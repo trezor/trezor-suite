@@ -7,6 +7,7 @@ import platforms from '../../__fixtures__/platforms.json';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { TradingBuyState } from '../../reducers/buyReducer';
 import { exchangeInitialState } from '../../reducers/exchangeReducer';
+import { sellInitialState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingReducer';
 import { TradingPaymentMethodListProps } from '../../types';
 import {
@@ -38,6 +39,7 @@ import {
     selectTradingNativeCoinSymbolByCryptoId,
     selectTradingPaymentMethods,
     selectTradingPlatformByCryptoId,
+    selectTradingSellInfo,
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
     selectTradingTrades,
@@ -137,6 +139,10 @@ describe('tradingSelectors', () => {
                         ...exchangeInitialState,
                         tradingAccountKey: accountEth.key,
                     },
+                    sell: {
+                        ...sellInitialState,
+                        tradingAccountKey: accountBtc.key,
+                    },
                     trades: [
                         {
                             tradeType: 'buy',
@@ -170,7 +176,7 @@ describe('tradingSelectors', () => {
                     account: accountBtc,
                     status: 'loaded',
                 },
-                accounts: [accountEth],
+                accounts: [accountEth, accountBtc],
             },
             suite: {
                 settings: {
@@ -298,6 +304,38 @@ describe('tradingSelectors', () => {
 
         it('should be stable', () => {
             expect(selectTradingExchangeInfo(state)).toBe(selectTradingExchangeInfo(state));
+        });
+    });
+
+    describe('selectTradingSellInfo', () => {
+        it('should return correct data', () => {
+            const stateExchange = {
+                wallet: {
+                    tradingNew: {
+                        sell: {
+                            sellInfo: {
+                                providerInfos: {},
+                                supportedFiatCurrencies: [] as string[],
+                                supportedCryptoCurrencies: [] as CryptoId[],
+                            },
+                        },
+                    },
+                },
+            } as TradingRootState;
+
+            expect(selectTradingSellInfo(stateExchange)).toEqual({
+                providerInfos: {},
+                supportedFiatCurrencies: new Set(),
+                supportedCryptoCurrencies: new Set(),
+            });
+        });
+
+        it('should return undefined', () => {
+            expect(selectTradingSellInfo(state)).toEqual(undefined);
+        });
+
+        it('should be stable', () => {
+            expect(selectTradingSellInfo(state)).toBe(selectTradingSellInfo(state));
         });
     });
 
@@ -677,7 +715,11 @@ describe('tradingSelectors', () => {
                     'sell',
                     state.wallet.selectedAccount,
                 ),
-            ).toBeUndefined();
+            ).toEqual(
+                state.wallet.accounts.find(
+                    account => account.key === state.wallet.tradingNew.sell.tradingAccountKey,
+                ),
+            );
         });
     });
 

@@ -256,3 +256,5 @@ export type TradingSignAndPushSendFormTransactionProps = {
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     selectedAccount: Account;
 };
+
+export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';

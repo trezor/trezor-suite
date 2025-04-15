@@ -84,9 +84,37 @@ export const watchTradeThunk = createThunk(
 
                 return;
             }
-            case 'sell':
-                // TODO: trading - add watch trade for sell
-                break;
+            case 'sell': {
+                const data = await watchTradeData<typeof tradeType>({
+                    trade,
+                    refreshCount,
+                });
+
+                if (!data) return;
+
+                if (data.response.destinationAddress) {
+                    data.tradeData.destinationAddress = data.response.destinationAddress;
+                    data.tradeData.destinationPaymentExtraId =
+                        data.response.destinationPaymentExtraId;
+                }
+
+                if (data.response.cryptoStringAmount) {
+                    data.tradeData.cryptoStringAmount = data.response.cryptoStringAmount;
+                }
+
+                dispatch(
+                    tradingActions.saveTrade({
+                        tradeType,
+                        date,
+                        key: data.tradeData.orderId,
+                        account: accountData,
+                        data: data.tradeData,
+                        sendAccountKey: trade.sendAccountKey,
+                    }),
+                );
+
+                return;
+            }
             case 'exchange': {
                 const data = await watchTradeData<typeof tradeType>({
                     trade,

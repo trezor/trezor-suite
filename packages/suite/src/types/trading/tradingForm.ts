@@ -22,6 +22,7 @@ import type {
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
     TradingPaymentMethodType,
+    TradingSellStepType,
     TradingSellType,
     TradingTradeMapProps,
     TradingTradeType,
@@ -89,8 +90,6 @@ export interface TradingExchangeFormDefaultValuesProps {
     defaultValues: TradingExchangeFormProps;
     defaultCurrency: Option;
 }
-
-export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 
 interface TradingFormStateProps {
     isFormLoading: boolean;
