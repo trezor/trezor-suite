@@ -60,6 +60,7 @@ const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWork
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
 });
 // just to have a commit
+// and another
 
 // eslint-disable-next-line import/no-default-export
 export default config;
