@@ -3,13 +3,12 @@ import { useState } from 'react';
 import { BankAccount } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import type { TradingSellType } from '@suite-common/trading';
+import { type TradingSellType, sellUtils } from '@suite-common/trading';
 import { Button, Icon, Row, Select } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { formatIban } from 'src/utils/wallet/trading/sellUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -165,7 +164,7 @@ export const TradingOfferSellBankAccount = () => {
                                     <AccountInfo>
                                         <AccountName>{option.holder}</AccountName>
                                         <AccountNumber>
-                                            {formatIban(option.bankAccount)}
+                                            {sellUtils.formatIban(option.bankAccount)}
                                         </AccountNumber>
                                     </AccountInfo>
                                     {option.verified ? (
