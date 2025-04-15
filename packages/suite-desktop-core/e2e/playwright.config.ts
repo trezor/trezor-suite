@@ -61,6 +61,8 @@ const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWork
 });
 // just to have a commit
 // and another
+// more comments
+
 
 // eslint-disable-next-line import/no-default-export
 export default config;
