@@ -78,7 +78,7 @@ export type TradingSellInfoSelector = Omit<
     'supportedCryptoCurrencies' | 'supportedFiatCurrencies'
 > & {
     supportedCryptoCurrencies: Set<CryptoId>;
-    supportedFiatCurrencies: Set<string>;
+    supportedFiatCurrencies: Set<string>; // TODO: trading - check if can be used FiatCurrencyCode
 };
 
 export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'> & {
