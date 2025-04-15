@@ -1,90 +1,11 @@
-import { useTradingInfo } from '@suite-common/trading';
-
 import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import { Account } from 'src/types/wallet';
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
-import {
-    createQuoteLink,
-    formatIban,
-    getAmountLimits,
-    getStatusMessage,
-} from 'src/utils/wallet/trading/sellUtils';
+import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
-const {
-    QUOTE_REQUEST_FIAT,
-    QUOTE_REQUEST_CRYPTO,
-    MIN_MAX_QUOTES_OK,
-    MIN_MAX_QUOTES_HIGH,
-    MIN_MAX_QUOTES_LOW,
-} = fixtures;
-
-jest.mock('@suite-common/trading', () => ({
-    ...jest.requireActual('@suite-common/trading'),
-    useTradingInfo: jest.fn(),
-}));
+const { QUOTE_REQUEST_FIAT, QUOTE_REQUEST_CRYPTO } = fixtures;
 
 describe('trading/sell utils', () => {
-    const cryptoIdToCoinSymbol = (useTradingInfo as jest.Mock).mockImplementation(() => 'BTC');
-
-    it('getAmountLimits', () => {
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_FIAT,
-                quotes: MIN_MAX_QUOTES_OK,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toBe(undefined);
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_CRYPTO,
-                quotes: MIN_MAX_QUOTES_OK,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toBe(undefined);
-
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_FIAT,
-                quotes: MIN_MAX_QUOTES_LOW,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'EUR',
-            minFiat: '20',
-        });
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_CRYPTO,
-                quotes: MIN_MAX_QUOTES_LOW,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'btc',
-            minCrypto: '0.002',
-        });
-
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_FIAT,
-                quotes: MIN_MAX_QUOTES_HIGH,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'EUR',
-            maxFiat: '17045',
-        });
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_CRYPTO,
-                quotes: MIN_MAX_QUOTES_HIGH,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'btc',
-            maxCrypto: '1.67212968',
-        });
-    });
-
     it('createQuoteLink', async () => {
         const accountMock = {
             index: 1,
@@ -120,22 +41,5 @@ describe('trading/sell utils', () => {
         ).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/42134432141234/custom/1/2/3/4`,
         );
-    });
-
-    it('formatIban', () => {
-        expect(formatIban('SE35 5000 0000 0549 1000 0003')).toEqual(
-            'SE35 5000 0000 0549 1000 0003',
-        );
-        expect(formatIban('CH9300762011623852957')).toEqual('CH93 0076 2011 6238 5295 7');
-    });
-
-    it('getStatusMessage', () => {
-        expect(getStatusMessage('PENDING')).toBe('TR_SELL_STATUS_PENDING');
-        expect(getStatusMessage('SUBMITTED')).toBe('TR_SELL_STATUS_PENDING');
-        expect(getStatusMessage('ERROR')).toBe('TR_SELL_STATUS_ERROR');
-        expect(getStatusMessage('BLOCKED')).toBe('TR_SELL_STATUS_ERROR');
-        expect(getStatusMessage('CANCELLED')).toBe('TR_SELL_STATUS_ERROR');
-        expect(getStatusMessage('REFUNDED')).toBe('TR_SELL_STATUS_ERROR');
-        expect(getStatusMessage('SUCCESS')).toBe('TR_SELL_STATUS_SUCCESS');
     });
 });
