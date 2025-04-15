@@ -18,7 +18,7 @@ import {
     ConfirmUnverifiedProceedModal,
     ConfirmUnverifiedXpubModal,
     ConfirmXpubModal,
-    ConnectPopupModal,
+    ConnectPermissionsModal,
     CopyAddressModal,
     CriticalCoinjoinPhaseModal,
     DeviceAuthenticityOptOutModal,
@@ -215,7 +215,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
         case 'passphrase-mismatch-warning':
             return <PassphraseMismatchModal onCancel={onCancel} />;
         case 'connect-popup':
-            return <ConnectPopupModal />;
+            return <ConnectPermissionsModal />;
         case 'walletconnect-proposal':
             return <WalletConnectProposalModal eventId={payload.eventId} />;
         case 'trading-dca':

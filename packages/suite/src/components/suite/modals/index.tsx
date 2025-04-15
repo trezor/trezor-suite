@@ -46,4 +46,4 @@ export { ClaimModal } from './ReduxModal/UserContextModal/ClaimModal/ClaimModal'
 export { MultiShareBackupModal } from './ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 export { CopyAddressModal } from './ReduxModal/CopyAddressModal';
 export { UnhideTokenModal } from './ReduxModal/UnhideTokenModal';
-export { ConnectPopupModal } from './ReduxModal/UserContextModal/ConnectPopupModal';
+export { ConnectPermissionsModal } from './ReduxModal/UserContextModal/ConnectPermissionsModal';

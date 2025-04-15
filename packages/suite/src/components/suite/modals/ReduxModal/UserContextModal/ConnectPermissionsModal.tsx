@@ -13,7 +13,7 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-export const ConnectPopupModal = () => {
+export const ConnectPermissionsModal = () => {
     const [isRemembered, setIsRemembered] = useState(false);
 
     const dispatch = useDispatch();
