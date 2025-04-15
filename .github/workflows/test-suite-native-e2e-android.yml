@@ -177,6 +177,11 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     needs: prepare_android_test_app
+    strategy:
+      fail-fast: false
+      matrix: 
+        TEST_GROUP: [0, 1, 2, 3]  
+      
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -250,13 +255,16 @@ jobs:
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
-          script: yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing
+          script: |
+            npx jest --listTests e2e | sort | awk 'NR % 4 == ${{ matrix.TEST_GROUP }}' > shard.txt
+            xargs yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing < shard.txt
 
       - name: Upload results to Currents.dev
         if: ${{ ! cancelled() }}
         env:
           CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
         working-directory: ./suite-native/app
         run: |
           npx currents convert \
@@ -265,7 +273,7 @@ jobs:
             --output-dir=./currents \
             --framework=postman \
             --framework-version=v11.2.0
-          npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --report-dir ./currents
+          npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --ci-build-id=${CURRENTS_CI_BUILD_ID} --report-dir ./currents
 
       - name: "Store failed test screenshot artifacts"
         if: ${{failure()}}
