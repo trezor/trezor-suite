@@ -7,6 +7,7 @@ import {
     useFirmwareInstallation,
 } from '@suite-common/firmware';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { setPriorityMode } from '@trezor/react-native-usb';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';
@@ -92,6 +93,8 @@ export const useFirmware = (params?: UseFirmwareInstallationParams) => {
         // @ts-expect-error types are not correct here, IDK why
         firmwareInstallation.uiEvent?.payload?.code === 'ButtonRequest_Other';
 
+    const originalFirmwareVersion = getFirmwareVersion(firmwareInstallation.originalDevice);
+
     const translatedText = useMemo(() => {
         let text: { title: TxKeyPath; subtitle?: TxKeyPath } = {
             title: 'firmware.firmwareUpdateProgress.initializing.title',
@@ -106,22 +109,22 @@ export const useFirmware = (params?: UseFirmwareInstallationParams) => {
         } else if (isInitialState && !confirmOnDevice) {
             text = {
                 title: 'firmware.firmwareUpdateProgress.initializing.title',
-                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
         } else if (isInitialState) {
             text = {
                 title: 'firmware.firmwareUpdateProgress.confirming.title',
-                subtitle: 'firmware.firmwareUpdateProgress.confirmOnDeviceMessage',
+                subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
         } else if (operation === 'validating') {
             text = {
                 title: 'firmware.firmwareUpdateProgress.validating.title',
-                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
         } else if (operation === 'restarting') {
             text = {
                 title: 'firmware.firmwareUpdateProgress.restarting.title',
-                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
         } else if (operation === 'completed' || status === 'done') {
             text = {
@@ -130,8 +133,10 @@ export const useFirmware = (params?: UseFirmwareInstallationParams) => {
             };
         } else if (operation === 'installing') {
             text = {
-                title: 'firmware.firmwareUpdateProgress.installing.title',
-                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                title: originalFirmwareVersion
+                    ? 'firmware.firmwareUpdateProgress.installing.title'
+                    : 'firmware.firmwareUpdateProgress.installing.title',
+                subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
             };
         }
 
@@ -139,7 +144,7 @@ export const useFirmware = (params?: UseFirmwareInstallationParams) => {
             title: translate(text.title),
             subtitle: text.subtitle ? translate(text.subtitle) : error,
         };
-    }, [operation, status, error, confirmOnDevice, translate]);
+    }, [operation, status, error, confirmOnDevice, translate, originalFirmwareVersion]);
 
     return {
         ...firmwareInstallation,

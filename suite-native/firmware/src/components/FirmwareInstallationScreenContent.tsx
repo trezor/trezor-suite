@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { authorizeDeviceThunk } from '@suite-common/wallet-core';
-import { Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
+import { Badge, Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage, setTemporaryRememberedDeviceThunk } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
@@ -225,6 +225,16 @@ export const FirmwareInstallationScreenContent = ({
                             {translatedText.subtitle ?? ' '}
                         </Text>
                     </Box>
+                    {!isError && !isDone && (
+                        <Box paddingTop="sp24" alignItems="center" justifyContent="center">
+                            <Badge
+                                variant="blue"
+                                label={
+                                    <Translation id="firmware.firmwareUpdateProgress.dontCloseAppMessage" />
+                                }
+                            />
+                        </Box>
+                    )}
                 </Animated.View>
             </VStack>
             {isError && (

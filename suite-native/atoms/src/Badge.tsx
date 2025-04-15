@@ -12,7 +12,7 @@ import { HStack } from './Stack';
 import { Text } from './Text';
 import { SurfaceElevation } from './types';
 
-export type BadgeVariant = 'neutral' | 'green' | 'greenSubtle' | 'yellow' | 'red' | 'bold';
+export type BadgeVariant = 'neutral' | 'green' | 'greenSubtle' | 'yellow' | 'red' | 'blue' | 'bold';
 export type BadgeSize = 'small' | 'medium';
 type IconType = IconName | NetworkSymbol;
 type BadgeProps = {
@@ -100,6 +100,13 @@ const badgeVariantToStylePropsMap = {
         backgroundColorElevation1: 'backgroundAlertRedSubtleOnElevation1',
         activeTextColor: 'textAlertRed',
         activeIconColor: 'iconAlertRed',
+        borderColor: undefined,
+    },
+    blue: {
+        backgroundColorElevation0: 'backgroundAlertBlueSubtleOnElevation0',
+        backgroundColorElevation1: 'backgroundAlertBlueSubtleOnElevation1',
+        activeTextColor: 'textAlertBlue',
+        activeIconColor: 'iconAlertBlue',
         borderColor: undefined,
     },
     bold: {
