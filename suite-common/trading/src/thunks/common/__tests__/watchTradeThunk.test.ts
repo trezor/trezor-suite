@@ -11,6 +11,7 @@ import {
     prepareTradingReducer,
 } from '../../../reducers/tradingReducer';
 import {
+    TradingTransaction,
     TradingTransactionBuy,
     TradingTransactionExchange,
     TradingTransactionSell,
@@ -60,36 +61,38 @@ describe('watchTradeThunk', () => {
         jest.clearAllMocks();
     });
 
-    it('should remain in the same status when there is not any response', async () => {
-        const trade = {
-            date: dateISO,
-            key: 'tradeKey',
-            tradeType: 'buy',
-            data: {
-                status: 'LOGIN_REQUEST',
-                paymentId: 'tradeKey',
-            },
-            account: accountData,
-        } as TradingTransactionBuy;
+    describe('should not update trade when there is not any response', () => {
+        it.each([['buy'], ['sell'], ['exchange']])('watch %s', async tradeType => {
+            const trade = {
+                date: dateISO,
+                key: 'tradeKey',
+                tradeType,
+                data: {
+                    status: 'LOGIN_REQUEST',
+                    paymentId: 'tradeKey',
+                },
+                account: accountData,
+            } as TradingTransaction;
 
-        const store = getStore({
-            trades: [trade],
+            const store = getStore({
+                trades: [trade],
+            });
+
+            invityAPI.watchTrade = () => Promise.resolve(undefined as any);
+
+            await store.dispatch(
+                watchTradeThunk({
+                    account,
+                    trade,
+                    refreshCount,
+                }),
+            );
+
+            const actions = store.getActions();
+            const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
+
+            expect(saveTradeAction).toBeUndefined();
         });
-
-        invityAPI.watchTrade = () => Promise.resolve(undefined as any);
-
-        await store.dispatch(
-            watchTradeThunk({
-                account,
-                trade,
-                refreshCount,
-            }),
-        );
-
-        const actions = store.getActions();
-        const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
-
-        expect(saveTradeAction).toBeUndefined();
     });
 
     it('should remain in the status when there is same the status in response', async () => {
@@ -173,87 +176,125 @@ describe('watchTradeThunk', () => {
         });
     });
 
-    it('should skip update sell trade data', async () => {
-        const trade = {
-            date: dateISO,
-            key: 'tradeKey',
-            tradeType: 'sell',
-            data: {
-                status: 'LOGIN_REQUEST',
-                paymentId: 'tradeKey',
-            },
-            account: accountData,
-        } as TradingTransactionSell;
+    describe('should update sell trade data', () => {
+        it.each([
+            [
+                'when destinationAddress is in the response',
+                {
+                    destinationAddress: 'destinationAddress',
+                    destinationPaymentExtraId: 'destinationPaymentExtraId',
+                },
+            ],
+            [
+                'when cryptoStringAmount is in the response',
+                {
+                    cryptoStringAmount: 'cryptoStringAmount',
+                },
+            ],
+            ['when neither destinationAddress nor cryptoStringAmount is not in the response', {}],
+        ])('watch %s', async (_, responseData) => {
+            const trade = {
+                date: dateISO,
+                key: 'tradeKey',
+                tradeType: 'sell',
+                data: {
+                    status: 'LOGIN_REQUEST',
+                    orderId: 'tradeKey',
+                },
+                account: accountData,
+                sendAccountKey: 'sendAccountKey',
+            } as TradingTransactionSell;
 
-        const store = getStore({
-            trades: [trade],
+            const store = getStore({
+                trades: [trade],
+            });
+
+            invityAPI.watchTrade = () =>
+                Promise.resolve({
+                    status: 'CONFIRM',
+                    ...responseData,
+                } as any);
+
+            await store.dispatch(
+                watchTradeThunk({
+                    account,
+                    trade,
+                    refreshCount,
+                }),
+            );
+
+            const actions = store.getActions();
+            const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
+
+            expect(saveTradeAction?.payload).toEqual({
+                tradeType: 'sell',
+                date: dateISO,
+                key: 'tradeKey',
+                account: accountData,
+                data: {
+                    status: 'CONFIRM',
+                    orderId: 'tradeKey',
+                    ...responseData,
+                },
+                sendAccountKey: 'sendAccountKey',
+            });
         });
-
-        invityAPI.watchTrade = () =>
-            Promise.resolve({
-                status: 'ERROR',
-                error: 'Some error occurred',
-            } as any);
-
-        await store.dispatch(
-            watchTradeThunk({
-                account,
-                trade,
-                refreshCount,
-            }),
-        );
-
-        const actions = store.getActions();
-        const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
-
-        expect(saveTradeAction).toBeUndefined();
     });
 
-    it('should update exchange trade data', async () => {
-        const trade = {
-            date: dateISO,
-            key: 'tradeKey',
-            tradeType: 'exchange',
-            data: {
-                status: 'SENDING',
-                orderId: 'tradeKey',
-            },
-            account: accountData,
-        } as TradingTransactionExchange;
+    describe('should update exchange trade data', () => {
+        it.each([
+            [
+                'when sendAddress is in the response',
+                {
+                    sendAddress: 'sendAddress',
+                    partnerPaymentExtraId: 'partnerPaymentExtraId',
+                },
+            ],
+            ['when sendAddress is not in the response', {}],
+        ])('watch %s', async (_, responseData) => {
+            const trade = {
+                date: dateISO,
+                key: 'tradeKey',
+                tradeType: 'exchange',
+                data: {
+                    status: 'SENDING',
+                    orderId: 'tradeKey',
+                },
+                account: accountData,
+            } as TradingTransactionExchange;
 
-        const store = getStore({
-            trades: [trade],
-        });
+            const store = getStore({
+                trades: [trade],
+            });
 
-        invityAPI.watchTrade = () =>
-            Promise.resolve({
-                status: 'CONFIRM',
-                sendAddress: 'address',
-                partnerPaymentExtraId: 'extraId',
-            } as any);
+            invityAPI.watchTrade = () =>
+                Promise.resolve({
+                    status: 'CONFIRM',
+                    ...responseData,
+                } as any);
 
-        await store.dispatch(
-            watchTradeThunk({
-                account,
-                trade,
-                refreshCount,
-            }),
-        );
+            await store.dispatch(
+                watchTradeThunk({
+                    account,
+                    trade,
+                    refreshCount,
+                }),
+            );
 
-        const actions = store.getActions();
-        const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
+            const actions = store.getActions();
+            const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
 
-        expect(saveTradeAction?.payload).toEqual({
-            tradeType: 'exchange',
-            date: dateISO,
-            key: 'tradeKey',
-            account: accountData,
-            data: {
-                status: 'CONFIRM',
-                orderId: 'tradeKey',
-                sendAddress: 'address',
-                partnerPaymentExtraId: 'extraId',
-            },
+            expect(saveTradeAction?.payload).toEqual({
+                tradeType: 'exchange',
+                date: dateISO,
+                key: 'tradeKey',
+                account: accountData,
+                data: {
+                    status: 'CONFIRM',
+                    orderId: 'tradeKey',
+                    ...responseData,
+                },
+            });
         });
     });
 });

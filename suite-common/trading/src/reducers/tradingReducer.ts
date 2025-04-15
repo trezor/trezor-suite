@@ -14,6 +14,7 @@ import {
     exchangeInitialState,
     tradingExchangeReducer,
 } from './exchangeReducer';
+import { TradingSellState, sellInitialState, tradingSellReducer } from './sellReducer';
 
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
@@ -39,7 +40,7 @@ export interface TradingState {
     info: TradingInfo;
     buy: TradingBuyState;
     exchange: TradingExchangeState;
-    // sell: TradingSellState;
+    sell: TradingSellState;
     composedTransactionInfo: TradingComposedTransactionInfo;
     trades: TradingTransaction[];
     modalCryptoId: CryptoId | undefined;
@@ -58,7 +59,7 @@ export const initialState: TradingState = {
     },
     buy: buyInitialState,
     exchange: exchangeInitialState,
-    // sell: sellInitialState,
+    sell: sellInitialState,
     composedTransactionInfo: {},
     trades: [],
     isLoading: false,
@@ -151,7 +152,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             })
             .addDefaultCase((state, action) => {
                 tradingBuyReducer(state.buy, action);
-                // TODO: prepareSellReducer(extra)(state.sell, action);
+                tradingSellReducer(state.sell, action);
                 tradingExchangeReducer(state.exchange, action);
             });
     },

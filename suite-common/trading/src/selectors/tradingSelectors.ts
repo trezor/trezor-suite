@@ -8,6 +8,7 @@ import addressValidator from '@trezor/address-validator';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
+import { SellInfo, TradingSellState } from '../reducers/sellReducer';
 import type { TradingInfo, TradingState } from '../reducers/tradingReducer';
 import {
     InvityServerEnvironment,
@@ -71,9 +72,22 @@ export type TradingExchangeStateSelector = Omit<TradingExchangeState, 'exchangeI
     exchangeInfo?: TradingExchangeInfoSelector;
 };
 
-export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange'> & {
+export type TradingSellInfoSelector = Omit<
+    SellInfo,
+    'supportedCryptoCurrencies' | 'supportedFiatCurrencies'
+> & {
+    supportedCryptoCurrencies: Set<CryptoId>;
+    supportedFiatCurrencies: Set<string>;
+};
+
+export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'> & {
+    sell?: TradingSellInfoSelector;
+};
+
+export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell'> & {
     buy: TradingBuyStateSelector;
     exchange: TradingExchangeStateSelector;
+    sell: TradingSellStateSelector;
 };
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
@@ -137,6 +151,21 @@ export const selectTradingExchangeInfo = createMemoizedSelector(
     },
 );
 
+export const selectTradingSellInfo = createMemoizedSelector(
+    [state => state.wallet.tradingNew.sell],
+    (sell): TradingSellInfoSelector | undefined => {
+        const { sellInfo } = sell;
+
+        if (!sellInfo) return;
+
+        return {
+            ...sellInfo,
+            supportedFiatCurrencies: new Set(sellInfo.supportedFiatCurrencies),
+            supportedCryptoCurrencies: new Set(sellInfo.supportedCryptoCurrencies),
+        };
+    },
+);
+
 export const selectTradingBuy = createMemoizedSelector(
     [state => state.wallet.tradingNew.buy, selectTradingBuyInfo],
     (buy, buyInfo) => ({
@@ -150,6 +179,14 @@ export const selectTradingExchange = createMemoizedSelector(
     (exchange, exchangeInfo) => ({
         ...exchange,
         exchangeInfo,
+    }),
+);
+
+export const selectTradingSell = createMemoizedSelector(
+    [state => state.wallet.tradingNew.sell, selectTradingSellInfo],
+    (sell, sellInfo) => ({
+        ...sell,
+        sellInfo,
     }),
 );
 
@@ -353,24 +390,22 @@ export const selectTradingComposedTransactionInfo = (state: TradingRootState) =>
 export const selectTradingAccountAccordingActiveSection = createMemoizedSelector(
     [
         selectTradingExchange,
+        selectTradingSell,
         ({ wallet }) => wallet.accounts,
-        (
-            _: TradingRootState,
-            activeSection: TradingType,
-            selectedAccount: SelectedAccountStatus,
-        ) => ({
+        (_: TradingRootState, activeSection: TradingType) => activeSection,
+        (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
             selectedAccount,
-            activeSection,
-        }),
     ],
-    (tradingExchange, accounts, params) => {
-        if (params.activeSection === 'exchange') {
+    (tradingExchange, tradingSell, accounts, activeSection, selectedAccount) => {
+        if (activeSection === 'exchange') {
             return accounts.find(account => account.key === tradingExchange.tradingAccountKey);
         }
 
-        if (params.activeSection === 'sell') return; // TODO: trading - sell
+        if (activeSection === 'sell') {
+            return accounts.find(account => account.key === tradingSell.tradingAccountKey);
+        }
 
-        return params.selectedAccount.account;
+        return selectedAccount.account;
     },
 );
 
