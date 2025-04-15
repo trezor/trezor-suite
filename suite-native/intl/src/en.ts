@@ -1021,8 +1021,9 @@ export const en = {
             reconnectButton: 'Connect Trezor',
         },
         cancelOnboardingAlert: {
-            title: 'Are you sure you’d like to cancel your Trezor’s setup?',
+            title: 'Cancel Trezor setup?',
             description: 'Start again at anytime.',
+            cancelButton: 'Yes, cancel',
             continueButton: 'Continue setup',
         },
     },
@@ -1598,10 +1599,14 @@ export const en = {
             },
         },
         firmwareUpdateProgress: {
+            generalSubtitle: 'Firmware is your Trezor’s operating system.',
             initializing: { title: 'Preparing your Trezor' },
             confirming: { title: 'Confirm firmware update on your Trezor.' },
-            installing: {
+            updating: {
                 title: 'Updating your firmware',
+            },
+            installing: {
+                title: 'Installing firmware',
             },
             restarting: { title: 'Restarting Trezor.' },
             validating: { title: 'Validating firmware.' },

@@ -41,7 +41,9 @@ const DeviceOnboardingExitButtonScreenHeader = () => {
         showAlert({
             title: translate('moduleDeviceOnboarding.cancelOnboardingAlert.title'),
             description: translate('moduleDeviceOnboarding.cancelOnboardingAlert.description'),
-            primaryButtonTitle: translate('generic.buttons.cancel'),
+            primaryButtonTitle: translate(
+                'moduleDeviceOnboarding.cancelOnboardingAlert.cancelButton',
+            ),
             primaryButtonVariant: 'redBold',
             secondaryButtonTitle: translate(
                 'moduleDeviceOnboarding.cancelOnboardingAlert.continueButton',
