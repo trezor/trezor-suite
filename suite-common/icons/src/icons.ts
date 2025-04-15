@@ -2526,6 +2526,7 @@ export const icons = {
     wall: require('../assets/wall.svg'),
     wallFilled: require('../assets/wallFilled.svg'),
     wallet: require('../assets/wallet.svg'),
+    walletConnect: require('../assets/walletConnect.svg'),
     walletFilled: require('../assets/walletFilled.svg'),
     warehouse: require('../assets/warehouse.svg'),
     warehouseFilled: require('../assets/warehouseFilled.svg'),
