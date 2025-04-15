@@ -40,6 +40,9 @@ import {
     selectTradingPaymentMethods,
     selectTradingPlatformByCryptoId,
     selectTradingSellInfo,
+    selectTradingSellProviders,
+    selectTradingSellQuotesRequest,
+    selectTradingSellSelectedQuote,
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
     selectTradingTrades,
@@ -393,6 +396,18 @@ describe('tradingSelectors', () => {
         });
     });
 
+    describe('selectTradingSellProviders', () => {
+        it('should return correct data', () => {
+            expect(selectTradingSellProviders(state)).toEqual(
+                state.wallet.tradingNew.sell.sellInfo?.providerInfos,
+            );
+        });
+
+        it('should be stable', () => {
+            expect(selectTradingSellProviders(state)).toBe(selectTradingSellProviders(state));
+        });
+    });
+
     it('selectTradingBuyQuotesRequest should return correct data', () => {
         expect(selectTradingBuyQuotesRequest(state)).toBe(
             state.wallet.tradingNew.buy.quotesRequest,
@@ -405,6 +420,12 @@ describe('tradingSelectors', () => {
         );
     });
 
+    it('selectTradingSellQuotesRequest should return correct data', () => {
+        expect(selectTradingSellQuotesRequest(state)).toBe(
+            state.wallet.tradingNew.sell.quotesRequest,
+        );
+    });
+
     it('selectTradingBuySelectedQuote should return correct data', () => {
         expect(selectTradingBuySelectedQuote(state)).toBe(
             state.wallet.tradingNew.buy.selectedQuote,
@@ -414,6 +435,12 @@ describe('tradingSelectors', () => {
     it('selectTradingExchangeSelectedQuote should return correct data', () => {
         expect(selectTradingExchangeSelectedQuote(state)).toBe(
             state.wallet.tradingNew.exchange.selectedQuote,
+        );
+    });
+
+    it('selectTradingSellSelectedQuote should return correct data', () => {
+        expect(selectTradingSellSelectedQuote(state)).toBe(
+            state.wallet.tradingNew.sell.selectedQuote,
         );
     });
 
