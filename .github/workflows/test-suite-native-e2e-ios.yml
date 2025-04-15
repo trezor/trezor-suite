@@ -3,6 +3,9 @@ name: "[Test] suite-native iOS E2E"
 on:
   schedule:
     - cron: "0 0 * * *"
+  push:
+    branches:
+      - release-native/*
   workflow_dispatch:
 
 concurrency:

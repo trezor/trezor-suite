@@ -12,6 +12,9 @@ on:
       - "suite-common/**"
       - "packages/connect/**"
       - ".github/workflows/test-suite-native-e2e-android.yml"
+  push:
+    branches:
+      - release-native/*
   workflow_dispatch:
 
 concurrency:

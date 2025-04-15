@@ -1,6 +1,11 @@
 name: "[Check] Validation"
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - release/2*
+      - release-native/*
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
