@@ -34,7 +34,7 @@ const appIconsAndroid = {
         backgroundColor: '#900B0B',
     },
     production: {
-        backgroundColor: '#0F6148',
+        backgroundColor: '#60E198',
     },
 } as const;
 
