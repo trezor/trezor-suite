@@ -46,6 +46,7 @@ export const ENUM_KEYS = [
     'BackupAvailability',
     'RecoveryType',
     'DisplayRotation',
+    'FailureType',
 ];
 
 // type rule fixes, ideally it should not be here

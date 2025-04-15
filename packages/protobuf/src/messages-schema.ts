@@ -1369,7 +1369,7 @@ export const Success = Type.Object(
     { $id: 'Success' },
 );
 
-export enum FailureType {
+export enum Enum_FailureType {
     Failure_UnexpectedMessage = 1,
     Failure_ButtonExpected = 2,
     Failure_DataError = 3,
@@ -1387,13 +1387,16 @@ export enum FailureType {
     Failure_FirmwareError = 99,
 }
 
-export type EnumFailureType = Static<typeof EnumFailureType>;
-export const EnumFailureType = Type.Enum(FailureType);
+export type EnumEnum_FailureType = Static<typeof EnumEnum_FailureType>;
+export const EnumEnum_FailureType = Type.Enum(Enum_FailureType);
+
+export type FailureType = Static<typeof FailureType>;
+export const FailureType = Type.KeyOfEnum(Enum_FailureType, { $id: 'FailureType' });
 
 export type Failure = Static<typeof Failure>;
 export const Failure = Type.Object(
     {
-        code: Type.Optional(Type.KeyOfEnum(FailureType)),
+        code: Type.Optional(FailureType),
         message: Type.Optional(Type.String()),
     },
     { $id: 'Failure' },

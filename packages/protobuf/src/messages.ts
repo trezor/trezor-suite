@@ -906,7 +906,7 @@ export type Success = {
     message: string;
 };
 
-export enum FailureType {
+export enum Enum_FailureType {
     Failure_UnexpectedMessage = 1,
     Failure_ButtonExpected = 2,
     Failure_DataError = 3,
@@ -923,6 +923,8 @@ export enum FailureType {
     Failure_InvalidSession = 14,
     Failure_FirmwareError = 99,
 }
+
+export type FailureType = keyof typeof Enum_FailureType;
 
 export type Failure = {
     code?: FailureType;
