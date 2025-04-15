@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
-import { Button, variables } from '@trezor/components';
+import { Button, Row, variables } from '@trezor/components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
@@ -14,6 +14,10 @@ import { MessageSystemBanner } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
+import {
+    OnboardingCancelButtonContext,
+    useOnboardingCancelButtonContext,
+} from './OnboardingCancelButtonContext';
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
 import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
@@ -110,9 +114,56 @@ const Content = styled.div`
     padding: 0 ${spacingsPx.lg} ${spacingsPx.xxxxl} ${spacingsPx.lg};
 `;
 
-interface OnboardingLayoutProps {
+type OnboardingContentProps = {
     children: ReactNode;
-}
+};
+
+const OnboardingContent = ({ children }: OnboardingContentProps) => {
+    const { onCancelHandler } = useOnboardingCancelButtonContext();
+
+    return (
+        <ContentWrapper id="layout-scroll">
+            <Header>
+                <LogoHeaderRow>
+                    <SmallDeviceItem />
+
+                    <Row gap={spacings.sm}>
+                        <Button
+                            variant="tertiary"
+                            icon="arrowUpRight"
+                            iconAlignment="end"
+                            size="small"
+                            href={TREZOR_SUPPORT_URL}
+                        >
+                            <Translation id="TR_HELP" />
+                        </Button>
+                        {onCancelHandler !== null ? (
+                            <Button
+                                variant="tertiary"
+                                icon="x"
+                                iconAlignment="end"
+                                size="small"
+                                onClick={onCancelHandler}
+                            >
+                                <Translation id="TR_CANCEL" />
+                            </Button>
+                        ) : null}
+                    </Row>
+                </LogoHeaderRow>
+
+                <ProgressBarRow>
+                    <OnboardingProgressBar />
+                </ProgressBarRow>
+            </Header>
+
+            <Content>{children}</Content>
+        </ContentWrapper>
+    );
+};
+
+type OnboardingLayoutProps = {
+    children: ReactNode;
+};
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const bannerMessage = useSelector(selectBannerMessage);
@@ -127,29 +178,9 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
 
                 <Body data-testid="@onboarding-layout/body">
                     <ScrollingWrapper>
-                        <ContentWrapper id="layout-scroll">
-                            <Header>
-                                <LogoHeaderRow>
-                                    <SmallDeviceItem />
-
-                                    <Button
-                                        variant="tertiary"
-                                        icon="arrowUpRight"
-                                        iconAlignment="end"
-                                        size="small"
-                                        href={TREZOR_SUPPORT_URL}
-                                    >
-                                        <Translation id="TR_HELP" />
-                                    </Button>
-                                </LogoHeaderRow>
-
-                                <ProgressBarRow>
-                                    <OnboardingProgressBar />
-                                </ProgressBarRow>
-                            </Header>
-
-                            <Content>{children}</Content>
-                        </ContentWrapper>
+                        <OnboardingCancelButtonContext>
+                            <OnboardingContent>{children}</OnboardingContent>
+                        </OnboardingCancelButtonContext>
                     </ScrollingWrapper>
 
                     <GuideButton />

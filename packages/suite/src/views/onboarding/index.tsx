@@ -56,10 +56,10 @@ export const Onboarding = () => {
                 return BasicSettingsStep;
             case STEP.ID_FINAL_STEP:
                 return FinalStep;
-            default:
-                console.error('no corresponding component found');
-
-                return () => null;
+            default: {
+                const _unhandledCase: never = activeStepId;
+                throw new Error(`Unhandled activeStepId: ${_unhandledCase}`);
+            }
         }
     }, [activeStepId, goToNextStep]);
 
