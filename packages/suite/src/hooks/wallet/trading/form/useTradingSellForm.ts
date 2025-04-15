@@ -6,6 +6,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TradingSellStepType,
     type TradingSellType,
     TradingTransactionSell,
     addIdsToQuotes,
@@ -53,11 +54,7 @@ import {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,
 } from 'src/types/trading/trading';
-import {
-    TradingSellFormContextProps,
-    TradingSellFormProps,
-    TradingSellStepType,
-} from 'src/types/trading/tradingForm';
+import { TradingSellFormContextProps, TradingSellFormProps } from 'src/types/trading/tradingForm';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/trading/sellUtils';
 import {

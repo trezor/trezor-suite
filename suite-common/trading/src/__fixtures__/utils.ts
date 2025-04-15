@@ -3,6 +3,7 @@ export const accountBtc = {
     accountType: 'segwit',
     networkType: 'bitcoin',
     descriptor: 'btc-descriptor',
+    key: 'btc-descriptor-btc',
     symbol: 'btc',
     addresses: {
         unused: [

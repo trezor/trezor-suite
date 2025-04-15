@@ -3,10 +3,12 @@ import { CryptoId } from 'invity-api';
 export const TRADING_PREFIX = '@trading';
 export const TRADING_BUY_PREFIX = `${TRADING_PREFIX}-buy`;
 export const TRADING_EXCHANGE_PREFIX = `${TRADING_PREFIX}-exchange`;
+export const TRADING_SELL_PREFIX = `${TRADING_PREFIX}-sell`;
 
 export const TRADING_THUNK_PREFIX = `${TRADING_PREFIX}/thunk`;
 export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;
 export const TRADING_EXCHANGE_THUNK_PREFIX = `${TRADING_EXCHANGE_PREFIX}/thunk`;
+export const TRADING_SELL_THUNK_PREFIX = `${TRADING_SELL_PREFIX}/thunk`;
 
 export const TRADING_DEFAULT_CRYPTO_CURRENCY = 'bitcoin' as CryptoId;
 export const TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY = 'ethereum' as CryptoId;
