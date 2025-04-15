@@ -33,6 +33,10 @@ export const allowedDomains = [
     'verify.walletconnect.org', // WalletConnect
 ];
 
+export const silentlyBlockedDomains = [
+    'pulse.walletconnect.org', // WalletConnect analytics
+];
+
 export const cspRules = [
     // Default to only own resources
     "default-src 'self'",
