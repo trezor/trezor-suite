@@ -51,6 +51,7 @@ const buildArgs = (params: LaunchSuiteParams) => {
         disableHWAccelerationArgument,
         disableHashChecksPatch,
         showDebugMenuStatePatch,
+        '--state.suite.settings.debug.showConnectLogs=true',
     ];
 
     if (params.bridgeDaemon) {
