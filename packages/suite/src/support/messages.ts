@@ -9895,4 +9895,29 @@ export default defineMessages({
         id: 'TR_CONNECT_ERROR_GENERIC_DESCRIPTION',
         defaultMessage: 'An error occured during the Trezor Connect call.',
     },
+    TR_NO_CONNECTED_APPS_DESCRIPTION: {
+        id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
+        defaultMessage:
+            'You can connect Trezor to third party wallets and manage access from here.',
+    },
+    TR_PERMISSION_READ: {
+        id: 'TR_PERMISSION_READ',
+        defaultMessage: 'Read public keys from Trezor device',
+    },
+    TR_PERMISSION_WRITE: {
+        id: 'TR_PERMISSION_WRITE',
+        defaultMessage: 'Prepare Trezor device for transaction and data signing',
+    },
+    TR_PERMISSION_MANAGEMENT: {
+        id: 'TR_PERMISSION_MANAGEMENT',
+        defaultMessage: 'Modify device settings',
+    },
+    TR_PERMISSION_PUSH_TX: {
+        id: 'TR_PERMISSION_PUSH_TX',
+        defaultMessage: 'Broadcast transaction to the network',
+    },
+    TR_PERMISSION_CUSTOM_MESSAGE: {
+        id: 'TR_PERMISSION_CUSTOM_MESSAGE',
+        defaultMessage: 'Run custom operations',
+    },
 });

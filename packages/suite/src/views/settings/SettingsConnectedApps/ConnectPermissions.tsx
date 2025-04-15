@@ -1,9 +1,16 @@
+import styled from 'styled-components';
+
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
-import { Badge, Column, Dropdown, IconCircle, Row, Text } from '@trezor/components';
+import { Badge, Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+const PermissionsList = styled.ul`
+    list-style: disc;
+    margin-left: 16px;
+`;
 
 export const ConnectPermissions = () => {
     const dispatch = useDispatch();
@@ -11,21 +18,41 @@ export const ConnectPermissions = () => {
 
     if (apps.length === 0) {
         return (
-            <Row padding={spacings.xl} justifyContent="center">
-                <Text align="center" variant="tertiary">
+            <Column flex="1" justifyContent="center" gap={spacings.xs}>
+                <H3 align="center">
                     <Translation id="TR_NO_CONNECTED_APPS" />
+                </H3>
+                <Text align="center" variant="tertiary">
+                    <Translation id="TR_NO_CONNECTED_APPS_DESCRIPTION" />
                 </Text>
-            </Row>
+            </Column>
         );
     }
 
+    const getPermissionText = (permissionType: string) => {
+        switch (permissionType) {
+            case 'read':
+                return <Translation id="TR_PERMISSION_READ" />;
+            case 'write':
+                return <Translation id="TR_PERMISSION_WRITE" />;
+            case 'management':
+                return <Translation id="TR_PERMISSION_MANAGEMENT" />;
+            case 'push_tx':
+                return <Translation id="TR_PERMISSION_PUSH_TX" />;
+            case 'custom-message':
+                return <Translation id="TR_PERMISSION_CUSTOM_MESSAGE" />;
+            default:
+                return '';
+        }
+    };
+
     return (
-        <>
-            <Column flex="1" hasDivider>
+        <Card paddingType="none">
+            <Column hasDivider>
                 {apps.map(app => (
                     <Row key={app.origin} gap={spacings.md} padding={spacings.md}>
                         <IconCircle
-                            name="appWindow"
+                            name="plugs"
                             size={spacings.xxl}
                             paddingType="small"
                             variant="tertiary"
@@ -42,9 +69,17 @@ export const ConnectPermissions = () => {
                                 ) : (
                                     <Text>{app.origin}</Text>
                                 )}
-                                <Badge variant="tertiary">{app.processName}</Badge>
+                                <Badge variant="tertiary" icon="appWindow">
+                                    {app.processName}
+                                </Badge>
                             </Row>
-                            <Text variant="tertiary">Permissions: {app.types.join(', ')}</Text>
+                            <Text variant="tertiary">
+                                <PermissionsList>
+                                    {app.types.map(permission => (
+                                        <li key={permission}>{getPermissionText(permission)}</li>
+                                    ))}
+                                </PermissionsList>
+                            </Text>
                         </Column>
 
                         <Dropdown
@@ -69,6 +104,6 @@ export const ConnectPermissions = () => {
                     </Row>
                 ))}
             </Column>
-        </>
+        </Card>
     );
 };
