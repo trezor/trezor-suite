@@ -294,6 +294,13 @@ const init = async () => {
             (!isMacOs() || !app.isHidden());
         const autoStartCurrentlyEnabled = isAutoStartEnabled();
         logger.info('main', `Before quit, window exists: ${windowExists}`);
+        if (windowExists) {
+            logger.info('main', 'Hiding main window');
+            // NOTE: immediatly hide the main window for the better closing UX
+            // for daemon mode, it doesn't matter
+            mainWindow?.hide();
+        }
+
         if (
             !stoppingDaemon &&
             autoStartCurrentlyEnabled &&
