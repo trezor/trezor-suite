@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { selectDeviceModel, selectHasDeviceFirmwareInstalled } from '@suite-common/wallet-core';
+import {
+    selectDeviceModel,
+    selectHasDeviceFirmwareInstalled,
+    selectIsLatestFirmwareInstalled,
+} from '@suite-common/wallet-core';
 import { Box, Button, Image, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -78,11 +82,18 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding
 >) => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
+    const isLatestFirmwareInstalled = useSelector(selectIsLatestFirmwareInstalled);
 
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
-            navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
+            if (isLatestFirmwareInstalled) {
+                // If user already has the latest firmware installed, skip this update screen and navigate to device auth-check directly.
+                navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
+            } else {
+                navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
+            }
         } else {
+            // Security check is relevant for brand new devices only.
             navigation.navigate(DeviceOnboardingStackRoutes.SecurityCheck);
         }
     };

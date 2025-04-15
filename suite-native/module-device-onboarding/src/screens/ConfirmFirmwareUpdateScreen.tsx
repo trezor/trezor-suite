@@ -1,9 +1,5 @@
-import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
-
-import { selectIsLatestFirmwareInstalled } from '@suite-common/wallet-core';
 import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
 import {
     ConfirmFirmwareUpdateScreenContent,
@@ -24,15 +20,6 @@ export const ConfirmFirmwareUpdateScreen = ({
     DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate
 >) => {
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
-    const isLatestFirmwareInstalled = useSelector(selectIsLatestFirmwareInstalled);
-
-    // If user already has the latest firmware installed, skip this screen and navigate to device auth-check directly.
-    useFocusEffect(
-        useCallback(() => {
-            if (isLatestFirmwareInstalled)
-                navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
-        }, [isLatestFirmwareInstalled, navigation]),
-    );
 
     const handleUpdateConfirmation = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInstallation);
