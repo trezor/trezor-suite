@@ -1,11 +1,11 @@
 import { FreeFocusInside } from 'react-focus-lock';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import styled, { css, keyframes } from 'styled-components';
 
-import { Backdrop, variables } from '@trezor/components';
+import { ActiveView } from '@suite-common/suite-types';
+import { Box, NewModal, useMediaQuery, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
-import { zIndices } from '@trezor/theme';
+import { borders, spacings, zIndices } from '@trezor/theme';
 
 import {
     Feedback,
@@ -17,98 +17,82 @@ import {
 import { GUIDE_ANIMATION_DURATION_MS, useGuide } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
 
-const fullHeightStyle = css`
-    position: absolute;
-    top: 0;
-    right: 0;
-`;
-
-const smoothBlur = keyframes`
-    from {
-        backdrop-filter: blur(0px);
+const getGuideContent = (activeView: ActiveView) => {
+    switch (activeView) {
+        case 'GUIDE_ARTICLE':
+            return <GuideArticle />;
+        case 'GUIDE_CATEGORY':
+            return <GuideCategory />;
+        case 'SUPPORT_FEEDBACK_SELECTION':
+            return <SupportFeedbackSelection />;
+        case 'FEEDBACK_BUG':
+            return <Feedback type="BUG" />;
+        case 'FEEDBACK_SUGGESTION':
+            return <Feedback type="SUGGESTION" />;
+        case 'GUIDE_DEFAULT':
+            return <Guide />;
+        default: {
+            const _unhandledCase: never = activeView;
+            throw new Error(`Unhandled activeView type: ${_unhandledCase}`);
+        }
     }
-
-    to {
-        backdrop-filter: blur(3px);
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledBackdrop = styled(Backdrop)`
-    animation: ${smoothBlur} 0.3s ease-in forwards;
-    z-index: ${zIndices.guide};
-    cursor: pointer;
-
-    ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
-        display: none;
-    }
-`;
-
-const GuideWrapper = styled.div`
-    max-width: 100vw;
-    height: 100%;
-    z-index: ${zIndices.guide};
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        ${fullHeightStyle}
-    }
-`;
-
-const MotionGuide = styled(motion.div)`
-    max-width: 100vw;
-    height: 100%;
-    border-left: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    display: flex;
-    overflow-x: hidden;
-`;
+};
 
 export const GuideRouter = () => {
     const activeView = useSelector(state => state.guide.view);
-
     const { isGuideOpen, closeGuide } = useGuide();
+    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
 
     // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
     const isFirstRender = useOnce(isGuideOpen, false);
 
-    return (
-        <FreeFocusInside>
-            {isGuideOpen && <StyledBackdrop onClick={closeGuide} />}
+    const content = (
+        <motion.div
+            data-testid="@guide/panel"
+            initial={{
+                width: isFirstRender ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0,
+            }}
+            animate={{
+                width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
+                transition: {
+                    duration: GUIDE_ANIMATION_DURATION_MS / 1000,
+                    bounce: 0,
+                },
+            }}
+            exit={{
+                width: 0,
+                transition: {
+                    duration: GUIDE_ANIMATION_DURATION_MS / 1000,
+                    bounce: 0,
+                },
+            }}
+        >
+            <Box
+                height="100vh"
+                maxWidth="100vw"
+                overflow="hidden auto"
+                borderWidth={{ left: borders.widths.small }}
+            >
+                {activeView && getGuideContent(activeView)}
+            </Box>
+        </motion.div>
+    );
 
-            <GuideWrapper>
-                <AnimatePresence>
-                    {isGuideOpen && (
-                        <MotionGuide
-                            data-testid="@guide/panel"
-                            initial={{
-                                width: isFirstRender ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0,
-                            }}
-                            animate={{
-                                width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
-                                transition: {
-                                    duration: GUIDE_ANIMATION_DURATION_MS / 1000,
-                                    bounce: 0,
-                                },
-                            }}
-                            exit={{
-                                width: 0,
-                                transition: {
-                                    duration: GUIDE_ANIMATION_DURATION_MS / 1000,
-                                    bounce: 0,
-                                },
-                            }}
-                        >
-                            {activeView === 'GUIDE_DEFAULT' && <Guide />}
-                            {activeView === 'GUIDE_ARTICLE' && <GuideArticle />}
-                            {activeView === 'GUIDE_CATEGORY' && <GuideCategory />}
-                            {activeView === 'SUPPORT_FEEDBACK_SELECTION' && (
-                                <SupportFeedbackSelection />
-                            )}
-                            {activeView === 'FEEDBACK_BUG' && <Feedback type="BUG" />}
-                            {activeView === 'FEEDBACK_SUGGESTION' && <Feedback type="SUGGESTION" />}
-                        </MotionGuide>
-                    )}
-                </AnimatePresence>
-            </GuideWrapper>
-        </FreeFocusInside>
+    return (
+        <AnimatePresence>
+            {isGuideOpen &&
+                (isBelowLaptop ? (
+                    <NewModal.Backdrop
+                        alignment={{ x: 'end', y: 'center' }}
+                        padding={spacings.zero}
+                        onClick={closeGuide}
+                        zIndex={zIndices.guide}
+                    >
+                        {content}
+                    </NewModal.Backdrop>
+                ) : (
+                    <FreeFocusInside>{content}</FreeFocusInside>
+                ))}
+        </AnimatePresence>
     );
 };

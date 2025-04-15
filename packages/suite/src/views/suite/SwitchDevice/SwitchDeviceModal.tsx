@@ -38,12 +38,13 @@ export const SwitchDeviceModal = ({
     });
 
     return (
-        <NewModal.Backdrop onClick={onCancel} alignment={{ x: 'start', y: 'start' }} margin={4}>
+        <NewModal.Backdrop
+            onClick={onCancel}
+            alignment={{ x: 'start', y: 'start' }}
+            padding={spacings.xxs}
+        >
             <TrafficLightOffset>
-                <Container
-                    onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
-                    data-testid={dataTest}
-                >
+                <Container data-testid={dataTest}>
                     <Column alignItems="flex-start" gap={spacings.md} flex="1">
                         <motion.div
                             initial={isAnimationEnabled ? initial : false}

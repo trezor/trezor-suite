@@ -94,12 +94,7 @@ const InnerNewModalBase = ({
 
     return (
         <Box maxWidth="95%" maxHeight="80vh" width={mapModalSizeToWidth(size)} height={height}>
-            <Container
-                $elevation={elevation}
-                onClick={e => e.stopPropagation()}
-                data-testid={dataTest}
-                id={NEW_MODAL_CONTENT_ID}
-            >
+            <Container $elevation={elevation} data-testid={dataTest} id={NEW_MODAL_CONTENT_ID}>
                 <Column height="100%">
                     {hasHeader && (
                         <Row

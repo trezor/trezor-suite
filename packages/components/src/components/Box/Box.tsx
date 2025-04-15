@@ -38,36 +38,56 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
         $borderRadius?: BorderRadii;
-        $borderWidth?: BorderWidths;
+        $borderWidth?: BorderWidth;
         $elevation: Elevation;
         $hasBackground?: boolean;
     }
 >`
+    border: 0 solid ${mapElevationToBorder};
+
     ${({ $borderRadius }) =>
         $borderRadius &&
         css`
             border-radius: ${$borderRadius};
         `}
 
-    ${({ $borderWidth, $elevation, theme }) =>
+    ${({ $borderWidth }) =>
         $borderWidth &&
-        css`
-            outline: ${$borderWidth} solid ${mapElevationToBorder({ theme, $elevation })};
-        `}
+        (typeof $borderWidth === 'object'
+            ? css`
+                  border-width: ${$borderWidth.top ?? $borderWidth.vertical ?? 0}
+                      ${$borderWidth.right ?? $borderWidth.horizontal ?? 0}
+                      ${$borderWidth.bottom ?? $borderWidth.vertical ?? 0}
+                      ${$borderWidth.left ?? $borderWidth.horizontal ?? 0};
+              `
+            : css`
+                  border-width: ${$borderWidth};
+              `)}
 
-    ${({ $hasBackground, $elevation, theme }) =>
+        ${({ $hasBackground, $elevation, theme }) =>
         $hasBackground &&
         css`
             background: ${mapElevationToBackground({ theme, $elevation })};
         `}
-
-    ${withFrameProps}
+        
+    ${withFrameProps};
 `;
+
+type BorderWidth =
+    | {
+          top?: BorderWidths;
+          bottom?: BorderWidths;
+          left?: BorderWidths;
+          right?: BorderWidths;
+          horizontal?: BorderWidths;
+          vertical?: BorderWidths;
+      }
+    | BorderWidths;
 
 export type BoxProps = AllowedFrameProps & {
     children: React.ReactNode;
     borderRadius?: BorderRadii;
-    borderWidth?: BorderWidths;
+    borderWidth?: BorderWidth;
     hasBackground?: boolean;
     'data-testid'?: string;
     'aria-hidden'?: boolean;

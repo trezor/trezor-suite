@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Backdrop } from '@trezor/components';
+import { NewModal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -39,14 +39,6 @@ const OuterActions = styled.div<{ $smallMargin?: boolean }>`
     width: 100%;
     justify-content: center;
     z-index: ${zIndices.onboardingForeground};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const StyledBackdrop = styled(Backdrop)<{ $show: boolean }>`
-    transition: all 0.3s;
-    opacity: ${({ $show }) => ($show ? '1' : '0')};
-    pointer-events: ${({ $show }) => ($show ? 'initial' : 'none')};
-    z-index: ${zIndices.base};
 `;
 
 const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVisible: boolean }>`
@@ -86,7 +78,7 @@ export const OnboardingStepBox = ({
 
     return (
         <>
-            <StyledBackdrop $show={isBackDropVisible} />
+            {isBackDropVisible && <NewModal.Backdrop zIndex={zIndices.base} />}
             {!disableConfirmWrapper && (
                 <WrapperWrapper data-testid="@prompts/confirm-on-device'">
                     {deviceModelInternal && (

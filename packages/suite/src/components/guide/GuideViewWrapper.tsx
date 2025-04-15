@@ -7,6 +7,7 @@ import { variables } from '@trezor/components';
 const Wrapper = styled.div`
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     display: flex;
+    height: 100%;
     flex-direction: column;
     overflow: hidden scroll;
     -webkit-app-region: no-drag;

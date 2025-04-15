@@ -4,12 +4,12 @@ import FocusLock from 'react-focus-lock';
 
 import styled from 'styled-components';
 
-import { spacings, zIndices } from '@trezor/theme';
+import { ZIndexValues, spacings, zIndices } from '@trezor/theme';
 
 import { useModalTarget } from './NewModalProvider';
 import { NewModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
-import { Margin } from '../../utils/frameProps';
+import { Padding } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Column } from '../Flex/Flex';
 
@@ -17,39 +17,48 @@ export type NewModalBackdropProps = {
     onClick?: () => void;
     children?: ReactNode;
     alignment?: NewModalAlignment;
-    margin?: Margin;
+    padding?: Padding;
+    zIndex?: ZIndexValues;
 };
 
-const Wrapper = styled.div`
+const Backdrop = styled.div`
     backdrop-filter: blur(5px);
     background: rgb(0 0 0 / 30%);
-    height: 100vh;
-    overflow: auto;
+    height: 100%;
+`;
+
+const InnerWrapper = styled.div`
+    display: contents;
 `;
 
 export const NewModalBackdrop = ({
     onClick,
     children,
     alignment = { x: 'center', y: 'center' },
-    margin = spacings.xs,
+    padding = spacings.xs,
+    zIndex = zIndices.modal,
 }: NewModalBackdropProps) => {
     const modalTarget = useModalTarget();
 
     const backdrop = (
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
-            <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndices.modal} overflow="auto">
-                <Wrapper onClick={onClick}>
-                    <Column
-                        alignItems={mapAlignmentToAlignItems(alignment)}
-                        justifyContent={mapAlignmentToJustifyContent(alignment)}
-                        gap={spacings.md}
-                        margin={margin}
-                        height={`calc(100vh - ${(margin as number) * 2}px)`}
-                    >
-                        {children}
-                    </Column>
-                </Wrapper>
+            <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndex}>
+                <Backdrop onClick={onClick}>
+                    <Box padding={padding} height="100%">
+                        <Column
+                            alignItems={mapAlignmentToAlignItems(alignment)}
+                            justifyContent={mapAlignmentToJustifyContent(alignment)}
+                            gap={spacings.md}
+                            height="100%"
+                            overflow="scroll"
+                        >
+                            <InnerWrapper onClick={e => e.stopPropagation()}>
+                                {children}
+                            </InnerWrapper>
+                        </Column>
+                    </Box>
+                </Backdrop>
             </Box>
         </FocusLock>
     );
