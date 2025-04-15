@@ -47,7 +47,6 @@ const getOutlineSvg = (theme: DefaultTheme) =>
 
 const ProgressIndicator = styled.div`
     position: absolute;
-    top: 11px;
     width: 94px;
     height: 94px;
     background: conic-gradient(#fff0 20deg, #ccc);
@@ -258,7 +257,7 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
 
     return (
         <Tooltip content={getTooltipMessage()}>
-            <>
+            <div>
                 {isProgressIndicatorShown && <ProgressIndicator />}
 
                 <Wheel
@@ -279,7 +278,7 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
                         isWheelHovered={isWheelHovered}
                     />
                 </Wheel>
-            </>
+            </div>
         </Tooltip>
     );
 };

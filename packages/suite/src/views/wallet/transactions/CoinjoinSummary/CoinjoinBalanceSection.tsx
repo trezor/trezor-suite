@@ -17,8 +17,13 @@ export const Container = styled.div`
     justify-content: space-between;
     gap: 8px;
     width: 100%;
-    height: 160px;
+    height: 200px;
     align-items: center;
+
+    & > :last-child {
+        width: initial;
+        height: 100%;
+    }
 `;
 
 interface CoinjoinBalanceSectionProps {

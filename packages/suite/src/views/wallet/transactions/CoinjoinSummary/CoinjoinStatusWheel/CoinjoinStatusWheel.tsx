@@ -25,6 +25,10 @@ const Container = styled(Card)<{ $isWide?: boolean }>`
     color: ${({ theme }) => theme.textSubdued};
     ${typography.callout}
     text-align: center;
+
+    > :first-child {
+        justify-items: center;
+    }
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
