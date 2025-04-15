@@ -4,7 +4,7 @@ import { expect, test } from '../../support/fixtures';
 import { ConnectPopupModal } from '../../support/pageObjects/connectPopupModal';
 
 const passThroughPermissions = async (connectModal: ConnectPopupModal) => {
-    await expect(connectModal.processParagraph).toHaveText('Process: node');
+    await expect(connectModal.processParagraph).toHaveText('node');
     await expect(connectModal.rememberCheckbox).toHaveText('Always allow for this app');
     await connectModal.confirmButton.click();
 };
@@ -32,8 +32,8 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             coin: 'btc',
         });
 
-        await expect(connectModal.header).toHaveText('Export Bitcoin address');
         await passThroughPermissions(connectModal);
+        await expect(connectModal.loadingHeader).toHaveText('Export Bitcoin address');
 
         // export single address
         await trezorUserEnvLink.pressYes();
@@ -52,8 +52,9 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
                 },
             ],
         });
-        await expect(connectModal.header).toHaveText('Export multiple Bitcoin addresses');
         await connectModal.confirmButton.click();
+        await expect(connectModal.loadingHeader).toHaveText('Export multiple Bitcoin addresses');
+
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.pressYes();
 
@@ -74,8 +75,8 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             },
         });
 
-        await expect(connectModal.header).toHaveText('Sign Ethereum transaction');
         await passThroughPermissions(connectModal);
+        await expect(connectModal.loadingHeader).toHaveText('Sign Ethereum transaction');
 
         // todo: add UI asserts for step 1
         await trezorUserEnvLink.swipeEmu('up');

@@ -12,6 +12,23 @@ const PermissionsList = styled.ul`
     margin-left: 16px;
 `;
 
+export const getPermissionText = (permissionType: string) => {
+    switch (permissionType) {
+        case 'read':
+            return <Translation id="TR_PERMISSION_READ" />;
+        case 'write':
+            return <Translation id="TR_PERMISSION_WRITE" />;
+        case 'management':
+            return <Translation id="TR_PERMISSION_MANAGEMENT" />;
+        case 'push_tx':
+            return <Translation id="TR_PERMISSION_PUSH_TX" />;
+        case 'custom-message':
+            return <Translation id="TR_PERMISSION_CUSTOM_MESSAGE" />;
+        default:
+            return '';
+    }
+};
+
 export const ConnectPermissions = () => {
     const dispatch = useDispatch();
     const apps = useSelector(selectConnectAppPermissions);
@@ -28,23 +45,6 @@ export const ConnectPermissions = () => {
             </Column>
         );
     }
-
-    const getPermissionText = (permissionType: string) => {
-        switch (permissionType) {
-            case 'read':
-                return <Translation id="TR_PERMISSION_READ" />;
-            case 'write':
-                return <Translation id="TR_PERMISSION_WRITE" />;
-            case 'management':
-                return <Translation id="TR_PERMISSION_MANAGEMENT" />;
-            case 'push_tx':
-                return <Translation id="TR_PERMISSION_PUSH_TX" />;
-            case 'custom-message':
-                return <Translation id="TR_PERMISSION_CUSTOM_MESSAGE" />;
-            default:
-                return '';
-        }
-    };
 
     return (
         <Card paddingType="none">

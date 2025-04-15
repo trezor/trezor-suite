@@ -1,17 +1,25 @@
 import { useState } from 'react';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
-    CALL_SOURCE_DEEPLINK,
-    CALL_SOURCE_DESKTOP_WS,
-    CALL_SOURCE_WALLETCONNECT,
-} from '@suite-common/connect-popup/src/connectPopupTypes';
-import { Checkbox, Column, H2, NewModal, Paragraph } from '@trezor/components';
+    Badge,
+    Card,
+    Checkbox,
+    Column,
+    Icon,
+    IconCircle,
+    List,
+    NewModal,
+    Row,
+    Text,
+} from '@trezor/components';
 import { ERRORS } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {
     const [isRemembered, setIsRemembered] = useState(false);
@@ -21,7 +29,7 @@ export const ConnectPermissionsModal = () => {
     if (!popupCall || popupCall?.state !== 'permission-request') return null;
 
     const { methodInfo, source } = popupCall;
-    const { methodTitle, confirmLabel, permissionTypes } = methodInfo;
+    const { confirmLabel, permissionTypes } = methodInfo;
 
     const rememberPayload = {
         types: permissionTypes,
@@ -39,59 +47,94 @@ export const ConnectPermissionsModal = () => {
     return (
         <NewModal
             onCancel={onCancel}
-            iconName="plugs"
-            variant="primary"
             bottomContent={
                 <>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
-                        <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
                     <NewModal.Button variant="primary" onClick={onConfirm}>
                         {confirmLabel || <Translation id="TR_CONFIRM" />}
                     </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Translation id="TR_CANCEL" />
+                    </NewModal.Button>
                 </>
             }
-            heading={<Translation id="TR_TREZOR_CONNECT" />}
+            heading={<Translation id="TR_GRANT_PERMISSIONS" />}
+            description={<Translation id="TR_GRANT_PERMISSIONS_DESCRIPTION" />}
         >
             <Column gap={spacings.xs}>
-                <H2 data-testid="@connect-popup-modal/header">{methodTitle}</H2>
+                <Text>
+                    <Translation id="TR_APP" />
+                </Text>
 
-                <Column>
-                    {source.type === CALL_SOURCE_DESKTOP_WS && (
-                        <Paragraph data-testid="@connect-popup-modal/paragraph-process">
-                            <Translation id="TR_CONNECT_MODAL_PROCESS" />{' '}
-                            <strong>{source.processName}</strong>
-                        </Paragraph>
-                    )}
-                    {source.type === CALL_SOURCE_WALLETCONNECT && (
-                        <Paragraph data-testid="@connect-popup-modal/paragraph-walletconnect">
-                            <Translation id="TR_WALLETCONNECT" />
-                        </Paragraph>
-                    )}
-                    <Paragraph data-testid="@connect-popup-modal/paragraph-origin">
-                        <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" />{' '}
-                        <strong>{source.origin}</strong>
-                    </Paragraph>
-                    {source.type !== CALL_SOURCE_DEEPLINK && (
-                        <Paragraph data-testid="@connect-popup-modal/paragraph-app-name">
-                            <Translation id="TR_CONNECT_MODAL_APP_NAME" />{' '}
-                            <strong>{source.manifest.appName}</strong>
-                        </Paragraph>
-                    )}
-                </Column>
+                <Card>
+                    <Row gap={spacings.md}>
+                        <IconCircle
+                            name={
+                                source.type === CALL_SOURCE_WALLETCONNECT
+                                    ? 'walletConnect'
+                                    : 'plugs'
+                            }
+                            size={spacings.xxxxl}
+                            paddingType="large"
+                            variant="tertiary"
+                            hasBorder={false}
+                        />
 
-                <Paragraph variant="tertiary">
-                    <Translation id="TR_CONNECT_MODAL_REQUEST_DESCRIPTION" />
-                </Paragraph>
+                        <Column gap={spacings.xxs}>
+                            <Row gap={spacings.sm}>
+                                {source.manifest?.appName ? (
+                                    <>
+                                        <Text>{source.manifest.appName}</Text>
+                                        <Text variant="tertiary">{source.origin}</Text>
+                                    </>
+                                ) : (
+                                    <Text>{source.origin}</Text>
+                                )}
+                            </Row>
+                            <Row gap={spacings.sm}>
+                                {source.processName && (
+                                    <Badge variant="tertiary" icon="appWindow">
+                                        <Text data-testid="@connect-popup-modal/paragraph-process">
+                                            {source.processName}
+                                        </Text>
+                                    </Badge>
+                                )}
+                            </Row>
+                        </Column>
+                    </Row>
+                </Card>
 
+                <Text>
+                    <Translation id="TR_PERMISSIONS" />
+                </Text>
+
+                <Card>
+                    <List>
+                        {permissionTypes.map(permission => (
+                            <List.Item
+                                key={permission}
+                                bulletComponent={<Icon name="checkCircle" variant="primary" />}
+                            >
+                                {getPermissionText(permission)}
+                            </List.Item>
+                        ))}
+                    </List>
+                </Card>
                 {source.type !== CALL_SOURCE_WALLETCONNECT && (
-                    <Checkbox
-                        data-testid="@connect-popup-modal/remember-checkbox"
-                        isChecked={isRemembered}
-                        onClick={() => setIsRemembered(!isRemembered)}
-                    >
-                        <Translation id="TR_CONNECT_MODAL_REMEMBER" />
-                    </Checkbox>
+                    <>
+                        <Text>
+                            <Translation id="TR_OPTIONAL" />
+                        </Text>
+
+                        <Card>
+                            <Checkbox
+                                data-testid="@connect-popup-modal/remember-checkbox"
+                                isChecked={isRemembered}
+                                onClick={() => setIsRemembered(!isRemembered)}
+                            >
+                                <Translation id="TR_CONNECT_MODAL_REMEMBER" />
+                            </Checkbox>
+                        </Card>
+                    </>
                 )}
             </Column>
         </NewModal>

@@ -9696,11 +9696,6 @@ export default defineMessages({
         id: 'TR_TREZOR_CONNECT',
         defaultMessage: 'Trezor Connect',
     },
-    TR_CONNECT_MODAL_REQUEST_DESCRIPTION: {
-        id: 'TR_CONNECT_MODAL_REQUEST_DESCRIPTION',
-        defaultMessage:
-            'A third-party app is requesting to connect to your device. Do you want to allow this?',
-    },
     TR_CONNECT_MODAL_REMEMBER: {
         id: 'TR_CONNECT_MODAL_REMEMBER',
         defaultMessage: 'Always allow for this app',
@@ -9919,5 +9914,22 @@ export default defineMessages({
     TR_PERMISSION_CUSTOM_MESSAGE: {
         id: 'TR_PERMISSION_CUSTOM_MESSAGE',
         defaultMessage: 'Run custom operations',
+    },
+    TR_GRANT_PERMISSIONS: {
+        id: 'TR_GRANT_PERMISSIONS',
+        defaultMessage: 'Grant Permissions',
+    },
+    TR_GRANT_PERMISSIONS_DESCRIPTION: {
+        id: 'TR_GRANT_PERMISSIONS_DESCRIPTION',
+        defaultMessage:
+            'A third party app is trying to connect to Trezor Suite and is requesting the following permissions.',
+    },
+    TR_PERMISSIONS: {
+        id: 'TR_PERMISSIONS',
+        defaultMessage: 'Permissions',
+    },
+    TR_OPTIONAL: {
+        id: 'TR_OPTIONAL',
+        defaultMessage: 'Optional',
     },
 });
