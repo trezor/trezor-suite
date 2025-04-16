@@ -9,7 +9,12 @@ import type {
     Timestamp,
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import { scheduleAction } from '@trezor/utils';
+import {
+    RejectWhenAbortedError,
+    ScheduleActionDeadlineError,
+    ScheduleActionTimeoutError,
+    scheduleAction,
+} from '@trezor/utils';
 
 import * as blockbookService from './blockbook';
 import { ParallelRequestsCache } from './cache';
@@ -25,23 +30,44 @@ type FiatRatesParams = {
     isElectrumBackend: boolean;
 };
 
-const getConnectFiatRatesForTimestamp = (
+const getConnectFiatRatesForTimestamp = async (
     ticker: TickerId,
     timestamps: number[],
     currency: FiatCurrencyCode,
-) =>
-    scheduleAction(
-        () =>
-            TrezorConnect.blockchainGetFiatRatesForTimestamps({
-                coin: ticker.symbol,
-                token: ticker.tokenAddress,
-                timestamps,
-                currencies: [currency],
-            }),
-        {
-            timeout: CONNECT_FETCH_TIMEOUT,
-        },
-    );
+): Promise<
+    | ReturnType<typeof TrezorConnect.blockchainGetFiatRatesForTimestamps>
+    | { success: false; payload: null }
+> => {
+    try {
+        return await scheduleAction(
+            () =>
+                TrezorConnect.blockchainGetFiatRatesForTimestamps({
+                    coin: ticker.symbol,
+                    token: ticker.tokenAddress,
+                    timestamps,
+                    currencies: [currency],
+                }),
+            {
+                timeout: CONNECT_FETCH_TIMEOUT,
+            },
+        );
+    } catch (error) {
+        if (
+            ('name' in error && error.name === 'AbortError') ||
+            !('message' in error) ||
+            (error.message !== ScheduleActionTimeoutError.name &&
+                error.message !== ScheduleActionDeadlineError.name &&
+                error.message !== RejectWhenAbortedError.name)
+        ) {
+            throw error;
+        }
+
+        return Promise.resolve({
+            success: false,
+            payload: null,
+        });
+    }
+};
 
 export const fetchCurrentFiatRates = ({
     ticker,

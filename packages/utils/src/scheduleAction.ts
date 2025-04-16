@@ -59,10 +59,18 @@ const rejectAfterMs = (ms: number, reason: Error, clear: AbortSignal) =>
 const maybeRejectAfterMs = (ms: number | undefined, reason: Error, clear: AbortSignal) =>
     ms === undefined ? [] : [rejectAfterMs(ms, reason, clear)];
 
+export class RejectWhenAbortedError extends Error {
+    static name = 'Aborted by signal';
+
+    constructor() {
+        super(RejectWhenAbortedError.name);
+    }
+}
+
 const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
-        if (clear.aborted) return reject();
-        const errorSignal = new Error('Aborted by signal');
+        const errorSignal = new RejectWhenAbortedError();
+        if (clear.aborted) return reject(errorSignal);
         if (signal?.aborted) return reject(errorSignal);
         const onAbort = () => reject(errorSignal);
         signal?.addEventListener('abort', onAbort);
@@ -115,6 +123,20 @@ const attemptLoop = async <T>(
     return clear.aborted ? Promise.reject() : attempt(attempts - 1, clear);
 };
 
+export class ScheduleActionTimeoutError extends Error {
+    static name = 'Aborted by timeout' as const;
+    constructor() {
+        super(ScheduleActionTimeoutError.name);
+    }
+}
+
+export class ScheduleActionDeadlineError extends Error {
+    static name = 'Aborted by deadline' as const;
+    constructor() {
+        super(ScheduleActionDeadlineError.name);
+    }
+}
+
 export const scheduleAction = async <T>(
     action: ScheduledAction<T>,
     params: ScheduleActionParams,
@@ -130,8 +152,8 @@ export const scheduleAction = async <T>(
         ? (attempt: number) => attempts[attempt]
         : () => ({ timeout, gap });
 
-    const errorDeadline = new Error('Aborted by deadline');
-    const errorTimeout = new Error('Aborted by timeout');
+    const errorDeadline = new ScheduleActionDeadlineError();
+    const errorTimeout = new ScheduleActionTimeoutError();
 
     try {
         return await Promise.race([
