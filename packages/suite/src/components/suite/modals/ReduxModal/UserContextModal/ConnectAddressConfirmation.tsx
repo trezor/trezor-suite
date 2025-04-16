@@ -60,7 +60,12 @@ export const ConnectAddressConfirmation = () => {
             variant="primary"
             bottomContent={
                 <>
-                    <NewModal.Button variant="tertiary" onClick={onFinish} size="medium">
+                    <NewModal.Button
+                        variant="tertiary"
+                        onClick={onFinish}
+                        size="medium"
+                        data-testid="@connect-address-confirmation/close-button"
+                    >
                         <Translation id="TR_DONE" />
                     </NewModal.Button>
                 </>
@@ -100,6 +105,7 @@ export const ConnectAddressConfirmation = () => {
                                     )}
                                 </Row>
                                 <Button
+                                    data-testid="@connect-address-confirmation/verify-button"
                                     variant="tertiary"
                                     onClick={() => onVerify(index)}
                                     icon={
