@@ -12,7 +12,8 @@ import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
@@ -28,8 +29,10 @@ interface SolStakingDashboardProps {
 
 export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProps) => {
     const { account } = selectedAccount;
+    const { device } = useDevice();
 
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const isDeviceConnected = device?.connected && device?.available;
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
@@ -54,6 +57,8 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                             }
                         >
                             <Column alignItems="normal" gap={spacings.sm}>
+                                {!isDeviceConnected && <ConnectDeviceGenericPromo />}
+
                                 <Grid
                                     columns={isBelowLaptop || !canClaim ? 1 : 2}
                                     gap={spacings.sm}

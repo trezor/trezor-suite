@@ -17,8 +17,9 @@ import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
+import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
 import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
@@ -35,8 +36,11 @@ interface EthStakingDashboardProps {
 
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
     const { account } = selectedAccount;
+    const { device } = useDevice();
+
     const accountKey = account?.key ?? '';
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const isDeviceConnected = device?.connected && device?.available;
 
     const { data, isLoading } =
         useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
@@ -86,6 +90,8 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                             }
                         >
                             <Column gap={spacings.sm}>
+                                {!isDeviceConnected && <ConnectDeviceGenericPromo />}
+
                                 <InstantStakeBanner
                                     txs={txs}
                                     daysToAddToPool={daysToAddToPool}

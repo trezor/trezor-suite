@@ -68,7 +68,6 @@ export const UnstakeEthForm = () => {
                             />
                         </Banner>
                     )}
-
                     <SolanaStakingLimitBanner
                         account={account}
                         composedLevels={composedLevels}
@@ -122,7 +121,7 @@ export const UnstakeEthForm = () => {
                                 <Translation
                                     id="TR_STAKE_UNSTAKING_APPROXIMATE"
                                     values={{
-                                        symbol: symbol.toUpperCase(),
+                                        symbol: getDisplaySymbol(symbol),
                                     }}
                                 />
                             </Tooltip>
