@@ -51,14 +51,16 @@ const ethereumRequestThunk = createThunk<
         case 'personal_sign': {
             const [message, address] = event.params.request.params;
             const account = getAccount(address);
+            const messageDecoded = message.startsWith('0x')
+                ? Buffer.from(message.slice(2), 'hex').toString('utf8')
+                : message;
             const response = await dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
                     method: 'ethereumSignMessage',
                     payload: {
                         path: account.path,
-                        message,
-                        hex: true,
+                        message: messageDecoded,
                     },
                 }),
             ).unwrap();
