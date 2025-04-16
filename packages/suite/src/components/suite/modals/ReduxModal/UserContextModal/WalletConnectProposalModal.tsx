@@ -1,17 +1,38 @@
+import styled from 'styled-components';
+
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
-import { Banner, Card, H2, NewModal, Note, Paragraph, Row, Text } from '@trezor/components';
+import { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import {
+    Banner,
+    Card,
+    Column,
+    IconCircle,
+    NewModal,
+    Note,
+    Row,
+    Text,
+    Tooltip,
+} from '@trezor/components';
 import { BannerButton } from '@trezor/components/src/components/Banner/BannerButton';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
+    display: flex;
+    flex-direction: row;
+    gap: ${spacingsPx.xs};
+    align-items: center;
+    opacity: ${props => (props.$isDisabled ? 0.5 : 1)};
+`;
 
 interface WalletConnectProposalModalProps {
     eventId: number;
@@ -30,18 +51,26 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
         dispatch(onCancel());
     };
 
+    const getTooltipContent = (network: PendingConnectionProposalNetwork) => {
+        if (network.status !== 'active')
+            return (
+                <Translation
+                    id="TR_ACCOUNT_EXCEPTION_NOT_ENABLED"
+                    values={{ networkName: network.name }}
+                />
+            );
+        if (network.required) return <Translation id="TR_REQUIRED_FIELD" />;
+
+        return undefined;
+    };
+
     if (!pendingProposal) return null;
 
     return (
         <NewModal
             onCancel={handleReject}
-            iconName="plugs"
-            variant="primary"
             bottomContent={
                 <>
-                    <NewModal.Button variant="tertiary" onClick={handleReject}>
-                        <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
                     <NewModal.Button
                         variant="primary"
                         onClick={handleAccept}
@@ -49,53 +78,72 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     >
                         <Translation id="TR_CONFIRM" />
                     </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={handleReject}>
+                        <Translation id="TR_CANCEL" />
+                    </NewModal.Button>
                 </>
             }
-            heading={<Translation id="TR_TREZOR_CONNECT" />}
+            heading={<Translation id="TR_WALLETCONNECT" />}
+            description={<Translation id="TR_WALLETCONNECT_REQUEST" />}
         >
-            <H2>{pendingProposal.params.proposer.metadata.name}</H2>
+            <Column gap={spacings.xs}>
+                <Text>
+                    <Translation id="TR_APP" />
+                </Text>
+                <Card>
+                    <Row gap={spacings.md}>
+                        <IconCircle
+                            name="walletConnect"
+                            size={spacings.xxxxl}
+                            paddingType="large"
+                            variant="tertiary"
+                            hasBorder={false}
+                        />
 
-            <Paragraph>{pendingProposal.params.proposer.metadata.url}</Paragraph>
+                        <Column gap={spacings.xxs}>
+                            <Row gap={spacings.sm}>
+                                <Text>{pendingProposal.params.proposer.metadata.name}</Text>
+                                <Text variant="tertiary">
+                                    {pendingProposal.params.proposer.metadata.url}
+                                </Text>
+                            </Row>
+                            <Row gap={spacings.sm}>
+                                {!pendingProposal.isScam &&
+                                    pendingProposal.validation === 'VALID' && (
+                                        <Note variant="info" iconName="shieldCheckFilled">
+                                            <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
+                                        </Note>
+                                    )}
+                                {!pendingProposal.isScam &&
+                                    pendingProposal.validation === 'UNKNOWN' && (
+                                        <Note variant="warning" iconName="shieldWarningFilled">
+                                            <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
+                                        </Note>
+                                    )}
+                                {(pendingProposal.isScam ||
+                                    pendingProposal.validation === 'INVALID') && (
+                                    <Note variant="destructive" iconName="shieldWarningFilled">
+                                        <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
+                                    </Note>
+                                )}
+                            </Row>
+                        </Column>
+                    </Row>
+                </Card>
 
-            {!pendingProposal.isScam && pendingProposal.validation === 'VALID' && (
-                <Note variant="info" iconName="shieldCheckFilled">
-                    <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
-                </Note>
-            )}
-            {!pendingProposal.isScam && pendingProposal.validation === 'UNKNOWN' && (
-                <Note variant="warning" iconName="shieldWarningFilled">
-                    <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
-                </Note>
-            )}
-            {(pendingProposal.isScam || pendingProposal.validation === 'INVALID') && (
-                <Note variant="destructive" iconName="shieldWarningFilled">
-                    <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
-                </Note>
-            )}
-
-            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
-                <Translation id="TR_WALLETCONNECT_REQUEST" />
-            </Paragraph>
-
-            <Card margin={{ top: spacings.xs }} paddingType="small">
-                {['active', 'inactive', 'unsupported'].map(status => {
-                    const filteredNetworks = pendingProposal.networks.filter(
-                        network => network.status == status,
-                    );
-                    if (!filteredNetworks?.length) return null;
-
-                    return (
-                        <>
-                            <Text variant="tertiary">{`Requested networks - ${status}: `}</Text>
-                            <Row
-                                key={status}
-                                rowGap={spacings.xs}
-                                columnGap={spacings.sm}
-                                flexWrap="wrap"
-                                margin={{ bottom: spacings.sm }}
-                            >
-                                {filteredNetworks.map(network => (
-                                    <Row key={network.namespaceId} gap={spacings.xs}>
+                <Text>
+                    <Translation id="TR_REQUESTED_NETWORKS" />
+                </Text>
+                <Card>
+                    <Row rowGap={spacings.xs} columnGap={spacings.sm} flexWrap="wrap">
+                        {pendingProposal.networks
+                            .filter(network => network.status !== 'unsupported')
+                            .map(network => (
+                                <Tooltip
+                                    content={getTooltipContent(network)}
+                                    key={network.namespaceId}
+                                >
+                                    <NetworkItemWrapper $isDisabled={network.status !== 'active'}>
                                         {network.symbol && (
                                             <CoinLogo
                                                 type="network"
@@ -109,50 +157,48 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                                 <Text variant="destructive">*</Text>
                                             )}
                                         </Text>
-                                    </Row>
-                                ))}
-                            </Row>
-                        </>
-                    );
-                })}
-            </Card>
-            {pendingProposal.networks.some(
-                network => network.required && network.status !== 'active',
-            ) && (
-                <Banner
-                    variant="warning"
-                    margin={{ top: spacings.xs }}
-                    rightContent={
-                        <BannerButton
-                            onClick={() => dispatch(goto('settings-coins'))}
-                            icon="arrowRight"
-                            iconAlignment="end"
-                        >
-                            Coin settings
-                        </BannerButton>
-                    }
-                >
-                    Some required networks are not activated. Please activate them to ensure proper
-                    compatibility with the app.
-                </Banner>
-            )}
+                                    </NetworkItemWrapper>
+                                </Tooltip>
+                            ))}
+                    </Row>
+                </Card>
 
-            {pendingProposal.isScam && (
-                <Banner variant="destructive" margin={{ top: spacings.xs }}>
-                    <Translation id="TR_WALLETCONNECT_IS_SCAM" />
-                </Banner>
-            )}
-            {pendingProposal.validation === 'INVALID' && (
-                <Banner variant="destructive" margin={{ top: spacings.xs }}>
-                    <Translation id="TR_WALLETCONNECT_UNABLE_TO_VERIFY" />
-                </Banner>
-            )}
+                {pendingProposal.networks.some(
+                    network => network.required && network.status !== 'active',
+                ) && (
+                    <Banner
+                        variant="warning"
+                        rightContent={
+                            <BannerButton
+                                onClick={() => dispatch(goto('settings-coins'))}
+                                icon="arrowRight"
+                                iconAlignment="end"
+                            >
+                                <Translation id="TR_COIN_SETTINGS" />
+                            </BannerButton>
+                        }
+                    >
+                        <Translation id="TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED" />
+                    </Banner>
+                )}
 
-            {pendingProposal.expired && (
-                <Banner variant="warning" margin={{ top: spacings.xs }}>
-                    <Translation id="TR_WALLETCONNECT_REQUEST_EXPIRED" />
-                </Banner>
-            )}
+                {pendingProposal.isScam && (
+                    <Banner variant="destructive">
+                        <Translation id="TR_WALLETCONNECT_IS_SCAM" />
+                    </Banner>
+                )}
+                {pendingProposal.validation === 'INVALID' && (
+                    <Banner variant="destructive">
+                        <Translation id="TR_WALLETCONNECT_UNABLE_TO_VERIFY" />
+                    </Banner>
+                )}
+
+                {pendingProposal.expired && (
+                    <Banner variant="warning">
+                        <Translation id="TR_WALLETCONNECT_REQUEST_EXPIRED" />
+                    </Banner>
+                )}
+            </Column>
         </NewModal>
     );
 };

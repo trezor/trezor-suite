@@ -9932,4 +9932,13 @@ export default defineMessages({
         id: 'TR_OPTIONAL',
         defaultMessage: 'Optional',
     },
+    TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED: {
+        id: 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED',
+        defaultMessage:
+            'Some required networks are not activated. Please activate them to ensure proper compatibility with the app.',
+    },
+    TR_REQUESTED_NETWORKS: {
+        id: 'TR_REQUESTED_NETWORKS',
+        defaultMessage: 'Requested networks',
+    },
 });
