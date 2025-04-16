@@ -28,8 +28,7 @@ import history from 'src/support/history';
 import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
-import { passphraseFlowManager } from 'src/actions/wallet/passphraseFlowManager';
-import { ServiceContext } from 'src/reducers/services';
+import { ServiceContext, dependencyInjectionContainer } from 'src/reducers/services';
 
 const MainWeb = () => {
     usePlaywright();
@@ -80,11 +79,7 @@ export const init = async (container: HTMLElement) => {
     const preloadAction = await preloadStore();
     const { store, services } = initStore({
         preloadStoreAction: preloadAction,
-        serviceFactories: [
-            {
-                passphraseFlowManager,
-            },
-        ],
+        di: dependencyInjectionContainer,
     });
 
     root.render(

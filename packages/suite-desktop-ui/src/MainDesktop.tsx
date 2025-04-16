@@ -38,8 +38,7 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
-import { passphraseFlowManager } from 'src/actions/wallet/passphraseFlowManager';
-import { ServiceContext } from 'src/reducers/services';
+import { ServiceContext, dependencyInjectionContainer } from 'src/reducers/services';
 
 const MainDesktop = () => {
     useTor();
@@ -93,11 +92,7 @@ export const init = async (container: HTMLElement) => {
     const { store, services } = initStore({
         preloadStoreAction: preloadAction,
         statePatch,
-        serviceFactories: [
-            {
-                passphraseFlowManager,
-            },
-        ],
+        di: dependencyInjectionContainer,
     });
 
     // start logging to file if Debug menu is active

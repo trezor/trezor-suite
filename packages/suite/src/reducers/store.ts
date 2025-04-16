@@ -17,9 +17,8 @@ import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions'
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
 import { accountsActions } from '@suite-common/wallet-core';
-
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import suiteMiddlewares from 'src/middlewares/suite';
-import { Services } from './services';
 import walletMiddlewares from 'src/middlewares/wallet';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import backupMiddlewares from 'src/middlewares/backup';
@@ -107,15 +106,13 @@ type RootReducerShape = typeof rootReducer;
 type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export const initStore = <
-    T extends Record<string, (deps: Store & typeof extraDependencies & Services) => any>[],
->(options: {
+export const initStore = <T extends Record<string, any>>(options: {
     preloadStoreAction?: PreloadStoreAction;
     statePatch?: Record<string, any>;
-    serviceFactories?: T;
+    di?: (store: Store, extraDependencies: ExtraDependencies) => T;
 }) => {
-    // get initial state by calling STORAGE.LOAD action with optional payload
-    // payload will be processed in each reducer explicitly
+    // Get initial state by calling STORAGE.LOAD action with optional payload.
+    // Payload will be processed in each reducer explicitly.
     const preloadedState = options.preloadStoreAction
         ? rootReducer(undefined, options.preloadStoreAction)
         : undefined;
@@ -147,21 +144,8 @@ export const initStore = <
         devTools,
     } as const);
 
-    // NOTE: creates object { getState, dispatch, ...services[number][key] }
-    const services = (options.serviceFactories ?? []).reduce<{
-        [K in keyof T[number]]: ReturnType<T[number][K]>;
-    }>(
-        (acc, factories) => {
-            Object.entries(factories).forEach(([key, factory]) => {
-                // Create the service and add it to the accumulator
-                // @ts-expect-error: you can't really write this properly
-                acc[key as keyof T[number]] = factory({ ...extraDependencies, ...acc });
-            });
-
-            return acc;
-        },
-        { ...store } as { [K in keyof T[number]]: ReturnType<T[number][K]> },
-    ) as Services;
-
-    return { store, services };
+    return {
+        store,
+        services: options.di?.(store, extraDependencies) ?? ({} as T),
+    };
 };
