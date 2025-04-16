@@ -198,16 +198,13 @@ export const useHandleDeviceConnection = () => {
                 return;
             }
 
-            if (isDeviceOnboardingStackFocused && !wasDeviceOnboardingCancelled) {
-                setWasDeviceOnboardingCancelled(false);
-
+            if (isDeviceOnboardingStackFocused) {
                 navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
                     screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
                 });
 
                 return;
             }
-            setWasDeviceOnboardingCancelled(false);
 
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,

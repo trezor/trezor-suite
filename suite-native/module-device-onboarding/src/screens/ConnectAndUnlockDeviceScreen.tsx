@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
-import { useAtom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 
 import { useAlert } from '@suite-native/alerts';
 import {
@@ -38,9 +38,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
     const hideDeviceDisconnectedAlert = () =>
         setIsOnboardingDeviceDisconnectedAlertDisplayed(false);
 
-    const [wasDeviceOnboardingCancelled, setWasDeviceOnboardingCancelled] = useAtom(
-        wasDeviceOnboardingCancelledAtom,
-    );
+    const setWasDeviceOnboardingCancelled = useSetAtom(wasDeviceOnboardingCancelledAtom);
 
     const navigateToHome = () =>
         navigation.navigate(RootStackRoutes.AppTabs, {
@@ -53,30 +51,26 @@ export const ConnectAndUnlockDeviceScreen = () => {
     useEffect(() => {
         // This alert should be shown only if the device was physically disconnected from the phone.
         // In case that user "disconnects" device by cancelling the onboarding flow via the app UI, the alert is not shown!
-        if (!wasDeviceOnboardingCancelled) {
-            setIsOnboardingDeviceDisconnectedAlertDisplayed(true);
-            showAlert({
-                title: translate('moduleDeviceOnboarding.deviceDisconnectedAlert.title'),
-                description: translate(
-                    'moduleDeviceOnboarding.deviceDisconnectedAlert.description',
-                ),
-                primaryButtonTitle: translate(
-                    'moduleDeviceOnboarding.deviceDisconnectedAlert.reconnectButton',
-                ),
-                pictogramVariant: 'critical',
-                primaryButtonVariant: 'redBold',
-                secondaryButtonTitle: translate('generic.buttons.cancel'),
-                secondaryButtonVariant: 'redElevation0',
-                onPressPrimaryButton: hideDeviceDisconnectedAlert,
-                onPressSecondaryButton: () => {
-                    hideDeviceDisconnectedAlert();
-                    navigateToHome();
-                },
-            });
-
-            return;
-        }
+        setIsOnboardingDeviceDisconnectedAlertDisplayed(true);
         setWasDeviceOnboardingCancelled(false);
+
+        showAlert({
+            title: translate('moduleDeviceOnboarding.deviceDisconnectedAlert.title'),
+            description: translate('moduleDeviceOnboarding.deviceDisconnectedAlert.description'),
+            primaryButtonTitle: translate(
+                'moduleDeviceOnboarding.deviceDisconnectedAlert.reconnectButton',
+            ),
+            pictogramVariant: 'critical',
+            primaryButtonVariant: 'redBold',
+            secondaryButtonTitle: translate('generic.buttons.cancel'),
+            secondaryButtonVariant: 'redElevation0',
+            onPressPrimaryButton: hideDeviceDisconnectedAlert,
+            onPressSecondaryButton: () => {
+                setWasDeviceOnboardingCancelled(true);
+                hideDeviceDisconnectedAlert();
+                navigateToHome();
+            },
+        });
 
         // This effect should be called only once during the first render.
         // eslint-disable-next-line react-hooks/exhaustive-deps
