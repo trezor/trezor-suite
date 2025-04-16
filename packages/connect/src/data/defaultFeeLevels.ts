@@ -15,11 +15,15 @@ const BLOCKS_FOR_FEE_LEVEL: Record<string, Record<string, number>> = {
         low: 36,
     },
 };
+// used for bitcoin-like coins that do not have multiple fee levels defined, like BTC does
+const DEFAULT_BLOCK_FOR_FEE_LEVEL = 1;
 
 const getDefaultBlocksForFeeLevel = (shortcut: string, label: string) =>
     BLOCKS_FOR_FEE_LEVEL[shortcut] && BLOCKS_FOR_FEE_LEVEL[shortcut][label]
         ? BLOCKS_FOR_FEE_LEVEL[shortcut][label]
-        : -1; // -1 for unknown
+        : DEFAULT_BLOCK_FOR_FEE_LEVEL;
+
+export const DEFAULT_BITCOIN_LONGTERM_FEE_RATE = '1'; // [sat/vB]
 
 const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     string,

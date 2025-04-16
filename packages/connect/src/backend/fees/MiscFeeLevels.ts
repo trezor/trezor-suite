@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { cloneObject } from '@trezor/utils/src/cloneObject';
 
 import type { CoinInfo, FeeLevel } from '../../types';
 import { Blockchain } from '../Blockchain';
@@ -16,7 +17,7 @@ export class MiscFeeLevels {
 
     constructor(coinInfo: CoinInfo) {
         this.coinInfo = coinInfo;
-        this.levels = coinInfo.defaultFees;
+        this.levels = cloneObject(coinInfo.defaultFees);
     }
 
     async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
