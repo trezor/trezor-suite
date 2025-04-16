@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { Box } from '@suite-native/atoms';
 import {
     ConfirmFirmwareUpdateScreenContent,
     ConfirmFirmwareUpdateScreenFooter,
@@ -36,7 +37,9 @@ export const ConfirmFirmwareUpdateScreen = () => {
                 />
             }
         >
-            <ConfirmFirmwareUpdateScreenContent />
+            <Box flex={1} marginTop="sp16">
+                <ConfirmFirmwareUpdateScreenContent />
+            </Box>
         </Screen>
     );
 };

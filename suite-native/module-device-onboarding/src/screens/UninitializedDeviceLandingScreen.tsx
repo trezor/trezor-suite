@@ -112,7 +112,7 @@ export const UninitializedDeviceLandingScreen = ({
 
     return (
         <DeviceOnboardingScreenWithExitButton>
-            <VStack justifyContent="space-between" flex={1} paddingTop="sp16">
+            <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp32">
                     <UninitializedDeviceLandingScreenContent />
                     <TextButton

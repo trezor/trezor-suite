@@ -31,7 +31,7 @@ export const CreateOrRecoverCrossroadsScreen = ({
 
     return (
         <DeviceOnboardingScreenWithExitButton>
-            <VStack spacing="sp24" flex={1} justifyContent="space-between">
+            <VStack spacing="sp24" flex={1} justifyContent="space-between" marginBottom="sp16">
                 <Card style={applyStyle(cardStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="center">
                         <Box flex={1} justifyContent="center" paddingVertical="sp12">

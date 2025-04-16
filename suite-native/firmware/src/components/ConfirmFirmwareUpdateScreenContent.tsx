@@ -6,7 +6,7 @@ import { FirmwareUpdateVersionCard } from '../components/FirmwareVersionCard';
 
 export const ConfirmFirmwareUpdateScreenContent = () => (
     <>
-        <Box paddingTop="sp16">
+        <Box>
             <Text variant="titleMedium">
                 <Translation id="firmware.firmwareUpdateScreen.title" />
             </Text>

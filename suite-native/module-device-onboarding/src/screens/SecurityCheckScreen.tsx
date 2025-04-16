@@ -80,7 +80,7 @@ export const SecurityCheckScreen = ({
 
     return (
         <DeviceOnboardingScreenWithExitButton>
-            <VStack justifyContent="flex-start" flex={1} marginTop="sp16">
+            <VStack justifyContent="flex-start" flex={1}>
                 <VStack spacing="sp24">
                     <TitleHeader
                         titleVariant="titleMedium"

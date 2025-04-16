@@ -89,7 +89,7 @@ const DeviceOnboardingExitButtonScreenHeader = () => {
 
 export const DeviceOnboardingScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => (
     <Screen header={<DeviceOnboardingExitButtonScreenHeader />} {...screenProps}>
-        <Box flex={1} marginVertical="sp16">
+        <Box flex={1} marginTop="sp16">
             {children}
         </Box>
     </Screen>
