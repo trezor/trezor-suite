@@ -7,25 +7,22 @@ import { comment, commit } from './helpers';
 const { exec } = require('./helpers');
 
 const AUTHENTICITY_BASE_URL = 'https://data.trezor.io';
-const authenticityPaths = {
-    T2B1: {
-        authenticity: 'firmware/t2b1/authenticity.json',
-        authenticityDev: 'firmware/t2b1/authenticity-dev.json',
-    },
-    T3B1: {
-        authenticity: 'firmware/t3b1/authenticity.json',
-        authenticityDev: 'firmware/t3b1/authenticity-dev.json',
-    },
-    T3T1: {
-        authenticity: 'firmware/t3t1/authenticity.json',
-        authenticityDev: 'firmware/t3t1/authenticity-dev.json',
-    },
-};
-
 const ROOT = path.join(__dirname, '..', '..');
 const CONFIG_FILE_PATH = path.join(ROOT, 'packages/connect/src/data/deviceAuthenticityConfig.ts');
+const DEVICES_SUPPORTING_DEVICE_AUTHENTICITY_CHECK = ['T2B1', 'T3B1', 'T3T1', 'T3W1'] as const;
 
-type AuthenticityPathsKeys = keyof typeof authenticityPaths;
+type DeviceModel = (typeof DEVICES_SUPPORTING_DEVICE_AUTHENTICITY_CHECK)[number];
+
+const authenticityPaths = DEVICES_SUPPORTING_DEVICE_AUTHENTICITY_CHECK.reduce(
+    (acc, device) => {
+        acc[device] = {
+            authenticity: `firmware/${device.toLowerCase()}/authenticity.json`,
+            authenticityDev: `firmware/${device.toLowerCase()}/authenticity-dev.json`,
+        };
+        return acc;
+    },
+    {} as Record<DeviceModel, { authenticity: string; authenticityDev: string }>,
+);
 
 const fetchJSON = async (url: string) => {
     const response = await fetch(url);
@@ -47,7 +44,7 @@ const getLatestTimestamp = (timestamps: string[]): string | null => {
 
 const updateConfigFromJSON = async () => {
     try {
-        const devicesKeys = Object.keys(authenticityPaths) as AuthenticityPathsKeys[];
+        const devicesKeys = Object.keys(authenticityPaths) as DeviceModel[];
 
         // Import the current configuration object
         let { deviceAuthenticityConfig } = require(CONFIG_FILE_PATH);
