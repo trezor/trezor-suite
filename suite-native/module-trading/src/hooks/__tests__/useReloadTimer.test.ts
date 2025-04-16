@@ -12,7 +12,10 @@ jest.mock('@trezor/react-utils', () => ({
 }));
 
 describe('useReloadTimer', () => {
-    const renderUseReloadTimer = () => renderHook(() => useReloadTimer());
+    const renderUseReloadTimer = (initialEnabled: boolean = true) =>
+        renderHook(({ isEnabled }) => useReloadTimer(isEnabled), {
+            initialProps: { isEnabled: initialEnabled },
+        });
 
     beforeEach(() => {
         mockTimerReturn = {
@@ -83,5 +86,43 @@ describe('useReloadTimer', () => {
 
         expect(result.current.shouldReload).toBe(false);
         expect(result.current.timer.stop).not.toHaveBeenCalled();
+    });
+
+    it('should stop timer when isEnabled is false', () => {
+        const { result } = renderUseReloadTimer(false);
+
+        expect(result.current.timer.stop).toHaveBeenCalled();
+        expect(result.current.shouldReload).toBe(false);
+    });
+
+    it('should return shouldReload when timer is not enabled even when reload time is reached', () => {
+        mockTimerReturn.timeSpent.seconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
+        const { result } = renderUseReloadTimer(false);
+
+        expect(result.current.timer.stop).toHaveBeenCalled();
+        expect(result.current.shouldReload).toBe(false);
+    });
+
+    it('should reset timer when enabled but stopped', () => {
+        mockTimerReturn.isStopped = true;
+        const { result } = renderUseReloadTimer();
+
+        expect(result.current.timer.reset).toHaveBeenCalled();
+    });
+
+    it('should not reset timer when isStopped and isLoading', () => {
+        mockTimerReturn.isStopped = true;
+        mockTimerReturn.isLoading = true;
+        const { result } = renderUseReloadTimer();
+
+        expect(result.current.timer.reset).not.toHaveBeenCalled();
+    });
+
+    it('should not reset timer when stopped and MAX_RESET_COUNT is reached', () => {
+        mockTimerReturn.isStopped = true;
+        mockTimerReturn.resetCount = MAX_RESET_COUNT + 1;
+        const { result } = renderUseReloadTimer();
+
+        expect(result.current.timer.reset).not.toHaveBeenCalled();
     });
 });

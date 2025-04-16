@@ -189,7 +189,14 @@ export const selectTradingPaymentMethods = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.tradingNew.trades);
 
-export const selectTradingCoinInfoByCryptoId = (state: TradingRootState, cryptoId: CryptoId) => {
+export const selectTradingCoinInfoByCryptoId = (
+    state: TradingRootState,
+    cryptoId: CryptoId | undefined,
+) => {
+    if (!cryptoId) {
+        return undefined;
+    }
+
     const { coins = {} } = state.wallet.tradingNew.info;
 
     return getTradingCoinInfoByCryptoId(coins, cryptoId);

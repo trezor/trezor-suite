@@ -156,7 +156,7 @@ describe('useQuotes', () => {
         },
     );
 
-    it('should not re-fetch quotes when refetch time elapsed', async () => {
+    it('should re-fetch quotes when re-fetch time elapsed', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result, rerender } = await renderUseQuotes(store);
@@ -181,5 +181,19 @@ describe('useQuotes', () => {
                 type: 'handleRequestThunkMock',
             }),
         );
+    });
+
+    it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result, rerender } = await renderUseQuotes(store);
+        act(() => {
+            result.current.setValue('fiatCurrency', 'usd');
+        });
+
+        mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
+        rerender({});
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(0);
     });
 });
