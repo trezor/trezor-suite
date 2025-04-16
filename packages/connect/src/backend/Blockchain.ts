@@ -1,6 +1,5 @@
 import BlockchainLink, {
     BlockchainLinkParams,
-    BlockchainLinkResponse,
     ServerInfo,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
@@ -59,10 +58,6 @@ export class Blockchain {
     readonly identity?: string;
     readonly coinInfo: BlockchainOptions['coinInfo'];
     readonly postMessage: BlockchainOptions['postMessage'];
-
-    feeForBlock: BlockchainLinkResponse<'estimateFee'> = [];
-
-    feeTimestamp = 0;
 
     private onDisconnected: BlockchainOptions['onDisconnected'];
     private initPromise?: Promise<ServerInfo>;
@@ -217,34 +212,7 @@ export class Blockchain {
         return this.link.rpcCall(params);
     }
 
-    async estimateFee(request: Parameters<typeof this.link.estimateFee>[0]) {
-        const { blocks } = request;
-        // cache should be used if there is no specific data (ethereum case) and requested blocks are already cached/downloaded
-        const useCache = !request.specific && Array.isArray(blocks) && blocks.length > 0;
-        if (useCache) {
-            // estimated fee levels cache is valid for 20 minutes
-            const outdated = Date.now() - this.feeTimestamp > 20 * 60 * 1000;
-            const unknownBlocks = outdated
-                ? blocks
-                : blocks.filter(block => !this.feeForBlock[block]);
-            if (unknownBlocks.length < 1) {
-                // all requested blocks are valid an known, return cached result
-                return blocks.map(block => this.feeForBlock[block]);
-            }
-            // reset old values
-            this.feeForBlock = [];
-            // get new values
-            const fees = await this.link.estimateFee(request);
-            // cache blocks for future use
-            blocks.forEach((block, index) => {
-                this.feeForBlock[block] = fees[index];
-            });
-            this.feeTimestamp = Date.now();
-
-            // return requested fees
-            return fees;
-        }
-
+    estimateFee(request: Parameters<typeof this.link.estimateFee>[0]) {
         return this.link.estimateFee(request);
     }
 
