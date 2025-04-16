@@ -1,11 +1,5 @@
 import { ReactNode } from 'react';
-import {
-    FadeIn,
-    FadeOutUp,
-    useAnimatedStyle,
-    withDelay,
-    withTiming,
-} from 'react-native-reanimated';
+import { FadeOutUp, useAnimatedStyle, withDelay, withTiming } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/core';
 
@@ -46,10 +40,24 @@ type NavigationProps = StackNavigationProps<
 
 const ANIMATION_DURATION = 300;
 
-const cardStyle = prepareNativeStyle<{ wasOpened: boolean }>((utils, { wasOpened }) => ({
-    backgroundColor: wasOpened
-        ? utils.colors.backgroundSurfaceElevationNegative
-        : utils.colors.backgroundSurfaceElevation1,
+const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabled }) => ({
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    borderColor: utils.colors.borderOnElevation1,
+    borderWidth: 1,
+    paddingVertical: utils.spacings.sp12,
+
+    extend: {
+        condition: isDisabled,
+        style: {
+            backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
+            borderColor: utils.colors.borderOnElevation0,
+            ...utils.boxShadows.none,
+        },
+    },
+}));
+
+const dividerStyle = prepareNativeStyle(utils => ({
+    marginHorizontal: -utils.spacings.sp16,
 }));
 
 const buttonStyle = prepareNativeStyle(() => ({
@@ -75,9 +83,6 @@ export const SecurityCheckStepCard = ({
             suspicionCause,
         });
     };
-
-    const isFirstStepCard = suspicionCause === 'untrustedReseller';
-
     const animatedCardStyle = useAnimatedStyle(
         () => ({
             minHeight: withDelay(
@@ -90,11 +95,23 @@ export const SecurityCheckStepCard = ({
         [isOpened],
     );
 
+    const contentAnimatedStyle = useAnimatedStyle(() => ({
+        height: withTiming(isOpened ? 110 : 0, {
+            duration: ANIMATION_DURATION,
+        }),
+        opacity: withDelay(
+            ANIMATION_DURATION,
+            withTiming(isOpened ? 1 : 0, {
+                duration: ANIMATION_DURATION,
+            }),
+        ),
+    }));
+
     return (
         <AnimatedCard
             style={[
                 animatedCardStyle,
-                applyStyle(cardStyle, { wasOpened: !isOpened && !isChecked }),
+                applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked }),
             ]}
         >
             <VStack spacing="sp16">
@@ -105,23 +122,17 @@ export const SecurityCheckStepCard = ({
                             {header}
                         </Text>
                     </HStack>
-                    {isOpened && <Divider />}
+                    {isOpened && <Divider style={applyStyle(dividerStyle)} />}
                 </VStack>
                 {isOpened && (
-                    <AnimatedVStack
-                        spacing="sp16"
-                        entering={isFirstStepCard ? undefined : FadeIn.delay(ANIMATION_DURATION)}
-                        exiting={FadeOutUp}
-                    >
+                    <AnimatedVStack spacing="sp16" style={contentAnimatedStyle} exiting={FadeOutUp}>
                         <Text variant="highlight">{description}</Text>
-                        <HStack flex={1} spacing="sp12" justifyContent="space-between">
-                            <Button
-                                size="small"
-                                style={applyStyle(buttonStyle)}
-                                onPress={onPressConfirmButton}
-                            >
-                                <Translation id="generic.buttons.yes" />
-                            </Button>
+                        <HStack
+                            flex={1}
+                            spacing="sp12"
+                            justifyContent="space-between"
+                            paddingBottom="sp4"
+                        >
                             <Button
                                 size="small"
                                 style={applyStyle(buttonStyle)}
@@ -129,6 +140,13 @@ export const SecurityCheckStepCard = ({
                                 onPress={navigateToSuspiciousDeviceScreen}
                             >
                                 <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
+                            </Button>
+                            <Button
+                                size="small"
+                                style={applyStyle(buttonStyle)}
+                                onPress={onPressConfirmButton}
+                            >
+                                <Translation id="generic.buttons.yes" />
                             </Button>
                         </HStack>
                     </AnimatedVStack>

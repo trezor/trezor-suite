@@ -63,11 +63,13 @@ export const Link = ({
         ),
     }));
 
-    const handlePressIn = () => {
+    const handlePressIn = (e: GestureResponderEvent) => {
         isPressed.value = withTiming(IS_PRESSED_VALUE, { duration: ANIMATION_DURATION });
+        e.stopPropagation();
     };
 
-    const handlePress = (e: GestureResponderEvent) => {
+    const handlePressOut = (e: GestureResponderEvent) => {
+        isPressed.value = withTiming(IS_NOT_PRESSED_VALUE, { duration: ANIMATION_DURATION });
         if (href) {
             openLink(href);
         } else if (onPress) {
@@ -76,14 +78,10 @@ export const Link = ({
         e.stopPropagation();
     };
 
-    const handlePressOut = () => {
-        isPressed.value = withTiming(IS_NOT_PRESSED_VALUE, { duration: ANIMATION_DURATION });
-    };
-
     return (
         <Animated.Text
             onPressIn={handlePressIn}
-            onPress={handlePress}
+            onPress={() => {}} // If the handling is defined in onPress, the very short taps are sometimes ignored
             onPressOut={handlePressOut}
             style={[applyStyle(textStyle, { isUnderlined, textVariant }), animatedTextColorStyle]}
             suppressHighlighting
