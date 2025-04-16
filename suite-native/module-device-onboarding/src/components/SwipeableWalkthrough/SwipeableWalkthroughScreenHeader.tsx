@@ -50,7 +50,7 @@ const SwipeableWalkthroughBackButton = ({
     return (
         <Animated.View style={animatedButtonStyle}>
             <IconButton
-                iconName="arrowLeft"
+                iconName="caretLeft"
                 size="medium"
                 colorScheme="tertiaryElevation0"
                 onPress={onPressBack}

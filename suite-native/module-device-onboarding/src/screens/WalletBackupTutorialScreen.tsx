@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/core';
@@ -41,6 +41,18 @@ export const WalletBackupTutorialScreen = () => {
             currentStepIndex.value -= 1;
         }
     }, [navigation, currentStepIndex]);
+
+    useEffect(() => {
+        // Override default navigation GO_BACK action to align it with the UI back button behavior.
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            if (e.data.action.type === 'GO_BACK') {
+                e.preventDefault();
+                handlePressBackButton();
+            }
+        });
+
+        return unsubscribe;
+    }, [handlePressBackButton, navigation]);
 
     return (
         <Screen

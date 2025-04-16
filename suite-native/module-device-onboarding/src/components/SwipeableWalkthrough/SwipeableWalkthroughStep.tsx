@@ -94,7 +94,7 @@ export const SwipeableWalkthroughStep = ({
                     {children}
                     {continueButton ?? (
                         <IconButton
-                            iconName="arrowDown"
+                            iconName="caretDown"
                             colorScheme="tertiaryElevation0"
                             size="large"
                             onPress={onNextButtonPress}
