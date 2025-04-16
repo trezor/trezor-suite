@@ -93,8 +93,14 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '04be948fcc006a7d719d89019a446a8f9ff298410d203db096cbd76383b3807f3d4927ef5db437b99696edbed37829b03235f49f25603bed32d7eee2c49ede403b',
         ],
         debug: {
-            rootPubKeys: [],
-            caPubKeys: [],
+            rootPubKeys: [
+                '047f77368dea2d4d61e989f474a56723c3212dacf8a808d8795595ef38441427c4389bc454f02089d7f08b873005e4c28d432468997871c0bf286fd3861e21e96a',
+            ],
+            caPubKeys: [
+                '0410a6bc4f9eb52fd450be2c365189ea6a523fdddd62e44566dc349a8c7f813144cde81c8c106b74bfceae9c8ca5202af635ce1a5330c41c708ebbf505e025c339',
+                '04e979dab5fc3ed274f7a217850af3d483ed7e221f9a9845e1462ad8dd63e51c084682d736675df6273a114289f26e0150bd1cda97834c537f11e3506761352159',
+                '04f7c60026bfbb9bc75bcdf57bc3357457a16cfe25293f996bc32ee73597c9864f5ed8d2359f58b6797d69ef03b50fc3e99ac02a893b945f67b460fa84a6b2b35c',
+            ],
         },
     },
     T3T1: {
