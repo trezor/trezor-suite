@@ -34,7 +34,7 @@ const config: webpack.Configuration = {
     output: {
         publicPath: `${assetPrefix}/`,
         filename: 'js/[name].[contenthash:8].js',
-        chunkFilename: 'js/[id].[contenthash:8].js',
+        chunkFilename: 'js/[name].[id].[contenthash:8].js',
         assetModuleFilename: `assets/[hash][ext][query]`,
         pathinfo: false,
     },
@@ -62,19 +62,20 @@ const config: webpack.Configuration = {
     },
     optimization: {
         splitChunks: {
+            chunks: 'all',
             cacheGroups: {
                 react: {
-                    chunks: 'initial',
+                    chunks: 'all',
                     name: 'react',
                     test: /[\\/]node_modules[\\/]react/,
                 },
                 vendors: {
-                    chunks: 'initial',
+                    chunks: 'all',
                     name: 'vendors',
                     test: /[\\/]node_modules[\\/](?!react)/,
                 },
                 components: {
-                    chunks: 'initial',
+                    chunks: 'all',
                     name: 'components',
                     test: /[\\/]packages[\\/]components[\\/]/,
                 },
