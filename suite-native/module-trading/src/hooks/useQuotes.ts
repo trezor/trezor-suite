@@ -7,12 +7,12 @@ import {
     TradingRootState,
     buyThunks,
     selectTradingCoinInfoByCryptoId,
-    tradingBuyActions,
 } from '@suite-common/trading';
 import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { useDebounce } from '@trezor/react-utils';
 
+import { clearBuyState } from '../tradingSlice';
 import { TradingBuyForm } from '../types';
 import { useReloadTimer } from './useReloadTimer';
 import { tradingBuyFormToTradingBuyFormProps } from '../utils/quotesUtils';
@@ -122,7 +122,7 @@ export const useQuotes = (form: TradingBuyForm) => {
             if (promiseRef.current?.abort) {
                 promiseRef.current.abort('Component unmounted');
             }
-            dispatch(tradingBuyActions.saveQuotes([]));
+            dispatch(clearBuyState());
         },
         [dispatch],
     );

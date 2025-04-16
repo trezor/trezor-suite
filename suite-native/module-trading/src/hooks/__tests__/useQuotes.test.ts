@@ -110,7 +110,7 @@ describe('useQuotes', () => {
         );
     });
 
-    it('should clear quotes on unmount', async () => {
+    it('should clear buy state on unmount', async () => {
         const store = await getInitializedStore();
         store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
         const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -118,7 +118,10 @@ describe('useQuotes', () => {
 
         unmount();
 
-        expect(dispatchSpy).toHaveBeenCalledWith({ payload: [], type: '@trading-buy/saveQuotes' });
+        expect(dispatchSpy).toHaveBeenCalledWith({
+            payload: undefined,
+            type: 'trading/clearBuyState',
+        });
     });
 
     it.each([

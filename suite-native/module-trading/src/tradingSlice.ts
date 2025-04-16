@@ -54,6 +54,13 @@ export const tradingSlice = createSliceWithExtraDeps({
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
         },
+        clearBuyState: state => {
+            state.buy.selectedReceiveAccount = undefined;
+            state.buy.quotesRequest = undefined;
+            state.buy.quotes = [];
+            state.buy.selectedQuote = undefined;
+            state.buy.amountLimits = undefined;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
@@ -70,6 +77,7 @@ export const {
     addTradeableAssetToFavourites,
     removeTradeableAssetFromFavourites,
     setTradingEnvironment,
+    clearBuyState,
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();

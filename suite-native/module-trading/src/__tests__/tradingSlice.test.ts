@@ -1,10 +1,14 @@
+import { BuyTrade, CryptoId } from 'invity-api';
+
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { getBtcAccount } from '../__fixtures__/account';
+import quotes from '../__fixtures__/quotes.json';
 import { adaAsset, btcAsset, usdcAsset } from '../__fixtures__/tradeableAssets';
 import {
     TradingState,
     addTradeableAssetToFavourites,
+    initialState,
     removeTradeableAssetFromFavourites,
     setBuySelectedReceiveAccount,
     setTradingEnvironment,
@@ -120,6 +124,42 @@ describe('tradingSlice', () => {
             const state = tradingReducer(undefined, setTradingEnvironment('dev'));
 
             expect(state.tradingEnvironment).toBe('dev');
+        });
+    });
+
+    describe('clearBuyState', () => {
+        it('should clear buy state', () => {
+            const tradingInitialState = {
+                ...initialState,
+                buy: {
+                    ...initialState.buy,
+                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                    quotesRequest: {
+                        wantCrypto: true,
+                        receiveCurrency: 'btc' as CryptoId,
+                        fiatCurrency: 'czk',
+                        country: 'CZ',
+                    },
+                    quotes: quotes as BuyTrade[],
+                    selectedQuote: quotes[0],
+                    amountLimits: {
+                        currency: 'CZK',
+                        minFiat: '100',
+                    },
+                },
+            } as TradingState;
+
+            const state = tradingReducer(tradingInitialState, tradingSlice.actions.clearBuyState());
+
+            expect(state.buy).toEqual({
+                selectedReceiveAccount: undefined,
+                quotesRequest: undefined,
+                quotes: [],
+                selectedQuote: undefined,
+                amountLimits: undefined,
+                isFromRedirect: false,
+                isLoading: false,
+            });
         });
     });
 });
