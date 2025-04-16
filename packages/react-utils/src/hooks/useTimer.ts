@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface Timer {
     timeSpent: {
@@ -40,22 +40,22 @@ export const useTimer = (): Timer => {
         };
     }, [isLoading, isStopped]);
 
-    const reset = () => {
+    const reset = useCallback(() => {
         setIsLoading(false);
         setResetCount(prev => prev + 1);
         setTimeSpent(0);
         setIsStopped(false);
-    };
+    }, []);
 
-    const stop = () => {
+    const stop = useCallback(() => {
         setIsStopped(true);
-    };
+    }, []);
 
-    const loading = () => {
+    const loading = useCallback(() => {
         setTimeSpent(0);
         setIsLoading(true);
         setIsStopped(false);
-    };
+    }, []);
 
     return {
         timeSpent: { seconds: timeSpent },
