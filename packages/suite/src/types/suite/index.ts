@@ -1,4 +1,4 @@
-import type { Store as ReduxStore } from 'redux';
+import type { Store as ReduxStore, UnknownAction } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { analyticsActions } from '@suite-common/analytics';
@@ -110,7 +110,7 @@ export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
 
 export type GetState = () => AppState;
 
-export type Store = ReduxStore<AppState, Action>;
+export type Store = ReduxStore<AppState, Action | UnknownAction>;
 
 export type ForegroundAppRoute = Extract<
     Route,

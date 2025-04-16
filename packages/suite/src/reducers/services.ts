@@ -1,12 +1,27 @@
 import { createContext, useContext } from 'react';
 
-import type { PassphraseFlowManager } from 'src/actions/wallet/passphraseFlowManager';
+import { ExtraDependencies } from '@suite-common/redux-utils/libDev/src';
 
-export type ServiceFactory<T> = (deps: any) => T;
+import { createPassphraseFlowManager } from '../actions/wallet/createPassphraseFlowManager';
+import { Store } from '../types/suite';
 
-export type Services = {
-    passphraseFlowManager: PassphraseFlowManager;
+export const dependencyInjectionContainer = (
+    store: Store,
+    extraDependencies: ExtraDependencies,
+) => {
+    const passphraseFlowManager = createPassphraseFlowManager({
+        store,
+        discoveryHook: extraDependencies.services.discoveryHook,
+        trezorConnectService: extraDependencies.services.trezorConnectService,
+    });
+
+    return {
+        passphraseFlowManager,
+    };
 };
+
+type Services = ReturnType<typeof dependencyInjectionContainer>;
+
 export const ServiceContext = createContext<Services | null>(null);
 
 export const useServices = () => {
