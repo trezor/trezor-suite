@@ -268,6 +268,7 @@ jobs:
           CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+          COMMIT_INFO_BRANCH: ${{ github.head_ref }}
         working-directory: ./suite-native/app
         run: |
           npx currents convert \
@@ -277,6 +278,14 @@ jobs:
             --framework=postman \
             --framework-version=v11.2.0
           npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --ci-build-id=${CURRENTS_CI_BUILD_ID} --report-dir ./currents
+
+      - name: Post Currents link
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        uses: ./.github/actions/post-currents-link
+        with:
+          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          project: "native android"
+          currents-project-id: "iUe1Y4"
 
       - name: "Store failed test screenshot artifacts"
         if: ${{failure()}}

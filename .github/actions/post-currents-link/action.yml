@@ -5,7 +5,7 @@ inputs:
     description: "GitHub token for accessing the API"
     required: true
   project:
-    description: "Playwright project name. (web|desktop)"
+    description: "Playwright project name. (web|desktop|native android)"
     required: true
   currents-project-id:
     description: "Currents project ID for reporting"
