@@ -88,7 +88,7 @@ export const useQuotes = (form: TradingBuyForm) => {
         selectTradingCoinInfoByCryptoId(state, asset?.cryptoId),
     );
 
-    if (shouldFetchQuotes || shouldReload) {
+    if (asset && (shouldFetchQuotes || shouldReload)) {
         if (promiseRef.current?.abort) {
             promiseRef.current.abort('Request was replaced by another one.');
         }
