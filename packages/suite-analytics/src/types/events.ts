@@ -98,6 +98,7 @@ export type SuiteAnalyticsEvent =
               totalInstances?: number | null;
               backup_type?: string;
               isBitcoinOnly?: boolean;
+              isBitcoinOnlyDevice?: boolean;
               totalDevices?: number;
               language?: string | null;
               model?: string;
