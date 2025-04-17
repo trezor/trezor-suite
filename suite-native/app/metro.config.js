@@ -5,7 +5,6 @@ const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/m
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
 const { mergeConfig } = require('metro-config');
-const nodejs = require('node-libs-browser');
 
 const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecureResolver');
 
@@ -36,12 +35,12 @@ const config = {
         blockList: [/libDev/],
         extraNodeModules: {
             // modules needed for trezor-connect
-            crypto: nodejs.crypto,
-            stream: nodejs.stream,
-            https: nodejs.https,
-            http: nodejs.http,
-            zlib: nodejs.zlib,
-            vm: nodejs.vm,
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+            https: require.resolve('https-browserify'),
+            http: require.resolve('stream-http'),
+            zlib: require.resolve('browserify-zlib'),
+            vm: require.resolve('vm-browserify'),
         },
         sourceExts,
         resolveRequest: (context, moduleName, platform) => {

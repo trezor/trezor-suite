@@ -121,7 +121,7 @@
         "karma-sourcemap-loader": "^0.4.0",
         "karma-webpack": "^5.0.1",
         "node-fetch": "^2.6.4",
-        "node-libs-browser": "^2.2.1",
+        "process": "^0.11.10",
         "stream-browserify": "^3.0.0",
         "ts-node": "^10.9.2",
         "tsx": "^4.20.3",
