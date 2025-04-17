@@ -66,6 +66,15 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     // You may turn this on for dev purposes, see docs/releases/desktop_updates.md
     autoUpdater.forceDevUpdateConfig = false;
 
+    // electron-updater always checks if user is within stagingPercentage rollout, but it offers
+    // possibility to override the default behavior. This wraps the original function, bypassing it if `isManualCheck`
+    const isUserWithinRolloutDefaultMethod = autoUpdater.isUserWithinRollout;
+    autoUpdater.isUserWithinRollout = async updateInfo =>
+        isManualCheck === true
+            ? // do not force if it is set to exactly 0, so we can completely stop distributing a release in case of trouble
+              updateInfo.stagingPercentage !== 0
+            : await isUserWithinRolloutDefaultMethod(updateInfo);
+
     const updateSettings = store.getUpdateSettings();
     let allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
     let { isAutomaticUpdateEnabled } = updateSettings;
