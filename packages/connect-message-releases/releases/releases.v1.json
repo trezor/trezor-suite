@@ -1,0 +1,227 @@
+{
+    "version": 1,
+    "timestamp": "2025-03-18T00:00:00+00:00",
+    "sequence": 1,
+    "releases": {
+        "T1B1": [
+            {
+                "firmware_type": "regular",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [1, 13, 0],
+                    "min_bootloader_version": [1, 12, 0],
+                    "min_firmware_version": [1, 12, 0],
+                    "bootloader_version": [1, 12, 1],
+                    "url": "firmware/t1b1/trezor-t1b1-1.13.0.bin",
+                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c"
+                }
+            },
+            {
+                "firmware_type": "bitcoin-only",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [1, 13, 0],
+                    "min_bootloader_version": [1, 12, 0],
+                    "min_firmware_version": [1, 12, 0],
+                    "bootloader_version": [1, 12, 1],
+                    "url": "firmware/t1b1/trezor-t1b1-1.13.0-bitcoinonly.bin",
+                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c"
+                }
+            }
+        ],
+        "T2B1": [
+            {
+                "firmware_type": "regular",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 1, 1],
+                    "min_firmware_version": [2, 8, 8],
+                    "bootloader_version": [2, 1, 8],
+                    "url": "firmware/t2b1/trezor-t2b1-2.8.9.bin",
+                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                }
+            },
+            {
+                "firmware_type": "bitcoin-only",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 1, 1],
+                    "min_firmware_version": [2, 6, 1],
+                    "bootloader_version": [2, 1, 8],
+                    "url": "firmware/t2b1/trezor-t2b1-2.8.9-bitcoinonly.bin",
+                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                }
+            }
+        ],
+        "T2T1": [
+            {
+                "firmware_type": "regular",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 0, 0],
+                    "min_firmware_version": [2, 8, 7],
+                    "bootloader_version": [2, 1, 8],
+                    "url": "firmware/t2t1/trezor-t2t1-2.8.9.bin",
+                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
+                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                }
+            },
+            {
+                "firmware_type": "bitcoin-only",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 0, 0],
+                    "min_firmware_version": [2, 0, 8],
+                    "bootloader_version": [2, 1, 8],
+                    "url": "firmware/t2t1/trezor-t2t1-2.8.9-bitcoinonly.bin",
+                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                }
+            }
+        ],
+        "T3B1": [
+            {
+                "firmware_type": "regular",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 1, 7],
+                    "min_firmware_version": [2, 8, 3],
+                    "bootloader_version": [2, 1, 8],
+                    "url": "firmware/t3b1/trezor-t3b1-2.8.9.bin",
+                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                }
+            },
+            {
+                "firmware_type": "bitcoin-only",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 1, 7],
+                    "min_firmware_version": [2, 8, 3],
+                    "bootloader_version": [2, 1, 8],
+                    "url": "firmware/t3b1/trezor-t3b1-2.8.9-bitcoinonly.bin",
+                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                }
+            }
+        ],
+        "T3T1": [
+            {
+                "firmware_type": "regular",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 1, 6],
+                    "min_firmware_version": [2, 7, 2],
+                    "bootloader_version": [2, 1, 10],
+                    "url": "firmware/t3t1/trezor-t3t1-2.8.9.bin",
+                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
+                }
+            },
+            {
+                "firmware_type": "bitcoin-only",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.2.1"
+                    },
+                    "rollout_probability": 50
+                },
+                "release": {
+                    "required": false,
+                    "version": [2, 8, 9],
+                    "min_bootloader_version": [2, 1, 6],
+                    "min_firmware_version": [2, 7, 2],
+                    "bootloader_version": [2, 1, 10],
+                    "url": "firmware/t3t1/trezor-t3t1-2.8.9-bitcoinonly.bin",
+                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
+                }
+            }
+        ]
+    },
+    "intermediaries": {
+        "T1B1": [
+            {
+                "if_version_less_than": "1.6.2",
+                "version": 1,
+                "firmware_revision": "todo",
+                "url": "firmware/t1b1/trezor-t1tb-inter-v1.bin"
+            },
+            {
+                "if_version_less_than": "1.12.0",
+                "version": 2,
+                "firmware_revision": "todo",
+                "url": "firmware/t1b1/trezor-t1tb-inter-v2.bin"
+            },
+            {
+                "if_version_less_than": "1.12.1",
+                "version": 2,
+                "firmware_revision": "todo",
+                "url": "firmware/t1b1/trezor-t1tb-inter-v3.bin"
+            }
+        ]
+    }
+}

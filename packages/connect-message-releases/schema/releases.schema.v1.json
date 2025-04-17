@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://json-schema.org/draft-07/schema#",
+    "title": "Releases system",
+    "description": "JSON schema of the Trezor Suite firmware releases system.",
+    "type": "object",
+    "required": ["version", "timestap", "sequence", "releases"],
+    "properties": {
+        "version": {},
+        "timestamp": {
+            "$ref": "#/definitions/date-time"
+        },
+        "sequence": {
+            "description": "An increasing counter. Trezor Suite must decline any sequence lower than the latest number. This is to protect against replay attacks, where an attacker could send an older version of the file, and Trezor Suite would accept it.",
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+        },
+        "releases": {
+            "type": "array",
+            "uniqueItems": true
+        }
+    }
+}
