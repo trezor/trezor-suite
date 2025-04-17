@@ -105,7 +105,7 @@ export const EmptyStakingCard = () => {
                         </Text>
                         <Paragraph variant="tertiary">
                             <Translation
-                                id="TR_STAKE_NETWORK_STAKING_IS"
+                                id="TR_STAKE_STAKING_IS"
                                 values={{
                                     symbol: displaySymbol,
                                 }}
