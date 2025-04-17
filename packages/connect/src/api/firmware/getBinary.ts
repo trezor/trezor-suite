@@ -1,25 +1,42 @@
-import { FirmwareRelease } from '../../types';
 import { httpRequest } from '../../utils/assets';
 
 const ALL_SLASHES_AT_THE_END_REGEX = /\/+$/;
 
-interface GetBinaryProps {
+interface GetBinaryParams {
     baseUrl: string;
-    btcOnly?: boolean;
-    release: FirmwareRelease;
+    firmwareName: string;
 }
 
-export const getBinary = ({ baseUrl, btcOnly, release }: GetBinaryProps) => {
-    const fwUrl = release[btcOnly ? 'url_bitcoinonly' : 'url'];
+export const getLocalBinary = ({ basePath, firmwareName }: any) => {
+    console.log('getLocalBinary');
+    console.log('basePath', basePath);
+    console.log('firmwareName', firmwareName);
+    const sanitizedBasePath = basePath.replace(ALL_SLASHES_AT_THE_END_REGEX, '');
+    const path = `${sanitizedBasePath}/${firmwareName}`;
+
+    return httpRequest(path, 'binary');
+};
+
+export const getRemoteBinary = ({ firmwareUrl }: any) => {
+    const baseUrl = 'https://data.trezor.io/';
     const sanitizedBaseUrl = baseUrl.replace(ALL_SLASHES_AT_THE_END_REGEX, '');
-    const url = `${sanitizedBaseUrl}/${fwUrl}`;
+    const url = `${sanitizedBaseUrl}/${firmwareUrl}`;
 
     return httpRequest(url, 'binary');
 };
 
-export const getBinaryOptional = async (props: GetBinaryProps) => {
+export const getBinary = ({ baseUrl, firmwareName }: GetBinaryParams) => {
+    const sanitizedBaseUrl = baseUrl.replace(ALL_SLASHES_AT_THE_END_REGEX, '');
+    const url = `${sanitizedBaseUrl}/${firmwareName}`;
+
+    return httpRequest(url, 'binary');
+};
+
+export const getBinaryOptional = async (params: GetBinaryParams) => {
+    console.log('getBinaryOptional');
+    console.log('params', params);
     try {
-        return await getBinary(props);
+        return await getBinary(params);
     } catch {
         return null;
     }

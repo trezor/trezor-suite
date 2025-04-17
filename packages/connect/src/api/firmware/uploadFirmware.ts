@@ -34,6 +34,8 @@ export const uploadFirmware = async (
     device: Device,
     { payload }: PROTO.FirmwareUpload,
 ) => {
+    console.log('uploadFirmware', uploadFirmware);
+    console.log('payload', payload);
     if (device.features.major_version === 1) {
         postConfirmationMessage(device);
         await typedCall('FirmwareErase', 'Success', {});

@@ -96,6 +96,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.transportReconnect = input.transportReconnect;
     }
 
+    if (typeof input.localFirmwares === 'object') {
+        settings.localFirmwares = input.localFirmwares;
+    }
+
     if (Array.isArray(input.transports)) {
         settings.transports = input.transports;
     }

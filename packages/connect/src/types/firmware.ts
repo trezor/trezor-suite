@@ -1,3 +1,7 @@
+import {
+    ConditionalRelease,
+    IntermediaryRelease,
+} from '@trezor/connect-message-releases/src/types';
 import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
 import { Type } from '@trezor/schema-utils';
 
@@ -8,6 +12,8 @@ export type FirmwareRange = Record<
         max: string;
     }
 >;
+
+// export type FirmwareMessageRelease = ConditionalRelease['release'];
 
 export type FirmwareRelease = {
     required: boolean;
@@ -34,11 +40,15 @@ export type ReleaseInfo = {
     release: FirmwareRelease;
     isRequired: boolean | null;
     isNewer: boolean | null;
-    /**
-     * v1 - bootloader < 1.8.0
-     * v2 - bootloader >= 1.8.0, < 1.12.0
-     * v3 - bootloader >= 1.12.0
-     */
-    intermediaryVersion?: IntermediaryVersion;
+    translations?: string[];
+};
+
+export type ReleaseMessageInfo = {
+    changelog: FirmwareRelease[] | null;
+    releaseConditions: ConditionalRelease['conditions'] & { shouldBeOffered: boolean };
+    release: ConditionalRelease['release'];
+    intermediary: IntermediaryRelease | undefined;
+    isRequired: boolean | null;
+    isNewer: boolean | null;
     translations?: string[];
 };

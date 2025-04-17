@@ -88,6 +88,7 @@ export const fetchConfigThunk = createThunk(
                 }
 
                 const authenticityPublicKey = getJWSPublicKey();
+                console.log('authenticityPublicKey', authenticityPublicKey);
 
                 if (!authenticityPublicKey) {
                     throw Error('JWS public key is not defined!');

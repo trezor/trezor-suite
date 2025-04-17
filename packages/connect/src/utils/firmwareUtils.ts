@@ -1,6 +1,8 @@
 import { versionUtils } from '@trezor/utils';
 
-import type { Features, FirmwareRelease, StrictFeatures, VersionArray } from '../types';
+import { Features, FirmwareRelease, FirmwareType, StrictFeatures, VersionArray } from '../types';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import { ConditionalRelease } from '@trezor/connect-message-releases/src/types';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&
@@ -20,6 +22,13 @@ export const isValidReleases = (extReleases: any): extReleases is FirmwareReleas
     extReleases.every(
         release =>
             release.version && release.min_firmware_version && release.min_bootloader_version,
+    );
+
+export const isValidMessageRelease = (messageRelease: ConditionalRelease['release']): boolean =>
+    !!(
+        messageRelease.version &&
+        messageRelease.min_firmware_version &&
+        messageRelease.min_bootloader_version
     );
 
 export const filterSafeListByBootloader = (
@@ -56,3 +65,23 @@ export const filterSafeListByFirmware = (
     releasesList.filter(item =>
         versionUtils.isNewerOrEqual(firmwareVersion, item.min_firmware_version),
     );
+
+export const buildFirmwareFileName = (
+    firmwareType: FirmwareType,
+    internalModel: DeviceModelInternal,
+    version: VersionArray,
+) => {
+    const firmwareTypeFileString = firmwareType === FirmwareType.BitcoinOnly ? '-bitcoinonly' : '';
+    const fileName = `trezor-${internalModel.toLocaleLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
+    console.log('fileName', fileName);
+    return fileName;
+};
+
+export const buildIntermediaryFirmwareFileName = (
+    internalModel: DeviceModelInternal,
+    version: number,
+) => {
+    const fileName = `trezor-${internalModel}-inter-v${version}.bin`;
+    console.log('fileName intermediaryFW', fileName);
+    return fileName;
+};

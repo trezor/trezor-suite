@@ -1164,6 +1164,10 @@ export class Core extends EventEmitter {
             case UI.LOGIN_CHALLENGE_RESPONSE:
                 this.uiPromises.resolve(message);
                 break;
+            case UI.RECEIVE_FIRMWARE:
+                console.log('message from UI.RECEIVE_FIRMWARE ', message);
+                DataManager.setLocalFirmwares(message.payload);
+                break;
 
             // message from index
             case IFRAME.CALL:
@@ -1246,6 +1250,10 @@ export class Core extends EventEmitter {
 
         try {
             await DataManager.load(settings);
+            console.log('settings', settings);
+            if (settings.localFirmwares) {
+                DataManager.setLocalFirmwares(settings.localFirmwares);
+            }
             const { debug, priority, _sessionsBackgroundUrl, manifest } = DataManager.getSettings();
             const messages = DataManager.getProtobufMessages();
 

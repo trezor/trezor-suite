@@ -48,6 +48,16 @@ const config: webpack.Configuration = {
                         ),
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
+                    {
+                        from: path.join(
+                            __dirname,
+                            '../..',
+                            'connect-message-releases',
+                            'files',
+                            'releases.v1.ts',
+                        ),
+                        to: path.join(baseDir, 'build', 'static', 'message-releases'),
+                    },
                 ])
                 // include FW binaries from @trezor/connect-common
                 .concat([

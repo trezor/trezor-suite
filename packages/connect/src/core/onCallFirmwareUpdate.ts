@@ -2,7 +2,6 @@ import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {
-    getBinaryForFirmwareUpgrade,
     getLanguage,
     parseFirmwareHeaders,
     shouldStripFwHeaders,
@@ -10,13 +9,14 @@ import {
     uploadFirmware,
 } from '../api/firmware';
 import { ERRORS, PROTO } from '../constants';
-import { getReleases } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
 import { CoreEventMessage, UI, createUiMessage } from '../events';
-import { CommonParams, DeviceUniquePath } from '../types';
+import { CommonParams, DeviceUniquePath, FirmwareType, VersionArray } from '../types';
 import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
+import { getFirmwareLocation } from '../data/firmwareInfo';
+import { getBinary } from '../api/firmware/getBinary';
 
 type PostMessage = (message: CoreEventMessage) => void;
 
@@ -115,6 +115,8 @@ const waitForReconnectedDevice = async (
 
         i++;
         log.debug('onCallFirmwareUpdate', '...still waiting for device to reconnect', i);
+        // TODO(karliatto): WIP: just for dev.
+        // } while (!abortSignal.aborted && !reconnectedDevice?.features?.bootloader_mode);
     } while (
         !abortSignal.aborted &&
         (!reconnectedDevice?.features ||
@@ -149,7 +151,7 @@ const waitForReconnectedDevice = async (
 };
 
 const getInstallationParams = (device: Device, params: Params) => {
-    const btcOnly = params.btcOnly ?? device.firmwareType === 'bitcoin-only';
+    const btcOnly = params.btcOnly ?? device.firmwareType === FirmwareType.BitcoinOnly;
 
     // we can detect support properly only if device was not connected in bootloader mode
     if (!device.features.bootloader_mode) {
@@ -157,13 +159,14 @@ const getInstallationParams = (device: Device, params: Params) => {
             ? parseFirmwareHeaders(Buffer.from(params.binary)).version
             : undefined;
         const isUpdatingToNewerVersion = !version
-            ? device.firmwareRelease?.isNewer
+            ? device.firmwareReleaseMessage?.isNewer
             : isNewer(version, [
                   device.features.major_version,
                   device.features.minor_version,
                   device.features.patch_version,
               ]);
-        const isUpdatingToEqualFirmwareType = (device.firmwareType === 'bitcoin-only') === btcOnly;
+        const isUpdatingToEqualFirmwareType =
+            (device.firmwareType === FirmwareType.BitcoinOnly) === btcOnly;
 
         const upgrade =
             device.atLeast('2.6.3') && isUpdatingToNewerVersion && isUpdatingToEqualFirmwareType;
@@ -200,56 +203,37 @@ const getInstallationParams = (device: Device, params: Params) => {
 
 const getFwHeader = (binary: ArrayBuffer) => Buffer.from(binary.slice(0, 6000)).toString('hex');
 
-const getBinaryHelper = (
-    device: Device,
-    params: Params,
-    log: Log,
-    postMessage: PostMessage,
-    btcOnly: boolean,
-) => {
-    if (params.binary) {
-        return {
-            binary: params.binary,
-            binaryVersion: parseFirmwareHeaders(Buffer.from(params.binary)).version,
-            releaseVersion: undefined,
-        };
-    }
+export type BinaryInfo = {
+    binary: ArrayBuffer;
+    binaryVersion: VersionArray;
+    releaseVersion: undefined;
+};
 
-    if (!device.firmwareRelease) {
-        throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
+type BinaryInfoParams = {
+    device: Device;
+    isIntermediary: boolean;
+};
+const getBinaryHelper = ({ device, isIntermediary }: BinaryInfoParams): Promise<BinaryInfo> => {
+    if (!device.firmwareReleaseMessage) {
+        throw ERRORS.TypedError('Runtime', 'device.firmwareReleaseMessage is not set');
     }
 
     const {
-        intermediaryVersion,
         release: { version },
-    } = device.firmwareRelease;
-    log.debug(
-        'onCallFirmwareUpdate loading binary',
-        'intermediaryVersion',
-        intermediaryVersion,
-        'version',
-        version,
-        'btcOnly',
-        btcOnly,
-    );
+        intermediary,
+    } = device.firmwareReleaseMessage;
 
-    postMessage(
-        createUiMessage(UI.FIRMWARE_PROGRESS, {
-            device: device.toMessageObject(),
-            operation: 'downloading',
-            progress: 0,
-        }),
-    );
+    const firmwareType = device.firmwareType ? device.firmwareType : FirmwareType.Regular;
+    const internalModel = device.features?.internal_model;
 
-    return getBinaryForFirmwareUpgrade({
-        // features and releases are used for sanity checking
-        features: device.features,
-        releases: getReleases(device.features?.internal_model),
-        baseUrl: params.baseUrl || 'https://data.trezor.io',
-        version,
-        btcOnly,
-        intermediaryVersion,
-    })
+    const firmwareLocation = getFirmwareLocation({
+        firmwareVersion: intermediary ? intermediary.version : version,
+        internalModel,
+        firmwareType,
+        isIntermediary,
+    });
+
+    return getBinary(firmwareLocation)
         .then(res => {
             // suspiciously small binary. this typically happens when build does not have git lfs enabled and all
             // you download here are some pointers to lfs objects which are around ~132 byteLength
@@ -260,14 +244,6 @@ const getBinaryHelper = (
             return res;
         })
         .then(res => {
-            postMessage(
-                createUiMessage(UI.FIRMWARE_PROGRESS, {
-                    device: device.toMessageObject(),
-                    operation: 'downloading',
-                    progress: 100,
-                }),
-            );
-
             return {
                 binary: res,
                 binaryVersion: parseFirmwareHeaders(Buffer.from(res)).version,
@@ -324,8 +300,68 @@ export const onCallFirmwareUpdate = async ({
         btcOnly,
     });
 
-    let binaryInfo = await getBinaryHelper(device, params, log, postMessage, btcOnly);
-    const { binary } = binaryInfo;
+    const intermediary = !params.binary && device.firmwareReleaseMessage.intermediary;
+    console.log('intermediary in onCallFirmware', intermediary);
+
+    // We start downloading, it could be more than 1 FW in case we need `intermediary`.
+    postMessage(
+        createUiMessage(UI.FIRMWARE_PROGRESS, {
+            device: device.toMessageObject(),
+            operation: 'downloading',
+            progress: 0,
+        }),
+    );
+
+    // Sometiemes we use `intermediary` FW that will be uploaded before the `final`,
+    // where `final` is the one that will stay in the device and will be used.
+    let intermediaryBinaryInfo;
+    let finalBinaryInfo;
+    const fwFetchPromises = [];
+
+    // Initiate the download for the intermediary firmware if requeried.
+    if (intermediary) {
+        fwFetchPromises.push(getBinaryHelper({ device, isIntermediary: true }));
+    }
+
+    // Always initiate the download for the final firmware.
+    fwFetchPromises.push(getBinaryHelper({ device, isIntermediary: false }));
+
+    // Fetch required FWs.
+    const [firstResult, finalResult] = await Promise.all(fwFetchPromises);
+    if (intermediary) {
+        intermediaryBinaryInfo = firstResult;
+        finalBinaryInfo = finalResult;
+    } else {
+        finalBinaryInfo = firstResult;
+    }
+
+    // If we have `intermediary` we upload it first and after final, otherwise final will be first and last one.
+    const firstBinaryInfo = intermediary ? intermediaryBinaryInfo : finalBinaryInfo;
+
+    // Throw an error if the first binary info is missing
+    if (!firstBinaryInfo) {
+        throw new Error('Missing binary, something went wrong.');
+    }
+
+    postMessage(
+        createUiMessage(UI.FIRMWARE_PROGRESS, {
+            device: device.toMessageObject(),
+            operation: 'downloading',
+            progress: 100,
+        }),
+    );
+
+    // We have completed binary download and we should notify sending an event,
+    // if desktop wants to store it. We only do this for final FW, not intermediaries.
+    postMessage(
+        createUiMessage(UI.FIRMWARE_DOWNLOADED, {
+            binary: finalBinaryInfo.binary,
+            binaryVersion: finalBinaryInfo.binaryVersion,
+            releaseVersion: finalBinaryInfo.releaseVersion,
+            firmwareType: device.firmwareType,
+            internalModel: device.features.internal_model,
+        }),
+    );
 
     const deviceInitiallyConnectedInBootloader = device.features.bootloader_mode;
     const deviceInitiallyConnectedWithoutFirmware = device.features.firmware_present === false;
@@ -343,7 +379,6 @@ export const onCallFirmwareUpdate = async ({
         await device.acquire();
     } else if (manual) {
         // Device doesn't support automatic reboot to bootloader, initiate manual one
-
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'manual' },
             { ...context, device },
@@ -353,7 +388,7 @@ export const onCallFirmwareUpdate = async ({
         const rebootParams = upgrade
             ? {
                   boot_command: PROTO.BootCommand.INSTALL_UPGRADE,
-                  firmware_header: getFwHeader(binary),
+                  firmware_header: getFwHeader(firstBinaryInfo.binary),
               }
             : {};
 
@@ -361,10 +396,10 @@ export const onCallFirmwareUpdate = async ({
 
         const targetLanguage = params.language || device.features.language || 'en-US';
         const languageBlob =
-            device.firmwareRelease && language && targetLanguage !== 'en-US'
+            device.firmwareReleaseMessage && language && targetLanguage !== 'en-US'
                 ? await getLanguage({
                       language: targetLanguage,
-                      version: device.firmwareRelease.release.version,
+                      version: device.firmwareReleaseMessage.release.version,
                       internal_model: device.features.internal_model,
                   }).catch(() => {
                       // silent, language data is not critical, it can be updated any time later and it indeed happens inside device.updateFeatures
@@ -421,20 +456,24 @@ export const onCallFirmwareUpdate = async ({
         );
     }
 
-    const intermediary = !params.binary && device.firmwareRelease?.intermediaryVersion;
     const bootloaderVersion = reconnectedDevice.getVersion();
 
     // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
     await reconnectedDevice.initialize(false);
 
     // Might not be installed, but needed for calculateFirmwareHash anyway
-    let stripped = stripFwHeaders(binary);
+    let stripped = stripFwHeaders(firstBinaryInfo.binary);
 
     await uploadFirmware(
         reconnectedDevice.getCommands().typedCall,
         postMessage,
         reconnectedDevice,
-        { payload: !intermediary && shouldStripFwHeaders(device.features) ? stripped : binary },
+        {
+            payload:
+                !intermediary && shouldStripFwHeaders(device.features)
+                    ? stripped
+                    : firstBinaryInfo.binary,
+        },
     );
 
     log.info('onCallFirmwareUpdate', 'firmware uploaded');
@@ -447,8 +486,7 @@ export const onCallFirmwareUpdate = async ({
             { ...context, device: reconnectedDevice },
         );
 
-        binaryInfo = await getBinaryHelper(reconnectedDevice, params, log, postMessage, btcOnly);
-        stripped = stripFwHeaders(binaryInfo.binary);
+        stripped = stripFwHeaders(finalBinaryInfo.binary);
         // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
         await reconnectedDevice.initialize(false);
 
@@ -489,7 +527,7 @@ export const onCallFirmwareUpdate = async ({
         throw ERRORS.TypedError('Runtime', 'reconnectedDevice.installedVersion is not set');
     }
 
-    const { binaryVersion, releaseVersion } = binaryInfo;
+    const { binaryVersion, releaseVersion } = finalBinaryInfo;
     // check if installed version matches binary version
     const assertBinaryVersion = isEqual(installedVersion, binaryVersion);
     // check if installed version matches requested release version

@@ -11375,6 +11375,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-message-releases@workspace:packages/connect-message-releases":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-message-releases@workspace:packages/connect-message-releases"
+  dependencies:
+    "@trezor/device-utils": "workspace:^"
+    "@types/fs-extra": "npm:^11"
+    "@types/jws": "npm:^3.2.10"
+    fs-extra: "npm:^11.3.0"
+    jws: "npm:^4.0.0"
+    tsx: "npm:^4.19.3"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-mobile@workspace:*, @trezor/connect-mobile@workspace:^, @trezor/connect-mobile@workspace:packages/connect-mobile":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
@@ -11609,7 +11622,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/device-utils@workspace:*, @trezor/device-utils@workspace:packages/device-utils":
+"@trezor/device-utils@workspace:*, @trezor/device-utils@workspace:^, @trezor/device-utils@workspace:packages/device-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
@@ -12913,7 +12926,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/fs-extra@npm:^11.0.4":
+"@types/fs-extra@npm:^11, @types/fs-extra@npm:^11.0.4":
   version: 11.0.4
   resolution: "@types/fs-extra@npm:11.0.4"
   dependencies:
@@ -23684,6 +23697,17 @@ __metadata:
     jsonfile: "npm:^6.0.1"
     universalify: "npm:^2.0.0"
   checksum: 10/0579bf6726a4cd054d4aa308f10b483f52478bb16284f32cf60b4ce0542063d551fca1a08a2af365e35db21a3fa5a06cf2a6ed614004b4368982bc754cb816b3
+  languageName: node
+  linkType: hard
+
+"fs-extra@npm:^11.3.0":
+  version: 11.3.0
+  resolution: "fs-extra@npm:11.3.0"
+  dependencies:
+    graceful-fs: "npm:^4.2.0"
+    jsonfile: "npm:^6.0.1"
+    universalify: "npm:^2.0.0"
+  checksum: 10/c9fe7b23dded1efe7bbae528d685c3206477e20cc60e9aaceb3f024f9b9ff2ee1f62413c161cb88546cc564009ab516dec99e9781ba782d869bb37e4fe04a97f
   languageName: node
   linkType: hard
 

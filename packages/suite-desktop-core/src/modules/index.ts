@@ -36,6 +36,7 @@ import * as tray from './tray';
 import * as trezorConnect from './trezor-connect';
 import * as userData from './user-data';
 import * as windowControls from './window-controls';
+import * as firmware from './firmware';
 
 // General modules (both dev & prod)
 const MODULES: Module[] = [
@@ -63,6 +64,7 @@ const MODULES: Module[] = [
     coinjoin,
     autoStart,
     bridge,
+    firmware,
     systemSettings,
     bluetooth,
     // Modules used only in dev/prod mode
@@ -77,6 +79,9 @@ interface MainThreadMessages {
     'module/reset-tor-circuits': Extract<InterceptedEvent, { type: 'CIRCUIT_MISBEHAVING' }>;
     'module/tor-status-update': TorStatus;
     'module/trezor-connect/device-event': DeviceEvent;
+    // TODO(karliatto): type this please !!!
+    'module/trezor-connect/firmware-store': any;
+    'module/firmware/list': any;
     'module/bridge/toggle': void;
     'module/bridge/status': {
         service: boolean;

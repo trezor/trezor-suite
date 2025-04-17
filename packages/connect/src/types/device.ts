@@ -2,7 +2,7 @@ import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
 import { Descriptor } from '@trezor/transport';
 
 import type { PROTO } from '../constants';
-import type { ReleaseInfo } from './firmware';
+import type { ReleaseInfo, ReleaseMessageInfo } from './firmware';
 
 /**
  * - `available`  no other application has an active session
@@ -90,6 +90,7 @@ export type KnownDevice = BaseDevice & {
     error?: typeof undefined;
     firmware: DeviceFirmwareStatus;
     firmwareRelease?: ReleaseInfo | null;
+    firmwareReleaseMessage?: ReleaseMessageInfo;
     firmwareType?: FirmwareType;
     color?: string;
     status: DeviceStatus;

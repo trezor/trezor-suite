@@ -196,6 +196,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             descriptor,
             listener: lifecycle => this.emit(lifecycle, device),
         });
+
         this.devices.add(device);
 
         const penalty = this.authPenaltyManager.get();

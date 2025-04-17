@@ -3,12 +3,14 @@
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 
-import type { PROTO } from '../constants';
+import { type PROTO } from '../constants';
 import type { BitcoinNetworkInfo, CoinInfo, Device, SelectFeeLevel } from '../types';
 import type { DeviceButtonRequest } from './device';
 import { MethodPermission } from '../core/AbstractMethod';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
 import type { MessageFactoryFn } from '../types/utils';
+import { BinaryInfo } from '../core/onCallFirmwareUpdate';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
 export const UI_EVENT = 'UI_EVENT';
 export const UI_REQUEST = {
@@ -24,6 +26,8 @@ export const UI_REQUEST = {
     FIRMWARE_NOT_COMPATIBLE: 'ui-device_firmware_not_compatible',
     FIRMWARE_NOT_INSTALLED: 'ui-device_firmware_not_installed',
     FIRMWARE_PROGRESS: 'ui-firmware-progress',
+
+    FIRMWARE_DOWNLOADED: 'ui-firmware_downloaded',
 
     /** connect is waiting for device to be automatically reconnected */
     FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
@@ -202,6 +206,16 @@ export interface UiRequestSelectDevice {
     };
 }
 
+export interface UiRequestFirmwareDownloaded {
+    type: typeof UI_REQUEST.FIRMWARE_DOWNLOADED;
+    payload:
+        | BinaryInfo
+        | {
+              internalModel?: DeviceModelInternal;
+              firmwareType?: FirmwareType;
+          };
+}
+
 export interface UiRequestUnexpectedDeviceMode {
     type:
         | typeof UI_REQUEST.BOOTLOADER
@@ -300,7 +314,8 @@ export type UiEvent =
     | FirmwareException
     | FirmwareReconnect
     | UiRequestAddressValidation
-    | UiRequestSetOperation;
+    | UiRequestSetOperation
+    | UiRequestFirmwareDownloaded;
 
 export type UiEventMessage = UiEvent & { event: typeof UI_EVENT };
 

@@ -57,6 +57,10 @@ export interface ConnectSettingsInternal {
     proxy?: Proxy;
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
+    localFirmwares?: {
+        firmwareDir: string;
+        firmwares: string[];
+    };
 }
 
 export interface ConnectSettingsWeb {

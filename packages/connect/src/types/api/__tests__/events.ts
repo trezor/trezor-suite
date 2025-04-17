@@ -29,6 +29,7 @@ export const events = (api: TrezorConnect) => {
 
             return;
         }
+
         const { payload } = event;
         payload.path.toLowerCase();
         if (payload.type === 'acquired') {

@@ -6,11 +6,14 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmwareReleases } from './firmwareInfo';
-import { ConnectSettings } from '../types';
+import { parseFirmwareReleases, parseMessageRelease } from './firmwareInfo';
+import { ConnectSettings, FirmwareRelease } from '../types';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
 type AssetCollection = { [key: string]: Record<string, any> };
+type LocalFirmwares = { firmwareDir: string; firmwares: string[] };
+
+let localFirmwares: LocalFirmwares = { firmwareDir: '', firmwares: [] };
 
 export class DataManager {
     static assets: AssetCollection = {};
@@ -18,7 +21,7 @@ export class DataManager {
     private static settings: ConnectSettings;
     private static messages: Record<string, any> = messages;
 
-    static load(settings: ConnectSettings, withAssets = true) {
+    static async load(settings: ConnectSettings, withAssets = true) {
         this.settings = settings;
 
         if (!withAssets) return;
@@ -46,10 +49,12 @@ export class DataManager {
             const firmwareKey = `firmware-${model.toLowerCase()}`;
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
             // Check if the firmware data exists for this model
-            if (this.assets[firmwareKey]) {
-                parseFirmwareReleases(this.assets[firmwareKey], modelType);
+            const modelReleases = this.assets[firmwareKey] as FirmwareRelease[];
+            if (modelReleases) {
+                parseFirmwareReleases(modelReleases, modelType);
             }
         }
+        await parseMessageRelease();
     }
 
     static getProtobufMessages() {
@@ -65,5 +70,12 @@ export class DataManager {
         }
 
         return this.settings;
+    }
+
+    static setLocalFirmwares(firmwares: LocalFirmwares): void {
+        localFirmwares = firmwares;
+    }
+    static getLocalFirmwares(): LocalFirmwares {
+        return localFirmwares;
     }
 }

@@ -100,6 +100,8 @@ export interface InvokeChannels {
     'bridge/get-status': () => InvokeResult<Status>;
     'bridge/change-settings': (payload: BridgeSettings) => InvokeResult;
     'bridge/get-settings': () => InvokeResult<BridgeSettings>;
+    // TODO(karliatto): add proper type here.
+    'firmware/get-list': () => InvokeResult<any>;
     'user-data/clear': () => InvokeResult;
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
@@ -167,6 +169,8 @@ export interface DesktopApi {
     toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
     changeBridgeSettings: DesktopApiInvoke<'bridge/change-settings'>;
     getBridgeSettings: DesktopApiInvoke<'bridge/get-settings'>;
+    // Firmwares
+    getFirmwareList: DesktopApiInvoke<'firmware/get-list'>;
     // Tray
     changeTraySettings: DesktopApiInvoke<'tray/change-settings'>;
     getTraySettings: DesktopApiInvoke<'tray/get-settings'>;

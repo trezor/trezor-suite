@@ -1,21 +1,31 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
-
-import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareType, VersionArray } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
+
+import { getReleasesMessage } from '@trezor/connect-message-releases';
+import type {
+    ConditionalRelease,
+    IntermediaryRelease,
+    ReleaseMessage,
+} from '@trezor/connect-message-releases/src/types';
 
 import type {
     Features,
     FirmwareRelease,
-    IntermediaryVersion,
     ReleaseInfo,
+    ReleaseMessageInfo,
     StrictFeatures,
 } from '../types';
 import {
+    buildFirmwareFileName,
+    buildIntermediaryFirmwareFileName,
     filterSafeListByBootloader,
     filterSafeListByFirmware,
     isStrictFeatures,
+    isValidMessageRelease,
     isValidReleases,
 } from '../utils/firmwareUtils';
+import { DataManager } from './DataManager';
 
 // undefined releases should never happen for official firmware, only custom
 const releases = Object.values(DeviceModelInternal).reduce(
@@ -23,9 +33,25 @@ const releases = Object.values(DeviceModelInternal).reduce(
     {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[] | undefined>,
 );
 
-export const parseFirmwareReleases = (json: any, deviceModel: DeviceModelInternal) => {
-    Object.keys(json).forEach(key => {
-        const release = json[key];
+let messageReleases: ReleaseMessage['releases'] | undefined;
+let messageIntermediaryReleases:
+    | Record<keyof typeof DeviceModelInternal, IntermediaryRelease[]>
+    | undefined;
+let bundledReleases: Record<keyof typeof DeviceModelInternal, FirmwareRelease> = {} as Record<
+    keyof typeof DeviceModelInternal,
+    FirmwareRelease
+>;
+
+export const parseFirmwareReleases = (
+    modelReleases: FirmwareRelease[],
+    deviceModel: DeviceModelInternal,
+) => {
+    if (!Array.isArray(modelReleases)) {
+        return;
+    }
+    const [latestRelease] = modelReleases;
+    bundledReleases[deviceModel] = latestRelease;
+    modelReleases.forEach(release => {
         releases[deviceModel]?.push({
             ...release,
         });
@@ -33,6 +59,58 @@ export const parseFirmwareReleases = (json: any, deviceModel: DeviceModelInterna
 };
 
 export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel] || [];
+
+export const parseMessageRelease = async (): Promise<any> => {
+    try {
+        const message = await getReleasesMessage();
+        if (!message) {
+            throw new Error('Missing message release.');
+        }
+        messageReleases = message.releases;
+        messageIntermediaryReleases = message.intermediaries;
+        return {
+            releases,
+            intermediaryReleases: messageIntermediaryReleases,
+        };
+    } catch (error) {
+        throw new Error(`Error parsing message release ${error}`);
+    }
+};
+
+const getIntermediaryMessageRelease = (
+    deviceModel: DeviceModelInternal,
+    firmwareVersion: VersionArray,
+) => {
+    if (!messageIntermediaryReleases) {
+        throw new Error('Message releases not loaded.');
+    }
+
+    const deviceIntermediaryReleases = messageIntermediaryReleases[deviceModel];
+    if (!deviceIntermediaryReleases) {
+        // There are not intermediary releases for this model.
+        return undefined;
+    }
+
+    const intermediary = deviceIntermediaryReleases.find(inter => {
+        console.log('inter intermediary', inter);
+        console.log('firmwareVersion', firmwareVersion);
+        return versionUtils.isNewer(inter.if_version_less_than, firmwareVersion);
+    });
+
+    return intermediary || undefined; // Return null if no intermediary is found
+};
+
+export const getMessageRelease = (deviceModel: DeviceModelInternal, firmwareType: FirmwareType) => {
+    if (!messageReleases) {
+        throw new Error('Message releases not loaded.');
+    }
+    const deviceMessageRelease = messageReleases[deviceModel];
+    if (!deviceMessageRelease) {
+        throw new Error(`No message release found for device model ${deviceModel}`);
+    }
+    const message = deviceMessageRelease.find(item => item.firmware_type === firmwareType);
+    return message;
+};
 
 const getChangelog = (releases2: FirmwareRelease[], features: StrictFeatures) => {
     // releases are already filtered, so they can be considered "safe".
@@ -76,7 +154,10 @@ const getChangelog = (releases2: FirmwareRelease[], features: StrictFeatures) =>
     );
 };
 
-const isNewer = (release: FirmwareRelease, features: StrictFeatures) => {
+const isNewer = (
+    release: FirmwareRelease | ConditionalRelease['release'],
+    features: StrictFeatures,
+) => {
     if (features.major_version === 1 && features.bootloader_mode) {
         return null;
     }
@@ -92,57 +173,6 @@ const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
     if (!changelog || !changelog.length) return null;
 
     return changelog.some(item => item.required);
-};
-
-const isEqual = (release: FirmwareRelease, latest: FirmwareRelease) =>
-    versionUtils.isEqual(release.version, latest.version);
-
-const getT1BootloaderVersion = (
-    releases2: FirmwareRelease[],
-    features: StrictFeatures,
-): VersionArray => {
-    const { bootloader_mode, major_version, minor_version, patch_version } = features;
-    const versionArray = [major_version, minor_version, patch_version] as VersionArray;
-
-    if (bootloader_mode) {
-        return versionArray;
-    }
-
-    const release = releases2.find(({ version }) => versionUtils.isEqual(version, versionArray));
-
-    /**
-     * FW version 1.6.0 and below don't have bootloader_version listed, so default to 1.0.0,
-     * because it doesn't matter for intermediary version calculation.
-     */
-    return release?.bootloader_version || [1, 0, 0];
-};
-
-/**
- * v1 - bootloader < 1.8.0
- * v2 - bootloader >= 1.8.0, < 1.12.0
- * v3 - bootloader >= 1.12.0
- */
-const getIntermediaryVersion = (
-    releases2: FirmwareRelease[],
-    features: StrictFeatures,
-    offerLatest: boolean,
-): IntermediaryVersion | undefined => {
-    if (features.major_version !== 1 || offerLatest) {
-        // Intermediary is only supported on T1B1 and not needed if latest firmware is already offered
-        return;
-    }
-
-    const bootloaderVersion = getT1BootloaderVersion(releases2, features);
-
-    if (versionUtils.isNewerOrEqual(bootloaderVersion, [1, 12, 0])) {
-        return 3;
-    }
-
-    if (versionUtils.isNewerOrEqual(bootloaderVersion, [1, 8, 0])) {
-        return 2;
-    }
-
-    return 1;
 };
 
 export interface GetInfoProps {
@@ -187,6 +217,88 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
     return filterSafeListByFirmware(releases, firmwareVersion);
 };
 
+const calculateShouldOfferRelease = (rolloutProbability: number) => {
+    if (rolloutProbability < 0 || rolloutProbability > 100) {
+        throw new Error('Probability must be between 0 and 100.');
+    }
+    const randomValue = Math.random() * 100;
+
+    return randomValue <= rolloutProbability;
+};
+
+const getReleaseMessageInfo = ({
+    features,
+    release,
+    conditions,
+}: {
+    features: Features;
+    release: ConditionalRelease['release'];
+    conditions: ConditionalRelease['conditions'];
+}): ReleaseMessageInfo => {
+    console.log('getReleaseMessageInfo');
+    const {
+        bootloader_mode,
+        major_version,
+        minor_version,
+        patch_version,
+        internal_model,
+        fw_major,
+        fw_minor,
+        fw_patch,
+    } = features;
+
+    const firmwareVersionInBootloaderMode = [fw_major, fw_minor, fw_patch];
+    console.log('firmwareVersionInBootloaderMode', firmwareVersionInBootloaderMode);
+    const version = [major_version, minor_version, patch_version];
+    const firmwareVersion = bootloader_mode ? firmwareVersionInBootloaderMode : version;
+    console.log('firmwareVersion', firmwareVersion);
+
+    if (!versionUtils.isVersionArray(firmwareVersion)) {
+        throw new Error('Firmware version is not version array.');
+    }
+
+    console.log('checking isStrictFeatures');
+    if (!isStrictFeatures(features)) {
+        throw new Error('Features of unexpected shape provided.');
+    }
+    console.log('checking isValidMessageRelease');
+    if (!isValidMessageRelease(release)) {
+        throw new Error(`Release object in unexpected shape.`);
+    }
+    const isNewerResult = isNewer(release, features);
+    if (!firmwareVersion) {
+        throw new Error('Firmware to update is lower version');
+    }
+
+    const { min_firmware_version, required } = release;
+    console.log('min_firmware_version', min_firmware_version);
+    console.log('firmwareVersion', firmwareVersion);
+
+    const requiresIntermediary = versionUtils.isNewer(min_firmware_version, firmwareVersion);
+    const intermediary = requiresIntermediary
+        ? getIntermediaryMessageRelease(internal_model, firmwareVersion)
+        : undefined;
+
+    const { rollout_probability } = conditions;
+
+    const shouldBeOffered = calculateShouldOfferRelease(rollout_probability);
+
+    return {
+        changelog: [],
+        releaseConditions: {
+            ...conditions,
+            shouldBeOffered,
+        },
+        release,
+        intermediary,
+        isRequired: required,
+        isNewer: isNewerResult,
+        // translations available to be installed
+        // TODO(karliatto): we kind of need translations in releases message.
+        translations: [],
+    };
+};
+
 /**
  * Get info about available firmware update.
  * For T1B1, it always returns the latest firmware plus intermediaryVersion
@@ -227,12 +339,6 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
     const release = releasesParsed[0];
     const prevRelease = releasesParsed[1];
 
-    const intermediaryVersion = getIntermediaryVersion(
-        releases,
-        features,
-        isEqual(releasesSafe[0], latest),
-    );
-
     const isNewerResult = isNewer(latest, features); // do not consider safe releases, we want to show "outdated" even if it's not safe to update
 
     return {
@@ -241,13 +347,34 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
         release,
         isRequired: isRequired(changelog),
         isNewer: isNewerResult,
-        intermediaryVersion,
         // translations available to be installed
         translations: isNewerResult ? prevRelease?.translations : release?.translations,
     };
 };
 
-export const getFirmwareStatus = (features: Features) => {
+export const getReleaseInfo = (features: Features) => {
+    return getInfo({
+        features,
+        releases: getReleases(features?.internal_model),
+    });
+};
+
+export const getMessageReleaseInfo = (features: Features, firmwareType: FirmwareType) => {
+    const deviceMessageRelease = getMessageRelease(features?.internal_model, firmwareType);
+    if (!deviceMessageRelease) {
+        throw new Error('Missing message release for device');
+    }
+    const { release, conditions } = deviceMessageRelease;
+    // TODO(karliatto): it seams that we use `getReleaseMessageInfo` to do sanity checks in fw and releases.
+    // TODO(karliatto): why not been more clear and do a check release message and relase ???
+    return getReleaseMessageInfo({
+        features,
+        release,
+        conditions,
+    });
+};
+
+export const getFirmwareStatus = (features: Features, firmwareType: FirmwareType) => {
     // indication that firmware is not installed at all. This information is set to false in bl mode. Otherwise it is null.
     if (features.firmware_present === false) {
         return 'none';
@@ -258,26 +385,17 @@ export const getFirmwareStatus = (features: Features) => {
         return 'unknown';
     }
 
-    const info = getInfo({
-        features,
-        releases: getReleases(features?.internal_model),
-    });
+    const releaseInfo = getMessageReleaseInfo(features, firmwareType);
 
     // should never happen for official firmware, see getInfo
-    if (!info) return 'custom';
+    if (!releaseInfo) return 'custom';
 
-    if (info.isRequired) return 'required';
+    if (releaseInfo.isRequired) return 'required';
 
-    if (info.isNewer) return 'outdated';
+    if (releaseInfo.isNewer) return 'outdated';
 
     return 'valid';
 };
-
-export const getReleaseInfo = (features: Features) =>
-    getInfo({
-        features,
-        releases: getReleases(features?.internal_model),
-    });
 
 export const getRelease = (
     internalModel: DeviceModelInternal,
@@ -289,3 +407,49 @@ export const getRelease = (
             versionUtils.isVersionArray(firmwareVersion) &&
             versionUtils.isEqual(r.version, firmwareVersion),
     );
+
+type GetFirmwareLocationParam =
+    | {
+          firmwareVersion: VersionArray;
+          internalModel: DeviceModelInternal;
+          firmwareType: FirmwareType;
+          isIntermediary: false;
+      }
+    | {
+          firmwareVersion: number;
+          internalModel: DeviceModelInternal;
+          firmwareType: FirmwareType;
+          isIntermediary: true;
+      };
+
+export const getFirmwareLocation = ({
+    firmwareVersion,
+    internalModel,
+    firmwareType,
+    isIntermediary,
+}: GetFirmwareLocationParam) => {
+    const bundledBaseUrl = DataManager.getSettings('binFilesBaseUrl');
+    const localFirmwares = DataManager.getLocalFirmwares();
+    const { firmwareDir, firmwares } = localFirmwares;
+
+    let firmwareName;
+    if (isIntermediary) {
+        firmwareName = buildIntermediaryFirmwareFileName(internalModel, firmwareVersion);
+    } else {
+        firmwareName = buildFirmwareFileName(firmwareType, internalModel, firmwareVersion);
+    }
+    const useLocalBinary = firmwares.includes(firmwareName);
+    const isBundledRelease = bundledReleases[internalModel].version == firmwareVersion;
+    let baseUrl = `https://data.trezor.io/firmware/${internalModel.toLocaleLowerCase()}`;
+
+    if (isBundledRelease && bundledBaseUrl) {
+        baseUrl = bundledBaseUrl;
+    } else if (useLocalBinary) {
+        baseUrl = firmwareDir;
+    }
+
+    return {
+        baseUrl,
+        firmwareName,
+    };
+};

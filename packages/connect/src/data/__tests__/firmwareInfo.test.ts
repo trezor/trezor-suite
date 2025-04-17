@@ -2,10 +2,11 @@ import * as releases2 from '@trezor/connect-common/files/firmware/t2t1/releases.
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { getFirmwareStatus, getReleases, parseFirmwareReleases } from '../firmwareInfo';
+import { FirmwareRelease } from '../../exports';
 
 describe('data/firmwareInfo', () => {
     beforeEach(() => {
-        parseFirmwareReleases(releases2, DeviceModelInternal.T2T1);
+        parseFirmwareReleases(releases2 as FirmwareRelease[], DeviceModelInternal.T2T1);
     });
 
     test('getReleases', () => {

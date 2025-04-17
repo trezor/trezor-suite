@@ -10,6 +10,7 @@ import type { MessageFactoryFn } from '../types/utils';
 export const UI_RESPONSE = {
     RECEIVE_PERMISSION: 'ui-receive_permission',
     RECEIVE_CONFIRMATION: 'ui-receive_confirmation',
+    RECEIVE_FIRMWARE: 'ui-receive_firmware',
     RECEIVE_PIN: 'ui-receive_pin',
     RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
     RECEIVE_DEVICE: 'ui-receive_device',
@@ -37,6 +38,11 @@ export interface UiResponsePermission {
 export interface UiResponseConfirmation {
     type: typeof UI_RESPONSE.RECEIVE_CONFIRMATION;
     payload: boolean;
+}
+
+export interface UiResponseFirmwares {
+    type: typeof UI_RESPONSE.RECEIVE_FIRMWARE;
+    payload: any;
 }
 
 export interface UiResponseDevice {
@@ -111,7 +117,8 @@ export type UiResponseEvent =
     | UiResponsePassphraseAction
     | UiResponseAccount
     | UiResponseFee
-    | UiResponseLoginChallenge;
+    | UiResponseLoginChallenge
+    | UiResponseFirmwares;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT };
 
