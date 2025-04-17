@@ -21,7 +21,10 @@ export type BadgeSize = Extract<UISize, (typeof badgeSizes)[number]>;
 export const allowedBadgeFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBadgeFrameProps)[number]>;
 
-export type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive' | 'warning'>;
+export type BadgeVariant = Extract<
+    UIVariant,
+    'primary' | 'tertiary' | 'destructive' | 'warning' | 'info'
+>;
 
 export type BadgeProps = AllowedFrameProps & {
     size?: BadgeSize;
@@ -55,6 +58,7 @@ const mapVariantToBackgroundColor = ({ $variant, $onElevation, theme }: MapArgs)
         tertiary: `backgroundNeutralSubtleOnElevation${$onElevation ? 1 : 0}`,
         destructive: 'backgroundAlertRedSubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',
+        info: 'backgroundAlertBlueSubtleOnElevation0',
     };
 
     return theme[colorMap[$variant]];
@@ -66,6 +70,7 @@ const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
         tertiary: 'textSubdued',
         destructive: 'textAlertRed',
         warning: 'textAlertYellow',
+        info: 'textAlertBlue',
     };
 
     return theme[colorMap[$variant]];
@@ -77,6 +82,7 @@ const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
         tertiary: 'iconSubdued',
         destructive: 'iconAlertRed',
         warning: 'iconAlertYellow',
+        info: 'iconAlertBlue',
     };
 
     return theme[colorMap[$variant]];

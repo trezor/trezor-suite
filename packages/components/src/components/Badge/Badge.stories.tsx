@@ -28,6 +28,7 @@ export const Badge: StoryObj<BadgeProps> = {
                 'tertiary',
                 'destructive',
                 'warning',
+                'info',
                 undefined,
             ] satisfies BadgeProps['variant'][],
         },
