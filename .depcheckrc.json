@@ -7,7 +7,7 @@
         "@playwright/*",
         "webpack*",
         "worker-loader",
-        "node-libs-browser",
+        "process",
         "rimraf",
         "tslib",
         "protobufjs-cli",
