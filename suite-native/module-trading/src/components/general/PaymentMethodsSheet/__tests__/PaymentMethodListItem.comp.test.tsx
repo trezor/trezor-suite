@@ -6,7 +6,8 @@ describe('PaymentMethodListItem', () => {
     const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps>) =>
         renderWithBasicProvider(
             <PaymentMethodListItem
-                method={{ label: 'Credit card', value: 'creditCard' }}
+                paymentMethodName="Credit card"
+                orderId="orderId"
                 isSelected={false}
                 onPress={jest.fn()}
                 {...props}
@@ -15,10 +16,7 @@ describe('PaymentMethodListItem', () => {
 
     it('should render given name', () => {
         const { getByText } = renderPaymentMethodListItem({
-            method: {
-                label: 'Debit card',
-                value: 'debitCard',
-            },
+            paymentMethodName: 'Debit card',
         });
 
         expect(getByText('Debit card')).toBeDefined();

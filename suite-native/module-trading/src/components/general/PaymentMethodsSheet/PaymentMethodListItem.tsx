@@ -1,11 +1,11 @@
 import { Pressable } from 'react-native';
 
-import { TradingPaymentMethodListProps } from '@suite-common/trading';
 import { Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type PaymentMethodListItemProps = {
-    method: TradingPaymentMethodListProps;
+    orderId: string;
+    paymentMethodName: string;
     isSelected: boolean;
     onPress: () => void;
 };
@@ -18,7 +18,8 @@ const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
 
 export const PaymentMethodListItem = ({
     onPress,
-    method,
+    orderId,
+    paymentMethodName,
     isSelected,
 }: PaymentMethodListItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -28,9 +29,9 @@ export const PaymentMethodListItem = ({
             <Card>
                 <HStack alignItems="center" justifyContent="space-between">
                     <Text variant="body" color="textDefault">
-                        {method.label}
+                        {paymentMethodName}
                     </Text>
-                    <Radio value={method.value} onPress={onPress} isChecked={isSelected} />
+                    <Radio value={orderId} onPress={onPress} isChecked={isSelected} />
                 </HStack>
             </Card>
         </Pressable>

@@ -1,7 +1,7 @@
-import { CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
+import { BuyTrade, CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { Formatters } from '@suite-common/formatters';
-import { TradingAmountLimitProps, TradingPaymentMethodListProps } from '@suite-common/trading';
+import { TradingAmountLimitProps } from '@suite-common/trading';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import type { UseFormReturn } from '@suite-native/forms';
@@ -23,7 +23,7 @@ export type ReceiveAccount = {
 };
 
 export type TradingBuyFormValues = {
-    quoteId: string | undefined;
+    quote: BuyTrade | undefined;
     asset: TradeableAsset | undefined;
     receiveAccount: ReceiveAccount | undefined;
     fiatCurrency: FiatCurrencyCode;
@@ -31,9 +31,7 @@ export type TradingBuyFormValues = {
     cryptoValue: string | undefined;
     amountInCrypto: boolean;
     focusedValue: 'fiatValue' | 'cryptoValue' | undefined;
-    paymentMethod: TradingPaymentMethodListProps | undefined;
     country: Country;
-    provider: string | undefined;
     generalAlert: string | undefined;
 };
 

@@ -1,15 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
 
-import {
-    buyThunks,
-    selectTradingBuyIsLoading,
-    selectTradingBuyQuotes,
-    tradingBuyActions,
-} from '@suite-common/trading';
+import { buyThunks, selectTradingBuyIsLoading, tradingBuyActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
     RootStackParamList,
@@ -55,7 +50,6 @@ const reportTradeConfirmation = () => {
 
 export const useTradingBuyFlow = (form: TradingBuyForm) => {
     const dispatch = useDispatch();
-    const quotes = useSelector(selectTradingBuyQuotes);
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
     const timer = useTimer();
@@ -64,12 +58,7 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const [isConsentRequested, setIsConsentRequested] = useState(false);
 
-    const [quoteId, receiveAccount] = form.watch(['quoteId', 'receiveAccount']);
-
-    const candidateQuote = useMemo(
-        () => (quotes.length > 0 ? quotes.filter(q => q.quoteId === quoteId)[0] : null),
-        [quotes, quoteId],
-    );
+    const [candidateQuote, receiveAccount] = form.watch(['quote', 'receiveAccount']);
 
     const canProceed = !isLoading && !!candidateQuote;
 

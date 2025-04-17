@@ -278,10 +278,10 @@ export const selectTradingBuyIsLoading = (state: TradingRootState) =>
 export const selectTradingBuyQuotes = (state: TradingRootState) =>
     state.wallet.tradingNew.buy.quotes;
 
-export const selectTradingBuyQuoteByQuoteId = (
+export const selectTradingBuyQuoteByOrderId = (
     state: TradingRootState,
-    quoteId: string | undefined,
-) => (quoteId ? state.wallet.tradingNew.buy.quotes.find(q => q.quoteId === quoteId) : undefined);
+    orderId: string | undefined,
+) => (orderId ? state.wallet.tradingNew.buy.quotes.find(q => q.orderId === orderId) : undefined);
 
 export const selectBuyQuotesByPaymentMethod = createMemoizedSelector(
     [

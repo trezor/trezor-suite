@@ -19,7 +19,7 @@ import {
     selectTradingBuyInfo,
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
-    selectTradingBuyQuoteByQuoteId,
+    selectTradingBuyQuoteByOrderId,
     selectTradingBuyQuotes,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
@@ -524,19 +524,19 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe('selectTradingBuyQuoteByQuoteId', () => {
-        it('should return undefined when quoteId1 is not provided', () => {
-            const result = selectTradingBuyQuoteByQuoteId(state, undefined);
+    describe('selectTradingBuyQuoteByOrderId', () => {
+        it('should return undefined when orderId is not provided', () => {
+            const result = selectTradingBuyQuoteByOrderId(state, undefined);
             expect(result).toBeUndefined();
         });
 
-        it('should return undefined when quote with quoteId is not found', () => {
-            const result = selectTradingBuyQuoteByQuoteId(state, 'non_existent_id');
+        it('should return undefined when quote with orderId is not found', () => {
+            const result = selectTradingBuyQuoteByOrderId(state, 'non_existent_id');
             expect(result).toBeUndefined();
         });
 
         it('should return correct quote', () => {
-            const result = selectTradingBuyQuoteByQuoteId(state, 'quoteId1');
+            const result = selectTradingBuyQuoteByOrderId(state, 'orderId1');
             expect(result?.orderId).toBe('orderId1');
         });
     });

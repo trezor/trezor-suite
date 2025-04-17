@@ -9,14 +9,14 @@ export type ProvidersSheetProps = {
     quotes: TradingTradeType[];
     isVisible: boolean;
     onClose: () => void;
-    onQuoteSelect: (method: TradingTradeType) => void;
+    onQuoteSelect: (quote: TradingTradeType) => void;
     selectedQuote?: TradingTradeType;
     providerInfos: { [name: string]: TradingProviderInfo };
 };
 
 const EXTRA_LIST_PADDING = 20;
 
-const keyExtractor = (item: TradingTradeType) => item.quoteId ?? '';
+const keyExtractor = (item: TradingTradeType) => item.orderId ?? '';
 const getEstimatedListHeight = (itemsCount: number) =>
     itemsCount * PROVIDER_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
 
@@ -52,17 +52,17 @@ export const ProvidersSheet = ({
 
                 const { companyName, logo } = provider;
 
-                if (!companyName || !item.quoteId) {
+                if (!companyName || !item.orderId) {
                     return null;
                 }
 
                 return (
                     <ProviderListItem
-                        quoteId={item.quoteId}
+                        orderId={item.orderId}
                         companyName={companyName ?? ''}
                         logo={logo ?? ''}
                         onPress={() => onQuoteSelectCallback(item)}
-                        isSelected={item.exchange === selectedQuote?.exchange}
+                        isSelected={item.orderId === selectedQuote?.orderId}
                     />
                 );
             }}

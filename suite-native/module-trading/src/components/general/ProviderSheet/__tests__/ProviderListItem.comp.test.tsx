@@ -12,7 +12,7 @@ describe('ProviderListItem', () => {
     ) =>
         renderWithStoreProviderAsync(
             <ProviderListItem
-                quoteId={quote.quoteId ?? ''}
+                orderId={quote.orderId ?? ''}
                 isSelected={false}
                 onPress={jest.fn()}
                 companyName=""

@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { BuyTrade } from 'invity-api';
+
 import {
     PreloadedState,
     TestStore,
@@ -9,6 +11,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../__fixtures__/account';
+import quotes from '../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../__fixtures__/tradingState';
 import { TradingBuyFormValues } from '../../types';
 import { useTradingBuyFlow } from '../useTradingBuyFlow';
@@ -69,12 +72,12 @@ describe('useTradingBuyFlow', () => {
         expect(result.current.canProceed).toBe(false);
     });
 
-    it('should canProceed be true when not loading and quoteId filters one in quotes', async () => {
+    it('should canProceed be true when not loading and orderId filters one in quotes', async () => {
         const store = await getInitializedStore({ isLoading: false });
 
         const { result } = await renderUseTradingBuyFlow({
             store,
-            quoteId: 'fc12d4c4-9078-4175-becd-90fc58a3145c',
+            quote: quotes[1] as BuyTrade,
         });
 
         expect(result.current.canProceed).toBe(true);
@@ -87,7 +90,7 @@ describe('useTradingBuyFlow', () => {
 
         const { result } = await renderUseTradingBuyFlow({
             store,
-            quoteId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
+            quote: quotes[2] as BuyTrade,
             receiveAccount: { account: btcAccount, address: btcAccount.addresses?.used?.[0] },
         });
 
@@ -119,7 +122,7 @@ describe('useTradingBuyFlow', () => {
 
         const { result } = await renderUseTradingBuyFlow({
             store,
-            quoteId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
+            quote: quotes[2] as BuyTrade,
             receiveAccount: { account: btcAccount, address: btcAccount.addresses?.used?.[0] },
         });
 

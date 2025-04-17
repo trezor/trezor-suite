@@ -1,12 +1,14 @@
-import { CryptoId } from 'invity-api';
+import { BuyTrade, CryptoId } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { getBtcAccount } from '../../__fixtures__/account';
+import quotes from '../../__fixtures__/quotes.json';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingState, tradingSlice } from '../../tradingSlice';
 import {
     selectBuyAmountLimits,
+    selectBuyBestQuotesForAvailablePaymentMethods,
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
     selectBuySupportedFiatCurrencies,
@@ -211,6 +213,41 @@ describe('buySelectors', () => {
                 maxCrypto: '50',
                 minCrypto: '0.0001',
             });
+        });
+    });
+
+    describe('selectBuyBestQuotesForAvailablePaymentMethods', () => {
+        beforeEach(() => {
+            prevState.buy.quotes = quotes as BuyTrade[];
+        });
+
+        it('should return only best quote for each payment method', () => {
+            expect(
+                selectBuyBestQuotesForAvailablePaymentMethods({
+                    wallet: { tradingNew: prevState },
+                }),
+            ).toEqual([
+                expect.objectContaining({
+                    paymentMethod: 'applePay',
+                    rate: 9998.316675433,
+                }),
+                expect.objectContaining({
+                    paymentMethod: 'creditCard',
+                    rate: 20000,
+                }),
+            ]);
+        });
+
+        it('should be stable', () => {
+            expect(
+                selectBuyBestQuotesForAvailablePaymentMethods({
+                    wallet: { tradingNew: prevState },
+                }),
+            ).toBe(
+                selectBuyBestQuotesForAvailablePaymentMethods({
+                    wallet: { tradingNew: prevState },
+                }),
+            );
         });
     });
 });

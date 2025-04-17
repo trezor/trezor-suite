@@ -24,15 +24,12 @@ export const TradingProviderPicker = () => {
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useTradeSheetControls(form, 'quoteId');
-    const providerKey = form.watch('provider');
-    const paymentMethod = form.watch('paymentMethod');
+        useTradeSheetControls(form, 'quote');
+    const { paymentMethod, exchange: providerKey } = selectedValue ?? {};
     const quotes =
         useSelector((state: TradingRootState) =>
-            selectBuyQuotesByPaymentMethod(state, paymentMethod?.value),
+            selectBuyQuotesByPaymentMethod(state, paymentMethod),
         ) ?? [];
-
-    const selectedQuote = selectedValue ? quotes.find(q => q.quoteId === selectedValue) : undefined;
 
     if (isLoading) {
         return (
@@ -51,8 +48,6 @@ export const TradingProviderPicker = () => {
     }
 
     const { companyName, logo } = providers[providerKey];
-
-    const handleQuoteSelect = (quote: TradingTradeType) => setSelectedValue(quote.quoteId);
 
     return (
         <>
@@ -80,8 +75,8 @@ export const TradingProviderPicker = () => {
                 providerInfos={providers}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
-                onQuoteSelect={handleQuoteSelect}
-                selectedQuote={selectedQuote}
+                onQuoteSelect={setSelectedValue as (quote: TradingTradeType) => void}
+                selectedQuote={selectedValue}
             />
         </>
     );

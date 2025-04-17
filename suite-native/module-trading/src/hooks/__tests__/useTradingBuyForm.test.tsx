@@ -188,122 +188,181 @@ describe('useTradingBuyForm', () => {
         expect(result.current.getValues('amountInCrypto')).toBe(false);
     });
 
-    it('should set payment method and provider after quotes are fetched', async () => {
-        const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+    describe('on quotes change', () => {
+        it('if no quote is selected should select 1st quote with creditCard payment method', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
 
-        initFormAndQuotes(result.current, store);
+            initFormAndQuotes(result.current, store);
 
-        expect(result.current.getValues('provider')).toEqual('cexdirect');
-        expect(result.current.getValues('paymentMethod')).toEqual(
-            expect.objectContaining({ value: 'creditCard' }),
-        );
-    });
-
-    it('should set another payment method when card is not available', async () => {
-        const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
-
-        act(() => {
-            result.current.setValue('fiatValue', '10');
-            result.current.setValue('asset', btcAsset);
+            expect(result.current.getValues('quote')).toEqual(
+                expect.objectContaining({
+                    paymentMethod: 'creditCard',
+                    exchange: 'cexdirect',
+                }),
+            );
         });
 
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes([quotes[0]] as BuyTrade[]));
+        it('if no quote is selected and creditCard method is not available should select 1st quote', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            act(() => {
+                result.current.setValue('fiatValue', '10');
+                result.current.setValue('asset', btcAsset);
+                store.dispatch(tradingBuyActions.saveQuotes([quotes[0]] as BuyTrade[]));
+            });
+
+            expect(result.current.getValues('quote')).toEqual(
+                expect.objectContaining({
+                    paymentMethod: 'applePay',
+                    exchange: 'mercuryo',
+                }),
+            );
         });
 
-        expect(result.current.getValues('provider')).toEqual('mercuryo');
-        expect(result.current.getValues('paymentMethod')).toEqual(
-            expect.objectContaining({ value: 'applePay' }),
-        );
-    });
+        it('should set quote to undefined when no quotes are available', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
 
-    it('should clear payment method, provider and cryptoValue when quotes are empty and user inserted fiat', async () => {
-        const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+            // this will load quotes and selects one
+            initFormAndQuotes(result.current, store);
 
-        initFormAndQuotes(result.current, store);
+            act(() => {
+                store.dispatch(tradingBuyActions.saveQuotes([]));
+            });
 
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes([]));
+            expect(result.current.getValues('quote')).toBeUndefined();
         });
 
-        expect(result.current.getValues('provider')).toBeUndefined();
-        expect(result.current.getValues('paymentMethod')).toBeUndefined();
-        expect(result.current.getValues('cryptoValue')).toBeUndefined();
-        expect(result.current.getValues('fiatValue')).toBe('10');
-    });
+        it('should clear cryptoValue when no quotes are available', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
 
-    it('should clear payment method, provider and fiatValue when quotes are empty and user inserted crypto', async () => {
-        const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+            // this will load quotes and selects one
+            initFormAndQuotes(result.current, store);
 
-        act(() => {
-            result.current.setValue('amountInCrypto', true);
-            result.current.setValue('asset', btcAsset);
+            act(() => {
+                store.dispatch(tradingBuyActions.saveQuotes([]));
+            });
+
+            expect(result.current.getValues('cryptoValue')).toBeUndefined();
+            expect(result.current.getValues('fiatValue')).toBe('10');
         });
 
-        act(() => {
-            result.current.setValue('cryptoValue', '1');
-            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+        it('should clear fiatValue when no quotes are available and user inserted cryptoValue', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            // this will load quotes and selects one
+            act(() => {
+                result.current.setValue('amountInCrypto', true);
+                result.current.setValue('asset', btcAsset);
+                result.current.setValue('cryptoValue', '1');
+                store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+            });
+
+            act(() => {
+                store.dispatch(tradingBuyActions.saveQuotes([]));
+            });
+
+            expect(result.current.getValues('fiatValue')).toBeUndefined();
+            expect(result.current.getValues('cryptoValue')).toBe('1');
         });
 
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes([]));
+        it('should update cryptoValue when selected quote is changed', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            initFormAndQuotes(result.current, store);
+
+            act(() => {
+                result.current.setValue('quote', quotes[0] as BuyTrade);
+            });
+
+            expect(result.current.getValues('cryptoValue')).toEqual('0.0010001683607972866');
+            expect(result.current.getValues('fiatValue')).toEqual('10');
         });
 
-        expect(result.current.getValues('provider')).toBeUndefined();
-        expect(result.current.getValues('paymentMethod')).toBeUndefined();
-        expect(result.current.getValues('fiatValue')).toBeUndefined();
-        expect(result.current.getValues('cryptoValue')).toBe('1');
-    });
+        it('should update fiatAmount when selected quote is changed and user inserted cryptoAmount', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
 
-    it('should update provider and cryptoValue when payment method is changed', async () => {
-        const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+            act(() => {
+                result.current.setValue('asset', btcAsset);
+                result.current.setValue('amountInCrypto', true);
+                result.current.setValue('cryptoValue', '100');
+                store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+            });
 
-        initFormAndQuotes(result.current, store);
+            act(() => {
+                result.current.setValue('quote', quotes[0] as BuyTrade);
+            });
 
-        act(() => {
-            result.current.setValue('paymentMethod', {
-                value: 'applePay',
-                label: 'Apple Pay',
+            expect(result.current.getValues('cryptoValue')).toEqual('100');
+            expect(result.current.getValues('fiatValue')).toEqual('10');
+        });
+
+        describe('when quote is selected and new quotes are fetched', () => {
+            let store: EnhancedStore;
+            let form: TradingBuyForm;
+
+            beforeEach(async () => {
+                store = await getInitializedStore();
+                const { result } = await renderUseTradingBuyForm(store);
+                form = result.current;
+
+                act(() => {
+                    result.current.setValue('asset', btcAsset);
+                    result.current.setValue('amountInCrypto', true);
+                    result.current.setValue('cryptoValue', '100');
+                });
+            });
+
+            it('should select quote with same payment method and provider', () => {
+                act(() => {
+                    form.setValue('quote', { ...quotes[3], orderId: 'test1' } as BuyTrade);
+                });
+
+                act(() => {
+                    store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+                });
+
+                expect(form.getValues('quote')).toEqual(quotes[3]);
+            });
+
+            it('should select 1st quote with same payment method if same provider is not available', () => {
+                act(() => {
+                    form.setValue('quote', {
+                        ...quotes[3],
+                        orderId: 'test1',
+                        exchange: 'unavailable',
+                    } as BuyTrade);
+                });
+
+                act(() => {
+                    store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+                });
+
+                expect(form.getValues('quote')).toEqual(quotes[1]);
+            });
+
+            it('should select 1st quote on new quotes when payment method is not available even with different payment method', () => {
+                act(() => {
+                    store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+                });
+
+                act(() => {
+                    store.dispatch(tradingBuyActions.saveQuotes([quotes[0]] as BuyTrade[]));
+                });
+
+                expect(form.getValues('quote')).toEqual(
+                    expect.objectContaining({
+                        paymentMethod: 'applePay',
+                    }),
+                );
             });
         });
-
-        expect(result.current.getValues('provider')).toEqual('mercuryo');
-        expect(result.current.getValues('cryptoValue')).toEqual('0.0010001683607972866');
-        expect(result.current.getValues('fiatValue')).toEqual('10');
-    });
-
-    it('should update provider and fiatAmount when payment method is changed', async () => {
-        const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
-
-        act(() => {
-            result.current.setValue('asset', btcAsset);
-        });
-
-        act(() => {
-            result.current.setValue('amountInCrypto', true);
-            result.current.setValue('cryptoValue', '100');
-        });
-
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
-        });
-
-        act(() => {
-            result.current.setValue('paymentMethod', {
-                value: 'applePay',
-                label: 'Apple Pay',
-            });
-        });
-
-        expect(result.current.getValues('provider')).toEqual('mercuryo');
-        expect(result.current.getValues('cryptoValue')).toEqual('100');
-        expect(result.current.getValues('fiatValue')).toEqual('10');
     });
 
     it('should set correct cryptoValue when using BTC and amount in sats', async () => {
@@ -313,56 +372,6 @@ describe('useTradingBuyForm', () => {
         initFormAndQuotes(result.current, store);
 
         expect(result.current.getValues('cryptoValue')).toEqual('50000');
-    });
-
-    it('should not change payment method on new quotes', async () => {
-        const store = await getInitializedStore(true);
-        const { result } = await renderUseTradingBuyForm(store);
-
-        initFormAndQuotes(result.current, store);
-        act(() => {
-            result.current.setValue('paymentMethod', {
-                value: 'applePay',
-                label: 'Apple Pay',
-            });
-        });
-
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes([...quotes] as BuyTrade[]));
-        });
-
-        expect(result.current.getValues('paymentMethod')).toEqual({
-            value: 'applePay',
-            label: 'Apple Pay',
-        });
-    });
-
-    it('should change payment method on new quotes when payment method is not available', async () => {
-        const store = await getInitializedStore(true);
-        const { result } = await renderUseTradingBuyForm(store);
-
-        initFormAndQuotes(result.current, store);
-
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes([quotes[0]] as BuyTrade[]));
-        });
-
-        expect(result.current.getValues('paymentMethod')).toEqual({
-            value: 'applePay',
-            label: 'Apple Pay',
-        });
-    });
-
-    it('should change data when quoteId is changed', async () => {
-        const store = await getInitializedStore(true);
-        const { result } = await renderUseTradingBuyForm(store);
-
-        initFormAndQuotes(result.current, store);
-        act(() => {
-            result.current.setValue('quoteId', 'ab12d4c3-1001-4175-becd-90fc58a3145c');
-        });
-
-        expect(result.current.getValues('provider')).toEqual('mercuryo');
     });
 
     describe('validations', () => {

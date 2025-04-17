@@ -1,4 +1,5 @@
-import { TradingPaymentMethodListProps } from '@suite-common/trading';
+import type { BuyTrade } from 'invity-api';
+
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -6,41 +7,42 @@ import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader
 import { PAYMENT_METHOD_LIST_ITEM_HEIGHT, PaymentMethodListItem } from './PaymentMethodListItem';
 
 export type PaymentMethodsSheetProps = {
-    methods: TradingPaymentMethodListProps[];
+    quotes: BuyTrade[];
     isVisible: boolean;
     onClose: () => void;
-    onMethodSelect: (method: TradingPaymentMethodListProps) => void;
-    selectedMethod?: TradingPaymentMethodListProps;
+    onQuoteSelect: (quote: BuyTrade) => void;
+    selectedQuote?: BuyTrade;
 };
 
 const EXTRA_LIST_PADDING = 20;
 
-const keyExtractor = (item: TradingPaymentMethodListProps) => item.value;
+const keyExtractor = (item: BuyTrade) => item.orderId ?? '';
 const getEstimatedListHeight = (itemsCount: number) =>
     itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
 
 export const PaymentMethodsSheet = ({
-    methods,
+    quotes,
     isVisible,
     onClose,
-    onMethodSelect,
-    selectedMethod,
+    onQuoteSelect,
+    selectedQuote,
 }: PaymentMethodsSheetProps) => {
     const { translate } = useTranslate();
-    const onMethodSelectCallback = (method: TradingPaymentMethodListProps) => {
-        onMethodSelect(method);
+    const onQuoteSelectCallback = (quote: BuyTrade) => {
+        onQuoteSelect(quote);
         onClose();
     };
 
     return (
-        <BottomSheetFlashList<TradingPaymentMethodListProps>
+        <BottomSheetFlashList<BuyTrade>
             isVisible={isVisible}
             onClose={onClose}
             renderItem={({ item }) => (
                 <PaymentMethodListItem
-                    method={item}
-                    onPress={() => onMethodSelectCallback(item)}
-                    isSelected={item.value === selectedMethod?.value}
+                    orderId={item.orderId ?? ''}
+                    paymentMethodName={item.paymentMethodName ?? ''}
+                    onPress={() => onQuoteSelectCallback(item)}
+                    isSelected={item.paymentMethod === selectedQuote?.paymentMethod}
                 />
             )}
             handleComponent={() => (
@@ -49,8 +51,8 @@ export const PaymentMethodsSheet = ({
                     title={translate('moduleTrading.tradingScreen.paymentMethod')}
                 />
             )}
-            data={methods}
-            estimatedListHeight={getEstimatedListHeight(methods.length)}
+            data={quotes}
+            estimatedListHeight={getEstimatedListHeight(quotes.length)}
             estimatedItemSize={PAYMENT_METHOD_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
         />

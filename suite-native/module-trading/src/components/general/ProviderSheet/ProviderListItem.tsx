@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TradingProviderLogo } from '../TradingProviderLogo';
 
 export type ProviderListItemProps = {
-    quoteId: string;
+    orderId: string;
     companyName: string;
     logo: string;
     isSelected: boolean;
@@ -20,7 +20,7 @@ const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 export const ProviderListItem = ({
-    quoteId,
+    orderId,
     companyName,
     logo,
     isSelected,
@@ -38,7 +38,7 @@ export const ProviderListItem = ({
                             {companyName}
                         </Text>
                     </HStack>
-                    <Radio value={`${quoteId}`} onPress={onPress} isChecked={isSelected} />
+                    <Radio value={orderId} onPress={onPress} isChecked={isSelected} />
                 </HStack>
             </Card>
         </Pressable>

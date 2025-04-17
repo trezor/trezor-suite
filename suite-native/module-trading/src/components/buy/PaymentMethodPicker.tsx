@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { selectTradingBuyIsLoading, selectTradingPaymentMethods } from '@suite-common/trading';
+import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+import { selectBuyBestQuotesForAvailablePaymentMethods } from '../../selectors/buySelectors';
 import { PaymentMethodsSheet } from '../general/PaymentMethodsSheet/PaymentMethodsSheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSkeleton';
@@ -13,10 +14,10 @@ import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSke
 export const PaymentMethodPicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
-    const methods = useSelector(selectTradingPaymentMethods);
+    const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useTradeSheetControls(form, 'paymentMethod');
+        useTradeSheetControls(form, 'quote');
 
     if (isLoading) {
         return (
@@ -29,7 +30,7 @@ export const PaymentMethodPicker = () => {
         );
     }
 
-    if (methods.length === 0) {
+    if (quotes.length === 0) {
         return null;
     }
 
@@ -47,7 +48,7 @@ export const PaymentMethodPicker = () => {
                             'moduleTrading.tradingScreen.selectedPaymentMethod',
                         )}
                     >
-                        {selectedValue.label}
+                        {selectedValue.paymentMethodName}
                     </Text>
                 ) : (
                     <Text
@@ -62,11 +63,11 @@ export const PaymentMethodPicker = () => {
                 )}
             </TradingOverviewRow>
             <PaymentMethodsSheet
-                methods={methods}
+                quotes={quotes}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
-                onMethodSelect={setSelectedValue}
-                selectedMethod={selectedValue}
+                onQuoteSelect={setSelectedValue}
+                selectedQuote={selectedValue}
             />
         </>
     );

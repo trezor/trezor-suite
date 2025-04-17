@@ -13,7 +13,7 @@ export const Confirmation = () => {
     const { canProceed, selectQuote, isConsentRequested, giveConsent, cancelConsent } =
         useTradingBuyFlow(form);
 
-    const provider = form.watch('provider');
+    const quote = form.watch('quote');
 
     return (
         <AnimatedBox entering={FadeInDown} exiting={FadeOutDown}>
@@ -26,7 +26,7 @@ export const Confirmation = () => {
                 onClose={cancelConsent}
                 isVisible={isConsentRequested}
                 onConsent={giveConsent}
-                tradeProvider={provider ?? ''}
+                tradeProvider={quote?.exchange ?? ''}
             />
         </AnimatedBox>
     );

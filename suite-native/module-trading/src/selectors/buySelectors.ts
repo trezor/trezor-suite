@@ -1,9 +1,11 @@
-import { FiatCurrencyCode } from 'invity-api';
+import { BuyCryptoPaymentMethod, BuyTrade, FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
+    getBestRatedQuote,
     regional,
     selectTradingBuyInfo,
+    selectTradingBuyQuotes,
     selectTradingBuySupportedCryptoIds,
 } from '@suite-common/trading';
 
@@ -96,3 +98,37 @@ export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
 
 export const selectBuyAmountLimits = (state: TradingRootState) =>
     selectTradingBuy(state).amountLimits;
+
+export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelector(
+    [
+        selectTradingBuyQuotes as unknown as (
+            state: TradingRootState,
+        ) => ReturnType<typeof selectTradingBuyQuotes>,
+    ],
+    quotes => {
+        if (!quotes) {
+            return [];
+        }
+
+        const allQuotesByPaymentMethodMap = quotes.reduce((quotesByPaymentMethodMap, quote) => {
+            const { paymentMethod } = quote;
+            if (!paymentMethod) {
+                return quotesByPaymentMethodMap;
+            }
+
+            const existingQuotes = quotesByPaymentMethodMap.get(paymentMethod);
+
+            if (!existingQuotes) {
+                quotesByPaymentMethodMap.set(paymentMethod, [quote]);
+            } else {
+                existingQuotes.push(quote);
+            }
+
+            return quotesByPaymentMethodMap;
+        }, new Map<BuyCryptoPaymentMethod, BuyTrade[]>());
+
+        return [...allQuotesByPaymentMethodMap.values()].map(quotesForPaymentMethod =>
+            getBestRatedQuote(quotesForPaymentMethod, 'buy'),
+        ) as BuyTrade[];
+    },
+);
