@@ -24,6 +24,7 @@ import {
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { findAccountDevice } from '@suite-common/wallet-utils';
+import { walletConnectActions } from '@suite-common/walletconnect';
 
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
@@ -220,6 +221,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     connectPopupActions.rememberAppPermissions,
                     connectPopupActions.forgetAppPermissions,
+                    walletConnectActions.saveSession,
+                    walletConnectActions.removeSession,
                 )(action)
             ) {
                 api.dispatch(storageActions.saveConnectSettings());

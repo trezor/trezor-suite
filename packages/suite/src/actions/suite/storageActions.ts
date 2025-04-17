@@ -462,9 +462,17 @@ export const saveEntropyCheckFail = () => async (_dispatch: Dispatch, getState: 
 
 export const saveConnectSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
-    const { connectPopup } = getState();
+    const { connectPopup, walletConnect } = getState();
 
-    db.addItem('connect', { permissions: connectPopup.permissions }, 'connect', true);
+    db.addItem(
+        'connect',
+        {
+            permissions: connectPopup.permissions,
+            walletConnectSessions: walletConnect.sessions,
+        },
+        'connect',
+        true,
+    );
 };
 
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {

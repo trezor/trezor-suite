@@ -1,3 +1,5 @@
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { walletConnectActions } from './walletConnectActions';
@@ -12,6 +14,12 @@ type WalletConnectStateRootState = {
     walletConnect: WalletConnectState;
 };
 
+type StorageActionPayload = {
+    connect: {
+        walletConnectSessions: WalletConnectSession[];
+    };
+};
+
 const walletConnectInitialState: WalletConnectState = {
     sessions: [],
     pendingProposal: undefined,
@@ -19,8 +27,15 @@ const walletConnectInitialState: WalletConnectState = {
 
 export const prepareWalletConnectReducer = createReducerWithExtraDeps(
     walletConnectInitialState,
-    (builder, _extra) => {
+    (builder, extra) => {
         builder
+            .addCase(
+                extra.actionTypes.storageLoad,
+                (state, { payload }: PayloadAction<StorageActionPayload>) => {
+                    if (payload.connect?.walletConnectSessions)
+                        state.sessions = payload.connect.walletConnectSessions;
+                },
+            )
             .addCase(walletConnectActions.saveSession, (state, { payload }) => {
                 const { topic, ...rest } = payload;
                 const exists = state.sessions.find(session => session.topic === topic);
