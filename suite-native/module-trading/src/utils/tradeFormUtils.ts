@@ -1,4 +1,4 @@
-import { BuyTrade, FormResponse } from 'invity-api';
+import { FormResponse } from 'invity-api';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { xssFilters } from '@trezor/utils';
@@ -12,6 +12,12 @@ type TemplateOptions = {
 type RequestFormSourceReturnType = {
     uri?: string;
     html?: string;
+};
+
+type BuildTradingUrlProps = {
+    actionType: 'quote' | 'trade';
+    tradeType: 'buy' | 'exchange ' | 'sell';
+    orderId: string | undefined;
 };
 
 export const applyHtmlTemplate = (
@@ -108,5 +114,5 @@ export const getSourceForForm = (form: FormResponse['form'] | undefined, backUrl
     return null;
 };
 
-export const buildTradingUrl = (type: 'quote' | 'trade', trade: BuyTrade) =>
-    `suitetrading://buy/${type}?receive=${trade.receiveCurrency}&send=${trade.fiatCurrency}&fiatAmount=${trade.fiatAmount}`;
+export const buildTradingUrl = ({ actionType, tradeType, orderId }: BuildTradingUrlProps) =>
+    `suitetrading://${tradeType}/${actionType}${orderId ? `?orderId=${orderId}` : ''}`;

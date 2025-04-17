@@ -1,5 +1,3 @@
-import { BuyTrade } from 'invity-api';
-
 import { trezorLogo } from '@suite-common/suite-constants';
 
 import {
@@ -188,11 +186,11 @@ describe('getRequestFormSource', () => {
 describe('buildTradingUrl', () => {
     it('should return correct url format', () => {
         expect(
-            buildTradingUrl('quote', {
-                receiveCurrency: 'btc',
-                fiatCurrency: 'usd',
-                fiatAmount: 1234,
-            } as BuyTrade),
-        ).toBe('suitetrading://buy/quote?receive=btc&send=usd&fiatAmount=1234');
+            buildTradingUrl({
+                actionType: 'quote',
+                tradeType: 'buy',
+                orderId: '1234',
+            }),
+        ).toBe('suitetrading://buy/quote?orderId=1234');
     });
 });

@@ -99,13 +99,12 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
         });
     };
 
-    const handleTradeResponse = (response: BuyTradeResponse) => {
+    const handleTradeResponse = (response: BuyTradeResponse, returnUrl: string) => {
         if (response.trade.paymentId) {
             dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
         }
 
         if (response.tradeForm) {
-            const returnUrl = buildTradingUrl('trade', candidateQuote!);
             handleWebview(response.tradeForm.form, returnUrl);
         }
 
@@ -117,14 +116,18 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
             return;
         }
 
-        const returnUrl = buildTradingUrl('trade', quote);
+        const returnUrl = buildTradingUrl({
+            actionType: 'trade',
+            tradeType: 'buy',
+            orderId: quote.orderId,
+        });
 
         await dispatch(
             buyThunks.confirmTradeThunk({
                 address,
                 returnUrl,
                 account: receiveAccount.account,
-                processResponseData: handleTradeResponse,
+                processResponseData: response => handleTradeResponse(response, returnUrl),
                 triggerAnalyticsTradeConfirmation: reportTradeConfirmation,
             }),
         );
@@ -143,7 +146,11 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
 
         setIsConsentRequested(false);
 
-        const returnUrl = buildTradingUrl('quote', candidateQuote);
+        const returnUrl = buildTradingUrl({
+            actionType: 'quote',
+            tradeType: 'buy',
+            orderId: candidateQuote.orderId,
+        });
 
         await dispatch(
             buyThunks.selectQuoteThunk({

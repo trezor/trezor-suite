@@ -49,7 +49,7 @@ export const TradingWebViewScreen = () => {
                 source={{ ...sourceData }}
                 // go back on closeCallbackUrl
                 onShouldStartLoadWithRequest={(request: { url: string }) => {
-                    if (request.url.startsWith(closeCallbackUrl)) {
+                    if (closeCallbackUrl && request.url.startsWith(closeCallbackUrl)) {
                         navigation.goBack();
 
                         return false; // Prevent WebView from loading the URL
