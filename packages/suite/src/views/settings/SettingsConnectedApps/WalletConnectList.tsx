@@ -8,7 +8,7 @@ import {
     PendingConnectionProposalNetwork,
     WalletConnectSession,
 } from '@suite-common/walletconnect/src/walletConnectTypes';
-import { Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
+import { Badge, Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -78,6 +78,21 @@ export const WalletConnectList = () => {
                             <Row gap={spacings.sm}>
                                 <Text>{session.peer.metadata.name}</Text>
                                 <Text variant="tertiary">{session.peer.metadata.url}</Text>
+                                {session.validation === 'VALID' && (
+                                    <Badge variant="info" icon="shieldCheckFilled">
+                                        <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
+                                    </Badge>
+                                )}
+                                {session.validation === 'UNKNOWN' && (
+                                    <Badge variant="warning" icon="shieldWarningFilled">
+                                        <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
+                                    </Badge>
+                                )}
+                                {session.validation === 'INVALID' && (
+                                    <Badge variant="destructive" icon="shieldWarningFilled">
+                                        <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
+                                    </Badge>
+                                )}
                             </Row>
 
                             <Text variant="tertiary">

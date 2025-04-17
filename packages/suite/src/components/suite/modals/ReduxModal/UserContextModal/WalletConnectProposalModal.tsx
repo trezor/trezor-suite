@@ -7,12 +7,12 @@ import {
 } from '@suite-common/walletconnect';
 import { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
 import {
+    Badge,
     Banner,
     Card,
     Column,
     IconCircle,
     NewModal,
-    Note,
     Row,
     Text,
     Tooltip,
@@ -110,21 +110,21 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             <Row gap={spacings.sm}>
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'VALID' && (
-                                        <Note variant="info" iconName="shieldCheckFilled">
+                                        <Badge variant="info" icon="shieldCheckFilled">
                                             <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
-                                        </Note>
+                                        </Badge>
                                     )}
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'UNKNOWN' && (
-                                        <Note variant="warning" iconName="shieldWarningFilled">
+                                        <Badge variant="warning" icon="shieldWarningFilled">
                                             <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
-                                        </Note>
+                                        </Badge>
                                     )}
                                 {(pendingProposal.isScam ||
                                     pendingProposal.validation === 'INVALID') && (
-                                    <Note variant="destructive" iconName="shieldWarningFilled">
+                                    <Badge variant="destructive" icon="shieldWarningFilled">
                                         <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
-                                    </Note>
+                                    </Badge>
                                 )}
                             </Row>
                         </Column>
