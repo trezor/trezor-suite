@@ -1,6 +1,8 @@
 import { defineMessages } from 'react-intl';
 
-export default defineMessages({
+import { typeCheckMessages } from './typeCheckMessages';
+
+const messages = typeCheckMessages({
     TR_404_DESCRIPTION: {
         defaultMessage: 'Looks like a wrong URL or broken link.',
         id: 'TR_404_DESCRIPTION',
@@ -9001,7 +9003,7 @@ export default defineMessages({
         id: 'TR_STAKE_WHAT_IS_STAKING',
         defaultMessage: 'What is staking?',
     },
-    TR_STAKE_NETWORK_STAKING_IS: {
+    TR_STAKE_STAKING_IS: {
         id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
             "Staking involves temporarily locking your {symbol} to support the blockchain's operation. In return, you'll earn additional {symbol} as a reward.",
@@ -9958,3 +9960,5 @@ export default defineMessages({
         defaultMessage: 'Requested networks',
     },
 });
+
+export default defineMessages(messages);

@@ -12,6 +12,6 @@ type MessageDescriptor<K extends string> = {
 /**
 Checks whether id corresponds to the property name. Otherwise, text is not translated. Returns the same value that was passed in.
  */
-export const defineMessagesWithTypeCheck = <Key extends string>(messages: {
+export const typeCheckMessages = <Key extends string>(messages: {
     [K in Key]: MessageDescriptor<K>;
 }) => messages;
