@@ -1,5 +1,6 @@
 import { Form } from '@suite-native/forms';
 import {
+    act,
     fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
@@ -52,6 +53,9 @@ describe('FiatCurrencyPicker', () => {
 
         fireEvent.press(getByLabelText('Select fiat currency'));
         fireEvent.press(getByText('USD'));
+
+        // wait for validators to run
+        await act(() => Promise.resolve());
 
         expect(getByLabelText('Select fiat currency')).toHaveTextContent(/USD/);
     });
