@@ -107,6 +107,7 @@ export interface InvokeChannels {
     'tray/change-settings': (payload: TraySettings) => InvokeResult;
     'tray/get-settings': () => InvokeResult<TraySettings>;
     'connect-popup/enabled': () => boolean;
+    'connect-popup/set-enabled': (enabled: boolean) => void;
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
     'system/open-settings': (settings: string) => InvokeResult;
@@ -172,6 +173,7 @@ export interface DesktopApi {
     getTraySettings: DesktopApiInvoke<'tray/get-settings'>;
     // Connect popup
     connectPopupEnabled: DesktopApiInvoke<'connect-popup/enabled'>;
+    connectPopupSetEnabled: DesktopApiInvoke<'connect-popup/set-enabled'>;
     connectPopupReady: DesktopApiInvoke<'connect-popup/ready'>;
     connectPopupResponse: DesktopApiInvoke<'connect-popup/response'>;
     //system

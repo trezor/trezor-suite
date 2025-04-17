@@ -15,6 +15,7 @@ export class Store {
         torSettings: TorSettings;
         bridgeSettings: BridgeSettings;
         traySettings: TraySettings;
+        connectSettings: ConnectSettings;
     }>;
 
     private constructor() {
@@ -98,6 +99,16 @@ export class Store {
 
     public setTraySettings(traySettings: TraySettings) {
         this.store.set('traySettings', traySettings);
+    }
+
+    public getConnectSettings() {
+        return this.store.get('connectSettings', {
+            enableWs: false,
+        });
+    }
+
+    public setConnectSettings(connectSettings: ConnectSettings) {
+        this.store.set('connectSettings', connectSettings);
     }
 
     /** Deletes all items from the store. */

@@ -134,3 +134,7 @@ declare type BridgeSettings = {
 declare type TraySettings = {
     showOnTray: boolean;
 };
+
+declare type ConnectSettings = {
+    enableWs: boolean;
+};

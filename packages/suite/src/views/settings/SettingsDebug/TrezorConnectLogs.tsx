@@ -5,7 +5,7 @@ import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-export const TrezorConnect = () => {
+export const TrezorConnectLogs = () => {
     const showConnectLogs = useSelector(state => state.suite.settings.debug.showConnectLogs);
     const dispatch = useDispatch();
 

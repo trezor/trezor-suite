@@ -1,9 +1,9 @@
 /**
  * Local web server for handling requests to app
  */
-import { isDevEnv } from '@suite-common/suite-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 
+import { restartApp } from '../libs/app-utils';
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
 import { hasSwitch } from '../libs/process-switches';
@@ -13,7 +13,11 @@ import type { ModuleInitBackground } from './index';
 
 export const SERVICE_NAME = 'http-receiver';
 
-export const initBackground: ModuleInitBackground = ({ mainWindowProxy, mainThreadEmitter }) => {
+export const initBackground: ModuleInitBackground = ({
+    mainWindowProxy,
+    mainThreadEmitter,
+    store,
+}) => {
     const { logger } = global;
     let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
 
@@ -70,13 +74,20 @@ export const initBackground: ModuleInitBackground = ({ mainWindowProxy, mainThre
             }
         });
 
-        const connectPopupEnabled = hasSwitch('expose-connect-ws') || isDevEnv;
+        const connectPopupEnabled = () =>
+            hasSwitch('expose-connect-ws') || store.getConnectSettings().enableWs;
         ipcMain.handle('connect-popup/enabled', ipcEvent => {
             validateIpcMessage(ipcEvent);
 
-            return connectPopupEnabled;
+            return connectPopupEnabled();
         });
-        if (connectPopupEnabled) {
+        ipcMain.handle('connect-popup/set-enabled', (ipcEvent, enabled: boolean) => {
+            validateIpcMessage(ipcEvent);
+
+            store.setConnectSettings({ enableWs: enabled });
+            restartApp();
+        });
+        if (connectPopupEnabled()) {
             exposeConnectWs({ mainThreadEmitter, httpReceiver: receiver, mainWindowProxy });
         }
 

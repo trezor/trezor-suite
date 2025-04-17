@@ -22,7 +22,8 @@ import { Tor } from './Tor';
 import { TranslationMode } from './TranslationMode';
 import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
-import { TrezorConnect } from './TrezorConnect';
+import { TrezorConnectLogs } from './TrezorConnectLogs';
+import { TrezorConnectWS } from './TrezorConnectWS';
 import { TriggerHighlight } from './TriggerHighlight';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { WipeData } from './WipeData';
@@ -93,7 +94,8 @@ export const SettingsDebug = () => {
                 </SettingsSection>
             )}
             <SettingsSection title="TrezorConnect">
-                <TrezorConnect />
+                <TrezorConnectLogs />
+                {isDesktop() && <TrezorConnectWS />}
             </SettingsSection>
         </SettingsLayout>
     );

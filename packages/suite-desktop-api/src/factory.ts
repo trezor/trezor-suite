@@ -179,6 +179,13 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
 
         // Connect popup
         connectPopupEnabled: () => ipcRenderer.invoke('connect-popup/enabled'),
+        connectPopupSetEnabled: (enabled: boolean) => {
+            if (validation.isPrimitive('boolean', enabled)) {
+                ipcRenderer.invoke('connect-popup/set-enabled', enabled);
+            }
+
+            return Promise.resolve();
+        },
         connectPopupReady: () => ipcRenderer.invoke('connect-popup/ready'),
         connectPopupResponse: response => ipcRenderer.invoke('connect-popup/response', response),
 
