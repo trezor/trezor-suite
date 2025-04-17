@@ -8891,7 +8891,7 @@ export default defineMessages({
         id: 'TR_STAKE_WHAT_IS_STAKING',
         defaultMessage: 'What is staking?',
     },
-    TR_STAKE_NETWORK_STAKING_IS: {
+    TR_STAKE_STAKING_IS: {
         id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
             "Staking involves temporarily locking your {symbol} to support the blockchain's operation. In return, you'll earn additional {symbol} as a reward.",
@@ -9827,4 +9827,4 @@ export default defineMessages({
         id: 'TR_REQUESTED_NETWORKS',
         defaultMessage: 'Requested networks',
     },
-});
+} as const);
