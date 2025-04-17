@@ -19,7 +19,11 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         });
     });
 
-    test('Permissions - add and forget', async ({ settingsPage, connectModal, page }) => {
+    test('Permissions - add and forget', async ({
+        settingsPage,
+        connectPermissionsModal,
+        page,
+    }) => {
         await settingsPage.navigateTo('connect');
 
         await page.getByTestId('@settings/connect-apps/no-apps').waitFor({ state: 'visible' });
@@ -29,10 +33,12 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             coin: 'btc',
         });
 
-        await expect(connectModal.processParagraph).toHaveText('node');
-        await expect(connectModal.rememberCheckbox).toHaveText('Always allow for this app');
-        await connectModal.rememberCheckbox.click();
-        await connectModal.confirmButton.click();
+        await expect(connectPermissionsModal.processParagraph).toHaveText('node');
+        await expect(connectPermissionsModal.rememberCheckbox).toHaveText(
+            'Always allow for this app',
+        );
+        await connectPermissionsModal.rememberCheckbox.click();
+        await connectPermissionsModal.confirmButton.click();
         await page.getByTestId('@connect-address-confirmation/close-button').click();
 
         // permission is already saved, user won't be prompted again for this app
@@ -53,6 +59,6 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             path: "m/44'/0'/0'/0/0",
             coin: 'btc',
         });
-        await expect(connectModal.processParagraph).toHaveText('node');
+        await expect(connectPermissionsModal.processParagraph).toHaveText('node');
     });
 });

@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-export class ConnectPopupModal {
+export class ConnectPermissionsModal {
     readonly loadingHeader: Locator;
     readonly processParagraph: Locator;
     readonly rememberCheckbox: Locator;

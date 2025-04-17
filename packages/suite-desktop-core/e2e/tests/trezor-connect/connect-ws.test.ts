@@ -1,12 +1,12 @@
 import TrezorConnect from '@trezor/connect-web';
 
 import { expect, test } from '../../support/fixtures';
-import { ConnectPopupModal } from '../../support/pageObjects/connectPopupModal';
+import { ConnectPermissionsModal } from '../../support/pageObjects/connectPermissionsModal';
 
-const passThroughPermissions = async (connectModal: ConnectPopupModal) => {
-    await expect(connectModal.processParagraph).toHaveText('node');
-    await expect(connectModal.rememberCheckbox).toHaveText('Always allow for this app');
-    await connectModal.confirmButton.click();
+const passThroughPermissions = async (connectPermissionsModal: ConnectPermissionsModal) => {
+    await expect(connectPermissionsModal.processParagraph).toHaveText('node');
+    await expect(connectPermissionsModal.rememberCheckbox).toHaveText('Always allow for this app');
+    await connectPermissionsModal.confirmButton.click();
 };
 
 test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => {
@@ -26,14 +26,14 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         });
     });
 
-    test('TrezorConnect.getAddress', async ({ connectModal, trezorUserEnvLink }) => {
+    test('TrezorConnect.getAddress', async ({ connectPermissionsModal, trezorUserEnvLink }) => {
         const res = TrezorConnect.getAddress({
             path: "m/44'/0'/0'/0/0",
             coin: 'btc',
         });
 
-        await passThroughPermissions(connectModal);
-        await expect(connectModal.loadingHeader).toHaveText('Export Bitcoin address');
+        await passThroughPermissions(connectPermissionsModal);
+        await expect(connectPermissionsModal.loadingHeader).toHaveText('Export Bitcoin address');
 
         // export single address
         await trezorUserEnvLink.pressYes();
@@ -52,8 +52,10 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
                 },
             ],
         });
-        await connectModal.confirmButton.click();
-        await expect(connectModal.loadingHeader).toHaveText('Export multiple Bitcoin addresses');
+        await connectPermissionsModal.confirmButton.click();
+        await expect(connectPermissionsModal.loadingHeader).toHaveText(
+            'Export multiple Bitcoin addresses',
+        );
 
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.pressYes();
@@ -61,7 +63,10 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         expect(await resMultiple).toMatchObject({ success: true });
     });
 
-    test('TrezorConnect.ethereumSignTransaction', async ({ connectModal, trezorUserEnvLink }) => {
+    test('TrezorConnect.ethereumSignTransaction', async ({
+        connectPermissionsModal,
+        trezorUserEnvLink,
+    }) => {
         const res = TrezorConnect.ethereumSignTransaction({
             path: "m/44'/60'/0'/0/0",
             transaction: {
@@ -75,8 +80,8 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             },
         });
 
-        await passThroughPermissions(connectModal);
-        await expect(connectModal.loadingHeader).toHaveText('Sign Ethereum transaction');
+        await passThroughPermissions(connectPermissionsModal);
+        await expect(connectPermissionsModal.loadingHeader).toHaveText('Sign Ethereum transaction');
 
         // todo: add UI asserts for step 1
         await trezorUserEnvLink.swipeEmu('up');
@@ -87,14 +92,18 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         expect(await res).toMatchObject({ success: true });
     });
 
-    test('TrezorConnect.ethereumSignMessage', async ({ connectModal, trezorUserEnvLink, page }) => {
+    test('TrezorConnect.ethereumSignMessage', async ({
+        connectPermissionsModal,
+        trezorUserEnvLink,
+        page,
+    }) => {
         const res = TrezorConnect.ethereumSignMessage({
             path: "m/44'/60'/0'",
             message: 'example message',
         });
 
-        await passThroughPermissions(connectModal);
-        await expect(connectModal.loadingHeader).toHaveText('Sign Ethereum message');
+        await passThroughPermissions(connectPermissionsModal);
+        await expect(connectPermissionsModal.loadingHeader).toHaveText('Sign Ethereum message');
 
         const text = page.getByTestId('@sign-message-modal/message');
         await expect(text).toHaveText('example message');
