@@ -89,8 +89,7 @@ export const WalletBackupTutorialStep5 = ({
                     </Text>
                     {isCalloutButtonShown && (
                         <InlineAlertBox
-                            iconName={selectedType === 'shamir-single' ? 'checkCircle' : undefined}
-                            variant={selectedType === 'shamir-advanced' ? 'warning' : 'neutral'}
+                            variant={selectedType === 'shamir-advanced' ? 'warning' : 'success'}
                             buttonLabel={
                                 selectedType === 'shamir-advanced' ? (
                                     <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step5.backupOptions.shamir-advanced.calloutActionLabel" />
