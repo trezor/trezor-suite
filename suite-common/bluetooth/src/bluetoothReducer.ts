@@ -56,7 +56,7 @@ export type BluetoothAdapterStatus =
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
     adapterStatus: BluetoothAdapterStatus;
     scanStatus: BluetoothScanStatus;
-    nearbyDevices: T[]; // Must be sorted, newest last
+    nearbyDevices: null | T[]; // Must be sorted, newest last. Null = we haven't received first update yet
 
     // This will be persisted, those are devices we believed that are paired
     // (because we already successfully paired them in the Suite) in the Operating System
@@ -67,7 +67,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
     const initialState: BluetoothState<T> = {
         adapterStatus: 'unknown',
         scanStatus: 'idle',
-        nearbyDevices: [] as T[],
+        nearbyDevices: null,
         knownDevices: [] as T[],
     };
 
@@ -95,9 +95,11 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(
                 bluetoothActions.updateDeviceConnectionStatus,
                 (state, { payload: { deviceId, connectionStatus } }) => {
-                    state.nearbyDevices = state.nearbyDevices.map(it =>
-                        it.id === deviceId ? { ...it, connectionStatus } : it,
-                    ) as Draft<T>[];
+                    if (state.nearbyDevices !== null) {
+                        state.nearbyDevices = state.nearbyDevices.map(it =>
+                            it.id === deviceId ? { ...it, connectionStatus } : it,
+                        ) as Draft<T>[];
+                    }
 
                     state.knownDevices = state.knownDevices.map(it =>
                         it.id === deviceId ? { ...it, connectionStatus } : it,
@@ -107,9 +109,11 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(
                 bluetoothActions.connectDeviceEventAction,
                 (state, { payload: { device } }) => {
-                    state.nearbyDevices = state.nearbyDevices.map(it =>
-                        it.id === device.id ? device : it,
-                    ) as Draft<T>[];
+                    if (state.nearbyDevices !== null) {
+                        state.nearbyDevices = state.nearbyDevices.map(it =>
+                            it.id === device.id ? device : it,
+                        ) as Draft<T>[];
+                    }
 
                     state.knownDevices = state.knownDevices.map(it =>
                         it.id === device.id ? device : it,
@@ -132,9 +136,11 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             })
             .addCase(deviceActions.deviceDisconnect, (state, { payload: { bluetoothProps } }) => {
                 if (bluetoothProps !== undefined) {
-                    state.nearbyDevices = state.nearbyDevices.filter(
-                        it => it.id !== bluetoothProps.id,
-                    );
+                    if (state.nearbyDevices !== null) {
+                        state.nearbyDevices = state.nearbyDevices.filter(
+                            it => it.id !== bluetoothProps.id,
+                        );
+                    }
                 }
             })
             .addCase(
@@ -151,7 +157,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                         return;
                     }
 
-                    const device = state.nearbyDevices.find(it => it.id === bluetoothProps.id);
+                    const device = state.nearbyDevices?.find(it => it.id === bluetoothProps.id);
 
                     if (device !== undefined) {
                         // Once device is fully connected, we save it to the list of known devices
