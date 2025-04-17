@@ -9956,6 +9956,10 @@ export default defineMessages({
         id: 'TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR',
         defaultMessage: 'Not the Trezor you’re looking for?',
     },
+    TR_BLUETOOTH_GHOST_DEVICE: {
+        id: 'TR_BLUETOOTH_GHOST_DEVICE',
+        defaultMessage: 'Trezor not found. Remove it and create a new connection.',
+    },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
         defaultMessage: 'Trezor Bridge will soon no longer be supported.',

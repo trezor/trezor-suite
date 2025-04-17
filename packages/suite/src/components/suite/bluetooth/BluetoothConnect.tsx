@@ -5,10 +5,12 @@ import {
     prepareSelectAllDevices,
     selectAdapterStatus,
     selectKnownDevices,
+    selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
 import { TimerId } from '@trezor/type-utils';
 
+import { BluetoothLoading } from './BluetoothLoading';
 import { BluetoothPairingPin } from './BluetoothPairingPin';
 import { BluetoothScanningList } from './BluetoothScanningList';
 import { BluetoothSelectedDevice } from './BluetoothSelectedDevice';
@@ -41,6 +43,7 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const allDevices = useSelector(selectAllDevices);
     const knownDevices = useSelector(selectKnownDevices);
+    const nearbyDevices = useSelector(selectNearbyDevices);
 
     const lasUpdatedBoundaryTimestamp =
         Date.now() / 1000 - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS;
@@ -168,6 +171,10 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
                 onCancel={handlePairingCancel}
             />
         );
+    }
+
+    if (nearbyDevices === null) {
+        return <BluetoothLoading />;
     }
 
     return (

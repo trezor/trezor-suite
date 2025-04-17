@@ -6,7 +6,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { Button, IconButton, NewModal, Row } from '@trezor/components';
+import { Banner, Button, Column, NewModal, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
@@ -38,10 +38,10 @@ const AreYouSureModal = ({ onYes, onNo }: AreYouSureModalProps) => (
         bottomContent={
             <>
                 <Button variant="primary" onClick={onYes}>
-                    Yes
+                    <Translation id="TR_CONFIRM" />
                 </Button>
                 <Button variant="tertiary" onClick={onNo}>
-                    No
+                    <Translation id="TR_CANCEL" />
                 </Button>
             </>
         }
@@ -66,7 +66,9 @@ export const BluetoothDeviceListItem = ({
     const dispatch = useDispatch();
 
     const nearbyDevices = useSelector(selectNearbyDevices);
-    const isNearbyDevice = nearbyDevices.find(nearbyDevice => nearbyDevice.id === device.id);
+    const isNearbyDevice = (nearbyDevices ?? []).find(
+        nearbyDevice => nearbyDevice.id === device.id,
+    );
     const knownDevices = useSelector(selectKnownDevices);
     const isKnownDevice = knownDevices.find(knownDevice => knownDevice.id === device.id);
 
@@ -111,36 +113,50 @@ export const BluetoothDeviceListItem = ({
 
     const buttonLabel = labelMap[device.connectionStatus.type];
 
+    const isGhostDevice = isKnownDevice && !isNearbyDevice;
+
     return (
         <>
             {isDeleting && (
                 <AreYouSureModal onYes={handleDelete} onNo={() => setIsDeleting(false)} />
             )}
-            <Row gap={spacings.md} alignItems="center">
-                <BluetoothDeviceComponent device={device} flex="1" />
-                {buttonLabel !== null ? (
-                    <Row gap={spacings.xs}>
-                        {isKnownDevice && !isNearbyDevice ? (
-                            <IconButton
-                                variant="tertiary"
-                                icon="trash"
-                                onClick={() => setIsDeleting(true)}
-                                size="small"
-                            />
-                        ) : null}
-                        <Button
-                            variant="primary"
-                            size="small"
-                            margin={{ vertical: spacings.xxs }}
-                            isDisabled={isDisabled || handleOnclick === undefined}
-                            isLoading={isLoading || isGlobalLoading}
-                            onClick={handleOnClick}
-                        >
-                            <Translation id={buttonLabel} />
-                        </Button>
-                    </Row>
-                ) : null}
-            </Row>
+            <Column gap={spacings.xs}>
+                <Row gap={spacings.md} alignItems="center">
+                    <BluetoothDeviceComponent device={device} flex="1" />
+                    {buttonLabel !== null ? (
+                        <Row gap={spacings.xs}>
+                            {isGhostDevice ? (
+                                <Button
+                                    variant="warning"
+                                    size="small"
+                                    margin={{ vertical: spacings.xxs }}
+                                    isDisabled={isDisabled || handleOnclick === undefined}
+                                    isLoading={isLoading || isGlobalLoading}
+                                    onClick={() => setIsDeleting(true)}
+                                >
+                                    <Translation id="TR_REMOVE" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="primary"
+                                    size="small"
+                                    margin={{ vertical: spacings.xxs }}
+                                    isDisabled={isDisabled || handleOnclick === undefined}
+                                    isLoading={isLoading || isGlobalLoading}
+                                    onClick={handleOnClick}
+                                >
+                                    <Translation id={buttonLabel} />
+                                </Button>
+                            )}
+                        </Row>
+                    ) : null}
+                </Row>
+                {isGhostDevice && (
+                    <Banner variant="warning">
+                        <Translation id="TR_BLUETOOTH_GHOST_DEVICE" />
+                    </Banner>
+                )}
+            </Column>
         </>
     );
 };
