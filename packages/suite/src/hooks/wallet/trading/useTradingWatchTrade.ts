@@ -106,6 +106,13 @@ export const useTradingWatchTrade = <T extends TradingType>({
                         refreshCount,
                     }),
                 );
+
+                if (
+                    trade.data.status &&
+                    tradeFinalStatuses[trade.tradeType].includes(trade.data.status)
+                ) {
+                    removeDraft(account.key);
+                }
             } else {
                 tradingWatchTrade<T>({ trade, account, refreshCount, dispatch, removeDraft });
             }

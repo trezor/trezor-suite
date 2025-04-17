@@ -34,7 +34,7 @@ const watchTradeData = async <T extends TradingType>({
 }: WatchTradeDataProps): Promise<WatchTradeDataResultProps<T> | undefined> => {
     const response = await invityAPI.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
 
-    if (!response || response?.status === trade.data.status) return;
+    if (!response || !response.status || response.status === trade.data.status) return;
 
     const tradeData = {
         ...trade.data,
