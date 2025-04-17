@@ -6,7 +6,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { Banner, Button, Column, NewModal, Row } from '@trezor/components';
+import { Banner, Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
@@ -28,28 +28,6 @@ const labelMap: Record<DeviceBluetoothConnectionStatusType, TranslationKey | nul
 const LOADING_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'connecting'];
 const DISABLED_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'connecting'];
 
-type AreYouSureModalProps = {
-    onYes: () => void;
-    onNo: () => void;
-};
-
-const AreYouSureModal = ({ onYes, onNo }: AreYouSureModalProps) => (
-    <NewModal
-        bottomContent={
-            <>
-                <Button variant="primary" onClick={onYes}>
-                    <Translation id="TR_CONFIRM" />
-                </Button>
-                <Button variant="tertiary" onClick={onNo}>
-                    <Translation id="TR_CANCEL" />
-                </Button>
-            </>
-        }
-    >
-        Are you sure?
-    </NewModal>
-);
-
 type BluetoothDeviceItemProps = {
     device: BluetoothDevice;
     onConnect: (deviceId: string) => Promise<void>;
@@ -61,8 +39,6 @@ export const BluetoothDeviceListItem = ({
     onConnect,
     onError,
 }: BluetoothDeviceItemProps) => {
-    const [isDeleting, setIsDeleting] = useState(false);
-
     const dispatch = useDispatch();
 
     const nearbyDevices = useSelector(selectNearbyDevices);
@@ -108,7 +84,6 @@ export const BluetoothDeviceListItem = ({
 
     const handleDelete = () => {
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
-        setIsDeleting(false);
     };
 
     const buttonLabel = labelMap[device.connectionStatus.type];
@@ -117,9 +92,6 @@ export const BluetoothDeviceListItem = ({
 
     return (
         <>
-            {isDeleting && (
-                <AreYouSureModal onYes={handleDelete} onNo={() => setIsDeleting(false)} />
-            )}
             <Column gap={spacings.xs}>
                 <Row gap={spacings.md} alignItems="center">
                     <BluetoothDeviceComponent device={device} flex="1" />
@@ -132,7 +104,7 @@ export const BluetoothDeviceListItem = ({
                                     margin={{ vertical: spacings.xxs }}
                                     isDisabled={isDisabled || handleOnclick === undefined}
                                     isLoading={isLoading || isGlobalLoading}
-                                    onClick={() => setIsDeleting(true)}
+                                    onClick={handleDelete}
                                 >
                                     <Translation id="TR_REMOVE" />
                                 </Button>
