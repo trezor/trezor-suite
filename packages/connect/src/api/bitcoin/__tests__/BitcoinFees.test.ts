@@ -37,7 +37,7 @@ describe('api/bitcoin/Fees', () => {
         ); // preloaded values from coins.json
 
         const smartFeeLevels = await feeLevels.load(backend);
-        expect(smartFeeLevels?.map(l => l.feePerUnit)).toEqual(['10', '10', '8.86', '4.69']);
+        expect(smartFeeLevels?.map(l => l.feePerUnit)).toEqual(['10', '10', '9.62', '8.86']);
 
         backend.disconnect();
         spy.mockClear();
@@ -66,7 +66,7 @@ describe('api/bitcoin/Fees', () => {
         const feeLevels = new BitcoinFeeLevels(coinInfo);
 
         const smartFeeLevels = await feeLevels.load(backend);
-        expect(smartFeeLevels?.map(l => l.feePerUnit)).toEqual(['10', '8.86', '3.18', '1']);
+        expect(smartFeeLevels?.map(l => l.feePerUnit)).toEqual(['10', '9.24', '7.73', '3.18']);
 
         backend.disconnect();
         spy.mockClear();

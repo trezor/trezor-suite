@@ -9,9 +9,10 @@ const BLOCKS_FOR_FEE_LEVEL: Record<string, Record<string, number>> = {
     btc: {
         // blocktime ~ 600sec.
         high: 1,
-        normal: 6,
-        economy: 36,
-        low: 144,
+        normal: 3,
+        economy: 12,
+        // low fee is offerred by Connect, though Suite only uses the first three levels (see feesThunks.ts)
+        low: 36,
     },
 };
 
