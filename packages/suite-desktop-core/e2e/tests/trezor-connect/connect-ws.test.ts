@@ -26,17 +26,25 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         });
     });
 
-    test('TrezorConnect.getAddress', async ({ connectPermissionsModal, trezorUserEnvLink }) => {
+    test('TrezorConnect.getAddress', async ({
+        page,
+        connectPermissionsModal,
+        trezorUserEnvLink,
+    }) => {
         const res = TrezorConnect.getAddress({
             path: "m/44'/0'/0'/0/0",
             coin: 'btc',
         });
 
         await passThroughPermissions(connectPermissionsModal);
-        await expect(connectPermissionsModal.loadingHeader).toHaveText('Export Bitcoin address');
 
         // export single address
+        await expect(connectPermissionsModal.loadingHeader).toHaveText('Export Bitcoin address');
+        await page.getByTestId('@connect-address-confirmation/verify-button').click();
+        expect(page.getByTestId('@connect-address-confirmation/verify-button')).toBeDisabled();
         await trezorUserEnvLink.pressYes();
+        // todo: verified badge appears
+
         expect(await res).toMatchObject({ success: true });
 
         // export multiple addresses
@@ -56,9 +64,6 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await expect(connectPermissionsModal.loadingHeader).toHaveText(
             'Export multiple Bitcoin addresses',
         );
-
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
 
         expect(await resMultiple).toMatchObject({ success: true });
     });
