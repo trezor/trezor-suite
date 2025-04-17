@@ -15,7 +15,7 @@ export type ConnectPopupState = {
 };
 
 type ConnectPopupStateRootState = {
-    wallet: { connectPopup: ConnectPopupState };
+    connectPopup: ConnectPopupState;
 };
 
 type StorageActionPayload = {
@@ -121,10 +121,10 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
 );
 
 export const selectConnectPopupCall = (state: ConnectPopupStateRootState) =>
-    state.wallet.connectPopup.activeCall;
+    state.connectPopup.activeCall;
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.wallet.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
+    state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
 
 export const selectWalletConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.wallet.connectPopup.permissions.filter(p => p.type === CALL_SOURCE_WALLETCONNECT);
+    state.connectPopup.permissions.filter(p => p.type === CALL_SOURCE_WALLETCONNECT);

@@ -18,8 +18,8 @@ export type SelectedAccountRootStateWithTrading = SelectedAccountRootState & {
     wallet: {
         trading: TradingState;
         tradingNew: TradingNewState;
-        connectPopup: ConnectPopupState;
     };
+    connectPopup: ConnectPopupState;
 };
 
 export const initialState: State = {
@@ -70,7 +70,7 @@ export const selectAccountIncludingChosenInTrading = (
         return selectAccountByKey(state, modalAccountKeyNew) ?? undefined;
     }
 
-    const { activeCall } = state.wallet.connectPopup;
+    const { activeCall } = state.connectPopup;
     if (activeCall?.state === 'ongoing') {
         return selectAccountByKey(state, activeCall.selectedAccountKey) ?? undefined;
     }

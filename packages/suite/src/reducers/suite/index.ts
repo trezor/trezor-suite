@@ -1,8 +1,10 @@
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { logsSlice } from '@suite-common/logger';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
+import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -19,6 +21,8 @@ const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const device = prepareDeviceReducer(extraDependencies);
+const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
+const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
 export default {
     suite,
@@ -34,4 +38,6 @@ export default {
     messageSystem,
     guide,
     protocol,
+    connectPopup: connectPopupReducer,
+    walletConnect: walletConnectReducer,
 };

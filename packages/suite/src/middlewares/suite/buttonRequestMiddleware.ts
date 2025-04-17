@@ -44,8 +44,8 @@ const buttonRequest =
             const {
                 wallet: {
                     selectedAccount: { account },
-                    connectPopup: { activeCall },
                 },
+                connectPopup: { activeCall },
                 router: { route },
             } = api.getState();
             const isInSuite =

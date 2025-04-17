@@ -9,7 +9,7 @@ export type WalletConnectState = {
 };
 
 type WalletConnectStateRootState = {
-    wallet: { walletConnect: WalletConnectState };
+    walletConnect: WalletConnectState;
 };
 
 const walletConnectInitialState: WalletConnectState = {
@@ -48,11 +48,10 @@ export const prepareWalletConnectReducer = createReducerWithExtraDeps(
     },
 );
 
-export const selectSessions = (state: WalletConnectStateRootState) =>
-    state.wallet.walletConnect.sessions;
+export const selectSessions = (state: WalletConnectStateRootState) => state.walletConnect.sessions;
 
 export const selectSessionByTopic = (state: WalletConnectStateRootState, topic: string) =>
-    state.wallet.walletConnect.sessions.find(session => session.topic === topic);
+    state.walletConnect.sessions.find(session => session.topic === topic);
 
 export const selectPendingProposal = (state: WalletConnectStateRootState) =>
-    state.wallet.walletConnect.pendingProposal;
+    state.walletConnect.pendingProposal;

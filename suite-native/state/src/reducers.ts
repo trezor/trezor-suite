@@ -98,8 +98,6 @@ export const prepareRootReducers = async () => {
         fees: feesReducer,
         stake: stakeReducer,
         tradingNew: tradingPersistedReducer,
-        connectPopup: connectPopupReducer,
-        walletConnect: walletConnectReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({
@@ -229,6 +227,8 @@ export const prepareRootReducers = async () => {
             discoveryConfig: discoveryConfigPersistedReducer,
             messageSystem: messageSystemPersistedReducer,
             tokenDefinitions: tokenDefinitionsReducer,
+            connectPopup: connectPopupReducer,
+            walletConnect: walletConnectReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

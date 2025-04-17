@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 
-import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareTradingReducer } from '@suite-common/trading';
 import {
     feesReducer,
@@ -12,7 +11,6 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
-import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -33,8 +31,6 @@ export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 export const stakeReducer = prepareStakeReducer(extraDependencies);
 export const sendFormReducer = prepareSendFormReducer(extraDependencies);
-export const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
-export const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 export const tradingNewReducer = prepareTradingReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
@@ -56,8 +52,6 @@ const WalletReducers = combineReducers({
     cardanoStaking: cardanoStakingReducer,
     coinjoin: coinjoinReducer,
     stake: stakeReducer,
-    connectPopup: connectPopupReducer,
-    walletConnect: walletConnectReducer,
 });
 
 export default WalletReducers;
