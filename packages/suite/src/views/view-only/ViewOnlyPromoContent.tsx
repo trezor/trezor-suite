@@ -27,8 +27,7 @@ import { PriceChartLine } from './images/PriceChartLine';
 import { setFlag } from '../../actions/suite/suiteActions';
 import { FormattedCryptoAmount, Translation } from '../../components/suite';
 import { useDispatch, useSelector } from '../../hooks/suite';
-import { DeviceConnectionText } from '../suite/SwitchDevice/DeviceItem/DeviceConnectionText';
-import { DeviceDetail } from '../suite/SwitchDevice/DeviceItem/DeviceDetail';
+import { SmallDeviceItem } from '../suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 
 const Callout = styled.div`
     display: flex;
@@ -58,10 +57,6 @@ const DeviceImage = styled(Image)`
     object-fit: contain;
 `;
 
-const SmallDeviceImage = styled(DeviceImage)`
-    width: 18px;
-`;
-
 const LargeDeviceImage = styled(DeviceImage)`
     width: 93px;
 `;
@@ -78,14 +73,6 @@ const LargeDeviceImageContainer = styled.div`
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: ${spacingsPx.zero} ${spacingsPx.lg} ${spacingsPx.sm};
     }
-`;
-
-const DeviceItem = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: ${spacingsPx.xs};
-    padding: ${spacingsPx.xs};
-    align-items: center;
 `;
 
 const StyledGrayTop = styled.div<{ $elevation: Elevation }>`
@@ -162,18 +149,8 @@ const Top = () => {
             <ElevationContext baseElevation={elevation}>
                 <MacWindow>
                     <WindowGrayTop>
-                        <DeviceItem>
-                            <SmallDeviceImage
-                                alt="Trezor"
-                                image={`TREZOR_${selectedDeviceModelInternal}`}
-                            />
-
-                            <DeviceDetail label="My Trezor">
-                                <DeviceConnectionText icon="link" variant="primary">
-                                    <Translation id="TR_CONNECTED" />
-                                </DeviceConnectionText>
-                            </DeviceDetail>
-                        </DeviceItem>
+                        {/* Use forceAlternativeDeviceLabel to indicate to the user, that this is just an example, and not theirs actual Trezor */}
+                        <SmallDeviceItem forceAlternativeDeviceLabel="My Trezor" />
                     </WindowGrayTop>
                     <WindowChart>
                         <ChartText>

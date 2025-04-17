@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
 import { Button, variables } from '@trezor/components';
-import { TrezorLogo } from '@trezor/product-components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
@@ -16,6 +15,7 @@ import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
+import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
 import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 
@@ -132,7 +132,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                             <ContentWrapper id="layout-scroll">
                                 <Header>
                                     <LogoHeaderRow>
-                                        <TrezorLogo type="suite" width="128px" />
+                                        <SmallDeviceItem />
 
                                         <Button
                                             variant="tertiary"
