@@ -12,7 +12,7 @@ import {
     selectIsDeviceDiscoveryActive,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { HStack, InlineAlertBoxProps, Text, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { deviceModelToIconName } from '@suite-native/icons';
@@ -75,7 +75,7 @@ export const DeviceFirmwareCard = () => {
         ? 'firmware.typeBitcoinOnly'
         : 'firmware.typeUniversal';
 
-    const firmwareUpdateProps = (() => {
+    const firmwareUpdateProps = ((): InlineAlertBoxProps | undefined => {
         if (!isFirmwareUpdateEnabled || !isDeviceBackedUp) {
             return undefined;
         }
@@ -92,19 +92,14 @@ export const DeviceFirmwareCard = () => {
                         />
                     ),
                     variant: 'info',
-                    rightButton: (
-                        <Button
-                            colorScheme="blueBold"
-                            size="small"
-                            onPress={() => {
-                                navigation.navigate(DeviceStackRoutes.ConfirmFirmwareUpdate);
-                            }}
-                            isDisabled={isDiscoveryRunning}
-                            isLoading={isDiscoveryRunning}
-                        >
-                            <Translation id="firmware.updateCard.updateButton" />
-                        </Button>
-                    ),
+                    buttonLabel: <Translation id="firmware.updateCard.updateButton" />,
+                    onButtonPress: () => {
+                        navigation.navigate(DeviceStackRoutes.ConfirmFirmwareUpdate);
+                    },
+                    buttonProps: {
+                        isDisabled: isDiscoveryRunning,
+                        isLoading: isDiscoveryRunning,
+                    },
                 } as const;
             }
 
