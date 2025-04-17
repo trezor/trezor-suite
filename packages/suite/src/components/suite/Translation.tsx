@@ -10,7 +10,8 @@ import {
 // It's little hacky by this will be solved when PR for refactor intl will be merged.
 import messages from '../../support/messages';
 
-export type TranslationKey = keyof typeof messages;
+// Must be based on id, not key of the message object, otherwise the translation is not displayed if the key doesn't match the id.
+export type TranslationKey = (typeof messages)[keyof typeof messages]['id'];
 
 type OwnProps = {
     isNested?: boolean;
@@ -34,22 +35,11 @@ export const Translation = (props: MsgType) => {
         values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} isNested /> : maybeMsg;
     });
 
-    // prevent runtime errors
-    if (
-        !props.defaultMessage &&
-        Object.prototype.hasOwnProperty.call(props, 'id') &&
-        !messages[props.id]
-    ) {
-        return <>{`Unknown translation id: ${props.id}`}</>;
-    }
-
-    const defaultTagName = props.isNested ? undefined : 'span';
-
     return (
         <FormattedMessage
             id={props.id}
-            tagName={defaultTagName}
-            defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
+            tagName={props.isNested ? undefined : 'span'}
+            defaultMessage={props.defaultMessage}
             // pass undefined to a 'values' prop in case of an empty values object
             values={Object.keys(values).length === 0 ? undefined : values}
         />

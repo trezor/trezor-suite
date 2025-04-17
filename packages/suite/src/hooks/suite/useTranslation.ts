@@ -16,8 +16,9 @@ export const useTranslation = () => {
 
     const translationString = useCallback<TranslationFunction>(
         (id, values) => {
-            if (id && messages[id]) {
-                return intl.formatMessage(messages[id], values);
+            const message = Object.values(messages).find(message => message.id === id);
+            if (message) {
+                return intl.formatMessage(message, values);
             }
 
             return `Unknown translation id: ${id}`;
