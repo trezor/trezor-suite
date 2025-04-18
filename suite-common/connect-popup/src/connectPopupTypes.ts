@@ -12,22 +12,28 @@ export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
 export const CALL_SOURCE_DEEPLINK = 'deeplink';
 
 export type ConnectSerializedError = { error: string; code: ErrorCode };
+export type ConnectProcessInfo = {
+    name: string;
+    fullPath: string;
+    icon?: string;
+    warning: boolean;
+};
 export type ConnectCallSource = {
     origin: string;
 } & (
     | {
           type: typeof CALL_SOURCE_DESKTOP_WS;
-          processName: string;
+          process: ConnectProcessInfo;
           manifest: ManifestPartial;
       }
     | {
           type: typeof CALL_SOURCE_WALLETCONNECT;
-          processName?: undefined;
+          process?: undefined;
           manifest: ManifestPartial;
       }
     | {
           type: typeof CALL_SOURCE_DEEPLINK;
-          processName?: undefined;
+          process?: undefined;
           manifest?: undefined;
       }
 );

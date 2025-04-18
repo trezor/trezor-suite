@@ -17,7 +17,11 @@ export const connectPopupDesktopInitThunk = createThunk(
                         payload: params.payload,
                         source: {
                             type: CALL_SOURCE_DESKTOP_WS,
-                            processName: params.processName ?? 'Unknown',
+                            process: params.process ?? {
+                                name: 'Unknown',
+                                fullPath: 'Unknown',
+                                warning: true,
+                            },
                             origin: params.origin,
                             manifest: params.manifest,
                         },

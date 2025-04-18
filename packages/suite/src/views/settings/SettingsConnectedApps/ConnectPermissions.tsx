@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
-import { Badge, Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
+import { Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const PermissionsList = styled.ul`
@@ -78,9 +79,8 @@ export const ConnectPermissions = () => {
                                 ) : (
                                     <Text>{app.origin}</Text>
                                 )}
-                                <Badge variant="tertiary" icon="appWindow">
-                                    {app.processName}
-                                </Badge>
+
+                                {app.process && <ConnectProcessLabel process={app.process} />}
                             </Row>
                             <Text variant="tertiary">
                                 <PermissionsList>

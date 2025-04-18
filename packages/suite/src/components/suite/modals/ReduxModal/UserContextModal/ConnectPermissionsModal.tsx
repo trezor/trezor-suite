@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
-    Badge,
     Card,
     Checkbox,
     Column,
@@ -18,6 +17,7 @@ import { ERRORS } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
@@ -90,13 +90,12 @@ export const ConnectPermissionsModal = () => {
                                     <Text>{source.origin}</Text>
                                 )}
                             </Row>
-                            <Row gap={spacings.sm}>
-                                {source.processName && (
-                                    <Badge variant="tertiary" icon="appWindow">
-                                        <Text data-testid="@connect-popup-modal/paragraph-process">
-                                            {source.processName}
-                                        </Text>
-                                    </Badge>
+                            <Row>
+                                {source.process && (
+                                    <ConnectProcessLabel
+                                        process={source.process}
+                                        data-testid="@connect-popup-modal/paragraph-process"
+                                    />
                                 )}
                             </Row>
                         </Column>

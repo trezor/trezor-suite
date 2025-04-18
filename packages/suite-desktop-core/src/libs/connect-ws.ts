@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { ipcMain, nativeImage } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
@@ -10,12 +10,14 @@ import {
     PopupHandshake,
     parseConnectSettings,
 } from '@trezor/connect';
+import { isMacOs, isWindows } from '@trezor/env-utils';
 import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { Deferred, createDeferred, resolveAfter } from '@trezor/utils';
 
 import { createHttpReceiver } from './http-receiver';
 import { Dependencies } from '../modules';
+import { app } from '../typed-electron';
 
 const LOG_PREFIX = 'connect-ws';
 
@@ -56,6 +58,32 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     }
 
     return false;
+};
+
+export const getProcessIcon = async (path: string) => {
+    try {
+        const iconDim = { width: 48, height: 48 };
+        if (isWindows()) {
+            const icon = await app.getFileIcon(path, {
+                size: 'normal',
+            });
+
+            if (icon.isEmpty()) {
+                return undefined;
+            }
+
+            return icon.resize(iconDim).toDataURL();
+        } else if (isMacOs()) {
+            const icon = await nativeImage.createThumbnailFromPath(path, iconDim);
+            if (icon.isEmpty()) {
+                return undefined;
+            }
+
+            return icon.toDataURL();
+        }
+    } catch (error) {
+        logger.warn(LOG_PREFIX, 'Failed to get icon of process - ' + error);
+    }
 };
 
 export const exposeConnectWs = ({
@@ -123,7 +151,12 @@ export const exposeConnectWs = ({
                 return;
             }
             if (message.type === POPUP.HANDSHAKE) {
-                processOnPort = await findProcessFromIncomingPort(port);
+                const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
+                processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
+                    logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+
+                    return undefined;
+                });
                 settings = parseConnectSettings(message.payload.settings);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
@@ -173,7 +206,12 @@ export const exposeConnectWs = ({
                     method,
                     payload: rest,
                     origin,
-                    processName: processOnPort?.name,
+                    process: {
+                        name: processOnPort.name,
+                        fullPath: processOnPort.fullPath,
+                        warning: !!processOnPort.warning,
+                        icon: await getProcessIcon(processOnPort.fullPath),
+                    },
                     manifest: {
                         appName: settings.manifest.appName,
                         appIcon: settings.manifest.appIcon,
@@ -191,6 +229,12 @@ export const exposeConnectWs = ({
                 );
             }
         });
+        ws.on('close', () => {
+            logger.info(LOG_PREFIX, 'Connection closed');
+        });
+    });
+    wss.on('close', () => {
+        logger.info(LOG_PREFIX, 'Websocket server closed');
     });
 
     httpReceiver.server.on('upgrade', (request, socket, head) => {

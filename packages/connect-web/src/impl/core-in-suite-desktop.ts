@@ -70,7 +70,8 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
                     },
                 },
                 {
-                    timeout: 1000,
+                    // can take a while on slower machines due to loading process info
+                    timeout: 3000,
                 },
             );
 

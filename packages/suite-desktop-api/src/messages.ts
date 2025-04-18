@@ -132,7 +132,12 @@ export type ConnectPopupCall = {
     id: string;
     method: string;
     payload: any;
-    processName?: string;
+    process?: {
+        name: string;
+        warning: boolean;
+        fullPath: string;
+        icon?: string;
+    };
     origin: string;
     manifest: {
         appName: string;
