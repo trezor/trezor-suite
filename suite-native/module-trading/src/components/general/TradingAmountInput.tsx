@@ -13,6 +13,7 @@ export type TradingAmountInputProps = {
 export const INPUT_MIN_WIDTH = 60;
 export const INPUT_HEIGHT = 42;
 
+// TODO test coverage for color
 const inputStyle = prepareNativeStyle<{ hasError: boolean }>(
     ({ colors, typography }, { hasError }) => ({
         ...typography.body,
@@ -32,15 +33,17 @@ export const TradingAmountInput = ({
     ...inputProps
 }: TradingAmountInputProps) => {
     const { applyStyle, utils } = useNativeStyles();
-    const form = useTradingBuyFormContext();
-    const { value, onChange, onBlur, hasError } = useField({ name });
+    const { getValues, setValue } = useTradingBuyFormContext();
+    // do not use `value` from `useField` here, because it does not work properly with `undefined`
+    const value = getValues(name);
+    const { onChange, onBlur, hasError } = useField({ name });
 
     const setFocusedValue = () => {
-        form.setValue('focusedValue', name);
+        setValue('focusedValue', name);
     };
 
     const clearFocusedValue = () => {
-        form.setValue('focusedValue', undefined);
+        setValue('focusedValue', undefined);
     };
 
     const handleTextChange = (text: string) => {

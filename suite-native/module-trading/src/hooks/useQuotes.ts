@@ -6,13 +6,14 @@ import {
     HandleRequestThunkProps,
     TradingRootState,
     buyThunks,
+    selectTradingBuyQuotes,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
 import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { useDebounce } from '@trezor/react-utils';
 
-import { clearBuyState } from '../tradingSlice';
+import { clearBuyState, clearQuotesAndQuotesRequest } from '../tradingSlice';
 import { TradingBuyForm } from '../types';
 import { useReloadTimer } from './useReloadTimer';
 import { tradingBuyFormToTradingBuyFormProps } from '../utils/quotesUtils';
@@ -82,12 +83,47 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
     };
 };
 
+const useQuotesInvalidator = (
+    isFormValid: boolean,
+    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    debounce: ReturnType<typeof useDebounce>,
+) => {
+    const dispatch = useDispatch();
+    const quotes = useSelector(selectTradingBuyQuotes);
+
+    const shouldInvalidateQuotes = !isFormValid && quotes.length > 0;
+
+    useEffect(() => {
+        if (shouldInvalidateQuotes) {
+            if (quotesPromiseRef.current?.abort) {
+                quotesPromiseRef.current.abort('Invalidating quotes');
+            }
+            // make sure that no debounced quotes request is pending
+            debounce(() => {});
+
+            dispatch(clearQuotesAndQuotesRequest());
+        }
+    }, [shouldInvalidateQuotes, quotesPromiseRef, dispatch, debounce]);
+
+    useEffect(
+        () => () => {
+            if (quotesPromiseRef.current?.abort) {
+                quotesPromiseRef.current.abort('Component unmounted');
+            }
+            dispatch(clearBuyState());
+        },
+        [dispatch, quotesPromiseRef],
+    );
+};
+
 export const useQuotes = (form: TradingBuyForm) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const promiseRef = useRef<PromiseType | undefined>(undefined);
+
     const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchQuotes(form);
     const { timer, shouldReload } = useReloadTimer(isFetchAllowed);
+
     const asset = form.watch('asset');
     const symbol = getSelectedSymbolFromBuyForm(form);
     const shouldSendInSats = useSelector((state: SettingsSliceRootState) =>
@@ -96,6 +132,8 @@ export const useQuotes = (form: TradingBuyForm) => {
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, asset?.cryptoId),
     );
+
+    useQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
 
     if (isFetchAllowed && (shouldFetchQuotes || shouldReload)) {
         if (promiseRef.current?.abort) {
@@ -116,16 +154,6 @@ export const useQuotes = (form: TradingBuyForm) => {
             promiseRef.current = dispatch(buyThunks.handleRequestThunk(payload));
         });
     }
-
-    useEffect(
-        () => () => {
-            if (promiseRef.current?.abort) {
-                promiseRef.current.abort('Component unmounted');
-            }
-            dispatch(clearBuyState());
-        },
-        [dispatch],
-    );
 
     return {
         timer,

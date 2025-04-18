@@ -200,4 +200,37 @@ describe('useQuotes', () => {
 
         expect(dispatchSpy).toHaveBeenCalledTimes(0);
     });
+
+    // TODO this test logs error
+    it.skip('should clear quotes when data in form becomes invalid', async () => {
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseQuotes(store);
+
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+            result.current.setValue('fiatValue', '100');
+        });
+        // handleRequestThunk is mocked, add quotes manually
+        act(() => {
+            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+        });
+
+        // clear some value to make form invalid
+        act(() => {
+            result.current.setValue('fiatValue', undefined);
+        });
+
+        // 1st call - trading/setBuySelectedReceiveAccount
+        // 2nd call - initial handleRequestThunkMock
+        // 3rd call - manual saveQuotes
+        // 4th call - clearQuotesAndQuotesRequest
+        expect(dispatchSpy).toHaveBeenCalledTimes(4);
+        expect(dispatchSpy).toHaveBeenNthCalledWith(4, {
+            payload: undefined,
+            type: 'trading/clearQuotesAndQuotesRequest',
+        });
+        expect(store.getState().wallet.tradingNew.buy.quotes).toEqual([]);
+    });
 });

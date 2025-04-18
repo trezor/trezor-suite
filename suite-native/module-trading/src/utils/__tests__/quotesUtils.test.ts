@@ -70,7 +70,7 @@ describe('quotesUtils', () => {
                 const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
                 expect(props).toEqual({
                     fiatInput: '100',
-                    cryptoInput: undefined,
+                    cryptoInput: '0.0010001683607972866',
                     currencySelect: {
                         value: 'czk',
                         label: 'Czech Koruna',

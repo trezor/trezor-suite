@@ -3,11 +3,13 @@ import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { tradingBuyActions } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
+import { Form, useField } from '@suite-native/forms';
 import {
     PreloadedState,
     TestStore,
     act,
     initStore,
+    renderHook,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { PROTO } from '@trezor/connect';
@@ -138,11 +140,14 @@ describe('useTradingBuyForm', () => {
     it('should clear cryptoValue when user edits fiatValue', async () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
+        const { result: fieldResult } = renderHook(() => useField({ name: 'fiatValue' }), {
+            wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
+        });
 
         act(() => {
             result.current.setValue('cryptoValue', '10');
             result.current.setValue('focusedValue', 'fiatValue');
-            result.current.setValue('fiatValue', '10');
+            fieldResult.current.onChange('10');
         });
 
         expect(result.current.getValues('cryptoValue')).toBeUndefined();
@@ -152,11 +157,14 @@ describe('useTradingBuyForm', () => {
     it('should clear fiatValue when user edits cryptoValue', async () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
+        const { result: fieldResult } = renderHook(() => useField({ name: 'cryptoValue' }), {
+            wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
+        });
 
         act(() => {
             result.current.setValue('fiatValue', '10');
             result.current.setValue('focusedValue', 'cryptoValue');
-            result.current.setValue('cryptoValue', '10');
+            fieldResult.current.onChange('10');
         });
 
         expect(result.current.getValues('fiatValue')).toBeUndefined();
@@ -166,10 +174,13 @@ describe('useTradingBuyForm', () => {
     it('should set amountInCrypto to true when user edits cryptoValue', async () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
+        const { result: fieldResult } = renderHook(() => useField({ name: 'cryptoValue' }), {
+            wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
+        });
 
         act(() => {
             result.current.setValue('focusedValue', 'cryptoValue');
-            result.current.setValue('cryptoValue', '10');
+            fieldResult.current.onChange('10');
         });
 
         expect(result.current.getValues('amountInCrypto')).toBe(true);
@@ -178,11 +189,14 @@ describe('useTradingBuyForm', () => {
     it('should set amountInCrypto to false when user edits fiatValue', async () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
+        const { result: fieldResult } = renderHook(() => useField({ name: 'fiatValue' }), {
+            wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
+        });
 
         act(() => {
             result.current.setValue('amountInCrypto', true);
             result.current.setValue('focusedValue', 'fiatValue');
-            result.current.setValue('fiatValue', '10');
+            fieldResult.current.onChange('10');
         });
 
         expect(result.current.getValues('amountInCrypto')).toBe(false);

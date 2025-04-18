@@ -61,6 +61,10 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.buy.selectedQuote = undefined;
             state.buy.amountLimits = undefined;
         },
+        clearQuotesAndQuotesRequest: state => {
+            state.buy.quotesRequest = undefined;
+            state.buy.quotes = [];
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
@@ -78,6 +82,7 @@ export const {
     removeTradeableAssetFromFavourites,
     setTradingEnvironment,
     clearBuyState,
+    clearQuotesAndQuotesRequest,
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
