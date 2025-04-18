@@ -1,6 +1,7 @@
 import { FormResponse } from 'invity-api';
 
 import { trezorLogo } from '@suite-common/suite-constants';
+import { TradingType } from '@suite-common/trading';
 import { xssFilters } from '@trezor/utils';
 
 type TemplateOptions = {
@@ -16,9 +17,11 @@ type RequestFormSourceReturnType = {
 
 type BuildTradingUrlProps = {
     actionType: 'quote' | 'trade';
-    tradeType: 'buy' | 'exchange ' | 'sell';
+    tradeType: TradingType;
     orderId: string | undefined;
 };
+
+export const TRADING_URL_SCHEME = 'suitetrading';
 
 export const applyHtmlTemplate = (
     content = 'You may now close this window.',
@@ -58,7 +61,7 @@ export const applyHtmlTemplate = (
             <body>
                 <img style="margin-bottom:40px" alt="trezor logo" src="data:image/png;base64, ${trezorLogo}" />
                 ${content}
-                <a style="margin-top:40px" href="${options?.backUrl ?? 'trezorsuitelite://'}">Go back</a>
+                <a style="margin-top:40px" href="${options?.backUrl ?? `${TRADING_URL_SCHEME}://`}">Go back</a>
             </body>
         </html>
     `;
@@ -115,4 +118,4 @@ export const getSourceForForm = (form: FormResponse['form'] | undefined, backUrl
 };
 
 export const buildTradingUrl = ({ actionType, tradeType, orderId }: BuildTradingUrlProps) =>
-    `suitetrading://${tradeType}/${actionType}${orderId ? `?orderId=${orderId}` : ''}`;
+    `${TRADING_URL_SCHEME}://${tradeType}/${actionType}${orderId ? `?orderId=${orderId}` : ''}`;

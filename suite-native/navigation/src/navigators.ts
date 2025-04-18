@@ -258,4 +258,5 @@ export type RootStackParamList = {
 export type TradingStackParamList = {
     [TradingStackRoutes.Trading]: undefined;
     [TradingStackRoutes.ReceiveAccounts]: { symbol: NetworkSymbol };
+    [TradingStackRoutes.TradeHistory]: { tradeType: 'buy' | 'sell' | 'exchange' };
 };

@@ -18,7 +18,7 @@ import { TestProps } from '../types';
 // and also because string needs to be rendered in the <Text> element anyway
 export type ButtonAccessory = IconName | ReactElement;
 
-export type ButtonSize = 'extraSmall' | 'small' | 'medium' | 'large';
+export type ButtonSize = 'tiny' | 'extraSmall' | 'small' | 'medium' | 'large';
 export type ButtonColorScheme =
     | 'primary'
     | 'primaryElevation0'
@@ -202,6 +202,11 @@ export const buttonSchemeToColorsMap = {
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
 export const buttonSizeToDimensionsMap = {
+    tiny: {
+        minHeight: 20,
+        paddingVertical: nativeSpacings.sp2,
+        paddingHorizontal: nativeSpacings.sp8,
+    },
     extraSmall: {
         minHeight: 36,
         paddingVertical: nativeSpacings.sp8,
@@ -225,6 +230,7 @@ export const buttonSizeToDimensionsMap = {
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
 
 const sizeToAdditionalSpacingMap = {
+    tiny: 0,
     extraSmall: 0,
     small: nativeSpacings.sp1,
     medium: nativeSpacings.sp2,
@@ -232,6 +238,7 @@ const sizeToAdditionalSpacingMap = {
 } as const satisfies Record<ButtonSize, number>;
 
 export const buttonToTextSizeMap = {
+    tiny: 'label',
     extraSmall: 'hint',
     small: 'hint',
     medium: 'body',
@@ -239,6 +246,7 @@ export const buttonToTextSizeMap = {
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 export const buttonToIconSizeMap = {
+    tiny: 'small',
     extraSmall: 'medium',
     small: 'medium',
     medium: 'mediumLarge',

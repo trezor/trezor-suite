@@ -44,7 +44,7 @@ describe('tradeFormUtils', () => {
             <body>
                 <img style="margin-bottom:40px" alt="trezor logo" src="data:image/png;base64, ${trezorLogo}" />
                 CONTENT_TO_EMBED
-                <a style="margin-top:40px" href="trezorsuitelite://">Go back</a>
+                <a style="margin-top:40px" href="suitetrading://">Go back</a>
             </body>
         </html>
     `);

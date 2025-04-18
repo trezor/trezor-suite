@@ -146,4 +146,5 @@ export enum SettingsStackRoutes {
 export enum TradingStackRoutes {
     Trading = 'Trading',
     ReceiveAccounts = 'ReceiveAccounts',
+    TradeHistory = 'TradeHistory',
 }

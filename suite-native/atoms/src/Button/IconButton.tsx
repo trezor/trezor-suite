@@ -29,6 +29,7 @@ type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'
     isDisabled?: boolean;
 };
 const sizeDimensions = {
+    tiny: 20,
     extraSmall: 36,
     small: 40,
     medium: 48,

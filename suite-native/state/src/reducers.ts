@@ -83,7 +83,7 @@ export const prepareRootReducers = async () => {
 
     const tradingPersistedReducer = await preparePersistReducer({
         reducer: tradingReducer,
-        persistedKeys: ['favouriteAssets'],
+        persistedKeys: ['favouriteAssets', 'trades'],
         key: 'trading',
         version: 1,
     });

@@ -89,17 +89,17 @@ type TradingCommonTransaction = {
     };
 };
 export type TradingTransactionBuy = TradingCommonTransaction & {
-    tradeType: 'buy';
+    tradeType: TradingBuyType;
     data: BuyTrade;
     receiveAccountKey: Account['key'] | undefined;
 };
 export type TradingTransactionSell = TradingCommonTransaction & {
-    tradeType: 'sell';
+    tradeType: TradingSellType;
     data: SellFiatTrade;
     sendAccountKey: Account['key'] | undefined;
 };
 export type TradingTransactionExchange = TradingCommonTransaction & {
-    tradeType: 'exchange';
+    tradeType: TradingExchangeType;
     data: ExchangeTrade;
     receiveAccountKey?: Account['key'];
     sendAccountKey: Account['key'] | undefined;
@@ -108,6 +108,8 @@ export type TradingTransaction =
     | TradingTransactionBuy
     | TradingTransactionSell
     | TradingTransactionExchange;
+
+export type TradingTransactionStatus = TradingTransaction['data']['status'];
 
 export type TradingCryptoSelectItemProps = {
     badge?: ReactNode;

@@ -23,7 +23,7 @@ export const TradingFooter = () => {
             </HStack>
             <Button
                 colorScheme="tertiaryElevation0"
-                size="extraSmall"
+                size="tiny"
                 onPress={openLinkToInvity}
                 viewRight="arrowUpRight"
             >

@@ -10,6 +10,7 @@ import { Confirmation } from './Confirmation';
 import { PaymentCard } from './PaymentCard';
 import { useQuotes } from '../../hooks/useQuotes';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+import { TradeHistoryButton } from '../general/TradeHistory/TradeHistoryButton';
 import { TradingAlert } from '../general/TradingAlert';
 import { TradingFooter } from '../general/TradingFooter';
 
@@ -25,6 +26,7 @@ const BuyFormMemoized = memo(({ isAmountInputActive }: { isAmountInputActive: bo
                 <PaymentCard />
                 <Confirmation />
                 <TradingFooter />
+                <TradeHistoryButton tradeType="buy" />
             </>
         )}
     </VStack>

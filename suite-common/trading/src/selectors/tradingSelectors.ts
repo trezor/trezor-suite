@@ -13,6 +13,7 @@ import {
     InvityServerEnvironment,
     TradingFiatCurrenciesProps,
     TradingPaymentMethodProps,
+    TradingTransaction,
     TradingType,
 } from '../types';
 import {
@@ -171,6 +172,26 @@ export const selectTradingExchangeProviders = createMemoizedSelector(
     exchangeInfo => exchangeInfo?.providerInfos,
 );
 
+export const selectTradingProviderByNameAndTradeType = (
+    state: TradingRootState,
+    name: string | undefined,
+    type: TradingType,
+) => {
+    if (!name) {
+        return undefined;
+    }
+
+    switch (type) {
+        case 'buy':
+            return selectTradingBuyProviders(state)?.[name];
+        case 'exchange':
+            return selectTradingExchangeProviders(state)?.[name];
+        case 'sell':
+            // TODO: Not implemented until SELL is migrated to suite-common
+            return undefined;
+    }
+};
+
 export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
     state.wallet.tradingNew.buy.quotesRequest;
 
@@ -189,6 +210,22 @@ export const selectTradingPaymentMethods = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.tradingNew.trades);
 
+export const selectTradingTradesByTradeType: (
+    state: TradingRootState,
+    tradeType: TradingType,
+) => TradingTransaction[] = createMemoizedSelector(
+    [({ wallet }) => wallet.tradingNew.trades, (_, tradeType: TradingType) => tradeType],
+    (trades, tradeType) => returnStableArrayIfEmpty(trades.filter(t => t.tradeType === tradeType)),
+);
+
+export const selectHasTradingTradesOfTradeType = (
+    state: TradingRootState,
+    tradeType: TradingType,
+) => selectTradingTradesByTradeType(state, tradeType).length > 0;
+
+export const selectTradingTradeByOrderId = (state: TradingRootState, orderId: string) =>
+    selectTradingTrades(state).find(t => t.data.orderId === orderId);
+
 export const selectTradingCoinInfoByCryptoId = (
     state: TradingRootState,
     cryptoId: CryptoId | undefined,
@@ -196,13 +233,18 @@ export const selectTradingCoinInfoByCryptoId = (
     if (!cryptoId) {
         return undefined;
     }
-
     const { coins = {} } = state.wallet.tradingNew.info;
 
     return getTradingCoinInfoByCryptoId(coins, cryptoId);
 };
 
-export const selectTradingCoinSymbolByCryptoId = (state: TradingRootState, cryptoId: CryptoId) => {
+export const selectTradingCoinSymbolByCryptoId = (
+    state: TradingRootState,
+    cryptoId: CryptoId | undefined,
+) => {
+    if (cryptoId === undefined) {
+        return undefined;
+    }
     const { coins = {} } = state.wallet.tradingNew.info;
 
     return getTradingCoinSymbolByCryptoId(coins, cryptoId);

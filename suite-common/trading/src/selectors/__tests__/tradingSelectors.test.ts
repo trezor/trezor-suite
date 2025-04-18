@@ -13,6 +13,7 @@ import {
     TradingRootState,
     selectBestBuyQuoteByPaymentMethod,
     selectBuyQuotesByPaymentMethod,
+    selectHasTradingTradesOfTradeType,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingBuy,
@@ -38,7 +39,9 @@ import {
     selectTradingPaymentMethods,
     selectTradingPlatformByCryptoId,
     selectTradingSymbolAndContractAddressByCryptoId,
+    selectTradingTradeByOrderId,
     selectTradingTrades,
+    selectTradingTradesByTradeType,
     selectValidTradingBuyQuotes,
 } from '../tradingSelectors';
 
@@ -133,7 +136,10 @@ describe('tradingSelectors', () => {
                         ...exchangeInitialState,
                         tradingAccountKey: accountEth.key,
                     },
-                    trades: [{ tradeType: 'buy' }],
+                    trades: [
+                        { tradeType: 'buy', data: { orderId: 'orderId1' } },
+                        { tradeType: 'exchange', data: { orderId: 'orderId2' } },
+                    ],
                     composedTransactionInfo: {
                         composed: {
                             feePerByte: '1',
@@ -362,6 +368,36 @@ describe('tradingSelectors', () => {
 
     it('selectTradingTrades should return correct data', () => {
         expect(selectTradingTrades(state)).toBe(state.wallet.tradingNew.trades);
+    });
+
+    it('selectTradingTradesByTradeType should return only data for relevant tradeType', () => {
+        expect(selectTradingTradesByTradeType(state, 'buy')).toStrictEqual([
+            {
+                data: { orderId: 'orderId1' },
+                tradeType: 'buy',
+            },
+        ]);
+        expect(selectTradingTradesByTradeType(state, 'exchange')).toStrictEqual([
+            {
+                data: { orderId: 'orderId2' },
+                tradeType: 'exchange',
+            },
+        ]);
+
+        expect(selectTradingTradesByTradeType(state, 'sell')).toStrictEqual([]);
+    });
+
+    it('selectHasTradingTradesOfTradeType should return correctly whether there is a trade', () => {
+        expect(selectHasTradingTradesOfTradeType(state, 'buy')).toBe(true);
+        expect(selectHasTradingTradesOfTradeType(state, 'sell')).toBe(false);
+    });
+
+    it('selectTradingTradeByOrderId should find trade for correct orderId', () => {
+        expect(selectTradingTradeByOrderId(state, 'orderId1')).toBeDefined();
+    });
+
+    it('selectTradingTradeByOrderId should return undefined when orderId is not found', () => {
+        expect(selectTradingTradeByOrderId(state, 'orderId4')).toBeUndefined();
     });
 
     it('selectTradingCoinInfoByCryptoId should return coin data', () => {
