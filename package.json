@@ -116,6 +116,7 @@
         "@babel/preset-react": "^7.26.3",
         "@babel/preset-typescript": "^7.27.0",
         "@babel/runtime": "^7.27.0",
+        "@octokit/rest": "^21.1.1",
         "@trezor/eslint": "workspace:*",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",

@@ -36,6 +36,7 @@ export enum TestCategory {
     Staking = 'Staking',
     Solana = 'Solana',
     Engagement = 'Engagement',
+    Uncategorized = 'Uncategorized',
 }
 
 export enum TestPriority {
@@ -46,9 +47,137 @@ export enum TestPriority {
     AsNecessary = 'As necessary',
 }
 
+export const TestPriorityColors: Record<TestPriority, string> = {
+    [TestPriority.Critical]: 'RED',
+    [TestPriority.High]: 'ORANGE',
+    [TestPriority.Medium]: 'YELLOW',
+    [TestPriority.Low]: 'GREEN',
+    [TestPriority.AsNecessary]: 'GRAY',
+};
+
 export enum TestStream {
     Trends = 'Trends',
     Foundation = 'Foundation',
     Engagement = 'Engagement',
     Firmware = 'Firmware',
+    Unassigned = 'Unassigned',
 }
+
+export enum TestStatus {
+    Todo = 'Todo',
+    InProgress = 'In Progress',
+    DonePass = 'Done PASS',
+    DoneFail = 'Done FAIL',
+    AutoPass = 'Auto PASS',
+    AutoFail = 'Auto FAIL',
+    Skipped = 'Skipped',
+}
+
+export const TestStatusColors: Record<TestStatus, string> = {
+    [TestStatus.Todo]: 'BLUE',
+    [TestStatus.InProgress]: 'YELLOW',
+    [TestStatus.DonePass]: 'GREEN',
+    [TestStatus.DoneFail]: 'RED',
+    [TestStatus.AutoPass]: 'GREEN',
+    [TestStatus.AutoFail]: 'RED',
+    [TestStatus.Skipped]: 'GRAY',
+};
+
+// Basic annotation definition
+export interface BaseAnnotation {
+    name: string;
+    key: string;
+    valueType: string;
+    valueOptions?: string[];
+    optionsColors?: Record<string, string>;
+    annotationType?: TestAnnotationType;
+    needsFormatting?: boolean;
+}
+
+// Individual annotation definitions
+export const testCaseAnnotation: BaseAnnotation = {
+    name: 'Test Case',
+    key: 'testCase',
+    annotationType: TestAnnotationType.TestCase,
+    valueType: 'TEXT',
+};
+
+export const prerequisitesAnnotation: BaseAnnotation = {
+    name: 'Prerequisites',
+    key: 'prerequisites',
+    annotationType: TestAnnotationType.Prerequisites,
+    valueType: 'TEXT',
+    needsFormatting: true,
+};
+
+export const stepsAnnotation: BaseAnnotation = {
+    name: 'Steps',
+    key: 'steps',
+    annotationType: TestAnnotationType.Steps,
+    valueType: 'TEXT',
+    needsFormatting: true,
+};
+
+export const statusAnnotation: BaseAnnotation = {
+    name: 'Status',
+    key: 'status',
+    valueType: 'SINGLE_SELECT',
+    valueOptions: Object.values(TestStatus),
+    optionsColors: TestStatusColors,
+};
+
+export const streamAnnotation: BaseAnnotation = {
+    name: 'Stream',
+    key: 'stream',
+    annotationType: TestAnnotationType.Stream,
+    valueType: 'SINGLE_SELECT',
+    valueOptions: Object.values(TestStream),
+};
+
+export const testRunAnnotation: BaseAnnotation = {
+    name: 'Test Run',
+    key: 'testRun',
+    valueType: 'TEXT',
+};
+
+export const categoryAnnotation: BaseAnnotation = {
+    name: 'Category',
+    key: 'category',
+    annotationType: TestAnnotationType.Category,
+    valueType: 'SINGLE_SELECT',
+    valueOptions: Object.values(TestCategory),
+};
+
+export const priorityAnnotation: BaseAnnotation = {
+    name: 'Priority',
+    key: 'priority',
+    annotationType: TestAnnotationType.Priority,
+    valueType: 'SINGLE_SELECT',
+    valueOptions: Object.values(TestPriority),
+    optionsColors: TestPriorityColors,
+};
+
+export const commentAnnotation: BaseAnnotation = {
+    name: 'Comment',
+    key: 'comment',
+    valueType: 'TEXT',
+};
+
+export const annotationsForBodyDescription = [prerequisitesAnnotation, stepsAnnotation];
+
+export const annotationsForProjectFields = [
+    statusAnnotation,
+    streamAnnotation,
+    testRunAnnotation,
+    priorityAnnotation,
+    commentAnnotation,
+];
+
+export const testAnnotations = [
+    testCaseAnnotation,
+    prerequisitesAnnotation,
+    stepsAnnotation,
+    streamAnnotation,
+    categoryAnnotation,
+    priorityAnnotation,
+];
