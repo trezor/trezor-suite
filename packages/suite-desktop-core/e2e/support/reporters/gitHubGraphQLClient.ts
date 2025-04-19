@@ -217,8 +217,6 @@ export class GitHubGraphQLClient {
               }
           `);
 
-            this.logger.logResponse('Project fields', response);
-
             return response.node.fields.nodes;
         } catch (error) {
             this.logger.logError('Failed to get project fields:');

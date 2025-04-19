@@ -22,6 +22,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
     private _graphQLClient: GitHubGraphQLClient | null = null;
     private pendingOperations: Promise<any>[] = [];
     private cachedFields: ProjectField[] | null = null;
+    private initializationPromise: Promise<void> | null = null;
 
     log(...args: any[]): void {
         if (VERBOSE) {
@@ -78,18 +79,24 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         });
     }
 
+    // eslint-disable-next-line require-await
     async onBegin() {
-        try {
-            const OctokitModule = await import('@octokit/rest');
-            this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
-            this._graphQLClient = new GitHubGraphQLClient(this.octokit, this);
-            this.log('GitHub client initialized successfully');
-        } catch (error) {
-            this.logError('Failed to initialize GitHub reporter.');
-            throw error;
-        }
+        const initPromise = (async () => {
+            try {
+                const OctokitModule = await import('@octokit/rest');
+                this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
+                this._graphQLClient = new GitHubGraphQLClient(this.octokit, this);
+                this.log('GitHub client initialized successfully');
+            } catch (error) {
+                this.logError('Failed to initialize GitHub reporter.');
+                throw error;
+            }
 
-        await this.initializeProject();
+            await this.initializeProject();
+        })();
+        this.initializationPromise = initPromise;
+
+        return this.trackOperation(initPromise);
     }
 
     // eslint-disable-next-line require-await
@@ -98,6 +105,10 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
 
         this.trackOperation(
             (async () => {
+                if (this.initializationPromise) {
+                    await this.initializationPromise;
+                }
+
                 const report = new TestReportProvider(test);
 
                 try {
@@ -281,6 +292,8 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                 draft: true,
             });
 
+            this.log(`Successfully created issue with Id: "${response.data.node_id}"`);
+
             return response.data.node_id;
         } catch (error) {
             this.logError(`Failed to create GitHub issue for test "${report.testCase}".`);
@@ -333,4 +346,5 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
     }
 }
 
-export { GitHubTicketReporter };
+// eslint-disable-next-line import/no-default-export
+export default GitHubTicketReporter;

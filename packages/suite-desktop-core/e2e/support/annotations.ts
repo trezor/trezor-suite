@@ -125,7 +125,7 @@ export class TestReportProvider {
     }
 
     get isManual(): boolean {
-        return this.test.tags.some(tag => tag.startsWith('@manual'));
+        return this.test.tags.some(tag => tag.startsWith('@group=manual'));
     }
 
     get bodyDescription(): string {
@@ -140,7 +140,7 @@ export class TestReportProvider {
             sections.push('## Automated Test');
         }
 
-        return sections.join('---');
+        return sections.join('\n---\n');
     }
 
     get projectValues(): Array<{ name: string; value: string }> {
