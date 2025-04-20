@@ -97,7 +97,7 @@ export class GitHubGraphQLClient {
 
             return fieldId;
         } catch (error) {
-            this.logger.logError(`Failed to create ${fieldType} field "${fieldName}":`, error);
+            this.logger.logError(`Failed to create ${fieldType} field "${fieldName}".`);
             throw error;
         }
     }

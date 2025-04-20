@@ -13,7 +13,7 @@ const repoName = 'exercism_dominoes';
 // const repoId = 'R_kgDOG5BJRw';
 // const organization = 'trezor';
 //TODO: Run over Test Results which has wrong fields and fix double error in term
-const projectName = 'Test Results 19';
+const projectName = 'Test Results 22';
 const VERBOSE = true;
 
 class GitHubTicketReporter implements Reporter, LoggingFunctions {
@@ -133,10 +133,9 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                         );
                     }
 
-                    this.log(`Successfully recorded test result for "${report.testCase}"`);
+                    this.log(`Successfully recorded test result for "${test.title}"`);
                 } catch (error) {
-                    this.logError(`Failed to process test end for "${report.testCase}".`);
-                    throw error;
+                    this.logError(`Failed to process test end for "${test.title}":`, error);
                 }
             })(),
         );
@@ -149,13 +148,14 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         if (this.pendingOperations.length > 0) {
             this.log(`Waiting for ${this.pendingOperations.length} pending operations to complete`);
 
-            // Wait for all pending operations to complete
-            return Promise.all(this.pendingOperations)
-                .then(() => {
-                    this.log('All operations completed successfully');
-                })
-                .catch(error => {
-                    this.logError('Error while waiting for operations to complete:', error);
+            return Promise.allSettled(this.pendingOperations)
+                .then(results => {
+                    const failed = results.filter(r => r.status === 'rejected').length;
+                    if (failed > 0) {
+                        this.logError(`${failed} operations failed`);
+                    } else {
+                        this.log('All operations completed successfully');
+                    }
                 })
                 .finally(() => {
                     this.log('GitHub reporter finished');
@@ -275,7 +275,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
             await this.graphQLClient.updateFieldOptions(fieldId, desiredOptions);
             this.log(`Successfully updated options for field "${desiredField.name}"`);
         } catch (error) {
-            this.logError(`Failed to update options for field "${desiredField.name}":`, error);
+            this.logError(`Failed to update options for field "${desiredField.name}".`);
             throw error;
         }
     }
