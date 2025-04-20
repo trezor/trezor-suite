@@ -89,7 +89,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                 this.log('GitHub client initialized successfully');
             } catch (error) {
                 this.logError('Failed to initialize GitHub reporter.');
-                throw error;
+                throw error; // Critical error, rethrow to stop execution
             }
 
             await this.initializeProject();
@@ -103,7 +103,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
     async onTestEnd(test: TestCase) {
         this.log(`Processing test end for "${test.title}"`);
 
-        this.trackOperation(
+        return this.trackOperation(
             (async () => {
                 if (this.initializationPromise) {
                     await this.initializationPromise;
@@ -136,6 +136,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                     this.log(`Successfully recorded test result for "${test.title}"`);
                 } catch (error) {
                     this.logError(`Failed to process test end for "${test.title}":`, error);
+                    // Non-Critical error, no need to rethrow
                 }
             })(),
         );
