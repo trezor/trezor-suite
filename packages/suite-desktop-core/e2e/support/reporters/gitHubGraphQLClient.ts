@@ -21,7 +21,7 @@ export class GitHubGraphQLClient {
     ) {}
 
     async createProject(ownerId: string, projectName: string): Promise<string> {
-        this.logger.log(`Creating project with owner ID: ${ownerId}`);
+        this.logger.log(`Creating project ${projectName} with owner ID: ${ownerId}`);
 
         const mutation = `
             mutation {
@@ -40,7 +40,7 @@ export class GitHubGraphQLClient {
         const response = await this.octokit.graphql<CreateProjectMutation>(mutation);
         const projectId = response.createProjectV2.projectV2.id;
 
-        this.logger.log(`Created GitHub project with ID: ${projectId}`);
+        this.logger.log(`Created GitHub project ${projectName} with ID: ${projectId}`);
 
         return projectId;
     }
@@ -140,8 +140,6 @@ export class GitHubGraphQLClient {
     }
 
     async addIssueToProject(projectId: string, issueNodeId: string): Promise<string> {
-        this.logger.log(`Adding issue ${issueNodeId} to project ${projectId}...`);
-
         const mutation = `
             mutation {
               addProjectV2ItemById(
@@ -157,9 +155,6 @@ export class GitHubGraphQLClient {
         `;
 
         const response = await this.octokit.graphql<AddIssueToProjectResponse>(mutation);
-        this.logger.log(
-            `Successfully added issue to project with item ID: ${response.addProjectV2ItemById.item.id}`,
-        );
 
         return response.addProjectV2ItemById.item.id;
     }
@@ -205,10 +200,6 @@ export class GitHubGraphQLClient {
         fieldId: string,
         valueOrOptionId: ValueOrOptionId,
     ): Promise<void> {
-        this.logger.log(
-            `Updating field ${fieldId} for item ${itemId} with value: ${JSON.stringify(valueOrOptionId)}`,
-        );
-
         const mutation = `
           mutation {
             updateProjectV2ItemFieldValue(
@@ -226,7 +217,6 @@ export class GitHubGraphQLClient {
       `;
 
         await this.octokit.graphql<UpdateProjectItemFieldResponse>(mutation);
-        this.logger.log(`Successfully updated field for item ${itemId}`);
     }
 
     async updateFieldOptions(
