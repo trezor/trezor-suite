@@ -70,6 +70,16 @@ const buttonRequest =
             }
         }
 
+        if (action.type === UI.REQUEST_BUTTON && action.payload.code === 'ButtonRequest_Address') {
+            const {
+                connectPopup: { activeCall },
+            } = api.getState();
+            // Skip if address confirmation modal open
+            if (activeCall?.state === 'address-confirmation') {
+                return action;
+            }
+        }
+
         // pass action
         next(action);
 
