@@ -122,6 +122,7 @@ export const ConnectAddressConfirmation = () => {
                                         }
                                         size="small"
                                         isLoading={address.loading}
+                                        isDisabled={isLoading}
                                     >
                                         {address.loading ? (
                                             <Translation id="TR_VERIFYING" />
