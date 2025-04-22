@@ -8,7 +8,7 @@ import { FeeLevel } from '@trezor/connect';
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
-import { buyThunks, exchangeThunks } from '../thunks';
+import { buyThunks, exchangeThunks, sellThunks } from '../thunks';
 import {
     TradingExchangeState,
     exchangeInitialState,
@@ -143,6 +143,19 @@ export const tradingSlice = createSliceWithExtraDeps({
             })
             .addCase(exchangeThunks.handleRequestThunk.fulfilled, state => {
                 state.exchange.isLoading = false;
+            })
+            .addCase(sellThunks.handleRequestThunk.pending, state => {
+                state.sell.isLoading = true;
+            })
+            .addCase(sellThunks.handleRequestThunk.fulfilled, state => {
+                state.sell.isLoading = false;
+            })
+            .addCase(sellThunks.handleRequestThunk.rejected, state => {
+                state.sell.amountLimits = undefined;
+                state.sell.quotes = [];
+                state.sell.quotesRequest = undefined;
+                state.sell.isLoading = false;
+                state.info.paymentMethods = [];
             })
             .addCase(exchangeThunks.confirmTradeThunk.pending, state => {
                 state.exchange.isLoading = true;

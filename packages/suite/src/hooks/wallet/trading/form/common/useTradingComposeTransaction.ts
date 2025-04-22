@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { TradingExchangeFormProps, tradingActions } from '@suite-common/trading';
+import {
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
+    tradingActions,
+} from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
@@ -15,7 +19,6 @@ import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import {
     TradingSellExchangeFormProps,
-    TradingSellFormProps,
     TradingUseComposeTransactionProps,
     TradingUseComposeTransactionReturnProps,
     TradingUseComposeTransactionStateProps,

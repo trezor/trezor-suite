@@ -2,12 +2,11 @@ import { useMemo } from 'react';
 
 import { SellFiatTradeQuoteRequest } from 'invity-api';
 
-import { getDefaultCountry } from '@suite-common/trading';
+import { type TradingSellFormProps, getDefaultCountry } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
-import { TradingSellFormProps } from 'src/types/trading/tradingForm';
 import {
     buildFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
