@@ -2,7 +2,7 @@
 import { randomBytes } from 'crypto';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
+import { TransportProtocol, thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
 import { Session } from '@trezor/transport';
 import { type Descriptor, TRANSPORT_ERROR, type Transport } from '@trezor/transport';
 import {
@@ -128,6 +128,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly protocol: TransportProtocol;
     public readonly transportPath;
+    private thp: protocolThp.ThpState | undefined;
     private readonly transportDescriptorType;
     private readonly bluetoothProps;
     private session;
@@ -213,7 +214,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         super();
 
         this.emitLifecycle = listener;
-        this.protocol = v1Protocol;
+        this.protocol = protocolV1;
 
         // === immutable properties
         this.uniquePath = id;
@@ -1229,6 +1230,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ? undefined
                     : this.transportSessionOwner,
                 bluetoothProps: this.bluetoothProps,
+                thp: this.thp?.serialize(),
             };
         }
         const defaultLabel = 'My Trezor';
@@ -1255,6 +1257,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
             bluetoothProps: this.bluetoothProps,
+            thp: this.thp?.serialize(),
         };
     }
 }

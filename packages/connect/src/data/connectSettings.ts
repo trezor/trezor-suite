@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
 import type { ConnectSettings, Manifest } from '../types';
+import { parseThpSettings } from './thpSettings';
 import { DEEPLINK_VERSION, DEFAULT_DOMAIN, VERSION } from './version';
 
 /*
@@ -162,6 +163,8 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     if (typeof input.npmVersion === 'string') {
         settings.npmVersion = input.npmVersion;
     }
+
+    settings.thp = parseThpSettings(input);
 
     return settings;
 };

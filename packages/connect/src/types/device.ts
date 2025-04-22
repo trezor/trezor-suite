@@ -1,4 +1,5 @@
 import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
+import type { ThpStateSerialized } from '@trezor/protocol';
 import { Descriptor } from '@trezor/transport';
 
 import type { PROTO } from '../constants';
@@ -97,6 +98,7 @@ export type KnownDevice = BaseDevice & {
     _state?: DeviceState; // TODO: breaking change in next major release
     state?: DeviceState['staticSessionId'];
     features: PROTO.Features;
+    thp?: ThpStateSerialized;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: string[];
     authenticityChecks?: {
@@ -116,6 +118,7 @@ export type UnknownDevice = BaseDevice & {
     id?: typeof undefined;
     error?: typeof undefined;
     features?: typeof undefined;
+    thp?: ThpStateSerialized;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
@@ -138,6 +141,7 @@ export type UnreadableDevice = BaseDevice & {
     error: string;
     id?: typeof undefined;
     features?: typeof undefined;
+    thp?: typeof undefined;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
