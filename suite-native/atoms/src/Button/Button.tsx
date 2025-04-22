@@ -209,7 +209,7 @@ export const buttonSizeToDimensionsMap = {
     },
     small: {
         minHeight: 40,
-        paddingVertical: 10,
+        paddingVertical: nativeSpacings.sp10,
         paddingHorizontal: nativeSpacings.sp12,
     },
     medium: {

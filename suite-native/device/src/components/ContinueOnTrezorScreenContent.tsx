@@ -1,7 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { RequireAllOrNone } from 'type-fest';
+
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
@@ -12,7 +14,13 @@ import { DeviceImage } from './DeviceImage';
 
 type ContinueOnTrezorScreenContentProps = {
     titleTxKey?: TxKeyPath;
-};
+} & RequireAllOrNone<
+    {
+        actionLabelTxKey: TxKeyPath;
+        onActionPress: () => void;
+    },
+    'actionLabelTxKey' | 'onActionPress'
+>;
 
 const SCREEN_HEIGHT = getScreenHeight();
 
@@ -21,8 +29,14 @@ const titleStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
 }));
 
+const actionButtonStyle = prepareNativeStyle(() => ({
+    alignSelf: 'center',
+}));
+
 export const ContinueOnTrezorScreenContent = ({
     titleTxKey = 'device.title.continueOnTrezor',
+    actionLabelTxKey,
+    onActionPress,
 }: ContinueOnTrezorScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -30,9 +44,21 @@ export const ContinueOnTrezorScreenContent = ({
 
     return (
         <>
-            <Text variant="titleMedium" style={applyStyle(titleStyle)}>
-                <Translation id={titleTxKey} />
-            </Text>
+            <VStack spacing="sp24">
+                <Text variant="titleMedium" style={applyStyle(titleStyle)}>
+                    <Translation id={titleTxKey} />
+                </Text>
+                {onActionPress && (
+                    <Button
+                        size="small"
+                        colorScheme="tertiaryElevation0"
+                        style={applyStyle(actionButtonStyle)}
+                        onPress={onActionPress}
+                    >
+                        <Translation id={actionLabelTxKey} />
+                    </Button>
+                )}
+            </VStack>
             <Box flex={1} alignItems="center" justifyContent="flex-end">
                 <DeviceImage
                     deviceModel={deviceModel || DeviceModelInternal.T3T1}

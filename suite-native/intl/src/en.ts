@@ -921,6 +921,7 @@ export const en = {
         },
         deviceTutorialScreen: {
             title: 'Continue with short tutorial on Trezor',
+            actionLabel: 'Skip tutorial',
         },
         createOrRecoverCrossroadsScreen: {
             create: {

@@ -30,9 +30,18 @@ export const DeviceTutorialScreen = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleSkipTutorial = () => {
+        TrezorConnect.cancel();
+        navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
+    };
+
     return (
         <DeviceOnboardingScreenWithExitButton>
-            <ContinueOnTrezorScreenContent titleTxKey="moduleDeviceOnboarding.deviceTutorialScreen.title" />
+            <ContinueOnTrezorScreenContent
+                titleTxKey="moduleDeviceOnboarding.deviceTutorialScreen.title"
+                actionLabelTxKey="moduleDeviceOnboarding.deviceTutorialScreen.actionLabel"
+                onActionPress={handleSkipTutorial}
+            />
         </DeviceOnboardingScreenWithExitButton>
     );
 };
