@@ -123,6 +123,7 @@ export class BitcoinFeeLevels extends MiscFeeLevels {
             });
 
             this.longTermFeeRate = findLowest(this.blocks);
+            this.wasFetchedSuccessfully = true;
         } catch {
             // do not throw
         }

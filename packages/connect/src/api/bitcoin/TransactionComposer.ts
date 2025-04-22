@@ -4,6 +4,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { ComposeOutput, TransactionInputOutputSortingStrategy, composeTx } from '@trezor/utxo-lib';
 
 import { Blockchain } from '../../backend/BlockchainLink';
+import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
 import { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
 import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
 import type {
@@ -47,7 +48,7 @@ export class TransactionComposer {
         this.blockHeight = 0;
         this.baseFee = options.baseFee || 0;
         this.sortingStrategy = options.sortingStrategy;
-        this.feeLevels = new BitcoinFeeLevels(options.coinInfo);
+        this.feeLevels = getOrInitBitcoinFeeLevels(options.coinInfo);
 
         // map to @trezor/utxo-lib/compose format
         const { addresses } = options.account;
@@ -73,7 +74,9 @@ export class TransactionComposer {
         const { blockHeight } = await blockchain.getNetworkInfo();
         this.blockHeight = blockHeight;
 
-        await this.feeLevels.load(blockchain);
+        if (!this.feeLevels.wasFetchedSuccessfully) {
+            await this.feeLevels.load(blockchain);
+        }
     }
 
     // Composing fee levels for SelectFee view in popup

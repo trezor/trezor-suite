@@ -4,9 +4,7 @@ import { ERRORS } from '../constants';
 import { AbstractMethod, MethodReturnType, Payload } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { BitcoinFeeLevels } from '../backend/fees/BitcoinFeeLevels';
-import { EthereumFeeLevels } from '../backend/fees/EthereumFeeLevels';
-import { MiscFeeLevels } from '../backend/fees/MiscFeeLevels';
+import { getOrInitFeeLevels } from '../backend/fees';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
 
@@ -14,17 +12,6 @@ type Params = {
     coinInfo: CoinInfo;
     identity?: string;
     request: Payload<'blockchainEstimateFee'>['request'];
-};
-
-const getFees = (coinInfo: CoinInfo) => {
-    switch (coinInfo.type) {
-        case 'bitcoin':
-            return new BitcoinFeeLevels(coinInfo);
-        case 'ethereum':
-            return new EthereumFeeLevels(coinInfo);
-        default:
-            return new MiscFeeLevels(coinInfo);
-    }
 };
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
@@ -86,14 +73,17 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
         };
 
         if (request?.feeLevels) {
-            const fees = getFees(coinInfo);
+            const feeLevelsInstance = getOrInitFeeLevels(coinInfo);
 
+            // In Suite, request.feeLevels: 'smart' is always used to update the fee levels.
+            // Only on initial load, request.feeLevels: 'preloaded' is used (see feesThunks in suite-common/wallet-core)
             if (request.feeLevels === 'smart') {
                 const backend = await initBlockchain(coinInfo, this.postMessage, identity);
-                await fees.load(backend, request);
+                await feeLevelsInstance.load(backend, request);
             }
 
-            feeInfo.levels = fees.levels;
+            // the default fee constants from json files
+            feeInfo.levels = feeLevelsInstance.levels;
         } else {
             const backend = await initBlockchain(coinInfo, this.postMessage, identity);
             feeInfo.levels = await backend.estimateFee(request || {});
