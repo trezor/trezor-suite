@@ -258,3 +258,10 @@ export type TradingSignAndPushSendFormTransactionProps = {
 };
 
 export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
+
+export interface TradingSellFormProps extends FormState {
+    sendCryptoSelect: TradingAccountOptionsGroupOptionProps | undefined;
+    paymentMethod?: TradingPaymentMethodListProps;
+    countrySelect: TradingOption;
+    amountInCrypto: boolean;
+}
