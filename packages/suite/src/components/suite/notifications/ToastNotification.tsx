@@ -3,8 +3,8 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
 import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
-import { Button, Icon, variables } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, Icon } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 
 import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -15,11 +15,12 @@ import { ToastNotificationVariant } from '../../../types/suite';
 const Wrapper = styled.div<{ $variant: ToastNotificationVariant; $isTall: boolean }>`
     display: flex;
     align-items: ${({ $isTall }) => ($isTall ? 'start' : 'center')};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    font-size: ${typography.hint};
     height: 100%;
     padding: ${({ $isTall }) => ($isTall ? '16px 16px 12px 12px' : '12px 16px 12px 12px')};
     border-left: 4px solid ${({ $variant }) => getVariantColor($variant)};
-    word-break: break-word;
+    overflow-wrap: anywhere;
+    word-break: normal;
     max-width: 430px;
 `;
 
@@ -30,8 +31,8 @@ const BodyWrapper = styled.div<{ $isTall: boolean }>`
 `;
 
 const Message = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    font-weight: ${typography.callout};
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component

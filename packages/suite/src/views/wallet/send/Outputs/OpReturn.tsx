@@ -12,8 +12,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 
 const Inputs = styled.div`
     display: flex;
-    place-items: center space-between;
-    align-items: end;
+    place-items: end stretch;
     margin-top: ${spacingsPx.md};
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {

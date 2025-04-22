@@ -18,7 +18,7 @@ const DarkModeImg = styled.img<{ $darkMode?: boolean }>`
 // Handle dark mode styles in react-medium-image-zoom
 const ReactMediumImageZoomStyle = createGlobalStyle<{ $darkMode?: boolean }>`
   html.dark [data-rmiz-modal-overlay="visible"] {
-    background-color: rgba(0, 0, 0, 1);
+    background-color: rgb(0, 0, 0);
   }
 
   [data-rmiz-modal-img] {

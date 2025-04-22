@@ -16,7 +16,7 @@ const LoaderCell = styled.div<{ $size: number; $isLoading: boolean }>`
     ${({ $isLoading }) =>
         $isLoading
             ? css`
-                  transition-delay: 0;
+                  transition-delay: 0s;
               `
             : css`
                   transition-delay: 2.5s;
@@ -35,7 +35,7 @@ const ContentCell = styled.div<{ $size: number; $isLoading: boolean }>`
     ${({ $isLoading }) =>
         $isLoading
             ? css`
-                  transition-delay: 0;
+                  transition-delay: 0s;
                   transform: none;
               `
             : css`

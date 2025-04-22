@@ -11419,7 +11419,7 @@ __metadata:
     storybook: "npm:^8.6.12"
     styled-components: "npm:^6.1.16"
     stylelint: "npm:^16.14.1"
-    stylelint-config-standard: "npm:^36.0.0"
+    stylelint-config-standard: "npm:^38.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
   languageName: unknown
   linkType: soft
@@ -11647,8 +11647,8 @@ __metadata:
   peerDependencies:
     react: 18.2.0
     styled-components: ^6.1.16
-    stylelint: ^16.2.1
-    stylelint-config-standard: ^36.0.0
+    stylelint: ^16.18.0
+    stylelint-config-standard: ^38.0.0
   languageName: unknown
   linkType: soft
 
@@ -11674,8 +11674,8 @@ __metadata:
   peerDependencies:
     react: 18.2.0
     styled-components: ^6.1.16
-    stylelint: ^16.2.1
-    stylelint-config-standard: ^36.0.0
+    stylelint: ^16.18.0
+    stylelint-config-standard: ^38.0.0
   languageName: unknown
   linkType: soft
 
@@ -12215,7 +12215,7 @@ __metadata:
     react-router-dom: "npm:^5.2.0"
     styled-components: "npm:^6.1.16"
     stylelint: "npm:^16.14.1"
-    stylelint-config-standard: "npm:^36.0.0"
+    stylelint-config-standard: "npm:^38.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
   languageName: unknown
   linkType: soft
@@ -12282,7 +12282,7 @@ __metadata:
     rimraf: "npm:^6.0.1"
     styled-components: "npm:^6.1.16"
     stylelint: "npm:^16.17.0"
-    stylelint-config-standard: "npm:^36.0.0"
+    stylelint-config-standard: "npm:^38.0.0"
     tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     worker-loader: "npm:^3.0.8"
@@ -12418,7 +12418,7 @@ __metadata:
     semver: "npm:^7.7.1"
     styled-components: "npm:^6.1.16"
     stylelint: "npm:^16.14.1"
-    stylelint-config-standard: "npm:^36.0.0"
+    stylelint-config-standard: "npm:^38.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
     uuid: "npm:^11.1.0"
     web3-utils: "npm:^4.3.1"
@@ -38712,23 +38712,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint-config-recommended@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "stylelint-config-recommended@npm:14.0.0"
+"stylelint-config-recommended@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "stylelint-config-recommended@npm:16.0.0"
   peerDependencies:
-    stylelint: ^16.0.0
-  checksum: 10/36511115b06d9f51aa0edc05f6064a7aae98cc990da14dd03629951f63a029d9e66a4d5b1ca678cce699e24413a62c2cd608cc07413ca5026f9680ddb8993858
+    stylelint: ^16.16.0
+  checksum: 10/711595ec35f387422154b14bc1d05217c48762b62dcee13ca73a0edbb7353d537e3a9f6646e9631b2988dfadc8a015a893611e6cca65971c9b99ab8bb096704f
   languageName: node
   linkType: hard
 
-"stylelint-config-standard@npm:^36.0.0":
-  version: 36.0.0
-  resolution: "stylelint-config-standard@npm:36.0.0"
+"stylelint-config-standard@npm:^38.0.0":
+  version: 38.0.0
+  resolution: "stylelint-config-standard@npm:38.0.0"
   dependencies:
-    stylelint-config-recommended: "npm:^14.0.0"
+    stylelint-config-recommended: "npm:^16.0.0"
   peerDependencies:
-    stylelint: ^16.1.0
-  checksum: 10/78b14cdfdd03be409687acc863ef88d0e79d9a7f7ab3a9158e7dcd74212893db24841d22f076f248f3b1b6419d778538a5c885dc42fc056eaeb240463edf2f8f
+    stylelint: ^16.18.0
+  checksum: 10/6704f80e93990a15e28043f25b926f08b6a585a6374d3610e1fa782c6e39279cdbd963c4614a58045372dc70254101f5d622f6578bbd7b2974fc3b4ce629db26
   languageName: node
   linkType: hard
 

@@ -48,7 +48,7 @@ export const Row = styled.tr<{
                                 $elevation: nextElevation[$elevation],
                             })}
                             90%,
-                        rgba(0 0 0 / 0%)
+                        rgb(0 0 0 / 0%)
                     );
                 }
             }
@@ -58,7 +58,7 @@ export const Row = styled.tr<{
         $isCollapsed &&
         css`
             visibility: collapse;
-            border-top: 1;
+            border-top: 1px;
             opacity: 0;
         `}
 

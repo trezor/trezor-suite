@@ -27,7 +27,7 @@ const StyledMarkdown = styled.div`
     }
 
     h2 {
-        margin-bottom: 8px 0 12px;
+        margin: 8px 0 12px;
         font-size: ${variables.FONT_SIZE.NORMAL};
     }
 

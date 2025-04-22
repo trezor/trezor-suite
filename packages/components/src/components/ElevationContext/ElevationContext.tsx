@@ -22,7 +22,7 @@ type ElevationContextProps = {
 const DebugNumber = styled.div`
     position: absolute;
     font-size: 11px;
-    background-color: rgba(0 0 0 / 50%);
+    background-color: rgb(0 0 0 / 50%);
     color: #fff;
     border-radius: 8px;
     width: 16px;

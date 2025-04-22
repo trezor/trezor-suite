@@ -45,7 +45,8 @@ const Info = styled.div`
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    word-break: break-word;
+    overflow-wrap: anywhere;
+    word-break: normal;
 
     @media (max-width: 639px) {
         font-size: 80%;

@@ -44,7 +44,7 @@ const Cell = styled.td<CellProps>`
         position: sticky;
         left: 0;
         z-index: 2;
-        background: linear-gradient(to right, ${mapElevationToBackground} 90%, rgba(0 0 0 / 0%));
+        background: linear-gradient(to right, ${mapElevationToBackground} 90%, rgb(0 0 0 / 0%));
 
         ${({ $hasBorder }) => !$hasBorder && 'padding-left: 0;'}
     }

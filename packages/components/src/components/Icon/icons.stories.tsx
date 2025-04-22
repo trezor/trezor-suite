@@ -61,8 +61,8 @@ const IconText = styled.div`
     align-items: center;
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
-    word-break: break-word;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+    word-break: normal;
     text-align: center;
 `;
 

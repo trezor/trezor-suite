@@ -147,7 +147,7 @@
         "redux-devtools-extension": "^2.13.9",
         "redux-mock-store": "^1.5.4",
         "stylelint": "^16.14.1",
-        "stylelint-config-standard": "^36.0.0",
+        "stylelint-config-standard": "^38.0.0",
         "typescript-styled-plugin": "^0.18.3"
     }
 }
