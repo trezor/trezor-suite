@@ -66,10 +66,26 @@ jobs:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
 
+      - name: Extract suite desktop version
+        id: extract-version
+        run: |
+          echo "VERSION=$(jq -r .suiteVersion packages/suite/package.json)" >> $GITHUB_ENV
+
       - name: Sync suite-desktop latest
         run: |
           aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://data.trezor.io/suite/releases/desktop/latest/
           aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/latest/*"
+
+      # Uploads the version folder to data.trezor.io together with the production latest release
+      - name: Sync suite-desktop version folder
+        run: |
+          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/v${{ steps.extract-version.outputs.VERSION }}/ s3://data.trezor.io/suite/releases/desktop/v${{ steps.extract-version.outputs.VERSION }}/
+
+      # Generate index.html for desktop release folders
+      - name: Generate index.html for desktop release folders
+        run: |
+          ./scripts/generate-s3-directory-index.sh data.trezor.io suite/releases/desktop
+          aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/*"
 
   sync-staging-website:
     if: ${{ github.event.inputs.publishWebProduction == 'true' && github.repository == 'trezor/trezor-suite-release' }}
