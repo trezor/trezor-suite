@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface Timer {
     timeSpent: {
@@ -17,26 +17,18 @@ export const useTimer = (): Timer => {
     const [isLoading, setIsLoading] = useState(false);
     const [isStopped, setIsStopped] = useState(false);
     const [resetCount, setResetCount] = useState(0);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (isStopped || isLoading) {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
-
-            return;
+            return () => {};
         }
 
-        intervalRef.current = setInterval(() => {
+        const interval = setInterval(() => {
             setTimeSpent(prevTime => prevTime + 1);
         }, 1000);
 
         return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
+            clearInterval(interval);
         };
     }, [isLoading, isStopped]);
 

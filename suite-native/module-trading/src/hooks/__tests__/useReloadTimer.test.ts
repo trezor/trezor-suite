@@ -95,7 +95,7 @@ describe('useReloadTimer', () => {
         expect(result.current.shouldReload).toBe(false);
     });
 
-    it('should return shouldReload when timer is not enabled even when reload time is reached', () => {
+    it('should return shouldReload false when timer is not enabled even when reload time is reached', () => {
         mockTimerReturn.timeSpent.seconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
         const { result } = renderUseReloadTimer(false);
 

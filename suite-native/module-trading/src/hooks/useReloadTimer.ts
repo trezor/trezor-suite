@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { useTimer } from '@trezor/react-utils';
 
@@ -14,20 +16,17 @@ export const useReloadTimer = (isEnabled: boolean) => {
         reset,
     } = timer;
 
-    if (isEnabled && isStopped && !isLoading && resetCount < MAX_RESET_COUNT) {
-        reset();
-    }
+    useEffect(() => {
+        if (isEnabled && isStopped && !isLoading && resetCount < MAX_RESET_COUNT) {
+            reset();
+        }
 
-    if ((!isEnabled && !isStopped) || resetCount >= MAX_RESET_COUNT) {
-        stop();
+        if ((!isEnabled && !isStopped) || resetCount >= MAX_RESET_COUNT) {
+            stop();
+        }
+    }, [isEnabled, isStopped, isLoading, resetCount, reset, stop]);
 
-        return {
-            timer,
-            shouldReload: false,
-        };
-    }
-
-    if (isStopped || isLoading) {
+    if (isStopped || isLoading || !isEnabled) {
         return {
             timer,
             shouldReload: false,
