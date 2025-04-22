@@ -11,7 +11,7 @@ import { useDispatch, useLayout } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 
 /**
- * This component renders only in desktop version
+ * This component renders only in desktop version - as an explanation why suite-desktop app was opened using a deeplink from suite-web
  */
 export const BridgeRequested = () => {
     const [confirmGoToWallet, setConfirmGoToWallet] = useState(false);
@@ -27,6 +27,11 @@ export const BridgeRequested = () => {
     };
 
     useLayout('Bridge');
+
+    if (!isDesktop()) {
+        // this component doesn't make sense for web.
+        return null;
+    }
 
     if (confirmGoToWallet) {
         return (
@@ -90,18 +95,16 @@ export const BridgeRequested = () => {
                     <Translation id="TR_BRIDGE_REQUESTED_DESCRIPTION" />
                 </Paragraph>
             </Column>
-            {!isDesktop() && (
-                <Card
-                    label={
-                        <Text typographyStyle="label">
-                            <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
-                        </Text>
-                    }
-                    margin={{ top: spacings.xxl }}
-                >
-                    <AutoStart />
-                </Card>
-            )}
+            <Card
+                label={
+                    <Text typographyStyle="label">
+                        <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
+                    </Text>
+                }
+                margin={{ top: spacings.xxl }}
+            >
+                <AutoStart />
+            </Card>
         </NewModal>
     );
 };
