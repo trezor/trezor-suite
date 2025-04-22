@@ -6,7 +6,7 @@ import * as url from 'url';
 import type { RequiredKey } from '@trezor/type-utils';
 import { Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 
-import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
+import { findProcessFromIncomingPort } from './process';
 import { getFreePort } from './getFreePort';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;

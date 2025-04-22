@@ -1,6 +1,6 @@
 import net from 'net';
 
-import { findProcessFromIncomingPort } from '../findProcessFromIncomingPort';
+import { findFullPathByPid, findProcessFromIncomingPort } from '../process';
 import { getFreePort } from '../getFreePort';
 
 describe('findProcessFromIncomingPort', () => {
@@ -24,6 +24,9 @@ describe('findProcessFromIncomingPort', () => {
             } else {
                 expect(processInfo?.name).toEqual('node');
             }
+
+            const executablePath = await findFullPathByPid(processInfo!.pid);
+            console.log('executablePath', executablePath);
         } finally {
             server.close();
         }

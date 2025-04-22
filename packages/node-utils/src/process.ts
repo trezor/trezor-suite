@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 
-function spawnAndCollectStdout(command: string): Promise<string> {
+export function spawnAndCollectStdout(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
         const child = spawn(command, { shell: true });
         let stdout = '';
@@ -73,3 +73,4 @@ export async function findProcessFromIncomingPort(port: number) {
         }
     }
 }
+
