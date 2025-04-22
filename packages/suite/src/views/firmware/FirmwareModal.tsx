@@ -2,22 +2,21 @@ import { ReactNode, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
-import {
-    acquireDevice,
-    selectDevices,
-    selectIsDeviceBackedUp,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
-import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
+import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
-import { updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import { closeModalApp, goto } from 'src/actions/suite/routerActions';
-import { CheckSeedStep, FirmwareInstallationStandalone } from 'src/components/firmware';
-import { PrerequisitesGuide, Translation } from 'src/components/suite';
+import { closeModalApp } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
+
+import { StepCheckSeed } from './Steps/StepCheckSeed';
+import { StepDone } from './Steps/StepDone';
+import { StepError } from './Steps/StepError';
+import { StepInitial } from './Steps/StepInitial';
+import { StepStarted } from './Steps/StepStarted';
 
 type FirmwareModalProps = {
     children: ReactNode;
@@ -45,18 +44,17 @@ export const FirmwareModal = ({
         showConfirmationPill,
     } = useFirmwareInstallation({ shouldSwitchFirmwareType });
     const device = useSelector(selectSelectedDevice);
-    const devices = useSelector(selectDevices);
-    const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
+
     const dispatch = useDispatch();
     const intl = useIntl();
     const [isChecked, setIsChecked] = useState(false);
 
-    const isCustomFirmware = typeof isCustomFirmwareUploaded !== 'undefined';
     const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
-    const devicesConnected = devices.filter(device => device?.connected);
-    const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
-    const shouldCheckSeed = device?.mode !== 'initialize';
+
+    // The 'started' is NOT cancellable as the FW is streamed into the device.
+    // It can be cancelled only via `trezorCancel`
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
+
     const isAwaitingPinEntry =
         uiEvent?.type === 'button' && uiEvent.payload.code === 'ButtonRequest_PinEntry';
 
@@ -67,125 +65,59 @@ export const FirmwareModal = ({
         dispatch(closeModalApp());
         resetReducer();
     };
-    const handlePinCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
-    const handleInstall = () => {
-        install();
-        updateAnalytics({ firmware: 'install' });
-    };
+    const trezorCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     const getContent = () => {
-        if (
-            (!device?.connected || !device?.features) &&
-            ['initial', 'check-seed'].includes(status)
-        ) {
-            return <PrerequisitesGuide />;
-        }
-
         switch (status) {
             case 'error':
-                return (
-                    <>
-                        <H3>
-                            <Translation id="TR_FW_INSTALLATION_FAILED" />
-                        </H3>
-                        <Paragraph>
-                            <Translation id="TOAST_GENERIC_ERROR" values={{ error: error || '' }} />
-                        </Paragraph>
-                    </>
-                );
+                return <StepError error={error} onClose={handleClose} />;
             case 'initial':
-                return children;
+                return (
+                    <StepInitial
+                        onClose={handleClose}
+                        install={install}
+                        setStatus={setStatus}
+                        isCustomFirmwareUploaded={isCustomFirmwareUploaded}
+                        modalHeading={heading}
+                    >
+                        {children}
+                    </StepInitial>
+                );
             case 'check-seed':
                 return (
-                    <CheckSeedStep
+                    <StepCheckSeed
+                        resetReducer={resetReducer}
+                        onClose={handleClose}
                         deviceWillBeWiped={deviceWillBeWiped}
                         setIsChecked={setIsChecked}
                         isChecked={isChecked}
+                        modalHeading={heading}
+                        install={install}
                     />
                 );
             case 'started':
-            case 'done':
                 return (
-                    <FirmwareInstallationStandalone
+                    <StepStarted
+                        modalHeading={heading}
                         install={install}
                         onPromptClose={handleClose}
-                        isCustomFirmware={isCustomFirmware}
+                        isCustomFirmwareUploaded={isCustomFirmwareUploaded}
                     />
-                );
-        }
-    };
-
-    const getBottomContent = () => {
-        switch (status) {
-            case 'error':
-                return (
-                    <Modal.Button variant="tertiary" onClick={handleClose}>
-                        <Translation id="TR_CLOSE" />
-                    </Modal.Button>
-                );
-            case 'initial':
-                return (
-                    <>
-                        <Tooltip
-                            content={<Translation id="TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES" />}
-                            isActive={multipleDevicesConnected}
-                        >
-                            <Modal.Button
-                                onClick={() =>
-                                    shouldCheckSeed ? setStatus('check-seed') : handleInstall()
-                                }
-                                data-testid="@firmware/install-button"
-                                isDisabled={
-                                    isCustomFirmware
-                                        ? !isCustomFirmwareUploaded
-                                        : multipleDevicesConnected
-                                }
-                            >
-                                <Translation id={shouldCheckSeed ? 'TR_CONTINUE' : 'TR_INSTALL'} />
-                            </Modal.Button>
-                        </Tooltip>
-                        <Modal.Button variant="tertiary" onClick={handleClose}>
-                            <Translation id="TR_CANCEL" />
-                        </Modal.Button>
-                    </>
-                );
-            case 'check-seed':
-                return (
-                    <>
-                        <Modal.Button
-                            onClick={install}
-                            data-testid="@firmware/confirm-seed-button"
-                            isDisabled={!device?.connected || !isChecked}
-                            variant={deviceWillBeWiped ? 'destructive' : 'primary'}
-                        >
-                            <Translation
-                                id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_INSTALL'}
-                            />
-                        </Modal.Button>
-                        <Modal.Button
-                            variant="tertiary"
-                            onClick={() => {
-                                resetReducer();
-                                dispatch(
-                                    goto(isDeviceBackedUp ? 'recovery-index' : 'backup-index'),
-                                );
-                            }}
-                        >
-                            <Translation
-                                id={isDeviceBackedUp ? 'TR_CHECK_SEED' : 'TR_CREATE_BACKUP'}
-                            />
-                        </Modal.Button>
-                    </>
                 );
             case 'done':
                 return (
-                    <Modal.Button onClick={handleClose} data-testid="@firmware/continue-button">
-                        <Translation id="TR_CLOSE" />
-                    </Modal.Button>
+                    <StepDone
+                        modalHeading={heading}
+                        install={install}
+                        onClose={handleClose}
+                        isCustomFirmwareUploaded={isCustomFirmwareUploaded}
+                    />
                 );
-            default:
-                return null;
+            default: {
+                const _unhandledCase: never = status;
+                throw new Error(`Unhandled status: ${_unhandledCase}`);
+            }
         }
     };
 
@@ -197,19 +129,10 @@ export const FirmwareModal = ({
                     deviceModelInternal={deviceModelInternal}
                     deviceUnitColor={uiEvent?.payload.device.features?.unit_color}
                     isConfirmed={!confirmOnDevice}
-                    onCancel={isAwaitingPinEntry ? handlePinCancel : undefined}
+                    onCancel={isAwaitingPinEntry ? trezorCancel : undefined}
                 />
             )}
-            <Modal.ModalBase
-                onCancel={isCancelable ? handleClose : undefined}
-                data-testid="@firmware-modal"
-                heading={status === 'error' ? undefined : heading}
-                bottomContent={getBottomContent()}
-                iconName={status === 'error' ? 'warning' : undefined}
-                variant={status === 'error' ? 'destructive' : undefined}
-            >
-                {getContent()}
-            </Modal.ModalBase>
+            {getContent()}
         </Modal.Backdrop>
     );
 };

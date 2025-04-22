@@ -164,7 +164,7 @@ export const closeModalApp =
         if (!preserveParams && history.location.hash.length > 0) {
             history.push(getPrefixedURL(history.location.pathname));
         } else {
-            // + history.location.hash is here to preserve params (eg nth account)
+            // + history.location.hash is here to preserve params (e.g. nth account)
             dispatch(onLocationChange(history.location.pathname + history.location.hash));
         }
     };
