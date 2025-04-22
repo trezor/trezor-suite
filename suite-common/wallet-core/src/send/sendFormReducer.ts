@@ -12,8 +12,9 @@ import {
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import { cloneObject } from '@trezor/utils';
+import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { sendFormActions } from './sendFormActions';
 import { SerializedTx } from './sendFormTypes';
@@ -22,6 +23,7 @@ import {
     DeviceRootState,
     selectDeviceButtonRequestsCodes,
     selectDeviceModel,
+    selectSelectedDevice,
 } from '../device/deviceReducer';
 
 export type SendState = {
@@ -143,20 +145,23 @@ export const selectSendFormReviewButtonRequestsCount = (
 ) => {
     const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
     const deviceModel = selectDeviceModel(state);
+    const device = selectSelectedDevice(state);
 
     if (G.isNullable(symbol)) return 0;
 
     const networkType = getNetworkType(symbol);
 
     const isCardano = networkType === 'cardano';
-    const isEthereum = networkType === 'ethereum';
 
     const sendFormReviewRequest = buttonRequestCodes.filter(
         code =>
             code === 'ButtonRequest_ConfirmOutput' ||
             code === 'ButtonRequest_SignTx' ||
-            isCardano ||
-            (isEthereum && code === 'ButtonRequest_Other'),
+            // Firmware 2.x.x below 2.8.9 returns 'ButtonRequest_Other' instead of 'ButtonRequest_SignTx' in some flows.
+            // This condition should be removed when 2.8.8 is no longer supported by Suite.
+            (!isNewerOrEqual(getFirmwareVersion(device), '2.8.9') &&
+                ['cardano', 'ethereum'].includes(networkType) &&
+                code === 'ButtonRequest_Other'),
     );
 
     // NOTE: T1B1 edge-case

@@ -3,6 +3,8 @@ import { MiddlewareAPI } from 'redux';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { SUITE } from 'src/actions/suite/constants';
@@ -41,6 +43,13 @@ const buttonRequest =
         // ugly hack to make Ethereum staking and bump fee review modal on specific devices work
         // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
         if (action.type === UI.REQUEST_BUTTON && action.payload.code === 'ButtonRequest_Other') {
+            // Fixed in https://github.com/trezor/trezor-firmware/commit/b8e2709ca8f141a5ded1ffdd5d20d4b388fe49d6
+            // The whole workaround can be removed when 2.8.8 is no longer supported by Suite.
+            const device = selectSelectedDevice(api.getState());
+            if (isNewerOrEqual(getFirmwareVersion(device), '2.8.9')) {
+                return action;
+            }
+
             const {
                 wallet: {
                     selectedAccount: { account },
