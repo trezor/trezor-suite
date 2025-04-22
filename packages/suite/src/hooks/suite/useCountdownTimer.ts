@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import intervalToDuration from 'date-fns/intervalToDuration';
+import { intervalToDuration } from 'date-fns';
 
 export const useCountdownTimer = (deadline: number) => {
     const getDuration = useCallback(

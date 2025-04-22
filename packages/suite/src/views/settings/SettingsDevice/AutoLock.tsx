@@ -1,3 +1,5 @@
+import type { Locale } from 'date-fns';
+
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 

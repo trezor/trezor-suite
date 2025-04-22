@@ -12,13 +12,15 @@ export const useLocales = () => {
     useEffect(() => {
         let active = true;
         const loadLocale = async () => {
-            const lang = language === 'en' ? 'en-US' : language;
+            const lang = language === 'en' ? 'enUS' : language;
 
             let dateLocale;
             try {
-                dateLocale = await import(/* @vite-ignore */ `date-fns/locale/${lang}/index`);
+                dateLocale = await import(/* @vite-ignore */ `date-fns/locale`).then(
+                    module => module[lang as keyof typeof module],
+                );
             } catch {
-                dateLocale = await import(`date-fns/locale/en-US/index`);
+                dateLocale = await import(`date-fns/locale`).then(module => module['enUS']);
 
                 console.warn(
                     `date-fns language: ${language} is not available. Using en-US fallback.`,

@@ -9090,7 +9090,7 @@ __metadata:
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
   languageName: unknown
   linkType: soft
 
@@ -9123,7 +9123,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
     react: "npm:18.2.0"
     react-intl: "npm:^7.1.11"
   languageName: unknown
@@ -9144,7 +9144,7 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
     react: "npm:18.2.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -9303,7 +9303,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
   languageName: unknown
   linkType: soft
 
@@ -9440,7 +9440,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
     react-hook-form: "npm:^7.54.2"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
@@ -9482,7 +9482,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.54.2"
     web3-utils: "npm:^4.3.1"
@@ -10261,7 +10261,7 @@ __metadata:
     "@suite-native/transactions": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.9"
@@ -11402,13 +11402,13 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.55"
     "@types/react-date-range": "npm:^1.4.10"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
     framer-motion: "npm:^12.7.4"
     lottie-react: "npm:2.4.1"
     polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:18.2.0"
-    react-date-range: "npm:^1.4.0"
+    react-date-range: "npm:^2.0.1"
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.13.6"
     react-intl: "npm:^7.1.11"
@@ -12381,7 +12381,7 @@ __metadata:
     "@types/ua-parser-js": "npm:^0.7.39"
     "@types/zxcvbn": "npm:4.4.5"
     bs58check: "npm:^4.0.0"
-    date-fns: "npm:^2.30.0"
+    date-fns: "npm:^4.1.0"
     dropbox: "npm:^10.34.0"
     file-saver: "npm:^2.0.5"
     framer-motion: "npm:^12.7.4"
@@ -34857,18 +34857,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-date-range@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "react-date-range@npm:1.4.0"
+"react-date-range@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "react-date-range@npm:2.0.1"
   dependencies:
     classnames: "npm:^2.2.6"
     prop-types: "npm:^15.7.2"
     react-list: "npm:^0.8.13"
     shallow-equal: "npm:^1.2.1"
   peerDependencies:
-    date-fns: 2.0.0-alpha.7 || >=2.0.0
+    date-fns: 3.0.6 || >=3.0.0
     react: ^0.14 || ^15.0.0-rc || >=15.0
-  checksum: 10/72b2dbb4de14448cb8011c8cdde2571e8b44d6fb7ae863715da5bced7cc4f9a834ccfb2db1f177a4eecd753321a16ae15c3e4f2370b4f0e8ec2ecbe76b73287a
+  checksum: 10/f5ca9d64eb8dfb557dd04b84ce5270229dbc8532ae14a2a7fd254c61340561c0281bc39482c5d71a59e12caa6258fc436eb27d684ca9b5a3360c19c8b98d14da
   languageName: node
   linkType: hard
 

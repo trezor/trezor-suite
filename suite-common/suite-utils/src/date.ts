@@ -1,5 +1,5 @@
+import { type Locale } from 'date-fns';
 import {
-    Locale,
     differenceInCalendarMonths,
     differenceInMinutes,
     differenceInMonths,

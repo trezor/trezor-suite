@@ -4,14 +4,7 @@ export const fixtures = [
         duration: 1000,
         expected: {
             isPastDeadline: true,
-            duration: {
-                years: 0,
-                months: 0,
-                days: 0,
-                hours: 0,
-                minutes: 0,
-                seconds: 0,
-            },
+            duration: {},
         },
     },
     {
@@ -20,10 +13,6 @@ export const fixtures = [
         expected: {
             isPastDeadline: false,
             duration: {
-                years: 0,
-                months: 0,
-                days: 0,
-                hours: 0,
                 minutes: 1,
                 seconds: 29,
             },

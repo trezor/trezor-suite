@@ -86,7 +86,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "bs58check": "^4.0.0",
-        "date-fns": "^2.30.0",
+        "date-fns": "^4.1.0",
         "dropbox": "^10.34.0",
         "file-saver": "^2.0.5",
         "framer-motion": "^12.7.4",

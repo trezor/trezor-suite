@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import hoursToMilliseconds from 'date-fns/hoursToMilliseconds';
+import { hoursToMilliseconds } from 'date-fns';
 
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
