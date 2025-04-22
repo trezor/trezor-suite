@@ -10,14 +10,18 @@ export const useOpenSuiteDesktop = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
-        if (isWebUsbTransport) {
-            (TrezorConnect as typeof TrezorConnectWeb).disableWebUSB();
-        }
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
 
-        location.href = SUITE_BRIDGE_DEEPLINK;
+        iframe.src = SUITE_BRIDGE_DEEPLINK;
 
         // fallback in case deeplink does not work
         window.setTimeout(() => {
+            document.body.removeChild(iframe);
+            if (isWebUsbTransport) {
+                (TrezorConnect as typeof TrezorConnectWeb).disableWebUSB();
+            }
             if (!windowFocused.current) return;
 
             window.open(SUITE_URL);
