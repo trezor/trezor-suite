@@ -16,6 +16,7 @@ import { signDataAndConfirmThunk } from './exchange/signDataAndConfirmThunk';
 import { handleSellRequestThunk } from './sell/handleSellRequestThunk';
 import { handleSellTradeThunk } from './sell/handleSellTradeThunk';
 import { loadSellInfoThunk } from './sell/loadSellInfoThunk';
+import { sendSellTransactionThunk } from './sell/sendSellTransactionThunk';
 
 export { type HandleRequestThunkProps } from './buy/handleRequestThunk';
 
@@ -47,4 +48,5 @@ export const sellThunks = {
     loadInfoThunk: loadSellInfoThunk,
     handleRequestThunk: handleSellRequestThunk,
     handleTradeThunk: handleSellTradeThunk,
+    sendTransactionThunk: sendSellTransactionThunk,
 };
