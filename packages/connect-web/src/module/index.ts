@@ -55,9 +55,12 @@ const disableWebUSB = () => {
 };
 
 const requestWebUSBDevice = async () => {
-    await window.navigator.usb.requestDevice({ filters: config.webusb });
-
-    impl.getTarget().handleCoreMessage({ type: TRANSPORT.REQUEST_DEVICE });
+    try {
+        await window.navigator.usb.requestDevice({ filters: config.webusb });
+        impl.getTarget().handleCoreMessage({ type: TRANSPORT.REQUEST_DEVICE });
+    } catch {
+        // empty
+    }
 };
 
 const TrezorConnect = factory(
