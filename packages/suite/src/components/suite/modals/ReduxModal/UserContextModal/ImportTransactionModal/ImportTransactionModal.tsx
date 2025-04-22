@@ -4,7 +4,7 @@ import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
-import { Card, CollapsibleBox, Column, Modal, Paragraph, Tabs, Textarea } from '@trezor/components';
+import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -24,8 +24,8 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
     const [content, setContent] = useState<string>('');
     const exampleCSV = useExampleCSV();
 
-    const onCsvResult = (result: string) => {
-        const parsed = parseCSV(result, ['address', 'amount', 'currency', 'label'], delimiter);
+    const onCsvResult = (input: string) => {
+        const parsed = parseCSV(input, ['address', 'amount', 'currency', 'label'], delimiter);
 
         parsed.forEach(item => {
             const network = networksCollection.find(
@@ -79,9 +79,9 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                     hasDivider={false}
                 >
                     <Card paddingType="normal">
-                        <Paragraph typographyStyle="label" as="pre" isMonospaced>
+                        <Text typographyStyle="label" as="pre" isMonospaced>
                             {exampleCSV}
-                        </Paragraph>
+                        </Text>
                     </Card>
                 </CollapsibleBox>
                 <Card>
