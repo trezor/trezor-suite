@@ -3,8 +3,8 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { ComposeOutput, TransactionInputOutputSortingStrategy, composeTx } from '@trezor/utxo-lib';
 
-import { BitcoinFeeLevels } from './BitcoinFees';
 import { Blockchain } from '../../backend/BlockchainLink';
+import { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
 import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
 import type {
     ComposeResult,

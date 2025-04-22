@@ -2,8 +2,8 @@
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Blockchain } from '../../backend/BlockchainLink';
 import type { CoinInfo, FeeLevel } from '../../types';
+import { Blockchain } from '../Blockchain';
 
 export type Blocks = Array<string | undefined>;
 

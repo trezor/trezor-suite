@@ -4,11 +4,11 @@ import { ERRORS } from '../constants';
 import { AbstractMethod, MethodReturnType, Payload } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { BitcoinFeeLevels } from '../backend/fees/BitcoinFeeLevels';
+import { EthereumFeeLevels } from '../backend/fees/EthereumFeeLevels';
+import { MiscFeeLevels } from '../backend/fees/MiscFeeLevels';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
-import { BitcoinFeeLevels } from './bitcoin/BitcoinFees';
-import { MiscFeeLevels } from './common/MiscFees';
-import { EthereumFeeLevels } from './ethereum/EthereumFees';
 
 type Params = {
     coinInfo: CoinInfo;

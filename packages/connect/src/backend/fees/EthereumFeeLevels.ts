@@ -1,8 +1,8 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Blockchain } from '../../backend/BlockchainLink';
 import type { EthereumNetworkInfo, FeeLevel } from '../../types';
-import { Blocks, MiscFeeLevels } from '../common/MiscFees';
+import { Blockchain } from '../Blockchain';
+import { Blocks, MiscFeeLevels } from './MiscFeeLevels';
 
 export class EthereumFeeLevels extends MiscFeeLevels {
     coinInfo: EthereumNetworkInfo;

@@ -2,9 +2,9 @@
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Blockchain } from '../../backend/BlockchainLink';
 import type { BitcoinNetworkInfo, FeeLevel } from '../../types';
-import { Blocks } from '../common/MiscFees';
+import { Blockchain } from '../Blockchain';
+import { Blocks } from './MiscFeeLevels';
 
 const findBlocksForFee = (feePerUnit: string, blocks: Blocks) => {
     const fee = new BigNumber(feePerUnit);
