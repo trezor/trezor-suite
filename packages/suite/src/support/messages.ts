@@ -9827,4 +9827,8 @@ export default defineMessages({
         id: 'TR_REQUESTED_NETWORKS',
         defaultMessage: 'Requested networks',
     },
+    TR_COULD_NOT_PARSE: {
+        id: 'TR_COULD_NOT_PARSE',
+        defaultMessage: 'Failed to parse the input',
+    },
 } as const);

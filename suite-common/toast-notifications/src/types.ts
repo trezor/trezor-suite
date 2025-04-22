@@ -72,7 +72,8 @@ export type ToastPayload = (
               | 'firmware-language-changed'
               | 'firmware-language-fetch-error'
               | 'estimated-fee-error'
-              | 'not-enough-funds-error';
+              | 'not-enough-funds-error'
+              | 'could-not-parse-csv';
       }
     | SentTransactionNotification
     | {

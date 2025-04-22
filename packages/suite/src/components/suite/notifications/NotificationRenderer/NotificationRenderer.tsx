@@ -306,6 +306,8 @@ export const NotificationRenderer = ({
             return error(render, notification, 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR');
         case 'not-enough-funds-error':
             return error(render, notification, 'TR_NOT_ENOUGH_FUNDS');
+        case 'could-not-parse-csv':
+            return error(render, notification, 'TR_COULD_NOT_PARSE');
 
         // intentionally no default, all cases must be handled.
     }

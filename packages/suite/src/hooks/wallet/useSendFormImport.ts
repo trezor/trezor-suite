@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRates, FiatRatesResult, Output, Rate, Timestamp } from '@suite-common/wallet-types';
@@ -41,6 +42,13 @@ export const useSendFormImport = ({
         if (!result || result.length < 1) return; // cancelled
 
         const rates: { currency: string; rate?: number }[] = [];
+
+        if (result.some(it => !Object.prototype.hasOwnProperty.call(it, 'currency'))) {
+            dispatch(notificationsActions.addToast({ type: 'could-not-parse-csv' }));
+
+            return;
+        }
+
         const currencies = result.map(it => it.currency.toLowerCase());
         const uniqueCurrencies = [...new Set(currencies)];
 
@@ -140,9 +148,7 @@ export const useSendFormImport = ({
                 }
 
                 if (!output.amount || !output.fiat) {
-                    // TODO: display Toast notification with invalid currency error?
-                    // what if there will be multiple errors? Toast spamming...
-                    console.warn('import error', itemCurrency, output);
+                    dispatch(notificationsActions.addToastOnce({ type: 'could-not-parse-csv' }));
                 }
             }
 
