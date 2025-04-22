@@ -74,3 +74,24 @@ export async function findProcessFromIncomingPort(port: number) {
     }
 }
 
+export const findFullPathByPid = async (pid: string): Promise<string | undefined> => {
+    switch (process.platform) {
+        case 'darwin':
+        case 'linux': {
+            const command = `ps -p ${pid} -o args=`;
+            const stdout = await spawnAndCollectStdout(command);
+            if (stdout) {
+                return stdout.trim();
+            }
+            return undefined;
+        }
+        case 'win32': {
+            const command = `wmic process where "ProcessId=${pid}" get ExecutablePath`;
+            const stdout = await spawnAndCollectStdout(command);
+            if (stdout) {
+                return stdout.trim();
+            }
+            return undefined;
+        }
+    }
+};
