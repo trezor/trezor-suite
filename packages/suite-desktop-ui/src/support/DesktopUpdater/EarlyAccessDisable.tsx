@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -27,18 +27,18 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     }, []);
 
     return enabled ? (
-        <NewModal
+        <Modal
             iconName="starFour"
             variant="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={allowPrerelease}>
+                    <Modal.Button onClick={allowPrerelease}>
                         <Translation id="TR_EARLY_ACCESS_DISABLE" />
-                    </NewModal.Button>
-                    <NewModal.Button onClick={hideWindow} variant="tertiary">
+                    </Modal.Button>
+                    <Modal.Button onClick={hideWindow} variant="tertiary">
                         <Translation id="TR_EARLY_ACCESS_STAY_IN" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -52,22 +52,22 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                     <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     ) : (
-        <NewModal
+        <Modal
             iconName="starFour"
             variant="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
                     <TrezorLink variant="nostyle" href={SUITE_URL}>
-                        <NewModal.Button icon="arrowUpRight" iconAlignment="end">
+                        <Modal.Button icon="arrowUpRight" iconAlignment="end">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </TrezorLink>
-                    <NewModal.Button onClick={hideWindow} variant="tertiary">
+                    <Modal.Button onClick={hideWindow} variant="tertiary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -81,6 +81,6 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                     <Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

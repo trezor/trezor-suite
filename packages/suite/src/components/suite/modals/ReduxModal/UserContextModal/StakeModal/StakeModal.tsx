@@ -1,5 +1,5 @@
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Grid, NewModal, useMediaQuery, variables } from '@trezor/components';
+import { Grid, Modal, useMediaQuery, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -37,7 +37,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
 
     return (
         <StakeEthFormContext.Provider value={stakeEthContextValues}>
-            <NewModal
+            <Modal
                 size="huge"
                 heading={
                     <Translation
@@ -52,7 +52,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
                     <StakeEthForm />
                     <StakingInfoCards />
                 </Grid>
-            </NewModal>
+            </Modal>
         </StakeEthFormContext.Provider>
     );
 };

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
-import { Banner, Button, Card, Column, H3, NewModal, Paragraph, Row } from '@trezor/components';
+import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -39,7 +39,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
     return symbol ? (
         <AdvancedCoinSettingsModal symbol={symbol} onCancel={() => setSymbol(undefined)} />
     ) : (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             variant={onionBackends.length ? 'warning' : 'primary'}
             size="small"
@@ -49,7 +49,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
             }
             bottomContent={
                 <>
-                    <NewModal.Button onClick={onDisableTor}>
+                    <Modal.Button onClick={onDisableTor}>
                         <Translation
                             id={
                                 onionBackends.length
@@ -57,10 +57,10 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                     : 'TR_TOR_DISABLE'
                             }
                         />
-                    </NewModal.Button>
-                    <NewModal.Button onClick={onCancel} variant="tertiary">
+                    </Modal.Button>
+                    <Modal.Button onClick={onCancel} variant="tertiary">
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -109,6 +109,6 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                     </Paragraph>
                 </Column>
             )}
-        </NewModal>
+        </Modal>
     );
 };

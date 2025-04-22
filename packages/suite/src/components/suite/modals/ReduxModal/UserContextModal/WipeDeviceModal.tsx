@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Card, Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
@@ -28,24 +28,24 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
         : 'TR_DEVICE_SETTINGS_WIPE_DEVICE';
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             variant="destructive"
             iconName="shieldWarning"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         variant="destructive"
                         onClick={handleWipeDevice}
                         isDisabled={isLocked() || !checkbox1 || !checkbox2}
                         data-testid="@wipe/wipe-button"
                     >
                         <Translation id={headingTranslation} />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -79,6 +79,6 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                     />
                 </Column>
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

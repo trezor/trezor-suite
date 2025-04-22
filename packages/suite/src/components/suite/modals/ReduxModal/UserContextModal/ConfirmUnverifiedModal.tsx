@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Button, H3, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { Button, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { onCancel } from 'src/actions/suite/modalActions';
@@ -63,7 +63,7 @@ export const ConfirmUnverifiedModal = ({
     }, [device?.connected, dispatch, verifyProcess]);
 
     return (
-        <NewModal
+        <Modal
             variant="warning"
             size="small"
             iconName="shieldWarning"
@@ -104,6 +104,6 @@ export const ConfirmUnverifiedModal = ({
                     values={{ claim: <Translation id={description} /> }}
                 />
             </Paragraph>
-        </NewModal>
+        </Modal>
     );
 };

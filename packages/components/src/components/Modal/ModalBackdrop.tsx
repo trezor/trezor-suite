@@ -6,17 +6,17 @@ import styled from 'styled-components';
 
 import { ZIndexValues, spacings, zIndices } from '@trezor/theme';
 
-import { useModalTarget } from './NewModalProvider';
-import { NewModalAlignment } from './types';
+import { useModalTarget } from './ModalProvider';
+import { ModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
 import { Padding } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Column } from '../Flex/Flex';
 
-export type NewModalBackdropProps = {
+export type ModalBackdropProps = {
     onClick?: () => void;
     children?: ReactNode;
-    alignment?: NewModalAlignment;
+    alignment?: ModalAlignment;
     padding?: Padding;
     zIndex?: ZIndexValues;
 };
@@ -31,13 +31,13 @@ const InnerWrapper = styled.div`
     display: contents;
 `;
 
-export const NewModalBackdrop = ({
+export const ModalBackdrop = ({
     onClick,
     children,
     alignment = { x: 'center', y: 'center' },
     padding = spacings.xs,
     zIndex = zIndices.modal,
-}: NewModalBackdropProps) => {
+}: ModalBackdropProps) => {
     const modalTarget = useModalTarget();
 
     const backdrop = (

@@ -1,4 +1,4 @@
-import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
@@ -11,12 +11,12 @@ export const MoreRoundsNeededModal = () => {
     const close = () => dispatch(closeModal());
 
     return (
-        <NewModal
+        <Modal
             onCancel={close}
             bottomContent={
-                <NewModal.Button variant="tertiary" onClick={close}>
+                <Modal.Button variant="tertiary" onClick={close}>
                     <Translation id="TR_CLOSE" />
-                </NewModal.Button>
+                </Modal.Button>
             }
             size="small"
             iconName="arrowsIn"
@@ -30,6 +30,6 @@ export const MoreRoundsNeededModal = () => {
                     <Translation id="TR_MORE_ROUNDS_NEEDED_DESCRIPTION" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

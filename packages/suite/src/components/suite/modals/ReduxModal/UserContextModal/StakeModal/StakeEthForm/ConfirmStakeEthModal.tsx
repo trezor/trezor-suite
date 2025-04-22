@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { Banner, Card, Checkbox, Column, NewModal } from '@trezor/components';
+import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
@@ -82,19 +82,19 @@ export const ConfirmStakeEthModal = ({
     if (!account) return null;
 
     return (
-        <NewModal
+        <Modal
             heading={<Translation id="TR_STAKE_CONFIRM_ENTRY_PERIOD" />}
             onCancel={handleOnCancel}
             size="small"
             variant="warning"
             bottomContent={
                 <>
-                    <NewModal.Button isDisabled={isDisabled} onClick={onClick}>
+                    <Modal.Button isDisabled={isDisabled} onClick={onClick}>
                         <Translation id="TR_STAKE_CONFIRM_AND_STAKE" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={handleOnCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={handleOnCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -133,6 +133,6 @@ export const ConfirmStakeEthModal = ({
                     <Translation id="TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD" />
                 </Checkbox>
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

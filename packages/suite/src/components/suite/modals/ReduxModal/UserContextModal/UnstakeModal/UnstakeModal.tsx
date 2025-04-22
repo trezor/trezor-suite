@@ -4,7 +4,7 @@ import {
     Column,
     Grid,
     H3,
-    NewModal,
+    Modal,
     useMediaQuery,
     variables,
 } from '@trezor/components';
@@ -45,7 +45,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
 
     return (
         <UnstakeEthFormContext.Provider value={unstakeEthContextValues}>
-            <NewModal
+            <Modal
                 size="huge"
                 heading={<Translation id="TR_STAKE_UNSTAKE" />}
                 description={<Translation id="TR_STAKE_CLAIM_AFTER_UNSTAKING" />}
@@ -68,7 +68,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                         </CollapsibleBox>
                     </Column>
                 </Grid>
-            </NewModal>
+            </Modal>
         </UnstakeEthFormContext.Provider>
     );
 };

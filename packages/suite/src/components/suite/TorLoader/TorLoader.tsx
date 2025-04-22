@@ -5,7 +5,7 @@ import {
     Card,
     Column,
     H3,
-    NewModal,
+    Modal,
     Paragraph,
     ProgressBar,
     Row,
@@ -101,30 +101,30 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
     };
 
     return (
-        <NewModal
+        <Modal
             variant="info"
             iconName="torBrowser"
             size="small"
             bottomContent={
                 <>
                     {!isDisabling && (
-                        <NewModal.Button
+                        <Modal.Button
                             data-testid="@tor-loading-screen/disable-button"
                             variant="tertiary"
                             onClick={disableTor}
                         >
                             <Translation id="TR_TOR_DISABLE" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     )}
                     {isTorError && (
-                        <NewModal.Button
+                        <Modal.Button
                             data-testid="@tor-loading-screen/try-again-button"
                             icon="repeat"
                             onClick={tryAgain}
                             variant="tertiary"
                         >
                             <Translation id="TR_TRY_AGAIN" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     )}
                 </>
             }
@@ -151,6 +151,6 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                     </Banner>
                 )}
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

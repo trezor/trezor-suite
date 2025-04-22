@@ -1,4 +1,4 @@
-import { Box, Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Box, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
@@ -18,17 +18,17 @@ export const BridgeDeprecated = () => {
     useLayout('Bridge');
 
     return (
-        <NewModal
+        <Modal
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         icon="caretLeft"
                         variant="tertiary"
                         onClick={() => goToWallet()}
                         data-testid="@bridge/goto/wallet-index"
                     >
                         <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             size="small"
@@ -55,6 +55,6 @@ export const BridgeDeprecated = () => {
                     />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

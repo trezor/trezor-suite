@@ -7,7 +7,7 @@ import {
     Column,
     ElevationDown,
     ElevationUp,
-    NewModal,
+    Modal,
     Row,
     useElevation,
     variables,
@@ -81,7 +81,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                     data-testid="@welcome-layout/body"
                     alignItems="normal"
                 >
-                    <NewModal.Provider>
+                    <Modal.Provider>
                         <ElevationDown>
                             <LoggedOutSidebar />
                         </ElevationDown>
@@ -102,7 +102,7 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
 
                         <GuideButton />
                         <GuideRouter />
-                    </NewModal.Provider>
+                    </Modal.Provider>
                 </Row>
             </Column>
             {theme.variant === 'debug' && <DebugLegend />}

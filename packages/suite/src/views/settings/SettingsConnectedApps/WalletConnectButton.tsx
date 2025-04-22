@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
-import { Button, Input, NewModal } from '@trezor/components';
+import { Button, Input, Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
@@ -22,23 +22,20 @@ export const WalletConnectButton = () => {
     return (
         <>
             {modalOpened && (
-                <NewModal.Backdrop onClick={onCancel}>
-                    <NewModal.ModalBase
+                <Modal.Backdrop onClick={onCancel}>
+                    <Modal.ModalBase
                         heading={<Translation id="TR_WALLETCONNECT_ADD_CONNECTION" />}
                         description={<Translation id="TR_WALLETCONNECT_ADD_CONNECTION_DESC" />}
                         onCancel={onCancel}
                         size="small"
                         bottomContent={
                             <>
-                                <NewModal.Button
-                                    onClick={handleConnect}
-                                    isDisabled={!connectionUrl}
-                                >
+                                <Modal.Button onClick={handleConnect} isDisabled={!connectionUrl}>
                                     <Translation id="TR_CONNECT" />
-                                </NewModal.Button>
-                                <NewModal.Button variant="tertiary" onClick={onCancel}>
+                                </Modal.Button>
+                                <Modal.Button variant="tertiary" onClick={onCancel}>
                                     <Translation id="TR_CANCEL" />
-                                </NewModal.Button>
+                                </Modal.Button>
                             </>
                         }
                     >
@@ -49,8 +46,8 @@ export const WalletConnectButton = () => {
                                 'TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER',
                             )}
                         />
-                    </NewModal.ModalBase>
-                </NewModal.Backdrop>
+                    </Modal.ModalBase>
+                </Modal.Backdrop>
             )}
 
             <Button

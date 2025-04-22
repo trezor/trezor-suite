@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import * as STEP from 'src/constants/onboarding/steps';
@@ -56,26 +56,26 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
     };
 
     return (
-        <NewModal
+        <Modal
             heading={heading}
             onCancel={onCancel}
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={onCancel}>
+                    <Modal.Button onClick={onCancel}>
                         <Translation id="TR_DONT_SKIP" />
-                    </NewModal.Button>
-                    <NewModal.Button
+                    </Modal.Button>
+                    <Modal.Button
                         variant="tertiary"
                         data-testid="@onboarding/skip-button-confirm"
                         onClick={handleSkipStepConfirm}
                     >
                         {secondaryButtonText}
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
             {body}
-        </NewModal>
+        </Modal>
     );
 };

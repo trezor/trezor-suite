@@ -1,4 +1,4 @@
-import { Card, Checkbox, Column, H4, NewModal, Paragraph } from '@trezor/components';
+import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
@@ -34,7 +34,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
         dispatch(setFlag('enableAutoupdateOnNextRun', !enableAutoupdateOnNextRun));
 
     return (
-        <NewModal
+        <Modal
             heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
             description={
                 <Translation
@@ -45,12 +45,12 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
             onCancel={onCancel}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={downloadUpdate}>
+                    <Modal.Button onClick={downloadUpdate}>
                         <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
-                    </NewModal.Button>
-                    <NewModal.Button onClick={onCancel} variant="tertiary">
+                    </Modal.Button>
+                    <Modal.Button onClick={onCancel} variant="tertiary">
                         <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -81,6 +81,6 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                     <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
                 </Checkbox>
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { Card, Column, H3, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { Card, Column, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -29,22 +29,22 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates({ isManual: true }), []);
 
     return enabled ? (
-        <NewModal
+        <Modal
             iconName="starFour"
             variant="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={checkForUpdates}>
+                    <Modal.Button onClick={checkForUpdates}>
                         <Translation id="TR_EARLY_ACCESS_CHECK_UPDATE" />
-                    </NewModal.Button>
-                    <NewModal.Button
+                    </Modal.Button>
+                    <Modal.Button
                         onClick={hideWindow}
                         variant="tertiary"
                         data-testid="@settings/early-access-skip-button"
                     >
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -56,9 +56,9 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     <Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     ) : (
-        <NewModal
+        <Modal
             iconName="starFour"
             variant="info"
             onCancel={hideWindow}
@@ -72,17 +72,17 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                             )
                         }
                     >
-                        <NewModal.Button
+                        <Modal.Button
                             onClick={allowPrerelease}
                             isDisabled={!understood}
                             data-testid="@settings/early-access-confirm-button"
                         >
                             <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </Tooltip>
-                    <NewModal.Button variant="tertiary" onClick={hideWindow}>
+                    <Modal.Button variant="tertiary" onClick={hideWindow}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -105,6 +105,6 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     onClick={() => setUnderstood(!understood)}
                 />
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

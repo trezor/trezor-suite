@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { selectAllValidMessages, selectMessageSystemConfig } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
-import { Box, Button, ButtonGroup, Column, NewModal, Paragraph, Row } from '@trezor/components';
+import { Box, Button, ButtonGroup, Column, Modal, Paragraph, Row } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
@@ -42,7 +42,7 @@ export const MessageSystemDebugInfo = () => {
                 </ButtonGroup>
             </Row>
             {isModalOpen && (
-                <NewModal onCancel={handleCloseValidMessages}>
+                <Modal onCancel={handleCloseValidMessages}>
                     <Column gap={spacings.sm}>
                         {allValidMessages.map(m => (
                             <div key={m.id}>
@@ -53,7 +53,7 @@ export const MessageSystemDebugInfo = () => {
                             </div>
                         ))}
                     </Column>
-                </NewModal>
+                </Modal>
             )}
         </>
     );

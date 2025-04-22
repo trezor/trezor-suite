@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { Card, NewModal, Row } from '@trezor/components';
+import { Card, Modal, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents, Translation, TrezorLink } from 'src/components/suite';
@@ -28,7 +28,7 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
     }, [getReleaseNotes]);
 
     return (
-        <NewModal
+        <Modal
             heading={
                 <Translation
                     id="TR_VERSION_HAS_BEEN_RELEASED"
@@ -38,9 +38,9 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
             onCancel={onCancel}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={onCancel} variant="primary">
+                    <Modal.Button onClick={onCancel} variant="primary">
                         <Translation id="TR_GOT_IT" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -65,6 +65,6 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
                     <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                 )}
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

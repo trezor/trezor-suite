@@ -1,4 +1,4 @@
-import { Banner, Card, Column, Divider, LoadingContent, NewModal } from '@trezor/components';
+import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -30,7 +30,7 @@ export const CriticalCoinjoinPhaseModal = ({
     }
 
     return (
-        <NewModal
+        <Modal
             size="tiny"
             heading={<Translation id="TR_COINJOIN_RUNNING" />}
             description={
@@ -52,6 +52,6 @@ export const CriticalCoinjoinPhaseModal = ({
                     <AutoStopButton relatedAccountKey={relatedAccountKey} />
                 </Card>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

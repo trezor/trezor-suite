@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Banner, Column, InfoItem, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { Banner, Column, InfoItem, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -81,7 +81,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
     };
 
     return (
-        <NewModal
+        <Modal
             heading={<Translation id="TR_STAKE_CLAIM" />}
             description={
                 <Translation
@@ -94,7 +94,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
             bottomContent={
                 <>
                     <Tooltip content={claimingMessageContent}>
-                        <NewModal.Button
+                        <Modal.Button
                             type="submit"
                             isDisabled={isDisabled || isClaimingDisabled}
                             isLoading={isComposing || isSubmitting}
@@ -102,11 +102,11 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                             icon={isClaimingDisabled ? 'info' : undefined}
                         >
                             <Translation id="TR_STAKE_CLAIM" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </Tooltip>
-                    <NewModal.Button variant="tertiary" onClick={onCancelClick}>
+                    <Modal.Button variant="tertiary" onClick={onCancelClick}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -153,7 +153,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                     )}
                 </Column>
             </form>
-        </NewModal>
+        </Modal>
     );
 };
 

@@ -14,7 +14,7 @@ import {
     Icon,
     InfoSegments,
     List,
-    NewModal,
+    Modal,
     Paragraph,
     Row,
     Select,
@@ -323,5 +323,5 @@ export const TradingDCAModal = ({ device, onCancel }: TradingDCAModalProps) => {
         };
     };
 
-    return <NewModal onCancel={onCancel} size="small" {...getModal()} />;
+    return <Modal onCancel={onCancel} size="small" {...getModal()} />;
 };

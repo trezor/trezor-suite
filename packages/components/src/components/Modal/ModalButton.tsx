@@ -1,12 +1,12 @@
-import { NewModalContext, useNewModalContext } from './NewModalContext';
+import { ModalContext, useModalContext } from './ModalContext';
 import { Button, ButtonProps } from '../buttons/Button/Button';
 
-export const NewModalButton = ({ children, ...rest }: ButtonProps) => {
-    const { variant } = useNewModalContext();
+export const ModalButton = ({ children, ...rest }: ButtonProps) => {
+    const { variant } = useModalContext();
     const value = { variant };
 
     return (
-        <NewModalContext.Provider value={value}>
+        <ModalContext.Provider value={value}>
             <Button
                 {...rest}
                 variant={rest.variant ?? variant}
@@ -15,6 +15,6 @@ export const NewModalButton = ({ children, ...rest }: ButtonProps) => {
             >
                 {children}
             </Button>
-        </NewModalContext.Provider>
+        </ModalContext.Provider>
     );
 };

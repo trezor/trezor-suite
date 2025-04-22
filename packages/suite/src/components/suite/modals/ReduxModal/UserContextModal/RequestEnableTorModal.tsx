@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { UserContextPayload } from '@suite-common/suite-types';
-import { Banner, NewModal } from '@trezor/components';
+import { Banner, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -35,14 +35,14 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             onBackClick={onBackClick}
             heading={<Translation id="TR_TOR_ENABLE" />}
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={onEnableTor}
                         isLoading={isTorLoading}
                         isDisabled={isTorLoading}
@@ -52,10 +52,10 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
                         ) : (
                             <Translation id="TR_TOR_ENABLE" />
                         )}
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -67,6 +67,6 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
                     }}
                 />
             </Banner>
-        </NewModal>
+        </Modal>
     );
 };

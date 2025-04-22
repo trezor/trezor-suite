@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Card, Column, H3, NewModal, Paragraph, Text } from '@trezor/components';
+import { Card, Column, H3, Modal, Paragraph, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -35,22 +35,22 @@ export const BridgeRequested = () => {
 
     if (confirmGoToWallet) {
         return (
-            <NewModal
+            <Modal
                 variant="warning"
                 size="small"
                 heading={<Translation id="TR_BRIDGE" />}
                 onBackClick={() => setConfirmGoToWallet(false)}
                 bottomContent={
                     <>
-                        <NewModal.Button onClick={goToWallet}>
+                        <Modal.Button onClick={goToWallet}>
                             <Translation id="TR_YES_CONTINUE" />
-                        </NewModal.Button>
-                        <NewModal.Button
+                        </Modal.Button>
+                        <Modal.Button
                             variant="tertiary"
                             onClick={() => setConfirmGoToWallet(false)}
                         >
                             <Translation id="TR_CANCEL" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </>
                 }
             >
@@ -58,30 +58,30 @@ export const BridgeRequested = () => {
                 <Paragraph>
                     <Translation id="TR_BRIDGE_GO_TO_WALLET_DESCRIPTION" />
                 </Paragraph>
-            </NewModal>
+            </Modal>
         );
     }
 
     return (
-        <NewModal
+        <Modal
             iconName="appWindow"
             variant="info"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         icon="caretLeft"
                         variant="tertiary"
                         onClick={() => setConfirmGoToWallet(true)}
                         data-testid="@bridge/goto/wallet-index"
                     >
                         <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                    </NewModal.Button>
+                    </Modal.Button>
 
                     {desktopApi.available && (
-                        <NewModal.Button onClick={handleKeepInBackground}>
+                        <Modal.Button onClick={handleKeepInBackground}>
                             <Translation id="TR_KEEP_RUNNING_IN_BACKGROUND" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     )}
                 </>
             }
@@ -105,6 +105,6 @@ export const BridgeRequested = () => {
             >
                 <AutoStart />
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

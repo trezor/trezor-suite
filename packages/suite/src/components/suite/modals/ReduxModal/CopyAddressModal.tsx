@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AddressType } from '@suite-common/wallet-types';
-import { Card, Checkbox, H2, NewModal, Paragraph } from '@trezor/components';
+import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
@@ -45,18 +45,18 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             iconName="warning"
             variant="warning"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={onCopyAddress}>
+                    <Modal.Button onClick={onCopyAddress}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -71,6 +71,6 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
                     <Translation id="TR_DO_NOT_SHOW_AGAIN" />
                 </Checkbox>
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

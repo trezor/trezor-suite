@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { Input, NewModal } from '@trezor/components';
+import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -111,17 +111,17 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
             bottomContent={
-                <NewModal.Button
+                <Modal.Button
                     onClick={handleAddTokenButtonClick}
                     isDisabled={!tokenInfo || !!error}
                     isLoading={isFetching}
                 >
                     <Translation id="TR_ADD_TOKEN_SUBMIT" />
-                </NewModal.Button>
+                </Modal.Button>
             }
         >
             <Input
@@ -131,6 +131,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 inputState={getInputState()}
                 onChange={onChange}
             />
-        </NewModal>
+        </Modal>
     );
 };

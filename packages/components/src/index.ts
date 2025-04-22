@@ -68,7 +68,7 @@ export * from './components/loaders/Spinner/Spinner';
 export * from './components/loaders/Stepper/Stepper';
 export * from './components/Markdown/Markdown';
 export * from './components/Menu/Menu';
-export * from './components/NewModal/NewModal';
+export * from './components/Modal/Modal';
 export * from './components/Note/Note';
 export * from './components/Popover/Popover';
 export * from './components/Popover/utils';

@@ -6,7 +6,7 @@ import {
     Card,
     Column,
     H4,
-    NewModal,
+    Modal,
     Paragraph,
     Row,
     Switch,
@@ -66,15 +66,15 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
     if (log === null) return null;
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={<Translation id="TR_LOG" />}
             description={<Translation id="LOG_DESCRIPTION" />}
             data-testid="@modal/application-log"
             bottomContent={
-                <NewModal.Button onClick={download} data-testid="@log/export-button">
+                <Modal.Button onClick={download} data-testid="@log/export-button">
                     <Translation id="TR_EXPORT_TO_FILE" />
-                </NewModal.Button>
+                </Modal.Button>
             }
         >
             <Card paddingType="none" margin={{ top: spacings.sm }} overflow="hidden">
@@ -103,6 +103,6 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                     onChange={() => setHideSensitiveInfo(!hideSensitiveInfo)}
                 />
             </Row>
-        </NewModal>
+        </Modal>
     );
 };

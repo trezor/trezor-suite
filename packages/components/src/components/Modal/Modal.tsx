@@ -12,11 +12,11 @@ import {
     spacings,
 } from '@trezor/theme';
 
-import { NewModalBackdrop } from './NewModalBackdrop';
-import { NewModalButton } from './NewModalButton';
-import { NewModalContext } from './NewModalContext';
-import { NewModalProvider } from './NewModalProvider';
-import { NewModalAlignment, NewModalSize, NewModalVariant } from './types';
+import { ModalBackdrop } from './ModalBackdrop';
+import { ModalButton } from './ModalButton';
+import { ModalContext } from './ModalContext';
+import { ModalProvider } from './ModalProvider';
+import { ModalAlignment, ModalSize, ModalVariant } from './types';
 import { mapModalSizeToWidth } from './utils';
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
@@ -30,10 +30,10 @@ import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';
 import { Text } from '../typography/Text/Text';
 
-export const allowedNewModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[number]>;
+export const allowedModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedModalFrameProps)[number]>;
 
-const NEW_MODAL_CONTENT_ID = 'modal-content';
+const MODAL_CONTENT_ID = 'modal-content';
 const MODAL_ELEVATION = 0;
 
 const Container = styled.section<{ $elevation: Elevation }>`
@@ -51,8 +51,8 @@ const ScrollContainer = styled.div`
     height: 100%;
 `;
 
-type NewModalProps = AllowedFrameProps & {
-    variant?: NewModalVariant;
+type ModalProps = AllowedFrameProps & {
+    variant?: ModalVariant;
     children?: ReactNode;
     heading?: ReactNode;
     description?: ReactNode;
@@ -60,13 +60,13 @@ type NewModalProps = AllowedFrameProps & {
     onBackClick?: () => void;
     onCancel?: () => void;
     isBackdropCancelable?: boolean;
-    alignment?: NewModalAlignment;
-    size?: NewModalSize;
+    alignment?: ModalAlignment;
+    size?: ModalSize;
     iconName?: IconName;
     'data-testid'?: string;
 };
 
-const InnerNewModalBase = ({
+const InnerModalBase = ({
     children,
     variant,
     size = 'medium',
@@ -79,7 +79,7 @@ const InnerNewModalBase = ({
     isBackdropCancelable,
     height,
     'data-testid': dataTest = '@modal',
-}: NewModalProps) => {
+}: ModalProps) => {
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom } = useScrollShadow();
     const { elevation } = useElevation();
 
@@ -94,7 +94,7 @@ const InnerNewModalBase = ({
 
     return (
         <Box maxWidth="95%" maxHeight="80vh" width={mapModalSizeToWidth(size)} height={height}>
-            <Container $elevation={elevation} data-testid={dataTest} id={NEW_MODAL_CONTENT_ID}>
+            <Container $elevation={elevation} data-testid={dataTest} id={MODAL_CONTENT_ID}>
                 <Column height="100%">
                     {hasHeader && (
                         <Row
@@ -185,31 +185,28 @@ const InnerNewModalBase = ({
         </Box>
     );
 };
-const NewModalBase = (props: NewModalProps) => (
+const ModalBase = (props: ModalProps) => (
     <ElevationContext baseElevation={prevElevation[MODAL_ELEVATION]}>
-        <NewModalContext.Provider value={{ variant: props.variant }}>
-            <InnerNewModalBase {...props} />
-        </NewModalContext.Provider>
+        <ModalContext.Provider value={{ variant: props.variant }}>
+            <InnerModalBase {...props} />
+        </ModalContext.Provider>
     </ElevationContext>
 );
 
-const NewModal = ({ isBackdropCancelable = true, ...rest }: NewModalProps) => {
+const Modal = ({ isBackdropCancelable = true, ...rest }: ModalProps) => {
     const { alignment, onCancel } = rest;
 
     return (
-        <NewModalBackdrop
-            onClick={isBackdropCancelable ? onCancel : undefined}
-            alignment={alignment}
-        >
-            <NewModalBase isBackdropCancelable={isBackdropCancelable} {...rest} />
-        </NewModalBackdrop>
+        <ModalBackdrop onClick={isBackdropCancelable ? onCancel : undefined} alignment={alignment}>
+            <ModalBase isBackdropCancelable={isBackdropCancelable} {...rest} />
+        </ModalBackdrop>
     );
 };
 
-NewModal.Button = NewModalButton;
-NewModal.Backdrop = NewModalBackdrop;
-NewModal.Provider = NewModalProvider;
-NewModal.ModalBase = NewModalBase;
+Modal.Button = ModalButton;
+Modal.Backdrop = ModalBackdrop;
+Modal.Provider = ModalProvider;
+Modal.ModalBase = ModalBase;
 
-export { NewModal, NEW_MODAL_CONTENT_ID };
-export type { NewModalProps, NewModalSize };
+export { Modal, MODAL_CONTENT_ID };
+export type { ModalProps, ModalSize };

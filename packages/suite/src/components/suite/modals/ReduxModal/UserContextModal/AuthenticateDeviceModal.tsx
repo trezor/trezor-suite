@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { TranslationKey } from '@suite-common/intl-types';
-import { Icon, IconName, List, NewModal, Paragraph } from '@trezor/components';
+import { Icon, IconName, List, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { onCancel, openModal } from 'src/actions/suite/modalActions';
@@ -38,21 +38,21 @@ export const AuthenticateDeviceModal = () => {
     const handleClose = () => dispatch(onCancel());
 
     return (
-        <NewModal
+        <Modal
             onCancel={handleClose}
             heading={<Translation id="TR_LETS_CHECK_YOUR_DEVICE" />}
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={handleClick}
                         isDisabled={isLoading}
                         isLoading={isLoading}
                     >
                         <Translation id="TR_START_CHECK" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={handleClose}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={handleClose}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -72,6 +72,6 @@ export const AuthenticateDeviceModal = () => {
                     </List.Item>
                 ))}
             </List>
-        </NewModal>
+        </Modal>
     );
 };

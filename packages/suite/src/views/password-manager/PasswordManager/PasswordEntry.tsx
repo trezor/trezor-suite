@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -106,12 +106,12 @@ export const PasswordEntry = ({
     return (
         <>
             {confirmRemove != null && (
-                <NewModal
+                <Modal
                     variant="destructive"
                     iconName="trash"
                     bottomContent={
                         <>
-                            <NewModal.Button
+                            <Modal.Button
                                 onClick={() => {
                                     removePassword(index);
                                     setFormActive(null);
@@ -119,13 +119,10 @@ export const PasswordEntry = ({
                                 }}
                             >
                                 <Translation id="TR_CONFIRM" />
-                            </NewModal.Button>
-                            <NewModal.Button
-                                onClick={() => setConfirmRemove(null)}
-                                variant="tertiary"
-                            >
+                            </Modal.Button>
+                            <Modal.Button onClick={() => setConfirmRemove(null)} variant="tertiary">
                                 <Translation id="TR_CANCEL" />
-                            </NewModal.Button>
+                            </Modal.Button>
                         </>
                     }
                 >
@@ -133,7 +130,7 @@ export const PasswordEntry = ({
                         <H3>Remove password entry</H3>
                         <Paragraph>{`Really remove ${note || title}?`}</Paragraph>
                     </Column>
-                </NewModal>
+                </Modal>
             )}
             <PasswordEntryRow>
                 <PasswordEntryCol>{note || title}</PasswordEntryCol>

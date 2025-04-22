@@ -14,8 +14,8 @@ import {
     IconCircle,
     InfoItem,
     Link,
-    NewModal,
-    NewModalProps,
+    Modal,
+    ModalProps,
     Paragraph,
     Row,
 } from '@trezor/components';
@@ -34,7 +34,7 @@ import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/RippleOptions/DestinationTag';
 
-export type ConfirmValueModalProps = Pick<NewModalProps, 'onCancel' | 'heading'> & {
+export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
     account?: Account;
     'data-testid'?: string;
     isConfirmed?: boolean;
@@ -104,7 +104,7 @@ export const ConfirmValueModal = ({
     );
 
     return (
-        <NewModal.Backdrop onClick={isCancelable ? onCancel : undefined}>
+        <Modal.Backdrop onClick={isCancelable ? onCancel : undefined}>
             {canConfirmOnDevice && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -113,7 +113,7 @@ export const ConfirmValueModal = ({
                     isConfirmed={isConfirmed}
                 />
             )}
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 heading={heading}
                 description={
                     account && (
@@ -251,7 +251,7 @@ export const ConfirmValueModal = ({
                         </Card>
                     )}
                 </Column>
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

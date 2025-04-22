@@ -1,4 +1,4 @@
-import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
@@ -21,24 +21,24 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
     }
 
     return (
-        <NewModal
+        <Modal
             onCancel={onClose}
             variant="warning"
             iconName="arrowsIn"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={() => {
                             dispatch(stopCoinjoinSession(account.key));
                             onClose();
                         }}
                     >
                         <Translation id="TR_CANCEL_COINJOIN_YES" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onClose}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onClose}>
                         <Translation id="TR_CANCEL_COINJOIN_NO" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -50,6 +50,6 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                     <Translation id="TR_CANCEL_COINJOIN_QUESTION" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

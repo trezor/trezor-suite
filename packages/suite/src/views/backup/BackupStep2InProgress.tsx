@@ -1,4 +1,4 @@
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { Loading } from 'src/components/suite';
 
@@ -12,7 +12,7 @@ export const BackupStep2InProgress = ({
     onCancel: () => void;
     backup: BackupState;
 }) => (
-    <NewModal
+    <Modal
         onCancel={onCancel}
         variant="primary"
         data-testid="@backup"
@@ -20,5 +20,5 @@ export const BackupStep2InProgress = ({
         description={<BackupStepDescription backupStatus={backup.status} />}
     >
         <Loading />
-    </NewModal>
+    </Modal>
 );

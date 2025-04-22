@@ -1,6 +1,6 @@
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
-import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
@@ -50,18 +50,18 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
         symbolParam === symbol && indexParam === index && accountTypeParam === accountType;
 
     return (
-        <NewModal
+        <Modal
             onCancel={close}
             bottomContent={
                 <>
                     {!isOnAccountPage && (
-                        <NewModal.Button onClick={navigateToRelatedAccount}>
+                        <Modal.Button onClick={navigateToRelatedAccount}>
                             <Translation id="TR_VIEW_ACCOUNT" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     )}
-                    <NewModal.Button variant="tertiary" onClick={close}>
+                    <Modal.Button variant="tertiary" onClick={close}>
                         <Translation id="TR_CLOSE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             size="small"
@@ -75,6 +75,6 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
                     <Translation id="TR_COINJOIN_COMPLETED_DESCRIPTION" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

@@ -30,7 +30,7 @@ import {
     isRbfCancelTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
-import { Column, NewModal, Row } from '@trezor/components';
+import { Column, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
@@ -328,21 +328,21 @@ export const TransactionReviewModalContent = ({
     const BottomContent = () => {
         if (isRbfConfirmedError) {
             return (
-                <NewModal.Button variant="tertiary" onClick={onCancel}>
+                <Modal.Button variant="tertiary" onClick={onCancel}>
                     <Translation id="TR_CLOSE" />
-                </NewModal.Button>
+                </Modal.Button>
             );
         }
 
         if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
             return (
                 <>
-                    <NewModal.Button variant="primary" onClick={() => handleTryAgain(false)}>
+                    <Modal.Button variant="primary" onClick={() => handleTryAgain(false)}>
                         <Translation id="TR_TRY_AGAIN" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CLOSE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             );
         }
@@ -357,33 +357,33 @@ export const TransactionReviewModalContent = ({
 
         if (isBroadcastEnabled) {
             return (
-                <NewModal.Button
+                <Modal.Button
                     data-testid="@modal/send"
                     isDisabled={!serializedTx}
                     isLoading={isSending}
                     onClick={handleSend}
                 >
                     <Translation id={actionLabel} />
-                </NewModal.Button>
+                </Modal.Button>
             );
         }
 
         return (
             <>
-                <NewModal.Button
+                <Modal.Button
                     isDisabled={!serializedTx}
                     onClick={handleCopy}
                     data-testid="@send/copy-raw-transaction"
                 >
                     <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
-                </NewModal.Button>
-                <NewModal.Button
+                </Modal.Button>
+                <Modal.Button
                     variant="tertiary"
                     isDisabled={!serializedTx}
                     onClick={handleDownload}
                 >
                     <Translation id="DOWNLOAD_TRANSACTION" />
-                </NewModal.Button>
+                </Modal.Button>
             </>
         );
     };
@@ -426,7 +426,7 @@ export const TransactionReviewModalContent = ({
     };
 
     return (
-        <NewModal.Backdrop>
+        <Modal.Backdrop>
             {!isRbfConfirmedError && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -438,7 +438,7 @@ export const TransactionReviewModalContent = ({
                     onCancel={isSending ? undefined : onCancel}
                 />
             )}
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 heading={<Translation id={areDetailsVisible ? 'TR_DETAIL' : actionLabel} />}
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
                 description={
@@ -470,7 +470,7 @@ export const TransactionReviewModalContent = ({
                 size="small"
             >
                 <Content />
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

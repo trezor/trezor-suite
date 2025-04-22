@@ -1,5 +1,5 @@
 import { UserContextPayload } from '@suite-common/suite-types';
-import { Banner, Column, NewModal, Paragraph } from '@trezor/components';
+import { Banner, Column, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -24,19 +24,19 @@ export const DisableTorStopCoinjoinModal = ({
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onKeepRunningTor}
             heading={<Translation id="TR_TOR_DISABLE" />}
             variant="warning"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={onStopRunningTor}>
+                    <Modal.Button onClick={onStopRunningTor}>
                         <Translation id="TR_TOR_STOP" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onKeepRunningTor}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onKeepRunningTor}>
                         <Translation id="TR_TOR_KEEP_RUNNING" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -55,6 +55,6 @@ export const DisableTorStopCoinjoinModal = ({
                     <Translation id="TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

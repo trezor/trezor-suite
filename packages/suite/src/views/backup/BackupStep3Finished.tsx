@@ -1,4 +1,4 @@
-import { NewModal, Paragraph } from '@trezor/components';
+import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -18,20 +18,20 @@ export const BackupStep3Finished = ({
     const continueEnabled = canContinue(backup.userConfirmed);
 
     return (
-        <NewModal
+        <Modal
             onCancel={continueEnabled ? onCancel : undefined}
             variant="primary"
             data-testid="@backup"
             heading={<Translation id="TR_BACKUP_CREATED" />}
             description={<BackupStepDescription backupStatus={backup.status} />}
             bottomContent={
-                <NewModal.Button
+                <Modal.Button
                     isDisabled={!continueEnabled}
                     onClick={onCancel}
                     data-testid="@backup/close-button"
                 >
                     <Translation id="TR_CLOSE" />
-                </NewModal.Button>
+                </Modal.Button>
             }
         >
             <Paragraph
@@ -43,6 +43,6 @@ export const BackupStep3Finished = ({
                 <Translation id="TR_BACKUP_FINISHED_TEXT" />
             </Paragraph>
             <AfterBackupCheckboxes />
-        </NewModal>
+        </Modal>
     );
 };

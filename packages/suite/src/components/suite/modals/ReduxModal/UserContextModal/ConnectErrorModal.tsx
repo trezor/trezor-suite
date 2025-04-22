@@ -1,5 +1,5 @@
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Card, Column, H3, Icon, NewModal, Paragraph, Row } from '@trezor/components';
+import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -17,13 +17,13 @@ export const ConnectErrorModal = () => {
         return null;
 
     return (
-        <NewModal
+        <Modal
             variant="primary"
             bottomContent={
                 <>
-                    <NewModal.Button variant="tertiary" onClick={onFinish} size="medium">
+                    <Modal.Button variant="tertiary" onClick={onFinish} size="medium">
                         <Translation id="TR_DONE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -43,6 +43,6 @@ export const ConnectErrorModal = () => {
                     {popupCall.error.error}
                 </Card>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

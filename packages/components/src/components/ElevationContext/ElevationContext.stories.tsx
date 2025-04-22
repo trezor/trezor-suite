@@ -18,7 +18,7 @@ import {
     useElevation,
 } from './ElevationContext';
 import { Card } from '../Card/Card';
-import { NewModal } from '../NewModal/NewModal';
+import { Modal } from '../Modal/Modal';
 import { Button } from '../buttons/Button/Button';
 import { Textarea } from '../form/Textarea/Textarea';
 
@@ -107,10 +107,10 @@ export const ElevationContext: StoryObj = {
             </Background>
 
             <Background>
-                <NewModal>
+                <Modal>
                     Modal content
                     <Card>Card inside of a Modal</Card>
-                </NewModal>
+                </Modal>
             </Background>
 
             <Background>

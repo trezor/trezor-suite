@@ -1,4 +1,4 @@
-import { NewModal, Paragraph } from '@trezor/components';
+import { Modal, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 
@@ -11,7 +11,7 @@ export const BackupStepError = ({
     onCancel: () => void;
     backup: BackupState;
 }) => (
-    <NewModal
+    <Modal
         onCancel={onCancel}
         variant="warning"
         iconName="warning"
@@ -19,13 +19,13 @@ export const BackupStepError = ({
         heading={<Translation id="TOAST_BACKUP_FAILED" />}
         description={undefined} // Error state has no Step description
         bottomContent={
-            <NewModal.Button onClick={() => onCancel()} data-testid="@backup/close-button">
+            <Modal.Button onClick={() => onCancel()} data-testid="@backup/close-button">
                 <Translation id="TR_CLOSE" />
-            </NewModal.Button>
+            </Modal.Button>
         }
     >
         <Paragraph data-testid="@backup/error-message" typographyStyle="highlight">
             {backup.error}
         </Paragraph>
-    </NewModal>
+    </Modal>
 );

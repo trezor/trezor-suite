@@ -1,5 +1,5 @@
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { NewModal, Tooltip } from '@trezor/components';
+import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
@@ -47,14 +47,14 @@ export const StakeButton = () => {
 
     return (
         <Tooltip content={stakingMessageContent}>
-            <NewModal.Button
+            <Modal.Button
                 isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isComposing || isSubmitting}
                 onClick={onStakeClick}
                 icon={isStakingDisabled ? 'info' : undefined}
             >
                 <Translation id="TR_CONTINUE" />
-            </NewModal.Button>
+            </Modal.Button>
         </Tooltip>
     );
 };

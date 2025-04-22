@@ -6,7 +6,7 @@ import {
     Card,
     Column,
     Icon,
-    NewModal,
+    Modal,
     Row,
     SkeletonCircle,
     SkeletonRectangle,
@@ -63,7 +63,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
     const filteredAccounts = accounts?.filter(account => account.type === selectedAccountType);
 
     return (
-        <NewModal
+        <Modal
             onCancel={close}
             variant="primary"
             heading={
@@ -171,6 +171,6 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                     </Table>
                 </Card>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

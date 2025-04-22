@@ -12,7 +12,7 @@ import {
     Card,
     Column,
     IconCircle,
-    NewModal,
+    Modal,
     Row,
     Text,
     Tooltip,
@@ -67,20 +67,20 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     if (!pendingProposal) return null;
 
     return (
-        <NewModal
+        <Modal
             onCancel={handleReject}
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         variant="primary"
                         onClick={handleAccept}
                         isDisabled={pendingProposal.expired || pendingProposal.isScam}
                     >
                         <Translation id="TR_CONFIRM" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={handleReject}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={handleReject}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             heading={<Translation id="TR_WALLETCONNECT" />}
@@ -199,6 +199,6 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     </Banner>
                 )}
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

@@ -2,13 +2,7 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    ElevationContext,
-    ElevationDown,
-    ElevationUp,
-    NewModal,
-    variables,
-} from '@trezor/components';
+import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
@@ -156,7 +150,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                 <PageWrapper>
-                    <NewModal.Provider>
+                    <Modal.Provider>
                         <Metadata title={title} />
 
                         <ModalSwitcher />
@@ -198,7 +192,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                         </LayoutContext.Provider>
 
                         {!isMobileLayout && <GuideButton />}
-                    </NewModal.Provider>
+                    </Modal.Provider>
                 </PageWrapper>
 
                 <GuideRouter />

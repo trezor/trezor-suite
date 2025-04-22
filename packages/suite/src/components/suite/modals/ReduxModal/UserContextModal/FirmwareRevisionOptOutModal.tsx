@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Banner, Card, Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
@@ -21,22 +21,22 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             iconName="shieldWarning"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={handleTurningOffRevisionCheck}
                         isDisabled={!isConfirmed}
                         data-testid="@device-firmware-revision/opt-out-button"
                     >
                         <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             variant="warning"
@@ -63,6 +63,6 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
                     data-testid="@device-firmware-revision/checkbox"
                 />
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

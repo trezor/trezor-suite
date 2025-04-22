@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react';
 
-import { ElevationContext, ElevationDown, ElevationUp, NewModal } from '@trezor/components';
+import { ElevationContext, ElevationDown, ElevationUp, Modal } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -39,7 +39,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@logged-out-layout">
                 <PageWrapper>
-                    <NewModal.Provider>
+                    <Modal.Provider>
                         <Metadata title={title} />
                         <ModalSwitcher />
 
@@ -64,7 +64,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                         </LayoutContext.Provider>
 
                         {!isMobileLayout && <GuideButton />}
-                    </NewModal.Provider>
+                    </Modal.Provider>
                 </PageWrapper>
                 <GuideRouter />
             </Wrapper>

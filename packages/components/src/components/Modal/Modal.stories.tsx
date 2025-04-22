@@ -2,11 +2,11 @@ import { action } from '@storybook/addon-actions';
 import { Meta, StoryObj } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
 
-import { newModalSizes, newModalVariants } from './types';
+import { modalSizes, modalVariants } from './types';
 import {
-    NewModal as ModalComponent,
-    NewModalProps,
-    allowedNewModalFrameProps,
+    Modal as ModalComponent,
+    ModalProps,
+    allowedModalFrameProps,
     intermediaryTheme,
     variables,
 } from '../../index';
@@ -20,7 +20,7 @@ const Buttons = () => (
 );
 
 const meta: Meta = {
-    title: 'NewModal',
+    title: 'Modal',
     component: ModalComponent,
     decorators: [
         Story => (
@@ -45,7 +45,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const NewModal: StoryObj<NewModalProps> = {
+export const Modal: StoryObj<ModalProps> = {
     args: {
         variant: 'primary',
         iconName: undefined,
@@ -58,20 +58,20 @@ export const NewModal: StoryObj<NewModalProps> = {
         onCancel: 'withCallback' as unknown as () => void,
         onBackClick: 'withCallback' as unknown as () => void,
         alignment: { x: 'center', y: 'center' },
-        ...getFramePropsStory(allowedNewModalFrameProps).args,
+        ...getFramePropsStory(allowedModalFrameProps).args,
     },
     argTypes: {
         variant: {
             control: {
                 type: 'select',
             },
-            options: [...newModalVariants, undefined],
+            options: [...modalVariants, undefined],
         },
         size: {
             control: {
                 type: 'select',
             },
-            options: newModalSizes,
+            options: modalSizes,
         },
         heading: {
             control: 'text',
@@ -152,7 +152,7 @@ export const NewModal: StoryObj<NewModalProps> = {
                 'bottom right': { x: 'right', y: 'bottom' },
             },
         },
-        ...getFramePropsStory(allowedNewModalFrameProps).argTypes,
+        ...getFramePropsStory(allowedModalFrameProps).argTypes,
     },
     parameters: {
         noWrapper: true,

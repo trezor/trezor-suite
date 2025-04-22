@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { Image, NewModal, Paragraph } from '@trezor/components';
+import { Image, Modal, Paragraph } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -82,11 +82,11 @@ export const ConfirmEvmExplanationModal = ({
     };
 
     return (
-        <NewModal
+        <Modal
             bottomContent={
-                <NewModal.Button onClick={close}>
+                <Modal.Button onClick={close}>
                     <Translation id="TR_CONFIRM" />
-                </NewModal.Button>
+                </Modal.Button>
             }
             size="small"
             heading={
@@ -124,6 +124,6 @@ export const ConfirmEvmExplanationModal = ({
                     }}
                 />
             </Paragraph>
-        </NewModal>
+        </Modal>
     );
 };

@@ -9,7 +9,7 @@ import {
     DotIndicator,
     Input,
     List,
-    NewModal,
+    Modal,
     Row,
     Text,
 } from '@trezor/components';
@@ -85,7 +85,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     return torModalOpen ? (
         <TorModal onResult={onTorResult} />
     ) : (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={
                 <Text case="titlecase" as="p">
@@ -104,16 +104,16 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={onSaveClick}
                         isDisabled={isSubmitButtonDisabled}
                         data-testid="@settings/advance/button/save"
                     >
                         <Translation id="TR_CONFIRM" />
-                    </NewModal.Button>
-                    <NewModal.Button onClick={onCancel} variant="tertiary">
+                    </Modal.Button>
+                    <Modal.Button onClick={onCancel} variant="tertiary">
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -194,6 +194,6 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                     <ConnectionInfo symbol={symbol} />
                 </CollapsibleBox>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

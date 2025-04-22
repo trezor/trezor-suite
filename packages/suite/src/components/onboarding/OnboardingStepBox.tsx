@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -78,7 +78,7 @@ export const OnboardingStepBox = ({
 
     return (
         <>
-            {isBackDropVisible && <NewModal.Backdrop zIndex={zIndices.base} />}
+            {isBackDropVisible && <Modal.Backdrop zIndex={zIndices.base} />}
             {!disableConfirmWrapper && (
                 <WrapperWrapper data-testid="@prompts/confirm-on-device'">
                     {deviceModelInternal && (

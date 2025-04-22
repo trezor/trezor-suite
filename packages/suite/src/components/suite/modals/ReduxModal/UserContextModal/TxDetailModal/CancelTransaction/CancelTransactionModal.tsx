@@ -12,7 +12,7 @@ import {
     SelectedAccountLoaded,
     WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
-import { Banner, Column, NewModal } from '@trezor/components';
+import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { CancelTransaction } from './CancelTransaction';
@@ -84,9 +84,9 @@ export const CancelTransactionModal = ({
                 heading={<Translation id="TR_TRANSACTION_DETAILS" />}
                 bottomContent={
                     isTxConfirmed ? (
-                        <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Modal.Button variant="tertiary" onClick={onCancel}>
                             <Translation id="TR_CLOSE_WINDOW" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     ) : (
                         <>
                             <CancelTransactionButton account={selectedAccount.account} />

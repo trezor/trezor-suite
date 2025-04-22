@@ -7,7 +7,7 @@ import {
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import { Banner, Column, NewModal } from '@trezor/components';
+import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
@@ -48,7 +48,7 @@ export const TxDetailModalBase = ({
     );
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={heading}
             size="large"
@@ -85,6 +85,6 @@ export const TxDetailModalBase = ({
 
                 {children}
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

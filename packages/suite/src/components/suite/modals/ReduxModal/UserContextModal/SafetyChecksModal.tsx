@@ -4,8 +4,8 @@ import {
     Banner,
     Card,
     Column,
-    NewModal,
-    NewModalProps,
+    Modal,
+    ModalProps,
     Paragraph,
     Radio,
     Text,
@@ -22,7 +22,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
  * The third value, `PromptAlways`, is considered an advanced feature that can be
  * set only via command line and trezor-lib.
  */
-export const SafetyChecksModal = ({ onCancel }: NewModalProps) => {
+export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
     const { device, isLocked } = useDevice();
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
     const dispatch = useDispatch();
@@ -30,24 +30,24 @@ export const SafetyChecksModal = ({ onCancel }: NewModalProps) => {
     const confirm = () => dispatch(applySettings({ safety_checks: level }));
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={<Translation id="TR_SAFETY_CHECKS_MODAL_TITLE" />}
             variant="warning"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={confirm}
                         // Only allow confirming when the value will be changed.
                         isDisabled={isLocked() || level === device?.features?.safety_checks}
                         data-testid="@safety-checks-apply"
                     >
                         <Translation id="TR_CONFIRM" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -89,6 +89,6 @@ export const SafetyChecksModal = ({ onCancel }: NewModalProps) => {
                     </Radio>
                 </Column>
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

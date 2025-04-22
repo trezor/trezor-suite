@@ -1,5 +1,5 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Card, Column, NewModal, Row, Spinner } from '@trezor/components';
+import { Card, Column, Modal, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -11,7 +11,7 @@ export const ConnectLoadingModal = () => {
     if (!popupCall || popupCall?.state !== 'ongoing') return null;
 
     return (
-        <NewModal
+        <Modal
             data-testid="@connect-popup-loading"
             variant="primary"
             size="small"
@@ -25,6 +25,6 @@ export const ConnectLoadingModal = () => {
                     </Row>
                 </Card>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

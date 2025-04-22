@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Column, H3, NewModal, Paragraph, ProgressBar, Text } from '@trezor/components';
+import { Column, H3, Modal, Paragraph, ProgressBar, Text } from '@trezor/components';
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { bytesToHumanReadable } from '@trezor/utils';
@@ -24,11 +24,11 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
     }, [step]);
 
     return (
-        <NewModal
+        <Modal
             bottomContent={
-                <NewModal.Button variant="tertiary" onClick={hideWindow}>
+                <Modal.Button variant="tertiary" onClick={hideWindow}>
                     <Translation id="TR_BACKGROUND_DOWNLOAD" />
-                </NewModal.Button>
+                </Modal.Button>
             }
             iconName="download"
         >
@@ -52,6 +52,6 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
                     {bytesToHumanReadable(progress?.total || 0)}
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

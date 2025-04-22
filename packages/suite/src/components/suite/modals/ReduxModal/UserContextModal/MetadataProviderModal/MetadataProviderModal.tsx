@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { Button, NewModal, Paragraph, Row } from '@trezor/components';
+import { Button, Modal, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import type { Deferred } from '@trezor/utils';
 
@@ -52,7 +52,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onModalCancel}
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-testid="@modal/metadata-provider"
@@ -108,6 +108,6 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                     {error}
                 </Paragraph>
             )}
-        </NewModal>
+        </Modal>
     );
 };

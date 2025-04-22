@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { NewModal, Paragraph } from '@trezor/components';
+import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ConfirmKey, backupDevice } from 'src/actions/backup/backupActions';
@@ -37,7 +37,7 @@ export const BackupStep1Initial = ({
             : {};
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             variant="primary"
             data-testid="@backup"
@@ -45,20 +45,20 @@ export const BackupStep1Initial = ({
             description={<BackupStepDescription backupStatus={backup.status} />}
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         data-testid="@backup/start-button"
                         onClick={() => dispatch(backupDevice(backupParams))}
                         isDisabled={!canStart(backup.userConfirmed, isDeviceLocked)}
                     >
                         <Translation id="TR_CREATE_BACKUP" />
-                    </NewModal.Button>
-                    <NewModal.Button
+                    </Modal.Button>
+                    <Modal.Button
                         onClick={() => onCancel()}
                         data-testid="@backup/close-button"
                         variant="tertiary"
                     >
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -66,6 +66,6 @@ export const BackupStep1Initial = ({
                 <Translation id="TR_BACKUP_SUBHEADING_1" />
             </Paragraph>
             <PreBackupCheckboxes />
-        </NewModal>
+        </Modal>
     );
 };

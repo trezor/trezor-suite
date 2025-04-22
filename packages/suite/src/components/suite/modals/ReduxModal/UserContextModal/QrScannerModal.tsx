@@ -3,7 +3,7 @@ import { Suspense, lazy, useState } from 'react';
 import styled from 'styled-components';
 
 import { UserContextPayload } from '@suite-common/suite-types';
-import { Card, Column, Icon, NewModal, NewModalProps, Paragraph, Row } from '@trezor/components';
+import { Card, Column, Icon, Modal, ModalProps, Paragraph, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 
@@ -37,7 +37,7 @@ const StyledQrReader = styled(QrReader)`
 `;
 
 type QrScannerModalProps = Pick<Extract<UserContextPayload, { type: 'qr-reader' }>, 'decision'> &
-    Required<Pick<NewModalProps, 'onCancel'>>;
+    Required<Pick<ModalProps, 'onCancel'>>;
 
 export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
     const [readerLoaded, setReaderLoaded] = useState(false);
@@ -75,7 +75,7 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
     };
 
     return (
-        <NewModal onCancel={onCancel} heading={<Translation id="TR_SCAN_QR_CODE" />}>
+        <Modal onCancel={onCancel} heading={<Translation id="TR_SCAN_QR_CODE" />}>
             <Column gap={spacings.md}>
                 <ContentWrapper>
                     {error && (
@@ -122,6 +122,6 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
                     <LearnMoreButton url={HELP_CENTER_QR_CODE_URL} />
                 </Row>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

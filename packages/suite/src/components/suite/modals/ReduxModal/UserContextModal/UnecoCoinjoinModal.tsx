@@ -1,5 +1,5 @@
 import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
-import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { onCancel } from 'src/actions/suite/modalActions';
@@ -31,16 +31,16 @@ export const UnecoCoinjoinModal = () => {
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={handleCancel}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={handleContinue}>
+                    <Modal.Button onClick={handleContinue}>
                         <Translation id="TR_UNECO_COINJOIN_AGREE" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={handleCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={handleCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             size="small"
@@ -67,6 +67,6 @@ export const UnecoCoinjoinModal = () => {
                     />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

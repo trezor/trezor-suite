@@ -4,15 +4,7 @@ import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
-import {
-    Card,
-    CollapsibleBox,
-    Column,
-    NewModal,
-    Paragraph,
-    Tabs,
-    Textarea,
-} from '@trezor/components';
+import { Card, CollapsibleBox, Column, Modal, Paragraph, Tabs, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -67,17 +59,17 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={<Translation id="TR_IMPORT_CSV_MODAL_TITLE" />}
             bottomContent={
-                <NewModal.Button
+                <Modal.Button
                     onClick={() => onCsvResult(content)}
                     isDisabled={!content}
                     data-testid="@import-csv/import-button"
                 >
                     <Translation id="IMPORT_CSV" />
-                </NewModal.Button>
+                </Modal.Button>
             }
             size="small"
         >
@@ -119,6 +111,6 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                     </Column>
                 </Card>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

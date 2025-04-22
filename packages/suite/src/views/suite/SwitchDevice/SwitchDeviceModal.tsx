@@ -3,7 +3,7 @@ import { useEvent } from 'react-use';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Column, NewModal } from '@trezor/components';
+import { Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { TrafficLightOffset } from '../../../components/suite/TrafficLightOffset';
@@ -38,7 +38,7 @@ export const SwitchDeviceModal = ({
     });
 
     return (
-        <NewModal.Backdrop
+        <Modal.Backdrop
             onClick={onCancel}
             alignment={{ x: 'start', y: 'start' }}
             padding={spacings.xxs}
@@ -64,6 +64,6 @@ export const SwitchDeviceModal = ({
                     </Column>
                 </Container>
             </TrafficLightOffset>
-        </NewModal.Backdrop>
+        </Modal.Backdrop>
     );
 };

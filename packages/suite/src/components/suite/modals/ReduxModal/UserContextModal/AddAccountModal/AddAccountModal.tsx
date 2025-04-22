@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Network, NetworkAccount, NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
-import { CollapsibleBox, NewModal, Tooltip } from '@trezor/components';
+import { CollapsibleBox, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
@@ -285,7 +285,7 @@ export const AddAccountModal = ({
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             size="small"
             bottomContent={
@@ -298,12 +298,12 @@ export const AddAccountModal = ({
                         onEnableAccount={addAccount}
                     />
                 ) : (
-                    <NewModal.Button onClick={enableNetwork}>
+                    <Modal.Button onClick={enableNetwork}>
                         <Translation
                             id="TR_ENABLE_NETWORK_BUTTON"
                             values={{ networkName: selectedNetwork.name }}
                         />
-                    </NewModal.Button>
+                    </Modal.Button>
                 ))
             }
             {...getStepConfig()}

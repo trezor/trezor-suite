@@ -2,7 +2,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
-import { Card, Column, DotIndicator, H4, NewModal, Row, Text } from '@trezor/components';
+import { Card, Column, DotIndicator, H4, Modal, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -45,7 +45,7 @@ export const SignMessageModal = ({
     const account = accounts.find(a => a.symbol === networkSymbol && a.path === serializedPath);
 
     return (
-        <NewModal.Backdrop>
+        <Modal.Backdrop>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={deviceModelInternal}
@@ -53,7 +53,7 @@ export const SignMessageModal = ({
                 successText={<Translation id="TR_CONFIRMED_TX" />}
                 onCancel={onCancel}
             />
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 size="small"
                 heading={
                     popupCall.method === 'ethereumSignTypedData' ? (
@@ -112,7 +112,7 @@ export const SignMessageModal = ({
                         </Text>
                     </Card>
                 </Column>
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

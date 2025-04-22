@@ -3,7 +3,7 @@ import * as semver from 'semver';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { BulletList, Column, DeviceAnimation, H2, NewModal, Paragraph } from '@trezor/components';
+import { BulletList, Column, DeviceAnimation, H2, Modal, Paragraph } from '@trezor/components';
 import { DEVICE, Device, UI } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
@@ -148,7 +148,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     };
 
     return (
-        <NewModal.Backdrop onClick={isAbortable ? onClose : undefined}>
+        <Modal.Backdrop onClick={isAbortable ? onClose : undefined}>
             {!isManualRebootRequired && !isRebootDone && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -157,15 +157,15 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                     isConfirmed={uiEvent?.type !== 'button'}
                 />
             )}
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 onCancel={isAbortable ? onClose : undefined}
                 data-testid="@firmware/reconnect-device"
                 size="tiny"
                 bottomContent={
                     isRebootDone && (
-                        <NewModal.Button onClick={onSuccess} data-testid="@firmware/install-button">
+                        <Modal.Button onClick={onSuccess} data-testid="@firmware/install-button">
                             <Translation id="TR_INSTALL" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     )
                 }
             >
@@ -220,7 +220,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                         {showWebUsbButton && <WebUsbButton />}
                     </Column>
                 )}
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

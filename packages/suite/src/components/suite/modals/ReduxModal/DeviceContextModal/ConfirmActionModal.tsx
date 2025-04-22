@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { H2, NewModal } from '@trezor/components';
+import { H2, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -26,14 +26,14 @@ export const ConfirmActionModal = ({ device }: ConfirmActionProps) => {
     const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     return (
-        <NewModal.Backdrop onClick={onCancel} data-testid="@suite/modal/confirm-action-on-device">
+        <Modal.Backdrop onClick={onCancel} data-testid="@suite/modal/confirm-action-on-device">
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device?.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
                 onCancel={onCancel}
             />
-            <NewModal.ModalBase size="tiny">
+            <Modal.ModalBase size="tiny">
                 <ImageWrapper>
                     <DeviceConfirmImage device={device} />
                 </ImageWrapper>
@@ -43,7 +43,7 @@ export const ConfirmActionModal = ({ device }: ConfirmActionProps) => {
                 >
                     <Translation id="TR_CONFIRM_ACTION_ON_YOUR" />
                 </H2>
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

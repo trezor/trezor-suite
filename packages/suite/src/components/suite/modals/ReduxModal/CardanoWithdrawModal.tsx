@@ -1,5 +1,5 @@
 import { getNetworkName } from '@suite-common/wallet-utils';
-import { Card, Column, Icon, Link, NewModal, Paragraph, Row, Text } from '@trezor/components';
+import { Card, Column, Icon, Link, Modal, Paragraph, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -22,17 +22,17 @@ export const CardanoWithdrawModal = ({ onCancel }: { onCancel: () => void }) => 
     const trezorDRepBech32 = trezorDRep?.drep.bech32;
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={<Translation id="TR_CARDANO_WITHDRAW_MODAL_TITLE" />}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={() => voteDelegate()}>
+                    <Modal.Button onClick={() => voteDelegate()}>
                         <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE" />
-                    </NewModal.Button>
-                    <NewModal.Button onClick={() => voteAbstain()} variant="tertiary">
+                    </Modal.Button>
+                    <Modal.Button onClick={() => voteAbstain()} variant="tertiary">
                         <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -56,6 +56,6 @@ export const CardanoWithdrawModal = ({ onCancel }: { onCancel: () => void }) => 
                     </Card>
                 </Column>
             </Row>
-        </NewModal>
+        </Modal>
     );
 };

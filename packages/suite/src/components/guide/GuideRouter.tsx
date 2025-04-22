@@ -3,7 +3,7 @@ import { FreeFocusInside } from 'react-focus-lock';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { ActiveView } from '@suite-common/suite-types';
-import { Box, NewModal, useMediaQuery, variables } from '@trezor/components';
+import { Box, Modal, useMediaQuery, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { borders, spacings, zIndices } from '@trezor/theme';
 
@@ -82,14 +82,14 @@ export const GuideRouter = () => {
         <AnimatePresence>
             {isGuideOpen &&
                 (isBelowLaptop ? (
-                    <NewModal.Backdrop
+                    <Modal.Backdrop
                         alignment={{ x: 'end', y: 'center' }}
                         padding={spacings.zero}
                         onClick={closeGuide}
                         zIndex={zIndices.guide}
                     >
                         {content}
-                    </NewModal.Backdrop>
+                    </Modal.Backdrop>
                 ) : (
                     <FreeFocusInside>{content}</FreeFocusInside>
                 ))}

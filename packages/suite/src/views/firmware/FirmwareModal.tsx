@@ -8,7 +8,7 @@ import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { H3, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
@@ -120,9 +120,9 @@ export const FirmwareModal = ({
         switch (status) {
             case 'error':
                 return (
-                    <NewModal.Button variant="tertiary" onClick={handleClose}>
+                    <Modal.Button variant="tertiary" onClick={handleClose}>
                         <Translation id="TR_CLOSE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 );
             case 'initial':
                 return (
@@ -131,7 +131,7 @@ export const FirmwareModal = ({
                             content={<Translation id="TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES" />}
                             isActive={multipleDevicesConnected}
                         >
-                            <NewModal.Button
+                            <Modal.Button
                                 onClick={() =>
                                     shouldCheckSeed ? setStatus('check-seed') : handleInstall()
                                 }
@@ -143,17 +143,17 @@ export const FirmwareModal = ({
                                 }
                             >
                                 <Translation id={shouldCheckSeed ? 'TR_CONTINUE' : 'TR_INSTALL'} />
-                            </NewModal.Button>
+                            </Modal.Button>
                         </Tooltip>
-                        <NewModal.Button variant="tertiary" onClick={handleClose}>
+                        <Modal.Button variant="tertiary" onClick={handleClose}>
                             <Translation id="TR_CANCEL" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </>
                 );
             case 'check-seed':
                 return (
                     <>
-                        <NewModal.Button
+                        <Modal.Button
                             onClick={install}
                             data-testid="@firmware/confirm-seed-button"
                             isDisabled={!device?.connected || !isChecked}
@@ -162,8 +162,8 @@ export const FirmwareModal = ({
                             <Translation
                                 id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_INSTALL'}
                             />
-                        </NewModal.Button>
-                        <NewModal.Button
+                        </Modal.Button>
+                        <Modal.Button
                             variant="tertiary"
                             onClick={() => {
                                 resetReducer();
@@ -175,14 +175,14 @@ export const FirmwareModal = ({
                             <Translation
                                 id={isDeviceBackedUp ? 'TR_CHECK_SEED' : 'TR_CREATE_BACKUP'}
                             />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </>
                 );
             case 'done':
                 return (
-                    <NewModal.Button onClick={handleClose} data-testid="@firmware/continue-button">
+                    <Modal.Button onClick={handleClose} data-testid="@firmware/continue-button">
                         <Translation id="TR_CLOSE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 );
             default:
                 return null;
@@ -190,7 +190,7 @@ export const FirmwareModal = ({
     };
 
     return (
-        <NewModal.Backdrop onClick={isCancelable ? handleClose : undefined}>
+        <Modal.Backdrop onClick={isCancelable ? handleClose : undefined}>
             {showConfirmationPill && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -200,7 +200,7 @@ export const FirmwareModal = ({
                     onCancel={isAwaitingPinEntry ? handlePinCancel : undefined}
                 />
             )}
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 onCancel={isCancelable ? handleClose : undefined}
                 data-testid="@firmware-modal"
                 heading={status === 'error' ? undefined : heading}
@@ -209,7 +209,7 @@ export const FirmwareModal = ({
                 variant={status === 'error' ? 'destructive' : undefined}
             >
                 {getContent()}
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

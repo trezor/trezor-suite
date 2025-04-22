@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Banner, Card, Checkbox, Column, IconName, NewModal } from '@trezor/components';
+import { Banner, Card, Checkbox, Column, IconName, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -88,19 +88,19 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
     ];
 
     return (
-        <NewModal
+        <Modal
             heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
             description={<Translation id="TR_STAKE_YOUR_FUNDS_MAINTAINED" />}
             onCancel={onCancelClick}
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button isDisabled={!hasAgreed} onClick={proceedToStaking}>
+                    <Modal.Button isDisabled={!hasAgreed} onClick={proceedToStaking}>
                         <Translation id="TR_CONFIRM" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancelClick}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancelClick}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -120,6 +120,6 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                     <Translation id="TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE" />
                 </Checkbox>
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

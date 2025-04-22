@@ -7,7 +7,7 @@ import {
     IconCircle,
     IconCircleProps,
     List,
-    NewModal,
+    Modal,
     Paragraph,
 } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
@@ -58,7 +58,7 @@ export const TradingTermsModal = ({
     }
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             heading={
                 <Translation
@@ -78,7 +78,7 @@ export const TradingTermsModal = ({
                 />
             }
             bottomContent={
-                <NewModal.Button
+                <Modal.Button
                     data-testid="@trading/offers/trade-terms-confirm-button"
                     onClick={() => {
                         decision.resolve(true);
@@ -86,7 +86,7 @@ export const TradingTermsModal = ({
                     }}
                 >
                     <Translation id={`TR_${type}_MODAL_CONFIRM`} />
-                </NewModal.Button>
+                </Modal.Button>
             }
         >
             <List
@@ -147,6 +147,6 @@ export const TradingTermsModal = ({
                     </Column>
                 </List.Item>
             </List>
-        </NewModal>
+        </Modal>
     );
 };

@@ -1,4 +1,4 @@
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
@@ -15,12 +15,12 @@ export const ReplaceTxButton = () => {
         !composedTx || composedTx.type !== 'final' || isLocked() || (device && !device.available);
 
     return (
-        <NewModal.Button
+        <Modal.Button
             data-testid="@send/replace-tx-button"
             isDisabled={isDisabled || isLoading}
             onClick={signTransaction}
         >
             <Translation id="TR_REPLACE_TX" />
-        </NewModal.Button>
+        </Modal.Button>
     );
 };

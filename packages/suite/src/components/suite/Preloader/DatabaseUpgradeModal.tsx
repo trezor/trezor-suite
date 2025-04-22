@@ -1,4 +1,4 @@
-import { H3, NewModal, Paragraph } from '@trezor/components';
+import { H3, Modal, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 
@@ -7,7 +7,7 @@ type DatabaseUpgradeModalProps = {
 };
 
 export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => (
-    <NewModal iconName="database" variant="warning">
+    <Modal iconName="database" variant="warning">
         <H3>
             <Translation
                 id={
@@ -20,5 +20,5 @@ export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => 
         <Paragraph variant="tertiary">
             <Translation id="TR_RUNNING_MULTIPLE_INSTANCES" />
         </Paragraph>
-    </NewModal>
+    </Modal>
 );

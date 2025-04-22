@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
@@ -47,26 +47,26 @@ export const PinModal = ({ device }: PinModalProps) => {
     };
 
     return (
-        <NewModal.Backdrop>
+        <Modal.Backdrop>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
                 onCancel={onCancel}
             />
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 heading={<Translation id={getHeading()} />}
                 onCancel={onCancel}
                 data-testid="@modal/pin"
                 size="tiny"
                 bottomContent={
                     <>
-                        <NewModal.Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                        <Modal.Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
                             <Translation id="TR_CONFIRM" />
-                        </NewModal.Button>
-                        <NewModal.Button onClick={onCancel} variant="tertiary">
+                        </Modal.Button>
+                        <Modal.Button onClick={onCancel} variant="tertiary">
                             <Translation id="TR_CANCEL" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </>
                 }
             >
@@ -76,7 +76,7 @@ export const PinModal = ({ device }: PinModalProps) => {
                     onSubmit={handlePinSubmit}
                     showExplanation={isRequestingNewPinCode || isWipeCode}
                 />
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

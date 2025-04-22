@@ -1,9 +1,9 @@
-import { NewModalAlignment, NewModalSize } from './types';
+import { ModalAlignment, ModalSize } from './types';
 import { UIAlignment } from '../../config/types';
 import { FlexAlignItems, FlexJustifyContent } from '../Flex/Flex';
 
-export const mapModalSizeToWidth = (size: NewModalSize) => {
-    const widthMap: Record<NewModalSize, number> = {
+export const mapModalSizeToWidth = (size: ModalSize) => {
+    const widthMap: Record<ModalSize, number> = {
         tiny: 400,
         small: 600,
         medium: 680,
@@ -14,7 +14,7 @@ export const mapModalSizeToWidth = (size: NewModalSize) => {
     return widthMap[size];
 };
 
-export const mapAlignmentToJustifyContent = (alignment: NewModalAlignment): FlexJustifyContent => {
+export const mapAlignmentToJustifyContent = (alignment: ModalAlignment): FlexJustifyContent => {
     const alignmentMap: Record<UIAlignment, FlexJustifyContent> = {
         center: 'center',
         start: 'flex-start',
@@ -24,7 +24,7 @@ export const mapAlignmentToJustifyContent = (alignment: NewModalAlignment): Flex
     return alignmentMap[alignment.y];
 };
 
-export const mapAlignmentToAlignItems = (alignment: NewModalAlignment): FlexAlignItems => {
+export const mapAlignmentToAlignItems = (alignment: ModalAlignment): FlexAlignItems => {
     const alignmentMap: Record<UIAlignment, FlexAlignItems> = {
         center: 'center',
         start: 'flex-start',

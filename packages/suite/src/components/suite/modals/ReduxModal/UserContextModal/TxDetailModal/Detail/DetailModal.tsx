@@ -2,7 +2,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { Account, ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { useSelector } from '../../../../../../../hooks/suite';
@@ -46,13 +46,13 @@ export const DetailModal = ({
             bottomContent={
                 canReplaceTransaction ? (
                     <>
-                        <NewModal.Button icon="gauge" variant="tertiary" onClick={onChangeFeeClick}>
+                        <Modal.Button icon="gauge" variant="tertiary" onClick={onChangeFeeClick}>
                             <Translation id="TR_BUMP_FEE" />
-                        </NewModal.Button>
+                        </Modal.Button>
                         {canCancelTransaction && (
-                            <NewModal.Button icon="x" variant="tertiary" onClick={onCancelTxClick}>
+                            <Modal.Button icon="x" variant="tertiary" onClick={onCancelTxClick}>
                                 <Translation id="TR_CANCEL_TX" />
-                            </NewModal.Button>
+                            </Modal.Button>
                         )}
                     </>
                 ) : null

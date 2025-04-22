@@ -10,7 +10,7 @@ import {
     Icon,
     IconCircle,
     List,
-    NewModal,
+    Modal,
     Row,
     Text,
 } from '@trezor/components';
@@ -45,16 +45,16 @@ export const ConnectPermissionsModal = () => {
         dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             bottomContent={
                 <>
-                    <NewModal.Button variant="primary" onClick={onConfirm}>
+                    <Modal.Button variant="primary" onClick={onConfirm}>
                         {confirmLabel || <Translation id="TR_CONFIRM" />}
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             heading={<Translation id="TR_GRANT_PERMISSIONS" />}
@@ -137,6 +137,6 @@ export const ConnectPermissionsModal = () => {
                     </>
                 )}
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

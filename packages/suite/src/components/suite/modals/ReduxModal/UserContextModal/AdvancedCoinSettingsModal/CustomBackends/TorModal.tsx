@@ -1,4 +1,4 @@
-import { H3, NewModal, Paragraph } from '@trezor/components';
+import { H3, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import { Translation } from 'src/components/suite';
@@ -15,20 +15,20 @@ export const TorModal = ({ onResult }: TorModalProps) => {
     const isTorLoading = useSelector(state => getIsTorLoading(state.suite.torStatus));
 
     return (
-        <NewModal
+        <Modal
             bottomContent={
                 <>
                     {isDesktop() && (
-                        <NewModal.Button
+                        <Modal.Button
                             isLoading={isTorLoading}
                             onClick={() => onResult('enable-tor')}
                         >
                             <Translation id="TR_TOR_ENABLE_AND_CONFIRM" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     )}
-                    <NewModal.Button variant="tertiary" onClick={() => onResult('use-defaults')}>
+                    <Modal.Button variant="tertiary" onClick={() => onResult('use-defaults')}>
                         <Translation id="TR_USE_DEFAULT_BACKENDS" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             size="small"
@@ -40,6 +40,6 @@ export const TorModal = ({ onResult }: TorModalProps) => {
             <Paragraph variant="tertiary">
                 <Translation id="TR_ONION_BACKEND_TOR_NEEDED" />
             </Paragraph>
-        </NewModal>
+        </Modal>
     );
 };

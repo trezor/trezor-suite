@@ -4,7 +4,7 @@ import {
     SelectedAccountLoaded,
     WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { ChangeFee } from './ChangeFee';
 import { ReplaceTxButton } from './ReplaceTxButton';
@@ -48,9 +48,9 @@ export const BumpFeeModal = ({
                 heading={<Translation id="TR_TRANSACTION_DETAILS" />}
                 bottomContent={
                     isTxConfirmed ? (
-                        <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Modal.Button variant="tertiary" onClick={onCancel}>
                             <Translation id="TR_CLOSE_WINDOW" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     ) : (
                         <ReplaceTxButton />
                     )

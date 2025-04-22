@@ -20,12 +20,12 @@ const ModalContext = createContext<ModalContextData>({
 
 export const useModalTarget = () => useContext(ModalContext).modalTarget?.current ?? null;
 
-type NewModalProviderProps = {
+type ModalProviderProps = {
     isDisabled?: boolean;
     children: ReactNode;
 };
 
-export const NewModalProvider = ({ isDisabled = false, children }: NewModalProviderProps) => {
+export const ModalProvider = ({ isDisabled = false, children }: ModalProviderProps) => {
     const disabled = useContext(ModalContext).isDisabled ?? isDisabled;
     const [modalTarget, setModalTarget] = useState<RefObject<HTMLDivElement> | null>(null);
     const target = useRef<HTMLDivElement>(null);

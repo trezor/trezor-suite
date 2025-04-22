@@ -1,4 +1,4 @@
-import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
@@ -19,17 +19,17 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={installOnQuit}
             iconName="download"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={install}>
+                    <Modal.Button onClick={install}>
                         <Translation id="TR_UPDATE_MODAL_INSTALL_AND_RESTART" />
-                    </NewModal.Button>
-                    <NewModal.Button onClick={installOnQuit} variant="tertiary">
+                    </Modal.Button>
+                    <Modal.Button onClick={installOnQuit} variant="tertiary">
                         <Translation id="TR_UPDATE_MODAL_UPDATE_ON_QUIT" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -42,6 +42,6 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
                     <Translation id="TR_UPDATE_MODAL_RESTART_NEEDED" />
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

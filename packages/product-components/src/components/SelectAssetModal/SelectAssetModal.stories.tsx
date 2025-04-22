@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { Meta, StoryObj } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
 
-import { NewModal, intermediaryTheme } from '@trezor/components';
+import { Modal, intermediaryTheme } from '@trezor/components';
 
 import {
     AssetProps,
@@ -20,11 +20,11 @@ const meta: Meta = {
     decorators: [
         Story => (
             <ThemeProvider theme={intermediaryTheme.dark}>
-                <NewModal.Provider>
+                <Modal.Provider>
                     <IntlProvider locale="en">
                         <Story />
                     </IntlProvider>
-                </NewModal.Provider>
+                </Modal.Provider>
             </ThemeProvider>
         ),
     ],

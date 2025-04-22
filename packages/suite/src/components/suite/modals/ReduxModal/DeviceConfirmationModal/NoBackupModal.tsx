@@ -1,4 +1,4 @@
-import { H2, NewModal, Paragraph } from '@trezor/components';
+import { H2, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { onReceiveConfirmation } from 'src/actions/suite/modalActions';
@@ -18,19 +18,19 @@ export const NoBackupModal = () => {
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={close}
             iconName="warning"
             variant="warning"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={confirm} data-testid="@no-backup/take-risk-button">
+                    <Modal.Button onClick={confirm} data-testid="@no-backup/take-risk-button">
                         <Translation id="TR_CONTINUE_ANYWAY" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={goToSettings}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={goToSettings}>
                         <Translation id="TR_CREATE_BACKUP" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -40,6 +40,6 @@ export const NoBackupModal = () => {
             <Paragraph margin={{ top: spacings.sm }}>
                 <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
             </Paragraph>
-        </NewModal>
+        </Modal>
     );
 };

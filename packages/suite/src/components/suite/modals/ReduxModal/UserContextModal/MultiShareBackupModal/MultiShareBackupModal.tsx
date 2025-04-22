@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { NewModal, NewModalProps } from '@trezor/components';
+import { Modal, ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -27,7 +27,7 @@ type MultiShareBackupModalProps = {
     onCancel: () => void;
 };
 
-type StepConfig = Partial<NewModalProps>;
+type StepConfig = Partial<ModalProps>;
 
 export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
     const device = useSelector(selectSelectedDevice);
@@ -91,13 +91,13 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     ),
                     bottomContent: (
                         <>
-                            <NewModal.Button
+                            <Modal.Button
                                 onClick={goToStepNextStep}
                                 data-testid="@multi-share-backup/1st-info/submit-button"
                                 isDisabled={!isChecked1 || !isChecked2}
                             >
                                 <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
-                            </NewModal.Button>
+                            </Modal.Button>
                             <LearnMoreButton
                                 url={HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL}
                                 size="large"
@@ -144,12 +144,12 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     children: <MultiShareBackupStep2to4 step={step} />,
                     bottomContent: (
                         <>
-                            <NewModal.Button
+                            <Modal.Button
                                 onClick={enterBackup}
                                 data-testid="@multi-share-backup/2nd-info/submit-button"
                             >
                                 <Translation id="TR_ENTER_EXISTING_BACKUP" />
-                            </NewModal.Button>
+                            </Modal.Button>
                             <LearnMoreButton url={TREZOR_SUPPORT_RECOVERY_ISSUES_URL} size="large">
                                 <Translation id="TR_DONT_HAVE_BACKUP" />
                             </LearnMoreButton>
@@ -179,12 +179,12 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     children: <MultiShareBackupStep5 />,
                     bottomContent: (
                         <>
-                            <NewModal.Button
+                            <Modal.Button
                                 onClick={handleCancel}
                                 data-testid="@multi-share-backup/done/got-it-button"
                             >
                                 <Translation id="TR_GOT_IT_BUTTON" />
-                            </NewModal.Button>
+                            </Modal.Button>
                             <LearnMoreButton url={HELP_CENTER_KEEPING_SEED_SAFE_URL} size="medium">
                                 <Translation id="TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP" />
                             </LearnMoreButton>
@@ -197,7 +197,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     const isDeviceStep = ['verify-ownership', 'backup-seed'].includes(step);
 
     return (
-        <NewModal.Backdrop onClick={isDeviceStep ? undefined : handleCancel}>
+        <Modal.Backdrop onClick={isDeviceStep ? undefined : handleCancel}>
             {isDeviceStep && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -205,7 +205,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     deviceUnitColor={device?.features?.unit_color}
                 />
             )}
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 onCancel={handleCancel}
                 heading={<Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />}
                 description={
@@ -219,6 +219,6 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                 }
                 {...getStepConfig()}
             />
-        </NewModal.Backdrop>
+        </Modal.Backdrop>
     );
 };

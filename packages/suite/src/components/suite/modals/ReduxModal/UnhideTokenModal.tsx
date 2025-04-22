@@ -5,7 +5,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { Card, Checkbox, H2, NewModal, Paragraph } from '@trezor/components';
+import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -43,18 +43,18 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             iconName="warning"
             variant="warning"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={onUnhide}>
+                    <Modal.Button onClick={onUnhide}>
                         <Translation id="TR_UNHIDE" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -69,6 +69,6 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
                     <Translation id="TR_DO_NOT_SHOW_AGAIN" />
                 </Checkbox>
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

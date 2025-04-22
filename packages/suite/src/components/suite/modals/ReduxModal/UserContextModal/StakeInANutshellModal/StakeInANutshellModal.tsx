@@ -12,7 +12,7 @@ import {
     Icon,
     IconName,
     List,
-    NewModal,
+    Modal,
     Paragraph,
     Row,
     Text,
@@ -119,14 +119,14 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
     if (!account) return null;
 
     return (
-        <NewModal
+        <Modal
             heading={<Translation id="TR_STAKE_STAKING_IN_A_NUTSHELL" />}
             size="tiny"
             onCancel={onCancelClick}
             bottomContent={
-                <NewModal.Button onClick={proceedToEverstakeModal}>
+                <Modal.Button onClick={proceedToEverstakeModal}>
                     <Translation id="TR_CONTINUE" />
-                </NewModal.Button>
+                </Modal.Button>
             }
         >
             <List
@@ -168,6 +168,6 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
                     </CollapsibleBox>
                 ))}
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

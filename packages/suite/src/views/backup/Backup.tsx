@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Column, Image, NewModal, Text } from '@trezor/components';
+import { Column, Image, Modal, Text } from '@trezor/components';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -34,7 +34,7 @@ export const Backup = ({
 
     if (isDeviceUnavailable) {
         return (
-            <NewModal
+            <Modal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 onCancel={onCancel}
                 data-testid="@backup/no-device"
@@ -42,7 +42,7 @@ export const Backup = ({
                 <Column alignItems="center">
                     <Image image="CONNECT_DEVICE" width="360" />
                 </Column>
-            </NewModal>
+            </Modal>
         );
     }
 
@@ -57,15 +57,15 @@ export const Backup = ({
         device.features.unfinished_backup !== null
     ) {
         return (
-            <NewModal
+            <Modal
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
                 iconName={device.features.unfinished_backup ? 'warning' : 'check'}
                 variant={device.features.unfinished_backup ? 'warning' : 'primary'}
                 bottomContent={
-                    <NewModal.Button onClick={() => onCancel()} data-testid="@backup/close-button">
+                    <Modal.Button onClick={() => onCancel()} data-testid="@backup/close-button">
                         <Translation id="TR_CLOSE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 }
             >
                 {device.features.unfinished_backup ? (
@@ -80,7 +80,7 @@ export const Backup = ({
                         <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
                     </Text>
                 )}
-            </NewModal>
+            </Modal>
         );
     }
 

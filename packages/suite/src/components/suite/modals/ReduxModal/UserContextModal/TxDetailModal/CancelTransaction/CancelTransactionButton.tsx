@@ -1,6 +1,6 @@
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { Account, FormState } from '@suite-common/wallet-types';
-import { NewModal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -51,13 +51,13 @@ export const CancelTransactionButton = ({ account }: CancelTransactionButtonProp
     const isDisabled = isLocked() || !device || !device?.available || composedCancelTx === null;
 
     return (
-        <NewModal.Button
+        <Modal.Button
             data-testid="@send/cancel-tx-button"
             isDisabled={isDisabled}
             onClick={handleCancelTx}
             variant="destructive"
         >
             <Translation id="TR_CANCEL_TX_BUTTON" />
-        </NewModal.Button>
+        </Modal.Button>
     );
 };

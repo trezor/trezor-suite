@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Banner, Card, Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
@@ -21,22 +21,22 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
     };
 
     return (
-        <NewModal
+        <Modal
             onCancel={onCancel}
             iconName="shieldWarning"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={handleTurningOffRevisionCheck}
                         isDisabled={!isConfirmed}
                         data-testid="@device-authenticity/opt-out-button"
                     >
                         <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON" />
-                    </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    </Modal.Button>
+                    <Modal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             variant="warning"
@@ -63,6 +63,6 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
                     data-testid="@device-authenticity/checkbox"
                 />
             </Card>
-        </NewModal>
+        </Modal>
     );
 };

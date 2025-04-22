@@ -1,4 +1,4 @@
-import { Column, H3, Link, NewModal, Paragraph } from '@trezor/components';
+import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { DATA_URL } from '@trezor/urls';
 
@@ -37,24 +37,24 @@ export const BridgeUnavailable = () => {
         : `Trezor Bridge HTTP server is running.  Version: ${bridge.version}.`;
 
     return (
-        <NewModal
+        <Modal
             data-testid="@modal/bridge"
             iconName="appWindow"
             size="small"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={handleOpenSuite}>
+                    <Modal.Button onClick={handleOpenSuite}>
                         <Translation id="TR_OPEN_TREZOR_SUITE_DESKTOP" />
-                    </NewModal.Button>
+                    </Modal.Button>
                     {hasTransport && (
-                        <NewModal.Button
+                        <Modal.Button
                             icon="caretLeft"
                             variant="tertiary"
                             onClick={goToWallet}
                             data-testid="@bridge/goto/wallet-index"
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     )}
                 </>
             }
@@ -75,6 +75,6 @@ export const BridgeUnavailable = () => {
                     a standalone Trezor Bridge binary.
                 </Paragraph>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

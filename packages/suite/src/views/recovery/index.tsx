@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Box, H2, Image, NewModal, Paragraph } from '@trezor/components';
+import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
@@ -75,14 +75,14 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     if (!isDeviceAcquired(device) || !deviceModelInternal) {
         return (
-            <NewModal
+            <Modal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 onCancel={onCancel}
                 data-testid="@recovery/no-device"
                 size="tiny"
             >
                 <Image image="CONNECT_DEVICE" />
-            </NewModal>
+            </Modal>
         );
     }
 
@@ -176,7 +176,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         switch (recovery.status) {
             case 'initial':
                 return (
-                    <NewModal.Button
+                    <Modal.Button
                         onClick={() =>
                             isT1B1
                                 ? dispatch(setStatus('select-word-count'))
@@ -186,11 +186,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         data-testid="@recovery/start-button"
                     >
                         <Translation id="TR_START" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 );
             case 'select-word-count':
                 return (
-                    <NewModal.Button
+                    <Modal.Button
                         isDisabled={!wordCount}
                         onClick={() => {
                             if (!wordCount) return;
@@ -201,11 +201,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         data-testid="@recovery/continue-button"
                     >
                         <Translation id="TR_CONTINUE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 );
             case 'select-recovery-type':
                 return (
-                    <NewModal.Button
+                    <Modal.Button
                         isDisabled={!recoveryType}
                         onClick={() => {
                             dispatch(setAdvancedRecovery(recoveryType === 'advanced'));
@@ -214,7 +214,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         data-testid="@recovery/continue-button"
                     >
                         <Translation id="TR_CONTINUE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 );
             case 'waiting-for-confirmation':
                 if (
@@ -223,9 +223,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     modal.windowType === UI.REQUEST_PIN
                 ) {
                     return (
-                        <NewModal.Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                        <Modal.Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
                             <Translation id="TR_CONFIRM" />
-                        </NewModal.Button>
+                        </Modal.Button>
                     );
                 }
         }
@@ -261,7 +261,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     return (
-        <NewModal.Backdrop>
+        <Modal.Backdrop>
             {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -270,7 +270,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     onCancel={handleClose}
                 />
             )}
-            <NewModal.ModalBase
+            <Modal.ModalBase
                 heading={hasError ? undefined : <Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={
                     statesInProgressBar.includes(recovery.status) ? (
@@ -286,12 +286,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 bottomContent={
                     <>
                         {getBottomContentPrimaryButton()}
-                        <NewModal.Button
+                        <Modal.Button
                             variant={hasFinished ? undefined : 'tertiary'}
                             onClick={handleClose}
                         >
                             <Translation id={hasFinished ? 'TR_CLOSE' : 'TR_CANCEL'} />
-                        </NewModal.Button>
+                        </Modal.Button>
                     </>
                 }
                 onBackClick={hasBackClick ? handleBackClick : undefined}
@@ -301,7 +301,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 size={getSize()}
             >
                 {getStep()}
-            </NewModal.ModalBase>
-        </NewModal.Backdrop>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
     );
 };

@@ -5,17 +5,7 @@ import {
     connectPopupVerifyAddressThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import {
-    Badge,
-    Button,
-    Card,
-    Column,
-    H3,
-    Icon,
-    NewModal,
-    Paragraph,
-    Row,
-} from '@trezor/components';
+import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -56,18 +46,18 @@ export const ConnectAddressConfirmation = () => {
     if (!popupCall || popupCall?.state !== 'address-confirmation') return null;
 
     return (
-        <NewModal
+        <Modal
             variant="primary"
             bottomContent={
                 <>
-                    <NewModal.Button
+                    <Modal.Button
                         variant="tertiary"
                         onClick={onFinish}
                         size="medium"
                         data-testid="@connect-address-confirmation/close-button"
                     >
                         <Translation id="TR_DONE" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
         >
@@ -128,6 +118,6 @@ export const ConnectAddressConfirmation = () => {
                     </Column>
                 </Card>
             </Column>
-        </NewModal>
+        </Modal>
     );
 };

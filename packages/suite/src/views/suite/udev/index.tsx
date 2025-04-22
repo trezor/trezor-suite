@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Column, NewModal, Paragraph, Select, Spinner } from '@trezor/components';
+import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
@@ -32,16 +32,16 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
     const target = selectedTarget || preferredTarget || installers[0];
 
     return (
-        <NewModal
+        <Modal
             data-testid="@modal/udev"
             onCancel={onCancel}
             heading={<Translation id="TR_UDEV_DOWNLOAD_TITLE" />}
             bottomContent={
                 <>
-                    <NewModal.Button href={target.value}>
+                    <Modal.Button href={target.value}>
                         <Translation id="TR_DOWNLOAD" />
-                    </NewModal.Button>
-                    <NewModal.Button
+                    </Modal.Button>
+                    <Modal.Button
                         variant="tertiary"
                         href={udevManualUrl}
                         icon="arrowUpRight"
@@ -49,7 +49,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
                         iconSize={20}
                     >
                         <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
-                    </NewModal.Button>
+                    </Modal.Button>
                 </>
             }
             size="small"
@@ -75,6 +75,6 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
                     </>
                 )}
             </Column>
-        </NewModal>
+        </Modal>
     );
 };
