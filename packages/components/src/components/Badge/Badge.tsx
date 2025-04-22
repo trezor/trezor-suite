@@ -36,6 +36,7 @@ export type BadgeProps = AllowedFrameProps & {
     className?: string;
     children?: React.ReactNode;
     inline?: boolean;
+    'data-testid'?: string;
 };
 
 type MapArgs = {
@@ -152,6 +153,7 @@ export const Badge = ({
     className,
     children,
     inline,
+    'data-testid': dataTest,
     ...rest
 }: BadgeProps) => {
     const theme = useTheme();
@@ -179,7 +181,12 @@ export const Badge = ({
                 />
             )}
 
-            <Content $size={size} $variant={variant} $isDisabled={!!isDisabled}>
+            <Content
+                $size={size}
+                $variant={variant}
+                $isDisabled={!!isDisabled}
+                data-testid={dataTest}
+            >
                 {children}
             </Content>
         </Container>
