@@ -4,4 +4,6 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
+    volumes:
+      - ../:/trezor-suite
     network_mode: host
