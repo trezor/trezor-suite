@@ -5,5 +5,7 @@ import { BoxShadows, Colors } from '@trezor/theme';
 import { SuiteThemeColors } from './src/config/colors';
 
 declare module 'styled-components' {
-    export interface DefaultTheme extends SuiteThemeColors, Colors, BoxShadows {}
+    export interface DefaultTheme extends SuiteThemeColors, Colors, BoxShadows {
+        variant: 'light' | 'dark' | 'standard';
+    }
 }

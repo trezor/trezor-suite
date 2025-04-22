@@ -24,7 +24,7 @@ const meta: Meta = {
     component: ModalComponent,
     decorators: [
         Story => (
-            <ThemeProvider theme={intermediaryTheme.light}>
+            <ThemeProvider theme={{ variant: 'light', ...intermediaryTheme.light }}>
                 <ModalComponent.Provider>
                     <Story />
                     <p>

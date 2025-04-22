@@ -19,7 +19,9 @@ const MAX_ENTRIES = 1000;
 const LOG_DEBOUNCE_TIME = 1000;
 
 const ThemeWrapper = ({ children }: ReactWrapperProps) => (
-    <ThemeProvider theme={intermediaryTheme.light}>{children}</ThemeProvider>
+    <ThemeProvider theme={{ variant: 'light', ...intermediaryTheme.light }}>
+        {children}
+    </ThemeProvider>
 );
 
 const Layout = styled.div`
