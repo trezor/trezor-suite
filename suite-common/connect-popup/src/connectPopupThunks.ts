@@ -44,7 +44,8 @@ export const connectPopupCallThunkInner = createThunk<
             }
             if (
                 methodInfo.payload.requiredPermissions.includes('management') ||
-                methodInfo.payload.requiredPermissions.includes('push_tx')
+                (methodInfo.payload.requiredPermissions.includes('push_tx') &&
+                    source.type === 'deeplink')
             ) {
                 throw TypedError('Method_NotAllowed');
             }
