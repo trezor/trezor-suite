@@ -9,5 +9,7 @@ interface ReactWrapperProps {
 }
 
 export const ThemeWrapper = ({ children }: ReactWrapperProps) => (
-    <ThemeProvider theme={intermediaryTheme.light}>{children}</ThemeProvider>
+    <ThemeProvider theme={{ variant: 'light', ...intermediaryTheme.light }}>
+        {children}
+    </ThemeProvider>
 );

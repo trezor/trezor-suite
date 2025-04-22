@@ -15,7 +15,7 @@ const Item = styled.li<{ $bulletGap: SpacingValues; $size: BulletSize }>`
     column-gap: ${({ $bulletGap }) => `${$bulletGap}px`};
 `;
 
-const BulletWraper = styled.div`
+const BulletWrapper = styled.div`
     align-self: center;
     counter-increment: item-counter;
     position: relative;
@@ -105,7 +105,7 @@ export const BulletListItem = ({
 
     return (
         <Item $bulletGap={bulletGap} $size={bulletSize} data-testid={dataTestId}>
-            <BulletWraper>
+            <BulletWrapper>
                 {state === 'done' ? (
                     <IconCircle
                         name="check"
@@ -121,7 +121,7 @@ export const BulletListItem = ({
                         $isDarkTheme={isDarkTheme}
                     />
                 )}
-            </BulletWraper>
+            </BulletWrapper>
             <Title>
                 <Text
                     as="div"

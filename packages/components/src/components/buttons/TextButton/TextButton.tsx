@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled, { DefaultTheme, useTheme } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
@@ -55,7 +55,7 @@ const TextButtonContainer = styled.button<
     border: 1px solid transparent;
     border-radius: ${borders.radii.xxs};
     background: none;
-    color: ${({ theme, $variant }) => theme[mapVariantToColor[$variant]]};
+    color: ${({ theme, $variant }) => theme[mapVariantToColor[$variant] as keyof DefaultTheme]};
 
     ${({ $size }) => ($size === 'small' ? typography.hint : typography.body)};
     white-space: nowrap;
@@ -71,10 +71,12 @@ const TextButtonContainer = styled.button<
     ${withFrameProps}
 
     &:hover {
-        color: ${({ theme, $variant }) => theme[mapVariantToHoverColor[$variant]]};
+        color: ${({ theme, $variant }) =>
+            theme[mapVariantToHoverColor[$variant] as keyof DefaultTheme]};
 
         path {
-            fill: ${({ theme, $variant }) => theme[mapVariantToHoverColor[$variant]]};
+            fill: ${({ theme, $variant }) =>
+                theme[mapVariantToHoverColor[$variant] as keyof DefaultTheme]};
         }
     }
 

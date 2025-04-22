@@ -144,7 +144,7 @@ export const Tooltip = ({
                     arrowRender={hasArrow ? TooltipArrow : undefined}
                     appendTo={appendTo}
                 >
-                    <ThemeProvider theme={intermediaryTheme.dark}>
+                    <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
                         <TooltipBox
                             content={content}
                             addon={addon}
