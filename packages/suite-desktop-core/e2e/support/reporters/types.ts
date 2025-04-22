@@ -78,4 +78,16 @@ export interface CreateFieldResponse {
     };
 }
 
+export interface AddDraftIssueResponse {
+    addProjectV2DraftIssue: {
+        projectItem: {
+            id: string;
+            content: {
+                id: string;
+                title: string;
+            };
+        };
+    };
+}
+
 export type ValueOrOptionId = string | { optionId: string };

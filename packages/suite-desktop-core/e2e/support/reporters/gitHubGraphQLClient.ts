@@ -1,6 +1,7 @@
 import { Octokit } from '@octokit/rest';
 
 import {
+    AddDraftIssueResponse,
     AddIssueToProjectResponse,
     CreateFieldResponse,
     CreateProjectMutation,
@@ -20,8 +21,8 @@ export class GitHubGraphQLClient {
         private readonly logger: LoggingFunctions,
     ) {}
 
-    async createProject(ownerId: string, projectName: string): Promise<string> {
-        this.logger.log(`Creating project ${projectName} with owner ID: ${ownerId}`);
+    async createProject(ownerId: string, teamId: string, projectName: string): Promise<string> {
+        this.logger.log(`Creating project "${projectName}" with owner ID: ${ownerId}`);
 
         const mutation = `
             mutation {
@@ -29,6 +30,7 @@ export class GitHubGraphQLClient {
                 input: {
                     ownerId: "${ownerId}"
                     title: "${projectName}"
+                    teamId: "${teamId}"
                 }) {
                     projectV2 {
                         id
@@ -61,10 +63,7 @@ export class GitHubGraphQLClient {
 
         if (isSelectField && options) {
             optionsString = options
-                .map(
-                    opt =>
-                        `{ name: "${opt.value}", description: "${opt.value}", color: ${opt.color} }`,
-                )
+                .map(opt => `{ name: "${opt.value}", description: "", color: ${opt.color} }`)
                 .join(',\n');
         }
 
@@ -226,9 +225,7 @@ export class GitHubGraphQLClient {
         this.logger.log(`Updating all options for field ${fieldId}`);
 
         const optionsString = options
-            .map(
-                opt => `{ name: "${opt.value}", description: "${opt.value}", color: ${opt.color} }`,
-            )
+            .map(opt => `{ name: "${opt.value}", description: "", color: ${opt.color} }`)
             .join(',\n');
 
         const mutation = `
@@ -251,5 +248,33 @@ export class GitHubGraphQLClient {
 
         await this.octokit.graphql(mutation);
         this.logger.log(`Successfully replaced all options for field ${fieldId}`);
+    }
+
+    async createDraftIssueInProject(
+        projectId: string,
+        title: string,
+        body: string,
+    ): Promise<string> {
+        const mutation = `
+        mutation {
+          addProjectV2DraftIssue(
+            input: {
+              assigneeIds: []
+              projectId: "${projectId}"
+              title: "${title.replace(/"/g, '\\"')}"
+              body: "${body.replace(/"/g, '\\"')}"
+            }
+          ) {
+            projectItem {
+              id
+            }
+          }
+        }
+    `;
+
+        const response = await this.octokit.graphql<AddDraftIssueResponse>(mutation);
+        const issueId = response.addProjectV2DraftIssue.projectItem.id;
+
+        return issueId;
     }
 }

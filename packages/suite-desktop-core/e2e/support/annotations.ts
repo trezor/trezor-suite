@@ -75,13 +75,17 @@ export class TestReportProvider {
         return this.getAnnotation(TestAnnotationType.TestCase, this.test.title);
     }
     get status(): string {
-        //TODO: Find out how ok() behaves on skipped tests, we may simplify the condition or we might need !isManual && passed => todo
-        if (this.isManual) {
+        // This condition covers manual and automated tests that are skipped
+        if (this.test.outcome() === 'skipped') {
             return TestStatus.Todo;
         }
 
         if (this.test.ok()) {
             return TestStatus.AutoPass;
+        }
+
+        if (!this.test.ok()) {
+            return TestStatus.AutoFail;
         }
 
         return TestStatus.Todo;

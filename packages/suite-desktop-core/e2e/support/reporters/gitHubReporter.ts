@@ -9,13 +9,14 @@ import { LoggingFunctions, ProjectField } from './types';
 import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
 
 // Constants
-const ownerLogin = 'Vere-Grey';
-const ownerId = 'MDQ6VXNlcjczODM2MjY5';
-const repoName = 'exercism_dominoes';
+// const ownerLogin = 'Vere-Grey';
+// const ownerId = 'MDQ6VXNlcjczODM2MjY5';
+// const repoName = 'exercism_dominoes';
 // const repoId = 'R_kgDOG5BJRw';
-// const organization = 'trezor';
-//TODO: Run over Test Results which has wrong fields and fix double error in term
-const projectName = 'Test Results 24';
+const organization = 'trezor';
+const orgId = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
+const qaTeamId = 'T_kwDOAD9FD84AMZXd';
+const projectName = 'Test Results 33';
 const VERBOSE = true;
 const retryConf = {
     attempts: 3,
@@ -119,22 +120,15 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
 
                 try {
                     const issueNodeId = await scheduleAction(() => {
-                        this.log(`Creating GitHub issue for test "${test.title}"...`);
+                        this.log(`Creating GitHub draft issue for test "${test.title}"...`);
 
-                        return this.createIssue(report);
+                        return this.graphQLClient.createDraftIssueInProject(
+                            this.projectId,
+                            report.testCase,
+                            report.bodyDescription,
+                        );
                     }, retryConf);
-                    this.log(
-                        `Successfully created issue "${test.title}" with Id: "${issueNodeId}"`,
-                    );
-
-                    const projectItemId = await scheduleAction(() => {
-                        this.log(`Adding issue "${test.title}" to project ${this.projectId}...`);
-
-                        return this.graphQLClient.addIssueToProject(this.projectId, issueNodeId);
-                    }, retryConf);
-                    this.log(
-                        `Successfully added issue "${test.title}" to project with item ID: ${projectName}`,
-                    );
+                    this.log(`[${issueNodeId}] Successfully created issue "${test.title}"`);
 
                     const fields = await scheduleAction(() => this.getProjectFields(), retryConf);
 
@@ -145,21 +139,21 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                             value,
                         );
                         await scheduleAction(() => {
-                            this.log(`Updating field ${name}:${value} for item "${test.title}"...`);
+                            this.log(`[${issueNodeId}] Updating field ${name}:"${value}"...`);
 
                             return this.graphQLClient.setItemValue(
                                 this.projectId,
-                                projectItemId,
+                                issueNodeId,
                                 fieldId,
                                 valueOrOptionId,
                             );
                         }, retryConf);
-                        this.log(
-                            `Successfully updated field ${name}:${value} for item "${test.title}"`,
-                        );
+                        this.log(`[${issueNodeId}] Successfully updated field ${name}:"${value}"`);
                     }
 
-                    this.log(`Successfully recorded test result for "${test.title}"`);
+                    this.log(
+                        `[${issueNodeId}] Successfully recorded test result for "${test.title}"`,
+                    );
                 } catch (error) {
                     this.logError(`Failed to process test end for "${test.title}":`, error);
                     // Non-Critical error, no need to rethrow
@@ -206,7 +200,6 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
 
                 return;
             }
-
             await this.createProject(annotationsForProjectFields);
 
             // Finds the project again to avoid conflicts
@@ -227,8 +220,11 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
 
     private async findExistingProject(): Promise<{ id: string; title: string } | null> {
         try {
-            const projects = await this.graphQLClient.getProjectFromUser(ownerLogin, projectName);
-            // const projects =  this.graphQLClient.getProjectFromOrganization(organization, projectName));
+            // const projects = await this.graphQLClient.getProjectFromUser(ownerLogin, projectName);
+            const projects = await this.graphQLClient.getProjectFromOrganization(
+                organization,
+                projectName,
+            );
 
             const matchingProject = projects.find((project: any) => project.title === projectName);
 
@@ -252,7 +248,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
     }
 
     async createProject(desiredFields: Array<BaseAnnotation>): Promise<void> {
-        const projectId = await this.graphQLClient.createProject(ownerId, projectName);
+        const projectId = await this.graphQLClient.createProject(orgId, qaTeamId, projectName);
 
         // Get default STATUS field that was automatically created.
         const existingFields = await this.graphQLClient.getProjectFields(projectId);
@@ -305,18 +301,6 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
             this.logError(`Failed to update options for field "${desiredField.name}".`);
             throw error;
         }
-    }
-
-    private async createIssue(report: TestReportProvider): Promise<any> {
-        const response = await this.octokit.issues.create({
-            owner: ownerLogin,
-            repo: repoName,
-            title: report.testCase,
-            body: report.bodyDescription,
-            draft: true,
-        });
-
-        return response.data.node_id;
     }
 
     private async getProjectFields(): Promise<ProjectField[]> {
