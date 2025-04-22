@@ -89,7 +89,7 @@
         "date-fns": "^2.30.0",
         "dropbox": "^10.34.0",
         "file-saver": "^2.0.5",
-        "framer-motion": "^12.6.3",
+        "framer-motion": "^12.7.4",
         "history": "^4.10.1",
         "idb": "^8.0.2",
         "immer": "10.1.1",
