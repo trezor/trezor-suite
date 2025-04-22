@@ -8935,7 +8935,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     react: "npm:18.2.0"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
   languageName: unknown
   linkType: soft
 
@@ -8977,7 +8977,7 @@ __metadata:
   dependencies:
     "@trezor/type-utils": "workspace:*"
     react: "npm:18.2.0"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
   languageName: unknown
   linkType: soft
 
@@ -9504,7 +9504,7 @@ __metadata:
     metro: "npm:0.81.0"
     node-libs-browser: "npm:^2.2.1"
     react: "npm:18.2.0"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
     react-native: "npm:0.76.9"
     react-native-edge-to-edge: "npm:^1.3.1"
     react-native-gesture-handler: "npm:^2.21.0"
@@ -9949,7 +9949,7 @@ __metadata:
   dependencies:
     intl-pluralrules: "npm:^2.0.1"
     react: "npm:18.2.0"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
   languageName: unknown
   linkType: soft
 
@@ -11219,7 +11219,7 @@ __metadata:
     react-date-range: "npm:^1.4.0"
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.13.6"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
     react-markdown: "npm:^10.1.0"
     react-select: "npm:^5.10.1"
     react-svg: "npm:16.3.0"
@@ -11478,7 +11478,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.55"
     framer-motion: "npm:^12.6.3"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
   peerDependencies:
     react: 18.2.0
     styled-components: ^6.1.16
@@ -11720,7 +11720,7 @@ __metadata:
     framer-motion: "npm:^12.6.3"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.54.2"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
     react-svg: "npm:16.3.0"
     storybook: "npm:^8.6.12"
     styled-components: "npm:^6.1.16"
@@ -12209,7 +12209,7 @@ __metadata:
     react-focus-lock: "npm:^2.13.6"
     react-helmet-async: "npm:^2.0.5"
     react-hook-form: "npm:^7.54.2"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
     react-qr-reader: "npm:^2.2.1"
     react-redux: "npm:9.2.0"
     react-router-dom: "npm:^5.2.0"
@@ -12272,7 +12272,7 @@ __metadata:
     json-stable-stringify: "npm:^1.2.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
-    react-intl: "npm:^7.1.10"
+    react-intl: "npm:^7.1.11"
     styled-components: "npm:^6.1.16"
     usb: "npm:^2.15.0"
     webpack: "npm:^5.97.1"
@@ -34822,9 +34822,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-intl@npm:^7.1.10":
-  version: 7.1.10
-  resolution: "react-intl@npm:7.1.10"
+"react-intl@npm:^7.1.11":
+  version: 7.1.11
+  resolution: "react-intl@npm:7.1.11"
   dependencies:
     "@formatjs/ecma402-abstract": "npm:2.3.4"
     "@formatjs/icu-messageformat-parser": "npm:2.11.2"
@@ -34840,7 +34840,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/ebcf56f52f313ee2b80ee9bf9a6211625c3234cdae2867f13e9b48a78f68d42ce67709823c2499ed9b94e34ae92ee1753eac5c5996a1d26847cd1572f3a85cac
+  checksum: 10/ea642c0e04f8186d9141a36a4804afe24810f8b6a96a47c8dc4388663f03c9acfa7b1d093fa65b47bd3f3b62217b8d33f90a7bb5d74d1a420aa1ecd3c6a88014
   languageName: node
   linkType: hard
 

@@ -24,7 +24,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "framer-motion": "^12.6.3",
-        "react-intl": "^7.1.10"
+        "react-intl": "^7.1.11"
     },
     "devDependencies": {
         "@types/react": "18.2.55"

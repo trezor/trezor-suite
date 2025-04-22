@@ -30,7 +30,7 @@
         "framer-motion": "^12.6.3",
         "react": "18.2.0",
         "react-hook-form": "^7.54.2",
-        "react-intl": "^7.1.10",
+        "react-intl": "^7.1.11",
         "react-svg": "16.3.0",
         "styled-components": "^6.1.16",
         "zxcvbn": "^4.4.2"
