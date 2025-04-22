@@ -59,6 +59,7 @@ react-svg
 react-toastify
 recharts
 simple-git
+sharp
 storybook
 style-loader
 styled-components

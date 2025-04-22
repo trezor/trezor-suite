@@ -9,12 +9,14 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "generate-icons": "yarn g:tsx generateIcons.js && yarn g:tsx generateIconFont.ts",
-        "generate-icon-font": "yarn g:tsx generateIconFont.ts"
+        "generate-icon-font": "yarn g:tsx generateIconFont.ts",
+        "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts"
     },
     "devDependencies": {
         "chalk": "4.1.2",
         "fantasticon": "3.0.0",
         "prettier": "3.2.5",
+        "sharp": "^0.34.1",
         "svgo": "3.3.2"
     }
 }
