@@ -40,4 +40,27 @@ describe('process', () => {
             );
         });
     });
+
+    describe.only('findFullPathByPid', () => {
+        test('findFullPathByPid', async () => {
+            const port = await getFreePort();
+            const server = net.createServer().listen(port);
+            try {
+                // wait for listening
+                await new Promise(resolve => {
+                    server.on('listening', () => {
+                        resolve(undefined);
+                    });
+                });
+
+                const processInfo = await findProcessFromIncomingPort(port);
+                expect(processInfo).toBeDefined();
+
+                const executablePath = await findFullPathByPid(processInfo!.pid);
+                console.log('executablePath', executablePath);
+            } finally {
+                server.close();
+            }
+        });
+    });
 });

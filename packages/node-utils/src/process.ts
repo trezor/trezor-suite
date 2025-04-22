@@ -81,15 +81,16 @@ export const findFullPathByPid = async (pid: string): Promise<string | undefined
             const command = `ps -p ${pid} -o args=`;
             const stdout = await spawnAndCollectStdout(command);
             if (stdout) {
-                return stdout.trim();
+                return stdout.trim().split(' ')[0];
             }
             return undefined;
         }
         case 'win32': {
             const command = `wmic process where "ProcessId=${pid}" get ExecutablePath`;
             const stdout = await spawnAndCollectStdout(command);
+            console.log('windows stdout:', stdout);
             if (stdout) {
-                return stdout.trim();
+                return stdout.trim().split(' ')[0];
             }
             return undefined;
         }
