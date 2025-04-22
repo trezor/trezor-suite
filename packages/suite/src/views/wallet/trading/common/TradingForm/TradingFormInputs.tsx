@@ -1,4 +1,8 @@
-import { TradingBuyFormProps, TradingExchangeFormProps } from '@suite-common/trading';
+import type {
+    TradingBuyFormProps,
+    TradingExchangeFormProps,
+    TradingSellFormProps,
+} from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Column, FractionButton, FractionButtonProps, Row } from '@trezor/components';
@@ -17,10 +21,7 @@ import {
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    TradingSellFormProps,
-    TradingUseFormActionsReturnProps,
-} from 'src/types/trading/tradingForm';
+import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 import {
     isTradingExchangeContext,
     isTradingSellContext,
