@@ -1,5 +1,3 @@
-import { AnyAction } from '@reduxjs/toolkit';
-
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -31,7 +29,7 @@ import TrezorConnect, {
 import { getEnvironment } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
 
-import { DEVICE_MODULE_PREFIX, DeviceConnectActionPayload, deviceActions } from './deviceActions';
+import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import { selectDeviceById, selectDevices, selectSelectedDevice } from './deviceReducer';
 import { selectAccountByKey } from '../accounts/accountsReducer';
@@ -637,14 +635,6 @@ export const onPassphraseSubmit = createThunk(
 
 type DeviceConnectThunkEventType = typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
 
-const deviceConnectThunksMap: Record<
-    DeviceConnectThunkEventType,
-    (payload: DeviceConnectActionPayload) => AnyAction
-> = {
-    [DEVICE.CONNECT]: deviceActions.connectDevice,
-    [DEVICE.CONNECT_UNACQUIRED]: deviceActions.connectUnacquiredDevice,
-};
-
 type DeviceConnectThunksParams = {
     type: DeviceConnectThunkEventType;
     device: Device;
@@ -655,7 +645,16 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     ({ type, device }, { dispatch, getState, extra }) => {
         const settings = extra.selectors.selectSuiteSettings(getState());
 
-        dispatch(deviceConnectThunksMap[type]({ device, settings }));
+        switch (type) {
+            case DEVICE.CONNECT:
+                dispatch(deviceActions.connectDevice({ device, settings }));
+                break;
+            case DEVICE.CONNECT_UNACQUIRED:
+                dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
+                break;
+            default:
+                ((_: never) => {})(type);
+        }
     },
 );
 
