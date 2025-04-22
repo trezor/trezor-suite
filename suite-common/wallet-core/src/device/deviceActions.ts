@@ -97,6 +97,11 @@ const setEntropyCheckFail = createAction(
     (payload: string | null) => ({ payload }),
 );
 
+const setDeviceThpAutoConnect = createAction(
+    `${DEVICE_MODULE_PREFIX}/setDeviceThpAutoConnect`,
+    (payload: { thpAutoConnect: boolean }) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -114,4 +119,5 @@ export const deviceActions = {
     updateSelectedDevice,
     removeButtonRequests,
     setEntropyCheckFail,
+    setDeviceThpAutoConnect,
 };

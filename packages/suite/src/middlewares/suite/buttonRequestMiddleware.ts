@@ -36,6 +36,14 @@ const buttonRequest =
             }
         }
 
+        if (action.type === UI.REQUEST_THP_AUTOCONNECT) {
+            const device = selectSelectedDevice(api.getState());
+            TrezorConnect.uiResponse({
+                type: UI.RECEIVE_THP_AUTOCONNECT,
+                payload: { autoconnect: !!device?.thpAutoConnect },
+            });
+        }
+
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35
         // ugly hack to make Cardano review modal work
         // ugly hack to make Ethereum staking and bump fee review modal on specific devices work

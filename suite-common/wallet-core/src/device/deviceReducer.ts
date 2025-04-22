@@ -676,6 +676,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
+        .addCase(deviceActions.setDeviceThpAutoConnect, (state, { payload }) => {
+            if (state.selectedDevice) {
+                state.selectedDevice.thpAutoConnect = payload.thpAutoConnect;
+            }
+        })
         .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
             if (!state.dismissedSecurityChecks) {
                 state.dismissedSecurityChecks = {};
