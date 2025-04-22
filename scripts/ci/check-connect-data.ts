@@ -42,6 +42,12 @@ const getLatestTimestamp = (timestamps: string[]): string | null => {
     return new Date(latestTime).toISOString();
 };
 
+const emptyAuthenticityConfig = {
+    root_pubkeys: [],
+    ca_pubkeys: [],
+    timestamp: 0,
+};
+
 const updateConfigFromJSON = async () => {
     try {
         const devicesKeys = Object.keys(authenticityPaths) as DeviceModel[];
@@ -54,7 +60,9 @@ const updateConfigFromJSON = async () => {
         for (const deviceKey of devicesKeys) {
             const { authenticity, authenticityDev } = authenticityPaths[deviceKey];
             const authenticityUrl = `${AUTHENTICITY_BASE_URL}/${authenticity}`;
-            const authenticityData = await fetchJSON(authenticityUrl);
+            // TODO: for now we do not have production keys for `T3W1` so we include it empty.
+            const authenticityData =
+                deviceKey === 'T3W1' ? emptyAuthenticityConfig : await fetchJSON(authenticityUrl);
             timestamps.push(authenticityData.timestamp);
             const authenticityDevUrl = `${AUTHENTICITY_BASE_URL}/${authenticityDev}`;
             const authenticityDevData = await fetchJSON(authenticityDevUrl);
