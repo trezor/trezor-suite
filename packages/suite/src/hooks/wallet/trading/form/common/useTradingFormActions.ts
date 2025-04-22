@@ -5,7 +5,8 @@ import { useDebounce } from 'react-use';
 import { FiatCurrencyCode } from 'invity-api';
 
 import {
-    TradingExchangeFormProps,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
     cryptoIdToSymbol,
     exchangeUtils,
     useTradingInfo,
@@ -36,7 +37,6 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
     TradingSellExchangeFormProps,
-    TradingSellFormProps,
     TradingUseFormActionsProps,
     TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';

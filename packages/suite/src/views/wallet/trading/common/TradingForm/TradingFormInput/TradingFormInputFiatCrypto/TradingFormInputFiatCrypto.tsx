@@ -1,16 +1,14 @@
 import {
-    TradingBuyFormProps,
-    TradingExchangeFormProps,
+    type TradingBuyFormProps,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
     useTradingInfo,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    TradingFormInputFiatCryptoWrapProps,
-    TradingSellFormProps,
-} from 'src/types/trading/tradingForm';
+import { TradingFormInputFiatCryptoWrapProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
 import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';

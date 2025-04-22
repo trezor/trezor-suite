@@ -123,6 +123,7 @@ export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
     return { tag, infoNote };
 };
 
+// TODO: trading - delete possibility of undefined quotes after sell connection
 export const tradingGetSuccessQuotes = <T extends TradingType>(
     quotes: TradingTradeMapProps[T][] | undefined,
 ) => (quotes ? quotes.filter(quote => quote.error === undefined) : undefined);
