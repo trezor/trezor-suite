@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button } from '@trezor/components';
+import { Button, Column, H3, NewModal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
-import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
+import { Translation } from 'src/components/suite';
 import { usePasswords } from 'src/hooks/suite';
 import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
@@ -106,27 +106,34 @@ export const PasswordEntry = ({
     return (
         <>
             {confirmRemove != null && (
-                <DialogModal
-                    bodyHeading="Remove password entry"
-                    body={`Really remove ${note || title}?`}
-                    bottomBarComponents={
+                <NewModal
+                    variant="destructive"
+                    iconName="trash"
+                    bottomContent={
                         <>
-                            <Button
-                                variant="destructive"
+                            <NewModal.Button
                                 onClick={() => {
                                     removePassword(index);
                                     setFormActive(null);
                                     setConfirmRemove(null);
                                 }}
                             >
-                                Confirm
-                            </Button>
-                            <Button onClick={() => setConfirmRemove(null)} type="button">
-                                Nope
-                            </Button>
+                                <Translation id="TR_CONFIRM" />
+                            </NewModal.Button>
+                            <NewModal.Button
+                                onClick={() => setConfirmRemove(null)}
+                                variant="tertiary"
+                            >
+                                <Translation id="TR_CANCEL" />
+                            </NewModal.Button>
                         </>
                     }
-                />
+                >
+                    <Column gap={spacings.xs}>
+                        <H3>Remove password entry</H3>
+                        <Paragraph>{`Really remove ${note || title}?`}</Paragraph>
+                    </Column>
+                </NewModal>
             )}
             <PasswordEntryRow>
                 <PasswordEntryCol>{note || title}</PasswordEntryCol>
