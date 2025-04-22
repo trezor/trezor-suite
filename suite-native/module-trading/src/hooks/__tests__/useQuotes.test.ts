@@ -201,8 +201,7 @@ describe('useQuotes', () => {
         expect(dispatchSpy).toHaveBeenCalledTimes(0);
     });
 
-    // TODO this test logs error
-    it.skip('should clear quotes when data in form becomes invalid', async () => {
+    it('should clear quotes when data in form becomes invalid', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result } = await renderUseQuotes(store);

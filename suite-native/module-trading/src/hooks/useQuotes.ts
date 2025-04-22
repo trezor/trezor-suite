@@ -6,6 +6,7 @@ import {
     HandleRequestThunkProps,
     TradingRootState,
     buyThunks,
+    selectTradingBuyIsLoading,
     selectTradingBuyQuotes,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
@@ -90,39 +91,56 @@ const useQuotesInvalidator = (
 ) => {
     const dispatch = useDispatch();
     const quotes = useSelector(selectTradingBuyQuotes);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
 
+    const shouldClearDebounceCallback = !isFormValid;
+    const shouldAbortQuotesRequest = !isFormValid && isLoading;
     const shouldInvalidateQuotes = !isFormValid && quotes.length > 0;
 
+    // make sure that no debounced quotes request is pending when form is invalid
+    useEffect(() => {
+        if (shouldClearDebounceCallback) {
+            debounce(() => {});
+        }
+    }, [shouldClearDebounceCallback, debounce]);
+
+    // make sure no quotes request is pending when form is invalid
+    useEffect(() => {
+        if (shouldAbortQuotesRequest && quotesPromiseRef.current?.abort) {
+            quotesPromiseRef.current.abort('Invalidating quotes');
+        }
+    }, [shouldAbortQuotesRequest, quotesPromiseRef, debounce]);
+
+    // make sure no stale quotes are present when form is invalid
     useEffect(() => {
         if (shouldInvalidateQuotes) {
-            if (quotesPromiseRef.current?.abort) {
-                quotesPromiseRef.current.abort('Invalidating quotes');
-            }
-            // make sure that no debounced quotes request is pending
-            debounce(() => {});
-
             dispatch(clearQuotesAndQuotesRequest());
         }
-    }, [shouldInvalidateQuotes, quotesPromiseRef, dispatch, debounce]);
+    }, [shouldInvalidateQuotes, dispatch]);
 
     useEffect(
+        // on form unmount
         () => () => {
+            // make sure no quotes request is pending
             if (quotesPromiseRef.current?.abort) {
                 quotesPromiseRef.current.abort('Component unmounted');
             }
+            // clear whole buy state including quotes
             dispatch(clearBuyState());
+            // debounce should be handled by useDebounce, no need to clear it here
         },
         [dispatch, quotesPromiseRef],
     );
 };
 
-export const useQuotes = (form: TradingBuyForm) => {
+const useQuotesThunk = (
+    form: TradingBuyForm,
+    timer: ReturnType<typeof useReloadTimer>['timer'],
+    shouldRefetchQuotes: boolean,
+    quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
+    debounce: ReturnType<typeof useDebounce>,
+) => {
     const dispatch = useDispatch();
-    const debounce = useDebounce();
-    const promiseRef = useRef<PromiseType | undefined>(undefined);
-
-    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchQuotes(form);
-    const { timer, shouldReload } = useReloadTimer(isFetchAllowed);
 
     const asset = form.watch('asset');
     const symbol = getSelectedSymbolFromBuyForm(form);
@@ -133,27 +151,54 @@ export const useQuotes = (form: TradingBuyForm) => {
         selectTradingCoinInfoByCryptoId(state, asset?.cryptoId),
     );
 
-    useQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
+    useEffect(() => {
+        if (shouldRefetchQuotes) {
+            if (quotesPromiseRef.current?.abort) {
+                quotesPromiseRef.current.abort('Request was replaced by another one.');
+            }
 
-    if (isFetchAllowed && (shouldFetchQuotes || shouldReload)) {
-        if (promiseRef.current?.abort) {
-            promiseRef.current.abort('Request was replaced by another one.');
+            debounce(() => {
+                const selectedAsset = form.getValues('asset');
+                invariant(selectedAsset, 'Asset is not defined');
+                const network = getNetworkByCoingeckoId(selectedAsset.networkId);
+                invariant(network, `Network not found for ${selectedAsset.networkId}`);
+
+                const payload: HandleRequestThunkProps = {
+                    network,
+                    formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo),
+                    shouldSendInSats,
+                    timer,
+                };
+                quotesPromiseRef.current = dispatch(buyThunks.handleRequestThunk(payload));
+            });
         }
+    }, [
+        form,
+        shouldRefetchQuotes,
+        timer,
+        quotesPromiseRef,
+        shouldSendInSats,
+        coinInfo,
+        debounce,
+        dispatch,
+    ]);
+};
 
-        debounce(() => {
-            invariant(asset, 'Asset is not defined');
-            const network = getNetworkByCoingeckoId(asset.networkId);
-            invariant(network, `Network not found for ${asset.networkId}`);
+export const useQuotes = (form: TradingBuyForm) => {
+    const debounce = useDebounce();
+    const promiseRef = useRef<PromiseType | undefined>(undefined);
 
-            const payload: HandleRequestThunkProps = {
-                network,
-                formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo),
-                shouldSendInSats,
-                timer,
-            };
-            promiseRef.current = dispatch(buyThunks.handleRequestThunk(payload));
-        });
-    }
+    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchQuotes(form);
+    const { timer, shouldReload } = useReloadTimer(isFetchAllowed);
+
+    useQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
+    useQuotesThunk(
+        form,
+        timer,
+        isFetchAllowed && (shouldFetchQuotes || shouldReload),
+        promiseRef,
+        debounce,
+    );
 
     return {
         timer,
