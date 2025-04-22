@@ -10,9 +10,9 @@ import type {
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import {
-    RejectWhenAbortedError,
-    ScheduleActionDeadlineError,
-    ScheduleActionTimeoutError,
+    SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE,
+    SCHEDULE_ACTION_DEADLINE_ERROR_MESSAGE,
+    SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE,
     scheduleAction,
 } from '@trezor/utils';
 
@@ -55,9 +55,9 @@ const getConnectFiatRatesForTimestamp = async (
         if (
             ('name' in error && error.name === 'AbortError') ||
             !('message' in error) ||
-            (error.message !== ScheduleActionTimeoutError.name &&
-                error.message !== ScheduleActionDeadlineError.name &&
-                error.message !== RejectWhenAbortedError.name)
+            (error.message !== SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE &&
+                error.message !== SCHEDULE_ACTION_DEADLINE_ERROR_MESSAGE &&
+                error.message !== SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE)
         ) {
             throw error;
         }

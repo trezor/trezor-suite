@@ -59,11 +59,11 @@ const rejectAfterMs = (ms: number, reason: Error, clear: AbortSignal) =>
 const maybeRejectAfterMs = (ms: number | undefined, reason: Error, clear: AbortSignal) =>
     ms === undefined ? [] : [rejectAfterMs(ms, reason, clear)];
 
-export class RejectWhenAbortedError extends Error {
-    static name = 'Aborted by signal';
+export const SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE = 'Aborted by signal' as const;
 
+export class RejectWhenAbortedError extends Error {
     constructor() {
-        super(RejectWhenAbortedError.name);
+        super(SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE);
     }
 }
 
@@ -123,17 +123,19 @@ const attemptLoop = async <T>(
     return clear.aborted ? Promise.reject() : attempt(attempts - 1, clear);
 };
 
+export const SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE = 'Aborted by timeout' as const;
+
 export class ScheduleActionTimeoutError extends Error {
-    static name = 'Aborted by timeout' as const;
     constructor() {
-        super(ScheduleActionTimeoutError.name);
+        super(SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE);
     }
 }
 
+export const SCHEDULE_ACTION_DEADLINE_ERROR_MESSAGE = 'Aborted by deadline' as const;
+
 export class ScheduleActionDeadlineError extends Error {
-    static name = 'Aborted by deadline' as const;
     constructor() {
-        super(ScheduleActionDeadlineError.name);
+        super(SCHEDULE_ACTION_DEADLINE_ERROR_MESSAGE);
     }
 }
 
