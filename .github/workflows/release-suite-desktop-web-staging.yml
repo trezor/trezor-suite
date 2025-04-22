@@ -145,14 +145,23 @@ jobs:
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/canary
 
       - name: Set staging percentage
-        working-directory:
         run: cd ./trezor-suite-files && ../scripts/ci/set-staging-percentage.sh 20
+
+      - name: Extract suite desktop version
+        id: extract-version
+        run: |
+          echo "VERSION=$(jq -r .suiteVersion packages/suite/package.json)" >> $GITHUB_ENV
 
       - name: Upload suite-desktop to staging-data.trezor.io latest
         run: |
-          VERSION=$(jq -r .suiteVersion packages/suite/package.json)
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/latest
-          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://staging-data.trezor.io/suite/releases/desktop/v${VERSION}/
+          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://staging-data.trezor.io/suite/releases/desktop/v${{ steps.extract-version.outputs.VERSION }}/
+
+      - name: Generate index.html for latest, canary and version folders
+        run: |
+          ./scripts/generate-s3-index.sh staging-data.trezor.io suite/releases/desktop/latest
+          ./scripts/generate-s3-index.sh staging-data.trezor.io suite/releases/desktop/canary
+          ./scripts/generate-s3-index.sh staging-data.trezor.io suite/releases/desktop/v${{ steps.extract-version.outputs.VERSION }}
 
   build-web:
     if: github.repository == 'trezor/trezor-suite-release'

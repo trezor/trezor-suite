@@ -133,6 +133,15 @@ jobs:
         run: |
           aws s3 cp "./Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk" s3://data.trezor.io/suite/releases/mobile/v${{ steps.get_version.outputs.app_version }}/
 
+      - name: Generate index.html for mobile releases
+        run: |
+          ./scripts/generate-s3-index.sh data.trezor.io suite/releases/mobile/v${{ steps.get_version.outputs.app_version }}
+
+      - name: Generate index.html for mobile releases root
+        run: |
+          ./scripts/generate-s3-directory-index.sh data.trezor.io suite/releases/mobile
+          aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/mobile/*"
+
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@v1
