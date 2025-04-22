@@ -6,13 +6,12 @@ import { Blocks, MiscFeeLevels } from './MiscFeeLevels';
 
 export class EthereumFeeLevels extends MiscFeeLevels {
     coinInfo: EthereumNetworkInfo;
-    levels: FeeLevel[];
     blocks: Blocks = [];
 
+    // override only to narrow down the coinInfo type
     constructor(coinInfo: EthereumNetworkInfo) {
         super(coinInfo);
         this.coinInfo = coinInfo;
-        this.levels = coinInfo.defaultFees;
     }
 
     async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {

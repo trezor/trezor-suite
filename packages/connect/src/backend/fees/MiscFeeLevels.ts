@@ -9,10 +9,7 @@ export type Blocks = Array<string | undefined>;
 
 export class MiscFeeLevels {
     coinInfo: CoinInfo;
-
     levels: FeeLevel[];
-    longTermFeeRate?: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
-
     blocks: Blocks = [];
 
     constructor(coinInfo: CoinInfo) {

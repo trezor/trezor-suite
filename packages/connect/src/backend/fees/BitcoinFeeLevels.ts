@@ -2,9 +2,9 @@
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import type { BitcoinNetworkInfo, FeeLevel } from '../../types';
+import type { BitcoinNetworkInfo } from '../../types';
 import { Blockchain } from '../Blockchain';
-import { Blocks } from './MiscFeeLevels';
+import { Blocks, MiscFeeLevels } from './MiscFeeLevels';
 
 const findBlocksForFee = (feePerUnit: string, blocks: Blocks) => {
     const fee = new BigNumber(feePerUnit);
@@ -65,17 +65,17 @@ const findLowest = (blocks: Blocks) =>
         .reverse()
         .find(item => typeof item === 'string');
 
-export class BitcoinFeeLevels {
+export class BitcoinFeeLevels extends MiscFeeLevels {
     coinInfo: BitcoinNetworkInfo;
 
-    levels: FeeLevel[];
     longTermFeeRate?: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
 
     blocks: Blocks = [];
 
+    // override only to narrow down the coinInfo type
     constructor(coinInfo: BitcoinNetworkInfo) {
+        super(coinInfo);
         this.coinInfo = coinInfo;
-        this.levels = coinInfo.defaultFees;
     }
 
     async load(blockchain: Blockchain) {
