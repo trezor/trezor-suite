@@ -95,7 +95,12 @@ export const ConnectAddressConfirmation = () => {
                                             {address.address}
                                         </Paragraph>
                                         {address.validated === 'valid' && (
-                                            <Badge variant="primary" icon="check" size="small">
+                                            <Badge
+                                                variant="primary"
+                                                icon="check"
+                                                size="small"
+                                                data-testid={`@connect-address-confirmation/verified-badge/${index}`}
+                                            >
                                                 <Translation id="TR_VERIFIED" />
                                             </Badge>
                                         )}
@@ -106,7 +111,7 @@ export const ConnectAddressConfirmation = () => {
                                         )}
                                     </Row>
                                     <Button
-                                        data-testid="@connect-address-confirmation/verify-button"
+                                        data-testid={`@connect-address-confirmation/verify-button/${index}`}
                                         variant="tertiary"
                                         onClick={() => onVerify(index)}
                                         icon={
