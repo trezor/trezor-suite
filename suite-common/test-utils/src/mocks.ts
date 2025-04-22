@@ -161,6 +161,15 @@ type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path
  */
 const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Features>): Device => {
     const path = DeviceUniquePath(dev?.path ?? '1');
+    const thp: Device['thp'] = {
+        credentials: [],
+        channel: '00',
+        expectedResponses: [],
+        sendBit: 0,
+        recvBit: 0,
+        sendNonce: 0,
+        recvNonce: 0,
+    };
 
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
@@ -180,6 +189,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
             label: 'Unacquired device',
             name: 'name of unacquired device',
             transportSessionOwner: 'another app name',
+            thp,
         };
     }
 
@@ -210,6 +220,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
             firmwareRevision: { success: true },
             firmwareHash: { success: true },
         },
+        thp,
     };
 };
 
