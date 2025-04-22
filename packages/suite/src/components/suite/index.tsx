@@ -28,7 +28,6 @@ import { Sign } from './Sign';
 import { TrezorLink } from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import { RedactNumericalValue } from './RedactNumericalValue';
-import { Modal, ModalProps } from './modals/Modal/Modal';
 import { FormattedDate } from './FormattedDate';
 import { FormattedDateWithBullet } from './FormattedDateWithBullet';
 import { Metadata } from './Metadata';
@@ -82,7 +81,6 @@ export {
     ReadMoreLink,
     RedactNumericalValue,
     TrezorLink,
-    Modal,
     FormattedDate,
     FormattedDateWithBullet,
     Metadata,
@@ -112,4 +110,3 @@ export * from './graph';
 export * from './notifications';
 export * from './section';
 export * from './styled';
-export type { ModalProps };

@@ -2,7 +2,7 @@ import { RefObject, useEffect, useState } from 'react';
 import { SelectInstance } from 'react-select';
 
 import type { Option } from './Select';
-import { MODAL_CONTENT_ID } from '../../modals/Modal/Modal';
+import { NEW_MODAL_CONTENT_ID } from '../../NewModal/NewModal';
 
 export const useDetectPortalTarget = (selectRef: RefObject<SelectInstance<Option, boolean>>) => {
     const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(null);
@@ -14,7 +14,7 @@ export const useDetectPortalTarget = (selectRef: RefObject<SelectInstance<Option
         let parent = selectRef.current?.inputRef?.parentElement;
         let count = 0;
         while (parent) {
-            if (parent.id === MODAL_CONTENT_ID) {
+            if (parent.id === NEW_MODAL_CONTENT_ID) {
                 setMenuPortalTarget(document.body);
                 break;
             }

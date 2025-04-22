@@ -29,7 +29,6 @@ import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 import history from 'src/support/history';
-import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
@@ -51,28 +50,26 @@ const MainDesktop = () => {
             <TrafficLightDraggableWindowHeader />
             <ConnectedThemeProvider>
                 <RouterProvider history={history}>
-                    <ModalContextProvider>
-                        <ResponsiveContextProvider>
-                            <ErrorBoundary>
-                                <Autodetect />
-                                <Resize />
-                                <Protocol />
-                                <OnlineStatus />
-                                <RouterHandler />
-                                <ConnectedIntlProvider>
-                                    <FormatterProvider config={formattersConfig}>
-                                        <DesktopUpdater>
-                                            <Metadata />
-                                            <ToastContainer />
-                                            <Preloader>
-                                                <AppRouter />
-                                            </Preloader>
-                                        </DesktopUpdater>
-                                    </FormatterProvider>
-                                </ConnectedIntlProvider>
-                            </ErrorBoundary>
-                        </ResponsiveContextProvider>
-                    </ModalContextProvider>
+                    <ResponsiveContextProvider>
+                        <ErrorBoundary>
+                            <Autodetect />
+                            <Resize />
+                            <Protocol />
+                            <OnlineStatus />
+                            <RouterHandler />
+                            <ConnectedIntlProvider>
+                                <FormatterProvider config={formattersConfig}>
+                                    <DesktopUpdater>
+                                        <Metadata />
+                                        <ToastContainer />
+                                        <Preloader>
+                                            <AppRouter />
+                                        </Preloader>
+                                    </DesktopUpdater>
+                                </FormatterProvider>
+                            </ConnectedIntlProvider>
+                        </ErrorBoundary>
+                    </ResponsiveContextProvider>
                 </RouterProvider>
             </ConnectedThemeProvider>
         </HelmetProvider>

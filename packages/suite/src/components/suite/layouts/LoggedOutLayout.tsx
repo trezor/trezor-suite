@@ -7,7 +7,6 @@ import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
-import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { Metadata } from '../Metadata';
 import { LoggedOutSidebar } from './LoggedOutSidebar';
@@ -41,32 +40,30 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
             <Wrapper ref={wrapperRef} data-testid="@logged-out-layout">
                 <PageWrapper>
                     <NewModal.Provider>
-                        <ModalContextProvider>
-                            <Metadata title={title} />
-                            <ModalSwitcher />
+                        <Metadata title={title} />
+                        <ModalSwitcher />
 
-                            <LayoutContext.Provider value={setLayoutPayload}>
-                                <Body data-testid="@suite-layout/body">
-                                    <Columns>
-                                        <ElevationDown>
-                                            <LoggedOutSidebar />
-                                        </ElevationDown>
-                                        <AppWrapper
-                                            data-testid="@app"
-                                            ref={scrollRef}
-                                            id="layout-scroll"
-                                        >
-                                            {layoutHeader}
-                                            <ElevationUp>
-                                                <ContentWrapper>{children}</ContentWrapper>
-                                            </ElevationUp>
-                                        </AppWrapper>
-                                    </Columns>
-                                </Body>
-                            </LayoutContext.Provider>
+                        <LayoutContext.Provider value={setLayoutPayload}>
+                            <Body data-testid="@suite-layout/body">
+                                <Columns>
+                                    <ElevationDown>
+                                        <LoggedOutSidebar />
+                                    </ElevationDown>
+                                    <AppWrapper
+                                        data-testid="@app"
+                                        ref={scrollRef}
+                                        id="layout-scroll"
+                                    >
+                                        {layoutHeader}
+                                        <ElevationUp>
+                                            <ContentWrapper>{children}</ContentWrapper>
+                                        </ElevationUp>
+                                    </AppWrapper>
+                                </Columns>
+                            </Body>
+                        </LayoutContext.Provider>
 
-                            {!isMobileLayout && <GuideButton />}
-                        </ModalContextProvider>
+                        {!isMobileLayout && <GuideButton />}
                     </NewModal.Provider>
                 </PageWrapper>
                 <GuideRouter />

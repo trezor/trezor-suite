@@ -18,9 +18,9 @@ import {
     useElevation,
 } from './ElevationContext';
 import { Card } from '../Card/Card';
+import { NewModal } from '../NewModal/NewModal';
 import { Button } from '../buttons/Button/Button';
 import { Textarea } from '../form/Textarea/Textarea';
-import { Modal } from '../modals/Modal/Modal';
 
 const UiBox = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};
@@ -107,10 +107,10 @@ export const ElevationContext: StoryObj = {
             </Background>
 
             <Background>
-                <Modal>
+                <NewModal>
                     Modal content
                     <Card>Card inside of a Modal</Card>
-                </Modal>
+                </NewModal>
             </Background>
 
             <Background>

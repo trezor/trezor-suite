@@ -13,7 +13,6 @@ import { Translation } from 'src/components/suite';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
-import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
@@ -128,31 +127,29 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
 
                 <Body data-testid="@onboarding-layout/body">
                     <ScrollingWrapper>
-                        <ModalContextProvider>
-                            <ContentWrapper id="layout-scroll">
-                                <Header>
-                                    <LogoHeaderRow>
-                                        <SmallDeviceItem />
+                        <ContentWrapper id="layout-scroll">
+                            <Header>
+                                <LogoHeaderRow>
+                                    <SmallDeviceItem />
 
-                                        <Button
-                                            variant="tertiary"
-                                            icon="arrowUpRight"
-                                            iconAlignment="end"
-                                            size="small"
-                                            href={TREZOR_SUPPORT_URL}
-                                        >
-                                            <Translation id="TR_HELP" />
-                                        </Button>
-                                    </LogoHeaderRow>
+                                    <Button
+                                        variant="tertiary"
+                                        icon="arrowUpRight"
+                                        iconAlignment="end"
+                                        size="small"
+                                        href={TREZOR_SUPPORT_URL}
+                                    >
+                                        <Translation id="TR_HELP" />
+                                    </Button>
+                                </LogoHeaderRow>
 
-                                    <ProgressBarRow>
-                                        <OnboardingProgressBar />
-                                    </ProgressBarRow>
-                                </Header>
+                                <ProgressBarRow>
+                                    <OnboardingProgressBar />
+                                </ProgressBarRow>
+                            </Header>
 
-                                <Content>{children}</Content>
-                            </ContentWrapper>
-                        </ModalContextProvider>
+                            <Content>{children}</Content>
+                        </ContentWrapper>
                     </ScrollingWrapper>
 
                     <GuideButton />

@@ -24,7 +24,6 @@ import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 import history from 'src/support/history';
-import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
@@ -42,26 +41,24 @@ const MainWeb = () => {
         <HelmetProvider>
             <ConnectedThemeProvider>
                 <RouterProvider history={history}>
-                    <ModalContextProvider>
-                        <ResponsiveContextProvider>
-                            <ErrorBoundary>
-                                <Autodetect />
-                                <Resize />
-                                <Protocol />
-                                <OnlineStatus />
-                                <RouterHandler />
-                                <ConnectedIntlProvider>
-                                    <FormatterProvider config={formattersConfig}>
-                                        <Metadata />
-                                        <ToastContainer />
-                                        <Preloader>
-                                            <AppRouter />
-                                        </Preloader>
-                                    </FormatterProvider>
-                                </ConnectedIntlProvider>
-                            </ErrorBoundary>
-                        </ResponsiveContextProvider>
-                    </ModalContextProvider>
+                    <ResponsiveContextProvider>
+                        <ErrorBoundary>
+                            <Autodetect />
+                            <Resize />
+                            <Protocol />
+                            <OnlineStatus />
+                            <RouterHandler />
+                            <ConnectedIntlProvider>
+                                <FormatterProvider config={formattersConfig}>
+                                    <Metadata />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <AppRouter />
+                                    </Preloader>
+                                </FormatterProvider>
+                            </ConnectedIntlProvider>
+                        </ErrorBoundary>
+                    </ResponsiveContextProvider>
                 </RouterProvider>
             </ConnectedThemeProvider>
         </HelmetProvider>
