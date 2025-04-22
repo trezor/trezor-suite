@@ -371,6 +371,14 @@ export default defineMessages({
         defaultMessage: 'Cannot send transaction, missing data',
         id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
     },
+    TR_TRADING_NO_RESPONSE: {
+        defaultMessage: 'No response from the server {error}',
+        id: 'TR_TRADING_NO_RESPONSE',
+    },
+    TR_TRADING_INVALID_RESPONSE: {
+        defaultMessage: 'Invalid response from the server',
+        id: 'TR_TRADING_INVALID_RESPONSE',
+    },
     TR_CONFIRM_ADDRESS: {
         defaultMessage: 'Confirm address',
         id: 'TR_CONFIRM_ADDRESS',
