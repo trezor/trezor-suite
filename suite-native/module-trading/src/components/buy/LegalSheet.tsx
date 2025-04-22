@@ -8,7 +8,7 @@ import { Translation } from '@suite-native/intl';
 export type LegalSheetProps = {
     isVisible: boolean;
     onConsent: () => void;
-    onClose?: () => void;
+    onClose: () => void;
     tradeProvider: string;
 };
 
@@ -24,12 +24,7 @@ const Info = ({ children }: { children: ReactNode }) => (
     </BulletListItem>
 );
 
-export const LegalSheet = ({
-    isVisible,
-    onConsent = () => {},
-    onClose = () => {},
-    tradeProvider,
-}: LegalSheetProps) => {
+export const LegalSheet = ({ isVisible, onConsent, onClose, tradeProvider }: LegalSheetProps) => {
     const providers = useSelector(selectTradingBuyProviders);
     const { companyName } = providers?.[tradeProvider] ?? {};
 

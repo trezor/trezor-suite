@@ -13,7 +13,6 @@ export type TradingAmountInputProps = {
 export const INPUT_MIN_WIDTH = 60;
 export const INPUT_HEIGHT = 42;
 
-// TODO test coverage for color
 const inputStyle = prepareNativeStyle<{ hasError: boolean }>(
     ({ colors, typography }, { hasError }) => ({
         ...typography.body,

@@ -19,7 +19,7 @@ import { btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { setBuySelectedReceiveAccount } from '../../tradingSlice';
 import { TradeableAsset, TradingBuyForm } from '../../types';
-import { useTradingBuyForm } from '../useTradingBuyForm';
+import { clearTradingBuyFormQuoteData, useTradingBuyForm } from '../useTradingBuyForm';
 
 describe('useTradingBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
@@ -574,6 +574,27 @@ describe('useTradingBuyForm', () => {
 
                 expect(result.current.getValues('generalAlert')).toBeUndefined();
             });
+        });
+    });
+
+    describe('clearTradingBuyFormQuoteData', () => {
+        it('should clear quote, fiatValue, cryptoValue and generalAlert data', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            act(() => {
+                result.current.setValue('fiatValue', '10');
+                result.current.setValue('cryptoValue', '10');
+                result.current.setValue('quote', quotes[0] as BuyTrade);
+            });
+
+            act(() => {
+                clearTradingBuyFormQuoteData(result.current);
+            });
+
+            expect(result.current.getValues('quote')).toBeUndefined();
+            expect(result.current.getValues('fiatValue')).toBeUndefined();
+            expect(result.current.getValues('cryptoValue')).toBeUndefined();
         });
     });
 });

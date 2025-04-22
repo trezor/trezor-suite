@@ -95,6 +95,21 @@ describe('quotesUtils', () => {
                     amountInCrypto: false,
                 });
             });
+
+            it('should set paymentMethod to undefined when provided quote is not complete', () => {
+                form.setValue('quote', {
+                    ...quotes[0],
+                    paymentMethodName: undefined,
+                } as unknown as BuyTrade);
+
+                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
+
+                expect(props).toEqual(
+                    expect.objectContaining({
+                        paymentMethod: undefined,
+                    }),
+                );
+            });
         });
     });
 });

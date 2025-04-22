@@ -249,5 +249,35 @@ describe('buySelectors', () => {
                 }),
             );
         });
+
+        it('should ignore quotes without payment method', () => {
+            const quote = {
+                ...quotes[0],
+                paymentMethod: undefined,
+            } as unknown as BuyTrade;
+
+            prevState.buy.quotes = [quote];
+
+            expect(
+                selectBuyBestQuotesForAvailablePaymentMethods({
+                    wallet: { tradingNew: prevState },
+                }),
+            ).toEqual([]);
+        });
+
+        it('should ignore quotes without payment method name', () => {
+            const quote = {
+                ...quotes[0],
+                paymentMethodName: undefined,
+            } as unknown as BuyTrade;
+
+            prevState.buy.quotes = [quote];
+
+            expect(
+                selectBuyBestQuotesForAvailablePaymentMethods({
+                    wallet: { tradingNew: prevState },
+                }),
+            ).toEqual([]);
+        });
     });
 });
