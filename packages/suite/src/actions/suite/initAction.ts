@@ -7,9 +7,11 @@ import {
     initDevices,
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
+    selectDevices,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as walletConnectActions from '@suite-common/walletconnect';
+import { DEVICE } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -74,7 +76,31 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     try {
         // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
-        await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
+        await dispatch(
+            trezorConnectActions.connectInitThunk({
+                [DEVICE.CONNECT]: (_device, prevConnectedDevices) => {
+                    const previouslyConnectedDevices = prevConnectedDevices.filter(
+                        device => device.connected,
+                    );
+                    const currentConnectedDevices = selectDevices(getState()).filter(
+                        device => device.connected,
+                    );
+
+                    if (
+                        currentConnectedDevices.length > 1 &&
+                        currentConnectedDevices.length > previouslyConnectedDevices.length
+                    ) {
+                        dispatch(
+                            routerActions.goto('suite-switch-device', {
+                                params: {
+                                    cancelable: true,
+                                },
+                            }),
+                        );
+                    }
+                },
+            }),
+        ).unwrap();
     } catch (err) {
         dispatch({ type: SUITE.ERROR, error: err.message });
         throw err;
