@@ -1,10 +1,9 @@
-import styled from 'styled-components';
-
-import { Button, Link } from '@trezor/components';
+import { Column, H3, Link, NewModal, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { DATA_URL } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Metadata, Modal, Translation } from 'src/components/suite';
+import { Metadata, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import {
@@ -13,30 +12,6 @@ import {
     selectHasTransportOfType,
     selectTransportOfType,
 } from 'src/reducers/suite/suiteReducer';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    path {
-        fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    }
-`;
-
-const Footer = styled.div`
-    width: 100%;
-    margin-top: 72px;
-    display: flex;
-    justify-content: space-between;
-`;
-
-const DownloadStandalone = ({ target }: { target: string }) => (
-    <Modal.Description>
-        Alternatively you may{' '}
-        <Link variant="underline" href={target}>
-            download
-        </Link>{' '}
-        a standalone Trezor Bridge binary
-    </Modal.Description>
-);
 
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {
@@ -57,52 +32,49 @@ export const BridgeUnavailable = () => {
 
     // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
     // it makes sense to show some meaningful information here
-    if (hasTransport) {
-        const description = !bridge
-            ? `Using ${isWebUsb ? 'WebUSB' : 'different transport'}. No action required.`
-            : `Trezor Bridge HTTP server is running.  Version: ${bridge.version}`;
-
-        return (
-            <Modal
-                heading={<Translation id="TR_BRIDGE" />}
-                description={description}
-                data-testid="@modal/bridge"
-            >
-                <Metadata title="Bridge | Trezor Suite" />
-
-                <DownloadStandalone target={target} />
-                <Footer>
-                    <StyledButton
-                        icon="caretLeft"
-                        variant="tertiary"
-                        onClick={goToWallet}
-                        data-testid="@bridge/goto/wallet-index"
-                    >
-                        <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                    </StyledButton>
-
-                    <Button onClick={handleOpenSuite}>
-                        <Translation id="TR_OPEN_TREZOR_SUITE_DESKTOP" />
-                    </Button>
-                </Footer>
-            </Modal>
-        );
-    }
+    const description = !bridge
+        ? `Using ${isWebUsb ? 'WebUSB' : 'different transport'}. No action required.`
+        : `Trezor Bridge HTTP server is running.  Version: ${bridge.version}.`;
 
     return (
-        <Modal
-            heading={<Translation id="TR_BRIDGE" />}
-            description={<Translation id="TR_BRIDGE_NEEDED_DESCRIPTION" />}
+        <NewModal
             data-testid="@modal/bridge"
+            iconName="appWindow"
+            size="small"
+            bottomContent={
+                <>
+                    <NewModal.Button onClick={handleOpenSuite}>
+                        <Translation id="TR_OPEN_TREZOR_SUITE_DESKTOP" />
+                    </NewModal.Button>
+                    {hasTransport && (
+                        <NewModal.Button
+                            icon="caretLeft"
+                            variant="tertiary"
+                            onClick={goToWallet}
+                            data-testid="@bridge/goto/wallet-index"
+                        >
+                            <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
+                        </NewModal.Button>
+                    )}
+                </>
+            }
         >
             <Metadata title="Bridge | Trezor Suite" />
-            <DownloadStandalone target={target} />
-
-            <Footer>
-                <Button onClick={handleOpenSuite}>
-                    <Translation id="TR_OPEN_TREZOR_SUITE_DESKTOP" />
-                </Button>
-            </Footer>
-        </Modal>
+            <Column gap={spacings.xxs}>
+                <H3>
+                    <Translation id="TR_BRIDGE" />
+                </H3>
+                <Paragraph variant="tertiary">
+                    {hasTransport ? description : <Translation id="TR_BRIDGE_NEEDED_DESCRIPTION" />}
+                </Paragraph>
+                <Paragraph variant="tertiary">
+                    Alternatively you may{' '}
+                    <Link variant="underline" href={target}>
+                        download
+                    </Link>{' '}
+                    a standalone Trezor Bridge binary.
+                </Paragraph>
+            </Column>
+        </NewModal>
     );
 };
