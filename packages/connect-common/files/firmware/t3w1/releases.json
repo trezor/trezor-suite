@@ -1,1 +1,17 @@
-[]
+[
+    {
+        "required": false,
+        "version": [2, 9, 99],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "bootloader_version": [2, 1, 11],
+        "firmware_revision": "d4127aab5d41f6310d5b3f0156e712b23614acfb",
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
+        "url": "firmware/t3w1/firmware-T3W1-2.9.1-d5e9c78.bin",
+        "fingerprint": "f4888bed3e75205464910f3956d1f3ad19bb73e093b31c9141a66226a7081990",
+        "changelog": "",
+        "url_bitcoinonly": "firmware/t3w1/never-released.bin",
+        "fingerprint_bitcoinonly": "8abd380fa01e1294ccde3e6a5fd25b15f57104859b5d6c4a2534d5feb824993e",
+        "changelog_bitcoinonly": ""
+    }
+]
