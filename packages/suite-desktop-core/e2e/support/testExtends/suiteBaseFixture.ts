@@ -6,6 +6,7 @@ import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezo
 import { TrezorUserEnvLinkProxy, getUrl, getVideoPath, isDesktopProject } from '../common';
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { enhancePage } from './enhancePage';
+import { TestAnnotationType } from '../enums/testAnnotations';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
@@ -98,6 +99,11 @@ const trezorEnvSetup = async (
     await TrezorUserEnvLinkProxy.logTestDetails(
         ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
     );
+    // This test annotation is used by our GitHub reporter
+    testInfo.annotations.push({
+        type: TestAnnotationType.DeviceModel,
+        description: emulatorStartConf.model,
+    });
     // We cannot rely on that previous teardown was done correctly
     await TrezorUserEnvLinkProxy.stopBridge();
     await TrezorUserEnvLinkProxy.stopEmu();

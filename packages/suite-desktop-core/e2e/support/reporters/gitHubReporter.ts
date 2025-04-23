@@ -9,16 +9,13 @@ import { LoggingFunctions, ProjectField } from './types';
 import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
 
 // Constants
-// const ownerLogin = 'Vere-Grey';
-// const ownerId = 'MDQ6VXNlcjczODM2MjY5';
-// const repoName = 'exercism_dominoes';
-// const repoId = 'R_kgDOG5BJRw';
-const organization = 'trezor';
-const orgId = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
-const qaTeamId = 'T_kwDOAD9FD84AMZXd';
-const projectName = 'Test Results 33';
+
+const ORGANIZATION = 'trezor';
+const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
+const QA_TEAM_ID = 'T_kwDOAD9FD84AMZXd';
+const PROJECT_NAME = 'Test Results 35'; // TODO: Get this from CI, probably build name
 const VERBOSE = true;
-const retryConf = {
+const RETRY_CONF = {
     attempts: 3,
     gap: 500,
 };
@@ -127,10 +124,10 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                             report.testCase,
                             report.bodyDescription,
                         );
-                    }, retryConf);
+                    }, RETRY_CONF);
                     this.log(`[${issueNodeId}] Successfully created issue "${test.title}"`);
 
-                    const fields = await scheduleAction(() => this.getProjectFields(), retryConf);
+                    const fields = await scheduleAction(() => this.getProjectFields(), RETRY_CONF);
 
                     for (const { name, value } of report.projectValues) {
                         const { fieldId, valueOrOptionId } = this.resolveFieldAndValue(
@@ -147,7 +144,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                                 fieldId,
                                 valueOrOptionId,
                             );
-                        }, retryConf);
+                        }, RETRY_CONF);
                         this.log(`[${issueNodeId}] Successfully updated field ${name}:"${value}"`);
                     }
 
@@ -222,18 +219,18 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         try {
             // const projects = await this.graphQLClient.getProjectFromUser(ownerLogin, projectName);
             const projects = await this.graphQLClient.getProjectFromOrganization(
-                organization,
-                projectName,
+                ORGANIZATION,
+                PROJECT_NAME,
             );
 
-            const matchingProject = projects.find((project: any) => project.title === projectName);
+            const matchingProject = projects.find((project: any) => project.title === PROJECT_NAME);
 
             if (matchingProject) {
                 const areThereDuplicates =
-                    projects.filter((project: any) => project.title === projectName).length > 1;
+                    projects.filter((project: any) => project.title === PROJECT_NAME).length > 1;
                 if (areThereDuplicates) {
                     this.log(
-                        `Warning: Multiple projects found with title "${projectName}". Using the first one.`,
+                        `Warning: Multiple projects found with title "${PROJECT_NAME}". Using the first one.`,
                     );
                 }
 
@@ -248,7 +245,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
     }
 
     async createProject(desiredFields: Array<BaseAnnotation>): Promise<void> {
-        const projectId = await this.graphQLClient.createProject(orgId, qaTeamId, projectName);
+        const projectId = await this.graphQLClient.createProject(ORG_ID, QA_TEAM_ID, PROJECT_NAME);
 
         // Get default STATUS field that was automatically created.
         const existingFields = await this.graphQLClient.getProjectFields(projectId);

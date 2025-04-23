@@ -1,7 +1,10 @@
 import { TestDetailsAnnotation } from '@playwright/test';
 import { TestCase } from '@playwright/test/reporter';
 
+import { capitalizeFirstLetter } from '@trezor/utils';
+
 import {
+    DeviceModel,
     TestAnnotationType,
     TestCategory,
     TestPriority,
@@ -53,6 +56,7 @@ export class TestReportProvider {
         category: TestCategory.Uncategorized,
         priority: TestPriority.Medium,
         stream: TestStream.Unassigned,
+        deviceMatrix: DeviceModel.Unknown,
     };
 
     constructor(test: TestCase) {
@@ -115,9 +119,15 @@ export class TestReportProvider {
         if (this.isManual) {
             return 'Manual';
         } else {
-            // TODO: Provide link to trace
-            return 'Automated';
+            // Web or Desktop
+            const projectType = this.test.parent.project()?.name;
+
+            return capitalizeFirstLetter(projectType ?? 'Automated');
         }
+    }
+
+    get deviceModel(): string {
+        return this.getAnnotation(TestAnnotationType.DeviceModel, this.defaults.deviceMatrix);
     }
 
     get comment(): string {
@@ -164,6 +174,7 @@ export class TestReportProvider {
             'stream',
             'status',
             'testRun',
+            'deviceModel',
             'comment',
         ] as const;
 

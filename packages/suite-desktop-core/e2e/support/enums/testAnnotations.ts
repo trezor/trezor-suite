@@ -1,12 +1,12 @@
 export enum TestAnnotationType {
-    TestCase = 'testcase',
+    TestCase = 'testCase',
     Prerequisites = 'prerequisites',
     Steps = 'steps',
     Category = 'category',
     Priority = 'priority',
     Stream = 'stream',
     OsMatrix = 'os_matrix',
-    DeviceMatrix = 'device_matrix',
+    DeviceModel = 'deviceModel',
 }
 
 export enum TestCategory {
@@ -83,6 +83,14 @@ export const TestStatusColors: Record<TestStatus, string> = {
     [TestStatus.Skipped]: 'GRAY',
 };
 
+export enum DeviceModel {
+    T1B1 = 'T1B1',
+    T2T1 = 'T2T1',
+    T2B1 = 'T2B1',
+    T3T1 = 'T3T1',
+    Unknown = 'Unknown',
+}
+
 // Basic annotation definition
 export interface BaseAnnotation {
     name: string;
@@ -157,22 +165,34 @@ export const priorityAnnotation: BaseAnnotation = {
     optionsColors: TestPriorityColors,
 };
 
+export const deviceModelAnnotation: BaseAnnotation = {
+    name: 'Device Model',
+    key: 'deviceModel',
+    annotationType: TestAnnotationType.DeviceModel,
+    valueType: 'SINGLE_SELECT',
+    valueOptions: Object.values(DeviceModel),
+};
+
 export const commentAnnotation: BaseAnnotation = {
     name: 'Comment',
     key: 'comment',
     valueType: 'TEXT',
 };
 
+// Defines which annotations are used in the body description in GitHub Issue
 export const annotationsForBodyDescription = [prerequisitesAnnotation, stepsAnnotation];
 
+// Defines which annotations are used in the project fields in GitHub Issue
 export const annotationsForProjectFields = [
     statusAnnotation,
     streamAnnotation,
     testRunAnnotation,
     priorityAnnotation,
+    deviceModelAnnotation,
     commentAnnotation,
 ];
 
+// Defines which annotations are set for a test case in Playwright
 export const testAnnotations = [
     testCaseAnnotation,
     prerequisitesAnnotation,
