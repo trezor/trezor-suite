@@ -212,7 +212,7 @@ const getInstallationParams = (device: Device, params: Params) => {
             /** RebootToBootloader is not supported */
             manual,
             /** RebootToBootloader (reboot_and_upgrade) is supported  */
-            upgrade,
+            upgrade: false,
             updateFlowType: getUpdateFlowType(),
             btcOnly,
         };
