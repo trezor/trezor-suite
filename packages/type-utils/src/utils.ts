@@ -43,7 +43,7 @@ export type Keys<T> = T extends any ? keyof T : never;
  *  const w: W = { keep1: 1, keep2: true };
  *  ```
  */
-export type Without<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+export type Without<T, K extends keyof T> = T extends any ? Omit<T, K> : never;
 
 /**
  * Const with optional types.
