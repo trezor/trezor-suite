@@ -85,7 +85,7 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
 };
 
 export const isStepCategoryUsed = (stepCategory: StepCategory, props: IsStepUsedProps): boolean =>
-    stepCategory.steps.filter(step => isStepUsed(step, props)).length > 0;
+    stepCategory.steps.some(step => isStepUsed(step, props));
 
 export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
     const currentIndex = steps.findIndex((step: Step) => step.id === currentStepId);
