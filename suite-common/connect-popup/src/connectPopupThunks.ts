@@ -124,6 +124,9 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch,
                 getState,
             });
+            if (!response.success) {
+                throw response.payload;
+            }
             if (!postCallOngoing) {
                 dispatch(connectPopupActions.finishCall());
             }
