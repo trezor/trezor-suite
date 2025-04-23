@@ -11,8 +11,15 @@ import {
 
 type GetPrerequisiteNameParams = {
     router: AppState['router'];
-    device?: TrezorDevice;
     transport?: TransportState;
+    device?: {
+        type: TrezorDevice['type'];
+        mode: TrezorDevice['mode'];
+        features?: TrezorDevice['features'];
+        firmware?: TrezorDevice['firmware'];
+        reconnectRequested?: TrezorDevice['reconnectRequested'];
+        transportSessionOwner?: TrezorDevice['transportSessionOwner'];
+    };
 };
 
 export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisiteNameParams) => {

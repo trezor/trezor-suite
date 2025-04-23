@@ -7,6 +7,12 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
     discoveryActions,
+    selectDeviceFeatures,
+    selectDeviceFirmware,
+    selectDeviceMode,
+    selectDeviceReconnectRequested,
+    selectDeviceTransportSessionOwner,
+    selectDeviceType,
     selectIsEntropyCheckFailed,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -463,11 +469,25 @@ export const selectIsActionAbortable = (state: SuiteRootState) => {
 
 export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {
     const { transport } = state.suite;
-    const device = selectSelectedDevice(state);
     const router = selectRouter(state);
 
     const excluded = getExcludedPrerequisites(router);
-    const prerequisite = getPrerequisiteName({ router, device, transport });
+
+    const deviceType = selectDeviceType(state);
+    const prerequisite = getPrerequisiteName({
+        router,
+        device: deviceType
+            ? {
+                  type: deviceType,
+                  mode: selectDeviceMode(state)!,
+                  features: selectDeviceFeatures(state),
+                  firmware: selectDeviceFirmware(state),
+                  reconnectRequested: selectDeviceReconnectRequested(state),
+                  transportSessionOwner: selectDeviceTransportSessionOwner(state),
+              }
+            : undefined,
+        transport,
+    });
 
     if (prerequisite === undefined) return;
 

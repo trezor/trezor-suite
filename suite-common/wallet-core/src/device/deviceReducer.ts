@@ -920,6 +920,21 @@ export const selectIsPortfolioTrackerDevice = createMemoizedSelector(
     device => device?.id === PORTFOLIO_TRACKER_DEVICE_ID,
 );
 
+export const selectDeviceFirmware = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.firmware,
+);
+
+export const selectDeviceReconnectRequested = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.reconnectRequested,
+);
+
+export const selectDeviceTransportSessionOwner = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.transportSessionOwner,
+);
+
 export const selectDeviceLabel = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.features?.label,
