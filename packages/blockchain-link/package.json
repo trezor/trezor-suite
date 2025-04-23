@@ -85,7 +85,7 @@
         "@types/web": "^0.0.197",
         "events": "^3.3.0",
         "socks-proxy-agent": "8.0.5",
-        "xrpl": "^4.2.0"
+        "xrpl": "^4.2.5"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

@@ -270,14 +270,9 @@ const onTransaction = ({ state, post }: Context, event: TransactionStream) => {
     // ignore transactions other than Payment
     if (event.tx_json?.TransactionType !== 'Payment') return;
 
-    const { tx_json } = event;
+    const { tx_json, hash } = event;
 
     const notify = (descriptor: string) => {
-        // Every signed transaction has a unique "hash" that identifies it,
-        // but its type is missing in the event definition.
-        // https://github.com/XRPLF/xrpl.js/issues/2938
-        const { hash } = event as unknown as { hash?: string };
-
         if (!tx_json || !hash) return;
 
         post({

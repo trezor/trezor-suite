@@ -23,7 +23,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "xrpl": "^4.2.0"
+        "xrpl": "^4.2.5"
     },
     "devDependencies": {
         "@solana/addresses": "^2.1.0",
