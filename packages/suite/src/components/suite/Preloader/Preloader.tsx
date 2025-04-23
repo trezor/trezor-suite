@@ -1,8 +1,9 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
 import {
+    selectIsDeviceConnected,
+    selectIsDeviceRemembered,
     selectIsFirmwareAuthenticityCheckDismissed,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 
 import { init } from 'src/actions/suite/initAction';
@@ -59,7 +60,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
-    const selectedDevice = useSelector(selectSelectedDevice);
+    const isSelectedDeviceRemembered = useSelector(selectIsDeviceRemembered);
+    const isSelectedDeviceConnected = useSelector(selectIsDeviceConnected);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
     const isFirmwareCheckEnabledAndFailed = useSelector(
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
@@ -110,8 +112,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         router.route?.app !== 'settings' &&
         !initialRun &&
         !viewOnlyPromoClosed &&
-        selectedDevice?.connected === true &&
-        selectedDevice?.remember !== true
+        isSelectedDeviceConnected === true &&
+        isSelectedDeviceRemembered !== true
     ) {
         return <ViewOnlyPromo />;
     }
