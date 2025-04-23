@@ -4,7 +4,7 @@ type OnCancelHandler = () => void;
 
 type CancelButtonContextData = {
     onCancelHandler: OnCancelHandler | null;
-    setOnCancelHandler: Dispatch<OnCancelHandler> | null;
+    setOnCancelHandler: Dispatch<OnCancelHandler | null> | null;
 };
 
 const CancelButtonContext = createContext<CancelButtonContextData>({
