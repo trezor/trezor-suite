@@ -6,7 +6,7 @@ export enum TestAnnotationType {
     Category = 'category',
     Priority = 'priority',
     Stream = 'stream',
-    OsMatrix = 'os_matrix',
+    OsMatrix = 'osMatrix',
     DeviceModel = 'deviceModel',
 }
 
@@ -38,7 +38,7 @@ export enum TestCategory {
     Staking = 'Staking',
     Solana = 'Solana',
     Engagement = 'Engagement',
-    Uncategorized = 'Uncategorized',
+    NotCategorized = 'Not Categorized',
 }
 
 export enum TestPriority {
@@ -62,7 +62,7 @@ export enum TestStream {
     Foundation = 'Foundation',
     Engagement = 'Engagement',
     Firmware = 'Firmware',
-    Unassigned = 'Unassigned',
+    NotDefined = 'Not Defined',
 }
 
 export enum TestStatus {
@@ -97,7 +97,7 @@ export enum DeviceModel {
 export interface BaseAnnotation {
     name: string;
     key: string;
-    valueType: string;
+    valueType: 'TEXT' | 'SINGLE_SELECT';
     valueOptions?: string[];
     optionsColors?: Record<string, string>;
     annotationType?: TestAnnotationType;

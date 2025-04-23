@@ -55,10 +55,10 @@ export class TestReportProvider {
     private readonly defaults = {
         prerequisites: 'No prerequisites defined',
         steps: 'No steps defined',
-        category: TestCategory.Uncategorized,
+        category: TestCategory.NotCategorized,
         priority: TestPriority.Medium,
-        stream: TestStream.Unassigned,
-        deviceMatrix: DeviceModel.Unknown,
+        stream: TestStream.NotDefined,
+        deviceModel: DeviceModel.Unknown,
     };
 
     constructor(test: TestCase) {
@@ -129,7 +129,7 @@ export class TestReportProvider {
     }
 
     get deviceModel(): string {
-        return this.getAnnotation(TestAnnotationType.DeviceModel, this.defaults.deviceMatrix);
+        return this.getAnnotation(TestAnnotationType.DeviceModel, this.defaults.deviceModel);
     }
 
     get comment(): string {

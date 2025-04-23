@@ -345,7 +345,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
             };
         }
 
-        // We are assuming no other type than TEXT exists
+        // Currently we support only SINGLE_SELECT and TEXT fields
         return { fieldId: field.id, valueOrOptionId: `{ text: "${value}" }` };
     }
 }
