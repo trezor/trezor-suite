@@ -155,11 +155,17 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
         },
     },
     T3W1: {
-        rootPubKeys: ['you shall not pass'],
-        caPubKeys: ['you shall not pass'],
+        rootPubKeys: [],
+        caPubKeys: [],
         debug: {
-            rootPubKeys: ['you shall not pass'],
-            caPubKeys: ['you shall not pass'],
+            rootPubKeys: [
+                '04521192e173a9da4e3023f747d836563725372681eba3079c56ff11b2fc137ab189eb4155f371127651b5594f8c332fc1e9c0f3b80d4212822668b63189706578',
+            ],
+            caPubKeys: [
+                '04a5d701fced9b5a2cd076a02d8a98e779c54946eefc7b2525fac782fa3d65b5d9e6a8c90946bd30b35dfeec34a053f1106ba130a8472037f2db8cf2c4b3b6e93a',
+                '047e5985facc7f4084581fc80aa7c15684a39138aa31d83064aa7fbbb1c20b77b9c65405257131e8e82bb587b07df89985b895ff50fb597d35ce8b37711b4b290b',
+                '0426be191b127e795456d4fc758ebf2a0119f5ed745b415e339588483a8b50942277ce5e791a1a40b4bcdf1ff27c98700bb878b2d9376334d609778f4a38077ab9',
+            ],
         },
     },
 };
