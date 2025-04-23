@@ -21,6 +21,7 @@ import Resize from 'src/support/suite/Resize';
 import Autodetect from 'src/support/suite/Autodetect';
 import Protocol from 'src/support/suite/Protocol';
 import { useTor } from 'src/support/suite/useTor';
+import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
 import ErrorBoundary from 'src/support/suite/ErrorBoundary';
 import RouterHandler from 'src/support/suite/Router';
@@ -41,6 +42,7 @@ import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 const MainDesktop = () => {
     useTor();
     useDebugLanguageShortcut();
+    useConnectPopupDesktop();
     const formattersConfig = useFormattersConfig();
 
     return (

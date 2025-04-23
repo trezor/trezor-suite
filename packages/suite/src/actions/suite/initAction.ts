@@ -1,5 +1,4 @@
 import * as trezorConnectActions from '@suite-common/connect-init';
-import { connectPopupDesktopInitThunk } from '@suite-common/connect-popup/src/connectPopupDesktopThunks';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
@@ -106,20 +105,15 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         throw err;
     }
 
-    // 7. init connect popup handler
-    if (isDesktop()) {
-        dispatch(connectPopupDesktopInitThunk());
-    }
-
-    // 8. init backends
+    // 7. init backends
     await dispatch(initBlockchainThunk())
         .unwrap()
         .catch(err => console.error(err));
 
-    // 9. fetch token definitions (has to be fetched before fiat rates)
+    // 8. fetch token definitions (has to be fetched before fiat rates)
     await dispatch(periodicCheckTokenDefinitionsThunk());
 
-    // 10. init periodic fetching of fiat rates
+    // 9. init periodic fetching of fiat rates
     await dispatch(
         periodicFetchFiatRatesThunk({
             rateType: 'current',
@@ -133,25 +127,25 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         }),
     );
 
-    // 11. fetch rates for transactions with missing rates
+    // 10. fetch rates for transactions with missing rates
     await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
-    // 12. dispatch initial location change
+    // 11. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 13. fetch metadata. metadata is not saved together with other data in storage.
+    // 12. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
     dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
-    // 14. start fetching staking data if needed, does need to be waited
+    // 13. start fetching staking data if needed, does need to be waited
     dispatch(periodicCheckStakeDataThunk());
 
-    // 15. init wallet connect
+    // 14. init wallet connect
     if (selectIsDebugModeActive(getState())) {
         dispatch(walletConnectActions.walletConnectInitThunk());
     }
 
-    // 16. backend connected, suite is ready to use
+    // 15. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };
