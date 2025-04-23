@@ -1059,7 +1059,9 @@ export const en = {
                     "After writing your wallet backup, you'll verify it's correct. Your Trezor will display a random selection of words along with their correct positions.\n\nCompare them to your wallet backup card and select the matching word for each position.",
             },
         },
-
+        walletCreatedSuccessScreen: {
+            successLabel: 'All good!',
+        },
         deviceDisconnectedAlert: {
             title: 'Your Trezor has been disconnected',
             description: 'Connect your Trezor to start again.',

@@ -8,9 +8,12 @@ import { usePinAction } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { deviceImageMap } from '@suite-native/module-authorize-device';
 import {
+    AppTabsRoutes,
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
+    HomeStackRoutes,
     RootStackParamList,
+    RootStackRoutes,
     Screen,
     ScreenHeader,
     StackToStackCompositeNavigationProps,
@@ -49,8 +52,12 @@ export const CreatePinScreen = () => {
     usePinAction({
         type: 'enable',
         onSuccess: () => {
-            // TODO: temporary, not implemented yet
-            navigation.goBack();
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
         },
     });
 

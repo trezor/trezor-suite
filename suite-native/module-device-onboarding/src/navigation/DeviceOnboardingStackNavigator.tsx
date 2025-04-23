@@ -95,6 +95,9 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.WalletBackupRecap}
             component={WalletBackupRecapScreen}
+            options={{
+                animation: 'fade',
+            }}
         />
     </DeviceOnboardingStack.Navigator>
 );
