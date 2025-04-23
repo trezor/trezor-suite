@@ -215,20 +215,24 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             case 'uppercase':
                 return {
                     buttonProps: {
-                        onClick: () =>
+                        onClick: () => {
                             setValue(inputName, address.toLowerCase(), {
                                 shouldValidate: true,
-                            }),
+                            });
+                            composeTransaction();
+                        },
                         text: translationString('TR_CONVERT_TO_LOWERCASE'),
                     },
                 };
             case 'bch_missing_prefix':
                 return {
                     buttonProps: {
-                        onClick: () =>
+                        onClick: () => {
                             setValue(inputName, 'bitcoincash:' + address, {
                                 shouldValidate: true,
-                            }),
+                            });
+                            composeTransaction();
+                        },
                         text: translationString('TR_ADD_BITCOINCASH_PREFIX'),
                     },
                 };
