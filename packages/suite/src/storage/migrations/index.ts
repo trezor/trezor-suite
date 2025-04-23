@@ -1,19 +1,15 @@
-import { CryptoId } from 'invity-api';
 import { toWei } from 'web3-utils';
 
-import { cryptoIdToNetwork, toTokenCryptoId } from '@suite-common/trading';
 import {
     type NetworkSymbol,
     getNetwork,
     isNetworkSymbol,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
-import type { Account, BackendSettings } from '@suite-common/wallet-types';
+import type { BackendSettings } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
-    findAccountsByAddress,
     formatNetworkAmount,
-    getContractAddressForNetworkSymbol,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
@@ -31,6 +27,7 @@ import type { BlockbookUrl, CustomBackend } from 'src/types/wallet/backend';
 
 import { updateAll } from './utils';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
+import { migrateToV55 } from './versions/migrateToV55';
 
 type WalletWithBackends = {
     backends?: PartialRecord<NetworkSymbol, Omit<CustomBackend, 'coin'>>;
@@ -1282,60 +1279,6 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 55) {
-        const findAccountForTrade = (
-            accounts: Account[],
-            address: string | undefined,
-            cryptoId: CryptoId | undefined,
-        ): Account | undefined => {
-            if (!address || !cryptoId) {
-                return undefined;
-            }
-
-            const network = cryptoIdToNetwork(cryptoId);
-            if (!network) {
-                return undefined;
-            }
-
-            const account = findAccountsByAddress(network.symbol, address, accounts).at(0);
-
-            if (account) {
-                return account;
-            }
-
-            return accounts.find(account => {
-                const cryptoIds = [
-                    ...(account.tokens?.flatMap(token =>
-                        toTokenCryptoId(
-                            account.symbol,
-                            getContractAddressForNetworkSymbol(account.symbol, token.contract),
-                        ),
-                    ) ?? []),
-                    getNetwork(account.symbol).tradeCryptoId,
-                ].filter(Boolean) as CryptoId[];
-
-                return account.descriptor === address && cryptoIds.includes(cryptoId);
-            });
-        };
-
-        const accountsStoreOld = transaction.objectStore('accounts');
-        const accounts = await accountsStoreOld.getAll();
-
-        await updateAll(transaction, 'tradingTrades', trade => {
-            if (trade.tradeType === 'exchange') {
-                trade.sendAccountKey = findAccountForTrade(
-                    accounts,
-                    trade.account.descriptor,
-                    trade.data.send,
-                )?.key;
-
-                trade.receiveAccountKey = findAccountForTrade(
-                    accounts,
-                    trade.data.receiveAddress,
-                    trade.data.receive,
-                )?.key;
-
-                return trade;
-            }
-        });
+        await migrateToV55(db, oldVersion, newVersion, transaction);
     }
 };

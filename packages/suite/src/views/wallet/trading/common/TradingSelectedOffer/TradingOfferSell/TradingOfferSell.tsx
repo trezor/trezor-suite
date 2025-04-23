@@ -1,9 +1,11 @@
 import { Fragment } from 'react';
 
 import type { TradingSellType } from '@suite-common/trading';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingOfferSellProps } from 'src/types/trading/tradingForm';
 import { TradingOfferSellBankAccount } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellBankAccount';
@@ -15,7 +17,10 @@ import {
 } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
 
 export const TradingOfferSell = (props: TradingOfferSellProps) => {
-    const { sellStep } = useTradingFormContext<TradingSellType>();
+    const accounts = useSelector(selectAccounts);
+    const { sellStep, trade } = useTradingFormContext<TradingSellType>();
+
+    const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
 
     const steps: (TradingSelectedOfferStepperItemProps & {
         component: JSX.Element | null;
@@ -44,7 +49,7 @@ export const TradingOfferSell = (props: TradingOfferSellProps) => {
                 ))}
             </Card>
             <Card>
-                <TradingSelectedOfferInfo {...props} />
+                <TradingSelectedOfferInfo {...props} selectedAccount={sendAccount} />
             </Card>
         </>
     );

@@ -5,11 +5,12 @@ import { BuyTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import type { TradingBuyType } from '@suite-common/trading';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
@@ -41,6 +42,7 @@ const getTradeStatusStep = (tradeStatus?: BuyTradeStatus) => {
 };
 
 export const TradingDetailBuy = () => {
+    const accounts = useSelector(selectAccounts);
     const { trade, info, account } = useTradingDetailContext<TradingBuyType>();
     const dispatch = useDispatch();
 
@@ -61,6 +63,8 @@ export const TradingDetailBuy = () => {
         receiveAmount: trade?.data?.receiveStringAmount ?? '',
         receiveCurrency: trade?.data?.receiveCurrency,
     };
+
+    const receiveAccount = accounts.find(account => account.key === trade?.receiveAccountKey);
 
     useEffect(() => {
         // if tradeStatus hasn't changed, don't send the analytics event
@@ -115,6 +119,7 @@ export const TradingDetailBuy = () => {
             <Card>
                 <TradingSelectedOfferInfo
                     account={account}
+                    selectedAccount={receiveAccount}
                     selectedQuote={trade.data}
                     transactionId={trade.key}
                     providers={info?.providerInfos}

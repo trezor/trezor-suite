@@ -35,6 +35,7 @@ const tradeBuy: TradingTransactionBuy = {
         accountIndex: 0,
         accountType: 'normal',
     },
+    receiveAccountKey: 'yyy',
 };
 
 const tradeExchange: TradingTransactionExchange = {
@@ -56,6 +57,8 @@ const tradeExchange: TradingTransactionExchange = {
         accountIndex: 0,
         accountType: 'normal',
     },
+    sendAccountKey: 'xxx',
+    receiveAccountKey: 'yyy',
 };
 
 const symbolsInfo: InfoResponse = {

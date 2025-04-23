@@ -8,7 +8,10 @@ import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
-import { selectTradingBuySelectedQuote } from '../../selectors/tradingSelectors';
+import {
+    selectTradingBuySelectedQuote,
+    selectTradingExchangeReceiveAccountKey,
+} from '../../selectors/tradingSelectors';
 
 export type ConfirmTradeThunkProps = {
     returnUrl: string;
@@ -32,6 +35,7 @@ export const confirmTradeThunk = createThunk(
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingBuySelectedQuote(getState());
+        const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
 
         if (!selectedQuote) return;
 
@@ -76,6 +80,7 @@ export const confirmTradeThunk = createThunk(
                         accountIndex: account.index,
                     },
                     data: response.trade,
+                    receiveAccountKey,
                 }),
             );
 

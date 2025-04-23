@@ -63,7 +63,7 @@ const tradingWatchTrade = async <T extends TradingType>({
                 tradeData.cryptoStringAmount = sellResponse.cryptoStringAmount;
             }
 
-            dispatch(saveSellTrade(tradeData, account, newDate));
+            dispatch(saveSellTrade(tradeData, account, newDate, trade.sendAccountKey));
         }
     }
 

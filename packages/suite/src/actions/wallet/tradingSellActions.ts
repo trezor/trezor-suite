@@ -56,6 +56,7 @@ export type TradingSellAction =
               accountIndex: Account['index'];
               accountType: Account['accountType'];
           };
+          sendAccountKey: AccountKey | undefined;
       };
 
 export const loadSellInfo = async (): Promise<SellInfo> => {
@@ -94,6 +95,7 @@ export const saveTrade = (
     exchangeTrade: SellFiatTrade,
     account: Account,
     date: string,
+    sendAccountKey: AccountKey | undefined,
 ): TradingSellAction => ({
     type: TRADING_COMMON.SAVE_TRADE,
     tradeType: 'sell',
@@ -106,6 +108,7 @@ export const saveTrade = (
         accountType: account.accountType,
         accountIndex: account.index,
     },
+    sendAccountKey,
 });
 
 export const saveQuoteRequest = (request: SellFiatTradeQuoteRequest): TradingSellAction => ({

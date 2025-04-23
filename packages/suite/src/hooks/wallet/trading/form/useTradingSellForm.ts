@@ -396,6 +396,7 @@ export const useTradingSellForm = ({
                             response.trade,
                             selectedAccount.account,
                             new Date().toISOString(),
+                            tradingAccountKey,
                         ),
                     );
                     dispatch(tradingSellActions.saveTransactionId(response.trade.orderId));
@@ -634,6 +635,7 @@ export const useTradingSellForm = ({
                 response,
                 selectedAccount.account,
                 new Date().toISOString(),
+                tradingAccountKey,
             ),
         );
         dispatch(tradingSellActions.saveTransactionId(selectedTrade.orderId));

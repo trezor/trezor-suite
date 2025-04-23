@@ -2,7 +2,7 @@
 
 ## 55
 
--   change `tradingTrades` - add `sendAccountKey` and `receiveAccountKey` to each exchange trade
+-   change `tradingTrades` - add `sendAccountKey` and `receiveAccountKey` to each buy, sell, and exchange trade
 
 ## 54
 

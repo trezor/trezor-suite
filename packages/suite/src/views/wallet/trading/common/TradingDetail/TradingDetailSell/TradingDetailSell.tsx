@@ -5,11 +5,12 @@ import { SellTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import type { TradingSellType } from '@suite-common/trading';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
@@ -36,6 +37,7 @@ const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
 };
 
 export const TradingDetailSell = () => {
+    const accounts = useSelector(selectAccounts);
     const { account, trade, info } = useTradingDetailContext<TradingSellType>();
     const dispatch = useDispatch();
 
@@ -56,6 +58,8 @@ export const TradingDetailSell = () => {
         receiveAmount: trade?.data?.cryptoStringAmount ?? '',
         receiveCurrency: trade?.data?.cryptoCurrency,
     };
+
+    const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
 
     useEffect(() => {
         // if tradeStatus hasn't changed, don't send the analytics event
@@ -109,6 +113,7 @@ export const TradingDetailSell = () => {
             <Card>
                 <TradingSelectedOfferInfo
                     account={account}
+                    selectedAccount={sendAccount}
                     providers={info?.providerInfos}
                     selectedQuote={trade.data}
                     transactionId={trade.key}

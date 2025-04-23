@@ -147,6 +147,7 @@ describe('settings reducer', () => {
                 accountIndex: 0,
                 accountType: 'normal',
             },
+            sendAccountKey: 'xxx',
         };
 
         const updatedTradeSell = {
