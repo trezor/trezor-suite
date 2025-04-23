@@ -8,8 +8,6 @@ import { GitHubGraphQLClient } from './gitHubGraphQLClient';
 import { LoggingFunctions, ProjectField } from './types';
 import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
 
-// Constants
-
 const ORGANIZATION = 'trezor';
 const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
 const QA_TEAM_ID = 'T_kwDOAD9FD84AMZXd';
@@ -20,7 +18,7 @@ const RETRY_CONF = {
     gap: 500,
 };
 
-class GitHubTicketReporter implements Reporter, LoggingFunctions {
+class GitHubReporter implements Reporter, LoggingFunctions {
     private _octokit: Octokit | null = null;
     private _projectId: string | undefined;
     private _graphQLClient: GitHubGraphQLClient | null = null;
@@ -71,6 +69,8 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         return this._projectId;
     }
 
+    // Tracks asynchronous operations and logs their completion
+    // Otherwise, playwright would not wait for them to finish
     private trackOperation<T>(operation: Promise<T>): Promise<T> {
         this.pendingOperations.push(operation);
 
@@ -83,6 +83,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         });
     }
 
+    // Initializes the reporter when test run begins, creates a GitHub project if it doesn't exist
     // eslint-disable-next-line require-await
     async onBegin() {
         const initPromise = (async () => {
@@ -103,6 +104,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         return this.trackOperation(initPromise);
     }
 
+    // Processes test completion by creating a GitHub issue with test results and metadata
     // eslint-disable-next-line require-await
     async onTestEnd(test: TestCase) {
         this.log(`Processing test end for "${test.title}"`);
@@ -110,6 +112,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         return this.trackOperation(
             (async () => {
                 if (this.initializationPromise) {
+                    // Wait for OnBegin to finish
                     await this.initializationPromise;
                 }
 
@@ -159,6 +162,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
         );
     }
 
+    // Finalizes reporting when all tests are complete, waits for pending operations to finish
     // eslint-disable-next-line require-await
     async onEnd() {
         this.log('All tests completed, waiting for pending operations...');
@@ -199,7 +203,9 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
             }
             await this.createProject(annotationsForProjectFields);
 
-            // Finds the project again to avoid conflicts
+            // Instead of taking projectId from 'createProject()' we run another 'findExistingProject()' query again
+            // Goal is to avoid conflicts by searching for the project again, by its name and choosing the oldest
+            // Source of conflict: Parallel workflows on CI (Web x Desktop), parallel groups in one workflow
             const createdProject = await this.findExistingProject();
             if (createdProject) {
                 this._projectId = createdProject.id;
@@ -217,7 +223,6 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
 
     private async findExistingProject(): Promise<{ id: string; title: string } | null> {
         try {
-            // const projects = await this.graphQLClient.getProjectFromUser(ownerLogin, projectName);
             const projects = await this.graphQLClient.getProjectFromOrganization(
                 ORGANIZATION,
                 PROJECT_NAME,
@@ -230,7 +235,7 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
                     projects.filter((project: any) => project.title === PROJECT_NAME).length > 1;
                 if (areThereDuplicates) {
                     this.log(
-                        `Warning: Multiple projects found with title "${PROJECT_NAME}". Using the first one.`,
+                        `Warning: Multiple projects found with title "${PROJECT_NAME}". Using the first one with number ${matchingProject.number}.`,
                     );
                 }
 
@@ -346,4 +351,4 @@ class GitHubTicketReporter implements Reporter, LoggingFunctions {
 }
 
 // eslint-disable-next-line import/no-default-export
-export default GitHubTicketReporter;
+export default GitHubReporter;

@@ -10,7 +10,6 @@ import {
     ProjectField,
     ProjectFieldsResponse,
     ProjectQueryResponse,
-    ProjectQueryResponseUser,
     UpdateProjectItemFieldResponse,
     ValueOrOptionId,
 } from './types';
@@ -100,10 +99,11 @@ export class GitHubGraphQLClient {
         const query = `
             query {
               organization(login: "${organization}") {
-                projectsV2(first: 10, query: "${projectName}") {
+                projectsV2(first: 30, query: "${projectName}", orderBy: {field: NUMBER, direction: ASC}) {
                   nodes {
                     id
                     title
+                    number
                   }
                 }
               }
@@ -114,28 +114,6 @@ export class GitHubGraphQLClient {
         this.logger.log('Successfully retrieved organization projects');
 
         return response.organization.projectsV2.nodes;
-    }
-
-    async getProjectFromUser(ownerLogin: string, projectName: string): Promise<Project[]> {
-        this.logger.log(`Fetching projects for user: ${ownerLogin}`);
-
-        const query = `
-            query {
-              user(login: "${ownerLogin}") {
-                projectsV2(first: 10, query: "${projectName}") {
-                  nodes {
-                    id
-                    title
-                  }
-                }
-              }
-            }
-        `;
-
-        const response = await this.octokit.graphql<ProjectQueryResponseUser>(query);
-        this.logger.log('Successfully retrieved user projects');
-
-        return response.user.projectsV2.nodes;
     }
 
     async addIssueToProject(projectId: string, issueNodeId: string): Promise<string> {

@@ -7,6 +7,7 @@ export interface LoggingFunctions {
 export interface Project {
     id: string;
     title: string;
+    number: number;
 }
 
 // GraphQL Response Types
@@ -20,14 +21,6 @@ export interface CreateProjectMutation {
 
 export interface ProjectQueryResponse {
     organization: {
-        projectsV2: {
-            nodes: Project[];
-        };
-    };
-}
-
-export interface ProjectQueryResponseUser {
-    user: {
         projectsV2: {
             nodes: Project[];
         };

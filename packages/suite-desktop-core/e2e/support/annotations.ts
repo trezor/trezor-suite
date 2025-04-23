@@ -10,9 +10,9 @@ import {
     TestPriority,
     TestStatus,
     TestStream,
+    annotationsAddedToTest,
     annotationsForBodyDescription,
     annotationsForProjectFields,
-    testAnnotations,
 } from './enums/testAnnotations';
 
 type TestMetadataInput = {
@@ -27,11 +27,12 @@ type TestMetadataInput = {
 const formatList = (steps: string[]): string =>
     steps.map((step, index) => `${index + 1}. ${step}`).join('\n');
 
+// Loops thru params and adds these metadata to the test as annotation, used in test files
 export const createTestAnnotation = (metadata: TestMetadataInput): TestDetailsAnnotation[] => {
     const formattedAnnotations = [];
 
     for (const [key, value] of Object.entries(metadata)) {
-        const annotation = testAnnotations.find(a => a.key === key);
+        const annotation = annotationsAddedToTest.find(a => a.key === key);
         if (!value || !annotation?.annotationType) {
             continue;
         }
@@ -47,6 +48,7 @@ export const createTestAnnotation = (metadata: TestMetadataInput): TestDetailsAn
     return formattedAnnotations;
 };
 
+// Class used by our GitHub Reporter to extract metadata from the test and its run
 export class TestReportProvider {
     private readonly test: TestCase;
     private readonly annotationMap: Map<string, string>;
@@ -164,7 +166,11 @@ export class TestReportProvider {
         }));
     }
 
+    // This method allow us to loop thru array of keys and get the value from the getter
+    // That way `bodyDescription` and `projectValues` can be generated dynamically
+    // and rely on annotations objects (ex: 'annotationsForBodyDescription') as single source definitions
     getterByKey(key: string): string {
+        // This is the downside, we need to list all our annotation getters here
         const validGetterKeys = [
             'testCase',
             'prerequisites',

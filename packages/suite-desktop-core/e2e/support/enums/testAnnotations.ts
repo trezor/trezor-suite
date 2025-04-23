@@ -1,3 +1,4 @@
+// Types of annotations that can be defined in the test file
 export enum TestAnnotationType {
     TestCase = 'testCase',
     Prerequisites = 'prerequisites',
@@ -9,6 +10,7 @@ export enum TestAnnotationType {
     DeviceModel = 'deviceModel',
 }
 
+// Enums for TestAnnotationType
 export enum TestCategory {
     Onboarding = 'Onboarding',
     UriLinkHandler = 'URI link handler',
@@ -193,7 +195,7 @@ export const annotationsForProjectFields = [
 ];
 
 // Defines which annotations are set for a test case in Playwright
-export const testAnnotations = [
+export const annotationsAddedToTest = [
     testCaseAnnotation,
     prerequisitesAnnotation,
     stepsAnnotation,
