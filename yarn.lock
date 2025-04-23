@@ -10300,6 +10300,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-authenticity-checks@workspace:suite-native/module-authenticity-checks"
   dependencies:
+    "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native": "npm:6.1.18"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
