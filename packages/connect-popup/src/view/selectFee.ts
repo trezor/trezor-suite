@@ -42,12 +42,7 @@ export const updateCustomFee = (payload: UpdateCustomFee['payload']) => {
             feeAmount.className = 'fee-amount';
             feeAmount.textContent = formatAmount(customFee.fee, payload.coinInfo);
 
-            const feeTime = document.createElement('span');
-            feeTime.className = 'fee-time';
-            // @ts-expect-error unrecognized union member.
-            feeTime.textContent = formatTime(customFee.minutes);
-
-            customFeeLabel.replaceChildren(feeAmount, feeTime);
+            customFeeLabel.replaceChildren(feeAmount);
         }
     }
 
