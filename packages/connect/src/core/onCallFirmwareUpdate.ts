@@ -316,7 +316,9 @@ export const onCallFirmwareUpdate = async ({
 
     registerEvents(device);
 
+    // todo: maybe switch getInstallationParams with getBinaryHelper lines
     const { manual, upgrade, language, btcOnly } = getInstallationParams(device, params);
+
     log.debug('onCallFirmwareUpdate', 'installation params', {
         manual,
         upgrade,
