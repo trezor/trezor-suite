@@ -11,7 +11,6 @@ import {
 
 type GetPrerequisiteNameParams = {
     router: AppState['router'];
-    transport?: TransportState;
     device?: {
         type: TrezorDevice['type'];
         mode: TrezorDevice['mode'];
@@ -20,14 +19,15 @@ type GetPrerequisiteNameParams = {
         reconnectRequested?: TrezorDevice['reconnectRequested'];
         transportSessionOwner?: TrezorDevice['transportSessionOwner'];
     };
+    transports?: TransportState['transports'];
 };
 
-export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisiteNameParams) => {
+export const getPrerequisiteName = ({ router, device, transports }: GetPrerequisiteNameParams) => {
     if (!router || router.app === 'unknown') return;
 
     // no transport available
     // todo: is transport-bridge good name? other prerequisites denote to the problem. this ones denotes to the solution
-    if (transport && !transport.transports.length) return 'transport-bridge';
+    if (!transports?.length) return 'transport-bridge';
 
     if (!device) return 'device-disconnected';
 

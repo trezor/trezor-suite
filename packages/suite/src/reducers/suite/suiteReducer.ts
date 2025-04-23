@@ -468,12 +468,13 @@ export const selectIsActionAbortable = (state: SuiteRootState) => {
 };
 
 export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {
-    const { transport } = state.suite;
+    const transports = selectActiveTransports(state);
     const router = selectRouter(state);
 
     const excluded = getExcludedPrerequisites(router);
 
     const deviceType = selectDeviceType(state);
+
     const prerequisite = getPrerequisiteName({
         router,
         device: deviceType
@@ -486,7 +487,7 @@ export const selectPrerequisite = (state: SuiteRootState & RouterRootState & Dev
                   transportSessionOwner: selectDeviceTransportSessionOwner(state),
               }
             : undefined,
-        transport,
+        transports,
     });
 
     if (prerequisite === undefined) return;
