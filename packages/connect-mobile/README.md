@@ -20,6 +20,7 @@ import TrezorConnect from '@trezor/connect-mobile';
 TrezorConnect.init({
     manifest: {
         email: 'developer@xyz.com',
+        appName: 'Trezor Connect Example',
         appUrl: 'http://your.application.com',
     },
     deeplinkOpen: url => {

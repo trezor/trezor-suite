@@ -73,6 +73,7 @@ describe.skip('Deeplink connect popup.', () => {
         await TrezorConnect.init({
             manifest: {
                 email: 'developer@xyz.com',
+                appName: 'Trezor Connect Tests',
                 appUrl: 'http://your.application.com',
             },
             deeplinkOpen: url => {

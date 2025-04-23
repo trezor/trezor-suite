@@ -10,6 +10,7 @@ function loadTrezorConnect() {
     return TrezorConnect.init({
         manifest: {
             email: 'email@developer.com',
+            appName: 'Trezor Connect Example',
             appUrl: 'webextension-app-boilerplate',
         },
         connectSrc: DEFAULT_SRC,

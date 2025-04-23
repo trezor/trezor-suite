@@ -146,6 +146,7 @@ export const extraDependenciesMock: ExtraDependencies = {
             debug: false,
             manifest: {
                 email: 'info@trezor.io',
+                appName: 'Trezor Suite',
                 appUrl: '@suite-native/app',
             },
         },

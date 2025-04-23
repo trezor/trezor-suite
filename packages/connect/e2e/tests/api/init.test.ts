@@ -45,7 +45,7 @@ describe('TrezorConnect.init', () => {
         });
 
         try {
-            await TrezorConnect.init({ manifest: { appUrl: 'a', email: 'b' } });
+            await TrezorConnect.init({ manifest: { appName: 'a', appUrl: 'a', email: 'b' } });
             throw new Error('Should not be resolved');
         } catch (error) {
             expect(error).toMatchObject({ code: 'Init_AlreadyInitialized' });
@@ -54,6 +54,7 @@ describe('TrezorConnect.init', () => {
 
     it('calling multiple methods synchronously', async () => {
         TrezorConnect.manifest({
+            appName: 'a',
             appUrl: 'a',
             email: 'b',
         });
@@ -68,7 +69,7 @@ describe('TrezorConnect.init', () => {
     });
 
     it('init success', async () => {
-        await TrezorConnect.init({ manifest: { appUrl: 'a', email: 'b' } });
+        await TrezorConnect.init({ manifest: { appName: 'a', appUrl: 'a', email: 'b' } });
 
         const resp = await TrezorConnect.getCoinInfo({ coin: 'btc' });
         expect(resp).toMatchObject({
@@ -78,6 +79,7 @@ describe('TrezorConnect.init', () => {
 
     it('manifest success', async () => {
         TrezorConnect.manifest({
+            appName: 'a',
             appUrl: 'a',
             email: 'b',
         });

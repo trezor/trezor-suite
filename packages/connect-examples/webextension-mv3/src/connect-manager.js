@@ -4,6 +4,7 @@ window.TrezorConnect.init({
     lazyLoad: true,
     manifest: {
         email: 'developer@xyz.com',
+        appName: 'Trezor Connect Example',
         appUrl: 'http://your.application.com',
     },
     connectSrc: DEFAULT_SRC,

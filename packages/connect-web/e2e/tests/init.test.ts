@@ -39,6 +39,7 @@ fixtures.forEach(f => {
                     lazyLoad: false,
                     manifest: {
                         email: 'developer@xyz.com',
+                        appName: 'Trezor Connect Example',
                         appUrl: 'http://your.application.com',
                     },
                     connectSrc: '${f.params.connectSrc}'

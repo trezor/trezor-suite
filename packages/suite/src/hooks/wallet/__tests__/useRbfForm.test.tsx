@@ -133,6 +133,7 @@ describe('useRbfForm hook', () => {
             pendingTransportEvent: false,
             manifest: {
                 email: 'info@trezor.io',
+                appName: 'Trezor Connect Tests',
                 appUrl: '@trezor/suite',
             },
         });

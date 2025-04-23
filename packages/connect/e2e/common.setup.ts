@@ -173,6 +173,7 @@ export const initTrezorConnect = async (
 
     await TrezorConnect.init({
         manifest: {
+            appName: 'Trezor Connect Tests',
             appUrl: 'tests.connect.trezor.io',
             email: 'tests@connect.trezor.io',
         },

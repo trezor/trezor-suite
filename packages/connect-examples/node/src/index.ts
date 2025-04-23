@@ -9,6 +9,7 @@ const runExample = async () => {
     await TrezorConnect.init({
         manifest: {
             appUrl: 'my app',
+            appName: 'Trezor Connect Example',
             email: 'app@myapp.meow',
         },
     });

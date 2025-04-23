@@ -98,6 +98,7 @@ exports.initTrezorConnect = sender => {
         // this is useful when you don't know if you are dealing with Trezor user
         manifest: {
             email: 'email@developer.com',
+            appName: 'Trezor Connect Example',
             appUrl: 'electron-app-boilerplate',
         },
         transports: ['BridgeTransport'],

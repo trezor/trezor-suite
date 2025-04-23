@@ -28,6 +28,7 @@ export const App = () => {
         TrezorConnect.init({
             manifest: {
                 email: 'developer@xyz.com',
+                appName: 'Trezor Connect Example',
                 appUrl: 'http://your.application.com',
             },
             // for local development purposes. for production, leave it undefined to use the default value.

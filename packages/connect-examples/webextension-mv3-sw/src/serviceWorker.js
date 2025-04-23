@@ -12,6 +12,7 @@ chrome.runtime.onInstalled.addListener(details => {
     TrezorConnect.init({
         manifest: {
             email: 'meow@example.com',
+            appName: 'Trezor Connect Example',
             appUrl: 'https://yourAppUrl.com/',
         },
         transports: ['BridgeTransport', 'WebUsbTransport'], // Transport protocols to be used

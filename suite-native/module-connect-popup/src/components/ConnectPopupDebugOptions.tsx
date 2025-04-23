@@ -19,6 +19,7 @@ export const ConnectPopupDebugOptions = ({
         TrezorConnectDeeplink.init({
             manifest: {
                 email: 'info@trezor.io',
+                appName: 'Trezor Connect Tests',
                 appUrl: '@suite-native/app',
             },
             deeplinkCallbackUrl: 'https://httpbin.org/get',

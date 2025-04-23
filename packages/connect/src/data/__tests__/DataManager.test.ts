@@ -9,6 +9,7 @@ const settings = {
     pendingTransportEvent: false,
     manifest: {
         email: 'info@trezor.io',
+        appName: 'Trezor Connect Tests',
         appUrl: 'https://connect.trezor.io/9/',
     },
     // internal part, not to be accepted from .init()
