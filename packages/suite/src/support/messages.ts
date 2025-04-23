@@ -9831,4 +9831,4 @@ export default defineMessages({
         id: 'TR_COULD_NOT_PARSE',
         defaultMessage: 'Failed to parse the input',
     },
-});
+} as const);
