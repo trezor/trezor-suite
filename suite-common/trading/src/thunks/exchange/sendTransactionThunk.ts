@@ -92,6 +92,7 @@ export const sendTransactionThunk = createThunk<
                 amount: sendStringAmount,
                 destinationTag: sendPaymentExtraId,
                 signAndPushSendFormTransaction,
+                setMaxOutputId,
             }),
         );
 

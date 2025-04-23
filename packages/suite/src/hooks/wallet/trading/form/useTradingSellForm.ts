@@ -565,6 +565,8 @@ export const useTradingSellForm = ({
         // destinationAddress may be set by useTradingWatchTrade hook to the trade object
         const destinationAddress =
             selectedTrade?.destinationAddress || trade?.data?.destinationAddress;
+        const lockSendAmount =
+            !!sellInfo?.providerInfos[selectedTrade?.exchange ?? '']?.lockSendAmount;
 
         if (
             !selectedTrade ||
@@ -592,6 +594,8 @@ export const useTradingSellForm = ({
             address: destinationAddress,
             amount: cryptoStringAmount,
             destinationTag: destinationPaymentExtraId,
+            // when lockSendAmount is true, the amount should not be recomputed based on the maximum balance.
+            setMaxOutputId: lockSendAmount ? undefined : values.setMaxOutputId,
         });
 
         if (!result?.success) {
