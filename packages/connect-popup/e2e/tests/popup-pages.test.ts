@@ -111,7 +111,12 @@ test('log page should contain logs from shared worker', async ({ page, context }
     const errorLogs: any[] = [];
     page.on('console', message => {
         if (message.type() === 'error') {
-            errorLogs.push(message.text());
+            const text = message.text();
+            // Ignore network errors logged from browser
+            if (text.includes('net::ERR_CONNECTION_REFUSED')) {
+                return;
+            }
+            errorLogs.push(text);
         }
     });
     await TrezorUserEnvLink.stopBridge();
