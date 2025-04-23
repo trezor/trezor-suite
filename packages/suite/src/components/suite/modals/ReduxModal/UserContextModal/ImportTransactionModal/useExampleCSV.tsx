@@ -4,11 +4,11 @@ import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
 
 export const useExampleCSV = (): string => {
-    const { account } = useSelector(state => state.wallet.selectedAccount);
+    const { account, network } = useSelector(state => state.wallet.selectedAccount);
     const isLabelingAvailable = useSelector(selectIsLabelingAvailable);
     const { translationString } = useTranslation();
 
-    if (!account) return '';
+    if (!account || !network) return '';
 
     // for BTC get first two unused addresses
     // for ETH and XRP descriptor get twice (used in two examples)
@@ -24,11 +24,14 @@ export const useExampleCSV = (): string => {
     const example1 = `${addresses[0]},0.31337,${getNetworkDisplaySymbol(account.symbol)}${
         isLabelingAvailable ? `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_1')}` : ''
     }`;
+    const lines = [headerLine, example1];
 
-    const example2 = `${addresses[1]},0.1,USD${
+    if (network.testnet === true) return lines.join('\n');
+
+    // Inserting fiat rate is only available for mainnet networks
+    const example2 = `${addresses[1]},4.9,USD${
         isLabelingAvailable ? `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_2')}` : ''
     }`;
 
-    // Combine all lines with newlines
-    return `${headerLine}\n${example1}\n${example2}`;
+    return [...lines, example2].join('\n');
 };

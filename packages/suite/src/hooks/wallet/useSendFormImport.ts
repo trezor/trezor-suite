@@ -147,7 +147,7 @@ export const useSendFormImport = ({
                     }
                 }
 
-                if (!output.amount || !output.fiat) {
+                if (!output.amount || (!output.fiat && network.testnet === false)) {
                     dispatch(notificationsActions.addToastOnce({ type: 'could-not-parse-csv' }));
                 }
             }
