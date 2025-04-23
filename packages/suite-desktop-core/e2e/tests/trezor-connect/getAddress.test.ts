@@ -88,7 +88,6 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=suite', '@desktopOnly'
             // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
             await page.waitForTimeout(1000);
             await trezorUserEnvLink.pressYes();
-
             expect(await resMultiple).toMatchObject({ success: true });
         });
 
@@ -114,6 +113,14 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=suite', '@desktopOnly'
             expect(
                 page.getByTestId('@connect-address-confirmation/verified-badge/0'),
             ).toBeVisible();
+
+            // try to verify address and disconnect device during action
+            await page.getByTestId('@connect-address-confirmation/verify-button/0').click();
+            await page.waitForTimeout(1000);
+            await trezorUserEnvLink.pressNo();
+            await page
+                .getByTestId('@connect-address-confirmation/error-badge/0')
+                .waitFor({ state: 'visible' });
         });
     });
 

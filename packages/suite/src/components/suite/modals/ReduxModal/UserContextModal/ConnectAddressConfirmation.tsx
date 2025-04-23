@@ -105,7 +105,12 @@ export const ConnectAddressConfirmation = () => {
                                             </Badge>
                                         )}
                                         {address.validated === 'failed' && (
-                                            <Badge variant="warning" icon="warning" size="small">
+                                            <Badge
+                                                variant="warning"
+                                                icon="warning"
+                                                size="small"
+                                                data-testid={`@connect-address-confirmation/error-badge/${index}`}
+                                            >
                                                 <Translation id="TR_ERROR" />
                                             </Badge>
                                         )}
