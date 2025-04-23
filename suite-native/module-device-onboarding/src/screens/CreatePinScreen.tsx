@@ -2,9 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { Box, Image, TitleHeader } from '@suite-native/atoms';
 import { usePinAction } from '@suite-native/device';
+import { selectIsCoinEnablingInitFinished } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import { deviceImageMap } from '@suite-native/module-authorize-device';
 import {
@@ -48,17 +49,26 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const CreatePinScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const deviceModel = useSelector(selectDeviceModel);
+    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const { applyStyle } = useNativeStyles();
-    usePinAction({
-        type: 'enable',
-        onSuccess: () => {
+
+    const handlePinCreated = () => {
+        if (hasBitcoinOnlyFirmware || isCoinEnablingInitFinished) {
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
                     screen: HomeStackRoutes.Home,
                 },
             });
-        },
+        } else {
+            navigation.navigate(RootStackRoutes.CoinEnablingInit);
+        }
+    };
+
+    usePinAction({
+        type: 'enable',
+        onSuccess: handlePinCreated,
     });
 
     const onCancel = () => {

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useNavigationState } from '@react-navigation/native';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { selectShouldShowCoinEnablingInitFlow } from '@suite-native/coin-enabling';
@@ -26,6 +26,8 @@ export const useCoinEnablingInitialCheck = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>>();
 
+    const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
+    const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const shouldShowCoinEnablingInitFlow = useSelector(selectShouldShowCoinEnablingInitFlow);
@@ -35,7 +37,8 @@ export const useCoinEnablingInitialCheck = () => {
 
     const wasInitScreenShown = useRef(false);
 
-    const canShowCoinEnablingInitFlow = isOnboardingFinished && !wasInitScreenShown.current;
+    const canShowCoinEnablingInitFlow =
+        isOnboardingFinished && !wasInitScreenShown.current && !isDeviceOnboardingStackFocused;
 
     useEffect(() => {
         if (shouldShowCoinEnablingInitFlow && canShowCoinEnablingInitFlow) {

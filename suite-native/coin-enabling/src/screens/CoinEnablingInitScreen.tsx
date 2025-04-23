@@ -13,16 +13,23 @@ import {
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
+    AppTabsRoutes,
+    HomeStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     Screen,
     ScreenFooterGradient,
+    StackNavigationProps,
     useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 
+type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>;
+
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProps>();
     useHandleHardwareBackNavigation();
 
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
@@ -36,7 +43,13 @@ export const CoinEnablingInitScreen = () => {
                 type: EventType.CoinEnablingInitState,
                 payload: { enabledNetworks: enabledNetworkSymbols },
             });
-            navigation.goBack();
+
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
         }
     };
 
