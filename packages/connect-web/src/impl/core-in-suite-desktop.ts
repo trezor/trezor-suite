@@ -106,7 +106,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         this._settings = newSettings;
 
         try {
-            const ws = new WebsocketClient({ url: 'ws://localhost:21335/connect-ws' });
+            const ws = new WebsocketClient({ url: 'ws://127.0.0.1:21335/connect-ws' });
             await ws.connect();
             this.ws = ws;
         } catch (err) {
