@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { createFilter } from 'react-select';
 
@@ -46,6 +47,22 @@ export const TradingFormInputAccount = <
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
 
+    const selectedAccountIndex = useMemo(() => {
+        if (!selectedOption) {
+            return 0;
+        }
+
+        const index = optionGroups.findIndex(group =>
+            group.options.some(
+                option =>
+                    option.descriptor === selectedOption.descriptor &&
+                    option.value === selectedOption.value,
+            ),
+        );
+
+        return index >= 0 ? index : 0;
+    }, [optionGroups, selectedOption]);
+
     return (
         <Controller
             name={accountSelectName}
@@ -53,6 +70,7 @@ export const TradingFormInputAccount = <
             render={({ field: { value } }) => (
                 <Select
                     value={value}
+                    scrollIndex={selectedAccountIndex}
                     labelLeft={label && <Translation id={label} />}
                     options={optionGroups}
                     onChange={async (selected: TradingAccountOptionsGroupOptionProps) => {

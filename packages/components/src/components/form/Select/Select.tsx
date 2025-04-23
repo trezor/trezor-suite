@@ -1,5 +1,10 @@
-import { ReactNode, useCallback, useMemo, useRef } from 'react';
-import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import ReactSelect, {
+    Props as ReactSelectProps,
+    SelectInstance,
+    StylesConfig,
+    components as reactSelectComponents,
+} from 'react-select';
 
 import styled, { CSSObject, DefaultTheme, css, useTheme } from 'styled-components';
 
@@ -280,8 +285,29 @@ export type SelectProps = KeyPressScrollProps &
         isMenuOpen?: boolean;
         isLoading?: boolean;
         onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
+        /**
+         * @deprecated This prop will be replaced by internal logic - https://github.com/trezor/trezor-suite/issues/18749
+         */
+        scrollIndex?: number;
         'data-testid'?: string;
     };
+
+type MenuProps = any & {
+    selectRef: React.RefObject<SelectInstance<any, boolean>>;
+    scrollIndex?: number;
+};
+
+const Menu = ({ selectRef, scrollIndex, ...rest }: MenuProps) => {
+    useEffect(() => {
+        if (scrollIndex) {
+            const menuList = selectRef.current?.menuListRef;
+            const option = menuList?.children[scrollIndex];
+            option?.scrollIntoView({ behavior: 'instant' });
+        }
+    }, [selectRef, scrollIndex]);
+
+    return <reactSelectComponents.Menu {...rest} />;
+};
 
 export const Select = ({
     isClean = false,
@@ -322,6 +348,11 @@ export const Select = ({
         [onChange, isMenuOpen],
     );
 
+    const MenuWithProps = useCallback(
+        (props: any) => <Menu {...props} selectRef={selectRef} scrollIndex={rest.scrollIndex} />,
+        [selectRef, rest.scrollIndex],
+    );
+
     /**
      * This memoization is necessary to prevent jumping of the Select
      * to the corder. This may happen when parent component re-renders
@@ -336,9 +367,10 @@ export const Select = ({
                 <Option {...optionProps} data-testid={dataTest} />
             ),
             GroupHeading,
+            Menu: MenuWithProps,
             ...components,
         }),
-        [components, dataTest],
+        [components, dataTest, MenuWithProps],
     );
 
     return (
