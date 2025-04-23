@@ -482,8 +482,8 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559'],
         backendTypes: ['blockbook'],
         accountTypes: {},
-        coingeckoId: undefined,
-        tradeCryptoId: undefined,
+        coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
+        tradeCryptoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
     },
     thol: {
         symbol: 'thol',
