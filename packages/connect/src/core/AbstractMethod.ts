@@ -342,6 +342,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     async getMethodInfo() {
         return {
+            useUi: this.useUi,
             useDevice: this.useDevice,
             useDeviceState: this.useDeviceState,
             name: this.name,

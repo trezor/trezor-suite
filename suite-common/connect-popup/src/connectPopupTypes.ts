@@ -45,6 +45,7 @@ export type ConnectPopupCallLoaded = {
         methodTitle: string;
         confirmLabel: string;
         permissionTypes: MethodPermission[];
+        useUi: boolean;
     };
     source: ConnectCallSource;
     payload: any;

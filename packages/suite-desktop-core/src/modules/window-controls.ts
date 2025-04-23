@@ -80,11 +80,18 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
 
     ipcMain.on('app/focus', () => {
         logger.debug(SERVICE_NAME, 'Focus requested');
+        const mainWindow = mainWindowProxy.getInstance();
+        mainWindow?.show();
+        mainWindow?.restore();
         app.focus({ steal: true });
+        mainWindow?.moveTop();
+        mainWindow?.focus();
     });
 
     ipcMain.on('app/hide', () => {
         logger.debug(SERVICE_NAME, 'Hide requested');
         mainWindowProxy.getInstance()?.hide();
     });
+
+    ipcMain.handle('app/is-visible', () => mainWindowProxy?.getInstance()?.isVisible() ?? false);
 };

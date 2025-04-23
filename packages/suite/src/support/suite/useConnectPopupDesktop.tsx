@@ -1,14 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { connectPopupCallThunk, connectPopupCancelThunk } from '@suite-common/connect-popup';
+import {
+    connectPopupCallThunk,
+    connectPopupCancelThunk,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectPopupTypes';
 import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
+    const popupCall = useSelector(selectConnectPopupCall);
 
     useEffect(() => {
         const init = async () => {
@@ -47,4 +52,32 @@ export const useConnectPopupDesktop = () => {
             }
         };
     }, [dispatch]);
+
+    // App focus control
+    const [currentlyOngoing, setCurrentlyOngoing] = useState(false);
+    const [wasVisible, setWasVisible] = useState(false);
+    useEffect(() => {
+        if (
+            // Permission request
+            popupCall?.state === 'permission-request' ||
+            // Call ongoing - show only if method uses UI
+            (popupCall?.state === 'ongoing' && popupCall?.methodInfo.useUi)
+        ) {
+            // Only trigger once
+            if (currentlyOngoing) return;
+
+            setCurrentlyOngoing(true);
+            // Remember visibility state
+            desktopApi.appIsVisible().then(isVisible => setWasVisible(isVisible));
+            desktopApi.appFocus();
+        }
+
+        if (popupCall?.state === 'finished') {
+            setCurrentlyOngoing(false);
+            // Once finished, hide app if it was not visible before
+            if (!wasVisible) {
+                desktopApi.appHide();
+            }
+        }
+    }, [popupCall, currentlyOngoing, wasVisible]);
 };

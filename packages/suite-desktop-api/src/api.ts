@@ -104,6 +104,7 @@ export interface InvokeChannels {
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
     'app/auto-start/is-enabled': () => InvokeResult<boolean>;
+    'app/is-visible': () => boolean;
     'tray/change-settings': (payload: TraySettings) => InvokeResult;
     'tray/get-settings': () => InvokeResult<TraySettings>;
     'connect-popup/enabled': () => boolean;
@@ -130,6 +131,7 @@ export interface DesktopApi {
     appHide: DesktopApiSend<'app/hide'>;
     appAutoStart: DesktopApiSend<'app/auto-start'>;
     getAppAutoStartIsEnabled: DesktopApiInvoke<'app/auto-start/is-enabled'>;
+    appIsVisible: DesktopApiInvoke<'app/is-visible'>;
     // Auto-updater
     checkForUpdates: DesktopApiSend<'update/check'>;
     downloadUpdate: DesktopApiSend<'update/download'>;

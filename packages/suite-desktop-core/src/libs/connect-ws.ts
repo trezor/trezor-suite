@@ -187,11 +187,9 @@ export const exposeConnectWs = ({
 
                 messages[message.id] = createDeferred();
 
-                // focus renderer window
-                mainThreadEmitter.emit('app/show');
-
                 // check window exists, if not wait for it to be created
                 if (!mainWindowProxy.getInstance()) {
+                    mainThreadEmitter.emit('app/show');
                     logger.info(LOG_PREFIX, 'waiting for window to start');
                     appInit = createDeferred();
                     // todo: do we actually need to clean this timeout?

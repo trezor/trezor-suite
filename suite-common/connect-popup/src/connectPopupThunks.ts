@@ -58,6 +58,7 @@ export const connectPopupCallThunkInner = createThunk<
                             methodInfo.payload.confirmation?.label ?? methodInfo.payload.info,
                         confirmLabel: methodInfo.payload.confirmation?.customConfirmButton?.label,
                         permissionTypes: methodInfo.payload.requiredPermissions,
+                        useUi: methodInfo.payload.useUi,
                     },
                     payload,
                     source,
