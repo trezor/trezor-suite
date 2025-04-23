@@ -104,12 +104,7 @@ export const EmptyStakingCard = () => {
                             <Translation id="TR_STAKE_WHAT_IS_STAKING" />
                         </Text>
                         <Paragraph variant="tertiary">
-                            <Translation
-                                id="TR_STAKE_STAKING_IS"
-                                values={{
-                                    symbol: displaySymbol,
-                                }}
-                            />
+                            <Translation id="TR_STAKE_STAKING_IS" />
                         </Paragraph>
                     </section>
                     <Divider />
