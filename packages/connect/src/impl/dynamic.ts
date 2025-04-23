@@ -1,7 +1,9 @@
 import EventEmitter from 'events';
 
+import { getSynchronize } from '@trezor/utils';
+
 import { ERRORS } from '../constants';
-import { CallMethodPayload } from '../events';
+import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
@@ -57,6 +59,8 @@ export class TrezorConnectDynamic<
     >['handleErrorFallback'];
 
     public lastSettings?: InitFullSettings<SettingsType>;
+    private callPending = 0;
+    private beforeCallSynchronize = getSynchronize();
 
     public constructor({
         implementations,
@@ -88,7 +92,7 @@ export class TrezorConnectDynamic<
         }
 
         if (!this.lastSettings) {
-            throw ERRORS.TypedError('Init_NotInitialized');
+            throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
         // Go back to the old target if the new target fails to initialize
@@ -117,6 +121,7 @@ export class TrezorConnectDynamic<
         this.lastSettings = settings;
 
         this.currentTarget = this.getInitTarget(settings);
+        this.callPending = 0;
 
         // Initialize the target
         try {
@@ -124,7 +129,7 @@ export class TrezorConnectDynamic<
         } catch (error) {
             // Handle error by switching to other implementation if available as defined in `handleErrorFallback`.
             if (await this.handleErrorFallback(error.code)) {
-                return await this.getTarget().init(settings);
+                return;
             }
 
             throw error;
@@ -137,15 +142,28 @@ export class TrezorConnectDynamic<
     }
 
     public async call(params: CallMethodPayload) {
-        await this.handleBeforeCall();
-        const response = await this.getTarget().call(params);
-        if (!response.success) {
-            if (await this.handleErrorFallback(response.payload.code)) {
-                return await this.getTarget().call(params);
+        try {
+            // Edge case - if there are simultaneous calls, we only want to call `handleBeforeCall` once
+            if (this.callPending === 0) {
+                await this.beforeCallSynchronize(async () => {
+                    this.callPending++;
+                    await this.handleBeforeCall();
+                });
             }
-        }
+            const response = await this.getTarget().call(params);
+            if (!response.success) {
+                if (await this.handleErrorFallback(response.payload.code)) {
+                    return await this.getTarget().call(params);
+                }
+            }
 
-        return response;
+            return response;
+        } catch (error) {
+            // Don't throw but return error payload
+            return createErrorMessage(error);
+        } finally {
+            this.callPending--;
+        }
     }
 
     public requestLogin(params: any) {
@@ -162,6 +180,7 @@ export class TrezorConnectDynamic<
 
     public dispose() {
         this.eventEmitter.removeAllListeners();
+        this.callPending = 0;
 
         return this.getTarget().dispose();
     }

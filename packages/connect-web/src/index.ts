@@ -52,7 +52,9 @@ const impl = new TrezorConnectDynamic<
     handleBeforeCall: async () => {
         // Always try if desktop is available again
         const isCoreModeDesktop = impl.lastSettings?.coreMode === 'suite-desktop';
-        if (isCoreModeDesktop) {
+        const isCoreModeAuto =
+            impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
+        if (isCoreModeDesktop || isCoreModeAuto) {
             await impl.switchTarget('core-in-suite-desktop');
         }
     },
@@ -65,11 +67,10 @@ const impl = new TrezorConnectDynamic<
 
         // Handle desktop errors
         if (
-            !isCoreModeDisabled &&
             impl.getTargetType() === 'core-in-suite-desktop' &&
             errorCode === 'Desktop_ConnectionMissing'
         ) {
-            await impl.switchTarget('core-in-popup');
+            await impl.switchTarget('iframe');
 
             return true;
         }
