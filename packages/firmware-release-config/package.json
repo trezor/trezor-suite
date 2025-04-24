@@ -11,9 +11,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "generate-releases-message": "yarn tsx ./scripts/generate-releases-message.ts",
-        "sign-releases-message": "yarn tsx ./scripts/sign-releases-message.ts",
-        "validate-releases-message": "yarn tsx ./scripts/validate-releases-message.ts"
+        "generate-release-config": "yarn tsx ./scripts/generate-release-config.ts",
+        "sign-release-config": "yarn tsx ./scripts/sign-release-config.ts",
+        "validate-release-config": "yarn tsx ./scripts/validate-release-config.ts"
     },
     "dependencies": {
         "@trezor/device-utils": "workspace:^",
@@ -23,7 +23,7 @@
         "tsx": "^4.19.3"
     },
     "devDependencies": {
-        "@types/fs-extra": "^11",
+        "@types/fs-extra": "^11.0.4",
         "@types/jws": "^3.2.10"
     }
 }

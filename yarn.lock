@@ -11941,7 +11941,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/device-utils@workspace:*, @trezor/device-utils@workspace:packages/device-utils":
+"@trezor/device-utils@workspace:*, @trezor/device-utils@workspace:^, @trezor/device-utils@workspace:packages/device-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
@@ -12001,6 +12001,20 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^5.2.0"
     globals: "npm:^15.11.0"
     typescript-eslint: "npm:^8.31.1"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/firmware-release-config@workspace:packages/firmware-release-config":
+  version: 0.0.0-use.local
+  resolution: "@trezor/firmware-release-config@workspace:packages/firmware-release-config"
+  dependencies:
+    "@trezor/device-utils": "workspace:^"
+    "@trezor/env-utils": "workspace:^"
+    "@types/fs-extra": "npm:^11.0.4"
+    "@types/jws": "npm:^3.2.10"
+    fs-extra: "npm:^11.3.0"
+    jws: "npm:^4.0.0"
+    tsx: "npm:^4.19.3"
   languageName: unknown
   linkType: soft
 

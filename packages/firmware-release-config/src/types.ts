@@ -24,6 +24,7 @@ export interface ReleaseInfo {
     min_bootloader_version: VersionArray;
     translations: string[];
     firmware_revision: string;
+    fingerprint: string;
     changelog: string;
 }
 
@@ -38,26 +39,25 @@ export interface ConditionalRelease {
     release: ReleaseInfo;
 }
 
-export interface Releases {
+export interface ReleasesConfig {
     T1B1: ConditionalRelease[];
     T2T1: ConditionalRelease[];
     T2B1: ConditionalRelease[];
     T3B1: ConditionalRelease[];
     T3T1: ConditionalRelease[];
     T3W1: ConditionalRelease[];
-    UNKNOWN: ConditionalRelease[];
 }
-export interface IntermediaryRelease {
+export interface IntermediaryReleaseConfig {
     if_version_less_than: string;
     version: number;
     firmware_revision: string;
     url: string;
 }
 
-export interface ReleaseMessage {
+export interface FirmwareReleaseConfig {
     version: number;
     timestamp: string;
     sequence: number;
-    releases: Releases;
-    intermediaries: Record<DeviceModelInternal, IntermediaryRelease[]>;
+    releases: ReleasesConfig;
+    intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
 }

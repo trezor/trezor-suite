@@ -25,7 +25,8 @@
                 "^type-check",
                 "^guide-pull-content",
                 "guide-pull-content",
-                "@suite-common/message-system:build:lib"
+                "@suite-common/message-system:build:lib",
+                "@trezor/firmware-release-config:build:lib"
             ],
             "inputs": [
                 "^prod",
@@ -36,7 +37,10 @@
             "cache": true
         },
         "test:unit": {
-            "dependsOn": ["@suite-common/message-system:build:lib"],
+            "dependsOn": [
+                "@suite-common/message-system:build:lib",
+                "@trezor/firmware-release-config:build:lib"
+            ],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/jest.config.base.js",

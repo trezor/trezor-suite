@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "timestamp": "2025-04-24T09:53:53.114Z",
+    "timestamp": "2025-04-25T13:42:57.723Z",
     "sequence": 1,
     "releases": {
         "T1B1": [
@@ -19,7 +19,9 @@
                     "min_firmware_version": [1, 12, 0],
                     "bootloader_version": [1, 12, 1],
                     "translations": [],
-                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c"
+                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
+                    "fingerprint": "253042fb209c78e02482c645b16cc9894c19124e9c9c0c1051b3c68b6e7c700b",
+                    "changelog": "* Multisig-related changes.\n* Reworked PIN processing.\n* Fixed the ability to display the XPUB using a QR code."
                 }
             },
             {
@@ -37,7 +39,9 @@
                     "min_firmware_version": [1, 12, 0],
                     "bootloader_version": [1, 12, 1],
                     "translations": [],
-                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c"
+                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
+                    "fingerprint": "253042fb209c78e02482c645b16cc9894c19124e9c9c0c1051b3c68b6e7c700b",
+                    "changelog": "* Multisig-related changes.\n* Reworked PIN processing.\n* Fixed the ability to display the XPUB using a QR code."
                 }
             }
         ],
@@ -58,6 +62,7 @@
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "bde9c5ef485548746150e07a9c5081c25f2bdf127707a41f3c487ca83a6c0667",
                     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
                 }
             },
@@ -77,6 +82,7 @@
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "bde9c5ef485548746150e07a9c5081c25f2bdf127707a41f3c487ca83a6c0667",
                     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
                 }
             }
@@ -98,6 +104,7 @@
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "e5878fa067df9d1256cdcd86f10869930d85e090c39f807c23f8845472e8d995",
                     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
                 }
             },
@@ -117,6 +124,7 @@
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "e5878fa067df9d1256cdcd86f10869930d85e090c39f807c23f8845472e8d995",
                     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
                 }
             }
@@ -138,6 +146,7 @@
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "d3905f15221f7b2733e5496986ceb1a3b39f390c4439e2d3cc89d5f3b7423278",
                     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
                 }
             },
@@ -157,6 +166,7 @@
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "d3905f15221f7b2733e5496986ceb1a3b39f390c4439e2d3cc89d5f3b7423278",
                     "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
                 }
             }
@@ -178,6 +188,7 @@
                     "bootloader_version": [2, 1, 10],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "ac995c394f7a7b3ea4cbd9c04977621d6d2fbef30bba856f707f585f34866ac4",
                     "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
                 }
             },
@@ -197,6 +208,7 @@
                     "bootloader_version": [2, 1, 10],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
                     "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+                    "fingerprint": "ac995c394f7a7b3ea4cbd9c04977621d6d2fbef30bba856f707f585f34866ac4",
                     "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
                 }
             }

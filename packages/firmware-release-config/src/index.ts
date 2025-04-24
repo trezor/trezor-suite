@@ -4,7 +4,7 @@ import { decode, verify } from 'jws';
 import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 
 import { JWS_SIGN_ALGORITHM, RELEASES_URL_REMOTE } from './constants';
-import { ReleaseMessage } from './types';
+import { FirmwareReleaseConfig } from './types';
 import { jws as releasesJwsLocal } from '../files/releases.v1';
 
 // Enable this for local development purposes:
@@ -12,7 +12,7 @@ import { jws as releasesJwsLocal } from '../files/releases.v1';
 // TODO: WIP: for now we are foring local since it was not deployed yet.
 const FORCE_LOCAL_JWS = true;
 
-export const getReleasesJws = async () => {
+export const getFirmwareReleaseConfig = async () => {
     if (FORCE_LOCAL_JWS) {
         return {
             releasesJws: releasesJwsLocal,
@@ -55,7 +55,7 @@ export const getReleasesJws = async () => {
 };
 
 export const getReleasesMessage = async () => {
-    const { releasesJws } = await getReleasesJws();
+    const { releasesJws } = await getFirmwareReleaseConfig();
 
     const decodedJws = decode(releasesJws);
 
@@ -68,7 +68,7 @@ export const getReleasesMessage = async () => {
         throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
     }
 
-    const JWSPublicKey = getJWSPublicKey();
+    const JWSPublicKey = getJWSPublicKey('message-system');
     if (!JWSPublicKey) {
         throw new Error('JWS public key is not defined!');
     }
@@ -82,7 +82,7 @@ export const getReleasesMessage = async () => {
             throw new Error('Config authenticity is invalid');
         }
 
-        const releases: ReleaseMessage = JSON.parse(decodedJws.payload);
+        const releases: FirmwareReleaseConfig = JSON.parse(decodedJws.payload);
 
         return releases;
     } catch (error) {
