@@ -88,29 +88,50 @@ const SymbolInput = forwardRef<HTMLInputElement, SymbolInputProps>(
     },
 );
 
+const parseDefaultCode = (code: string, length: number): Symbol[] => {
+    const chars = code.split('').filter(isSymbolValid);
+
+    while (chars.length < length) {
+        chars.push('');
+    }
+
+    return chars.slice(0, length);
+};
+
 export type PinInputProps = {
     length: number;
     onComplete: (value: string) => void;
     onChange?: (value: string) => void;
     disabled?: boolean;
     autoFocus?: boolean;
+    defaultCode?: string;
 };
 
-export const PinInput = ({ length, onChange, onComplete, disabled, autoFocus }: PinInputProps) => {
-    const [symbols, setSymbols] = useState<Symbol[]>(new Array(length).fill(''));
+export const PinInput = ({
+    length,
+    onChange,
+    onComplete,
+    disabled,
+    autoFocus,
+    defaultCode = '',
+}: PinInputProps) => {
+    const [symbols, setSymbols] = useState<Symbol[]>(parseDefaultCode(defaultCode, length));
     const refs = useRef<HTMLInputElement[]>([]);
 
     useEffect(() => {
         onChange?.(symbols.join(''));
 
         if (symbols.filter(symbol => symbol !== EMPTY_SYMBOL).length === length) {
-            onComplete(symbols.join(''));
+            const newCode = symbols.join('');
+            if (newCode !== defaultCode?.slice(0, length)) {
+                onComplete(newCode);
+            }
         }
-    }, [length, onChange, onComplete, symbols]);
+    }, [length, onChange, onComplete, symbols, defaultCode]);
 
     useEffect(() => {
-        setSymbols(new Array(length).fill(''));
-    }, [length]);
+        setSymbols(parseDefaultCode(defaultCode, length));
+    }, [length, defaultCode]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === 'Backspace') {
