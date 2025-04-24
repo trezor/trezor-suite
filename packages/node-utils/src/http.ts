@@ -296,6 +296,14 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         }
     }
 
+    private getSafeDecodedURI(param: string) {
+        try {
+            return decodeURIComponent(param);
+        } catch (e) {
+            this.logger.error(`Failed to decode param: ${e.message}`);
+        }
+    }
+
     /**
      * pathname could be /a/b/c/d
      * return route with highest number of matching segments
@@ -348,8 +356,9 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                     let isParamInvalid = false;
 
                     query[key] = allParamsOfSameKey.map(singleParam => {
-                        const sanitized = sanitizeUrl(singleParam);
-                        if (sanitized !== singleParam) isParamInvalid = true;
+                        const decoded = this.getSafeDecodedURI(singleParam);
+                        const sanitized = sanitizeUrl(decoded);
+                        if (sanitized !== decoded) isParamInvalid = true;
 
                         return sanitized;
                     });
@@ -405,9 +414,10 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
         requestWithParams.params = route.params.reduce<Record<string, string>>(
             (acc, param, index) => {
-                if (!paramsSegments[index]) return acc;
-                const sanitized = sanitizeUrl(paramsSegments[index]);
-                if (sanitized !== paramsSegments[index]) {
+                const paramsSegment = paramsSegments[index];
+                if (!paramsSegment) return acc;
+                const sanitized = sanitizeUrl(paramsSegment);
+                if (sanitized !== paramsSegment) {
                     isSegmentInvalid = true;
                 }
 

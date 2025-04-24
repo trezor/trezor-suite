@@ -373,6 +373,43 @@ describe('HttpServer', () => {
         expect(await res.text()).toEqual('?a=1&a=2&b=3');
     });
 
+    test('should get query string as url when using encoded parameters', async () => {
+        const handler = jest.fn((request, response) => {
+            const { search } = url.parse(request.url, true);
+            response.end(search);
+        });
+        server.post('/foo', [parseBodyText, handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        const res = await fetch(
+            `http://${address.address}:${address.port}/foo?c=%2Fredirect%2Fdetail`,
+            {
+                method: 'POST',
+                body: 'foo',
+            },
+        );
+        expect(res.status).toEqual(200);
+        expect(await res.text()).toEqual('?c=%2Fredirect%2Fdetail');
+    });
+
+    test('should not get query string as url when using invalid encoded parameters', async () => {
+        const handler = jest.fn((request, response) => {
+            const { search } = url.parse(request.url, true);
+            response.end(search);
+        });
+        server.post('/foo', [parseBodyText, handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        const res = await fetch(`http://${address.address}:${address.port}/foo?c=%E0%A4%A`, {
+            method: 'POST',
+            body: 'foo',
+        });
+        expect(res.status).toEqual(403);
+        expect(await res.text()).toEqual('');
+    });
+
     test('query string sanitization', async () => {
         const handler = jest.fn((request, response) => {
             const { search } = url.parse(request.url, true);
