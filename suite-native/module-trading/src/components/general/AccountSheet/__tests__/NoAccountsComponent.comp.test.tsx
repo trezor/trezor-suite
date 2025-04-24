@@ -18,7 +18,7 @@ describe('NoAccountsComponent', () => {
     it('should render for not connected device', async () => {
         const { queryByText } = await renderNoAccountsComponent({ isConnected: false });
 
-        expect(queryByText('You need to connect your device to add new account.')).toBeDefined();
+        expect(queryByText('You need to connect your device to add new account.')).toBeTruthy();
     });
 
     it('should render for no account but connected device', async () => {
@@ -26,6 +26,6 @@ describe('NoAccountsComponent', () => {
 
         expect(
             queryByText("It seems that you don't have any account matching selected asset."),
-        ).toBeDefined();
+        ).toBeTruthy();
     });
 });

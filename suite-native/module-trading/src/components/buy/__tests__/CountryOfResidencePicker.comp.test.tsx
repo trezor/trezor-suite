@@ -60,7 +60,7 @@ describe('CountryOfResidencePicker', () => {
         const { getByText } = await renderCountryOfResidencePicker();
         fireEvent.press(getByText('Country of residence'));
 
-        expect(getByText('No country found')).toBeDefined();
-        expect(getByText(/a country matching your search/)).toBeDefined();
+        expect(getByText('No country found')).toBeTruthy();
+        expect(getByText(/a country matching your search/)).toBeTruthy();
     });
 });

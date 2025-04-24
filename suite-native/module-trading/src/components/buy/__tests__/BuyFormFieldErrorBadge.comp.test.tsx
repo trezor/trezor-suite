@@ -50,6 +50,6 @@ describe('BuyFormFieldErrorBadge', () => {
         });
         const { getByText } = renderBuyFormFieldErrorBadge({ fieldName: 'fiatValue' }, tradingForm);
 
-        expect(getByText('Error message')).toBeDefined();
+        expect(getByText('Error message')).toBeTruthy();
     });
 });

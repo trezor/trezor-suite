@@ -32,7 +32,7 @@ describe('TradeableAssetListItem', () => {
 
         fireEvent.press(getByAccessibilityHint('Add to favourites'));
 
-        expect(getByAccessibilityHint('Remove from favourites')).toBeDefined();
+        expect(getByAccessibilityHint('Remove from favourites')).toBeTruthy();
     });
 
     it('should remove asset from favourites on star click', async () => {
@@ -41,6 +41,6 @@ describe('TradeableAssetListItem', () => {
         fireEvent.press(getByAccessibilityHint('Add to favourites'));
         fireEvent.press(getByAccessibilityHint('Remove from favourites'));
 
-        expect(getByAccessibilityHint('Add to favourites')).toBeDefined();
+        expect(getByAccessibilityHint('Add to favourites')).toBeTruthy();
     });
 });

@@ -19,7 +19,7 @@ describe('PaymentMethodListItem', () => {
             paymentMethodName: 'Debit card',
         });
 
-        expect(getByText('Debit card')).toBeDefined();
+        expect(getByText('Debit card')).toBeTruthy();
     });
 
     it('should call onPress callback on item press', () => {

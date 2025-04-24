@@ -71,7 +71,7 @@ describe('useTradeableAssetsFilteredData', () => {
             result.current.setFilterValue('0xa0b');
         });
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].contractAddress).toBeDefined();
+        expect(result.current.filteredData[0].contractAddress).toBeTruthy();
     });
 
     it('should filter assets by filter symbol', () => {

@@ -62,7 +62,7 @@ describe('AccountListAddressItem', () => {
         const { getByText, queryByAccessibilityHint } =
             await renderAccountListAddressItem(receiveAccount);
 
-        expect(getByText('BTC_address')).toBeDefined();
+        expect(getByText('BTC_address')).toBeTruthy();
         expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
     });
 
@@ -82,7 +82,7 @@ describe('AccountListAddressItem', () => {
         const { getByText, queryByText, queryByAccessibilityHint, getByLabelText } =
             await renderAccountListAddressItem(receiveAccount);
 
-        expect(getByText('BTC_address')).toBeDefined();
+        expect(getByText('BTC_address')).toBeTruthy();
         expect(queryByText('My BTC account')).toBeNull();
         expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
         expect(getByLabelText('Balance in fiat')).toHaveTextContent('$5,000,000.00');

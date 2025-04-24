@@ -28,12 +28,12 @@ describe('LegalSheet', () => {
     it('should render text info with given tradeProviderName', async () => {
         const { getByText } = await renderLegalSheet();
 
-        expect(getByText('Buy with Invity Finance')).toBeDefined();
+        expect(getByText('Buy with Invity Finance')).toBeTruthy();
         expect(
             getByText(
                 "I understand that Invity doesn't provide this service. It's governed by Invity Finance’s Terms and Conditions.",
             ),
-        ).toBeDefined();
+        ).toBeTruthy();
     });
 
     it('should call onConsent callback on Continue button press and onClose not to be called', async () => {

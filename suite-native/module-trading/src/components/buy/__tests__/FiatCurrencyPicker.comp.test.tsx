@@ -68,7 +68,7 @@ describe('FiatCurrencyPicker', () => {
 
         const { getByText } = await renderFiatCurrencyPicker();
 
-        expect(getByText('No currency found')).toBeDefined();
-        expect(getByText(/ a currency matching your search/)).toBeDefined();
+        expect(getByText('No currency found')).toBeTruthy();
+        expect(getByText(/ a currency matching your search/)).toBeTruthy();
     });
 });

@@ -7,14 +7,14 @@ describe('FavouriteIcon', () => {
         const { getByA11yHint } = renderWithBasicProvider(
             <FavouriteIcon isFavourite={true} onPress={jest.fn()} />,
         );
-        expect(getByA11yHint('Remove from favourites')).toBeDefined();
+        expect(getByA11yHint('Remove from favourites')).toBeTruthy();
     });
 
     it('should have correct hint when not marked as favourite', () => {
         const { getByA11yHint } = renderWithBasicProvider(
             <FavouriteIcon isFavourite={false} onPress={jest.fn()} />,
         );
-        expect(getByA11yHint('Add to favourites')).toBeDefined();
+        expect(getByA11yHint('Add to favourites')).toBeTruthy();
     });
 
     it('should call onPress callback', () => {

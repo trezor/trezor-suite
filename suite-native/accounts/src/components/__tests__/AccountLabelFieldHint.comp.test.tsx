@@ -12,6 +12,6 @@ describe('AccountLabelFieldHint', () => {
 
         const { getByText } = renderComponent({ formControl: result.current.control });
 
-        expect(getByText('13 / 30 letters')).toBeDefined();
+        expect(getByText('13 / 30 letters')).toBeTruthy();
     });
 });

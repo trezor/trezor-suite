@@ -31,7 +31,7 @@ describe('Confirmation', () => {
         });
 
         const { getByText } = await renderConfirmation();
-        expect(getByText('Continue')).toBeDefined();
+        expect(getByText('Continue')).toBeTruthy();
     });
 
     it('should not render continue button when canProceed is false', async () => {

@@ -64,6 +64,6 @@ describe('TradingProviderPicker', () => {
             preloadedState,
         );
 
-        expect(getByLabelText('Fetching offers...')).toBeDefined();
+        expect(getByLabelText('Fetching offers...')).toBeTruthy();
     });
 });

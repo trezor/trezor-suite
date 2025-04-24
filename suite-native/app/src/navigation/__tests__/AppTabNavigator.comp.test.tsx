@@ -22,9 +22,9 @@ describe('AppTabNavigator', () => {
     it('should render 3 buttons', async () => {
         const { getByText } = await renderTabs();
 
-        expect(getByText('Home')).toBeDefined();
-        expect(getByText('My assets')).toBeDefined();
-        expect(getByText('Settings')).toBeDefined();
+        expect(getByText('Home')).toBeTruthy();
+        expect(getByText('My assets')).toBeTruthy();
+        expect(getByText('Settings')).toBeTruthy();
     });
 
     it('should not render Trade tab when all trading flags are disabled', async () => {

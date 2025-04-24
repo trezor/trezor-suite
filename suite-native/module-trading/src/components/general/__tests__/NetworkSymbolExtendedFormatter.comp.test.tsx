@@ -8,6 +8,6 @@ describe('NetworkSymbolExtendedFormatter', () => {
             <NetworkSymbolExtendedFormatter symbol="btc" />,
         );
 
-        expect(getByText('BTC')).toBeDefined();
+        expect(getByText('BTC')).toBeTruthy();
     });
 });

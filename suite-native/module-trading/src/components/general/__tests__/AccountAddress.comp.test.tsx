@@ -9,7 +9,7 @@ describe('AccountAddress', () => {
                 <AccountAddress address="0x1234567890abcdef" />,
             );
 
-            expect(getByText('0x1234567890abcdef')).toBeDefined();
+            expect(getByText('0x1234567890abcdef')).toBeTruthy();
         });
     });
 
@@ -19,13 +19,13 @@ describe('AccountAddress', () => {
                 <AccountAddress address="0x1234567890abcdef" form="short" />,
             );
 
-            expect(getByText('0x123456...')).toBeDefined();
+            expect(getByText('0x123456...')).toBeTruthy();
         });
 
         it('should render full address when it is shorter than 9 characters', () => {
             const { getByText } = renderWithBasicProvider(<AccountAddress address="0x123456" />);
 
-            expect(getByText('0x123456')).toBeDefined();
+            expect(getByText('0x123456')).toBeTruthy();
         });
     });
 });

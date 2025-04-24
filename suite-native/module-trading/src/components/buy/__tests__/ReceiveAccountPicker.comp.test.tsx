@@ -66,7 +66,7 @@ describe('ReceiveAccountPicker', () => {
 
     it('should display "Select coin first" when selectedSymbol is not specified', async () => {
         const { getByText } = await renderPicker();
-        expect(getByText('Select coin first')).toBeDefined();
+        expect(getByText('Select coin first')).toBeTruthy();
     });
 
     it('should not call navigate on press when selectedSymbol is not specified', async () => {
@@ -81,7 +81,7 @@ describe('ReceiveAccountPicker', () => {
         setSelectedCryptoId('bitcoin');
         const { getByText } = await renderPicker();
 
-        expect(getByText('Not selected')).toBeDefined();
+        expect(getByText('Not selected')).toBeTruthy();
     });
 
     it('should call navigate to account picker when selectedSymbol is specified and picker pressed', async () => {
@@ -102,7 +102,7 @@ describe('ReceiveAccountPicker', () => {
             preloadedState: getBuyState({ account: getBtcAccount() }),
         });
 
-        expect(getByText(btcAccountName1)).toBeDefined();
+        expect(getByText(btcAccountName1)).toBeTruthy();
     });
 
     it('should display selected account name and address', async () => {
@@ -115,7 +115,7 @@ describe('ReceiveAccountPicker', () => {
             }),
         });
 
-        expect(getByText(btcAccountName1)).toBeDefined();
-        expect(getByText(btcAddressAddress)).toBeDefined();
+        expect(getByText(btcAccountName1)).toBeTruthy();
+        expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 });

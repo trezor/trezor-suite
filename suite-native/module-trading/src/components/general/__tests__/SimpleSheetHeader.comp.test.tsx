@@ -12,7 +12,7 @@ describe('SimpleSheetHeader', () => {
             onClose: jest.fn(),
         });
 
-        expect(getByText('Test title')).toBeDefined();
+        expect(getByText('Test title')).toBeTruthy();
     });
     it('should call onClose when X button is pressed', () => {
         const onCloseMock = jest.fn();

@@ -34,9 +34,9 @@ describe('TradeableAssetsFilterTabs', () => {
     it('should render all filter tabs including "All" option', async () => {
         const { getByText } = await renderComponent();
 
-        expect(getByText('All')).toBeDefined();
-        expect(getByText('Bitcoin')).toBeDefined();
-        expect(getByText('Ethereum')).toBeDefined();
+        expect(getByText('All')).toBeTruthy();
+        expect(getByText('Bitcoin')).toBeTruthy();
+        expect(getByText('Ethereum')).toBeTruthy();
     });
 
     it('should not render anything when visible is false', async () => {

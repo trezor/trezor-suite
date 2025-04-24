@@ -33,7 +33,7 @@ describe('TradingAlert', () => {
 
         const { getByText } = renderTradingAlert();
 
-        expect(getByText('TEST')).toBeDefined();
+        expect(getByText('TEST')).toBeTruthy();
     });
 
     it.each([undefined, ''])('should render nothing when generalAlert is %s', generalAlertValue => {

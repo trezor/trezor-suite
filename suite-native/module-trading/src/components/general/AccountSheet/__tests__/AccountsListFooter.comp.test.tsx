@@ -17,7 +17,7 @@ describe('AccountsListFooter', () => {
     it('should render "OR" when hasTextualDivider props is true', () => {
         const { getByText } = renderAccountsListFooter({ hasTextualDivider: true });
 
-        expect(getByText('OR')).toBeDefined();
+        expect(getByText('OR')).toBeTruthy();
     });
 
     it('should call onAddAccountTap callback on "Add new" button press', () => {

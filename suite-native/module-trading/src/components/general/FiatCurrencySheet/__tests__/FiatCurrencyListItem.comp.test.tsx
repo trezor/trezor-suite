@@ -16,8 +16,8 @@ describe('FiatCurrencyListItem', () => {
     it('should render label and display value', () => {
         const { getByText } = renderFiatCurrencyListItem({});
 
-        expect(getByText('LABEL')).toBeDefined();
-        expect(getByText('DISPLAY_VALUE')).toBeDefined();
+        expect(getByText('LABEL')).toBeTruthy();
+        expect(getByText('DISPLAY_VALUE')).toBeTruthy();
     });
 
     it('should call onPress callback when pressed', () => {

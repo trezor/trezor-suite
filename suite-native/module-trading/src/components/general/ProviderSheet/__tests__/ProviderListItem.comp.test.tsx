@@ -30,6 +30,6 @@ describe('ProviderListItem', () => {
             companyName: 'tstName',
         });
 
-        expect(queryByText('tstName')).toBeDefined();
+        expect(queryByText('tstName')).toBeTruthy();
     });
 });

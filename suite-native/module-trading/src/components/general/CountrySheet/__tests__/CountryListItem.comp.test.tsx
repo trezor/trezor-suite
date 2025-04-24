@@ -16,7 +16,7 @@ describe('CountryListItem', () => {
     it('should render given name', () => {
         const { getByText } = renderCountryListItem({ label: '🇺🇸 United States of America' });
 
-        expect(getByText('🇺🇸 United States of America')).toBeDefined();
+        expect(getByText('🇺🇸 United States of America')).toBeTruthy();
     });
 
     it('should call onPress callback on item press', () => {

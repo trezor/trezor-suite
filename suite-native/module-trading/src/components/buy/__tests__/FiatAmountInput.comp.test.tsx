@@ -57,7 +57,7 @@ describe('FiatAmountInput', () => {
 
         const { getByLabelText } = await renderFiatAmountInput(form, preloadedState);
 
-        expect(getByLabelText('Fetching offers...')).toBeDefined();
+        expect(getByLabelText('Fetching offers...')).toBeTruthy();
     });
 
     it('should not display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {

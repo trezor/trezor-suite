@@ -52,7 +52,7 @@ describe('PaymentMethodPicker', () => {
             preloadedState!.wallet!.tradingNew!.buy!.isLoading = true;
             const { getByLabelText } = await renderPaymentMethodPicker(preloadedState);
 
-            expect(getByLabelText('Fetching offers...')).toBeDefined();
+            expect(getByLabelText('Fetching offers...')).toBeTruthy();
         });
     });
 });

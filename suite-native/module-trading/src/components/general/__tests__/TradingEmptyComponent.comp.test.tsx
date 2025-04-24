@@ -8,7 +8,7 @@ describe('TradingEmptyComponent', () => {
             <TradingEmptyComponent title="TITLE" description="DESCRIPTION" />,
         );
 
-        expect(getByText('TITLE')).toBeDefined();
-        expect(getByText('DESCRIPTION')).toBeDefined();
+        expect(getByText('TITLE')).toBeTruthy();
+        expect(getByText('DESCRIPTION')).toBeTruthy();
     });
 });

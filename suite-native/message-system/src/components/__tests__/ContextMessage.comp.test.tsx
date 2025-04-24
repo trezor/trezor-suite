@@ -89,6 +89,6 @@ describe('ContextMessage', () => {
             context: Context.tradingBuy,
             preloadedState: stateWithTradeContextMessage,
         });
-        expect(queryByText(contentText)).toBeDefined();
+        expect(queryByText(contentText)).toBeTruthy();
     });
 });

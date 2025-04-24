@@ -20,7 +20,7 @@ describe('TradingWebViewScreen', () => {
         };
         const { getByTestId } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
 
-        expect(getByTestId('@screen/sub-header/icon-left')).toBeDefined();
+        expect(getByTestId('@screen/sub-header/icon-left')).toBeTruthy();
     });
 
     it('should render error when no source is set', async () => {
@@ -29,7 +29,7 @@ describe('TradingWebViewScreen', () => {
         };
         const { getByText } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
 
-        expect(getByText('Something went wrong')).toBeDefined();
+        expect(getByText('Something went wrong')).toBeTruthy();
     });
 
     it('should render error when sources are undefined', async () => {
@@ -39,6 +39,6 @@ describe('TradingWebViewScreen', () => {
         };
         const { getByText } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
 
-        expect(getByText('Something went wrong')).toBeDefined();
+        expect(getByText('Something went wrong')).toBeTruthy();
     });
 });

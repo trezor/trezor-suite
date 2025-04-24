@@ -25,7 +25,7 @@ describe('TradeableAssetsSheetHeader', () => {
     it('should display "Coins" and do not display tabs by default', async () => {
         const { getByText, queryByText } = await renderComponent();
 
-        expect(getByText('Coins')).toBeDefined();
+        expect(getByText('Coins')).toBeTruthy();
         expect(queryByText('All')).toBeNull();
     });
 
@@ -34,7 +34,7 @@ describe('TradeableAssetsSheetHeader', () => {
 
         fireEvent(getByPlaceholderText('Search'), 'focus');
 
-        expect(getByText('All')).toBeDefined();
+        expect(getByText('All')).toBeTruthy();
         expect(queryByText('Coins')).toBeNull();
     });
 
@@ -49,7 +49,7 @@ describe('TradeableAssetsSheetHeader', () => {
 
         fireEvent(getByPlaceholderText('Search'), 'focus');
 
-        expect(getByText('Cancel')).toBeDefined();
+        expect(getByText('Cancel')).toBeTruthy();
     });
 
     it('should call onClose when close button is pressed ', async () => {

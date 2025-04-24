@@ -11,8 +11,8 @@ describe('TradingOverviewRow', () => {
             </TradingOverviewRow>,
         );
 
-        expect(getByText('Title')).toBeDefined();
-        expect(getByLabelText('Title')).toBeDefined();
+        expect(getByText('Title')).toBeTruthy();
+        expect(getByLabelText('Title')).toBeTruthy();
     });
 
     it('should call onPress callback when clicked', () => {

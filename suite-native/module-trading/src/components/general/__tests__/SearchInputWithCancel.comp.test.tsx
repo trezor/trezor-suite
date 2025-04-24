@@ -43,7 +43,7 @@ describe('SearchInputWithCancel', () => {
 
         fireEvent(getByPlaceholderText('Search'), 'focus');
 
-        expect(getByText('Cancel')).toBeDefined();
+        expect(getByText('Cancel')).toBeTruthy();
         expect(focusMock).toHaveBeenCalledTimes(1);
     });
 

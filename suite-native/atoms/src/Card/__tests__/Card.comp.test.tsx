@@ -17,13 +17,13 @@ describe('Card', () => {
     it('should render children prop', () => {
         const { getByText } = renderComponent({});
 
-        expect(getByText('hello')).toBeDefined();
+        expect(getByText('hello')).toBeTruthy();
     });
 
     it('should render children and alert, when alert props are specified', () => {
         const { getByText } = renderComponent({ alertProps: { title: 'alert', variant: 'info' } });
 
-        expect(getByText('hello')).toBeDefined();
-        expect(getByText('alert')).toBeDefined();
+        expect(getByText('hello')).toBeTruthy();
+        expect(getByText('alert')).toBeTruthy();
     });
 });

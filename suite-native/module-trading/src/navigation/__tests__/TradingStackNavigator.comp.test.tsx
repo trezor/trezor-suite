@@ -13,6 +13,6 @@ describe('TradingStackNavigator', () => {
     it('should render', async () => {
         const { getByTestId } = await renderWithStoreProviderAsync(<TradingStackNavigator />);
 
-        expect(getByTestId('@screen/Trading')).toBeDefined();
+        expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
 });

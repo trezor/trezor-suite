@@ -13,7 +13,7 @@ describe('TradeableAssetButton', () => {
             />,
         );
 
-        expect(getByText('BTC')).toBeDefined();
+        expect(getByText('BTC')).toBeTruthy();
     });
 
     it('should render display ETH as display symbol for L2 EVMs', () => {
@@ -25,7 +25,7 @@ describe('TradeableAssetButton', () => {
             />,
         );
 
-        expect(getByText('ETH')).toBeDefined();
+        expect(getByText('ETH')).toBeTruthy();
     });
 
     it('should render display token name when token is present', () => {
@@ -37,7 +37,7 @@ describe('TradeableAssetButton', () => {
             />,
         );
 
-        expect(getByText('USDC')).toBeDefined();
+        expect(getByText('USDC')).toBeTruthy();
         expect(getByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
     });
 

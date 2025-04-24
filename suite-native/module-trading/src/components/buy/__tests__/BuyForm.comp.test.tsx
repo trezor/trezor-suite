@@ -32,37 +32,38 @@ describe('BuyForm', () => {
 
         expect(queryAllByText('Buy').length).toBe(2);
         expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
-        expect(queryByText('Receive account')).toBeDefined();
-        expect(queryByText('Payment method')).toBeDefined();
-        expect(queryByText('Country of residence')).toBeDefined();
-        expect(queryByText('Provider')).toBeDefined();
-        expect(queryByText('Continue')).toBeDefined();
+        expect(queryByText('Receive account')).toBeTruthy();
+        expect(queryByText('Payment method')).toBeNull();
+        expect(queryByText('Country of residence')).toBeTruthy();
+        expect(queryByText('Provider')).toBeNull();
+        expect(queryByText('Continue')).toBeNull();
         // country
-        expect(queryByText('Not selected')).toBeDefined();
+        expect(queryByText('Not selected')).toBeTruthy();
         // receive account needs coin to be selected
-        expect(queryByText('Select coin first')).toBeDefined();
+        expect(queryByText('Select coin first')).toBeTruthy();
     });
 
     it('should render with default values', async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
         const { result } = await renderFormHook(preloadedState);
-        const { queryByText, queryAllByText, getByLabelText } = await renderBuyForm(
+        const { queryByText, queryAllByText, getByLabelText, getByText } = await renderBuyForm(
             preloadedState,
             result.current,
         );
+
         expect(queryAllByText('Buy').length).toBe(2);
 
         expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
         expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
 
-        expect(queryByText('Receive account')).toBeDefined();
-        expect(queryByText('Not selected')).toBeDefined();
+        expect(getByText('Receive account')).toBeTruthy();
+        expect(getByText('Select coin first')).toBeTruthy();
 
-        expect(queryByText('Country of residence')).toBeDefined();
-        expect(queryByText('🇨🇿 Czech Republic')).toBeDefined();
+        expect(getByText('Country of residence')).toBeTruthy();
+        expect(getByText('🇨🇿 Czech Republic')).toBeTruthy();
 
-        expect(queryByText('Provider')).toBeDefined();
-        expect(queryByText('Continue')).toBeDefined();
+        expect(queryByText('Provider')).toBeNull();
+        expect(queryByText('Continue')).toBeNull();
     });
 
     it('should render only BuyCard and Done when amount input is active', async () => {
@@ -73,9 +74,9 @@ describe('BuyForm', () => {
         });
         const { queryByText } = await renderBuyForm(preloadedState, result.current);
 
-        expect(queryByText('Buy')).toBeDefined();
-        expect(queryByText('Fund')).toBeDefined();
-        expect(queryByText('Receive account')).toBeDefined();
+        expect(queryByText('Buy')).toBeTruthy();
+        expect(queryByText('Fund')).toBeTruthy();
+        expect(queryByText('Receive account')).toBeTruthy();
 
         expect(queryByText('Country of residence')).toBeNull();
         expect(queryByText('Payment method')).toBeNull();

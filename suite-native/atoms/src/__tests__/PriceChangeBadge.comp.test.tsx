@@ -49,7 +49,7 @@ describe('PriceChangeBadge', () => {
             <PriceChangeBadge valuePercentageChange={null} />,
         );
 
-        expect(getByTestId('skeleton-box')).toBeDefined();
+        expect(getByTestId('skeleton-box')).toBeTruthy();
     });
 
     it('should render 3 significant digits', () => {
@@ -57,6 +57,6 @@ describe('PriceChangeBadge', () => {
             <PriceChangeBadge valuePercentageChange={0.1234} />,
         );
 
-        expect(getByText('12.3%')).toBeDefined();
+        expect(getByText('12.3%')).toBeTruthy();
     });
 });
