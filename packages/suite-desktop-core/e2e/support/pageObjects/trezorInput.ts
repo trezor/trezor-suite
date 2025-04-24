@@ -4,6 +4,8 @@ import { TrezorUserEnvLinkProxy, step } from '../common';
 
 export class TrezorInput {
     readonly wordSelectInput: Locator;
+    readonly wordOption = (word: string) =>
+        this.page.getByTestId(`@word-input-select/option/${word}`);
     readonly pinSubmitButton: Locator;
     readonly pinInput = (index: number) => this.page.getByTestId(`@pin/input/${index}`);
 
@@ -14,8 +16,9 @@ export class TrezorInput {
 
     @step()
     async inputWord(word: string) {
+        await this.wordSelectInput.click();
         await this.wordSelectInput.type(word);
-        await this.page.getByTestId(`@word-input-select/option/${word}`).click();
+        await this.wordOption(word).click();
     }
 
     @step()
