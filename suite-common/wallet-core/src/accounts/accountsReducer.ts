@@ -161,8 +161,10 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
 
 const EMPTY_STABLE_ACCOUNTS_ARRAY: Account[] = [];
 
-export const selectAccounts = (state: AccountsRootState) =>
-    state.wallet.accounts.filter(a => a.accountType !== 'placeholder');
+export const selectAccounts = createMemoizedSelector(
+    [(state: AccountsRootState) => state.wallet.accounts],
+    accounts => accounts.filter(a => a.accountType !== 'placeholder'),
+);
 
 export const getAccountsByDeviceState = (
     accounts: Account[],

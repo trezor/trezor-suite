@@ -6,7 +6,7 @@ import { Bip43Path } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 import { accountsActions } from '../accountsActions';
-import { AccountsRootState, prepareAccountsReducer } from '../accountsReducer';
+import { AccountsRootState, prepareAccountsReducer, selectAccounts } from '../accountsReducer';
 
 const accountsReducer = prepareAccountsReducer(extraDependenciesMock);
 
@@ -112,5 +112,53 @@ describe('Account Reducer', () => {
         spyWarn.mockRestore();
 
         expect(store.getState().wallet.accounts.length).toEqual(0);
+    });
+});
+
+describe('Account selectors', () => {
+    describe('selectAccounts', () => {
+        it('should return all accounts', () => {
+            const state = {
+                wallet: {
+                    accounts: [
+                        getAccount({
+                            symbol: 'ltc',
+                            path: testBip43Path,
+                            visible: false,
+                        }) as Account,
+                        getAccount({
+                            symbol: 'btc',
+                            path: testBip43Path,
+                            visible: false,
+                        }) as Account,
+                    ],
+                },
+            };
+
+            const accounts = selectAccounts(state);
+
+            expect(accounts.length).toEqual(2);
+        });
+
+        it('should be stable', () => {
+            const state = {
+                wallet: {
+                    accounts: [
+                        getAccount({
+                            symbol: 'ltc',
+                            path: testBip43Path,
+                            visible: false,
+                        }) as Account,
+                        getAccount({
+                            symbol: 'btc',
+                            path: testBip43Path,
+                            visible: false,
+                        }) as Account,
+                    ],
+                },
+            };
+
+            expect(selectAccounts(state)).toBe(selectAccounts(state));
+        });
     });
 });
