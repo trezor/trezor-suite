@@ -9844,4 +9844,8 @@ export default defineMessages({
         id: 'TR_COULD_NOT_PARSE',
         defaultMessage: 'Failed to parse the input',
     },
+    TR_VERIFICATION_CANCELED: {
+        id: 'TR_VERIFICATION_CANCELED',
+        defaultMessage: 'Verification canceled',
+    },
 } as const);

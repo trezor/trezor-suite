@@ -111,7 +111,7 @@ export const ConnectAddressConfirmation = () => {
                                                 size="small"
                                                 data-testid={`@connect-address-confirmation/error-badge/${index}`}
                                             >
-                                                <Translation id="TR_ERROR" />
+                                                <Translation id="TR_VERIFICATION_CANCELED" />
                                             </Badge>
                                         )}
                                     </Row>
