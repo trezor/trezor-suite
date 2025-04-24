@@ -115,7 +115,7 @@ export class SessionsBackground
             if (result && result.success && result.payload) {
                 if ('descriptors' in result.payload) {
                     const { descriptors } = result.payload;
-                    this.emit('descriptors', Object.values(descriptors));
+                    this.emit('descriptors', descriptors);
                 }
                 if ('releaseRequest' in result.payload && result.payload.releaseRequest) {
                     const { releaseRequest } = result.payload;
@@ -156,11 +156,7 @@ export class SessionsBackground
             }
         });
 
-        return Promise.resolve(
-            this.success({
-                descriptors: Object.values(this.descriptors),
-            }),
-        );
+        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
     }
 
     /**
@@ -173,20 +169,20 @@ export class SessionsBackground
             return this.error(ERRORS.DEVICE_NOT_FOUND);
         }
 
-        const previous = this.descriptors[pathInternal]?.session;
+        const previous = this.descriptors[pathInternal];
 
-        if (payload.previous && payload.previous !== previous) {
-            return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
+        if (!previous) {
+            return this.error(ERRORS.DEVICE_NOT_FOUND);
         }
 
-        if (!this.descriptors[pathInternal]) {
-            return this.error(ERRORS.DEVICE_NOT_FOUND);
+        if (payload.previous !== previous.session) {
+            return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
         await this.waitInQueue();
 
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
-        if (previous !== this.descriptors[pathInternal]?.session) {
+        if (previous.session !== this.descriptors[pathInternal]?.session) {
             this.clearLock();
 
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
@@ -194,7 +190,8 @@ export class SessionsBackground
 
         this.lastSessionId++;
         const session = Session(`${this.lastSessionId}`);
-        const releaseRequest = previous ? this.descriptors[pathInternal] : undefined;
+        const releaseRequest =
+            previous.session !== null ? this.descriptors[pathInternal] : undefined;
 
         return this.success({ session, path: pathInternal, releaseRequest });
     }
@@ -213,11 +210,7 @@ export class SessionsBackground
         this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
         this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
 
-        return Promise.resolve(
-            this.success({
-                descriptors: Object.values(this.descriptors),
-            }),
-        );
+        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
     }
 
     private async releaseIntent(payload: ReleaseIntentRequest) {

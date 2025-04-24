@@ -87,15 +87,8 @@ describe('sessions', () => {
             previous: null,
         });
         expect(acquire2).toMatchObject({
-            success: true,
-            payload: {
-                path: '1',
-                session: '2',
-                releaseRequest: {
-                    path: '1',
-                    session: '1',
-                },
-            },
+            success: false,
+            error: 'wrong previous session',
         });
 
         await client1.acquireDone({ path: PathPublic('1') });
@@ -106,8 +99,15 @@ describe('sessions', () => {
         });
 
         expect(acquire3).toMatchObject({
-            success: false,
-            error: 'wrong previous session',
+            success: true,
+            payload: {
+                path: '1',
+                session: '2',
+                releaseRequest: {
+                    path: '1',
+                    session: '1',
+                },
+            },
         });
 
         await client1.acquireDone({ path: PathPublic('1') });
