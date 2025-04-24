@@ -36,6 +36,7 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
+import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -128,6 +129,14 @@ export const initStore = (
         preloadedState: patchedState,
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
+                serializableCheck: {
+                    ignoredActions: [OPEN_USER_CONTEXT],
+                    ignoredPaths: [
+                        'modal.payload.decision.promise',
+                        'modal.payload.decision.resolve',
+                        'modal.payload.decision.reject',
+                    ],
+                },
                 thunk: { extraArgument: extraDependencies },
             }).concat(getCustomMiddleware()),
         devTools,
