@@ -6619,7 +6619,7 @@ export default defineMessages({
     TR_DECREASE_TX: {
         id: 'TR_DECREASE_TX',
         defaultMessage:
-            'No funds left for fee. Final amount needs to be reduced to speed up transaction.',
+            'Not enough funds to cover the fee. The final amount needs to be reduced to speed up transaction.',
     },
     TR_RBF_ORIGINAL_AMOUNT: {
         id: 'TR_RBF_ORIGINAL_AMOUNT',
@@ -7319,7 +7319,7 @@ export default defineMessages({
     },
     TR_TROUBLE_SHOOTING_TIPS: {
         id: 'TR_TROUBLE_SHOOTING_TIPS',
-        defaultMessage: 'Troubleshooting Bluetooth',
+        defaultMessage: 'Troubleshooting tips',
     },
     TR_TROUBLE_SHOOTING_BLUETOOTH: {
         id: 'TR_TROUBLE_SHOOTING_BLUETOOTH',
@@ -9747,8 +9747,7 @@ export default defineMessages({
     },
     TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION: {
         id: 'TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION',
-        defaultMessage:
-            'Please check addresses on your device against the addresses shown in the app.',
+        defaultMessage: 'Check addresses on your device against the addresses shown in the app.',
     },
     TR_DONE: {
         id: 'TR_DONE',

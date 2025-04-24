@@ -632,6 +632,7 @@
   "TR_COPY_AND_CLOSE": "crwdns28820:0crwdne28820:0",
   "TR_COPY_SIGNED_MESSAGE": "crwdns28822:0crwdne28822:0",
   "TR_COPY_TO_CLIPBOARD": "crwdns36810:0crwdne36810:0",
+  "TR_COULD_NOT_PARSE": "crwdns117895:0crwdne117895:0",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "crwdns23215:0crwdne23215:0",
   "TR_COULD_NOT_RETRIEVE_DATA": "crwdns23217:0crwdne23217:0",
   "TR_COUNT_WALLETS": "crwdns23221:0count={count}crwdnd23221:0count={count}crwdne23221:0",
