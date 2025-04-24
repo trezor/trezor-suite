@@ -50,7 +50,10 @@ export type AddCoinAccountNavigationProps = StackToStackCompositeNavigationProps
     RootStackParamList
 >;
 
-export type AddCoinEnabledAccountType = Exclude<AccountType, 'coinjoin' | 'imported' | 'ledger'>;
+export type AddCoinEnabledAccountType = Exclude<
+    AccountType,
+    'coinjoin' | 'imported' | 'ledger' | 'placeholder'
+>;
 
 export const accountTypeTranslationKeys: Record<
     AddCoinEnabledAccountType,

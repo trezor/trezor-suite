@@ -11,7 +11,7 @@ export const createPlaceholderAccount = (
         discoveryItem: {
             index: 0,
             path,
-            accountType: 'imported',
+            accountType: 'placeholder',
             networkType: network.networkType,
             coin: network.symbol,
         },
