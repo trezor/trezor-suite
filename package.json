@@ -62,6 +62,8 @@
         "depcheck": "depcheck && yarn nx affected --target=depcheck",
         "list-outdated": "./scripts/list-outdated-dependencies/list-outdated-dependencies.sh",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
+        "sign-release-config": "yarn workspace @trezor/firmware-release-config sign-release-config",
+        "validate-release-config": "yarn workspace @trezor/firmware-release-config validate-release-config",
         "format": "yarn nx format:write",
         "format:all": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json,yml,yaml}\"",
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",

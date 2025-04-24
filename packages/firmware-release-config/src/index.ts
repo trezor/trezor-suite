@@ -4,7 +4,7 @@ import { decode, verify } from 'jws';
 import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 
 import { JWS_SIGN_ALGORITHM, RELEASES_URL_REMOTE } from './constants';
-import { ReleaseMessage } from './types';
+import { FirmwareReleaseConfig } from './types';
 import { jws as releasesJwsLocal } from '../files/releases.v1';
 
 // Enable this for local development purposes:
@@ -82,7 +82,7 @@ export const getReleasesMessage = async () => {
             throw new Error('Config authenticity is invalid');
         }
 
-        const releases: ReleaseMessage = JSON.parse(decodedJws.payload);
+        const releases: FirmwareReleaseConfig = JSON.parse(decodedJws.payload);
 
         return releases;
     } catch (error) {
