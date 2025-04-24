@@ -3290,6 +3290,11 @@ export default defineMessages({
         defaultMessage: 'Refresh',
         id: 'TR_SOLVE_ISSUE',
     },
+    TR_THP_RESET_CREDENTIALS_SUCCESS: {
+        defaultMessage:
+            'Trezor Host Protocol credentials has been reset. Refresh suite to take effect',
+        id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
+    },
     TR_THP_PAIR: {
         defaultMessage: 'Pair',
         id: 'TR_THP_PAIR',
@@ -3341,6 +3346,10 @@ export default defineMessages({
     TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR: {
         id: 'TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR',
         defaultMessage: 'Securely connect automatically with your Trezor',
+    },
+    TR_THP_CONFIRM_SECURE_CONNECTION: {
+        id: 'TR_THP_CONFIRM_SECURE_CONNECTION',
+        defaultMessage: 'Confirm secure connection',
     },
     TR_SOUTH: {
         defaultMessage: 'South',

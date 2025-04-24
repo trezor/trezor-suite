@@ -228,6 +228,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (
                 deviceActions.setThpCredentials.match(action) ||
                 deviceActions.connectDevice.match(action) || // To save the `connectionCounter`
+                deviceActions.resetThpCredentials.match(action) ||
                 action.type === 'device-thp_credentials_changed'
             ) {
                 api.dispatch(storageActions.saveThpCredentials());
