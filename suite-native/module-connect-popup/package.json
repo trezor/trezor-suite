@@ -24,7 +24,7 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect-mobile": "workspace:*",
         "expo-linking": "^7.0.5",
-        "react": "18.2.0",
+        "react": "19.1.0",
         "react-native": "0.76.9",
         "react-redux": "9.2.0"
     }

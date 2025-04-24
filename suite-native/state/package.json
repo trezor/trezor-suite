@@ -37,7 +37,7 @@
         "@trezor/transport-native-usb": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-device": "7.0.3",
-        "react": "18.2.0",
+        "react": "19.1.0",
         "react-native": "0.76.9",
         "react-redux": "9.2.0",
         "redux-devtools-expo-dev-plugin": "1.0.0",
