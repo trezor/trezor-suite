@@ -6,7 +6,7 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "build:lib": "yarn generate-releases-message && yarn sign-releases-message",
+        "build:lib": "yarn validate-release-config && yarn sign-release-config",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",

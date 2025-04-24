@@ -1,0 +1,144 @@
+{
+    "$id": "https://data.trezor.io/message-releases/schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Releases system",
+    "description": "JSON schema of the Trezor firmware releases system.",
+    "type": "object",
+    "required": ["version", "timestamp", "sequence", "releases", "intermediaries"],
+    "properties": {
+        "version": {
+            "description": "A version of the release message. In case we would change the format of the config itself.",
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+        },
+        "timestamp": {
+            "$ref": "#/definitions/date-time"
+        },
+        "sequence": {
+            "description": "An increasing counter. Trezor Suite must decline any sequence lower than the latest number. This is to protect against replay attacks, where an attacker could send an older version of the file, and Trezor Suite would accept it.",
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+        },
+        "releases": {
+            "type": "object",
+            "propertyNames": {
+                "enum": ["T1B1", "T2B1", "T2T1", "T3B1", "T3T1"]
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "firmware_type": {
+                            "type": "string",
+                            "enum": ["regular", "bitcoin-only"]
+                        },
+                        "conditions": {
+                            "type": "object",
+                            "properties": {
+                                "environment": {
+                                    "type": "object",
+                                    "properties": {
+                                        "min_suite_version": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["min_suite_version"]
+                                },
+                                "rollout_probability": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                }
+                            },
+                            "required": ["environment", "rollout_probability"]
+                        },
+                        "release": {
+                            "type": "object",
+                            "properties": {
+                                "required": {
+                                    "type": "boolean"
+                                },
+                                "version": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "min_bootloader_version": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "min_firmware_version": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "bootloader_version": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "translations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "firmware_revision": {
+                                    "type": "string"
+                                },
+                                "changelog": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "required",
+                                "version",
+                                "min_bootloader_version",
+                                "min_firmware_version",
+                                "bootloader_version",
+                                "firmware_revision"
+                            ]
+                        }
+                    },
+                    "required": ["firmware_type", "conditions", "release"]
+                }
+            }
+        },
+        "intermediaries": {
+            "type": "object",
+            "propertyNames": {
+                "enum": ["T1B1", "T2B1", "T2T1", "T3B1", "T3T1"]
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "min_firmware_version": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": ["min_firmware_version", "version"]
+                }
+            }
+        }
+    },
+    "definitions": {
+        "date-time": {
+            "description": "ISO 8601 date-time format.",
+            "type": "string",
+            "examples": ["2021-03-03T03:48:16+00:00", "2021-03-03T03:48:16Z"]
+        }
+    }
+}
