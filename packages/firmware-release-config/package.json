@@ -1,0 +1,29 @@
+{
+    "name": "@trezor/firmware-release-config",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "build:lib": "yarn generate-releases-message && yarn sign-releases-message",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build",
+        "generate-releases-message": "yarn tsx ./scripts/generate-releases-message.ts",
+        "sign-releases-message": "yarn tsx ./scripts/sign-releases-message.ts",
+        "validate-releases-message": "yarn tsx ./scripts/validate-releases-message.ts"
+    },
+    "dependencies": {
+        "@trezor/device-utils": "workspace:^",
+        "@trezor/env-utils": "workspace:^",
+        "fs-extra": "^11.3.0",
+        "jws": "^4.0.0",
+        "tsx": "^4.19.3"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^11",
+        "@types/jws": "^3.2.10"
+    }
+}
