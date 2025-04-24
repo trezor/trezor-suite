@@ -44,6 +44,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     }
 
     :root {
-        color-scheme: ${({ theme }) => (theme.legacy.THEME === 'light' ? 'light' : 'dark')};
+        color-scheme: ${({ theme }) => (theme.variant === 'light' ? 'light' : 'dark')};
     }
 `;

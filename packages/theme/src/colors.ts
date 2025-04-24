@@ -179,6 +179,7 @@ const light = {
     ...colorsV2.light,
 };
 
+export type ThemeVariant = 'debug' | 'standard' | 'dark' | 'light';
 export type ThemeColorVariant = 'debug' | 'standard' | 'dark';
 
 export type Color = keyof typeof light;

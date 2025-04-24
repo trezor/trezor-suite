@@ -8,7 +8,7 @@ import { CoinLogo } from '../../index';
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const WrapperIcons = styled.div`

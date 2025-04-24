@@ -31,8 +31,12 @@ export const App = ({ children }: AppProps) => {
     return (
         <div>
             <IntlProvider locale={languageToUse} messages={messagesToUse}>
-                <GlobalStyle theme={intermediaryTheme[themeVariant]} />
-                <SCThemeProvider theme={intermediaryTheme[themeVariant]}>
+                <GlobalStyle
+                    theme={{ variant: themeVariant, ...intermediaryTheme[themeVariant] }}
+                />
+                <SCThemeProvider
+                    theme={{ variant: themeVariant, ...intermediaryTheme[themeVariant] }}
+                >
                     <Wrapper>{children}</Wrapper>
                 </SCThemeProvider>
             </IntlProvider>

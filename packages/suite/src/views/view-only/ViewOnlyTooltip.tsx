@@ -70,10 +70,10 @@ export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
                     <Content>
                         <Icons>
                             <IconContainer>
-                                <Icon size={16} name="asterisk" color={theme.defaultInverted} />
+                                <Icon size={16} name="asterisk" color={theme.iconDefaultInverted} />
                             </IconContainer>
                             <IconContainer>
-                                <Icon size={16} name="link" color={theme.defaultInverted} />
+                                <Icon size={16} name="link" color={theme.iconDefaultInverted} />
                             </IconContainer>
                         </Icons>
                         <Text>

@@ -13,11 +13,12 @@ type ThemeProviderProps = {
 };
 
 export const ThemeProvider = ({ children, themeVariant }: ThemeProviderProps) => {
-    const theme = getThemeColors({ variant: themeVariant ?? getOsTheme() });
+    const variant = themeVariant ?? getOsTheme();
+    const theme = getThemeColors({ variant });
 
     return (
-        <SCThemeProvider theme={{ ...theme, variant: themeVariant }}>
-            <GlobalStyle theme={theme} />
+        <SCThemeProvider theme={{ variant, ...theme }}>
+            <GlobalStyle theme={{ variant, ...theme }} />
             {children}
         </SCThemeProvider>
     );

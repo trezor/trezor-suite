@@ -19,7 +19,7 @@ const meta: Meta = {
     component: SelectAssetModalComponent,
     decorators: [
         Story => (
-            <ThemeProvider theme={intermediaryTheme.dark}>
+            <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
                 <Modal.Provider>
                     <IntlProvider locale="en">
                         <Story />
