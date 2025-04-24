@@ -1,5 +1,6 @@
 import { SellFiatTrade, SellFiatTradeQuoteRequest, SellTradeStatus } from 'invity-api';
 
+import { TradingSellInfoSelector } from '../../selectors/tradingSelectors';
 import { TradingAmountLimitProps } from '../../types';
 
 type GetAmountLimitsProps = {
@@ -77,8 +78,28 @@ const getStatusMessage = (status: SellTradeStatus) => {
     }
 };
 
+const needToRegisterOrVerifyBankAccount = ({
+    sellInfo,
+    quote,
+}: {
+    sellInfo: TradingSellInfoSelector;
+    quote: SellFiatTrade;
+}) => {
+    const provider = quote.exchange ? sellInfo.providerInfos[quote.exchange] : undefined;
+
+    // for BANK_ACCOUNT flow a message is shown if bank account is not verified
+    if (provider?.flow === 'BANK_ACCOUNT') {
+        const isSomeBankAccountVerified =
+            quote.bankAccounts && quote.bankAccounts.some(bankAccount => bankAccount.verified);
+
+        return !!quote.quoteId && !isSomeBankAccountVerified;
+    }
+
+    return false;
+};
 export const sellUtils = {
     getAmountLimits,
     formatIban,
     getStatusMessage,
+    needToRegisterOrVerifyBankAccount,
 };
