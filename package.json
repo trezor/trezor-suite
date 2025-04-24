@@ -90,7 +90,7 @@
         "s": "yarn native:start"
     },
     "resolutions": {
-        "typescript": "5.8.2",
+        "typescript": "5.8.3",
         "react-native": "0.76.9",
         "prettier": "3.2.5",
         "type-fest": "4.24.0",
@@ -134,7 +134,7 @@
         "ts-node": "^10.9.2",
         "tslib": "^2.6.2",
         "tsx": "^4.19.3",
-        "typescript": "5.8.2"
+        "typescript": "5.8.3"
     },
     "dependenciesMeta": {
         "core-js-pure": {

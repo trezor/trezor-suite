@@ -23,7 +23,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "framer-motion": "^12.7.4",
+        "framer-motion": "^12.8.2",
         "react-intl": "^7.1.11"
     },
     "devDependencies": {

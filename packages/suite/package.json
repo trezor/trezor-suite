@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@everstake/wallet-sdk": "1.0.14",
-        "@floating-ui/react": "^0.27.7",
+        "@floating-ui/react": "^0.27.8",
         "@formatjs/intl": "3.1.6",
         "@hookform/resolvers": "^4.1.3",
         "@mobily/ts-belt": "^3.13.1",
@@ -89,7 +89,7 @@
         "date-fns": "^4.1.0",
         "dropbox": "^10.34.0",
         "file-saver": "^2.0.5",
-        "framer-motion": "^12.7.4",
+        "framer-motion": "^12.8.2",
         "history": "^4.10.1",
         "idb": "^8.0.2",
         "immer": "10.1.1",
