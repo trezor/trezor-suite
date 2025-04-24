@@ -29,7 +29,7 @@ describe('TradeableAssetButton', () => {
     });
 
     it('should render display token name when token is present', () => {
-        const { getByText } = renderWithBasicProvider(
+        const { getByText, getByLabelText } = renderWithBasicProvider(
             <TradeableAssetButton
                 asset={usdcAsset}
                 onPress={jest.fn()}
@@ -38,6 +38,7 @@ describe('TradeableAssetButton', () => {
         );
 
         expect(getByText('USDC')).toBeDefined();
+        expect(getByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
     });
 
     it('should call onPress callback', () => {
@@ -54,5 +55,18 @@ describe('TradeableAssetButton', () => {
         fireEvent.press(button);
 
         expect(pressSpy).toHaveBeenCalledWith();
+    });
+
+    it('should render ETH icon for ETH on BASE asset', () => {
+        const { getByText, getByLabelText } = renderWithBasicProvider(
+            <TradeableAssetButton
+                asset={ethOnBaseAsset}
+                onPress={jest.fn()}
+                accessibilityLabel="a11yLabel"
+            />,
+        );
+
+        expect(getByText('ETH')).toBeTruthy();
+        expect(getByLabelText('ETH')).toBeTruthy();
     });
 });
