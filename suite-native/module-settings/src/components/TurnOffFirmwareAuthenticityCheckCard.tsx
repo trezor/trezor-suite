@@ -7,7 +7,7 @@ import { SettingsStackRoutes } from '@suite-native/navigation';
 import {
     SettingsCardWithIconLayout,
     selectIsFirmwareAuthenticityCheckEnabled,
-    setCheckFirmwareAuthenticity,
+    setCheckFirmwareAuthenticityEnabled,
 } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -43,7 +43,7 @@ const TurnOnButton = () => {
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const handleButtonPress = () => {
-        dispatch(setCheckFirmwareAuthenticity(true));
+        dispatch(setCheckFirmwareAuthenticityEnabled(true));
         showToast({
             variant: 'default',
             message: 'Authenticity check turned on',

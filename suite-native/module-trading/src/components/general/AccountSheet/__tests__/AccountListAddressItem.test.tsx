@@ -125,4 +125,19 @@ describe('AccountListAddressItem', () => {
         expect(queryByLabelText('Balance in fiat')).toBeNull();
         expect(queryByLabelText('Balance in crypto')).toBeNull();
     });
+
+    it('should render nothing when no address is specified', async () => {
+        const receiveAccount: ReceiveAccount = {
+            account: {
+                key: 'btc1',
+                symbol: 'btc',
+                accountLabel: 'My BTC account',
+                availableBalance: '10000000',
+            } as unknown as Account,
+            address: undefined as unknown as Address,
+        };
+        const { toJSON } = await renderAccountListAddressItem(receiveAccount);
+
+        expect(toJSON()).toBeNull();
+    });
 });

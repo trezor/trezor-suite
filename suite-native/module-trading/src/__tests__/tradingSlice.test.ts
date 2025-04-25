@@ -162,4 +162,37 @@ describe('tradingSlice', () => {
             });
         });
     });
+
+    describe('clearQuotesAndQuotesRequest', () => {
+        it('should clear quotes and quotesRequest', () => {
+            const tradingInitialState = {
+                ...initialState,
+                buy: {
+                    ...initialState.buy,
+                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                    quotesRequest: {
+                        wantCrypto: true,
+                        receiveCurrency: 'btc' as CryptoId,
+                        fiatCurrency: 'czk',
+                        country: 'CZ',
+                    },
+                    quotes: quotes as BuyTrade[],
+                    selectedQuote: quotes[0],
+                },
+            } as TradingState;
+
+            const state = tradingReducer(
+                tradingInitialState,
+                tradingSlice.actions.clearQuotesAndQuotesRequest(),
+            );
+
+            expect(state.buy).toEqual({
+                ...tradingInitialState.buy,
+                selectedReceiveAccount: expect.any(Object),
+                quotesRequest: undefined,
+                quotes: [],
+                selectedQuote: expect.any(Object),
+            });
+        });
+    });
 });

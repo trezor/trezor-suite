@@ -70,7 +70,7 @@ describe('quotesUtils', () => {
                 const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
                 expect(props).toEqual({
                     fiatInput: '100',
-                    cryptoInput: undefined,
+                    cryptoInput: '0.0010001683607972866',
                     currencySelect: {
                         value: 'czk',
                         label: 'Czech Koruna',
@@ -94,6 +94,21 @@ describe('quotesUtils', () => {
                     },
                     amountInCrypto: false,
                 });
+            });
+
+            it('should set paymentMethod to undefined when provided quote is not complete', () => {
+                form.setValue('quote', {
+                    ...quotes[0],
+                    paymentMethodName: undefined,
+                } as unknown as BuyTrade);
+
+                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
+
+                expect(props).toEqual(
+                    expect.objectContaining({
+                        paymentMethod: undefined,
+                    }),
+                );
             });
         });
     });

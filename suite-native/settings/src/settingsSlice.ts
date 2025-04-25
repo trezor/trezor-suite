@@ -54,7 +54,7 @@ export const appSettingsSlice = createSlice({
         setViewOnlyCancelationTimestamp: (state, { payload }: PayloadAction<number>) => {
             state.viewOnlyCancelationTimestamp = payload;
         },
-        setCheckFirmwareAuthenticity: (state, { payload }: PayloadAction<boolean>) => {
+        setCheckFirmwareAuthenticityEnabled: (state, { payload }: PayloadAction<boolean>) => {
             state.isFirmwareRevisionCheckEnabled = payload;
             state.isFirmwareHashCheckEnabled = payload;
         },
@@ -73,7 +73,7 @@ export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState
 
 /**
  * Determine if either FW revision or FW hash check is disabled
- * (both are controlled by the same setting, see setCheckFirmwareAuthenticity reducer)
+ * (both are controlled by the same setting, see setCheckFirmwareAuthenticityEnabled reducer)
  */
 export const selectIsFirmwareAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isFirmwareRevisionCheckEnabled &&
@@ -98,6 +98,6 @@ export const {
     setFiatCurrency,
     setBitcoinUnits,
     setViewOnlyCancelationTimestamp,
-    setCheckFirmwareAuthenticity,
+    setCheckFirmwareAuthenticityEnabled,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

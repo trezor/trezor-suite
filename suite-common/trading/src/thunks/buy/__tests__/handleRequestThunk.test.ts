@@ -132,44 +132,32 @@ describe('handleRequestThunk', () => {
         expect(quotesResponse).toEqual([mockQuotes[1], mockQuotes[6]]);
     });
 
-    it('should not save quotes when incorrect fiatInput and cryptoInput', async () => {
-        const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
-        const inputWithIncorrectData = {
-            ...input,
-            formValues: {
-                ...input.formValues,
+    it.each([
+        [
+            'incorrect fiatInput and cryptoInput',
+            {
                 fiatInput: undefined,
                 cryptoInput: undefined,
             },
-        };
-
-        const quotesResponse = await store
-            .dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData))
-            .unwrap();
-
-        const state = store.getState().wallet.tradingNew;
-
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
-        expect(state.buy.quotesRequest).toBeUndefined();
-        expect(state.buy.quotes?.length).toEqual(0);
-        expect(state.isLoading).toBe(false);
-        expect(quotesResponse).toEqual(undefined);
-    });
-
-    it('should not save quotes when incorrect cryptoSelect', async () => {
+        ],
+        [
+            'incorrect cryptoSelect',
+            {
+                cryptoSelect: undefined as unknown as TradingCryptoSelectItemProps,
+            },
+        ],
+    ])('should not save quotes when %s', async (_, incorrectFormValues) => {
         const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
         const inputWithIncorrectData = {
             ...input,
             formValues: {
                 ...input.formValues,
-                cryptoSelect: undefined as unknown as TradingCryptoSelectItemProps,
+                ...incorrectFormValues,
             },
         };
 
-        const quotesResponse = await store
-            .dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData))
-            .unwrap();
+        const promise = store.dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData));
+        await promise;
 
         const state = store.getState().wallet.tradingNew;
 
@@ -178,10 +166,10 @@ describe('handleRequestThunk', () => {
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.isLoading).toBe(false);
-        expect(quotesResponse).toEqual(undefined);
+        await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
     });
 
-    it('should not save quotes when empty array is returned from in the response', async () => {
+    it('should save empty quotes when empty array is returned from in the response', async () => {
         const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
 
         invityAPI.getBuyQuotes = () => Promise.resolve([]);
@@ -193,9 +181,16 @@ describe('handleRequestThunk', () => {
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
         expect(state.buy.quotes?.length).toEqual(0);
-        expect(state.buy.quotesRequest).toBeUndefined();
+        expect(state.buy.quotesRequest).toEqual({
+            country: 'CZ',
+            cryptoStringAmount: '0',
+            fiatCurrency: 'USD',
+            fiatStringAmount: '1000',
+            receiveCurrency: 'bitcoin',
+            wantCrypto: false,
+        });
         expect(state.isLoading).toBe(false);
-        expect(quotesResponse).toEqual(undefined);
+        expect(quotesResponse).toEqual([]);
     });
 
     it('should not save quotes, when request is aborted', async () => {
@@ -206,7 +201,6 @@ describe('handleRequestThunk', () => {
         const promise = store.dispatch(buyThunks.handleRequestThunk(input));
 
         promise.abort();
-
         await promise;
 
         const state = store.getState().wallet.tradingNew;
@@ -216,5 +210,9 @@ describe('handleRequestThunk', () => {
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.isLoading).toBe(false);
+        await expect(() => promise.unwrap()).rejects.toEqual({
+            message: 'Aborted',
+            name: 'AbortError',
+        });
     });
 });

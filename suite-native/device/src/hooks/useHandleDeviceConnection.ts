@@ -39,6 +39,7 @@ import {
 import {
     selectHasFirmwareAuthenticityCheckHardFailed,
     selectIsDeviceSetupSupported,
+    selectIsEntropyCheckEnabledAndFailed,
 } from '../selectors';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -70,6 +71,7 @@ export const useHandleDeviceConnection = () => {
     const isFirmwareAuthenticityCheckDismissed = useSelector(
         selectIsFirmwareAuthenticityCheckDismissed,
     );
+    const shouldDisplayEntropyCheckError = useSelector(selectIsEntropyCheckEnabledAndFailed);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
@@ -103,10 +105,16 @@ export const useHandleDeviceConnection = () => {
     const isOnPinMatrixBlacklistedRoute = pinMatrixBlacklistedScreens.includes(
         lastRoute as RootStackRoutes,
     );
+
+    const shouldDisplayFirmwareAuthenticityError =
+        hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
+
+    // any failing check should navigate to the DeviceCompromisedModal
     const shouldNavigateToDeviceCompromisedModal =
-        hasFirmwareAuthenticityCheckHardFailed &&
-        !isFirmwareAuthenticityCheckDismissed &&
-        isOnboardingFinished;
+        shouldDisplayEntropyCheckError || shouldDisplayFirmwareAuthenticityError;
+    // but the DeviceCompromisedModal shall not be persistent for Entropy check, because you cannot exit the modal via normal means
+    const shouldKeepDeviceCompromisedModal =
+        isDeviceCompromisedModalFocused && !shouldDisplayEntropyCheckError;
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
@@ -120,7 +128,8 @@ export const useHandleDeviceConnection = () => {
             !isOnboardingDeviceDisconnectedAlertDisplayed &&
             !isFirmwareInstallationRunning &&
             (!isDeviceOnboardingStackFocused || isDeviceOnboardingConnectAndUnlockScreenFocused) &&
-            !wasDeviceOnboardingCancelled
+            !wasDeviceOnboardingCancelled &&
+            !shouldNavigateToDeviceCompromisedModal
         ) {
             navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
@@ -140,6 +149,7 @@ export const useHandleDeviceConnection = () => {
         isOnboardingDeviceDisconnectedAlertDisplayed,
         isDeviceOnboardingConnectAndUnlockScreenFocused,
         wasDeviceOnboardingCancelled,
+        shouldNavigateToDeviceCompromisedModal,
     ]);
 
     // At the moment when unauthorized physical device is selected,
@@ -200,7 +210,7 @@ export const useHandleDeviceConnection = () => {
             // TODO: this hook is getting very complex, and it's hard to understand the logic when it navigates there and back again.
             //  Ideally there'd be a single source of truth, a function returning "where we should be as per current state"
             //  rather than multiple useEffects with imperative instructions "go there when X changes"
-            if (isDeviceCompromisedModalFocused || isSuspiciousDeviceScreenFocused) {
+            if (shouldKeepDeviceCompromisedModal || isSuspiciousDeviceScreenFocused) {
                 return;
             }
 
@@ -225,7 +235,7 @@ export const useHandleDeviceConnection = () => {
         navigation,
         shouldBlockSendReviewRedirect,
         isFirmwareInstallationRunning,
-        isDeviceCompromisedModalFocused,
+        shouldKeepDeviceCompromisedModal,
         isSuspiciousDeviceScreenFocused,
         isOnboardingStackFocused,
         isDeviceOnboardingStackFocused,

@@ -23,7 +23,7 @@ import {
     SettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { setCheckFirmwareAuthenticity } from '@suite-native/settings';
+import { setCheckFirmwareAuthenticityEnabled } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
 
 const CHECKBOX_ANIMATION_DURATION = 200; // same as in useAccordionAnimation
@@ -67,7 +67,7 @@ export const TurnOffFirmwareAuthenticityCheckModalScreen = () => {
     const handleCheckboxPress = () => setIsChecked(prev => !prev);
 
     const handleButtonPress = () => {
-        dispatch(setCheckFirmwareAuthenticity(false));
+        dispatch(setCheckFirmwareAuthenticityEnabled(false));
         if (navigation.canGoBack()) {
             navigation.goBack();
         } else {

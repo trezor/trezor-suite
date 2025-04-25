@@ -1,4 +1,4 @@
-import { BuyTradeQuoteRequest } from 'invity-api';
+import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
@@ -82,7 +82,7 @@ export const handleRequestThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/handleChange`,
     async (
         { formValues, network, timer, shouldSendInSats }: HandleRequestThunkProps,
-        { dispatch, getState, fulfillWithValue, signal },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
         timer.loading();
 
@@ -97,7 +97,7 @@ export const handleRequestThunk = createThunk(
         if (!requestData) {
             timer.stop();
 
-            return;
+            throw rejectWithValue('Invalid request data');
         }
 
         const allQuotes = await getQuotesRequest({
@@ -108,14 +108,19 @@ export const handleRequestThunk = createThunk(
         if (signal.aborted) {
             timer.reset();
 
-            return;
+            throw rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
             timer.stop();
-            dispatch(tradingBuyActions.saveQuotes([]));
 
-            return;
+            const quotesSuccess: BuyTrade[] = [];
+            dispatch(tradingBuyActions.setAmountLimits(undefined));
+            dispatch(tradingBuyActions.saveQuotes(quotesSuccess));
+            dispatch(tradingBuyActions.saveQuoteRequest(requestData));
+            dispatch(tradingActions.savePaymentMethods([]));
+
+            return fulfillWithValue(quotesSuccess);
         }
 
         // processed quotes and without alternative quotes

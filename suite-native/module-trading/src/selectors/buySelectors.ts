@@ -106,18 +106,13 @@ export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelec
         ) => ReturnType<typeof selectTradingBuyQuotes>,
     ],
     quotes => {
-        if (!quotes) {
-            return [];
-        }
-
         const allQuotesByPaymentMethodMap = quotes.reduce((quotesByPaymentMethodMap, quote) => {
-            const { paymentMethod } = quote;
-            if (!paymentMethod) {
+            const { paymentMethod, paymentMethodName } = quote;
+            if (!paymentMethod || !paymentMethodName) {
                 return quotesByPaymentMethodMap;
             }
 
             const existingQuotes = quotesByPaymentMethodMap.get(paymentMethod);
-
             if (!existingQuotes) {
                 quotesByPaymentMethodMap.set(paymentMethod, [quote]);
             } else {

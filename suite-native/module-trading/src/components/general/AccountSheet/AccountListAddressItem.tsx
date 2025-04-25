@@ -14,6 +14,7 @@ export type AccountListAddressItemProps = {
     receiveAccount: ReceiveAccount;
     onPress: () => void;
 };
+
 export const AccountListAddressItem = ({
     receiveAccount,
     onPress,

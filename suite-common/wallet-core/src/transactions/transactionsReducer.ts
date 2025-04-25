@@ -389,16 +389,11 @@ export const selectAccountIsStakingActive = createMemoizedSelector(
 );
 
 export const selectAnyAccountIsStakingActive = createMemoizedSelector(
-    [
-        (state: TransactionsRootState, accounts: Account[]) =>
-            accounts.map(account => ({
-                account,
-                transactions: state.wallet.transactions.transactions[account.key] ?? [],
-            })),
-    ],
-    items =>
-        items.some(({ account, transactions }) => {
-            const claimTransactions = transactions.filter(tx =>
+    [selectTransactions, (_: TransactionsRootState, accounts: Account[]) => accounts],
+    (transactions, accounts) =>
+        accounts.some(account => {
+            const accountTransactions = transactions[account.key] ?? [];
+            const claimTransactions = accountTransactions.filter(tx =>
                 isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId),
             );
 

@@ -49,7 +49,9 @@ export const ScreenHeader = ({
     return (
         <Box style={applyStyle(headerStyle)}>
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-left">
-                {leftIcon || (
+                {leftIcon !== undefined ? (
+                    leftIcon
+                ) : (
                     <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
                 )}
             </Box>

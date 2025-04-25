@@ -26,6 +26,7 @@ import {
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDiscoveredDeviceAccountless,
+    selectIsEntropyCheckFailed,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -198,6 +199,10 @@ export const selectHasFirmwareAuthenticityCheckHardFailed = (state: FwAuthentici
 
     return isRevisionHardError;
 };
+
+export const selectIsEntropyCheckEnabledAndFailed = (state: FwAuthenticityCheckState) =>
+    selectIsFeatureEnabled(state, Feature.entropyCheckMobile, true) &&
+    selectIsEntropyCheckFailed(state);
 
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [

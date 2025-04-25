@@ -130,6 +130,13 @@ export const tradingSlice = createSliceWithExtraDeps({
             .addCase(buyThunks.handleRequestThunk.fulfilled, state => {
                 state.buy.isLoading = false;
             })
+            .addCase(buyThunks.handleRequestThunk.rejected, state => {
+                state.buy.amountLimits = undefined;
+                state.buy.quotes = [];
+                state.buy.quotesRequest = undefined;
+                state.buy.isLoading = false;
+                state.info.paymentMethods = [];
+            })
             .addCase(exchangeThunks.handleRequestThunk.pending, state => {
                 state.exchange.isLoading = true;
             })
