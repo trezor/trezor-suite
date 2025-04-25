@@ -98,7 +98,6 @@ class GitHubReporter implements Reporter, LoggingFunctions {
                 this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
                 this._issueRequests = new IssueRequests(this.octokit);
                 this._gitHubProject = new GitHubProject(this.octokit, this);
-                this.initState = InitializationState.COMPLETED;
                 this.log('GitHub client initialized successfully');
             } catch (error) {
                 this.initState = InitializationState.FAILED;
@@ -107,6 +106,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
             }
 
             await this.gitHubProject.init();
+            this.initState = InitializationState.COMPLETED;
         })();
         this.initializationPromise = initPromise;
 
