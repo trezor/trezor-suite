@@ -1,7 +1,6 @@
 name: "[Test] Release Suite manual e2e tests"
-description: "Runs Playwright reporter, creating manual regressions release suite in GitHub"
 # Triggered by push to release branch
-# Creates a manual regression suite in GitHub
+# Runs Playwright reporter, creating manual regressions release suite in GitHub"
 
 permissions:
   issues: write # for creating issues which represent the manual regression tests
