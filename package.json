@@ -134,7 +134,8 @@
         "ts-node": "^10.9.2",
         "tslib": "^2.6.2",
         "tsx": "^4.19.3",
-        "typescript": "5.8.3"
+        "typescript": "5.8.3",
+        "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
         "core-js-pure": {
