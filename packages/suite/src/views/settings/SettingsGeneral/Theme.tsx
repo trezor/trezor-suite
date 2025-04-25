@@ -1,5 +1,5 @@
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { SuiteThemeVariant, desktopApi } from '@trezor/suite-desktop-api';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { ThemeColorVariant } from '@trezor/theme';
 
 import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
@@ -59,7 +59,10 @@ export const Theme = () => {
     const themeVariant = autodetectTheme ? 'system' : theme.variant;
     const selectedValue = getOption(themeVariant === 'light' ? 'standard' : themeVariant);
 
-    const onChange = ({ value }: { value: SuiteThemeVariant }) => {
+    const onChange = ({ value }: { value: ThemeColorVariantWithSystem }) => {
+        // Inconsistency between types (standard = light)
+        const themeValue = value === 'standard' ? 'light' : value;
+
         const platformTheme = getOsTheme();
         analytics.report({
             type: EventType.SettingsGeneralChangeTheme,
@@ -67,21 +70,23 @@ export const Theme = () => {
                 platformTheme,
                 previousTheme: theme.variant,
                 previousAutodetectTheme: autodetectTheme,
-                theme: value === 'system' ? platformTheme : value,
-                autodetectTheme: value === 'system',
+                theme: themeValue === 'system' ? platformTheme : themeValue,
+                autodetectTheme: themeValue === 'system',
             },
         });
 
-        if ((value === 'system') !== autodetectTheme) {
+        if ((themeValue === 'system') !== autodetectTheme) {
             dispatch(setAutodetect({ theme: !autodetectTheme }));
         }
 
-        if (value !== 'system') {
-            dispatch(setTheme(value));
+        if (themeValue !== 'system') {
+            dispatch(setTheme(themeValue));
         }
 
         if (desktopApi.available) {
-            desktopApi.themeChange(value);
+            // Remove `debug` option
+            const nativeThemeValue = themeValue === 'debug' ? 'light' : themeValue;
+            desktopApi.themeChange(nativeThemeValue);
         }
     };
 
