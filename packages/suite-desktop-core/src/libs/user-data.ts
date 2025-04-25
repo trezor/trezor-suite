@@ -31,13 +31,24 @@ export const initUserData = () => {
     }
 };
 
-export const save = async (
-    directory: string,
-    name: string,
-    content: string,
-): Promise<InvokeResult> => {
+export const save: {
+    (directory: string, name: string, content: string, encoding: 'utf-8'): Promise<InvokeResult>;
+    (
+        directory: string,
+        name: string,
+        content: ArrayBuffer,
+        encoding: 'binary',
+    ): Promise<InvokeResult>;
+} = async (directory, name, content, encoding) => {
     const dir = path.join(app.getPath('userData'), directory);
     const file = path.join(dir, name);
+
+    let data: string | Buffer;
+    if (encoding === 'binary') {
+        data = Buffer.from(content as ArrayBuffer);
+    } else {
+        data = content as string;
+    }
 
     try {
         try {
@@ -46,7 +57,7 @@ export const save = async (
             await fs.promises.mkdir(dir);
         }
 
-        await fs.promises.writeFile(file, content, 'utf-8');
+        await fs.promises.writeFile(file, data, encoding);
 
         return { success: true };
     } catch (error) {
