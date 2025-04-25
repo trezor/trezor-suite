@@ -195,4 +195,8 @@ describe('tradingSlice', () => {
             });
         });
     });
+
+    it('should true be false', () => {
+        expect(true).toBe(false);
+    });
 });
