@@ -1,15 +1,24 @@
 import { isDeviceInBootloaderMode } from './modeUtils';
-import { FirmwareType, FirmwareVersionString, PartialDevice, VersionArray } from './types';
+import {
+    FirmwareSource,
+    FirmwareType,
+    FirmwareVersionString,
+    PartialDevice,
+    VersionArray,
+} from './types';
 
-export const isOfficialFirmware = (device?: PartialDevice): boolean => {
+export const getFirmwareSource = (device?: PartialDevice): FirmwareSource => {
+    if (device?.mode === 'bootloader') {
+        return 'NA - bootloader';
+    }
     if (
         device?.authenticityChecks?.firmwareRevision?.success &&
         device?.authenticityChecks?.firmwareHash?.success
     ) {
-        return true;
+        return 'official';
     }
 
-    return false;
+    return 'unknown';
 };
 
 export const getFirmwareRevision = (device?: PartialDevice) => device?.features?.revision || '';

@@ -66,6 +66,7 @@ export type PartialDevice = {
         firmwareRevision: { success: boolean } | null;
         firmwareHash: { success: boolean } | null;
     };
+    mode?: 'normal' | 'bootloader' | 'initialize' | 'seedless';
 
     features?: {
         major_version: number;
@@ -82,3 +83,5 @@ export type PartialDevice = {
         unit_btconly?: boolean;
     };
 };
+
+export type FirmwareSource = 'official' | 'unknown' | 'NA - bootloader';

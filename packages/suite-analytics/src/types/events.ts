@@ -1,7 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { EventType } from '../constants';
-import type { AppUpdateEvent, OnboardingAnalytics } from './definitions';
+import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
 
 export type SuiteAnalyticsEventSuiteReady = {
     type: EventType.SuiteReady;
@@ -91,7 +91,7 @@ export type SuiteAnalyticsEvent =
           payload: {
               mode: 'normal' | 'bootloader' | 'initialize' | 'seedless';
               firmware: string;
-              isOfficialFw: boolean;
+              firmwareSource: FirmwareSource;
               bootloader?: string;
               pin_protection?: boolean | null;
               passphrase_protection?: boolean | null;
@@ -118,7 +118,7 @@ export type SuiteAnalyticsEvent =
               fromFwVersion: string;
               toFwVersion?: string;
               toBtcOnly?: boolean;
-              isOfficialFw: boolean;
+              firmwareSource: FirmwareSource;
               error: string;
           };
       }

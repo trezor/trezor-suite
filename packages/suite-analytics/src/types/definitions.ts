@@ -19,3 +19,5 @@ export type AppUpdateEvent = {
     isPrerelease?: boolean;
     isAutoUpdated?: boolean;
 };
+
+export type FirmwareSource = 'official' | 'unknown' | 'NA - bootloader';
