@@ -170,31 +170,27 @@ export class TestReportProvider {
     // That way `bodyDescription` and `projectValues` can be generated dynamically
     // and rely on annotations objects (ex: 'annotationsForBodyDescription') as single source definitions
     getterByKey(key: string): string {
-        // This is the downside, we need to list all our annotation getters here
-        const validGetterKeys = [
-            'testCase',
-            'prerequisites',
-            'steps',
-            'category',
-            'priority',
-            'stream',
-            'status',
-            'testRun',
-            'deviceModel',
-            'comment',
-        ] as const;
+        // This is the downside, we need to record of all our annotation getters here
+        const getters: Record<string, () => string> = {
+            testCase: () => this.testCase,
+            prerequisites: () => this.prerequisites,
+            steps: () => this.steps,
+            category: () => this.category,
+            priority: () => this.priority,
+            stream: () => this.stream,
+            status: () => this.status,
+            testRun: () => this.testRun,
+            deviceModel: () => this.deviceModel,
+            comment: () => this.comment,
+        };
 
-        type StringGetterKey = (typeof validGetterKeys)[number];
-
-        const isValidKey = (k: string): k is StringGetterKey =>
-            validGetterKeys.includes(k as StringGetterKey);
-
-        if (!isValidKey(key)) {
+        const getter = getters[key];
+        if (!getter) {
             throw new Error(
                 `The key '${key}' does not have corresponding getter on TestReportProvider class.`,
             );
         }
 
-        return this[key];
+        return getter();
     }
 }

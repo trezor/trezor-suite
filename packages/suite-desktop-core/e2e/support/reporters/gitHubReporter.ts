@@ -1,29 +1,34 @@
-import { Octokit } from '@octokit/rest';
+import type { Octokit } from '@octokit/rest';
 import { Reporter, TestCase } from '@playwright/test/reporter';
 
 import { scheduleAction } from '@trezor/utils';
 
 import { TestReportProvider } from '../annotations';
-import { GitHubGraphQLClient } from './gitHubGraphQLClient';
+import { GitHubProject } from './gitHubProject';
+import { IssueRequests } from './issueRequests';
 import { LoggingFunctions, ProjectField } from './types';
-import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
 
-const ORGANIZATION = 'trezor';
-const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
-const QA_TEAM_ID = 'T_kwDOAD9FD84AMZXd';
-const PROJECT_NAME = 'Test Results 35'; // TODO: Get this from CI, probably build name
 const VERBOSE = true;
 const RETRY_CONF = {
     attempts: 3,
     gap: 500,
 };
 
+enum InitializationState {
+    NOT_STARTED = 'NOT_STARTED',
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    FAILED = 'FAILED',
+}
+
 class GitHubReporter implements Reporter, LoggingFunctions {
     private _octokit: Octokit | null = null;
-    private _projectId: string | undefined;
-    private _graphQLClient: GitHubGraphQLClient | null = null;
+    private _issueRequests: IssueRequests | null = null;
+    private _gitHubProject: GitHubProject | null = null;
     private pendingOperations: Promise<any>[] = [];
     private cachedFields: ProjectField[] | null = null;
+    private initState: InitializationState = InitializationState.NOT_STARTED;
+
     private initializationPromise: Promise<void> | null = null;
 
     log(...args: any[]): void {
@@ -53,20 +58,20 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         return this._octokit;
     }
 
-    private get graphQLClient(): GitHubGraphQLClient {
-        if (!this._graphQLClient) {
+    private get issueRequests(): IssueRequests {
+        if (!this._issueRequests) {
             throw new Error('GraphQL client is not initialized. Ensure onBegin() is called first.');
         }
 
-        return this._graphQLClient;
+        return this._issueRequests;
     }
 
-    private get projectId(): string {
-        if (!this._projectId) {
-            throw new Error('Project ID is not set. Ensure onBegin() is called first.');
+    private get gitHubProject(): GitHubProject {
+        if (!this._gitHubProject) {
+            throw new Error('GitHub project is not initialized. Ensure onBegin() is called first.');
         }
 
-        return this._projectId;
+        return this._gitHubProject;
     }
 
     // Tracks asynchronous operations and logs their completion
@@ -86,18 +91,22 @@ class GitHubReporter implements Reporter, LoggingFunctions {
     // Initializes the reporter when test run begins, creates a GitHub project if it doesn't exist
     // eslint-disable-next-line require-await
     async onBegin() {
+        this.initState = InitializationState.IN_PROGRESS;
         const initPromise = (async () => {
             try {
                 const OctokitModule = await import('@octokit/rest');
                 this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
-                this._graphQLClient = new GitHubGraphQLClient(this.octokit, this);
+                this._issueRequests = new IssueRequests(this.octokit);
+                this._gitHubProject = new GitHubProject(this.octokit, this);
+                this.initState = InitializationState.COMPLETED;
                 this.log('GitHub client initialized successfully');
             } catch (error) {
+                this.initState = InitializationState.FAILED;
                 this.logError('Failed to initialize GitHub reporter.');
                 throw error; // Critical error, rethrow to stop execution
             }
 
-            await this.initializeProject();
+            await this.gitHubProject.init();
         })();
         this.initializationPromise = initPromise;
 
@@ -111,19 +120,15 @@ class GitHubReporter implements Reporter, LoggingFunctions {
 
         return this.trackOperation(
             (async () => {
-                if (this.initializationPromise) {
-                    // Wait for OnBegin to finish
-                    await this.initializationPromise;
-                }
-
+                await this.waitForOnBeginInit();
                 const report = new TestReportProvider(test);
 
                 try {
                     const issueNodeId = await scheduleAction(() => {
                         this.log(`Creating GitHub draft issue for test "${test.title}"...`);
 
-                        return this.graphQLClient.createDraftIssueInProject(
-                            this.projectId,
+                        return this.issueRequests.createDraftIssueInProject(
+                            this.gitHubProject.id,
                             report.testCase,
                             report.bodyDescription,
                         );
@@ -141,8 +146,8 @@ class GitHubReporter implements Reporter, LoggingFunctions {
                         await scheduleAction(() => {
                             this.log(`[${issueNodeId}] Updating field ${name}:"${value}"...`);
 
-                            return this.graphQLClient.setItemValue(
-                                this.projectId,
+                            return this.issueRequests.setItemValue(
+                                this.gitHubProject.id,
                                 issueNodeId,
                                 fieldId,
                                 valueOrOptionId,
@@ -189,122 +194,6 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         }
     }
 
-    private async initializeProject(): Promise<void> {
-        try {
-            const existingProject = await this.findExistingProject();
-
-            if (existingProject) {
-                this._projectId = existingProject.id;
-                this.log(
-                    `Using existing project: ${existingProject.title} (${existingProject.id})`,
-                );
-
-                return;
-            }
-            await this.createProject(annotationsForProjectFields);
-
-            // Instead of taking projectId from 'createProject()' we run another 'findExistingProject()' query again
-            // Goal is to avoid conflicts by searching for the project again, by its name and choosing the oldest
-            // Source of conflict: Parallel workflows on CI (Web x Desktop), parallel groups in one workflow
-            const createdProject = await this.findExistingProject();
-            if (createdProject) {
-                this._projectId = createdProject.id;
-                this.log(`Using created project: ${createdProject.title} (${createdProject.id})`);
-
-                return;
-            } else {
-                throw new Error('Failed to find the created project');
-            }
-        } catch (error) {
-            this.logError('Project initialization failed.');
-            throw error;
-        }
-    }
-
-    private async findExistingProject(): Promise<{ id: string; title: string } | null> {
-        try {
-            const projects = await this.graphQLClient.getProjectFromOrganization(
-                ORGANIZATION,
-                PROJECT_NAME,
-            );
-
-            const matchingProject = projects.find((project: any) => project.title === PROJECT_NAME);
-
-            if (matchingProject) {
-                const areThereDuplicates =
-                    projects.filter((project: any) => project.title === PROJECT_NAME).length > 1;
-                if (areThereDuplicates) {
-                    this.log(
-                        `Warning: Multiple projects found with title "${PROJECT_NAME}". Using the first one with number ${matchingProject.number}.`,
-                    );
-                }
-
-                return matchingProject;
-            }
-
-            return null;
-        } catch (error) {
-            this.logError('Failed to find project.');
-            throw error;
-        }
-    }
-
-    async createProject(desiredFields: Array<BaseAnnotation>): Promise<void> {
-        const projectId = await this.graphQLClient.createProject(ORG_ID, QA_TEAM_ID, PROJECT_NAME);
-
-        // Get default STATUS field that was automatically created.
-        const existingFields = await this.graphQLClient.getProjectFields(projectId);
-        const existingStatusField = existingFields.find(f => f.name === 'Status');
-
-        for (const desiredField of desiredFields) {
-            // Update STATUS field with new options
-            if (desiredField.name === 'Status' && existingStatusField) {
-                this.log('Status field already exists, updating options...');
-                await this.updateProjectFieldOptions(existingStatusField.id, desiredField);
-                continue;
-            }
-
-            try {
-                const desiredOptions =
-                    desiredField.valueType === 'SINGLE_SELECT' && desiredField.valueOptions
-                        ? desiredField.valueOptions.map(value => {
-                              const color = desiredField.optionsColors?.[value] || 'GRAY';
-
-                              return { value, color };
-                          })
-                        : undefined;
-
-                await this.graphQLClient.createProjectField(
-                    projectId,
-                    desiredField.name,
-                    desiredField.valueType,
-                    desiredOptions,
-                );
-            } catch (error) {
-                this.logError(`Error creating field "${desiredField.name}".`);
-                throw error;
-            }
-        }
-    }
-
-    async updateProjectFieldOptions(fieldId: string, desiredField: BaseAnnotation): Promise<void> {
-        this.log(`Updating field options for "${desiredField.name}" (${fieldId})`);
-
-        try {
-            const desiredOptions = desiredField.valueOptions!.map(value => {
-                const color = desiredField.optionsColors?.[value] || 'GRAY';
-
-                return { value, color };
-            });
-
-            await this.graphQLClient.updateFieldOptions(fieldId, desiredOptions);
-            this.log(`Successfully updated options for field "${desiredField.name}"`);
-        } catch (error) {
-            this.logError(`Failed to update options for field "${desiredField.name}".`);
-            throw error;
-        }
-    }
-
     private async getProjectFields(): Promise<ProjectField[]> {
         if (this.cachedFields) {
             this.log('Using cached project fields');
@@ -312,7 +201,9 @@ class GitHubReporter implements Reporter, LoggingFunctions {
             return this.cachedFields;
         }
 
-        const fields = await this.graphQLClient.getProjectFields(this.projectId);
+        this.log(`Fetching fields for project ${this.gitHubProject.id}...`);
+        const fields = await this.issueRequests.getProjectFields(this.gitHubProject.id);
+        this.log(`Successfully retrieved fields for project ${this.gitHubProject.id}`);
         this.cachedFields = fields;
 
         return fields;
@@ -347,6 +238,40 @@ class GitHubReporter implements Reporter, LoggingFunctions {
 
         // Currently we support only SINGLE_SELECT and TEXT fields
         return { fieldId: field.id, valueOrOptionId: `{ text: "${value}" }` };
+    }
+
+    private async waitForOnBeginInit(): Promise<void> {
+        if (this.initState === InitializationState.COMPLETED) {
+            return;
+        }
+
+        if (this.initState === InitializationState.FAILED) {
+            throw new Error('GitHub reporter onBegin initialization failed previously');
+        }
+
+        if (this.initState === InitializationState.NOT_STARTED) {
+            // Wait until state changes from NOT_STARTED to something else
+            await new Promise<void>((resolve, reject) => {
+                const checkInterval = setInterval(() => {
+                    if (this.initState !== InitializationState.NOT_STARTED) {
+                        clearInterval(checkInterval);
+                        resolve();
+                    }
+                }, 100);
+
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    reject(new Error('Timed out waiting for onBegin initialization to start'));
+                }, 30_000);
+            });
+
+            // Now state should be changed, call ensureInitialized again to handle the new state
+            return this.waitForOnBeginInit();
+        }
+
+        if (this.initState === InitializationState.IN_PROGRESS && this.initializationPromise) {
+            await this.initializationPromise;
+        }
     }
 }
 
