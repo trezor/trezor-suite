@@ -19,7 +19,11 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { DEVICE } from '@trezor/connect';
-import { getFirmwareVersionArray, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import {
+    getFirmwareVersionArray,
+    hasBitcoinOnlyFirmware,
+    isDeviceInBootloaderMode,
+} from '@trezor/device-utils';
 
 import { isDeviceEventAction } from '../utils';
 
@@ -85,17 +89,17 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                     dispatch(selectDeviceThunk(action.payload));
                 }
 
-                const {
-                    device: { features, mode },
-                } = action.payload;
+                const { device } = action.payload;
+                const { features, mode } = device;
 
                 if (features && mode) {
                     analytics.report({
                         type: EventType.ConnectDevice,
                         payload: {
-                            firmwareVersion: getFirmwareVersionArray(action.payload.device),
+                            mode: isDeviceInBootloaderMode(device) ? 'bootloader' : mode,
+                            firmwareVersion: getFirmwareVersionArray(device),
                             pinProtection: features.pin_protection,
-                            isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
+                            isBitcoinOnly: hasBitcoinOnlyFirmware(device),
                             deviceLanguage: features.language,
                             deviceModel: features.internal_model,
                         },

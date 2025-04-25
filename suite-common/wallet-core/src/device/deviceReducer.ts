@@ -793,7 +793,7 @@ export const selectDeviceButtonRequestsCodes = createMemoizedSelector(
 
 export const selectDeviceMode = createMemoizedSelector(
     [selectSelectedDevice],
-    device => device?.mode,
+    device => device?.mode ?? null,
 );
 
 export const selectIsUnacquiredDevice = createMemoizedSelector(

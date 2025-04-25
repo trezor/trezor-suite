@@ -2,7 +2,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { VersionArray } from '@trezor/connect';
+import { DeviceMode, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
@@ -178,6 +178,7 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.ConnectDevice;
           payload: {
+              mode: DeviceMode | null;
               firmwareVersion: VersionArray | null;
               pinProtection: boolean;
               deviceModel: DeviceModelInternal | null;
