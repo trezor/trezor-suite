@@ -107,6 +107,7 @@ describe('Suite Actions', () => {
     it(`onLocationChange with lock`, () => {
         const state = getInitialState({
             suite: { locks: { router: 1 } },
+            router: { loaded: true },
         } as InitialState);
         const store = initStore(state);
         store.dispatch(routerActions.onLocationChange('/'));

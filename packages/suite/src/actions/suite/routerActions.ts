@@ -55,8 +55,8 @@ export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) 
 export const onLocationChange =
     (url: string, anchor?: AnchorType) => (dispatch: Dispatch, getState: GetState) => {
         const unlocked = dispatch(onBeforePopState());
-        if (!unlocked) return;
         const { router } = getState();
+        if (!unlocked && router.loaded) return;
         if (router.url === url && router.app !== 'unknown') return null;
         // TODO: check if the view is not locked by the device request
 
