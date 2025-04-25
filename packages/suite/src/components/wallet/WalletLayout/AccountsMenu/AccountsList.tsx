@@ -46,27 +46,38 @@ const Accounts = ({
     const { params } = selectedAccount;
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
 
+    const router = useSelector(state => state.router);
+
+    const isAccountSelected = (account: Account) => {
+        const isSelected = (account: Account) =>
+            params &&
+            account.symbol === params.symbol &&
+            account.accountType === params.accountType &&
+            account.index === params.accountIndex;
+
+        const isHashSelected = (account: Account) =>
+            router.app === 'wallet' &&
+            router.params &&
+            account.symbol === router.params.symbol &&
+            account.accountType === router.params.accountType &&
+            account.index === router.params.accountIndex;
+
+        const isTradingBuyRoute = router.route?.name.startsWith('wallet-trading-buy');
+
+        return isTradingBuyRoute ? !!isHashSelected(account) : !!isSelected(account);
+    };
+
     return (
         <>
-            {accounts.map(account => {
-                const isSelected = (account: Account) =>
-                    params &&
-                    account.symbol === params.symbol &&
-                    account.accountType === params.accountType &&
-                    account.index === params.accountIndex;
-
-                const selected = !!isSelected(account);
-
-                return (
-                    <AccountSection
-                        key={account.key}
-                        account={account}
-                        selected={selected}
-                        accountLabel={accountLabels[account.key]}
-                        onItemClick={onItemClick}
-                    />
-                );
-            })}
+            {accounts.map(account => (
+                <AccountSection
+                    key={account.key}
+                    account={account}
+                    selected={isAccountSelected(account)}
+                    accountLabel={accountLabels[account.key]}
+                    onItemClick={onItemClick}
+                />
+            ))}
             {isSkeletonShown && <AccountItemSkeleton />}
         </>
     );
