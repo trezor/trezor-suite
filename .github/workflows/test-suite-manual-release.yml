@@ -1,0 +1,53 @@
+name: "[Test] Release Suite manual e2e tests"
+description: "Runs Playwright reporter, creating manual regressions release suite in GitHub"
+# Triggered by push to release branch
+# Creates a manual regression suite in GitHub
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  push:
+    branches:
+      - release/2*
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  run-e2e-suite-web-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+  
+    steps:
+    - name: Extract Branch Name
+      id: extract_branch
+      shell: bash
+      run: |
+        echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        cache: yarn
+
+    - name: Install PW Dependencies
+      shell: bash
+      run: |
+        echo "Silently installing Playwright dependencies"
+        yarn workspaces focus @trezor/suite-desktop-core > /dev/null
+
+    - name: Run Playwright Reporter
+      shell: bash
+      env:
+        GITHUB_ACTION: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "Starting Playwright Reporter for manual regression suite"
+        yarn workspace @trezor/suite-desktop-core test:e2e:manual
+

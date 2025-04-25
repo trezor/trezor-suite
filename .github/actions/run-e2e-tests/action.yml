@@ -2,7 +2,7 @@ name: "Run Playwright E2E Tests"
 description: "Runs Playwright E2E tests with Docker and uploads logs"
 inputs:
   project:
-    description: "Playwright project name. (web|desktop)"
+    description: "Playwright project name. (web|web:release|desktop|desktop:release)"
     required: true
   base-url:
     description: "Base URL for E2E tests. Default: https://dev.suite.sldev.cz/suite-web/BRANCH_NAME/web/"
@@ -52,7 +52,7 @@ runs:
     # without requiring elevated privileges, which is essential for running the application.
     # This is workaround until electron builder solves this issue in future release.
     - name: Disable security rule 'Restricted unprivileged user namespaces'
-      if: ${{ inputs.project == 'desktop' }}
+      if: ${{ inputs.project == 'desktop' || inputs.project == 'desktop:release' }}
       shell: bash
       run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
@@ -68,7 +68,7 @@ runs:
         echo "::group::Install PW Dependencies"
         echo "Silently installing Playwright dependencies"
         yarn workspaces focus @trezor/suite-desktop-core ${{ inputs.workspace-dependencies }} > /dev/null
-        if [[ "${{ inputs.project }}" == "web" ]]; then
+        if [[ "${{ inputs.project }}" == "web" || "${{ inputs.project }}" == "web:release" ]]; then
           npx playwright install --with-deps > /dev/null
         fi
         echo "::endgroup::"
@@ -81,12 +81,13 @@ runs:
         echo "::group::Pull Docker Images"
         docker compose pull --quiet ${{ inputs.containers }}
         echo "::endgroup::"
-        
+
     - name: Run Playwright E2E Tests
       shell: bash
       env:
         COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
         GITHUB_ACTION: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
         CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
         CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
@@ -104,7 +105,7 @@ runs:
 
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
-        yarn workspace @trezor/suite-desktop-core test:orchestrated:e2e:${{ inputs.project }} --pwc-cancel-after-failures ${{ inputs.fail-fast }} --forbid-only --grep="${{ inputs.additional-grep }}" 
+        yarn workspace @trezor/suite-desktop-core test:orchestrated:e2e:${{ inputs.project }} --pwc-cancel-after-failures ${{ inputs.fail-fast }} --forbid-only --grep="${{ inputs.additional-grep }}"
 
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}

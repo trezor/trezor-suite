@@ -9,6 +9,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 export enum PlaywrightProjects {
     Web = 'web',
     Desktop = 'desktop',
+    Manual = 'manual',
 }
 
 const CI_TIMEOUT = 1000 * 180;
@@ -37,6 +38,11 @@ const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWork
             name: PlaywrightProjects.Desktop,
             use: {},
             grepInvert: [/@webOnly/, /@group=manual/],
+        },
+        {
+            name: PlaywrightProjects.Manual,
+            use: {},
+            grep: /@group=manual/,
         },
     ],
     testDir: 'tests',
