@@ -11,6 +11,35 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.5.5-beta.1
+
+## Features
+
+- add THP to ConnectSettings and Device (6a40b17)
+- remove estimateFee caching (feebc12)
+- decrease block values for fee estimation (0eebb7f)
+- add TrezorConnect.bleUnpair method (442d99c)
+- precomposed payload for bitcoin signTransaction, solanaSignTransaction (df0b3b2,b29990a)
+- add signing payload in precomposed format to method info (a5cbb61)
+- block info in select fee levels (df8656b)
+
+## Fixes
+
+- use ipv4 instead of localhost for ws (5c5851f)
+- catch requestDevice error (df1134c)
+- Failure typing fixed (54da299)
+
+## Chores
+
+- manage FeeLevels classes to provide singletons (8c452a1)
+- cleanup FeeLevels inheritance (e1ed9a4)
+- move Fees classes (39cc03e)
+- update device authenticity config (7bc4717)
+- cleanup constants for FW hash check (1105d8c)
+- enum keys matching in DeviceCurrentSession (f8dcd6b)
+- tighten validation of manifest.appIcon and manifest.appName (23d9c55)
+- changelog for 9.5.4 (d5118b8)
+
 # 9.5.4
 
 If you are using @trezor/connect-web you must be using at least 9.1.5 starting from this release.
