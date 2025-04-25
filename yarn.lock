@@ -39850,7 +39850,6 @@ __metadata:
     "@babel/preset-react": "npm:^7.26.3"
     "@babel/preset-typescript": "npm:^7.27.0"
     "@babel/runtime": "npm:^7.27.0"
-    "@octokit/rest": "npm:^21.1.1"
     "@trezor/eslint": "workspace:*"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
