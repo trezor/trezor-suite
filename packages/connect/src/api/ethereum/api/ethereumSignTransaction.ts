@@ -120,6 +120,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return getNetworkLabel('Sign #NETWORK transaction', this.params.network);
     }
 
+    // todo: it is not wrapped in try/catch similarly to signTransaction and ethereumSignTransaction
     async payloadToPrecomposed() {
         const feePerByte = new BigNumber(
             this.payload.transaction.gasPrice || this.payload.transaction.maxFeePerGas!,
