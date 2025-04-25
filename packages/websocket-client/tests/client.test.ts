@@ -21,7 +21,7 @@ class Server extends WebSocket.Server {
         return this._url;
     }
 
-    private sendResponse(client: WebSocket, data: any) {
+    sendResponse(client: WebSocket, data: any) {
         const request = JSON.parse(data);
         const { id, method } = request;
         let response;
@@ -151,5 +151,25 @@ describe('WebsocketClient', () => {
         const cli = new Client({ url: 'invalid-url' });
 
         await expect(() => cli.connect()).rejects.toThrow('invalid-url');
+    });
+
+    it.only('throws timeout error on sendMessage', async () => {
+        const cli = new WebsocketClient({ url: server.getUrl() });
+        await cli.connect();
+
+        // do not respond, client will timeout
+        const sendSpy = jest.spyOn(server, 'sendResponse').mockImplementation(() => {});
+        await expect(() => cli.sendMessage({ method: 'init' }, { timeout: 300 })).rejects.toThrow(
+            'websocket_timeout',
+        );
+
+        // client is still connected
+        const disconnectedSpy = jest.fn();
+        expect(cli.isConnected()).toEqual(true);
+        cli.on('disconnected', disconnectedSpy);
+        expect(disconnectedSpy).toHaveBeenCalledTimes(0);
+
+        sendSpy.mockRestore();
+        cli.dispose();
     });
 });
