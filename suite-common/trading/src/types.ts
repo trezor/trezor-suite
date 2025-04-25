@@ -265,3 +265,8 @@ export interface TradingSellFormProps extends FormState {
     countrySelect: TradingOption;
     amountInCrypto: boolean;
 }
+
+export type TradingSellUserConsentProps = {
+    provider: string;
+    cryptoCurrency: CryptoId;
+};
