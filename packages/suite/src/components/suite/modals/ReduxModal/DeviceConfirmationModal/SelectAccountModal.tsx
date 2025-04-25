@@ -84,6 +84,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                             onClick={() => {
                                 setSelectedAccountType(type);
                             }}
+                            data-testid={`@select-account-modal/subtab/${type}`}
                         >
                             {typeLabels[type]}
                         </SubTabs.Item>
@@ -117,6 +118,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                     <Table.Row
                                         key={account.descriptor}
                                         onClick={() => confirm(index)}
+                                        data-testid={`@select-account-modal/accounts/${account.type}/${index}`}
                                     >
                                         <Table.Cell>
                                             <Row gap={spacings.sm}>
