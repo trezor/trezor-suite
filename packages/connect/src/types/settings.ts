@@ -12,6 +12,8 @@ export interface Manifest {
 
 export type Proxy = BlockchainSettings['proxy'];
 
+export type LocalFirmwares = { firmwareDir: string; firmwareList: string[] };
+
 // omit transports which are not implemented in @trezor/connect
 type KnownTransport = Exclude<Transport['name'], 'NativeUsbTransport' | 'BluetoothTransport'>;
 export type ThpSettings = {
@@ -65,6 +67,7 @@ export interface ConnectSettingsInternal {
     proxy?: Proxy;
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
+    localFirmwares?: LocalFirmwares;
 }
 
 export interface ConnectSettingsWeb {

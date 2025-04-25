@@ -1,6 +1,7 @@
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import type { Features, FirmwareRelease, StrictFeatures, VersionArray } from '../types';
+import { Features, FirmwareRelease, FirmwareType, StrictFeatures, VersionArray } from '../types';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&
@@ -56,3 +57,13 @@ export const filterSafeListByFirmware = (
     releasesList.filter(item =>
         versionUtils.isNewerOrEqual(firmwareVersion, item.min_firmware_version),
     );
+
+export const buildFirmwareFileName = (
+    firmwareType: FirmwareType,
+    internalModel: DeviceModelInternal,
+    version: VersionArray,
+) => {
+    const firmwareTypeFileString = firmwareType === FirmwareType.BitcoinOnly ? '-bitcoinonly' : '';
+
+    return `trezor-${internalModel.toLocaleLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
+};

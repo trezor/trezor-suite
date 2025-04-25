@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
-import type { ConnectSettings, Manifest } from '../types';
+import type { ConnectSettings, LocalFirmwares, Manifest } from '../types';
 import { parseThpSettings } from './thpSettings';
 import { DEEPLINK_VERSION, DEFAULT_DOMAIN, VERSION } from './version';
 
@@ -49,6 +49,17 @@ const parseManifest = (manifest?: Manifest) => {
     };
 };
 
+export const parseLocalFirmwares = (localFirmwares: LocalFirmwares) => {
+    if (!localFirmwares) return;
+    if (typeof localFirmwares.firmwareDir !== 'string') return;
+    if (Array.isArray(localFirmwares.firmwareList)) return;
+
+    return {
+        firmwareDir: localFirmwares.firmwareDir,
+        firmwareList: localFirmwares.firmwareList,
+    };
+}
+
 // Cors validation copied from Trezor Bridge
 // see: https://github.com/trezor/trezord-go/blob/05991cea5900d18bcc6ece5ae5e319d138fc5551/server/api/api.go#L229
 // Its pointless to allow `@trezor/connect` endpoints { connectSrc } for domains other than listed below
@@ -95,6 +106,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;
+    }
+
+    if (typeof input.localFirmwares === 'object') {
+        settings.localFirmwares = parseLocalFirmwares(input.localFirmwares);
     }
 
     if (Array.isArray(input.transports)) {

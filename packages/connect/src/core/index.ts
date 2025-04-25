@@ -42,6 +42,7 @@ import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
+import { parseLocalFirmwares } from '../data/connectSettings';
 
 // custom log
 const _log = initLog('Core');
@@ -1143,6 +1144,12 @@ export class Core extends EventEmitter {
             case UI.LOGIN_CHALLENGE_RESPONSE:
                 this.uiPromises.resolve(message);
                 break;
+            case UI.RECEIVE_FIRMWARE:
+                const localFirmwares = message.payload && parseLocalFirmwares(message.payload);
+                if (localFirmwares) {
+                    DataManager.setLocalFirmwares(localFirmwares);
+                }
+                break;
 
             // message from index
             case IFRAME.CALL:
@@ -1225,6 +1232,10 @@ export class Core extends EventEmitter {
 
         try {
             await DataManager.load(settings);
+            const localFirmwares = settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
+            if (localFirmwares) {
+                DataManager.setLocalFirmwares(localFirmwares);
+            }
             const { debug, priority, _sessionsBackgroundUrl, manifest } = DataManager.getSettings();
             const messages = DataManager.getProtobufMessages();
 
