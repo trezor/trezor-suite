@@ -1,11 +1,18 @@
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, Button, Card, Text, TextDivider, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    Text,
+    TextDivider,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
 import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
@@ -34,18 +41,13 @@ type NavigationProp = StackToTabCompositeProps<
 
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const dispatch = useDispatch();
 
     const device = useSelector(selectSelectedDevice);
 
     const navigation = useNavigation<NavigationProp>();
-
-    const [isSheetVisible, setIsSheetVisible] = useState(false);
-
-    const toggleBottomSheet = () => {
-        setIsSheetVisible(!isSheetVisible);
-    };
 
     const handleTryAgain = () => {
         navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseForm);
@@ -71,7 +73,7 @@ export const PassphraseEmptyWalletScreen = () => {
                     </Text>
                 </VStack>
                 <Button
-                    onPress={toggleBottomSheet}
+                    onPress={openModal}
                     testID="@passphrase/emptyPassphraseWallet/confirmButton"
                 >
                     <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.button" />
@@ -97,7 +99,7 @@ export const PassphraseEmptyWalletScreen = () => {
                     </Button>
                 </Box>
             </VStack>
-            <EmptyWalletInfoSheet isVisible={isSheetVisible} onClose={toggleBottomSheet} />
+            <EmptyWalletInfoSheet onCloseModal={closeModal} ref={bottomSheetRef} />
         </PassphraseContentScreenWrapper>
     );
 };

@@ -1,8 +1,11 @@
+import { forwardRef } from 'react';
+
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    BottomSheet,
     BottomSheetListItem,
+    BottomSheetModal,
     Box,
     Button,
     InlineAlertBox,
@@ -17,11 +20,6 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-type EmptyWalletInfoSheetProps = {
-    onClose: () => void;
-    isVisible: boolean;
-};
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp24,
@@ -44,65 +42,66 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const EmptyWalletInfoSheet = ({ onClose, isVisible }: EmptyWalletInfoSheetProps) => {
-    const navigation = useNavigation<NavigationProp>();
+type EmptyWalletInfoSheetProps = {
+    onCloseModal: () => void;
+};
 
-    const { applyStyle } = useNativeStyles();
+export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWalletInfoSheetProps>(
+    ({ onCloseModal }, ref) => {
+        const navigation = useNavigation<NavigationProp>();
 
-    const handleOpenEmptyWallet = () => {
-        navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet);
-        onClose();
-    };
+        const { applyStyle } = useNativeStyles();
 
-    return (
-        <BottomSheet
-            isVisible={isVisible}
-            onClose={onClose}
-            isCloseDisplayed={false}
-            style={applyStyle(bottomSheetStyle)}
-        >
-            <TitleHeader
-                textAlign="left"
-                title={
-                    <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.title" />
-                }
-            />
-            <VStack alignItems="center" spacing="sp24" padding="sp8">
-                <BottomSheetListItem
-                    iconName="pencilSimpleLine"
-                    translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
-                    iconSize="medium"
-                    iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                    iconBorderColor="borderElevation0"
-                />
-                <BottomSheetListItem
-                    iconName="copy"
-                    translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
-                    iconSize="medium"
-                    iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                    iconBorderColor="borderElevation0"
-                />
-                <BottomSheetListItem
-                    iconName="eyeSlash"
-                    translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
-                    iconSize="medium"
-                    iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                    iconBorderColor="borderElevation0"
-                />
-            </VStack>
-            <VStack style={applyStyle(bottomSheetBottomStyle)}>
-                <InlineAlertBox
-                    variant="warning"
+        const handleOpenEmptyWallet = () => {
+            navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet);
+            onCloseModal();
+        };
+
+        return (
+            <BottomSheetModal style={applyStyle(bottomSheetStyle)} ref={ref}>
+                <TitleHeader
+                    textAlign="left"
                     title={
-                        <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />
+                        <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.title" />
                     }
                 />
-                <Box style={applyStyle(buttonWrapperStyle)}>
-                    <Button onPress={handleOpenEmptyWallet}>
-                        <Translation id="generic.buttons.gotIt" />
-                    </Button>
-                </Box>
-            </VStack>
-        </BottomSheet>
-    );
-};
+                <VStack alignItems="center" spacing="sp24" padding="sp8">
+                    <BottomSheetListItem
+                        iconName="pencilSimpleLine"
+                        translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
+                        iconSize="medium"
+                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderElevation0"
+                    />
+                    <BottomSheetListItem
+                        iconName="copy"
+                        translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
+                        iconSize="medium"
+                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderElevation0"
+                    />
+                    <BottomSheetListItem
+                        iconName="eyeSlash"
+                        translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
+                        iconSize="medium"
+                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderElevation0"
+                    />
+                </VStack>
+                <VStack style={applyStyle(bottomSheetBottomStyle)}>
+                    <InlineAlertBox
+                        variant="warning"
+                        title={
+                            <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />
+                        }
+                    />
+                    <Box style={applyStyle(buttonWrapperStyle)}>
+                        <Button onPress={handleOpenEmptyWallet}>
+                            <Translation id="generic.buttons.gotIt" />
+                        </Button>
+                    </Box>
+                </VStack>
+            </BottomSheetModal>
+        );
+    },
+);

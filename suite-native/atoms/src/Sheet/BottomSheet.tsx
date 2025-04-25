@@ -139,28 +139,26 @@ export const BottomSheet = forwardRef<BottomSheetHandle, BottomSheetProps>(
                                     subtitle={subtitle}
                                     isCloseDisplayed={isCloseDisplayed}
                                     onCloseSheet={closeSheetAnimated}
+                                    scrollDivider={scrollDivider}
                                 />
                                 {isScrollable ? (
-                                    <>
-                                        {scrollDivider}
-                                        <ScrollView
-                                            ref={scrollViewRef.current}
-                                            waitFor={
-                                                isCloseScrollEnabled
-                                                    ? panGestureRef.current
-                                                    : scrollViewRef.current
-                                            }
-                                            onScroll={handleScroll}
-                                            keyboardShouldPersistTaps="handled"
-                                            testID="@bottom-sheet/scroll-view"
-                                        >
-                                            <Animated.View>
-                                                <Box paddingHorizontal="sp16" {...boxProps}>
-                                                    {children}
-                                                </Box>
-                                            </Animated.View>
-                                        </ScrollView>
-                                    </>
+                                    <ScrollView
+                                        ref={scrollViewRef.current}
+                                        waitFor={
+                                            isCloseScrollEnabled
+                                                ? panGestureRef.current
+                                                : scrollViewRef.current
+                                        }
+                                        onScroll={handleScroll}
+                                        keyboardShouldPersistTaps="handled"
+                                        testID="@bottom-sheet/scroll-view"
+                                    >
+                                        <Animated.View>
+                                            <Box paddingHorizontal="sp16" {...boxProps}>
+                                                {children}
+                                            </Box>
+                                        </Animated.View>
+                                    </ScrollView>
                                 ) : (
                                     <Box {...boxProps} style={{ height: '100%' }}>
                                         {children}

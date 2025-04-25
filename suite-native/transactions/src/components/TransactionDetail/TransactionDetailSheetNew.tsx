@@ -16,11 +16,6 @@ type TransactionDetailSheetProps = {
 
 type SheetType = 'parameters' | 'values' | 'inputs';
 
-type TransactionSheetAnalyticsEventType =
-    | EventType.TransactionDetailParameters
-    | EventType.TransactionDetailCompareValues
-    | EventType.TransactionDetailInputOutput;
-
 const sheetToAnalyticsEventMap: Record<SheetType, TransactionSheetAnalyticsEventType> = {
     parameters: EventType.TransactionDetailParameters,
     values: EventType.TransactionDetailCompareValues,
@@ -57,7 +52,7 @@ const BottomSheetTrigger = ({
     );
 };
 
-export const TransactionDetailSheet = ({
+export const TransactionDetailSheetNew = ({
     iconName,
     title,
     transactionId,
@@ -78,7 +73,6 @@ export const TransactionDetailSheet = ({
                 ref={bottomSheetRef}
                 title={title}
                 subtitle={`Transaction #${transactionId}`}
-                isCloseDisplayed
             >
                 <Box paddingTop="sp24">
                     {children}

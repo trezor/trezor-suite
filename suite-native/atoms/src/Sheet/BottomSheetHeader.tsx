@@ -13,21 +13,8 @@ type BottomSheetHeaderProps = {
     subtitle?: ReactNode;
     isCloseDisplayed: boolean;
     onCloseSheet: () => void;
+    scrollDivider?: ReactNode;
 };
-type SheetHeaderWrapperStyleProps = { isHeaderDisplayed: boolean };
-
-const sheetHeaderWrapperStyle = prepareNativeStyle<SheetHeaderWrapperStyleProps>(
-    (utils, { isHeaderDisplayed }) => ({
-        marginBottom: utils.spacings.sp24,
-
-        extend: {
-            condition: isHeaderDisplayed,
-            style: {
-                marginBottom: 0,
-            },
-        },
-    }),
-);
 
 const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
     (utils, { isCloseDisplayed }) => ({
@@ -35,7 +22,6 @@ const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
         justifyContent: 'space-between',
         alignItems: isCloseDisplayed ? 'center' : 'flex-start',
         paddingHorizontal: utils.spacings.sp24,
-        paddingTop: utils.spacings.sp24,
         paddingBottom: utils.spacings.sp16,
     }),
 );
@@ -51,17 +37,17 @@ export const BottomSheetHeader = ({
     subtitle,
     isCloseDisplayed,
     onCloseSheet,
+    scrollDivider,
 }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     const isHeaderDisplayed = !!(title || subtitle || isCloseDisplayed);
 
     return (
-        <Box
-            marginVertical="sp8"
-            style={applyStyle(sheetHeaderWrapperStyle, { isHeaderDisplayed })}
-        >
-            <BottomSheetGrabber />
+        <Box>
+            <Box marginTop="sp8" marginBottom="sp24">
+                <BottomSheetGrabber />
+            </Box>
             {isHeaderDisplayed && (
                 <View style={applyStyle(sheetHeaderStyle, { isCloseDisplayed })}>
                     <View style={applyStyle(titlesContainer, { isCloseDisplayed })}>
@@ -84,6 +70,7 @@ export const BottomSheetHeader = ({
                     )}
                 </View>
             )}
+            {scrollDivider}
         </Box>
     );
 };
