@@ -1,10 +1,11 @@
-import { BrowserWindow, app } from 'electron';
+import { BrowserWindow, app, nativeTheme } from 'electron';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
+import { colorVariants } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
@@ -42,7 +43,11 @@ const parseRemoveUserDataSwitch = () => {
 };
 parseRemoveUserDataSwitch();
 
-const createMainWindow = (winBounds: WinBounds) => {
+const createMainWindow = (winBounds: WinBounds, store: Store) => {
+    const darkTheme =
+        store.getThemeSettings() === 'dark' ||
+        (store.getThemeSettings() === 'system' && nativeTheme.shouldUseDarkColors);
+
     const mainWindow = new BrowserWindow({
         title: APP_NAME,
         width: winBounds.width,
@@ -61,6 +66,7 @@ const createMainWindow = (winBounds: WinBounds) => {
             preload: path.join(__dirname, 'preload.js'),
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
+        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].backgroundSurfaceElevation0,
     });
 
     let resizeDebounce: TimerId | null = null;
@@ -223,7 +229,7 @@ const init = async () => {
         let mainWindow = mainWindowProxy.getInstance();
         if (!mainWindow || mainWindow.isDestroyed()) {
             logger.info('main', 'Main window destroyed, recreating');
-            mainWindow = createMainWindow(winBounds);
+            mainWindow = createMainWindow(winBounds, store);
             mainWindowProxy.setInstance(mainWindow);
         }
 
@@ -363,7 +369,7 @@ const init = async () => {
     });
 
     // Create main window last, so all listeners are set up
-    mainWindowProxy.setInstance(createMainWindow(winBounds));
+    mainWindowProxy.setInstance(createMainWindow(winBounds, store));
 };
 
 init();

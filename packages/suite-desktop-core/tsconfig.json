@@ -39,6 +39,7 @@
         { "path": "../request-manager" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
+        { "path": "../theme" },
         { "path": "../transport" },
         { "path": "../transport-bluetooth" },
         { "path": "../transport-bridge" },
