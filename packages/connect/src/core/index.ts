@@ -258,7 +258,6 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         method.requireDeviceMode,
     );
     if (unexpectedMode) {
-        device.releaseTransportSession();
         if (isUsingPopup) {
             // wait for popup handshake
             await waitForPopup(context);
@@ -542,8 +541,7 @@ const onCallDevice = async (
     message: IFrameCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
-    const { deviceList, callMethods, getOverridePromise, setOverridePromise, sendCoreMessage } =
-        context;
+    const { deviceList, callMethods, sendCoreMessage } = context;
     const responseID = message.id;
     const { origin, env, useCoreInPopup, transports } = DataManager.getSettings();
 
@@ -602,8 +600,8 @@ const onCallDevice = async (
         // interrupt potential communication with device. this should throw error in try/catch block below
         // this error will apply to the last item of pending methods
         const overrideError = ERRORS.TypedError('Method_Override');
-        setOverridePromise(device.override(overrideError));
-        await getOverridePromise();
+        await device.interrupt(overrideError); // TODO not necessary to release session here
+
         // if current method was overridden while waiting for device.override result
         // return response with status false
         if (method.overridden) {
@@ -648,10 +646,6 @@ const onCallDevice = async (
     let messageResponse: CoreEventMessage;
 
     try {
-        // run inner function
-        if (getOverridePromise()) {
-            await getOverridePromise();
-        }
         const innerAction = () =>
             inner(context, method, device).then(response => {
                 messageResponse = response;
@@ -688,10 +682,6 @@ const onCallDevice = async (
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
     } finally {
-        // TODO This condition has to be there; awaiting undefined breaks e2e tests, which is a complete mystery
-        if (getOverridePromise()) {
-            await getOverridePromise();
-        }
         // Work done
 
         if (
@@ -926,7 +916,6 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
         deviceList,
         callMethods,
         resetWaitForFirstMethod,
-        setOverridePromise,
         sendCoreMessage,
     } = context;
     const error = customErrorMessage
@@ -935,9 +924,8 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
         deviceList.getAllDevices().forEach(d => {
-            d.releaseTransportSession(); // clear transportSession on release
             if (d.isUsedHere()) {
-                setOverridePromise(d.interruptionFromUser(error));
+                d.interrupt(error);
             } else {
                 const success = uiPromises.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
                 if (!success) {
@@ -1049,7 +1037,6 @@ export class Core extends EventEmitter {
         startInteractionTimeout(this.getCoreContext()),
     );
 
-    private overridePromise: Promise<void> | undefined;
     private waitForFirstMethod = createDeferred();
 
     private _interactionTimeout?: InteractionTimeout;
@@ -1091,10 +1078,6 @@ export class Core extends EventEmitter {
             },
             resolveWaitForFirstMethod: () => {
                 this.waitForFirstMethod.resolve();
-            },
-            getOverridePromise: () => this.overridePromise,
-            setOverridePromise: (promise: Promise<void>) => {
-                this.overridePromise = promise;
             },
         };
     }
