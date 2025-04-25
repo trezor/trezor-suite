@@ -15,9 +15,11 @@ import {
     selectDeviceThunk,
     selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { DEVICE } from '@trezor/connect';
+import { getFirmwareVersionArray, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { isDeviceEventAction } from '../utils';
 
@@ -78,11 +80,29 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
         switch (action.type) {
             case DEVICE.CONNECT:
-            case DEVICE.CONNECT_UNACQUIRED:
+            case DEVICE.CONNECT_UNACQUIRED: {
                 if (isUsbDeviceConnectFeatureEnabled) {
                     dispatch(selectDeviceThunk(action.payload));
                 }
+
+                const {
+                    device: { features, mode },
+                } = action.payload;
+
+                if (features && mode) {
+                    analytics.report({
+                        type: EventType.ConnectDevice,
+                        payload: {
+                            firmwareVersion: getFirmwareVersionArray(action.payload.device),
+                            pinProtection: features.pin_protection,
+                            isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
+                            deviceLanguage: features.language,
+                            deviceModel: features.internal_model,
+                        },
+                    });
+                }
                 break;
+            }
             case DEVICE.DISCONNECT:
                 if (!isDeviceForceRemembered) {
                     // In case of force remember we don't want to call this thunk because it will change selected device

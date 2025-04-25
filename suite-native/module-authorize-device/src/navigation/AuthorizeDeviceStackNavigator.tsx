@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useReportDeviceConnectToAnalytics } from '@suite-native/device';
 import {
     selectDeviceRequestedPin,
     useHandleDuplicatePassphrase,
@@ -30,9 +29,6 @@ export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceSt
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
-    // TODO: This should be in global hook to be reported if view-only enabled device is connected.
-    // But we should prevent the re-reporting of an already connected device when the state changes.
-    useReportDeviceConnectToAnalytics();
     useHandleDuplicatePassphrase();
 
     return (
