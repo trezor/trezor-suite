@@ -10,8 +10,8 @@ export class ConnectPermissionsModal {
         this.loadingHeader = page
             .getByTestId('@connect-popup-loading')
             .getByTestId('@modal/header');
-        this.processParagraph = page.getByTestId('@connect-popup-modal/paragraph-process');
-        this.rememberCheckbox = page.getByTestId('@connect-popup-modal/remember-checkbox');
-        this.confirmButton = page.getByTestId('@modal').getByRole('button', { name: 'Confirm' });
+        this.processParagraph = page.getByTestId('@connect-permissions-modal/paragraph-process');
+        this.rememberCheckbox = page.getByTestId('@connect-permissions-modal/remember-checkbox');
+        this.confirmButton = page.getByTestId('@connect-permissions-modal/confirm-button');
     }
 }

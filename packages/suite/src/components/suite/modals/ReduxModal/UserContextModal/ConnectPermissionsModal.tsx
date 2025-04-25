@@ -49,10 +49,18 @@ export const ConnectPermissionsModal = () => {
             onCancel={onCancel}
             bottomContent={
                 <>
-                    <Modal.Button variant="primary" onClick={onConfirm}>
+                    <Modal.Button
+                        variant="primary"
+                        onClick={onConfirm}
+                        data-testid="@connect-permissions-modal/confirm-button"
+                    >
                         {confirmLabel || <Translation id="TR_CONFIRM" />}
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button
+                        variant="tertiary"
+                        onClick={onCancel}
+                        data-testid="@connect-permissions-modal/cancel-button"
+                    >
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
@@ -94,7 +102,7 @@ export const ConnectPermissionsModal = () => {
                                 {source.process && (
                                     <ConnectProcessLabel
                                         process={source.process}
-                                        data-testid="@connect-popup-modal/paragraph-process"
+                                        data-testid="@connect-permissions-modal/paragraph-process"
                                     />
                                 )}
                             </Row>
@@ -126,7 +134,7 @@ export const ConnectPermissionsModal = () => {
 
                         <Card>
                             <Checkbox
-                                data-testid="@connect-popup-modal/remember-checkbox"
+                                data-testid="@connect-permissions-modal/remember-checkbox"
                                 isChecked={isRemembered}
                                 onClick={() => setIsRemembered(!isRemembered)}
                             >
