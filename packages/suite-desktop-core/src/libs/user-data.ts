@@ -56,6 +56,29 @@ export const save = async (
     }
 };
 
+export const saveBuffer = async (directory: string, name: string, content: ArrayBuffer) => {
+    const dir = path.join(app.getPath('userData'), directory);
+    const file = path.join(dir, name);
+
+    const buffer = Buffer.from(content);
+
+    try {
+        try {
+            await fs.promises.access(dir, fs.constants.R_OK);
+        } catch {
+            await fs.promises.mkdir(dir);
+        }
+
+        await fs.promises.writeFile(file, buffer, 'binary');
+
+        return { success: true };
+    } catch (error) {
+        global.logger.error('user-data', `Save failed: ${error.message}`);
+
+        return { success: false, error: error.message, code: error.code };
+    }
+};
+
 export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
     const dir = path.join(app.getPath('userData'), directory);
     const file = path.join(dir, name);

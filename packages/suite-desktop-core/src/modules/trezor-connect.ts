@@ -1,10 +1,13 @@
 import { ipcMain } from 'electron';
 
-import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
+import TrezorConnect, { DEVICE_EVENT, LocalFirmwares, UI, UI_EVENT } from '@trezor/connect';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
+import { getStoredFirmwares } from './firmware';
+
 import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
+
 
 export const SERVICE_NAME = '@trezor/connect';
 
@@ -56,9 +59,13 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
             onRequest: async (method, params) => {
                 logger.debug(SERVICE_NAME, `call ${method}`);
                 if (method === 'init') {
-                    const response = await TrezorConnect.init({
+                    logger.info(SERVICE_NAME, `Retrieving stored firmwares`);
+                    const localFirmwares = await getStoredFirmwares();
+                    const settings = {
                         ...params[0],
-                    });
+                        localFirmwares: localFirmwares.success ? localFirmwares.payload : undefined,
+                    };
+                    const response = await TrezorConnect.init(settings);
                     await setProxy();
 
                     return response;
@@ -99,10 +106,23 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
     return { onLoad, onQuit };
 };
 
-export const init: ModuleInit = () => {
+export const init: ModuleInit = ({ mainThreadEmitter }) => {
     const onLoad = () => {
         // reset previous instance, possible left over after renderer refresh (F5)
         TrezorConnect.dispose();
+        mainThreadEmitter.on('module/firmware/list', (event: LocalFirmwares) => {
+            TrezorConnect.uiResponse({
+                type: UI.RECEIVE_FIRMWARE,
+                payload: event,
+            });
+        });
+
+        TrezorConnect.on(UI_EVENT, event => {
+            const { type } = event;
+            if (type === UI.FIRMWARE_DOWNLOADED) {
+                mainThreadEmitter.emit('module/trezor-connect/firmware-store', event.payload);
+            }
+        });
     };
 
     return { onLoad };
