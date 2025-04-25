@@ -23,7 +23,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "framer-motion": "^12.8.2",
+        "framer-motion": "^12.9.1",
         "react-intl": "^7.1.11"
     },
     "devDependencies": {
@@ -32,7 +32,7 @@
     "peerDependencies": {
         "react": "18.2.0",
         "styled-components": "^6.1.17",
-        "stylelint": "^16.18.0",
+        "stylelint": "^16.19.0",
         "stylelint-config-standard": "^38.0.0"
     }
 }

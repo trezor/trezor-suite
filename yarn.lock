@@ -11404,7 +11404,7 @@ __metadata:
     "@types/react": "npm:18.2.55"
     "@types/react-date-range": "npm:^1.4.10"
     date-fns: "npm:^4.1.0"
-    framer-motion: "npm:^12.8.2"
+    framer-motion: "npm:^12.9.1"
     lottie-react: "npm:2.4.1"
     polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.7.1"
@@ -11648,7 +11648,7 @@ __metadata:
   peerDependencies:
     react: 18.2.0
     styled-components: ^6.1.17
-    stylelint: ^16.18.0
+    stylelint: ^16.19.0
     stylelint-config-standard: ^38.0.0
   languageName: unknown
   linkType: soft
@@ -11670,12 +11670,12 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.55"
-    framer-motion: "npm:^12.8.2"
+    framer-motion: "npm:^12.9.1"
     react-intl: "npm:^7.1.11"
   peerDependencies:
     react: 18.2.0
     styled-components: ^6.1.17
-    stylelint: ^16.18.0
+    stylelint: ^16.19.0
     stylelint-config-standard: ^38.0.0
   languageName: unknown
   linkType: soft
@@ -11910,7 +11910,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.55"
-    framer-motion: "npm:^12.8.2"
+    framer-motion: "npm:^12.9.1"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.54.2"
     react-intl: "npm:^7.1.11"
@@ -12384,7 +12384,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     dropbox: "npm:^10.34.0"
     file-saver: "npm:^2.0.5"
-    framer-motion: "npm:^12.8.2"
+    framer-motion: "npm:^12.9.1"
     history: "npm:^4.10.1"
     idb: "npm:^8.0.2"
     immer: "npm:10.1.1"
@@ -23793,12 +23793,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^12.8.2":
-  version: 12.8.2
-  resolution: "framer-motion@npm:12.8.2"
+"framer-motion@npm:^12.9.1":
+  version: 12.9.1
+  resolution: "framer-motion@npm:12.9.1"
   dependencies:
-    motion-dom: "npm:^12.8.1"
-    motion-utils: "npm:^12.7.5"
+    motion-dom: "npm:^12.9.1"
+    motion-utils: "npm:^12.8.3"
     tslib: "npm:^2.4.0"
   peerDependencies:
     "@emotion/is-prop-valid": "*"
@@ -23811,7 +23811,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10/a3398de09aec3b7fa04994a9df8a3a540a7f58da038d53517fc84ea5990bf5217530f36c02acb1d51930b5fd1715dea3d67932bc10a6672c9413a968bb0e0581
+  checksum: 10/ef7fbc3077a6408c8d4e5fa4bd13077c366243d10ceb014edb2b8e36999335e51f0332bc7dca951cd2cd475874bde578ddd16f4ce4c918fdbb5a978ac638dcbf
   languageName: node
   linkType: hard
 
@@ -31402,19 +31402,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion-dom@npm:^12.8.1":
-  version: 12.8.1
-  resolution: "motion-dom@npm:12.8.1"
+"motion-dom@npm:^12.9.1":
+  version: 12.9.1
+  resolution: "motion-dom@npm:12.9.1"
   dependencies:
-    motion-utils: "npm:^12.7.5"
-  checksum: 10/153417bf4b9ee7949a6f1d53bd3ccd175edd1c4473c3e976d559581e9af5c06da0bd35419caba30746b8e17a9b5ca51e5c91a3bd18597ee5f637c1168598cd06
+    motion-utils: "npm:^12.8.3"
+  checksum: 10/3985ff774fa0350ed82ca1b160604cd786559e707ef8b05631bc9ef05188fbdb97197463c23e142fc4f9afa023e8cb5e223994ac6a3146fc6d85aece6df235aa
   languageName: node
   linkType: hard
 
-"motion-utils@npm:^12.7.5":
-  version: 12.7.5
-  resolution: "motion-utils@npm:12.7.5"
-  checksum: 10/cfaf003d714329718a856f24ebe734524aaba645a78261f693f516251802bb03f3899d1b11fc82b8f0f436dfed32b9887b5a363510301bdd690fc5c6392d42f7
+"motion-utils@npm:^12.8.3":
+  version: 12.8.3
+  resolution: "motion-utils@npm:12.8.3"
+  checksum: 10/5e14be43fd6970c45e43f3628e1851800991dbb967174343db6ea45f5a90c7a3ab25d18bc23cff5d5c21c2e34c5fe875ba7583ebd9533a52af5e9a821fc4b8ad
   languageName: node
   linkType: hard
 
