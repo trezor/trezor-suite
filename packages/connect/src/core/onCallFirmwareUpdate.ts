@@ -139,7 +139,7 @@ const waitForReconnectedDevice = async (
     }
 
     registerEvents(reconnectedDevice);
-    await reconnectedDevice.waitForFirstRun();
+    await reconnectedDevice.currentRun;
 
     if (!reconnectedDevice.isUsedHere()) {
         await reconnectedDevice.acquire();

@@ -165,11 +165,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private keepTransportSession = false;
     private currentSession?: DeviceCurrentSession;
 
-    private loaded = false;
-
     private inconsistent = false;
 
-    private firstRunPromise: Deferred<boolean>;
     private instance = 0;
 
     // DeviceState list [this.instance]: DeviceState | undefined
@@ -222,9 +219,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.session = descriptor.session;
         this.lastAcquiredHere = false;
-
-        // this will be released after first run
-        this.firstRunPromise = createDeferred();
     }
 
     private getSessionChangePromise() {
@@ -447,7 +441,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // reject inner defer
         this.runAbort?.abort(reason);
 
-        await this.runPromise?.catch(() => {});
+        await this.currentRun;
+    }
+
+    get currentRun() {
+        return this.runPromise?.catch(() => {});
     }
 
     public usedElsewhere() {
@@ -609,7 +607,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         // reload features
-        if (this.loaded && this.features && !options.skipFinalReload) {
+        if (this.features && !options.skipFinalReload) {
             await this.getFeatures();
         }
 
@@ -619,11 +617,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         ) {
             this.keepTransportSession = false;
             await this.release();
-        }
-
-        if (!this.loaded) {
-            this.loaded = true;
-            this.firstRunPromise.resolve(true);
         }
     }
 
@@ -1108,18 +1101,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     isUsedElsewhere() {
         return this.isUsed() && !this.lastAcquiredHere;
-    }
-
-    isRunning() {
-        return !!this.runPromise;
-    }
-
-    isLoaded() {
-        return this.loaded;
-    }
-
-    waitForFirstRun() {
-        return this.firstRunPromise.promise;
     }
 
     getUniquePath() {

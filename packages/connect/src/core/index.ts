@@ -610,12 +610,12 @@ const onCallDevice = async (
             );
             throw overrideError;
         }
-    } else if (device.isRunning()) {
-        if (!device.isLoaded()) {
+    } else if (device.currentRun) {
+        if (device.isUnacquired()) {
             // corner case
             // device didn't finish loading for the first time. @see DeviceList._createAndSaveDevice
             // wait for self-release and then carry on
-            await device.waitForFirstRun();
+            await device.currentRun;
         } else {
             // cancel popup request
             // sendCoreMessage(UiMessage(POPUP.CANCEL_POPUP_REQUEST));
