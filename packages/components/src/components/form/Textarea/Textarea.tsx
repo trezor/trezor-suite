@@ -21,9 +21,11 @@ const TextareaWrapper = styled(InputWrapper)<{
     disabled?: boolean; // intentionally not transient, disabled is HTML <input> prop
     $elevation: Elevation;
     $inputState?: InputState;
+    $hasLabel: boolean;
 }>`
     ${baseInputStyle}
-    padding: ${spacingsPx.xl} 0 ${spacingsPx.md};
+    padding: ${({ $hasLabel }) => ($hasLabel ? spacingsPx.xxl : spacingsPx.md)} 0
+        ${spacingsPx.md};
 
     &:focus-within {
         border-color: ${({ theme }) => theme.borderElevation1};
@@ -101,7 +103,12 @@ export const Textarea = ({
 
     return (
         <FormCell {...formCellProps}>
-            <TextareaWrapper $inputState={inputState} disabled={isDisabled} $elevation={elevation}>
+            <TextareaWrapper
+                $hasLabel={!!label}
+                $inputState={inputState}
+                disabled={isDisabled}
+                $elevation={elevation}
+            >
                 <StyledTextarea
                     $elevation={elevation}
                     spellCheck={false}

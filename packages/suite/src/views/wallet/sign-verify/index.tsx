@@ -116,10 +116,18 @@ const SignVerify = () => {
 
             <Card>
                 <Tabs activeItemId={page} size="large" margin={{ bottom: spacings.lg }}>
-                    <Tabs.Item id="sign" onClick={() => setPage('sign')}>
+                    <Tabs.Item
+                        id="sign"
+                        onClick={() => setPage('sign')}
+                        data-testid="@sign-verify/navigation/sign"
+                    >
                         <Translation id="TR_SIGN" />
                     </Tabs.Item>
-                    <Tabs.Item id="verify" onClick={() => setPage('verify')}>
+                    <Tabs.Item
+                        id="verify"
+                        onClick={() => setPage('verify')}
+                        data-testid="@sign-verify/navigation/verify"
+                    >
                         <Translation id="TR_VERIFY" />
                     </Tabs.Item>
                 </Tabs>
