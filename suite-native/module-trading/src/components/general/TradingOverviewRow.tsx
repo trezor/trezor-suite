@@ -44,8 +44,8 @@ export const TradingOverviewRow = ({
             accessibilityRole="button"
             style={applyStyle(pressableStyle, { noBottomBorder })}
         >
-            <HStack paddingHorizontal="sp20" justifyContent="space-between">
-                <Box paddingVertical="sp20" flex={0}>
+            <HStack paddingHorizontal="sp12" justifyContent="space-between">
+                <Box paddingVertical="sp20" paddingHorizontal="sp8" flex={0}>
                     <Text color="textDefault" variant="body">
                         {title}
                     </Text>

@@ -29,7 +29,7 @@ export const AssetNetworkInfo = () => {
     }
 
     return (
-        <HStack paddingHorizontal="sp4">
+        <HStack paddingHorizontal="sp8">
             <NetworkIcon symbol={symbol} size="large" />
             <Text
                 variant="hint"

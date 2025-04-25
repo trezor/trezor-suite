@@ -20,14 +20,14 @@ export const ReceiveAccountCryptoBalance = () => {
 
     return (
         <HStack testID={RECEIVE_ACCOUNT_BALANCE_TEST_ID}>
-            <Text variant="body" color="textSubdued">
+            <Text variant="hint" color="textSubdued">
                 <Translation id="moduleTrading.tradingScreen.balance" />
             </Text>
             <DiscreetTextTrigger>
                 <CryptoAmountFormatter
                     value={balance}
                     symbol={symbol}
-                    variant="body"
+                    variant="hint"
                     color="textSubdued"
                     isBalance={false}
                     decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
