@@ -9,7 +9,7 @@ import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnota
 const ORGANIZATION = 'trezor';
 const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
 const QA_TEAM_ID = 'T_kwDOAD9FD84AMZXd';
-const PROJECT_NAME = 'Test Results 43'; // TODO: Get this from CI, probably build name
+const PROJECT_NAME = 'Test Results 35'; // 43 TODO: Get this from CI, probably build name
 const RETRY_CONF = {
     attempts: 3,
     gap: 500,
