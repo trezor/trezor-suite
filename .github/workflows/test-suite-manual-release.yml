@@ -5,6 +5,7 @@ name: "[Test] Release Suite manual e2e tests"
 permissions:
   issues: write # for creating issues which represent the manual regression tests
   repository-projects: write # for creating projects in QA team which contain the suite
+  discussions: write
 
 on:
   push:
@@ -38,8 +39,8 @@ jobs:
       - name: Install PW Dependencies
         shell: bash
         run: |
-          echo "Silently installing Playwright dependencies"
-          yarn workspaces focus @trezor/suite-desktop-core > /dev/null
+          echo "Installing Playwright dependencies"
+          yarn workspaces focus @trezor/suite-desktop-core
 
       - name: Run Playwright Reporter
         shell: bash
