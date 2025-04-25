@@ -4,7 +4,7 @@ import { scheduleAction } from '@trezor/utils';
 
 import { ProjectRequests } from './projectRequests';
 import { LoggingFunctions } from './types';
-import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
+import { BaseAnnotation } from '../enums/testAnnotations';
 
 const ORGANIZATION = 'trezor';
 const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
@@ -34,6 +34,7 @@ export class GitHubProject {
         return this._projectId;
     }
 
+    // GraphQL requests require token with permissions `project, read:org`
     async init(): Promise<void> {
         try {
             const existingProject = await this.findExistingProject();
@@ -45,24 +46,28 @@ export class GitHubProject {
                 );
 
                 return;
-            }
-
-            await this.createProject(annotationsForProjectFields);
-
-            // Instead of taking projectId from 'createProject()' we run another 'findExistingProject()' query again
-            // Goal is to avoid conflicts by searching for the project again, by its name and choosing the oldest
-            // Source of conflict: Parallel workflows on CI (Web x Desktop), parallel groups in one workflow
-            const createdProject = await this.findExistingProject();
-            if (createdProject) {
-                this._projectId = createdProject.id;
-                this.logger.log(
-                    `Using created project: ${createdProject.title} (${createdProject.id})`,
-                );
-
-                return;
             } else {
-                throw new Error('Failed to find the created project');
+                this.logger.logError(`No existing project found.`);
+                throw new Error('No existing project found.');
             }
+
+            // We cannot get atm right token to be able to create project from Github Actions
+            // await this.createProject(annotationsForProjectFields);
+
+            // // Instead of taking projectId from 'createProject()' we run another 'findExistingProject()' query again
+            // // Goal is to avoid conflicts by searching for the project again, by its name and choosing the oldest
+            // // Source of conflict: Parallel workflows on CI (Web x Desktop), parallel groups in one workflow
+            // const createdProject = await this.findExistingProject();
+            // if (createdProject) {
+            //     this._projectId = createdProject.id;
+            //     this.logger.log(
+            //         `Using created project: ${createdProject.title} (${createdProject.id})`,
+            //     );
+
+            //     return;
+            // } else {
+            //     throw new Error('Failed to find the created project');
+            // }
         } catch (error) {
             this.logger.logError('Project initialization failed.');
             throw error;

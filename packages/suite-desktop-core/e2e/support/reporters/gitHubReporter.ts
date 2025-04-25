@@ -8,7 +8,6 @@ import { GitHubProject } from './gitHubProject';
 import { IssueRequests } from './issueRequests';
 import { LoggingFunctions, ProjectField } from './types';
 
-const VERBOSE = true;
 const RETRY_CONF = {
     attempts: 3,
     gap: 500,
@@ -32,7 +31,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
     private initializationPromise: Promise<void> | null = null;
 
     log(...args: any[]): void {
-        if (VERBOSE) {
+        if (process.env.GITHUB_REPORTER_VERBOSE) {
             console.warn('[GitHub Reporter]', ...args);
         }
     }
@@ -42,7 +41,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
     }
 
     logResponse(label: string, response: any): void {
-        if (VERBOSE) {
+        if (process.env.GITHUB_REPORTER_VERBOSE) {
             console.warn(`[GitHub Reporter] ${label}:`);
             console.warn(JSON.stringify(response, null, 2));
         }
@@ -105,8 +104,14 @@ class GitHubReporter implements Reporter, LoggingFunctions {
                 throw error; // Critical error, rethrow to stop execution
             }
 
-            await this.gitHubProject.init();
-            this.initState = InitializationState.COMPLETED;
+            try {
+                await this.gitHubProject.init();
+                this.initState = InitializationState.COMPLETED;
+            } catch (error) {
+                this.initState = InitializationState.FAILED;
+                this.logError('Failed to initialize GitHub Project.');
+                throw error; // Critical error, rethrow to stop execution
+            }
         })();
         this.initializationPromise = initPromise;
 

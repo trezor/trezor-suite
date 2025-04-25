@@ -46,6 +46,7 @@ jobs:
         env:
           GITHUB_ACTION: true
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_REPORTER_VERBOSE: true
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
           yarn workspace @trezor/suite-desktop-core test:e2e:manual
