@@ -288,7 +288,6 @@ describe('sendTransactionThunk', () => {
                 account,
                 trade: {
                     ...trade.data,
-                    ...trade.data,
                     partnerPaymentExtraId: undefined,
                 },
                 returnUrl,
@@ -310,6 +309,7 @@ describe('sendTransactionThunk', () => {
                 date: dateString,
                 data: {
                     ...trade.data,
+                    receiveTxHash: 'txid',
                     partnerPaymentExtraId: undefined,
                 },
                 key: trade.data.orderId,

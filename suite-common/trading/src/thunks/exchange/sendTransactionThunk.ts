@@ -122,7 +122,7 @@ export const sendTransactionThunk = createThunk<
                     accountType: account.accountType,
                     accountIndex: account.index,
                 },
-                data: selectedTrade,
+                data: { ...selectedTrade, receiveTxHash: payload.payload.txid },
                 sendAccountKey,
                 receiveAccountKey,
             }),
