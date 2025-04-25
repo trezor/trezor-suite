@@ -65,7 +65,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
                         onGestureStart={handleGestureStart}
                         points={graphPoints}
                         loading={isLoading}
-                        error={error}
+                        error={error?.message}
                         onTryAgain={refetch}
                         events={graphEvents}
                     />

@@ -32,7 +32,7 @@ type useGraphForAccountsParams<TIsPortfolioGraph extends boolean = boolean> =
 type CommonUseGraphReturnType = {
     graphEvents?: GroupedBalanceMovementEvent[];
     isLoading: boolean;
-    error: string | null;
+    error: Error | null;
     refetch: () => Promise<void>;
 };
 
@@ -90,7 +90,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
     >([]);
     const [graphEvents, setGraphEvents] = useState<GroupedBalanceMovementEvent[]>();
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<Error | null>(null);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const dispatch = useDispatch();
@@ -105,7 +105,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                 setError(null);
             } else if (A.isEmpty(accounts)) {
                 setIsLoading(false);
-                setError('Graph is not available for testnet coins.');
+                setError(new Error('Graph is not available for testnet coins.'));
             } else {
                 const fetchTimestamp = Date.now();
                 lastFetchTimestamp.current = fetchTimestamp;
@@ -151,7 +151,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                     console.error(err);
                     // If the fetch was interrupted by a new fetch, do not set error.
                     if (lastFetchTimestamp.current !== fetchTimestamp) return;
-                    setError(err.message);
+                    setError(err as Error);
                 }
                 setIsLoading(false);
             }

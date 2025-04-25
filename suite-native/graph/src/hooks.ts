@@ -70,24 +70,24 @@ const useWatchTimeframeChangeForAnalytics = (
     }, [timeframeHours, symbol, isFirstRender]);
 };
 
-const redactBetweenSubstrings = (string: string, substring1: string, substring2?: string) => {
-    const start = string.indexOf(substring1);
-    const end = substring2 ? string.indexOf(substring2) : -1;
+const omitSensitiveSubstring = (message: string, prefix: string, suffix: string = '\n') => {
+    const start = message.indexOf(prefix);
+    const end = suffix ? message.indexOf(suffix) : -1;
 
     if (start !== -1) {
-        const str = string.slice(0, start + substring1.length) + ' redacted';
-        if (end !== -1 && end > start + substring1.length) {
-            return str + ' ' + string.slice(end);
+        const str = message.slice(0, start + prefix.length) + ' [SENSITIVE DATA HIDDEN]';
+        if (end !== -1 && end > start + prefix.length) {
+            return str + ' ' + message.slice(end);
         }
 
         return str;
     }
 
-    return string;
+    return message;
 };
 
-// this array defines start and end substrings for redacting using redact()
-const redactSubstringsArray: { start: string; end?: string }[] = [
+// this array defines start and end substrings for redacting using `omitErrorMessageSensitiveData()`
+const CensoredStringsMap: { start: string; end?: string }[] = [
     { start: 'Account not found:' },
     { start: 'Unable to fetch fiat rates for defined timestamps. ' },
     { start: 'Aborted by timeout -' },
@@ -97,17 +97,24 @@ const redactSubstringsArray: { start: string; end?: string }[] = [
     },
 ];
 
-const redact = (string: string) => {
+const omitErrorMessageSensitiveData = (string: string) => {
     let msg = string;
-    redactSubstringsArray.map(a => {
-        msg = redactBetweenSubstrings(msg, a.start, a.end);
+    CensoredStringsMap.map(a => {
+        msg = omitSensitiveSubstring(msg, a.start, a.end);
     });
 
     return msg;
 };
 
-const checkAndReportGraphError = (error: string | null) => {
-    if (error) captureException(redact(error));
+const checkAndReportGraphError = (error: Error | null) => {
+    if (error) {
+        // new Error object has to be created, to not override the original data
+        const errorCopy = new Error(omitErrorMessageSensitiveData(error.message));
+        errorCopy.stack = omitErrorMessageSensitiveData(error.stack ?? '');
+        errorCopy.name = error.name;
+
+        captureException(errorCopy);
+    }
 };
 
 export const useGraphForSingleAccount = ({

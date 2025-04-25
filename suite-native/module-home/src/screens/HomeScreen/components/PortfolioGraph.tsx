@@ -107,7 +107,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
                     onGestureEnd={setInitialSelectedPoints}
                     onGestureStart={handleGestureStart}
                     onTryAgain={refetch}
-                    error={error}
+                    error={error?.message}
                 />
             )}
             <IgnoredNetworksBanner />
