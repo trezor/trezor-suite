@@ -1,5 +1,6 @@
 @currents/cmd
 @currents/playwright
+@octokit/rest
 @playwright/browser-chromium
 @playwright/browser-firefox
 @playwright/browser-webkit
