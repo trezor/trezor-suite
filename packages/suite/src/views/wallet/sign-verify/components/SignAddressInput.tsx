@@ -12,11 +12,6 @@ import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveRedu
 import type { Account } from 'src/types/wallet';
 
 import { HiddenAddressRow } from './HiddenAddressRow';
-import { VerifyAddressButton } from './VerifyAddressButton';
-
-const HiddenAddressSingleValue = styled(HiddenAddressRow)`
-    margin-left: 6px;
-`;
 
 const InputWrapper = styled.div<{ $hideCaret: boolean }>`
     caret-color: ${({ $hideCaret }) => ($hideCaret ? 'transparent' : 'unset')};
@@ -38,15 +33,12 @@ const Option = ({ data, value, isFocused, innerProps, ...rest }: any) => (
 );
 
 const Input = ({ selectProps, ...rest }: any) => (
-    <>
-        <InputWrapper $hideCaret={!!selectProps.value}>
-            <components.Input {...rest} selectProps={selectProps} />
-        </InputWrapper>
-        {selectProps?.value && <VerifyAddressButton item={selectProps.value} />}
-    </>
+    <InputWrapper $hideCaret={!!selectProps.value}>
+        <components.Input {...rest} selectProps={selectProps} />
+    </InputWrapper>
 );
 
-const SingleValue = ({ data }: any) => <HiddenAddressSingleValue item={data} />;
+const SingleValue = ({ data }: any) => <HiddenAddressRow item={data} isElevated />;
 
 const optionToAddress = (option: AddressItem | null) =>
     option

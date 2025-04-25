@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 
-import styled from 'styled-components';
-
 import { getInputState } from '@suite-common/wallet-utils';
 import {
     Button,
     Card,
+    Column,
+    Divider,
     Input,
+    Row,
     SelectBar,
     Switch,
+    Tabs,
     Textarea,
     Tooltip,
-    variables,
 } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { Translation } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
@@ -30,96 +30,10 @@ import {
     useSignVerifyForm,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 
-import { ButtonRow, Row } from './components/ButtonRow';
-import { NavPages, Navigation } from './components/Navigation';
 import { SignAddressInput } from './components/SignAddressInput';
 
-const SwitchWrapper = styled.label`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    align-items: center;
-    height: 100%;
-
-    & > * + * {
-        margin-left: 10px;
-    }
-`;
-
-const Form = styled.form`
-    padding: 42px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 42px 20px;
-    }
-`;
-
-const FormatDescription = styled.p`
-    span {
-        font-weight: ${variables.FONT_WEIGHT.BOLD};
-    }
-
-    & + & {
-        margin-top: 10px;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledSelectBar = styled(SelectBar)`
-    margin: ${spacingsPx.sm} 0 ${spacingsPx.lg};
-
-    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 320px;
-        margin: ${spacingsPx.sm} 0 0 ${spacingsPx.lg};
-    }
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        width: 100%;
-        margin: ${spacingsPx.sm} 0 ${spacingsPx.lg};
-    }
-
-    @media (min-width: ${variables.SCREEN_SIZE.LG}) {
-        width: 320px;
-        margin: ${spacingsPx.xs} 0 0 20px;
-    }
-`;
-
-const Divider = styled.div`
-    margin: 15px 0 30px;
-    height: 1px;
-    background: ${({ theme }) => theme.legacy.STROKE_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const CopyButton = styled(Button)`
-    position: absolute;
-    right: 0;
-    top: -2px;
-`;
-
-const formatOptions = [
-    { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
-    {
-        value: true,
-        label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
-    },
-];
-
-const tooltipContent = (
-    <Translation
-        id="TR_FORMAT_TOOLTIP"
-        values={{
-            FormatDescription: chunks => <FormatDescription>{chunks}</FormatDescription>,
-            span: chunks => <span>{chunks}</span>,
-        }}
-    />
-);
-
-const MultilineRow = styled(Row)`
-    align-items: start;
-`;
-
 const SignVerify = () => {
-    const [page, setPage] = useState<NavPages>('sign');
+    const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -190,35 +104,35 @@ const SignVerify = () => {
         }
     };
 
-    const closeScreen = (withCopy?: boolean) => {
-        if (withCopy) {
-            copy();
-        }
-        dispatch(goto('wallet-index', { preserveParams: true }));
-    };
-
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" isSubpage account={selectedAccount}>
             <WalletSubpageHeading title="TR_NAV_SIGN_VERIFY">
                 {isFormDirty && (
-                    <Button type="button" variant="tertiary" onClick={resetForm}>
+                    <Button type="button" size="small" variant="tertiary" onClick={resetForm}>
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
             </WalletSubpageHeading>
 
-            <Card paddingType="none">
-                <Navigation page={page} setPage={setPage} />
-
-                <Form onSubmit={formSubmit(onSubmit)}>
-                    <Row>
+            <Card>
+                <Tabs activeItemId={page} size="large" margin={{ bottom: spacings.lg }}>
+                    <Tabs.Item id="sign" onClick={() => setPage('sign')}>
+                        <Translation id="TR_SIGN" />
+                    </Tabs.Item>
+                    <Tabs.Item id="verify" onClick={() => setPage('verify')}>
+                        <Translation id="TR_VERIFY" />
+                    </Tabs.Item>
+                </Tabs>
+                <form onSubmit={formSubmit(onSubmit)}>
+                    <Column gap={spacings.md} margin={{ bottom: spacings.xxl }}>
                         <Textarea
-                            label={<Translation id="TR_MESSAGE" />}
+                            labelLeft={<Translation id="TR_MESSAGE" />}
                             labelRight={
-                                <SwitchWrapper>
-                                    <Translation id="TR_HEX_FORMAT" />
-                                    <Switch {...hexField} />
-                                </SwitchWrapper>
+                                <Switch
+                                    label={<Translation id="TR_HEX_FORMAT" />}
+                                    labelPosition="start"
+                                    {...hexField}
+                                />
                             }
                             inputState={getInputState(formErrors.message)}
                             characterCount={{
@@ -231,62 +145,58 @@ const SignVerify = () => {
                             innerRef={messageRef}
                             {...messageField}
                         />
-                    </Row>
-
-                    <MultilineRow>
-                        {isSignPage ? (
-                            <SignAddressInput
-                                name="path"
-                                label={<Translation id="TR_ADDRESS" />}
-                                account={selectedAccount.account}
-                                revealedAddresses={revealedAddresses}
-                                inputState={getInputState(formErrors.path)}
-                                bottomText={pathError || null}
-                                data-testid="@sign-verify/sign-address"
-                                {...pathField}
-                            />
-                        ) : (
-                            <Input
-                                name="address"
-                                label={<Translation id="TR_ADDRESS" />}
-                                type="text"
-                                inputState={getInputState(formErrors.address)}
-                                bottomText={addressError || null}
-                                data-testid="@sign-verify/select-address"
-                                {...addressField}
-                            />
-                        )}
-
-                        {isSignPage && (
-                            <StyledSelectBar
-                                label={
-                                    <Tooltip maxWidth={330} content={tooltipContent} dashed>
-                                        <Translation id="TR_FORMAT" />
-                                    </Tooltip>
-                                }
-                                options={formatOptions}
-                                data-testid="@sign-verify/format"
-                                {...isElectrumField}
-                            />
-                        )}
-                    </MultilineRow>
-
-                    <Divider />
-
-                    <Row>
                         {isSignPage ? (
                             <>
-                                {canCopy && (
-                                    <CopyButton
-                                        type="button"
-                                        variant="tertiary"
-                                        onClick={copy}
-                                        icon="copy"
-                                    >
-                                        <Translation id="TR_COPY_SIGNED_MESSAGE" />
-                                    </CopyButton>
-                                )}
-
+                                <Row gap={spacings.xxxl}>
+                                    <SignAddressInput
+                                        name="path"
+                                        label={<Translation id="TR_ADDRESS" />}
+                                        account={selectedAccount.account}
+                                        revealedAddresses={revealedAddresses}
+                                        inputState={getInputState(formErrors.path)}
+                                        bottomText={pathError || null}
+                                        data-testid="@sign-verify/sign-address"
+                                        {...pathField}
+                                    />
+                                    <SelectBar
+                                        label={
+                                            <Tooltip
+                                                maxWidth={330}
+                                                content={
+                                                    <Translation
+                                                        id="TR_FORMAT_TOOLTIP"
+                                                        values={{
+                                                            FormatDescription: chunks => (
+                                                                <p>{chunks}</p>
+                                                            ),
+                                                            span: chunks => (
+                                                                <strong>{chunks}</strong>
+                                                            ),
+                                                        }}
+                                                    />
+                                                }
+                                                hasIcon
+                                            >
+                                                <Translation id="TR_FORMAT" />
+                                            </Tooltip>
+                                        }
+                                        options={[
+                                            {
+                                                value: false,
+                                                label: <Translation id="TR_BIP_SIG_FORMAT" />,
+                                            },
+                                            {
+                                                value: true,
+                                                label: (
+                                                    <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />
+                                                ),
+                                            },
+                                        ]}
+                                        data-testid="@sign-verify/format"
+                                        {...isElectrumField}
+                                    />
+                                </Row>
+                                <Divider margin={{}} />
                                 <Input
                                     maxLength={MAX_LENGTH_SIGNATURE}
                                     type="text"
@@ -295,31 +205,62 @@ const SignVerify = () => {
                                     placeholder={translationString(
                                         'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                     )}
+                                    innerAddon={
+                                        canCopy ? (
+                                            <Button
+                                                type="button"
+                                                variant="tertiary"
+                                                onClick={copy}
+                                                icon="copy"
+                                                size="tiny"
+                                            >
+                                                <Translation id="TR_COPY_SIGNED_MESSAGE" />
+                                            </Button>
+                                        ) : undefined
+                                    }
                                     {...signatureProps}
                                 />
                             </>
                         ) : (
-                            <Textarea
-                                maxLength={MAX_LENGTH_SIGNATURE}
-                                characterCount={{
-                                    current: formValues.signature?.length,
-                                    max: MAX_LENGTH_SIGNATURE,
-                                }}
-                                rows={4}
-                                {...signatureProps}
-                            />
+                            <>
+                                <Input
+                                    name="address"
+                                    label={<Translation id="TR_ADDRESS" />}
+                                    type="text"
+                                    inputState={getInputState(formErrors.address)}
+                                    bottomText={addressError || null}
+                                    data-testid="@sign-verify/select-address"
+                                    {...addressField}
+                                />
+                                <Textarea
+                                    maxLength={MAX_LENGTH_SIGNATURE}
+                                    characterCount={{
+                                        current: formValues.signature?.length,
+                                        max: MAX_LENGTH_SIGNATURE,
+                                    }}
+                                    rows={4}
+                                    {...signatureProps}
+                                />
+                            </>
                         )}
-                    </Row>
-
-                    <ButtonRow
-                        isCompleted={isCompleted}
-                        isSubmitting={isSubmitting}
-                        isSignPage={isSignPage}
-                        isTrezorLocked={isLocked()}
-                        resetForm={resetForm}
-                        closeScreen={closeScreen}
-                    />
-                </Form>
+                    </Column>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        icon={isCompleted ? 'check' : undefined}
+                        isSubtle={isCompleted}
+                        isDisabled={isLocked()}
+                        isLoading={isSubmitting}
+                        data-testid="@sign-verify/submit"
+                        minWidth={200}
+                    >
+                        {isSignPage ? (
+                            <Translation id={isCompleted ? 'TR_SIGNED' : 'TR_SIGN'} />
+                        ) : (
+                            <Translation id={isCompleted ? 'TR_VERIFIED' : 'TR_VERIFY'} />
+                        )}
+                    </Button>
+                </form>
             </Card>
         </WalletLayout>
     );
