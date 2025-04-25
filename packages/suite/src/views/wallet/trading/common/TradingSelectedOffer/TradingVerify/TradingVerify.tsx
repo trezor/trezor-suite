@@ -166,71 +166,77 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                 }
             />
 
-            <Column gap={spacings.sm}>
-                {selectedAccountOption?.type === 'SUITE' &&
-                    selectedAccountOption?.account?.networkType === 'bitcoin' && (
-                        <TradingAddressOptions
-                            account={selectedAccountOption?.account}
-                            address={address}
-                            control={form.control}
-                            receiveSymbol={cryptoId}
-                            setValue={form.setValue}
-                            label={
+            {selectedAccountOption && (
+                <Column gap={spacings.sm}>
+                    {selectedAccountOption?.type === 'SUITE' &&
+                        selectedAccountOption?.account?.networkType === 'bitcoin' && (
+                            <TradingAddressOptions
+                                account={selectedAccountOption?.account}
+                                address={address}
+                                control={form.control}
+                                receiveSymbol={cryptoId}
+                                setValue={form.setValue}
+                                label={
+                                    <Tooltip
+                                        hasIcon
+                                        content={<Translation id={addressTooltipTranslationId} />}
+                                    >
+                                        <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                                    </Tooltip>
+                                }
+                            />
+                        )}
+                    {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
+                        <Input
+                            data-testid="@trading/form/verify/address"
+                            readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
+                            inputState={form.formState.errors.address ? 'error' : undefined}
+                            labelLeft={
                                 <Tooltip
                                     hasIcon
                                     content={<Translation id={addressTooltipTranslationId} />}
                                 >
-                                    <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                                    <Translation id="TR_EXCHANGE_RECEIVING_ADDRESS" />
                                 </Tooltip>
                             }
+                            bottomText={form.formState.errors.address?.message || null}
+                            innerRef={networkRef}
+                            {...networkField}
                         />
                     )}
-                {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
-                    <Input
-                        data-testid="@trading/form/verify/address"
-                        readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                        inputState={form.formState.errors.address ? 'error' : undefined}
-                        labelLeft={
-                            <Tooltip
-                                hasIcon
-                                content={<Translation id={addressTooltipTranslationId} />}
-                            >
-                                <Translation id="TR_EXCHANGE_RECEIVING_ADDRESS" />
-                            </Tooltip>
-                        }
-                        bottomText={form.formState.errors.address?.message || null}
-                        innerRef={networkRef}
-                        {...networkField}
-                    />
-                )}
 
-                {exchangeQuote?.extraFieldDescription && (
-                    <TradingVerifyDestinationTag
-                        inputComponent={
-                            <Input
-                                label={
-                                    <Translation
-                                        id="TR_EXCHANGE_EXTRA_FIELD"
-                                        values={extraFieldDescription}
-                                    />
-                                }
-                                inputState={form.formState.errors.extraField ? 'error' : undefined}
-                                bottomText={form.formState.errors.extraField?.message || null}
-                                innerRef={descriptionRef}
-                                {...descriptionField}
-                            />
-                        }
-                        onToggle={() => form.setValue('extraField', '', { shouldValidate: true })}
-                        required={exchangeQuote.extraFieldDescription.required}
-                        extraFieldDescription={exchangeQuote.extraFieldDescription}
-                    />
-                )}
+                    {exchangeQuote?.extraFieldDescription && (
+                        <TradingVerifyDestinationTag
+                            inputComponent={
+                                <Input
+                                    label={
+                                        <Translation
+                                            id="TR_EXCHANGE_EXTRA_FIELD"
+                                            values={extraFieldDescription}
+                                        />
+                                    }
+                                    inputState={
+                                        form.formState.errors.extraField ? 'error' : undefined
+                                    }
+                                    bottomText={form.formState.errors.extraField?.message || null}
+                                    innerRef={descriptionRef}
+                                    {...descriptionField}
+                                />
+                            }
+                            onToggle={() =>
+                                form.setValue('extraField', '', { shouldValidate: true })
+                            }
+                            required={exchangeQuote.extraFieldDescription.required}
+                            extraFieldDescription={exchangeQuote.extraFieldDescription}
+                        />
+                    )}
 
-                {device?.connected &&
-                    device.available &&
-                    addressVerified &&
-                    addressVerified === address && <ConfirmedOnTrezor device={device} />}
-            </Column>
+                    {device?.connected &&
+                        device.available &&
+                        addressVerified &&
+                        addressVerified === address && <ConfirmedOnTrezor device={device} />}
+                </Column>
+            )}
             {selectedAccountOption && (
                 <Column>
                     <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
