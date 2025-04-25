@@ -53,7 +53,33 @@ export class ProjectRequests {
     ) {}
 
     async createProject(ownerId: string, teamId: string, projectName: string): Promise<string> {
+        const query = `
+          query {
+              organization(login: "trezor") {
+                  team(slug: "qa") {
+                      id
+                      name
+                  }
+              }
+          }
+      `;
+
+        interface TeamQueryResponse {
+            organization: {
+                team: {
+                    id: string;
+                    name: string;
+                };
+            };
+        }
+
+        const responseTeam = await this.octokit.graphql<TeamQueryResponse>(query);
+        const teamId2 = responseTeam.organization.team;
+
         this.logger.log(`Creating project "${projectName}" with owner ID: ${ownerId}`);
+        this.logger.log(
+            `Creating project for ${teamId2.id} : ${teamId2.name} instead of hardcoded ${teamId}`,
+        );
 
         const mutation = `
             mutation {
@@ -61,7 +87,7 @@ export class ProjectRequests {
                 input: {
                     ownerId: "${ownerId}"
                     title: "${projectName}"
-                    teamId: "${teamId}"
+                    teamId: "${teamId2.id}"
                 }) {
                     projectV2 {
                         id

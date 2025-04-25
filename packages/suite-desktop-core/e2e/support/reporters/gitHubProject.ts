@@ -98,7 +98,10 @@ export class GitHubProject {
     }
 
     async createProject(desiredFields: Array<BaseAnnotation>): Promise<void> {
-        const projectId = await this.graphQLClient.createProject(ORG_ID, QA_TEAM_ID, PROJECT_NAME);
+        const projectId = await scheduleAction(
+            () => this.graphQLClient.createProject(ORG_ID, QA_TEAM_ID, PROJECT_NAME),
+            RETRY_CONF,
+        );
 
         // Get default STATUS field that was automatically created.
         const existingFields = await scheduleAction(
