@@ -76,6 +76,7 @@ export class ProjectRequests {
         const responseTeam = await this.octokit.graphql<TeamQueryResponse>(query);
         const teamId2 = responseTeam.organization.team;
 
+        this.logger.logResponse('TeamQueryResponse', responseTeam);
         this.logger.log(`Creating project "${projectName}" with owner ID: ${ownerId}`);
         this.logger.log(
             `Creating project for ${teamId2.id} : ${teamId2.name} instead of hardcoded ${teamId}`,
