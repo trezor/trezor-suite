@@ -5,7 +5,6 @@ name: "[Test] Release Suite manual e2e tests"
 permissions:
   issues: write # for creating issues which represent the manual regression tests
   repository-projects: write # for creating projects in QA team which contain the suite
-  discussions: write
 
 on:
   push:
@@ -46,7 +45,7 @@ jobs:
         shell: bash
         env:
           GITHUB_ACTION: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
           yarn workspace @trezor/suite-desktop-core test:e2e:manual
