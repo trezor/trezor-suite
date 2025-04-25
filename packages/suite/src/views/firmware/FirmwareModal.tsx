@@ -17,6 +17,7 @@ import { StepDone } from './Steps/StepDone';
 import { StepError } from './Steps/StepError';
 import { StepInitial } from './Steps/StepInitial';
 import { StepStarted } from './Steps/StepStarted';
+import * as modalActions from '../../actions/suite/modalActions';
 
 type FirmwareModalProps = {
     children: ReactNode;
@@ -62,6 +63,7 @@ export const FirmwareModal = ({
         if (device?.status !== 'available') {
             dispatch(acquireDevice(device));
         }
+        dispatch(modalActions.onCancel());
         dispatch(closeModalApp());
         resetReducer();
     };
