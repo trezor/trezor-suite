@@ -115,8 +115,4 @@ export { intermediaryTheme } from './config/colors';
 export type { SuiteThemeColors } from './config/colors';
 
 export { RadioCard } from './components/RadioCard/RadioCard';
-export { mapSizeToLabelTypography } from './components/form/Switch/switchUtils';
-export { mapSizeToContainerHeight } from './components/form/Switch/switchUtils';
-export { mapSizeToContainerWidth } from './components/form/Switch/switchUtils';
-export { mapSizeToHandleSize } from './components/form/Switch/switchUtils';
 export { PinInput } from './components/PinInput/PinInput';

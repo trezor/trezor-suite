@@ -209,7 +209,6 @@ export const AllForms: StoryObj = {
                 <Switch
                     onChange={() => {}}
                     isChecked={false}
-                    isAlert
                     data-testid="switch-off-alert"
                     label="Headline"
                 />
@@ -219,7 +218,6 @@ export const AllForms: StoryObj = {
                     isDisabled
                     onChange={() => {}}
                     isChecked={false}
-                    isAlert
                     data-testid="switch-off-alert-disabled"
                     label="Headline"
                 />
@@ -228,7 +226,6 @@ export const AllForms: StoryObj = {
                 <Switch
                     onChange={() => {}}
                     isChecked
-                    isAlert
                     data-testid="switch-on-alert"
                     label="Headline"
                 />
@@ -238,7 +235,6 @@ export const AllForms: StoryObj = {
                     isDisabled
                     onChange={() => {}}
                     isChecked
-                    isAlert
                     data-testid="switch-on-alert-disabled"
                     label="Headline"
                 />

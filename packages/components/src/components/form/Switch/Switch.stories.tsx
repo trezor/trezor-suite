@@ -1,13 +1,8 @@
 import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
-import {
-    Switch as SwitchComponent,
-    SwitchProps,
-    allowedSwitchFrameProps,
-    labelPositions,
-    switchSizes,
-} from './Switch';
+import { Switch as SwitchComponent, SwitchProps, allowedSwitchFrameProps } from './Switch';
+import { switchLabelPositions, switchSizes } from './types';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta = {
@@ -24,7 +19,6 @@ export const Switch: StoryObj<SwitchProps> = {
         return <SwitchComponent onChange={handleIsChecked} isChecked={isChecked} {...rest} />;
     },
     args: {
-        isAlert: false,
         isChecked: false,
         isDisabled: false,
         size: 'medium',
@@ -33,11 +27,6 @@ export const Switch: StoryObj<SwitchProps> = {
         ...getFramePropsStory(allowedSwitchFrameProps).args,
     },
     argTypes: {
-        isAlert: {
-            control: {
-                type: 'boolean',
-            },
-        },
         isChecked: {
             control: {
                 type: 'boolean',
@@ -62,7 +51,7 @@ export const Switch: StoryObj<SwitchProps> = {
             },
         },
         labelPosition: {
-            options: labelPositions,
+            options: switchLabelPositions,
             control: {
                 type: 'radio',
             },
