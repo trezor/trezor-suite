@@ -157,6 +157,12 @@ export const tradingSlice = createSliceWithExtraDeps({
                 state.sell.isLoading = false;
                 state.info.paymentMethods = [];
             })
+            .addCase(sellThunks.handleTradeThunk.pending, state => {
+                state.exchange.isLoading = true;
+            })
+            .addCase(sellThunks.handleTradeThunk.fulfilled, state => {
+                state.exchange.isLoading = false;
+            })
             .addCase(exchangeThunks.confirmTradeThunk.pending, state => {
                 state.exchange.isLoading = true;
             })
