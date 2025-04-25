@@ -25,6 +25,7 @@ test.describe(
         test('TrezorConnect.ethereumSignTransaction', async ({
             connectPermissionsModal,
             trezorUserEnvLink,
+            page,
         }) => {
             const res = TrezorConnect.ethereumSignTransaction({
                 path: "m/44'/60'/0'/0/0",
@@ -44,10 +45,14 @@ test.describe(
                 'Sign Ethereum transaction',
             );
 
-            // todo: add UI asserts for step 1
+            await page
+                .getByTestId('@prompts/confirm-on-device/step/0/active')
+                .waitFor({ state: 'visible' });
             await trezorUserEnvLink.swipeEmu('up');
 
-            // todo: add UI asserts for step 2
+            await page
+                .getByTestId('@prompts/confirm-on-device/step/1/active')
+                .waitFor({ state: 'visible' });
             await trezorUserEnvLink.pressYes();
 
             expect(await res).toMatchObject({ success: true });
