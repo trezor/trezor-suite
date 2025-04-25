@@ -1,6 +1,7 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
+    fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithBasicProvider,
     userEvent,
@@ -86,5 +87,160 @@ describe('TradingAmountInput', () => {
         });
 
         expect(getByLabelText('INPUT')).toHaveStyle({ color: paletteV1.lightAccentRed700 });
+    });
+
+    it('should have font size of 34 before layout events', async () => {
+        const { result } = await renderBuyFormHook();
+        const { getByLabelText } = renderTradingAmountInput({}, result.current);
+
+        expect(getByLabelText('INPUT')).toHaveStyle({ fontSize: 34, lineHeight: 41 });
+    });
+
+    describe('font size scaling on content change', () => {
+        let input: ReturnType<ReturnType<typeof renderTradingAmountInput>['getByLabelText']>;
+        let box: ReturnType<ReturnType<typeof renderTradingAmountInput>['getByTestId']>;
+
+        beforeEach(async () => {
+            const { result } = await renderBuyFormHook();
+            const { getByLabelText, getByTestId } = renderTradingAmountInput({}, result.current);
+
+            input = getByLabelText('INPUT');
+            box = getByTestId('@trading/amountInput/wrapper');
+
+            act(() => {
+                fireEvent(box, 'layout', {
+                    nativeEvent: {
+                        layout: {
+                            width: 120,
+                        },
+                    },
+                });
+            });
+        });
+
+        it('should have font size of 34 after initial layout events', () => {
+            expect(input).toHaveStyle({ fontSize: 34, lineHeight: 41 });
+        });
+
+        it.each([
+            [120, 28, 34],
+            [150, 22, 27],
+            [200, 17, 20],
+            [250, 17, 20],
+        ])(
+            'should downscale font when not enough space is available for content with width %i',
+            (contentWidth, expectedFontSize, expectedLineHeight) => {
+                act(() => {
+                    fireEvent(input, 'layout', {
+                        nativeEvent: {
+                            layout: {
+                                width: contentWidth,
+                            },
+                        },
+                    });
+                });
+
+                expect(input).toHaveStyle({
+                    fontSize: expectedFontSize,
+                    lineHeight: expectedLineHeight,
+                });
+            },
+        );
+
+        it.each([
+            [79, 21, 25],
+            [50, 34, 41],
+            [10, 34, 41],
+        ])(
+            'should upscale font when enough space is available for content with width %i',
+            (contentWidth, expectedFontSize, expectedLineHeight) => {
+                act(() => {
+                    fireEvent(input, 'layout', {
+                        nativeEvent: {
+                            layout: {
+                                width: 200,
+                            },
+                        },
+                    });
+                });
+                act(() => {
+                    fireEvent(input, 'layout', {
+                        nativeEvent: {
+                            layout: {
+                                width: contentWidth,
+                            },
+                        },
+                    });
+                });
+
+                expect(input).toHaveStyle({
+                    fontSize: expectedFontSize,
+                    lineHeight: expectedLineHeight,
+                });
+            },
+        );
+
+        it.each([100, 80])(
+            'should not upscale until hysteresis is reached for content with width %i',
+            contentWidth => {
+                act(() => {
+                    fireEvent(input, 'layout', {
+                        nativeEvent: {
+                            layout: {
+                                width: 200,
+                            },
+                        },
+                    });
+                });
+                act(() => {
+                    fireEvent(input, 'layout', {
+                        nativeEvent: {
+                            layout: {
+                                width: contentWidth,
+                            },
+                        },
+                    });
+                });
+
+                expect(input).toHaveStyle({
+                    fontSize: 17,
+                    lineHeight: 20,
+                });
+            },
+        );
+
+        it('should not divide by zero', () => {
+            act(() => {
+                fireEvent(input, 'layout', {
+                    nativeEvent: {
+                        layout: {
+                            width: 0,
+                        },
+                    },
+                });
+            });
+
+            expect(input).toHaveStyle({
+                fontSize: 34,
+                lineHeight: 41,
+            });
+        });
+
+        it('should use full sized font when available space is equal zero', () => {
+            act(() => {
+                fireEvent(box, 'layout', {
+                    nativeEvent: {
+                        layout: {
+                            width: 0,
+                        },
+                    },
+                });
+            });
+
+            expect(input).toHaveStyle({
+                fontSize: 34,
+                lineHeight: 41,
+            });
+        });
     });
 });

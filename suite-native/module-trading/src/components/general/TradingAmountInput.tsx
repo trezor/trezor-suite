@@ -1,5 +1,7 @@
-import { TextInput, TextInputProps } from 'react-native';
+import { useCallback, useState } from 'react';
+import { LayoutChangeEvent, TextInput, TextInputProps } from 'react-native';
 
+import { Box } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -8,22 +10,125 @@ import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 export type TradingAmountInputProps = {
     name: 'fiatValue' | 'cryptoValue';
     inputTransformer: (value: string) => string;
-} & Omit<TextInputProps, 'value' | 'onChangeText' | 'placeholder' | 'style' | 'onBlur'>;
+} & Omit<
+    TextInputProps,
+    'value' | 'style' | 'onBlur' | 'onFocus' | 'onChangeText' | 'onLayout' | 'onContentSizeChange'
+>;
 
-export const INPUT_MIN_WIDTH = 60;
-export const INPUT_HEIGHT = 42;
+const MAX_FONT_SIZE = 34;
+const MIN_FONT_SIZE = Math.ceil(MAX_FONT_SIZE / 2);
+const FONT_TO_LINE_HEIGHT_RATIO = 1.235;
+const FONT_SIZE_SHRINK_THRESHOLD = 20;
+const FONT_SIZE_GROW_HYSTERESIS = 20;
 
-const inputStyle = prepareNativeStyle<{ hasError: boolean }>(
-    ({ colors, typography }, { hasError }) => ({
+export const MIN_INPUT_WIDTH = 70;
+export const MAX_INPUT_HEIGHT = Math.floor(MAX_FONT_SIZE * FONT_TO_LINE_HEIGHT_RATIO);
+
+const boxStyle = prepareNativeStyle(() => ({
+    flex: 1,
+    alignItems: 'flex-end',
+    paddingLeft: 0,
+    marginLeft: 0,
+    overflow: 'visible',
+}));
+
+const inputStyle = prepareNativeStyle<{ hasError: boolean; fontSize: number }>(
+    ({ colors, typography }, { hasError, fontSize }) => ({
         ...typography.body,
         color: hasError ? colors.textAlertRed : colors.textDefault,
         textAlign: 'right',
-        fontSize: 34,
-        lineHeight: INPUT_HEIGHT,
-        minWidth: INPUT_MIN_WIDTH,
-        flex: 1,
+        fontSize,
+        lineHeight: Math.floor(fontSize * FONT_TO_LINE_HEIGHT_RATIO),
+        minWidth: MIN_INPUT_WIDTH,
     }),
 );
+
+const useInputLayoutControls = () => {
+    const [availableWidth, setAvailableWidth] = useState(
+        MIN_INPUT_WIDTH + FONT_SIZE_SHRINK_THRESHOLD,
+    );
+    const [fontSize, setFontSize] = useState(MAX_FONT_SIZE);
+
+    const handleAvailableWith = useCallback(({ nativeEvent }: LayoutChangeEvent) => {
+        const { width } = nativeEvent.layout;
+        setAvailableWidth(width);
+    }, []);
+
+    const handleFontSizeOnContentChange = useCallback(
+        ({ nativeEvent }: LayoutChangeEvent) => {
+            const contentWidth = nativeEvent.layout.width;
+
+            if (contentWidth === 0 || availableWidth === 0) {
+                setFontSize(MAX_FONT_SIZE);
+
+                return;
+            }
+
+            const shrinkThreshold = availableWidth - FONT_SIZE_SHRINK_THRESHOLD;
+            if (contentWidth > shrinkThreshold) {
+                const newFontSize = Math.max(
+                    Math.floor((shrinkThreshold / contentWidth) * fontSize),
+                    MIN_FONT_SIZE,
+                );
+                setFontSize(newFontSize);
+            }
+
+            const growThreshold = shrinkThreshold - FONT_SIZE_GROW_HYSTERESIS;
+            if (contentWidth < growThreshold) {
+                const newFontSize = Math.min(
+                    Math.floor((shrinkThreshold / contentWidth) * fontSize),
+                    MAX_FONT_SIZE,
+                );
+                setFontSize(newFontSize);
+            }
+        },
+        [availableWidth, fontSize],
+    );
+
+    return {
+        fontSize,
+        onBoxLayout: handleAvailableWith,
+        onInputLayout: handleFontSizeOnContentChange,
+    };
+};
+
+const useInputFormControls = (
+    name: 'fiatValue' | 'cryptoValue',
+    inputTransformer: (value: string) => string,
+    maxLength: number | undefined,
+) => {
+    const { getValues, setValue } = useTradingBuyFormContext();
+    // do not use `value` from `useField` here, because it does not work properly with `undefined`
+    const value = getValues(name);
+    const { onChange, onBlur, hasError } = useField({ name });
+
+    const setFocusedValue = useCallback(() => {
+        setValue('focusedValue', name);
+    }, [name, setValue]);
+
+    const handleTextChange = useCallback(
+        (text: string) => {
+            const transformedText = inputTransformer(text);
+            const truncatedText = transformedText.slice(0, maxLength);
+
+            return onChange(truncatedText === '' ? undefined : truncatedText);
+        },
+        [maxLength, inputTransformer, onChange],
+    );
+
+    const clearFocusedValueAndBlur = useCallback(() => {
+        onBlur();
+        setValue('focusedValue', undefined);
+    }, [onBlur, setValue]);
+
+    return {
+        value,
+        hasError,
+        onFocus: setFocusedValue,
+        onChangeText: handleTextChange,
+        onBlur: clearFocusedValueAndBlur,
+    };
+};
 
 export const TradingAmountInput = ({
     name,
@@ -32,42 +137,34 @@ export const TradingAmountInput = ({
     ...inputProps
 }: TradingAmountInputProps) => {
     const { applyStyle, utils } = useNativeStyles();
-    const { getValues, setValue } = useTradingBuyFormContext();
-    // do not use `value` from `useField` here, because it does not work properly with `undefined`
-    const value = getValues(name);
-    const { onChange, onBlur, hasError } = useField({ name });
+    const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls();
+    const { value, hasError, onFocus, onChangeText, onBlur } = useInputFormControls(
+        name,
+        inputTransformer,
+        maxLength,
+    );
 
-    const setFocusedValue = () => {
-        setValue('focusedValue', name);
-    };
-
-    const clearFocusedValue = () => {
-        setValue('focusedValue', undefined);
-    };
-
-    const handleTextChange = (text: string) => {
-        const transformedText = inputTransformer(text);
-        const truncatedText = transformedText.slice(0, maxLength);
-
-        return onChange(truncatedText === '' ? undefined : truncatedText);
-    };
-
+    // Note: it would be nice to use `onContentSizeChange` instead of `<Box />` once this bug is fixed https://github.com/facebook/react-native/issues/29702
     return (
-        <TextInput
-            style={applyStyle(inputStyle, { hasError })}
-            placeholder="0.0"
-            keyboardType="decimal-pad"
-            inputMode="decimal"
-            value={value}
-            onChangeText={handleTextChange}
-            onFocus={setFocusedValue}
-            onBlur={() => {
-                onBlur();
-                clearFocusedValue();
-            }}
-            maxLength={maxLength}
-            placeholderTextColor={utils.colors.textDisabled}
-            {...inputProps}
-        />
+        <Box
+            style={applyStyle(boxStyle)}
+            onLayout={onBoxLayout}
+            testID="@trading/amountInput/wrapper"
+        >
+            <TextInput
+                style={applyStyle(inputStyle, { hasError, fontSize })}
+                keyboardType="decimal-pad"
+                inputMode="decimal"
+                placeholder="0.0"
+                placeholderTextColor={utils.colors.textDisabled}
+                value={value ?? ''}
+                maxLength={maxLength}
+                onChangeText={onChangeText}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                onLayout={onInputLayout}
+                {...inputProps}
+            />
+        </Box>
     );
 };

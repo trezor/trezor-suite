@@ -6,7 +6,11 @@ import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
-import { INPUT_HEIGHT, INPUT_MIN_WIDTH, TradingAmountInput } from '../general/TradingAmountInput';
+import {
+    MAX_INPUT_HEIGHT,
+    MIN_INPUT_WIDTH,
+    TradingAmountInput,
+} from '../general/TradingAmountInput';
 
 export const FiatAmountInput = () => {
     const { translate } = useTranslate();
@@ -19,8 +23,8 @@ export const FiatAmountInput = () => {
     if (isLoading && amountInCrypto) {
         return (
             <BoxSkeleton
-                height={INPUT_HEIGHT}
-                width={INPUT_MIN_WIDTH}
+                height={MAX_INPUT_HEIGHT}
+                width={MIN_INPUT_WIDTH}
                 accessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
             />
         );

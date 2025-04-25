@@ -9,7 +9,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { getSelectedSymbolFromBuyForm } from '../../utils/tradeableAssetUtils';
-import { INPUT_HEIGHT, INPUT_MIN_WIDTH, TradingAmountInput } from '../general/TradingAmountInput';
+import {
+    MAX_INPUT_HEIGHT,
+    MIN_INPUT_WIDTH,
+    TradingAmountInput,
+} from '../general/TradingAmountInput';
 
 export type CryptoAmountInputProps = {
     showAssetsSheet: () => void;
@@ -33,8 +37,8 @@ export const CryptoAmountInput = ({ showAssetsSheet }: CryptoAmountInputProps) =
     if (isLoading && !amountInCrypto) {
         return (
             <BoxSkeleton
-                height={INPUT_HEIGHT}
-                width={INPUT_MIN_WIDTH}
+                height={MAX_INPUT_HEIGHT}
+                width={MIN_INPUT_WIDTH}
                 accessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
             />
         );
