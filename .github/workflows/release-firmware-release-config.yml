@@ -1,0 +1,46 @@
+name: "[Release] firmware release config"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  firmware-release-config-release:
+    if: ${{ github.repository == 'trezor/trezor-suite' && (github.ref == 'refs/heads/release-firmware-release-config-production' || github.ref == 'refs/heads/release-firmware-release-config-develop') }}
+    environment: ${{ github.ref == 'refs/heads/release-firmware-release-config-production' && 'production-firmware-release-config' || 'develop-firmware-release-config' }}
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_ENV: ${{ github.ref == 'refs/heads/release-firmware-release-config-production' && 'production' || 'develop' }}
+      AWS_REGION: "eu-central-1"
+      AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
+      ROLE_TO_ASSUME: ${{ github.ref == 'refs/heads/release-firmware-release-config-production' && 'arn:aws:iam::538326561891:role/gh_actions_suite_production_firmware_release_config' || 'arn:aws:iam::538326561891:role/gh_actions_suite_develop_firmware_release_config' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.ROLE_TO_ASSUME  }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build and sign ${{ env.RELEASE_ENV }} firmware-release-config file
+        env:
+          IS_CODESIGN_BUILD: ${{ env.RELEASE_ENV == 'production' && 'true' || 'false' }}
+          JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
+        run: |
+          yarn install
+          yarn validate-release-config
+          yarn sign-release-config
+
+      - name: Upload ${{ env.RELEASE_ENV }}  firmware-release-config file
+        run: |
+          aws s3 cp packages/firmware-release-config/files/releases.v1.jws s3://data.trezor.io/config/${{ env.RELEASE_ENV == 'production' && 'stable' || 'develop'}}/releases.v1.jws --cache-control no-cache
+          aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/releases/${{ env.RELEASE_ENV == 'production' && 'stable' || 'develop'}}/*'
