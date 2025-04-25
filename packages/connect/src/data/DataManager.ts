@@ -7,7 +7,7 @@ import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
 import { parseFirmwareReleases } from './firmwareInfo';
-import { ConnectSettings } from '../types';
+import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
 type AssetCollection = { [key: string]: Record<string, any> };
@@ -17,6 +17,7 @@ export class DataManager {
 
     private static settings: ConnectSettings;
     private static messages: Record<string, any> = messages;
+    private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
 
     static load(settings: ConnectSettings, withAssets = true) {
         this.settings = settings;
@@ -65,5 +66,12 @@ export class DataManager {
         }
 
         return this.settings;
+    }
+
+    static setLocalFirmwares(firmwares: LocalFirmwares): void {
+        this.localFirmwares = firmwares;
+    }
+    static getLocalFirmwares(): LocalFirmwares {
+        return this.localFirmwares;
     }
 }

@@ -42,3 +42,9 @@ export type ReleaseInfo = {
     intermediaryVersion?: IntermediaryVersion;
     translations?: string[];
 };
+
+export type BinaryInfo = {
+    binary: ArrayBuffer;
+    binaryVersion: VersionArray;
+    releaseVersion: undefined;
+};

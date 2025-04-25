@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
-import type { ConnectSettings, Manifest } from '../types';
 import { parseThpSettings } from './thpSettings';
 import { DEEPLINK_VERSION, DEFAULT_DOMAIN, VERSION } from './version';
+import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/settings';
 
 /*
  * Initial settings for connect.
@@ -46,6 +46,17 @@ const parseManifest = (manifest?: Manifest) => {
         appUrl: manifest.appUrl,
         appName: manifest.appName,
         appIcon: manifest.appIcon,
+    };
+};
+
+export const parseLocalFirmwares = (localFirmwares: LocalFirmwares) => {
+    if (!localFirmwares) return;
+    if (typeof localFirmwares.firmwareDir !== 'string') return;
+    if (!Array.isArray(localFirmwares.firmwareList)) return;
+
+    return {
+        firmwareDir: localFirmwares.firmwareDir,
+        firmwareList: localFirmwares.firmwareList,
     };
 };
 
@@ -95,6 +106,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;
+    }
+
+    if (typeof input.localFirmwares === 'object') {
+        settings.localFirmwares = parseLocalFirmwares(input.localFirmwares);
     }
 
     if (Array.isArray(input.transports)) {

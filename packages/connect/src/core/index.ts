@@ -12,6 +12,7 @@ import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { DataManager } from '../data/DataManager';
 import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
+import { parseLocalFirmwares } from '../data/connectSettings';
 import type { Device, DeviceEvents } from '../device/Device';
 import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import { WebextensionStateStorage } from '../device/StateStorage';
@@ -1143,6 +1144,13 @@ export class Core extends EventEmitter {
             case UI.LOGIN_CHALLENGE_RESPONSE:
                 this.uiPromises.resolve(message);
                 break;
+            case UI.RECEIVE_FIRMWARE: {
+                const localFirmwares = message.payload && parseLocalFirmwares(message.payload);
+                if (localFirmwares) {
+                    DataManager.setLocalFirmwares(localFirmwares);
+                }
+                break;
+            }
 
             // message from index
             case IFRAME.CALL:
@@ -1225,6 +1233,11 @@ export class Core extends EventEmitter {
 
         try {
             await DataManager.load(settings);
+            const localFirmwares =
+                settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
+            if (localFirmwares) {
+                DataManager.setLocalFirmwares(localFirmwares);
+            }
             const { debug, priority, _sessionsBackgroundUrl, manifest } = DataManager.getSettings();
             const messages = DataManager.getProtobufMessages();
 
