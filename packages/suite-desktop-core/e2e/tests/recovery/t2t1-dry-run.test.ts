@@ -1,8 +1,8 @@
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const pin = '1';
 

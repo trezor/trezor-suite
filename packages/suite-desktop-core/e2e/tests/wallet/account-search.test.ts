@@ -1,6 +1,6 @@
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
     test.use({

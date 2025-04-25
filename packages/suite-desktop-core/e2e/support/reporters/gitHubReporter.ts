@@ -3,7 +3,7 @@ import { Reporter, TestCase } from '@playwright/test/reporter';
 
 import { scheduleAction } from '@trezor/utils';
 
-import { TestReportProvider } from '../annotations';
+import { TestReportProvider } from './annotations';
 import { GitHubProject } from './gitHubProject';
 import { IssueRequests } from './issueRequests';
 import { LoggingFunctions, ProjectField } from './types';

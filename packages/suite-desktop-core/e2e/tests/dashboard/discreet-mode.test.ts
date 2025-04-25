@@ -2,9 +2,9 @@ import { Locator } from '@playwright/test';
 
 import { EventType } from '@trezor/suite-analytics';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
 const verifyHiddenAndRevealedValue = async ({

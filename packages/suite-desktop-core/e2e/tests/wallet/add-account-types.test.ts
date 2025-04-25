@@ -1,9 +1,9 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EventType } from '@trezor/suite-analytics';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
 test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {

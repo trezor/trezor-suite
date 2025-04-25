@@ -1,9 +1,9 @@
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const migrateFromVersion = 'release/22.5/web';
 const migrateToVersion = 'develop/web';

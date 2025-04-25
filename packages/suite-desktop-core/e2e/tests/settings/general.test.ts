@@ -1,9 +1,9 @@
 import { EventType } from '@trezor/suite-analytics';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
 export enum Currency {

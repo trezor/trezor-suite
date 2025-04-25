@@ -13,7 +13,7 @@ import {
     annotationsAddedToTest,
     annotationsForBodyDescription,
     annotationsForProjectFields,
-} from './enums/testAnnotations';
+} from '../enums/testAnnotations';
 
 type TestMetadataInput = {
     testCase?: string;

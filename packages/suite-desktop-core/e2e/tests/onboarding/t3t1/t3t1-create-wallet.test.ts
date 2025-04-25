@@ -1,7 +1,7 @@
-import { createTestAnnotation } from '../../../support/annotations';
 import { SeedType } from '../../../support/enums/seedType';
 import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
     test.use({

@@ -1,6 +1,6 @@
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { model: 'T1B1', wipe: true } });

@@ -1,5 +1,5 @@
-import { createTestAnnotation } from '../../../support/annotations';
 import { test } from '../../../support/fixtures';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
     test.use({

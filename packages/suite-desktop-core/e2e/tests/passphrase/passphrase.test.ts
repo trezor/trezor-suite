@@ -1,9 +1,9 @@
 import { EventType } from '@trezor/suite-analytics';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { formatAddress } from '../../support/common';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';

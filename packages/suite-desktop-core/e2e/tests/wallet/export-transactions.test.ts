@@ -2,10 +2,10 @@ import fs from 'fs';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExportType } from '../../support/pageObjects/walletPage';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () => {
     test.use({

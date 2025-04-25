@@ -1,6 +1,6 @@
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });

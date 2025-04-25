@@ -1,6 +1,6 @@
-import { createTestAnnotation } from '../../../support/annotations';
 import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { expect, test } from '../../../support/fixtures';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 const mnemonic =
     'nasty answer gentle inform unaware abandon regret supreme dragon gravity behind lava dose pilot garden into dynamic outer hard speed luxury run truly armed';

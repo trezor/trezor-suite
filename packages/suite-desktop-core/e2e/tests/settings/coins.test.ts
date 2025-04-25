@@ -1,8 +1,8 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
     test.beforeEach(async ({ analytics, onboardingPage, settingsPage }) => {

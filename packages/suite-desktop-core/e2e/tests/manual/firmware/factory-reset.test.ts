@@ -1,6 +1,6 @@
-import { createTestAnnotation } from '../../../support/annotations';
 import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe.skip('Factory reset', { tag: ['@group=manual'] }, () => {
     test(

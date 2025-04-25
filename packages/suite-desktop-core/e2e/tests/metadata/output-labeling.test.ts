@@ -1,10 +1,10 @@
 import fs from 'fs';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { OutputLabelId } from '../../support/enums/outputLabelId';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });

@@ -1,6 +1,6 @@
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
 test.beforeEach(async ({ onboardingPage }) => {

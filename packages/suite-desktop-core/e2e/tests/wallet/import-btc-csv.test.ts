@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { csvToJson } from '../../support/csvToJson';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Import a BTC csv file', { tag: ['@group=wallet', '@webOnly'] }, () => {
     test.beforeEach(async ({ metadataMock, onboardingPage }) => {

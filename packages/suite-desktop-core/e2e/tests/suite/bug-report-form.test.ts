@@ -1,8 +1,8 @@
 import { FeedbackCategory } from '@suite-common/suite-types';
 
-import { createTestAnnotation } from '../../support/annotations';
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Bug report forms', { tag: ['@group=suite'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
