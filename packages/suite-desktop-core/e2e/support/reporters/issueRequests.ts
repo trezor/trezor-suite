@@ -61,6 +61,10 @@ export class IssueRequests {
         await this.octokit.graphql<UpdateProjectItemFieldResponse>(mutation);
     }
 
+    private escapeGraphQLString(input: string): string {
+        return input.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    }
+
     async createDraftIssueInProject(
         projectId: string,
         title: string,
@@ -72,8 +76,8 @@ export class IssueRequests {
             input: {
               assigneeIds: []
               projectId: "${projectId}"
-              title: "${title.replace(/"/g, '\\"')}"
-              body: "${body.replace(/"/g, '\\"')}"
+              title: "${this.escapeGraphQLString(title)}"
+              body: "${this.escapeGraphQLString(body)}"
             }
           ) {
             projectItem {
