@@ -53,35 +53,6 @@ export class ProjectRequests {
     ) {}
 
     async createProject(ownerId: string, teamId: string, projectName: string): Promise<string> {
-        //   const query = `
-        //     query {
-        //         organization(login: "trezor") {
-        //             team(slug: "qa") {
-        //                 id
-        //                 name
-        //             }
-        //         }
-        //     }
-        // `;
-
-        //   interface TeamQueryResponse {
-        //       organization: {
-        //           team: {
-        //               id: string;
-        //               name: string;
-        //           };
-        //       };
-        //   }
-
-        //   const responseTeam = await this.octokit.graphql<TeamQueryResponse>(query);
-        //   const teamId2 = responseTeam.organization.team;
-
-        //   this.logger.logResponse('TeamQueryResponse', responseTeam);
-        //   this.logger.log(`Creating project "${projectName}" with owner ID: ${ownerId}`);
-        //   this.logger.log(
-        //       `Creating project for ${teamId2.id} : ${teamId2.name} instead of hardcoded ${teamId}`,
-        //   );
-
         const mutation = `
             mutation {
                 createProjectV2(
@@ -158,7 +129,7 @@ export class ProjectRequests {
         const query = `
             query {
               organization(login: "${organization}") {
-                projectsV2(first: 30, query: "${projectName}", orderBy: {field: NUMBER, direction: ASC}) {
+                projectsV2(query: "${projectName}", first: 30, orderBy: {field: NUMBER, direction: ASC}) {
                   nodes {
                     id
                     title
