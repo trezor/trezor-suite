@@ -35,6 +35,12 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
 
+      - name: Extract Release Build
+        id: extract_branch
+        shell: bash
+        run: |
+          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
       - name: Install PW Dependencies
         shell: bash
         run: |
@@ -47,6 +53,7 @@ jobs:
           GITHUB_ACTION: true
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
           GITHUB_REPORTER_VERBOSE: true
+          RELEASE_BUILD: ${{ env.release_build }}
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
           yarn workspace @trezor/suite-desktop-core test:e2e:manual

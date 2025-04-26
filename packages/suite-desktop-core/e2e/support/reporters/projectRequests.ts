@@ -109,6 +109,9 @@ export class ProjectRequests {
               ... on ProjectV2SingleSelectField {
                 id
               }
+              ... on ProjectV2FieldCommon {
+                id
+              }
             }
         } 
       }`;

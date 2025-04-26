@@ -38,6 +38,13 @@ inputs:
   e2e-passphrase:
     description: "Passphrase for E2E tests"
     required: true
+  github_token:
+    description: "GitHub token for GitHub Reporter, only on Release workflows"
+    required: false
+  release-build:
+    description: "Information for GitHub Reporter, only on Release workflows"
+    required: false
+
 runs:
   using: "composite"
   steps:
@@ -87,13 +94,14 @@ runs:
       env:
         COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
         GITHUB_ACTION: true
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
         CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
         CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
         CURRENTS_TAG: ${{ inputs.currents-tags }}
         GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        RELEASE_BUILD: ${{ inputs.release-build }}
       run: |
         if [[ -z "${{ inputs.base-url }}" ]]; then
           BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"

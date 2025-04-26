@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - release/2*
+      - feat-pw-github-reporter-workflow
   workflow_dispatch:
 
 concurrency:
@@ -34,7 +35,7 @@ jobs:
       - build-app
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
         TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Checkout
@@ -57,6 +58,12 @@ jobs:
       - name: Extract build artifact
         run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
 
+      - name: Extract Release Build
+        id: extract_branch
+        shell: bash
+        run: |
+          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
         with:
@@ -68,3 +75,5 @@ jobs:
           currents-project-id: "4ytF0E"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+          github-token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          release-build: ${{ env.release_build }}

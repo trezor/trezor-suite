@@ -112,6 +112,12 @@ export const testCaseAnnotation: BaseAnnotation = {
     valueType: 'TEXT',
 };
 
+export const releaseBuildAnnotation: BaseAnnotation = {
+    name: 'Release Build',
+    key: 'releaseBuild',
+    valueType: 'TEXT',
+};
+
 export const prerequisitesAnnotation: BaseAnnotation = {
     name: 'Prerequisites',
     key: 'prerequisites',
@@ -186,6 +192,7 @@ export const annotationsForBodyDescription = [prerequisitesAnnotation, stepsAnno
 
 // Defines which annotations are used in the project fields in GitHub Issue
 export const annotationsForProjectFields = [
+    releaseBuildAnnotation,
     statusAnnotation,
     streamAnnotation,
     testRunAnnotation,
