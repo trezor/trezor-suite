@@ -12305,6 +12305,7 @@ __metadata:
     openpgp: "npm:^6.1.0"
     systeminformation: "npm:^5.25.11"
     terser-webpack-plugin: "npm:^5.3.14"
+    tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     ws: "npm:^8.18.0"
     xvfb-maybe: "npm:^0.2.1"

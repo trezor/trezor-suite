@@ -4,12 +4,12 @@ import { scheduleAction } from '@trezor/utils';
 
 import { ProjectRequests } from './projectRequests';
 import { LoggingFunctions } from './types';
-import { BaseAnnotation } from '../enums/testAnnotations';
+import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
 
 const ORGANIZATION = 'trezor';
 const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
 const QA_TEAM_ID = 'T_kwDOAD9FD84AMZXd';
-const PROJECT_NAME = 'Test Results 35'; // 43 TODO: Get this from CI, probably build name
+const PROJECT_NAME = 'Test Results 44'; // TODO: Get this from CI, probably build name
 const RETRY_CONF = {
     attempts: 3,
     gap: 500,
@@ -102,7 +102,7 @@ export class GitHubProject {
         }
     }
 
-    async createProject(desiredFields: Array<BaseAnnotation>): Promise<void> {
+    async createProject(): Promise<void> {
         const projectId = await scheduleAction(
             () => this.graphQLClient.createProject(ORG_ID, QA_TEAM_ID, PROJECT_NAME),
             RETRY_CONF,
@@ -115,7 +115,7 @@ export class GitHubProject {
         );
         const existingStatusField = existingFields.find(f => f.name === 'Status');
 
-        for (const desiredField of desiredFields) {
+        for (const desiredField of annotationsForProjectFields) {
             // Update STATUS field with new options
             if (desiredField.name === 'Status' && existingStatusField) {
                 this.logger.log('Status field already exists, updating options...');
