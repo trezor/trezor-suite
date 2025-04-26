@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [1]
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
 
     steps:
       - name: Checkout

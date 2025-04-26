@@ -113,7 +113,7 @@ runs:
 
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
-        yarn workspace @trezor/suite-desktop-core test:orchestrated:e2e:${{ inputs.project }} --pwc-cancel-after-failures ${{ inputs.fail-fast }} --forbid-only --grep="${{ inputs.additional-grep }}" ings/general.test.ts
+        yarn workspace @trezor/suite-desktop-core test:orchestrated:e2e:${{ inputs.project }} --pwc-cancel-after-failures ${{ inputs.fail-fast }} --forbid-only --grep="${{ inputs.additional-grep }}"
 
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}
