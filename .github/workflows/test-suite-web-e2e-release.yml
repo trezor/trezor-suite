@@ -60,7 +60,7 @@ jobs:
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
         with:
-          project: "web"
+          project: "web:release"
           containers: "trezor-user-env-unix bitcoin-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false
