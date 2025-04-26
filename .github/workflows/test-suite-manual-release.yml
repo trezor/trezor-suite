@@ -39,7 +39,7 @@ jobs:
         id: extract_branch
         shell: bash
         run: |
-          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
 
       - name: Install PW Dependencies
         shell: bash
