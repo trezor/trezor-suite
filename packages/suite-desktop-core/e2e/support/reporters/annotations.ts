@@ -126,14 +126,21 @@ export class TestReportProvider {
         return this.getAnnotation(TestAnnotationType.Stream, this.defaults.stream);
     }
 
+    get testProject(): string {
+        const project = this.test.parent.project();
+        if (!project) {
+            throw new Error('Test project is not defined');
+        }
+
+        return project.name;
+    }
+
     get testRun(): string {
         if (this.isManual) {
             return 'Manual';
         } else {
             // Web or Desktop
-            const projectType = this.test.parent.project()?.name;
-
-            return capitalizeFirstLetter(projectType ?? 'Automated');
+            return capitalizeFirstLetter(this.testProject);
         }
     }
 
@@ -153,6 +160,10 @@ export class TestReportProvider {
         return this.test.tags.some(tag => tag.startsWith('@group=manual'));
     }
 
+    get isRetryAttempt(): boolean {
+        return this.test.results.length > 1;
+    }
+
     get bodyDescription(): string {
         const sections = [];
 
@@ -162,7 +173,7 @@ export class TestReportProvider {
                 sections.push(`## ${annotation.name}\n${value}`);
             }
         } else {
-            sections.push('## Automated Test');
+            sections.push(`## Automated Test\nID: ${this.test.id}`);
         }
 
         return sections.join('\n---\n');

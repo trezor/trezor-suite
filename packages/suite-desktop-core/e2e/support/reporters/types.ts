@@ -71,14 +71,16 @@ export interface CreateFieldResponse {
     };
 }
 
+interface Issue {
+    id: string;
+    title: string;
+}
+
 export interface AddDraftIssueResponse {
     addProjectV2DraftIssue: {
         projectItem: {
             id: string;
-            content: {
-                id: string;
-                title: string;
-            };
+            content: Issue;
         };
     };
 }
