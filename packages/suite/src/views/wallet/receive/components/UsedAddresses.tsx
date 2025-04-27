@@ -154,7 +154,7 @@ export const UsedAddresses = ({
     );
     // TODO: add skipped addresses?
     // add revealed addresses to `used` list
-    const list = revealed.concat(used.slice().reverse());
+    const list = used.concat(revealed).reverse();
 
     if (list.length < 1) {
         return null;
