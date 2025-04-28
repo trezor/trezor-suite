@@ -62,5 +62,6 @@ export * from './utils';
 export * from './PriceChangeBadge';
 export * from './resetLetterSpacingOnAndroidStyle';
 export * from './FullAlertBox/FullAlertBox';
+export * from './CircularSpinner';
 
 export { useDebugView } from './DebugView';
