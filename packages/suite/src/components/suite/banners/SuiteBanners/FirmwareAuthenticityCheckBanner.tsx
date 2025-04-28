@@ -1,4 +1,5 @@
 import { TranslationKey } from '@suite-common/intl-types';
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Banner, Row } from '@trezor/components';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
@@ -30,11 +31,16 @@ const hashCheckMessages: Record<
 const useAuthenticityCheckMessage = (): TranslationKey | null => {
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
+    const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
 
     if (firmwareRevisionError) {
         return revisionCheckMessages[firmwareRevisionError];
     }
     if (firmwareHashError) {
+        if (firmwareHashError === 'other-error' && wasHashCheckOtherErrorLastTime) {
+            return 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN';
+        }
+
         return hashCheckMessages[firmwareHashError];
     }
 
@@ -59,7 +65,11 @@ export const FirmwareAuthenticityCheckBanner = () => {
     const wasOffline = firmwareRevisionError === 'cannot-perform-check-offline';
     const isHashCheckOtherError =
         firmwareRevisionError === null && firmwareHashError === 'other-error';
-    const hideBannerButtons = wasOffline || isHashCheckOtherError;
+    const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
+    const isFirstHashCheckOtherError = isHashCheckOtherError && !wasHashCheckOtherErrorLastTime;
+
+    const useWarningVariant = isFirstHashCheckOtherError;
+    const hideBannerButtons = wasOffline || isFirstHashCheckOtherError;
 
     const message = useAuthenticityCheckMessage();
     if (message === null) return null;
@@ -67,7 +77,7 @@ export const FirmwareAuthenticityCheckBanner = () => {
     return (
         <Banner
             icon
-            variant={isHashCheckOtherError ? 'warning' : 'destructive'}
+            variant={useWarningVariant ? 'warning' : 'destructive'}
             rightContent={hideBannerButtons ? null : <BannerButtons />}
         >
             <Translation id={message} />

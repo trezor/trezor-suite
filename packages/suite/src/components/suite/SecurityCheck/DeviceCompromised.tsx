@@ -1,87 +1,92 @@
-import { deviceActions } from '@suite-common/wallet-core';
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
-import {
-    HELP_CENTER_ENTROPY_CHECK_URL,
-    TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
-} from '@trezor/urls';
 
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
     selectIsEntropyCheckEnabledAndFailed,
 } from 'src/reducers/suite/suiteReducer';
 
-import { SecurityCheckFail, SecurityCheckFailProps } from './SecurityCheckFail';
+import { SecurityCheckFail } from './SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';
+import {
+    DismissFwAuthenticityCheckButton,
+    EntropyCheckSupportButton,
+    FwAuthencityChecksCtas,
+} from './deviceCompromisedCtas';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
-const useSecurityCheckFailProps = (): SecurityCheckFailProps => {
-    const { device } = useDevice();
+const DeviceCompromisedContent = () => {
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
-    const dispatch = useDispatch();
-
-    // Let user access the wallet if it may have been initiated before so that they can access the funds and send them to safety.
-    const goToSuite = () => {
-        // Condition to satisfy TypeScript, device.id is always defined at this point.
-        if (device?.id) {
-            dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
-        }
-    };
+    const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
 
     if (isEntropyCheckFailed) {
-        return {
-            heading: 'TR_DEVICE_COMPROMISED_HEADING',
-            text: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
-            checklistItems: hardFailureChecklistItems,
-            goBack: undefined,
-            supportUrl: HELP_CENTER_ENTROPY_CHECK_URL,
-        };
+        return (
+            <SecurityCheckFail
+                ctaSection={<EntropyCheckSupportButton />}
+                heading="TR_DEVICE_COMPROMISED_HEADING"
+                text="TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT"
+                checklistItems={hardFailureChecklistItems}
+            />
+        );
     }
     // revision check has precedence over hash check, because it does not have the ambiguous other-error state
     if (revisionCheckError !== null) {
-        return {
-            heading: 'TR_DEVICE_COMPROMISED_HEADING',
-            text: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
-            checklistItems: hardFailureChecklistItems,
-            goBack: goToSuite,
-            supportUrl: TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
-        };
+        return (
+            <SecurityCheckFail
+                ctaSection={<FwAuthencityChecksCtas />}
+                heading="TR_DEVICE_COMPROMISED_HEADING"
+                text="TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT"
+                checklistItems={hardFailureChecklistItems}
+            />
+        );
     }
-    // hash check other-error shall display softer wording than standard hash check errors
     if (hashCheckError === 'other-error') {
-        return {
-            heading: 'TR_FAILED_VERIFY_DEVICE_HEADING',
-            text: 'TR_FAILED_VERIFY_DEVICE_TEXT',
-            checklistItems: softFailureChecklistItems,
-            goBack: goToSuite,
-            supportUrl: TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
-        };
+        // display harsh modal only if there was an other-error for the second time
+        if (wasHashCheckOtherErrorLastTime) {
+            return (
+                <SecurityCheckFail
+                    ctaSection={<FwAuthencityChecksCtas />}
+                    heading="TR_FAILED_VERIFY_DEVICE_HEADING"
+                    text="TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT"
+                    checklistItems={hardFailureChecklistItems}
+                />
+            );
+        }
+
+        // for the first time, display a softer version without a CTA to contact support
+        return (
+            <SecurityCheckFail
+                ctaSection={<DismissFwAuthenticityCheckButton />}
+                heading="TR_FAILED_VERIFY_DEVICE_HEADING"
+                text="TR_FAILED_VERIFY_DEVICE_TEXT"
+                checklistItems={softFailureChecklistItems}
+                useCompromisedImage={false}
+            />
+        );
     }
     if (hashCheckError !== null) {
-        return {
-            heading: 'TR_DEVICE_COMPROMISED_HEADING',
-            text: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
-            checklistItems: hardFailureChecklistItems,
-            goBack: goToSuite,
-            supportUrl: TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
-        };
+        return (
+            <SecurityCheckFail
+                ctaSection={<FwAuthencityChecksCtas />}
+                heading="TR_DEVICE_COMPROMISED_HEADING"
+                text="TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT"
+                checklistItems={hardFailureChecklistItems}
+            />
+        );
     }
 
     // should not happen, but default props will be used with no problem
-    return { supportUrl: TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL };
+    return <SecurityCheckFail ctaSection={<FwAuthencityChecksCtas />} />;
 };
 
-export const DeviceCompromised = () => {
-    const securityCheckFailProps = useSecurityCheckFailProps();
-
-    return (
-        <WelcomeLayout>
-            <Card data-testid="@device-compromised">
-                <SecurityCheckFail {...securityCheckFailProps} />
-            </Card>
-        </WelcomeLayout>
-    );
-};
+export const DeviceCompromised = () => (
+    <WelcomeLayout>
+        <Card data-testid="@device-compromised">
+            <DeviceCompromisedContent />
+        </Card>
+    </WelcomeLayout>
+);

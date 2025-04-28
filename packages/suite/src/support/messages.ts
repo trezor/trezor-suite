@@ -7068,6 +7068,10 @@ export default defineMessages({
         id: 'TR_FAILED_VERIFY_DEVICE_TEXT',
         defaultMessage: "Your device firmware hash check couldn't be performed.",
     },
+    TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT: {
+        id: 'TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT',
+        defaultMessage: "Your device firmware hash check couldn't be performed repeatedly.",
+    },
     TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
         defaultMessage: 'Security check (entropy verification) failed.',
@@ -7104,18 +7108,6 @@ export default defineMessages({
     TR_DISCONNECT_YOUR_TREZOR: {
         id: 'TR_DISCONNECT_YOUR_TREZOR',
         defaultMessage: 'Reconnect your device',
-    },
-    TR_DISCONNECT_YOUR_TREZOR_SUBTITLE: {
-        id: 'TR_DISCONNECT_YOUR_TREZOR_SUBTITLE',
-        defaultMessage: 'This usually solves the issue.',
-    },
-    TR_PROBLEM_PERSISTS: {
-        id: 'TR_PROBLEM_PERSISTS',
-        defaultMessage: 'If the issue persists, contact Trezor Support',
-    },
-    TR_PROBLEM_PERSISTS_SUBTITLE: {
-        id: 'TR_PROBLEM_PERSISTS_SUBTITLE',
-        defaultMessage: 'Figure out what’s going on with your device and what to do next.',
     },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',
@@ -7287,7 +7279,12 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
         defaultMessage:
-            "Failed to verify device. Reconnect your Trezor and try again. Don't send any funds until the issue is resolved. If the issue persists, contact Trezor Support.",
+            "The verification process didn't finish. Close other tabs and windows that might be using your Trezor. Then reconnect your Trezor to try again.",
+    },
+    TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN: {
+        id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN',
+        defaultMessage:
+            "The verification process couldn't be performed repeatedly. Your Trezor may be counterfeit.",
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',

@@ -12,9 +12,14 @@ import {
 } from '@suite-common/redux-utils';
 import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { getDeviceInstances, getFwUpdateVersion, getStatus } from '@suite-common/suite-utils';
+import {
+    getDeviceInstances,
+    getFwUpdateVersion,
+    getStatus,
+    isDeviceAcquired,
+} from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
-import { Device, DeviceState, Features, StaticSessionId, UI } from '@trezor/connect';
+import { Device, DeviceState, Features, KnownDevice, StaticSessionId, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -41,6 +46,7 @@ export type DeviceReducerState = {
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
     };
+    lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
 };
 
 const initialState: DeviceReducerState = { devices: [], selectedDevice: undefined };
@@ -332,6 +338,10 @@ const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
             draft.devices.splice(draft.devices.indexOf(d), 1);
         }
     });
+
+    if (isDeviceAcquired(device)) {
+        draft.lastConnectedAuthenticityChecks = device.authenticityChecks;
+    }
 };
 
 /**
@@ -913,6 +923,15 @@ export const selectIsEntropyCheckFailed = createMemoizedSelector(
     [selectSelectedDevice, state => state.device.devicesWithFailedEntropyCheck],
     (device, devicesWithFailedEntropyCheck) =>
         !!(device?.id && devicesWithFailedEntropyCheck?.includes(device.id)),
+);
+
+export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
+    [state => state.device.lastConnectedAuthenticityChecks],
+    lastConnectedAuthenticityChecks => {
+        const lastHashCheck = lastConnectedAuthenticityChecks?.firmwareHash;
+
+        return lastHashCheck && !lastHashCheck.success && lastHashCheck.error === 'other-error';
+    },
 );
 
 export const selectIsPortfolioTrackerDevice = createMemoizedSelector(

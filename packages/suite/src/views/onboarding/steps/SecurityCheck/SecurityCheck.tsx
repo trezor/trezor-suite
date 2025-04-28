@@ -30,6 +30,7 @@ import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
+import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
@@ -167,10 +168,16 @@ const SecurityCheckContent = ({
 
     return isFailed ? (
         <SecurityCheckFail
-            goBack={toggleView}
+            ctaSection={
+                <>
+                    <Button variant="tertiary" onClick={toggleView} size="large">
+                        <Translation id="TR_BACK" />
+                    </Button>
+                    <ContactSupport supportUrl={supportUrl} />
+                </>
+            }
             heading="TR_PLAY_IT_SAFE"
             text="TR_DEVICE_COMPROMISED_TEXT_SOFT"
-            supportUrl={supportUrl}
         />
     ) : (
         <SecurityCheckLayout imageMode="ROTATE">

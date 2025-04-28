@@ -93,7 +93,7 @@ export class OnboardingPage {
         await this.verifySuiteIsLoaded();
         // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
         this.page
-            .$('[data-testid="@device-compromised/back-button"]')
+            .$('[data-testid="@device-compromised/dismiss-button"]')
             .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
     }
 
