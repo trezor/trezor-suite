@@ -604,11 +604,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // call inner function
         if (fn) {
             await fn();
-        }
 
-        // reload features
-        if (this.features && !options.skipFinalReload) {
-            await this.getFeatures();
+            // reload features
+            if (!options.skipFinalReload) {
+                await this.getFeatures();
+            }
         }
 
         if (
