@@ -58,6 +58,8 @@ const useSecurityCheckFailProps = (): SecurityCheckFailProps => {
             checklistItems: softFailureChecklistItems,
             goBack: goToSuite,
             supportUrl: TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
+            // make Contact support button less prominent
+            promoteSecondaryCta: true,
         };
     }
     if (hashCheckError !== null) {

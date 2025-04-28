@@ -7067,11 +7067,11 @@ export default defineMessages({
     },
     TR_FAILED_VERIFY_DEVICE_HEADING: {
         id: 'TR_FAILED_VERIFY_DEVICE_HEADING',
-        defaultMessage: 'Failed to verify device',
+        defaultMessage: "The verification process didn't finish",
     },
     TR_FAILED_VERIFY_DEVICE_TEXT: {
         id: 'TR_FAILED_VERIFY_DEVICE_TEXT',
-        defaultMessage: 'Avoid using this device or sending any funds to it.',
+        defaultMessage: "Your device firmware hash check couldn't be performed.",
     },
     TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',

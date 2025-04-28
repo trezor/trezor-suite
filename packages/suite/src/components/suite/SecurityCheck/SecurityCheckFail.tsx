@@ -16,6 +16,7 @@ export type SecurityCheckFailProps = {
     text?: TranslationKey;
     supportUrl: Url;
     checklistItems?: SecurityChecklistItem[];
+    promoteSecondaryCta?: boolean;
 };
 
 export const SecurityCheckFail = ({
@@ -24,6 +25,7 @@ export const SecurityCheckFail = ({
     text = 'TR_DEVICE_COMPROMISED_TEXT',
     supportUrl,
     checklistItems = hardFailureChecklistItems,
+    promoteSecondaryCta = false,
 }: SecurityCheckFailProps) => {
     const chatUrl = `${supportUrl}#open-chat`;
 
@@ -45,12 +47,18 @@ export const SecurityCheckFail = ({
                         variant="tertiary"
                         onClick={goBack}
                         size="large"
+                        flex={promoteSecondaryCta ? '1' : undefined}
                         data-testid="@device-compromised/back-button"
                     >
                         <Translation id="TR_BACK" />
                     </Button>
                 )}
-                <Button textWrap={false} href={chatUrl} isFullWidth size="large" flex="1">
+                <Button
+                    textWrap={false}
+                    href={chatUrl}
+                    flex={promoteSecondaryCta ? undefined : '1'}
+                    size="large"
+                >
                     <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
                 </Button>
             </Row>
