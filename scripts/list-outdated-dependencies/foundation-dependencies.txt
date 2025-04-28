@@ -12,6 +12,8 @@
 @types/file-saver
 @types/fs-extra
 @types/prettier
+@types/react-router
+@types/react-router-dom
 @types/tar
 @types/wif
 bech32

@@ -17,13 +17,10 @@
 @storybook/theming
 @types/pako
 @types/pdfmake
-@types/prettier
 @types/react
 @types/react-date-range
 @types/react-dom
 @types/react-qr-reader
-@types/react-router
-@types/react-router-dom
 @types/ua-parser-js
 @types/zxcvbn
 autoprefixer
