@@ -21,10 +21,16 @@ jobs:
   bump-versions:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          token: ${{ steps.trezor-bot-token.outputs.token }}
           # Fetch all commit history because Script connect-bump-versions.ts needs them to produce CHANGELOG for packages.
           fetch-depth: 0
           # `ref` makes sure that we checkout the branch we are running workflow on.
@@ -51,6 +57,6 @@ jobs:
 
       - name: Check dependencies to update
         env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: |
           yarn tsx ./scripts/ci/connect-bump-versions.ts ${{ github.event.inputs.semver }}

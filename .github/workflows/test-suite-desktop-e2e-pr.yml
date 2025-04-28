@@ -38,11 +38,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       - name: Check previous runs
         id: check-previous-runs
         uses: "./.github/actions/check-previous-test-runs"
         with:
-          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
           pr_branch: ${{ github.head_ref }}
           pr_created: ${{ github.event.pull_request.created_at }}
           repo: ${{ github.repository }}
@@ -69,11 +75,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       - name: Post Currents link
         uses: ./.github/actions/post-currents-link
         with:
-          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "desktop"
           currents-project-id: "4ytF0E"
 
@@ -85,7 +96,7 @@ jobs:
       - check-previous-runs
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
         TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Checkout

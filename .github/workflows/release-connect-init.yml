@@ -43,6 +43,12 @@ jobs:
     outputs:
       branch_name: ${{ steps.push-branch.outputs.branch_name }}
     steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -50,7 +56,7 @@ jobs:
           fetch-depth: 0
           # Checkout the specified commit
           ref: ${{ github.event.inputs.commit_sha }}
-          token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          token: ${{ steps.trezor-bot-token.outputs.token }}
 
       - name: Setup Git config
         run: |

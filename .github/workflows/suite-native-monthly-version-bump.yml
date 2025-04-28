@@ -28,10 +28,17 @@ jobs:
       - name: Update Version of package.json
         run: jq --indent 4 --arg version "$NEW_VERSION" '.suiteNativeVersion = $version' suite-native/app/package.json > temp.json && mv temp.json suite-native/app/package.json
 
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          token: ${{ steps.trezor-bot-token.outputs.token }}
           commit-message: "chore(suite-native): bump version to ${{ env.NEW_VERSION }}"
           title: "chore(suite-native): bump version to ${{ env.NEW_VERSION }}"
           body: |

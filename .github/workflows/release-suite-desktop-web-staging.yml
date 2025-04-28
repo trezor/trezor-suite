@@ -100,10 +100,19 @@ jobs:
           pattern: suite-desktop-*
           merge-multiple: true
           path: ./
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            trezor/trezor-suite
 
       - name: Create GitHub draft release
         env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: |
           gh config set prompt disabled
           VERSION=$(jq -r .suiteVersion packages/suite/package.json)

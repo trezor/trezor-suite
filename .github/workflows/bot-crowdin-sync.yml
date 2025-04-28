@@ -35,6 +35,13 @@ jobs:
       - name: Set source branch
         run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
       - name: Run crowdin sync
         run: |
           git config --global user.name "trezor-ci"
@@ -72,5 +79,5 @@ jobs:
             --label translations \
             --label no-project
         env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           BRANCH_NAME: trezor-ci/crowdin-sync-${{ env.NOW }}

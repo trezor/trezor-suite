@@ -24,17 +24,24 @@ jobs:
               repo: context.repo.repo,
               body: "Start rebasing: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             })
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          token: ${{ steps.trezor-bot-token.outputs.token }}
       - name: Auto rebase pull request
         uses: cirrus-actions/rebase@1.8
         with:
           autosquash: true
         env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
       - name: Report failure
         if: ${{ failure() }}
         uses: actions/github-script@v6

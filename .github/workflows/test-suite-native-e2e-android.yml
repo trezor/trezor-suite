@@ -280,11 +280,18 @@ jobs:
             --framework-version=v11.2.0
           npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --ci-build-id=${CURRENTS_CI_BUILD_ID} --report-dir ./currents
 
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
       - name: Post Currents link
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         uses: ./.github/actions/post-currents-link
         with:
-          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "native android"
           currents-project-id: "iUe1Y4"
 

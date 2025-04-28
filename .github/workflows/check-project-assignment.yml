@@ -16,12 +16,18 @@ jobs:
   check-project-or-issue:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Check if PR is assigned to a project or an issue
         env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: |
           # Fetch PR labels
           PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name')
