@@ -12,6 +12,8 @@ import {
     TradingAmountInput,
 } from '../general/TradingAmountInput';
 
+const MAX_FIAT_DECIMALS = 3;
+
 export const FiatAmountInput = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
@@ -35,6 +37,7 @@ export const FiatAmountInput = () => {
             name="fiatValue"
             accessibilityLabel={translate('moduleTrading.selectFiat.amountLabel')}
             inputTransformer={fiatAmountTransformer}
+            maxDecimals={MAX_FIAT_DECIMALS}
         />
     );
 };

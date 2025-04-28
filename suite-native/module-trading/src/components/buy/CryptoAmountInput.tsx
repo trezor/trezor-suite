@@ -19,6 +19,8 @@ export type CryptoAmountInputProps = {
     showAssetsSheet: () => void;
 };
 
+const MAX_CRYPTO_DECIMALS = 9;
+
 const pressableStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
@@ -54,6 +56,7 @@ export const CryptoAmountInput = ({ showAssetsSheet }: CryptoAmountInputProps) =
                     accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
                     editable={false}
                     inputTransformer={cryptoAmountTransformer}
+                    maxDecimals={MAX_CRYPTO_DECIMALS}
                     onPress={showAssetsSheet}
                 />
             </Pressable>
@@ -66,6 +69,7 @@ export const CryptoAmountInput = ({ showAssetsSheet }: CryptoAmountInputProps) =
             accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
             editable={isAssetSelected}
             inputTransformer={cryptoAmountTransformer}
+            maxDecimals={MAX_CRYPTO_DECIMALS}
         />
     );
 };

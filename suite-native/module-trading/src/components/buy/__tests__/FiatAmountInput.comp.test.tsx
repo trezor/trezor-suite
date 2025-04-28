@@ -69,4 +69,13 @@ describe('FiatAmountInput', () => {
 
         expect(queryByLabelText('Fetching offers...')).toBeNull();
     });
+
+    it('should limit value to 3 decimals', async () => {
+        const form = await renderUseTradingBuyForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
+
+        await userEvent.type(getByLabelText('You pay'), '1.0123456789');
+
+        expect(form.getValues('fiatValue')).toEqual('1.012');
+    });
 });

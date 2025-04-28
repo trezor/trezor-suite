@@ -126,4 +126,16 @@ describe('CryptoAmountInput', () => {
 
         expect(queryByLabelText('Fetching offers...')).toBeNull();
     });
+
+    it('should limit value to 9 decimals', async () => {
+        const form = await renderUseTradingBuyForm();
+        act(() => {
+            form.setValue('asset', btcAsset);
+        });
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+
+        await userEvent.type(getByLabelText('You get'), '1.0123456789');
+
+        expect(form.getValues('cryptoValue')).toEqual('1.012345678');
+    });
 });

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { LayoutChangeEvent, TextInput, TextInputProps } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
@@ -10,6 +10,7 @@ import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 export type TradingAmountInputProps = {
     name: 'fiatValue' | 'cryptoValue';
     inputTransformer: (value: string) => string;
+    maxDecimals?: number;
 } & Omit<
     TextInputProps,
     'value' | 'style' | 'onBlur' | 'onFocus' | 'onChangeText' | 'onLayout' | 'onContentSizeChange'
@@ -96,6 +97,7 @@ const useInputFormControls = (
     name: 'fiatValue' | 'cryptoValue',
     inputTransformer: (value: string) => string,
     maxLength: number | undefined,
+    maxDecimals: number | undefined,
 ) => {
     const { getValues, setValue } = useTradingBuyFormContext();
     // do not use `value` from `useField` here, because it does not work properly with `undefined`
@@ -106,14 +108,23 @@ const useInputFormControls = (
         setValue('focusedValue', name);
     }, [name, setValue]);
 
+    const maxDecimalRegex = useMemo(
+        () =>
+            maxDecimals !== undefined ? new RegExp(`[.](\\d{${maxDecimals}})(\\d+)$`) : undefined,
+        [maxDecimals],
+    );
+
     const handleTextChange = useCallback(
         (text: string) => {
-            const transformedText = inputTransformer(text);
-            const truncatedText = transformedText.slice(0, maxLength);
+            let transformedText = inputTransformer(text);
+            if (maxDecimalRegex) {
+                transformedText = transformedText.replace(maxDecimalRegex, '.$1');
+            }
+            transformedText = transformedText.slice(0, maxLength);
 
-            return onChange(truncatedText === '' ? undefined : truncatedText);
+            return onChange(transformedText === '' ? undefined : transformedText);
         },
-        [maxLength, inputTransformer, onChange],
+        [maxLength, maxDecimalRegex, inputTransformer, onChange],
     );
 
     const clearFocusedValueAndBlur = useCallback(() => {
@@ -134,6 +145,7 @@ export const TradingAmountInput = ({
     name,
     inputTransformer,
     maxLength,
+    maxDecimals,
     ...inputProps
 }: TradingAmountInputProps) => {
     const { applyStyle, utils } = useNativeStyles();
@@ -142,6 +154,7 @@ export const TradingAmountInput = ({
         name,
         inputTransformer,
         maxLength,
+        maxDecimals,
     );
 
     // Note: it would be nice to use `onContentSizeChange` instead of `<Box />` once this bug is fixed https://github.com/facebook/react-native/issues/29702

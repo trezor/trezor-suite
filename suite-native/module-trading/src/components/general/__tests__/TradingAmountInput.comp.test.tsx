@@ -243,4 +243,44 @@ describe('TradingAmountInput', () => {
             });
         });
     });
+
+    describe('maxDecimals property', () => {
+        it('should not limit input value when property is not set', async () => {
+            const { result } = await renderBuyFormHook();
+            const { getByLabelText } = renderTradingAmountInput({}, result.current);
+
+            await userEvent.type(getByLabelText('INPUT'), '1234567890.123456789');
+            expect(getByLabelText('INPUT')).toHaveDisplayValue('1234567890.123456789');
+        });
+
+        it('should truncate decimals exceeding specified limit', async () => {
+            const { result } = await renderBuyFormHook();
+            const { getByLabelText } = renderTradingAmountInput({ maxDecimals: 3 }, result.current);
+
+            await userEvent.type(getByLabelText('INPUT'), '1234567890.123456789');
+            expect(getByLabelText('INPUT')).toHaveDisplayValue('1234567890.123');
+        });
+
+        it('should truncate zero decimals exceeding specified limit', async () => {
+            const { result } = await renderBuyFormHook();
+            const { getByLabelText } = renderTradingAmountInput({ maxDecimals: 3 }, result.current);
+
+            await userEvent.type(getByLabelText('INPUT'), '1234567890.100000000');
+            expect(getByLabelText('INPUT')).toHaveDisplayValue('1234567890.100');
+        });
+
+        it.each(['0', '123456', '0.1', '12345.789'])(
+            'should do nothing when number of decimals is not exceeding limit, case [%s]',
+            async value => {
+                const { result } = await renderBuyFormHook();
+                const { getByLabelText } = renderTradingAmountInput(
+                    { maxDecimals: 3 },
+                    result.current,
+                );
+
+                await userEvent.type(getByLabelText('INPUT'), value);
+                expect(getByLabelText('INPUT')).toHaveDisplayValue(value);
+            },
+        );
+    });
 });
