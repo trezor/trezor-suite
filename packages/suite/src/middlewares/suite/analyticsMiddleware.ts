@@ -11,6 +11,7 @@ import {
     selectDevicesCount,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import {
     getBootloaderHash,
@@ -37,6 +38,7 @@ import {
     redactRouterUrl,
     redactTransactionIdFromAnchor,
 } from 'src/utils/suite/analytics';
+import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -166,17 +168,26 @@ const analyticsMiddleware =
                     .filter(
                         account =>
                             new BigNumber(account.balance).gt(0) ||
-                            new BigNumber(
-                                (account.tokens || []).filter(token =>
-                                    new BigNumber(token.balance || 0).gt(0),
-                                ).length,
-                            ).gt(0),
+                            new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
+                            hasVisibleTokens(
+                                account.symbol,
+                                account.tokens ?? [],
+                                state.tokenDefinitions,
+                            ),
                     )
                     .reduce(accumulateAccountCountBySymbolAndType, {});
 
                 const accountsWithTokens = state.wallet.accounts
                     .filter(account => new BigNumber((account.tokens || []).length).gt(0))
-                    .reduce((acc: { [key: string]: number }, { symbol }: Account) => {
+                    .reduce((acc: { [key: string]: number }, { symbol, tokens }) => {
+                        if (
+                            tokens &&
+                            tokens.length > 0 &&
+                            !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
+                        ) {
+                            return acc;
+                        }
+
                         acc[symbol] = (acc[symbol] || 0) + 1;
 
                         return acc;

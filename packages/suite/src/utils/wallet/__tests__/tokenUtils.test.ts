@@ -1,5 +1,5 @@
-import { getTokensFixtures } from '../__fixtures__/tokenUtils';
-import { getTokens } from '../tokenUtils';
+import { getTokensFixtures, hasVisibleTokensFixtures } from '../__fixtures__/tokenUtils';
+import { getTokens, hasVisibleTokens } from '../tokenUtils';
 
 describe('getTokens', () => {
     getTokensFixtures.forEach(
@@ -16,4 +16,12 @@ describe('getTokens', () => {
             });
         },
     );
+});
+
+describe('hasVisibleTokens', () => {
+    hasVisibleTokensFixtures.forEach(({ testName, tokens, symbol, tokenDefinitions, result }) => {
+        test(testName, () => {
+            expect(hasVisibleTokens(symbol, tokens, tokenDefinitions)).toStrictEqual(result);
+        });
+    });
 });

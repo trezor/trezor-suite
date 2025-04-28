@@ -2,6 +2,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
     EnhancedTokenInfo,
     TokenDefinition,
+    TokenDefinitionsState,
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
@@ -156,4 +157,28 @@ export const getTokens = ({
         unverifiedWithBalance,
         unverifiedWithoutBalance,
     };
+};
+
+export const hasVisibleTokens = (
+    symbol: NetworkSymbol,
+    tokens: TokenInfo[],
+    tokenDefinitions: Partial<TokenDefinitionsState>,
+    isNft: boolean = false,
+): boolean => {
+    if (!tokens || tokens.length === 0) return false;
+
+    const coinDefinitions = tokenDefinitions?.[symbol]?.coin;
+    if (!coinDefinitions) return false;
+
+    const currentTokens = getTokens({
+        tokens,
+        symbol,
+        tokenDefinitions: coinDefinitions,
+        isNft,
+    });
+
+    const visibleTokenCount =
+        currentTokens.shownWithBalance.length + currentTokens.shownWithoutBalance.length;
+
+    return visibleTokenCount > 0;
 };
