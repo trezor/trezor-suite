@@ -9,7 +9,10 @@ import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnota
 const ORGANIZATION = 'trezor';
 const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
 const QA_TEAM_ID = 'T_kwDOAD9FD84AMZXd';
-const PROJECT_NAME = 'Test Results 46'; // TODO: Get this from CI, probably build name
+// DevOps is working on tokens in our GitHub atm. Once that is settled we can rework this
+// and try to create project separately for each build. Until then we will use one project
+// for all builds and have name hardcoded here.
+const PROJECT_NAME = 'Trezor Suite release testing';
 const RETRY_CONF = {
     attempts: 3,
     gap: 500,

@@ -132,9 +132,9 @@ class GitHubReporter implements Reporter, LoggingFunctions {
 
                 try {
                     if (report.isRetryAttempt && this.createdIssuesMap.has(test.id)) {
-                        this.updateIssue(test, report);
+                        await this.updateIssue(test, report);
                     } else {
-                        this.createIssue(test, report);
+                        await this.createIssue(test, report);
                     }
                 } catch (error) {
                     this.logError(`Failed to process test end for "${test.title}":`, error);
@@ -219,12 +219,16 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         this.log(`[${issueNodeId}] Updating field Status:"${report.status}"...`);
         const { fieldId: statusFieldId, valueOrOptionId: statusOptionId } =
             this.resolveFieldAndValue(fields, statusAnnotation.name, report.status);
-        await scheduleAction(() => this.issueRequests.setItemValue(
-                this.gitHubProject.id,
-                issueNodeId,
-                statusFieldId,
-                statusOptionId,
-            ), RETRY_CONF);
+        await scheduleAction(
+            () =>
+                this.issueRequests.setItemValue(
+                    this.gitHubProject.id,
+                    issueNodeId,
+                    statusFieldId,
+                    statusOptionId,
+                ),
+            RETRY_CONF,
+        );
         this.log(`[${issueNodeId}] Successfully updated field Status:"${report.status}"`);
         this.log(`[${issueNodeId}] Successfully updated test result for "${test.title}"`);
     }

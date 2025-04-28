@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  run-e2e-suite-web-tests:
+  run-e2e-suite-manual-tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
 
