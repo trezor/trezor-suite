@@ -22,9 +22,7 @@ import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
 type TransactionDetailValuesSheetProps = {
-    isVisible: boolean;
     transaction: WalletAccountTransaction;
-    onSheetVisibilityChange: () => void;
 };
 
 type TodayHeaderCellProps = {
@@ -72,8 +70,6 @@ const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellP
 };
 
 export const TransactionDetailValuesSheet = ({
-    isVisible,
-    onSheetVisibilityChange,
     transaction,
 }: TransactionDetailValuesSheetProps) => {
     const { translate } = useTranslate();
@@ -92,8 +88,7 @@ export const TransactionDetailValuesSheet = ({
 
     return (
         <TransactionDetailSheet
-            isVisible={isVisible}
-            onVisibilityChange={onSheetVisibilityChange}
+            sheetName="values"
             title={translate('transactions.detail.sheet.values')}
             iconName="clockClockwise"
             transactionId={transaction.txid}

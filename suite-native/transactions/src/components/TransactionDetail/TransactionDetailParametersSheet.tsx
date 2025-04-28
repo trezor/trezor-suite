@@ -17,9 +17,7 @@ import { TransactionDetailRow } from './TransactionDetailRow';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
 type TransactionDetailParametersSheetProps = {
-    isVisible: boolean;
     transaction: WalletAccountTransaction;
-    onSheetVisibilityChange: () => void;
     accountKey: AccountKey;
 };
 
@@ -67,8 +65,6 @@ const ConfirmationsCount = ({ txid, accountKey }: { txid: string; accountKey: Ac
 };
 
 export const TransactionDetailParametersSheet = ({
-    isVisible,
-    onSheetVisibilityChange,
     transaction,
     accountKey,
 }: TransactionDetailParametersSheetProps) => {
@@ -83,8 +79,7 @@ export const TransactionDetailParametersSheet = ({
 
     return (
         <TransactionDetailSheet
-            isVisible={isVisible}
-            onVisibilityChange={onSheetVisibilityChange}
+            sheetName="parameters"
             title={translate('transactions.detail.sheet.parameters')}
             iconName="info"
             transactionId={transaction.txid}

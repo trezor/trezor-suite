@@ -14,10 +14,8 @@ import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionTranfer, selectTransactionInputAndOutputTransfers } from '../../selectors';
 
 type TransactionDetailInputsSheetProps = {
-    isVisible: boolean;
     txid: string;
     accountKey: AccountKey;
-    onSheetVisibilityChange: () => void;
 };
 
 type InputsOutputsHeaderProps = {
@@ -59,8 +57,6 @@ const getTransactionInputsAndOutputsCount = (transfers: TransactionTranfer[]) =>
     );
 
 export const TransactionDetailInputsSheet = ({
-    isVisible,
-    onSheetVisibilityChange,
     txid,
     accountKey,
 }: TransactionDetailInputsSheetProps) => {
@@ -76,11 +72,10 @@ export const TransactionDetailInputsSheet = ({
 
     return (
         <TransactionDetailSheet
-            isVisible={isVisible}
-            onVisibilityChange={onSheetVisibilityChange}
             title={translate('transactions.detail.sheet.inputs')}
             iconName="swap"
             transactionId={txid}
+            sheetName="inputs"
         >
             <VStack>
                 <TransactionDetailInputsSheetSection
