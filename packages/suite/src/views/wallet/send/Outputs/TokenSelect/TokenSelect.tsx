@@ -184,10 +184,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         if (sendFormPrefill) {
             setValue(tokenInputName, sendFormPrefill, { shouldValidate: true, shouldDirty: true });
             setDraftSaveRequest(true);
-            dispatch({
-                type: SUITE.SET_SEND_FORM_PREFILL,
-                payload: '',
-            });
+
+            return () => {
+                dispatch({
+                    type: SUITE.SET_SEND_FORM_PREFILL,
+                    payload: '',
+                });
+            };
         }
     }, [sendFormPrefill, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
