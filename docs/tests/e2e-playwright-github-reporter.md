@@ -124,7 +124,7 @@ To add or change value of annotation, simply change or add new enum value in cor
 ### Retry Strategy
 
 The GitHub Test Reporter implements a retry mechanism to handle network issues or temporary API failures. It uses the `scheduleAction` utility. Each API operation will be attempted up to 3 times with a 500ms delay between attempts.
-The current implementation does not have built-in deduplication logic for duplicate test issues created by retry.
+The current implementation does not have built-in deduplication logic for duplicate test issues created by `scheduleAction` retries.
 
 ### Test Retry Deduplication
 
