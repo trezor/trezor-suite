@@ -107,7 +107,8 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
                 const partnerPagePromise = page.context().waitForEvent('page', { timeout: 5_000 });
                 await page.getByRole('link', { name: 'Go to provider support' }).click();
                 const partnerTab = await partnerPagePromise;
-                await expect(partnerTab).toHaveURL(/https:\/\/sideshift\.ai\/orders\//);
+                // Mocked data have URL changed to https://example.org/orders/{{orderId}} for stability reasons
+                await expect(partnerTab).toHaveURL(/https:\/\/example\.org\/orders\//);
                 await partnerTab.close();
             }).toPass({ timeout: 20_000 });
         });

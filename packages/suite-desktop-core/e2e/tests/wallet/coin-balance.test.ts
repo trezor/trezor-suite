@@ -1,3 +1,5 @@
+import { localizeNumber } from '@suite-common/wallet-utils';
+
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
@@ -25,7 +27,8 @@ test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
 
         await test.step('Balance is increased after sending another BTC', async () => {
             const originalValue = await walletPage.balanceOfAccount('regtest').textContent();
-            const expectedIncreasedValue = (Number(originalValue) + 1).toString();
+            const rawIncreasedValue = (Number(originalValue) + 1).toString();
+            const expectedIncreasedValue = localizeNumber(rawIncreasedValue, 'en', 0, 7);
             await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
             await expect(walletPage.balanceOfAccount('regtest')).toHaveText(expectedIncreasedValue);
         });

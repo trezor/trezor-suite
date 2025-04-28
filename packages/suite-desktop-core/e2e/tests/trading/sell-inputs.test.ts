@@ -33,7 +33,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=other', '@webOnly'] }, ()
                 await tradingPage.youPayCryptoInput.fill('0.00000001');
                 await expect
                     .soft(tradingPage.cryptoInputBottomText)
-                    .toHaveText(/Minimum is 0\.\d+ BTC/, { timeout: 15_000 });
+                    .toHaveText(/Minimum is 0\.\d+( BTC)?/, { timeout: 15_000 });
             });
 
             await test.step('Too many decimal digits', async () => {

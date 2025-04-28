@@ -4,7 +4,7 @@
     "orderId": "1061e2d760262e1de932",
     "quoteId": "5d7e2530-cb13-4fd1-80d7-aec23fcb67d4",
     "status": "CONFIRM",
-    "statusUrl": "https://sideshift.ai/orders/1061e2d760262e1de932",
+    "statusUrl": "https://example.org/orders/1061e2d760262e1de932",
     "exchange": "sideshiftfr",
     "send": "solana",
     "receive": "bitcoin",
