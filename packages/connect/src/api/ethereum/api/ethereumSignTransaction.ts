@@ -121,69 +121,76 @@ export default class EthereumSignTransaction extends AbstractMethod<
     }
 
     async payloadToPrecomposed() {
-        const feePerByte = new BigNumber(
-            this.payload.transaction.gasPrice || this.payload.transaction.maxFeePerGas!,
-        );
-        const fee = feePerByte.multipliedBy(this.payload.transaction.gasLimit);
-        const data = this.payload.transaction.data?.replace(/^0x/, '');
-        let recipient = this.payload.transaction.to!;
-        let amount = new BigNumber(this.payload.transaction.value);
-        let totalSpent = amount.plus(fee);
-        let token: TokenInfo | undefined;
+        try {
+            const feePerByte = new BigNumber(
+                this.payload.transaction.gasPrice || this.payload.transaction.maxFeePerGas!,
+            );
+            const fee = feePerByte.multipliedBy(this.payload.transaction.gasLimit);
+            const data = this.payload.transaction.data?.replace(/^0x/, '');
+            let recipient = this.payload.transaction.to!;
+            let amount = new BigNumber(this.payload.transaction.value);
+            let totalSpent = amount.plus(fee);
+            let token: TokenInfo | undefined;
 
-        // ERC-20 transfer
-        // TODO: consider refactoring to shared util package together with `suite-common/wallet-constants/src/sendForm.ts`
-        if (this.payload.transaction.to && data?.startsWith('a9059cbb') && amount.eq(0)) {
-            const definitions = await getEthereumDefinitions({
-                chainId: this.payload.transaction.chainId,
-                contractAddress: this.payload.transaction.to.replace(/^0x/, ''),
-            });
-            const decoded = decodeEthereumDefinition(definitions);
-            if (decoded.token) {
-                recipient = '0x' + data.slice(32, 72);
-                amount = new BigNumber(data.slice(72, 136), 16);
-                totalSpent = amount;
-                token = {
-                    ...decoded.token,
-                    type: 'ERC20',
-                    standard: 'ERC20',
-                    contract: decoded.token.address,
-                };
+            // ERC-20 transfer
+            // TODO: consider refactoring to shared util package together with `suite-common/wallet-constants/src/sendForm.ts`
+            if (this.payload.transaction.to && data?.startsWith('a9059cbb') && amount.eq(0)) {
+                const definitions = await getEthereumDefinitions({
+                    chainId: this.payload.transaction.chainId,
+                    contractAddress: this.payload.transaction.to.replace(/^0x/, ''),
+                });
+                const decoded = decodeEthereumDefinition(definitions);
+                if (decoded.token) {
+                    recipient = '0x' + data.slice(32, 72);
+                    amount = new BigNumber(data.slice(72, 136), 16);
+                    totalSpent = amount;
+                    token = {
+                        ...decoded.token,
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        contract: decoded.token.address,
+                    };
+                }
             }
-        }
 
-        return {
-            type: 'final' as const,
-            inputs: [],
-            outputsPermutation: [0],
-            outputs: [
-                {
-                    address: recipient,
-                    amount: amount.toString(),
-                    script_type: 'PAYTOADDRESS' as const,
-                },
-            ],
-            totalSpent: totalSpent.toString(),
-            fee: fee.toString(),
-            feePerByte: feePerByte
-                .dividedBy(1e9) // wei to Gwei
-                .toString(),
-            maxFeePerGas: this.payload.transaction.maxFeePerGas
-                ? new BigNumber(this.payload.transaction.maxFeePerGas)
-                      .dividedBy(1e9) // wei to Gwei
-                      .toString()
-                : undefined,
-            maxPriorityFeePerGas: this.payload.transaction.maxPriorityFeePerGas
-                ? new BigNumber(this.payload.transaction.maxPriorityFeePerGas)
-                      .dividedBy(1e9) // wei to Gwei
-                      .toString()
-                : undefined,
-            feeLimit: new BigNumber(this.payload.transaction.gasLimit).toString(),
-            bytes: 0,
-            max: undefined,
-            isTokenKnown: !!token,
-            token,
-        };
+            return {
+                type: 'final' as const,
+                inputs: [],
+                outputsPermutation: [0],
+                outputs: [
+                    {
+                        address: recipient,
+                        amount: amount.toString(),
+                        script_type: 'PAYTOADDRESS' as const,
+                    },
+                ],
+                totalSpent: totalSpent.toString(),
+                fee: fee.toString(),
+                feePerByte: feePerByte
+                    .dividedBy(1e9) // wei to Gwei
+                    .toString(),
+                maxFeePerGas: this.payload.transaction.maxFeePerGas
+                    ? new BigNumber(this.payload.transaction.maxFeePerGas)
+                          .dividedBy(1e9) // wei to Gwei
+                          .toString()
+                    : undefined,
+                maxPriorityFeePerGas: this.payload.transaction.maxPriorityFeePerGas
+                    ? new BigNumber(this.payload.transaction.maxPriorityFeePerGas)
+                          .dividedBy(1e9) // wei to Gwei
+                          .toString()
+                    : undefined,
+                feeLimit: new BigNumber(this.payload.transaction.gasLimit).toString(),
+                bytes: 0,
+                max: undefined,
+                isTokenKnown: !!token,
+                token,
+            };
+        } catch (e) {
+            // Don't throw errors from this method
+            console.error('Error in payloadToPrecomposed', e);
+
+            return Promise.resolve(undefined);
+        }
     }
 
     async run() {
