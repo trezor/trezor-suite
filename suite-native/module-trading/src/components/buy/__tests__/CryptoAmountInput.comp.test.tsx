@@ -87,6 +87,7 @@ describe('CryptoAmountInput', () => {
         await userEvent.type(getByLabelText('You get'), 'asd1.123');
 
         expect(form.getValues('cryptoValue')).toEqual('1.123');
+        expect(getByLabelText('You get')).toHaveDisplayValue('1.123');
     });
 
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
@@ -102,6 +103,23 @@ describe('CryptoAmountInput', () => {
         await userEvent.type(getByLabelText('You get'), 'asd1.123');
 
         expect(form.getValues('cryptoValue')).toEqual('1123');
+        expect(getByLabelText('You get')).toHaveDisplayValue('1123');
+    });
+
+    it('should always escape non-numeric characters', async () => {
+        const preloadedState = {
+            appSettings: { bitcoinUnits: PROTO.AmountUnit.SATOSHI },
+        };
+        const form = await renderUseTradingBuyForm();
+        act(() => {
+            form.setValue('asset', btcAsset);
+        });
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+
+        await userEvent.type(getByLabelText('You get'), 'asd');
+
+        expect(form.getValues('cryptoValue')).toBeUndefined();
+        expect(getByLabelText('You get')).toHaveDisplayValue('');
     });
 
     it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {
