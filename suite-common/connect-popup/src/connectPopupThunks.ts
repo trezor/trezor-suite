@@ -134,7 +134,7 @@ export const connectPopupCallThunkInner = createThunk<
             return response;
         } catch (error) {
             console.error('connectPopupCallThunk', error);
-            if (error?.code === 'Method_Cancel') {
+            if (error?.code === 'Method_Cancel' || error?.code === 'Method_Interrupted') {
                 dispatch(connectPopupActions.finishCall());
             } else {
                 dispatch(connectPopupActions.setError(serializeError(error)));
