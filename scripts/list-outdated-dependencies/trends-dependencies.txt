@@ -31,7 +31,6 @@
 @testing-library/react
 @testing-library/user-event
 @types/bchaddrjs
-@types/copy-webpack-plugin
 @types/invity-api
 @types/jws
 @types/react-test-renderer

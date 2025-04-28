@@ -19,9 +19,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "@types/prettier": "^3.0.0",
         "@types/semver": "^7.7.0",
-        "@types/tar": "^6.1.11",
         "semver": "^7.7.1",
         "tar": "^7.0.1"
     }

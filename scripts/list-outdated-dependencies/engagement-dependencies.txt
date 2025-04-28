@@ -21,7 +21,6 @@
 @types/react-date-range
 @types/react-dom
 @types/react-qr-reader
-@types/ua-parser-js
 @types/zxcvbn
 autoprefixer
 babel-plugin-styled-components
