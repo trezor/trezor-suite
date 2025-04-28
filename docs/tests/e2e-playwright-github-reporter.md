@@ -98,8 +98,8 @@ This script creates a central "Trezor Suite release testing" project that will c
 
 The reporter can be run from a local environment for troubleshooting and development purposes:
 
--   `yarn test:e2e:web --reporter=./e2e/support/reporters/gitHubReporter.ts"
--   `yarn test:e2e:desktop --reporter=./e2e/support/reporters/gitHubReporter.ts"
+-   `yarn test:e2e:web --reporter=./e2e/support/reporters/gitHubReporter.ts`
+-   `yarn test:e2e:desktop --reporter=./e2e/support/reporters/gitHubReporter.ts`
 -   `yarn test:e2e:manual`
 
 ## Implementation Notes
