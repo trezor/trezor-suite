@@ -11,7 +11,7 @@ import {
     removeFeeInfoThunk,
     selectDeviceDiscovery,
     selectSelectedDevice,
-    startDiscoveryThunk,
+    startSelectedDeviceDiscovery,
     stopDiscoveryThunk,
     updateNetworkSettingsThunk,
 } from '@suite-common/wallet-core';
@@ -56,7 +56,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             action.type === ROUTER.LOCATION_CHANGE &&
             getApp(action.payload.url) !== 'wallet' &&
             getApp(action.payload.url) !== 'dashboard' &&
-            getApp(action.payload.url) !== 'settings'
+            getApp(action.payload.url) !== 'settings' &&
+            getApp(action.payload.url) !== 'switch-device'
         ) {
             interruptionIntent = true;
         }
@@ -180,7 +181,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 (discovery.status === DiscoveryStatus.IDLE ||
                     discovery.status >= DiscoveryStatus.STOPPED)
             ) {
-                dispatch(startDiscoveryThunk());
+                dispatch(startSelectedDeviceDiscovery());
             }
         }
 

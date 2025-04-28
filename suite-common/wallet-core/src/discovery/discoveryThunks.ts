@@ -84,10 +84,8 @@ export const filterUnavailableAccountTypes = (
     );
 
 const calculateProgress =
-    (discovery: Discovery) =>
+    (discovery: Discovery, device: TrezorDevice) =>
     (_dispatch: any, getState: any, extra: ExtraDependencies): PartialDiscovery => {
-        const { selectDevice } = extra.selectors;
-        const device = selectDevice(getState());
         // reconstruct networks from discovery symbols, because we need to iterate through accounts
         const networksToCount = filterUnavailableNetworks(discovery.networks, device);
 
@@ -162,11 +160,13 @@ const handleProgressThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/handleProgress`,
     (
         {
+            device,
             event,
             deviceState,
             item,
             metadataEnabled,
         }: {
+            device: TrezorDevice;
             event: ProgressEvent;
             deviceState: StaticSessionId;
             item: DiscoveryItem;
@@ -206,10 +206,13 @@ const handleProgressThunk = createThunk(
         }
         // calculate progress
         const progress = dispatch(
-            calculateProgress({
-                ...discovery,
-                failed,
-            }),
+            calculateProgress(
+                {
+                    ...discovery,
+                    failed,
+                },
+                device,
+            ),
         );
 
         // change auth confirm field only if metadata are not enabled
@@ -430,13 +433,12 @@ export const getAvailableCardanoDerivationsThunk = createThunk(
 
 export const startDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/start`,
-    async (_, { dispatch, getState, extra }): Promise<void> => {
+    async (device: TrezorDevice, { dispatch, getState, extra }): Promise<void> => {
         const {
-            selectors: { selectMetadata, selectDevice },
+            selectors: { selectMetadata },
             thunks: { initMetadata, fetchAndSaveMetadata },
             actions: { requestAuthConfirm },
         } = extra;
-        const device = selectDevice(getState());
         const metadata = selectMetadata(getState());
         const discovery = selectDeviceDiscovery(getState());
 
@@ -572,6 +574,7 @@ export const startDiscoveryThunk = createThunk(
             // pass more parameters to handler
             dispatch(
                 handleProgressThunk({
+                    device,
                     event,
                     deviceState,
                     item: bundle[progress],
@@ -616,7 +619,7 @@ export const startDiscoveryThunk = createThunk(
                 await dispatch(initMetadata(false));
             }
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
-                await dispatch(startDiscoveryThunk()); // try next index
+                await dispatch(startDiscoveryThunk(device)); // try next index
             } else if (currentDiscovery.status === DiscoveryStatus.STOPPING) {
                 dispatch(stopDiscovery({ deviceState, status: DiscoveryStatus.STOPPED }));
             } else {
@@ -654,10 +657,13 @@ export const startDiscoveryThunk = createThunk(
                     }));
 
                     const progress = dispatch(
-                        calculateProgress({
-                            ...discovery,
-                            failed,
-                        }),
+                        calculateProgress(
+                            {
+                                ...discovery,
+                                failed,
+                            },
+                            device,
+                        ),
                     );
 
                     dispatch(
@@ -668,7 +674,7 @@ export const startDiscoveryThunk = createThunk(
                         }),
                     );
 
-                    await dispatch(startDiscoveryThunk()); // restart process, exclude failed coins
+                    await dispatch(startDiscoveryThunk(device)); // restart process, exclude failed coins
 
                     return;
                 } catch {
@@ -709,6 +715,22 @@ export const startDiscoveryThunk = createThunk(
                 dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
             }
         }
+    },
+);
+
+export const startSelectedDeviceDiscovery = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/startSelectedDeviceDiscovery`,
+    (_, { dispatch, getState, extra }) => {
+        const selectedDevice = extra.selectors.selectDevice(getState());
+        if (!selectedDevice) {
+            console.warn(
+                'DiscoveryThunks#startSelectedDeviceDiscovery -> started discovery without any selected device, skipping',
+            );
+
+            return;
+        }
+
+        return dispatch(startDiscoveryThunk(selectedDevice));
     },
 );
 
@@ -763,12 +785,20 @@ export const updateNetworkSettingsThunk = createThunk(
                 n => n.symbol,
             );
 
+            if (!device) {
+                return;
+            }
+
             const progress = dispatch(
-                calculateProgress({
-                    ...d,
-                    networks: networksSymbols,
-                    failed: [],
-                }),
+                calculateProgress(
+                    {
+                        ...d,
+
+                        networks: networksSymbols,
+                        failed: [],
+                    },
+                    device,
+                ),
             );
             dispatch(
                 updateDiscovery({
@@ -783,14 +813,18 @@ export const updateNetworkSettingsThunk = createThunk(
 
 export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    async (_, { dispatch, getState }) => {
+    async (_, { dispatch, getState, extra }) => {
         const discovery = selectDeviceDiscovery(getState());
-        if (!discovery) return;
+        const device = extra.selectors.selectDevice(getState());
+        if (!discovery || !device) return;
         const progress = dispatch(
-            calculateProgress({
-                ...discovery,
-                failed: [],
-            }),
+            calculateProgress(
+                {
+                    ...discovery,
+                    failed: [],
+                },
+                device,
+            ),
         );
         dispatch(
             updateDiscovery({
@@ -798,6 +832,6 @@ export const restartDiscoveryThunk = createThunk(
                 failed: [],
             }),
         );
-        await dispatch(startDiscoveryThunk());
+        await dispatch(startDiscoveryThunk(device));
     },
 );

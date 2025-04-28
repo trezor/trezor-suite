@@ -10,11 +10,17 @@ import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suit
 
 interface AddWalletButtonProps {
     device: TrezorDevice;
+    disabled?: boolean;
     instances: AcquiredDevice[];
     onCancel: ForegroundAppProps['onCancel'];
 }
 
-export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButtonProps) => {
+export const AddWalletButton = ({
+    device,
+    disabled,
+    instances,
+    onCancel,
+}: AddWalletButtonProps) => {
     const dispatch = useDispatch();
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
@@ -44,7 +50,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         variant="tertiary"
                         isFullWidth
                         icon="plus"
-                        isDisabled={isLocked}
+                        isDisabled={disabled || isLocked}
                         onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
                     >
                         <Translation id="TR_ADD_WALLET" />
@@ -57,7 +63,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         variant="tertiary"
                         isFullWidth
                         icon="plus"
-                        isDisabled={isLocked}
+                        isDisabled={disabled || isLocked}
                         onClick={() => onAddWallet({ walletType: WalletType.PASSPHRASE })}
                     >
                         <Row gap={spacings.xs}>

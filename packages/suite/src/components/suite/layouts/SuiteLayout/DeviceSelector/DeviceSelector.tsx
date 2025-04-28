@@ -1,17 +1,15 @@
 import styled, { css } from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Icon, Tooltip } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
-import { Translation } from '../../../Translation';
 import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 
 const CaretContainer = styled.div`
@@ -57,22 +55,16 @@ const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
 `;
 
 export const DeviceSelector = () => {
-    const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
-    const { getDiscoveryStatus } = useDiscovery();
-    const discoveryStatus = getDiscoveryStatus();
-    const discoveryInProgress = Boolean(discoveryStatus && discoveryStatus.status === 'loading');
 
     const handleSwitchDeviceClick = () => {
-        if (!discoveryInProgress) {
-            dispatch(
-                goto('suite-switch-device', {
-                    params: {
-                        cancelable: true,
-                    },
-                }),
-            );
-        }
+        dispatch(
+            goto('suite-switch-device', {
+                params: {
+                    cancelable: true,
+                },
+            }),
+        );
     };
 
     const { isSidebarCollapsed } = useResponsiveContext();
@@ -80,30 +72,19 @@ export const DeviceSelector = () => {
     return (
         <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
             <ViewOnlyTooltip>
-                <Tooltip
-                    isActive={discoveryInProgress}
-                    isFullWidth
-                    placement="bottom"
-                    cursor={discoveryInProgress ? 'not-allowed' : undefined}
-                    content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
+                <InnerContainer
+                    onClick={handleSwitchDeviceClick}
+                    tabIndex={0}
+                    data-testid="@menu/switch-device"
                 >
-                    <InnerContainer
-                        onClick={handleSwitchDeviceClick}
-                        $isDisabled={discoveryInProgress}
-                        tabIndex={0}
-                        data-testid="@menu/switch-device"
-                    >
-                        <SidebarDeviceStatus />
+                    <SidebarDeviceStatus />
 
-                        <ExpandedSidebarOnly>
-                            {selectedDevice && selectedDevice.state && (
-                                <CaretContainer>
-                                    <Icon size={20} name="caretCircleDown" />
-                                </CaretContainer>
-                            )}
-                        </ExpandedSidebarOnly>
-                    </InnerContainer>
-                </Tooltip>
+                    <ExpandedSidebarOnly>
+                        <CaretContainer>
+                            <Icon size={20} name="caretCircleDown" />
+                        </CaretContainer>
+                    </ExpandedSidebarOnly>
+                </InnerContainer>
             </ViewOnlyTooltip>
         </Wrapper>
     );

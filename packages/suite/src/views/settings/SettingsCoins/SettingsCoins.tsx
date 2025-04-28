@@ -1,7 +1,10 @@
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectDeviceSupportedNetworks, startDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    selectDeviceSupportedNetworks,
+    startSelectedDeviceDiscovery,
+} from '@suite-common/wallet-core';
 import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
@@ -104,7 +107,7 @@ export const SettingsCoins = () => {
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     const startDiscovery = () => {
-        dispatch(startDiscoveryThunk());
+        dispatch(startSelectedDeviceDiscovery());
     };
 
     const animation = getDiscoveryButtonAnimationConfig(!!isDiscoveryRunning);

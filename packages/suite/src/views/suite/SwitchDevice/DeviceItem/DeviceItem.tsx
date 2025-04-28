@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { AddWalletButton } from './AddWalletButton';
@@ -36,6 +36,13 @@ export const DeviceItem = ({
     isFullHeaderVisible,
 }: DeviceItemProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
+    const { getDiscoveryStatus } = useDiscovery({
+        device,
+    });
+    const discoveryStatus = getDiscoveryStatus();
+    const discoveryInProgress = Boolean(
+        discoveryStatus && discoveryStatus.status === 'loading' && device.state,
+    );
 
     const instancesWithState = instances.filter(i => i.state);
 
@@ -65,7 +72,12 @@ export const DeviceItem = ({
                             ))}
                         </Column>
                     )}
-                    <AddWalletButton device={device} instances={instances} onCancel={onCancel} />
+                    <AddWalletButton
+                        device={device}
+                        disabled={discoveryInProgress}
+                        instances={instances}
+                        onCancel={onCancel}
+                    />
                 </Column>
             </WalletsWrapper>
         </CardWithDevice>

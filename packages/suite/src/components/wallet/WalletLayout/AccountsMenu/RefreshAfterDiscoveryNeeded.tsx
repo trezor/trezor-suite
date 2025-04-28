@@ -3,7 +3,7 @@ import React from 'react';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { selectSelectedDevice, startSelectedDeviceDiscovery } from '@suite-common/wallet-core';
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
@@ -49,7 +49,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
     }
 
     const startDiscovery = () => {
-        dispatch(startDiscoveryThunk());
+        dispatch(startSelectedDeviceDiscovery());
     };
 
     return (
