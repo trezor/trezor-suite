@@ -5,15 +5,10 @@ import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils'
 import coins from '../../__fixtures__/coins.json';
 import quotes from '../../__fixtures__/quotes.json';
 import { btcAsset } from '../../__fixtures__/tradeableAssets';
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../__fixtures__/trades';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { useTradingBuyForm } from '../../hooks/useTradingBuyForm';
 import { TradingBuyForm } from '../../types';
-import {
-    getPaymentMethodFromBuyForm,
-    getTradeOperationData,
-    tradingBuyFormToTradingBuyFormProps,
-} from '../quotesUtils';
+import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
 
 describe('quotesUtils', () => {
     let form: TradingBuyForm;
@@ -116,44 +111,6 @@ describe('quotesUtils', () => {
                         paymentMethod: undefined,
                     }),
                 );
-            });
-        });
-    });
-
-    describe('getTradeOperationStrings', () => {
-        it('should return correct strings for buy trade', () => {
-            const buyTrade = getBuyTrade({});
-            const result = getTradeOperationData(buyTrade);
-
-            expect(result).toEqual({
-                fromValue: '1234',
-                fromCryptoId: 'USD',
-                toValue: '0.462586',
-                toCryptoId: 'ethereum',
-            });
-        });
-
-        it('should return correct strings for exchange trade', () => {
-            const exchangeTrade = getExchangeTrade({});
-            const result = getTradeOperationData(exchangeTrade);
-
-            expect(result).toEqual({
-                fromValue: '10.1232',
-                fromCryptoId: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
-                toValue: '0.462586',
-                toCryptoId: 'solana',
-            });
-        });
-
-        it('should return correct strings for sell trade', () => {
-            const sellTrade = getSellTrade({});
-            const result = getTradeOperationData(sellTrade);
-
-            expect(result).toEqual({
-                fromValue: '1.22',
-                fromCryptoId: 'bitcoin',
-                toValue: '100',
-                toCryptoId: 'USD',
             });
         });
     });

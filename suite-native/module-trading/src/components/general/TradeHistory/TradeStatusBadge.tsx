@@ -11,15 +11,14 @@ export type TransactionStatusProps = {
 export const getBadgeVariant = (status: TradingTransactionStatus): BadgeVariant => {
     switch (status) {
         case undefined:
-        case 'CANCELLED':
             return 'neutral';
 
         case 'SUCCESS':
-        case 'REFUNDED':
             return 'greenSubtle';
 
         case 'BLOCKED':
         case 'ERROR':
+        case 'REFUNDED':
             return 'red';
 
         default:
@@ -29,26 +28,17 @@ export const getBadgeVariant = (status: TradingTransactionStatus): BadgeVariant 
 
 export const getBadgeIconName = (status: TradingTransactionStatus): IconName | undefined => {
     switch (status) {
-        case 'CANCELLED':
         case 'ERROR':
         case 'BLOCKED':
-            return 'x';
+        case 'REFUNDED':
+            return 'warningCircle';
 
         case 'SUCCESS':
-        case 'REFUNDED':
             return 'check';
 
         case 'KYC':
+        case 'CANCELLED':
             return 'warning';
-
-        case 'PENDING':
-        case 'APPROVAL_PENDING':
-        case 'CONFIRMING':
-        case 'SENDING':
-        case 'CONVERTING':
-        case 'WAITING_FOR_USER':
-        case 'SITE_ACTION_REQUEST':
-            return 'clock';
 
         default:
             return undefined;

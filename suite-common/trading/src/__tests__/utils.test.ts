@@ -10,6 +10,8 @@ import { accountBtc, accountEth } from '../__fixtures__/utils';
 import type { TradingAccountOptionsGroupOptionProps } from '../types';
 import {
     addIdsToQuotes,
+    cryptoIdToNetwork,
+    cryptoIdToNetworkAndContractAddress,
     cryptoIdToSymbol,
     filterQuotesAccordingTags,
     getBestRatedQuote,
@@ -236,6 +238,41 @@ describe('cryptoIdToSymbol', () => {
         'should return correct symbol for %s',
         (cryptoId, expectedSymbol) => {
             expect(cryptoIdToSymbol(cryptoId)).toBe(expectedSymbol);
+        },
+    );
+});
+
+describe('cryptoIdToNetworkAndContractAddress', () => {
+    it.each([
+        ['bitcoin', 'btc', undefined],
+        ['ethereum', 'eth', undefined],
+        [
+            'ethereum--0x1234123412341234123412341234123412341234',
+            'eth',
+            '0x1234123412341234123412341234123412341234',
+        ],
+    ] as [CryptoId, NetworkSymbol | undefined, string | undefined][])(
+        'should return correct symbol and contract for %s',
+        (cryptoId, expectedSymbol, expectedContract) => {
+            expect(cryptoIdToNetworkAndContractAddress(cryptoId).network?.symbol).toBe(
+                expectedSymbol,
+            );
+            expect(cryptoIdToNetworkAndContractAddress(cryptoId).contractAddress).toBe(
+                expectedContract,
+            );
+        },
+    );
+});
+
+describe('cryptoIdToNetwork', () => {
+    it.each([
+        ['bitcoin', 'btc'],
+        ['ethereum', 'eth'],
+        ['ethereum--0x1234123412341234123412341234123412341234', 'eth'],
+    ] as [CryptoId, NetworkSymbol | undefined][])(
+        'should return correct symbol for %s',
+        (cryptoId, expectedSymbol) => {
+            expect(cryptoIdToNetwork(cryptoId)?.symbol).toBe(expectedSymbol);
         },
     );
 });

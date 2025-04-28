@@ -14,15 +14,15 @@ import {
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 
 export const getBuyTrade = ({
-    status = 'SUBMITTED',
+    status,
 }: {
-    status?: BuyTradeStatus;
+    status: BuyTradeStatus | undefined;
 }): TradingTransactionBuy => ({
     account: {
         accountIndex: 0,
         accountType: 'normal',
-        descriptor: 'A1bZdZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t',
-        symbol: 'sol',
+        descriptor: 'eth1-normal',
+        symbol: 'eth',
     },
     data: {
         country: 'CZ',
@@ -52,20 +52,20 @@ export const getBuyTrade = ({
     date: '2025-04-10T20:21:25.042Z',
     key: '7546b3a9-ba27-4c9c-b3ae-45524fe63a97',
     tradeType: 'buy',
-    receiveAccountKey: undefined,
+    receiveAccountKey: 'eth1',
 });
 
 export const getExchangeTrade = ({
-    status = 'CONVERTING',
+    status,
 }: {
-    status?: ExchangeTradeStatus;
+    status: ExchangeTradeStatus | undefined;
 }): TradingTransactionExchange => ({
     tradeType: 'exchange' as const,
     date: '2025-02-12T20:11:03.042Z',
     key: 'exchange-key',
     account: {
         symbol: 'sol' as NetworkSymbol,
-        descriptor: 'A1bZdZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t',
+        descriptor: 'sol1-normal',
         accountIndex: 0,
         accountType: 'normal' as AccountType,
     },
@@ -80,21 +80,21 @@ export const getExchangeTrade = ({
         receiveStringAmount: '0.462586',
         exchange: 'mercuryo',
     },
-    sendAccountKey: undefined,
-    receiveAccountKey: undefined,
+    sendAccountKey: 'sol1',
+    receiveAccountKey: 'sol1',
 });
 
 export const getSellTrade = ({
-    status = 'SEND_CRYPTO',
+    status,
 }: {
-    status?: SellTradeStatus;
+    status: SellTradeStatus | undefined;
 }): TradingTransactionSell => ({
     tradeType: 'sell',
     date: '2025-01-01T20:12:25.042Z',
     key: 'sell-key',
     account: {
         symbol: 'btc',
-        descriptor: 'asdfasdfasdfa-sdfas',
+        descriptor: 'btc1-normal',
         accountIndex: 0,
         accountType: 'normal',
     },
@@ -109,5 +109,5 @@ export const getSellTrade = ({
         partnerData:
             'https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=SOL&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=Ee11dZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t&hide_address=false&country_code=CZ&merchant_transaction_id=1146b3a9-ba27-4c9c-b3ae-45524fe63a97&theme=invity&return_url=trezorsuitelite%3A%2F%2Fbuy%2Ftrade%3Freceive%3Dsolana%26send%3DCZK%26fiatAmount%3Dundefined&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=1ef703a2175a7d1a3ab255aabb753c8a54146c7c19453dc6ebc1f667fb0045755a03d4df979c3c68a37af5cb9f5e73b88eec390a49fd31311019a2a7a65c6cfb&fiat_amount=1234',
     },
-    sendAccountKey: undefined,
+    sendAccountKey: 'btc1',
 });

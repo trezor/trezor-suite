@@ -83,9 +83,9 @@ describe('TradeStatusBadge', () => {
     describe('getBadgeVariant', () => {
         it.each([
             [undefined, 'neutral'],
-            ['CANCELLED', 'neutral'],
+            ['CANCELLED', 'yellow'],
             ['SUCCESS', 'greenSubtle'],
-            ['REFUNDED', 'greenSubtle'],
+            ['REFUNDED', 'red'],
             ['BLOCKED', 'red'],
             ['ERROR', 'red'],
             ['SUBMITTED', 'yellow'],
@@ -104,32 +104,29 @@ describe('TradeStatusBadge', () => {
             expect(getBadgeIconName(undefined)).toBeUndefined();
         });
 
-        it('should return x for CANCELLED, ERROR and BLOCKED status', () => {
-            expect(getBadgeIconName('CANCELLED')).toBe('x');
-            expect(getBadgeIconName('ERROR')).toBe('x');
-            expect(getBadgeIconName('BLOCKED')).toBe('x');
+        it('should return warningCircle for CANCELLED, ERROR, REFUNDED and BLOCKED status', () => {
+            expect(getBadgeIconName('ERROR')).toBe('warningCircle');
+            expect(getBadgeIconName('BLOCKED')).toBe('warningCircle');
+            expect(getBadgeIconName('REFUNDED')).toBe('warningCircle');
         });
 
-        it('should return check for SUCCESS and REFUNDED status', () => {
+        it('should return check for SUCCESS  status', () => {
             expect(getBadgeIconName('SUCCESS')).toBe('check');
-            expect(getBadgeIconName('REFUNDED')).toBe('check');
         });
 
-        it('should return warning for KYC status', () => {
+        it('should return warning for KYC and CANCELLED status', () => {
+            expect(getBadgeIconName('CANCELLED')).toBe('warning');
             expect(getBadgeIconName('KYC')).toBe('warning');
         });
 
-        it('should return clock for pending statuses', () => {
-            expect(getBadgeIconName('PENDING')).toBe('clock');
-            expect(getBadgeIconName('APPROVAL_PENDING')).toBe('clock');
-            expect(getBadgeIconName('CONFIRMING')).toBe('clock');
-            expect(getBadgeIconName('SENDING')).toBe('clock');
-            expect(getBadgeIconName('CONVERTING')).toBe('clock');
-            expect(getBadgeIconName('WAITING_FOR_USER')).toBe('clock');
-            expect(getBadgeIconName('SITE_ACTION_REQUEST')).toBe('clock');
-        });
-
         it('should return undefined for other statuses', () => {
+            expect(getBadgeIconName('PENDING')).toBeUndefined();
+            expect(getBadgeIconName('APPROVAL_PENDING')).toBeUndefined();
+            expect(getBadgeIconName('CONFIRMING')).toBeUndefined();
+            expect(getBadgeIconName('SENDING')).toBeUndefined();
+            expect(getBadgeIconName('CONVERTING')).toBeUndefined();
+            expect(getBadgeIconName('WAITING_FOR_USER')).toBeUndefined();
+            expect(getBadgeIconName('SITE_ACTION_REQUEST')).toBeUndefined();
             expect(getBadgeIconName('SUBMITTED')).toBeUndefined();
         });
     });

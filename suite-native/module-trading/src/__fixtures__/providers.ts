@@ -11,7 +11,7 @@ export const invity = {
     paymentMethods: ['creditCard', 'googlePay', 'applePay'],
     brandName: 'Invity Finance',
     statusUrl: 'https://checkout.invity.io/#status/{{paymentId}}',
-    supportUrl: '',
+    supportUrl: 'https://invity.io/#support',
 } as BuyProviderInfo;
 
 export const mercuryo = {
@@ -25,7 +25,7 @@ export const mercuryo = {
     paymentMethods: ['creditCard', 'googlePay', 'applePay'],
     brandName: 'Mercuryo',
     statusUrl: 'https://checkout.mercuryo.io/#status/{{paymentId}}',
-    supportUrl: '',
+    supportUrl: 'https://mercuryo.io/#support',
 } as BuyProviderInfo;
 
 export const cexdirect = {
@@ -39,5 +39,5 @@ export const cexdirect = {
     paymentMethods: ['creditCard', 'googlePay', 'applePay'],
     brandName: 'Cexdirect',
     statusUrl: 'https://checkout.cexdirect.io/#status/{{paymentId}}',
-    supportUrl: '',
+    supportUrl: 'https://cexdirect.io/#support',
 } as BuyProviderInfo;

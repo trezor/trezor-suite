@@ -13,14 +13,18 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type RouteProps = StackProps<RootStackParamList, RootStackRoutes.TradingWebView>['route'];
+
+const webViewStyle = prepareNativeStyle(_ => ({ flex: 1 }));
 
 export const TradingWebViewScreen = () => {
     const {
         params: { source, closeCallbackUrl },
     } = useRoute<RouteProps>();
     const navigation = useNavigation();
+    const { applyStyle } = useNativeStyles();
 
     if (!source?.uri && !source?.html) {
         return (
@@ -45,7 +49,7 @@ export const TradingWebViewScreen = () => {
             noBottomPadding
         >
             <WebView
-                style={{ flex: 1 }}
+                style={applyStyle(webViewStyle)}
                 source={{ ...sourceData }}
                 // go back on closeCallbackUrl
                 onShouldStartLoadWithRequest={(request: { url: string }) => {

@@ -223,8 +223,8 @@ export const selectHasTradingTradesOfTradeType = (
     tradeType: TradingType,
 ) => selectTradingTradesByTradeType(state, tradeType).length > 0;
 
-export const selectTradingTradeByOrderId = (state: TradingRootState, orderId: string) =>
-    selectTradingTrades(state).find(t => t.data.orderId === orderId);
+export const selectTradingTradeByOrderId = (state: TradingRootState, orderId: string | undefined) =>
+    selectTradingTrades(state).find(t => orderId && t.data.orderId === orderId);
 
 export const selectTradingCoinInfoByCryptoId = (
     state: TradingRootState,

@@ -1,13 +1,10 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import type { CryptoId } from 'invity-api';
-
 import { useFormatters } from '@suite-common/formatters';
 import {
     TradingRootState,
     TradingTransaction,
-    selectTradingCoinSymbolByCryptoId,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
@@ -15,7 +12,7 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { TradeStatusBadge } from './TradeStatusBadge';
-import { getTradeOperationData } from '../../../utils/quotesUtils';
+import { useChangeStringsExtractor } from '../../../hooks/useChangeStringsExtractor';
 import { TradingProviderLogo } from '../TradingProviderLogo';
 
 type TradeHistoryListItemProps = {
@@ -24,25 +21,6 @@ type TradeHistoryListItemProps = {
 };
 
 export const TRADE_HISTORY_LIST_ITEM_HEIGHT = 148;
-
-export const useSymbolExtractor = (cryptoId: CryptoId | undefined) => {
-    const symbol = useSelector((state: TradingRootState) =>
-        selectTradingCoinSymbolByCryptoId(state, cryptoId),
-    );
-
-    return symbol ?? cryptoId;
-};
-
-export const useChangeStringsExtractor = (transaction: TradingTransaction) => {
-    const { fromValue, fromCryptoId, toValue, toCryptoId } = getTradeOperationData(transaction);
-    const fromSymbol = useSymbolExtractor(fromCryptoId);
-    const toSymbol = useSymbolExtractor(toCryptoId);
-
-    return {
-        fromStringValue: `${fromValue ?? ''} ${fromSymbol ?? ''}`,
-        toStringValue: `${toValue ?? ''} ${toSymbol ?? ''}`,
-    };
-};
 
 export const TradeHistoryListItem = ({ transaction, onPress }: TradeHistoryListItemProps) => {
     const { DateFormatter, TimeFormatter } = useFormatters();

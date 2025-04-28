@@ -57,7 +57,10 @@ export const CircularSpinner = ({ size, color, width }: CircularSpinnerProps) =>
     const radius = size / 2;
 
     return (
-        <Animated.View style={[animatedStyles, applyStyle(ContainerStyle)]}>
+        <Animated.View
+            style={[animatedStyles, applyStyle(ContainerStyle)]}
+            testID="@circular-spinner"
+        >
             <Canvas style={{ height: size, width: size }}>
                 <Circle
                     opacity={0.75}

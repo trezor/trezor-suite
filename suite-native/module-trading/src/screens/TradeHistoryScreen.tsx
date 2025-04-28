@@ -1,32 +1,30 @@
+import { useCallback, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import {
     TradingRootState,
     TradingTransaction,
-    TradingTransactionBuy,
     selectTradingTradesByTradeType,
 } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import {
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { TradeDetailSheet } from '../components/general/TradeDetailSheet/TradeDetailSheet';
 import {
     TRADE_HISTORY_LIST_ITEM_HEIGHT,
     TradeHistoryListItem,
 } from '../components/general/TradeHistory/TradeHistoryListItem';
-import { buildTradingUrl } from '../utils/tradeFormUtils';
+import { useBottomSheetControls } from '../hooks/useBottomSheetControls';
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
@@ -43,27 +41,24 @@ export const TradeHistoryScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const { bottom: insetBottom } = useSafeAreaInsets();
+
+    const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
+    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const trades = useSelector((state: TradingRootState) =>
         selectTradingTradesByTradeType(state, tradeType),
     );
-    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
-    const handleSelectedTrade = (trade: TradingTransaction) => {
-        if (trade.tradeType === 'buy') {
-            // TODO: Open Trade detail in followup PR instead of this
-            const buy = trade as TradingTransactionBuy;
-            if (buy.data.partnerData) {
-                navigation.navigate(RootStackRoutes.TradingWebView, {
-                    closeCallbackUrl: buildTradingUrl({
-                        actionType: 'trade',
-                        tradeType: trade.tradeType,
-                        orderId: trade.data.orderId,
-                    }),
-                    source: { uri: buy.data.partnerData },
-                });
+    const handleSelectedTrade = useCallback(
+        (trade: TradingTransaction) => {
+            const { orderId } = trade.data;
+
+            setDetailOrderId(orderId);
+            if (orderId && !isSheetVisible) {
+                showSheet();
             }
-        }
-    };
+        },
+        [isSheetVisible, showSheet],
+    );
 
     const renderItem = ({ item }: { item: TradingTransaction }) => (
         <TradeHistoryListItem transaction={item} onPress={() => handleSelectedTrade(item)} />
@@ -86,6 +81,11 @@ export const TradeHistoryScreen = () => {
                 data={trades}
                 estimatedItemSize={TRADE_HISTORY_LIST_ITEM_HEIGHT}
                 keyExtractor={keyExtractor}
+            />
+            <TradeDetailSheet
+                isVisible={isSheetVisible}
+                orderId={detailOrderId}
+                onClose={hideSheet}
             />
         </Screen>
     );

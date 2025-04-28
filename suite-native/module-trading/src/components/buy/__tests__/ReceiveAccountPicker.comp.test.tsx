@@ -37,6 +37,10 @@ const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
 describe('ReceiveAccountPicker', () => {
     let buyForm: TradingBuyForm;
 
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
     const renderBuyForm = async () => {
         const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
 

@@ -25,19 +25,30 @@ import {
     TradingType,
 } from './types';
 
+type NetworkAndContractAddress = {
+    network: Network | undefined;
+    contractAddress: string | undefined;
+};
+
 export const parseCryptoId = (cryptoId: CryptoId): TradingParsedCryptoIdProps => {
     const parts = cryptoId.split(CRYPTO_PLATFORM_SEPARATOR);
 
     return { networkId: parts[0] as CryptoId, contractAddress: parts[1] };
 };
 
-export const cryptoIdToNetwork = (cryptoId: CryptoId): Network | undefined => {
+export const cryptoIdToNetworkAndContractAddress = (
+    cryptoId: CryptoId,
+): NetworkAndContractAddress => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
-
-    return contractAddress
+    const network = contractAddress
         ? getNetworkByCoingeckoId(networkId)
         : getNetworkByTradeCryptoId(networkId);
+
+    return { network, contractAddress };
 };
+
+export const cryptoIdToNetwork = (cryptoId: CryptoId): Network | undefined =>
+    cryptoIdToNetworkAndContractAddress(cryptoId)?.network;
 
 export const cryptoIdToSymbol = (cryptoId: CryptoId): NetworkSymbol | undefined =>
     cryptoIdToNetwork(cryptoId)?.symbol;
