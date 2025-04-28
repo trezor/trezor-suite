@@ -161,8 +161,8 @@ export const TokenRow = ({
                 action: 'navigate',
                 type,
                 from: 'account/tokens',
-                networkSymbol: account?.symbol,
-                tokenSymbol: token?.symbol,
+                networkSymbol: account.symbol,
+                contractAddress: token.contract,
             },
         });
     };

@@ -224,7 +224,7 @@ export type SuiteAnalyticsEvent =
                   | 'account/empty'
                   | 'buy/sell/dca-form';
               networkSymbol?: string;
-              tokenSymbol?: string;
+              contractAddress?: string;
           };
       }
     | {
@@ -238,12 +238,7 @@ export type SuiteAnalyticsEvent =
                   | 'receive-address'
                   | 'create-approval'
                   | 'already-approved'
-                  | 'confirm-and-send'
-                  | 'status-converting'
-                  | 'status-sending'
-                  | 'status-success'
-                  | 'status-kyc'
-                  | 'status-error';
+                  | 'confirm-and-send';
 
               sendCryptoLabel?: string;
               sendCryptoNetworkSymbol?: string;
@@ -267,14 +262,7 @@ export type SuiteAnalyticsEvent =
           type: EventType.TradingBuy;
           payload: {
               action: 'continue' | 'cancel';
-              step:
-                  | 'buy-form'
-                  | 'offers-form'
-                  | 'buy-terms-modal'
-                  | 'status-waiting'
-                  | 'status-processing'
-                  | 'status-success'
-                  | 'status-error';
+              step: 'buy-form' | 'offers-form' | 'buy-terms-modal';
 
               cryptoLabel?: string;
               cryptoNetworkSymbol?: string;
@@ -294,10 +282,7 @@ export type SuiteAnalyticsEvent =
                   | 'sell-form'
                   | 'offers-form'
                   | 'sell-terms-modal'
-                  | 'confirm-and-send-transaction'
-                  | 'status-pending'
-                  | 'status-success'
-                  | 'status-error';
+                  | 'confirm-and-send-transaction';
 
               cryptoLabel?: string;
               cryptoNetworkSymbol?: string;
@@ -308,6 +293,27 @@ export type SuiteAnalyticsEvent =
 
               exchangeName?: string;
               fractionButton?: string;
+          };
+      }
+    | {
+          type: EventType.TradingStatus;
+          payload: {
+              type: 'exchange';
+              status: 'converting' | 'sending' | 'success' | 'kyc' | 'error';
+          };
+      }
+    | {
+          type: EventType.TradingStatus;
+          payload: {
+              type: 'buy';
+              status: 'waiting' | 'processing' | 'success' | 'error';
+          };
+      }
+    | {
+          type: EventType.TradingStatus;
+          payload: {
+              type: 'sell';
+              status: 'pending' | 'success' | 'error';
           };
       }
     | {

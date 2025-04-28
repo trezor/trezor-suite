@@ -31,16 +31,16 @@ const Wrapper = styled.div`
 const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
     switch (tradeStatus) {
         case 'CONVERTING':
-            return 'status-converting';
+            return 'converting';
         case 'KYC':
-            return 'status-kyc';
+            return 'kyc';
         case 'ERROR':
-            return 'status-error';
+            return 'error';
         case 'SUCCESS':
-            return 'status-success';
+            return 'success';
         default: {
             if (!tradeFinalStatuses['exchange'].includes(tradeStatus)) {
-                return 'status-sending';
+                return 'sending';
             }
 
             return undefined;
@@ -78,10 +78,10 @@ export const TradingDetailExchange = () => {
         }
 
         analytics.report({
-            type: EventType.TradingExchange,
+            type: EventType.TradingStatus,
             payload: {
-                action: 'continue',
-                step: tradeStatusStep,
+                type: 'exchange',
+                status: tradeStatusStep,
             },
         });
     }, [tradeStatus, previousTradeStatus, tradeStatusStep]);
@@ -121,27 +121,27 @@ export const TradingDetailExchange = () => {
                     </InfoItem>
                 )}
 
-                {tradeStatusStep === 'status-success' && (
+                {tradeStatusStep === 'success' && (
                     <TradingDetailExchangePaymentSuccessful account={account} />
                 )}
-                {tradeStatusStep === 'status-kyc' && (
+                {tradeStatusStep === 'kyc' && (
                     <TradingDetailExchangePaymentKYC
                         account={account}
                         provider={provider}
                         supportUrl={supportUrl}
                     />
                 )}
-                {tradeStatusStep === 'status-error' && (
+                {tradeStatusStep === 'error' && (
                     <TradingDetailExchangePaymentFailed
                         account={account}
                         transactionId={trade.key}
                         supportUrl={supportUrl}
                     />
                 )}
-                {tradeStatusStep === 'status-converting' && (
+                {tradeStatusStep === 'converting' && (
                     <TradingDetailExchangePaymentConverting supportUrl={supportUrl} />
                 )}
-                {tradeStatusStep === 'status-sending' && (
+                {tradeStatusStep === 'sending' && (
                     <TradingDetailExchangePaymentSending supportUrl={supportUrl} />
                 )}
             </Card>

@@ -28,14 +28,14 @@ const getTradeStatusStep = (tradeStatus?: BuyTradeStatus) => {
     switch (tradeStatus) {
         case 'SUBMITTED':
         case 'WAITING_FOR_USER':
-            return 'status-waiting';
+            return 'waiting';
         case 'APPROVAL_PENDING':
-            return 'status-processing';
+            return 'processing';
         case 'SUCCESS':
-            return 'status-success';
+            return 'success';
         case 'ERROR':
         case 'BLOCKED':
-            return 'status-error';
+            return 'error';
         default:
             return undefined;
     }
@@ -74,10 +74,10 @@ export const TradingDetailBuy = () => {
         }
 
         analytics.report({
-            type: EventType.TradingBuy,
+            type: EventType.TradingStatus,
             payload: {
-                action: 'continue',
-                step: tradeStatusStep,
+                type: 'buy',
+                status: tradeStatusStep,
             },
         });
     }, [tradeStatus, previousTradeStatus, tradeStatusStep]);
@@ -101,18 +101,18 @@ export const TradingDetailBuy = () => {
     return (
         <Wrapper data-testid="@trading/transaction/detail">
             <Card data-testid="@trading/transaction/detail/status-card">
-                {tradeStatusStep === 'status-error' && (
+                {tradeStatusStep === 'error' && (
                     <TradingDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
                 )}
-                {tradeStatusStep === 'status-processing' && <TradingDetailBuyPaymentProcessing />}
-                {tradeStatusStep === 'status-waiting' && (
+                {tradeStatusStep === 'processing' && <TradingDetailBuyPaymentProcessing />}
+                {tradeStatusStep === 'waiting' && (
                     <TradingDetailBuyPaymentWaitingForUser
                         trade={trade.data}
                         account={account}
                         providerName={provider?.brandName || provider?.companyName}
                     />
                 )}
-                {tradeStatusStep === 'status-success' && (
+                {tradeStatusStep === 'success' && (
                     <TradingDetailBuyPaymentPaymentSuccessful account={account} />
                 )}
             </Card>

@@ -27,11 +27,9 @@ const Wrapper = styled.div`
 const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
     switch (tradeStatus) {
         case 'SUCCESS':
-            return 'status-success';
+            return 'success';
         default: {
-            return tradeFinalStatuses['sell'].includes(tradeStatus)
-                ? 'status-error'
-                : 'status-pending';
+            return tradeFinalStatuses['sell'].includes(tradeStatus) ? 'error' : 'pending';
         }
     }
 };
@@ -69,10 +67,10 @@ export const TradingDetailSell = () => {
         }
 
         analytics.report({
-            type: EventType.TradingSell,
+            type: EventType.TradingStatus,
             payload: {
-                action: 'continue',
-                step: tradeStatusStep,
+                type: 'sell',
+                status: tradeStatusStep,
             },
         });
     }, [tradeStatus, previousTradeStatus, tradeStatusStep]);
@@ -96,17 +94,17 @@ export const TradingDetailSell = () => {
     return (
         <Wrapper>
             <Card>
-                {tradeStatusStep === 'status-success' && (
+                {tradeStatusStep === 'success' && (
                     <TradingDetailSellPaymentSuccessful account={account} />
                 )}
-                {tradeStatusStep === 'status-error' && (
+                {tradeStatusStep === 'error' && (
                     <TradingDetailSellPaymentFailed
                         account={account}
                         transactionId={trade.key}
                         supportUrl={supportUrl}
                     />
                 )}
-                {tradeStatusStep === 'status-pending' && (
+                {tradeStatusStep === 'pending' && (
                     <TradingDetailSellPaymentPending supportUrl={supportUrl} />
                 )}
             </Card>
