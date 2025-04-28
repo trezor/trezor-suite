@@ -58,3 +58,40 @@ export const percentageDiff = (a: number, b: number) => {
 
     return (b - a) / ((b + a) / 2);
 };
+
+const omitSensitiveSubstring = (message: string, prefix: string, suffix: string = '\n') => {
+    const start = message.indexOf(prefix);
+    const end = suffix ? message.indexOf(suffix) : -1;
+
+    if (start !== -1) {
+        const str = message.slice(0, start + prefix.length) + ' [SENSITIVE DATA HIDDEN]';
+        if (end !== -1 && end > start + prefix.length) {
+            return str + ' ' + message.slice(end);
+        }
+
+        return str;
+    }
+
+    return message;
+};
+
+// this array defines start and end substrings for redacting using `omitErrorMessageSensitiveData()`
+const CensoredStringsMap: { start: string; end?: string }[] = [
+    { start: 'Account not found:' },
+    { start: 'Unable to fetch fiat rates for defined timestamps.' },
+    { start: 'Aborted by timeout -' },
+    {
+        start: 'getTransaction',
+        end: 'not found (transaction indexing still in progress)',
+    },
+    { start: 'EthereumTypeGetBalance', end: 'context deadline exceeded' },
+];
+
+export const omitErrorMessageSensitiveData = (string: string) => {
+    let msg = string;
+    CensoredStringsMap.map(a => {
+        msg = omitSensitiveSubstring(msg, a.start, a.end);
+    });
+
+    return msg;
+};
