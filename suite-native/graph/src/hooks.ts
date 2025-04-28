@@ -95,6 +95,7 @@ const CensoredStringsMap: { start: string; end?: string }[] = [
         start: 'getTransaction ',
         end: 'not found (transaction indexing still in progress)',
     },
+    { start: 'EthereumTypeGetBalance', end: 'context deadline exceeded' },
 ];
 
 const omitErrorMessageSensitiveData = (string: string) => {
