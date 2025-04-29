@@ -66,8 +66,9 @@ const getOutputTitle = (
         case 'fee':
             return <Translation id={getFeeLabel(networkType)} />;
         case 'fee-replace':
+            return <Translation id="TR_TX_FEE" />;
         case 'reduce-output':
-            return <Translation id="TR_SUMMARY" />;
+            return <Translation id="AMOUNT" />;
         case 'contract':
             return <Translation id={networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT'} />;
         case 'address':
