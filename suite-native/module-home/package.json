@@ -4,11 +4,11 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest --coverage"
     },
     "dependencies": {
         "@react-navigation/native": "6.1.18",
