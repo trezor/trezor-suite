@@ -3428,11 +3428,6 @@ export default defineMessages({
         defaultMessage: 'Verified',
         id: 'TR_VERIFIED',
     },
-    TR_VERIFY_MESSAGE: {
-        defaultMessage: 'Verify message',
-        description: 'Header for the Sign and Verify form',
-        id: 'TR_VERIFY_MESSAGE',
-    },
     TR_RESTARTING_TREZOR: {
         defaultMessage: 'Restarting Trezor',
         description: 'Info what is happening with users device.',
@@ -7067,11 +7062,11 @@ export default defineMessages({
     },
     TR_FAILED_VERIFY_DEVICE_HEADING: {
         id: 'TR_FAILED_VERIFY_DEVICE_HEADING',
-        defaultMessage: 'Failed to verify device',
+        defaultMessage: "The verification process didn't finish",
     },
     TR_FAILED_VERIFY_DEVICE_TEXT: {
         id: 'TR_FAILED_VERIFY_DEVICE_TEXT',
-        defaultMessage: 'Avoid using this device or sending any funds to it.',
+        defaultMessage: "Your device firmware hash check couldn't be performed.",
     },
     TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
@@ -7461,10 +7456,6 @@ export default defineMessages({
     TR_COMPATIBILITY_SIG_FORMAT: {
         id: 'TR_COMPATIBILITY_SIG_FORMAT',
         defaultMessage: 'Electrum',
-    },
-    TR_COPY_AND_CLOSE: {
-        id: 'TR_COPY_AND_CLOSE',
-        defaultMessage: 'Copy & Close',
     },
     TR_COPY_SIGNED_MESSAGE: {
         id: 'TR_COPY_SIGNED_MESSAGE',

@@ -1331,6 +1331,7 @@
   "TR_SOLANA_DEVNET_SHORTCUT_WARNING": "DSOL будет отображать SOL на Вашем Trezor из-за ограничений сети. Проверьте предоставленный блокчейн в devnet explorer, если Вы хотите проверить сеть транзакций.",
   "TR_SOLVE_ISSUE": "Обновить",
   "TR_SOUTH": "Юг",
+  "TR_STAKE_APY_DESC": "zavalinech",
   "TR_STAKE_DELEGATED": "Делегация stake",
   "TR_STAKE_DEREGISTERED": "Снятие с регистрации адреса stake",
   "TR_STAKE_REGISTERED": "Регистрация адреса stake",
