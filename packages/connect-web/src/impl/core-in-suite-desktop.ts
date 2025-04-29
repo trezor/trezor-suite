@@ -29,10 +29,11 @@ import { parseConnectSettings } from '../connectSettings';
 export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();
     protected _settings: ConnectSettings;
-    private ws?: WebsocketClient<{}>;
+    private ws: WebsocketClient<{}>;
 
     public constructor() {
         this._settings = parseConnectSettings();
+        this.ws = new WebsocketClient({ url: 'ws://127.0.0.1:21335/connect-ws' });
     }
 
     public manifest(data: Manifest) {
@@ -45,13 +46,13 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     public dispose() {
         this.eventEmitter.removeAllListeners();
         this._settings = parseConnectSettings();
-        this.ws?.dispose();
+        this.ws.dispose();
 
         return Promise.resolve(undefined);
     }
 
     public cancel(_error?: string) {
-        this.ws?.sendMessage({
+        this.ws.sendMessage({
             type: POPUP.CLOSED,
             payload: { error: _error },
         });
@@ -106,9 +107,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         this._settings = newSettings;
 
         try {
-            const ws = new WebsocketClient({ url: 'ws://127.0.0.1:21335/connect-ws' });
-            await ws.connect();
-            this.ws = ws;
+            await this.ws.connect();
         } catch (err) {
             throw err instanceof WebsocketError
                 ? ERRORS.TypedError('Desktop_ConnectionMissing', err.message)
@@ -123,12 +122,12 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
 
     public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
         try {
-            if (!this.ws) {
+            if (!this.ws.isConnected()) {
                 await this.init();
             }
             await this.handshake();
 
-            const response = await this.ws?.sendMessage(
+            const response = await this.ws.sendMessage(
                 {
                     type: IFRAME.CALL,
                     payload: params,
