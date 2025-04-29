@@ -7,7 +7,6 @@ import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
 
 type AuthenticityChecks = AcquiredDevice['authenticityChecks'];
 const filterInconclusiveAuthenticityChecks = (checks: AuthenticityChecks): AuthenticityChecks => {
-    if (checks === undefined) return undefined;
     let { firmwareRevision, firmwareHash } = checks;
     if (
         firmwareRevision &&

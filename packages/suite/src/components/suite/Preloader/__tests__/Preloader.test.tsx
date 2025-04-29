@@ -580,6 +580,7 @@ describe('Preloader component', () => {
             selectedDevice: {
                 mode: 'seedless',
                 features: {},
+                authenticityChecks: {},
             },
         };
 
@@ -605,6 +606,7 @@ describe('Preloader component', () => {
         const device: DeepPartial<AppState['device']> = {
             selectedDevice: {
                 features: { recovery_status: 'Recovery' },
+                authenticityChecks: {},
             },
         };
 
@@ -630,6 +632,7 @@ describe('Preloader component', () => {
             selectedDevice: {
                 mode: 'initialize',
                 features: {},
+                authenticityChecks: {},
             },
         };
 
@@ -655,6 +658,7 @@ describe('Preloader component', () => {
             selectedDevice: {
                 mode: 'bootloader',
                 features: { firmware_present: true },
+                authenticityChecks: {},
             },
         };
 
@@ -680,6 +684,7 @@ describe('Preloader component', () => {
             selectedDevice: {
                 mode: 'bootloader',
                 features: { firmware_present: false },
+                authenticityChecks: {},
             },
         };
 
@@ -705,6 +710,7 @@ describe('Preloader component', () => {
             selectedDevice: {
                 firmware: 'required',
                 features: {},
+                authenticityChecks: {},
             },
         };
 
