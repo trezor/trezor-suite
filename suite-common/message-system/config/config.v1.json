@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-04-02T00:00:00+00:00",
-    "sequence": 87,
+    "timestamp": "2025-04-29T00:00:00+00:00",
+    "sequence": 88,
     "actions": [
         {
             "conditions": [
@@ -1603,6 +1603,45 @@
                     "pt": "Estamos enfrentando problemas de sincronização com a rede INPUT HERE. Isso pode resultar temporariamente em erros ou tempos de resposta lentos na INPUT HERE. Este problema não afeta de forma alguma a segurança dos seus fundos INPUT HERE. Pedimos desculpas pelo inconveniente.",
                     "uk": "У нас виникли проблеми з синхронізацією мережі INPUT HERE. Це може тимчасово призвести до помилок або повільних часів відповіді на INPUT HERE. Ця проблема ніяк не впливає на безпеку ваших коштів INPUT HERE. Приносимо вибачення за незручності."
                 }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.4.1 <25.5.0",
+                        "mobile": "!",
+                        "web": ">=25.4.1 <25.5.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "5b0fc4fd-7b43-4a7e-b44c-7745c96c30a6",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "security.firmware.hashCheck.otherError",
+                        "flag": false
+                    }
+                ]
             }
         }
     ]
