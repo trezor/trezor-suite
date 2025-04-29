@@ -11,6 +11,7 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
     formatAmount,
@@ -179,18 +180,18 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setValue(FORM_OUTPUT_MAX, undefined);
         setValue(FORM_OUTPUT_FIAT, '');
         setValue(FORM_OUTPUT_AMOUNT, '');
+        setValue(FORM_SEND_CRYPTO_CURRENCY_SELECT, selected);
         setAmountLimits(undefined);
         setComposedLevels(undefined);
 
-        await tradingFiatValues?.fiatRatesUpdater(
-            getValues(FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
-        );
-
         setAccountOnChange(account);
         setExchangeReceiveCrypto(selected);
-        setValue(FORM_SEND_CRYPTO_CURRENCY_SELECT, selected);
-
         changeFeeLevel('normal'); // reset fee level
+
+        await tradingFiatValues?.fiatRatesUpdater(
+            getValues(FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
+            selected.contractAddress as TokenAddress,
+        );
     };
 
     const setRatioAmount = (divisor: number) => {

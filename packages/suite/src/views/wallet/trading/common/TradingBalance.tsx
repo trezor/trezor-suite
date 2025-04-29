@@ -46,6 +46,7 @@ export const TradingBalance = ({
     const { fiatAmount } = useFiatFromCryptoValue({
         amount: stringBalance || '',
         symbol,
+        tokenAddress,
     });
 
     if (showOnlyAmount) {

@@ -16,19 +16,19 @@ type CurrentFeeProps = {
 const getCurrentFeeRate = (feeInfo: FeeInfo) => {
     const { levels } = feeInfo;
 
-    if (isEip1559(levels[0])) {
-        return levels[0].baseFeePerGas;
+    if (isEip1559(levels.at(0))) {
+        return levels.at(0)?.baseFeePerGas;
     }
 
     const middleIndex = Math.floor((levels.length - 1) / 2);
 
-    return levels[middleIndex].feePerUnit;
+    return levels.at(middleIndex)?.feePerUnit;
 };
 
 const getCurrentFeeRateLabel = (feeInfo: FeeInfo) => {
     const { levels } = feeInfo;
 
-    if (levels[0].baseFeePerGas) {
+    if (levels.at(0)?.baseFeePerGas) {
         return 'TR_CURRENT_BASE_FEE';
     }
 

@@ -27,7 +27,10 @@ interface TradingBalanceReturnProps {
     symbol: NetworkSymbol;
     networkDecimals: number;
     tokenAddress: TokenAddress | undefined;
-    fiatRatesUpdater: (value: FiatCurrencyCode | undefined) => Promise<FiatRatesResult | null>;
+    fiatRatesUpdater: (
+        value: FiatCurrencyCode | undefined,
+        currentTokenAddress?: TokenAddress,
+    ) => Promise<FiatRatesResult | null>;
 }
 
 export const useTradingFiatValues = ({
@@ -56,7 +59,10 @@ export const useTradingFiatValues = ({
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const fiatRatesUpdater = useCallback(
-        async (value: FiatCurrencyCode | undefined): Promise<FiatRatesResult | null> => {
+        async (
+            value: FiatCurrencyCode | undefined,
+            currentTokenAddress?: TokenAddress,
+        ): Promise<FiatRatesResult | null> => {
             if (!value) return null;
 
             const updateFiatRatesResult = await dispatch(
@@ -64,7 +70,7 @@ export const useTradingFiatValues = ({
                     tickers: [
                         {
                             symbol,
-                            tokenAddress: tokenAddressTyped,
+                            tokenAddress: currentTokenAddress ?? tokenAddressTyped,
                         },
                     ],
                     localCurrency: value,
