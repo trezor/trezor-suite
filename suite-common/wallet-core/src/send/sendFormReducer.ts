@@ -12,17 +12,12 @@ import {
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
 import { SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
-import {
-    DeviceRootState,
-    selectDeviceButtonRequestsCodes,
-    selectDeviceModel,
-} from '../device/deviceReducer';
+import { DeviceRootState, selectDeviceButtonRequestsCodes } from '../device/deviceReducer';
 
 export type SendState = {
     drafts: {
@@ -142,7 +137,6 @@ export const selectSendFormReviewButtonRequestsCount = (
     decreaseOutputId?: number,
 ) => {
     const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
-    const deviceModel = selectDeviceModel(state);
 
     if (G.isNullable(symbol)) return 0;
 
@@ -159,12 +153,9 @@ export const selectSendFormReviewButtonRequestsCount = (
             (isEthereum && code === 'ButtonRequest_Other'),
     );
 
-    // NOTE: T1B1 edge-case
-    // while confirming decrease amount 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount)
-    // remove 1 additional element to keep it consistent with T2T1 where this step is swipeable with one button request
+    // While confirming decrease amount in RBF, 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount).
     if (
         G.isNumber(decreaseOutputId) &&
-        deviceModel === DeviceModelInternal.T1B1 &&
         sendFormReviewRequest.filter(code => code === 'ButtonRequest_ConfirmOutput').length > 1
     ) {
         sendFormReviewRequest.splice(-1, 1);
