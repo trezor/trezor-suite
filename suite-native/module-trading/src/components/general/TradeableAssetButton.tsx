@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { Box } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
@@ -81,7 +82,7 @@ export const TradeableAssetButton = ({
                     size="extraSmall"
                 />
                 <NetworkSymbolExtendedFormatter symbol={symbol} variant="callout" />
-                {caret && <Icon name="caretDown" color="textSubdued" size="medium" />}
+                {caret ? <Icon name="caretDown" color="textSubdued" size="medium" /> : <Box />}
             </Pressable>
         </LinearGradient>
     );

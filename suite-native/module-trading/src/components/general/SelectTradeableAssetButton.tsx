@@ -8,9 +8,14 @@ import { TradeableAsset } from '../../types';
 export type SelectAssetButtonProps = {
     onPress: () => void;
     selectedAsset: TradeableAsset | undefined;
+    caret?: boolean;
 };
 
-export const SelectTradeableAssetButton = ({ onPress, selectedAsset }: SelectAssetButtonProps) => {
+export const SelectTradeableAssetButton = ({
+    onPress,
+    selectedAsset,
+    caret,
+}: SelectAssetButtonProps) => {
     const { translate } = useTranslate();
     const { iconColor } = buttonSchemeToColorsMap.primary;
 
@@ -20,7 +25,7 @@ export const SelectTradeableAssetButton = ({ onPress, selectedAsset }: SelectAss
                 asset={selectedAsset}
                 onPress={onPress}
                 accessibilityLabel={translate('moduleTrading.selectCoin.buttonTitle')}
-                caret
+                caret={caret}
             />
         );
     }

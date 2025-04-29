@@ -6,7 +6,7 @@ import { SelectTradeableAssetButton } from '../SelectTradeableAssetButton';
 describe('SelectTradeableAssetButton', () => {
     it('should render "Select coin" when no network is selected', () => {
         const { getByLabelText } = renderWithBasicProvider(
-            <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={undefined} />,
+            <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={undefined} caret />,
         );
 
         const button = getByLabelText('Select coin');
@@ -15,9 +15,17 @@ describe('SelectTradeableAssetButton', () => {
 
     it('should render TradeableAssetButton when network is selected', () => {
         const { getByLabelText } = renderWithBasicProvider(
-            <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} />,
+            <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} caret />,
         );
         const button = getByLabelText('Select coin');
         expect(button).toHaveTextContent(/^ADA.$/);
+    });
+
+    it('should not display caret when caret prop is falsy', () => {
+        const { getByLabelText } = renderWithBasicProvider(
+            <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} />,
+        );
+        const button = getByLabelText('Select coin');
+        expect(button).toHaveTextContent('ADA');
     });
 });
