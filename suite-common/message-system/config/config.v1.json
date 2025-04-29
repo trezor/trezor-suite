@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2025-04-29T00:00:00+00:00",
-    "sequence": 88,
+    "sequence": 89,
     "actions": [
         {
             "conditions": [
@@ -1371,33 +1371,103 @@
                         }
                     ],
                     "environment": {
-                        "desktop": "*",
-                        "mobile": ">=24.9.1",
-                        "web": "*"
+                        "desktop": "<25.2.1",
+                        "mobile": "<25.2.1",
+                        "web": "<25.2.1"
                     }
                 }
             ],
             "message": {
-                "id": "717447c0-543f-4451-97fa-7700045842b3",
-                "priority": 93,
+                "id": "896f97d4-7c98-4258-b69e-37e9b4e40afc",
+                "priority": 94,
                 "dismissible": true,
                 "variant": "warning",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "As of February 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin and DigiByte will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
-                    "en": "As of February 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin and DigiByte will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
-                    "es": "Desde febrero de 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin y DigiByte ya no serán compatibles con Trezor Suite. Por favor, transfiera sus fondos antes de que este cambio entre en vigor.",
-                    "cs": "Od února 2025 již nebudou v Trezor Suite podporovány tyto kryptoměny: Dash, Bitcoin Gold, Namecoin, Vertcoin a DigiByte. Přeneste prosím své prostředky předtím, než tato změna vstoupí v platnost.",
-                    "ru": "С февраля 2025 года Dash, Bitcoin Gold, Namecoin, Vertcoin и DigiByte больше не будут поддерживаться в Trezor Suite. Пожалуйста, переведите ваши средства до того, как это изменение вступит в силу.",
-                    "ja": "2025年2月より、Dash、Bitcoin Gold、Namecoin、Vertcoin、そしてDigiByteはTrezor Suiteでサポートされなくなります。この変更が有効になる前に、資金を移してください。",
-                    "hu": "2025 februárjától a Dash, Bitcoin Gold, Namecoin, Vertcoin és a DigiByte nem lesznek támogatva a Trezor Suite-ban. Kérjük, utalja át pénzeszközeit, mielőtt ez a változás életbe lép.",
-                    "it": "A partire da febbraio 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte non saranno più supportati in Trezor Suite. Si prega di trasferire i vostri fondi prima che questa modifica entri in vigore.",
-                    "fr": "À partir de février 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin et DigiByte ne seront plus pris en charge dans Trezor Suite. Veuillez transférer vos fonds avant que ce changement ne prenne effet.",
-                    "de": "Ab Februar 2025 werden Dash, Bitcoin Gold, Namecoin, Vertcoin und DigiByte in Trezor Suite nicht mehr unterstützt. Bitte übertragen Sie Ihre Gelder, bevor diese Änderung wirksam wird.",
-                    "tr": "Şubat 2025'ten itibaren Dash, Bitcoin Gold, Namecoin, Vertcoin ve DigiByte, Trezor Suite'te artık desteklenmeyecek. Lütfen bu değişiklik yürürlüğe girmeden önce fonlarınızı transfer edin.",
-                    "pt": "A partir de fevereiro de 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte não serão mais suportados no Trezor Suite. Por favor, transfira seus fundos antes que esta mudança entre em vigor.",
-                    "uk": "Починаючи з лютого 2025 року, Dash, Bitcoin Gold, Namecoin, Vertcoin та DigiByte більше не будуть підтримуватися в Trezor Suite. Будь ласка, переведіть свої кошти до того, як ця зміна набере чинності."
+                    "en-GB": "Important: Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be deactivated on August 1, 2025. Please transfer your funds before this change takes effect.",
+                    "en": "Important: Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be deactivated on August 1, 2025. Please transfer your funds before this change takes effect.",
+                    "es": "Importante: Los backends de Dash, Bitcoin Gold, Namecoin, Vertcoin y DigiByte se desactivarán el 1 de agosto de 2025. Por favor, transfiera sus fondos antes de que este cambio entre en vigor.",
+                    "cs": "Důležité: Backend služby pro Dash, Bitcoin Gold, Namecoin, Vertcoin a DigiByte budou deaktivovány 1. srpna 2025. Přeneste prosím své prostředky před tímto datem.",
+                    "ru": "Важно: Бэкэнды Dash, Bitcoin Gold, Namecoin, Vertcoin и DigiByte будут деактивированы 1 августа 2025 года. Пожалуйста, переведите ваши средства до того, как это изменение вступит в силу.",
+                    "ja": "重要：2025年8月1日より、Dash、Bitcoin Gold、Namecoin、Vertcoin、DigiByteのバックエンドが無効化されます。この変更が有効になる前に、資金を移動してください。",
+                    "hu": "Fontos: A Dash, Bitcoin Gold, Namecoin, Vertcoin és DigiByte backendjei 2025. augusztus 1-jén deaktiválásra kerülnek. Kérjük, még ezen dátum előtt utalja át pénzeszközeit.",
+                    "it": "Importante: I backend di Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte saranno disattivati il 1° agosto 2025. Si prega di trasferire i fondi prima che questa modifica entri in vigore.",
+                    "fr": "Important : Les backends de Dash, Bitcoin Gold, Namecoin, Vertcoin et DigiByte seront désactivés le 1er août 2025. Veuillez transférer vos fonds avant que ce changement ne prenne effet.",
+                    "de": "Wichtig: Die Backends von Dash, Bitcoin Gold, Namecoin, Vertcoin und DigiByte werden am 1. August 2025 deaktiviert. Bitte übertragen Sie Ihre Gelder, bevor diese Änderung wirksam wird.",
+                    "tr": "Önemli: Dash, Bitcoin Gold, Namecoin, Vertcoin ve DigiByte altyapıları 1 Ağustos 2025 tarihinde devre dışı bırakılacaktır. Lütfen bu tarihten önce fonlarınızı aktarın.",
+                    "pt": "Importante: Os backends do Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte serão desativados em 1º de agosto de 2025. Por favor, transfira seus fundos antes que esta mudança entre em vigor.",
+                    "uk": "Важливо: 1 серпня 2025 року бекенди Dash, Bitcoin Gold, Namecoin, Vertcoin та DigiByte будуть деактивовані. Будь ласка, переведіть свої кошти до набрання чинності цією зміною."
                 },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/deprecated-coins",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "dash": true
+                        },
+                        {
+                            "btg": true
+                        },
+                        {
+                            "nmc": true
+                        },
+                        {
+                            "vtc": true
+                        },
+                        {
+                            "dgb": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<25.2.1",
+                        "mobile": "<25.2.1",
+                        "web": "<25.2.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "af8f5613-6f85-4523-8a7e-a92ac8b6db83",
+                "priority": 60,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be shut down in August 2025. Please move your funds beforehand.",
+                    "en": "Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be shut down in August 2025. Please move your funds beforehand.",
+                    "es": "Los backends de Dash, Bitcoin Gold, Namecoin, Vertcoin y DigiByte serán cerrados en agosto de 2025. Por favor, mueva sus fondos con anticipación.",
+                    "cs": "Backend služby pro Dash, Bitcoin Gold, Namecoin, Vertcoin a DigiByte budou vypnuty v srpnu 2025. Přesuňte prosím své prostředky před tímto datem.",
+                    "ru": "Бэкэнды Dash, Bitcoin Gold, Namecoin, Vertcoin и DigiByte будут отключены в августе 2025 года. Пожалуйста, заранее переведите ваши средства.",
+                    "ja": "Dash、Bitcoin Gold、Namecoin、Vertcoin、DigiByteのバックエンドは2025年8月に停止されます。事前に資金を移動してください。",
+                    "hu": "A Dash, Bitcoin Gold, Namecoin, Vertcoin és DigiByte backendjei 2025 augusztusában leállításra kerülnek. Kérjük, időben helyezze át pénzeszközeit.",
+                    "it": "I backend di Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte saranno disattivati ad agosto 2025. Si prega di spostare i fondi in anticipo.",
+                    "fr": "Les backends de Dash, Bitcoin Gold, Namecoin, Vertcoin et DigiByte seront fermés en août 2025. Veuillez déplacer vos fonds à l'avance.",
+                    "de": "Die Backends von Dash, Bitcoin Gold, Namecoin, Vertcoin und DigiByte werden im August 2025 abgeschaltet. Bitte verschieben Sie Ihre Gelder rechtzeitig.",
+                    "tr": "Dash, Bitcoin Gold, Namecoin, Vertcoin ve DigiByte altyapıları Ağustos 2025'te kapatılacaktır. Lütfen fonlarınızı önceden taşıyın.",
+                    "pt": "Os backends do Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte serão encerrados em agosto de 2025. Por favor, mova seus fundos antecipadamente.",
+                    "uk": "Бекенди Dash, Bitcoin Gold, Namecoin, Vertcoin та DigiByte будуть вимкнені у серпні 2025 року. Будь ласка, заздалегідь переведіть свої кошти."
+                },
+
                 "cta": {
                     "action": "external-link",
                     "link": "https://trezor.io/learn/a/deprecated-coins",
