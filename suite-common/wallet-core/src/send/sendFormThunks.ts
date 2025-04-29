@@ -449,6 +449,7 @@ export const signTransactionThunk = createThunk<
             };
             if (networkType === 'bitcoin') {
                 response = await dispatch(signBitcoinSendFormTransactionThunk(thunkArguments));
+                console.log('signTransaction response', response);
             } else if (networkType === 'ethereum') {
                 response = await dispatch(signEthereumSendFormTransactionThunk(thunkArguments));
             } else if (networkType === 'ripple') {
@@ -474,7 +475,6 @@ export const signTransactionThunk = createThunk<
                     message: 'User canceled the signing process.',
                 });
             }
-
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
@@ -526,10 +526,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         if (!device) return rejectWithValue('Device not found');
 
         // native RBF is available since FW 1.9.4/2.3.5
-        const nativeRbfAvailable =
-            selectedAccount.networkType === 'bitcoin' &&
-            formValues.rbfParams &&
-            !device.unavailableCapabilities?.replaceTransaction;
+        const nativeRbfAvailable = false;
         // decrease output is available since FW 1.10.0/2.4.0
         const decreaseOutputAvailable =
             selectedAccount.networkType === 'bitcoin' &&

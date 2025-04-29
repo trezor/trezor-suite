@@ -662,15 +662,16 @@ const getBitcoinRbfParams = (
                 });
             }
         } else {
-            const changeOutput = changeAddresses.find(a => output.addresses?.includes(a.address));
-            outputs.push({
-                type: changeOutput ? 'change' : 'payment',
+            const changeOutput = outputs.length > 1 ? changeAddresses.find(a => output.addresses?.includes(a.address)) : undefined;
+            if (changeOutput !== undefined) {
+                changeAddress = changeOutput;
+            } else {
+                outputs.push({
+                type: 'payment',
                 address: output.addresses![0],
                 amount: output.value!,
                 formattedAmount: formatNetworkAmount(output.value!, account.symbol),
             });
-            if (changeOutput) {
-                changeAddress = changeOutput;
             }
         }
     });

@@ -161,35 +161,28 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
         };
 
         // transform original outputs
-        const outputs = rbfParams.outputs.flatMap(o => {
-            if (o.type === 'change') return [];
-            if (o.type === 'opreturn') {
-                return {
-                    ...DEFAULT_OPRETURN,
-                    dataHex: o.dataHex,
-                    dataAscii: o.dataAscii,
-                };
-            }
-
-            return {
-                ...DEFAULT_PAYMENT,
-                address: o.address,
-                amount: shouldSendInSats ? o.amount : o.formattedAmount,
-                token: o.token,
-            };
-        });
+        const outputs = rbfParams.outputs.map((output) => output.type === 'opreturn'
+                ? { ...DEFAULT_OPRETURN, dataHex: output.dataHex, dataAscii: output.dataAscii }
+                : {
+                      ...DEFAULT_PAYMENT,
+                      address: output.address,
+                      amount: shouldSendInSats ? output.amount : output.formattedAmount,
+                      token: output.token,
+                  });
 
         // if there is no change output in the transaction **and** there is no other utxos to add try to decrease amount immediately
         // otherwise use decrease amount only as a fallback (see useEffect below)
         const setMaxOutputId =
             account.networkType === 'bitcoin' &&
-            !rbfParams.outputs.some(o => o.type === 'change') &&
+            !(rbfParams.type === 'bitcoin' && rbfParams.changeAddress) &&
             availableUtxo.length < 1
                 ? outputs.findIndex(o => o.type === 'payment')
                 : undefined;
 
         // Set baseFee only if chainedTxs are present.
         const baseFee = chainedTxs && calculateChainedTransactionsFeeForRbf({ chainedTxs });
+
+        console.log('RBF: ', rbfParams);
 
         return {
             account: rbfAccount,
