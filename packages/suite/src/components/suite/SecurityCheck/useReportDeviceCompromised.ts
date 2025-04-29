@@ -56,11 +56,12 @@ const useCommonData = () => {
 const useReportRevisionCheck = () => {
     const commonData = useCommonData();
     const { device } = useDevice();
-
-    const revCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareRevision : null;
-    const isError = revCheck && !revCheck.success;
-    const errorType = isError ? revCheck.error : null;
-    const errorPayload = isError ? revCheck.errorPayload : null;
+    const revisionCheck = isDeviceAcquired(device)
+        ? device.authenticityChecks.firmwareRevision
+        : null;
+    const isError = revisionCheck && !revisionCheck.success;
+    const errorType = isError ? revisionCheck.error : null;
+    const errorPayload = isError ? revisionCheck.errorPayload : null;
 
     useEffect(() => {
         if (!errorType) return;
@@ -74,7 +75,7 @@ const useReportHashCheck = () => {
     const { device } = useDevice();
     const commonData = useCommonData();
 
-    const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareHash : null;
+    const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks.firmwareHash : null;
     const isError = hashCheck && !hashCheck.success;
     const errorType = isError ? hashCheck.error : null;
     const errorPayload = isError ? hashCheck.errorPayload : null;
