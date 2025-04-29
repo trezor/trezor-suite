@@ -19,9 +19,11 @@ import {
 export const useFirmwareAnalytics = ({
     device,
     targetFirmwareType,
+    navigationLocation,
 }: {
     device?: TrezorDevice;
     targetFirmwareType: FirmwareType;
+    navigationLocation?: 'settings' | 'onboarding';
 }) => {
     const toFwVersion = useSelector(selectDeviceUpdateFirmwareVersion);
 
@@ -33,8 +35,9 @@ export const useFirmwareAnalytics = ({
             toFwVersion: toFwVersion ?? '?.?.?',
             fromFwType: (device?.firmwareType || 'none') as FirmwareType | 'none',
             toFwType: targetFirmwareType,
+            location: navigationLocation ?? null,
         }),
-        [device, targetFirmwareType, toFwVersion],
+        [device, targetFirmwareType, toFwVersion, navigationLocation],
     );
 
     // Use refs to avoid any re-renders because of analytics and to make useCallback dependencies stable

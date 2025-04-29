@@ -36,6 +36,7 @@ export const FirmwareInstallationScreen = ({
                 isCancellationAllowed={false}
                 isRetryAllowed={false}
                 isTemporaryRememeberAllowed={false}
+                navigationLocation="onboarding"
             />
         </DeviceOnboardingScreenWithExitButton>
     );

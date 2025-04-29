@@ -6,14 +6,14 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { RequireExactlyOne } from 'type-fest';
+import { RequireAtLeastOne } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, TypographyStyle } from '@trezor/theme';
 
 import { useOpenLink } from '../useOpenLink';
 
-type LinkProps = RequireExactlyOne<
+type LinkProps = RequireAtLeastOne<
     {
         label: React.ReactNode;
         href?: string;
@@ -70,11 +70,9 @@ export const Link = ({
 
     const handlePressOut = (e: GestureResponderEvent) => {
         isPressed.value = withTiming(IS_NOT_PRESSED_VALUE, { duration: ANIMATION_DURATION });
-        if (href) {
-            openLink(href);
-        } else if (onPress) {
-            onPress();
-        }
+        if (href) openLink(href);
+
+        onPress?.();
         e.stopPropagation();
     };
 

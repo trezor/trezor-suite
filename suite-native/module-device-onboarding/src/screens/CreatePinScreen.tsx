@@ -1,8 +1,11 @@
+import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
+import { useAtomValue } from 'jotai';
 
 import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Image, TitleHeader } from '@suite-native/atoms';
 import { usePinAction } from '@suite-native/device';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/discovery';
@@ -23,6 +26,8 @@ import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { onboardingAnalyticsAtom } from '../../atoms';
 
 const SCREEN_HEIGHT = getScreenHeight();
 
@@ -52,6 +57,7 @@ export const CreatePinScreen = () => {
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const { applyStyle } = useNativeStyles();
+    const onboardingAnalytics = useAtomValue(onboardingAnalyticsAtom);
 
     const handlePinCreated = () => {
         if (hasBitcoinOnlyFirmware || isCoinEnablingInitFinished) {
@@ -64,6 +70,19 @@ export const CreatePinScreen = () => {
         } else {
             navigation.navigate(RootStackRoutes.CoinEnablingInit);
         }
+
+        analytics.report({
+            type: EventType.DeviceSetupCompleted,
+            payload: {
+                deviceModel,
+                osName: Platform.OS,
+                seed: 'create',
+                duration: onboardingAnalytics.startTimestamp
+                    ? Date.now() - onboardingAnalytics.startTimestamp
+                    : undefined,
+                ...onboardingAnalytics,
+            },
+        });
     };
 
     usePinAction({

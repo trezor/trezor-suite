@@ -47,6 +47,7 @@ type FirmwareInstallationScreenContentProps = {
     isCancellationAllowed?: boolean;
     isRetryAllowed?: boolean;
     isTemporaryRememeberAllowed?: boolean;
+    navigationLocation: 'settings' | 'onboarding';
 };
 
 // This component is shared between `module-onboarding` and `module-device-settings`.
@@ -57,6 +58,7 @@ export const FirmwareInstallationScreenContent = ({
     isCancellationAllowed = true,
     isRetryAllowed = true,
     isTemporaryRememeberAllowed = true,
+    navigationLocation,
 }: FirmwareInstallationScreenContentProps) => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
@@ -76,7 +78,7 @@ export const FirmwareInstallationScreenContent = ({
         mayBeStucked,
         originalDevice,
         targetFirmwareType,
-    } = useFirmware({});
+    } = useFirmware({ navigationLocation });
     const {
         handleAnalyticsReportFinished,
         handleAnalyticsReportStucked,
@@ -85,6 +87,7 @@ export const FirmwareInstallationScreenContent = ({
     } = useFirmwareAnalytics({
         device: originalDevice,
         targetFirmwareType,
+        navigationLocation,
     });
     const openLink = useOpenLink();
 

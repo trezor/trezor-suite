@@ -22,6 +22,7 @@ export type FirmwareUpdatePayload = {
     toFwVersion: string;
     fromFwType: FirmwareType | 'none';
     toFwType: FirmwareType;
+    location: 'settings' | 'onboarding' | null;
 };
 
 export type FirmwareUpdateStuckedState = 'modalPart1' | 'modalPart2' | 'buttonVisible';

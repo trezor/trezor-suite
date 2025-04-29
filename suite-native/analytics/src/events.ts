@@ -353,4 +353,44 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               type: 'buy' | 'sell' | 'exchange';
           };
+      }
+    | {
+          type: EventType.DeviceSetupStarted;
+          payload: {
+              osName: string;
+              deviceModel: DeviceModelInternal | null;
+          };
+      }
+    | {
+          type: EventType.DeviceSetupCompleted;
+          payload: Partial<{
+              osName: string;
+              deviceModel: DeviceModelInternal | null;
+              duration: number;
+              seed: 'create' | 'recovery';
+              firmware: 'install' | 'update' | 'skip' | 'up-to-date';
+              seedType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
+
+              // TODO: https://github.com/trezor/trezor-suite/issues/18570
+              // not supported yet:
+              //   recoveryType: 'standard' | 'advanced';
+              //   recoveryStepBack: boolean;
+          }>;
+      }
+    | {
+          type: EventType.DeviceSetupSecurityCheck;
+          payload: {
+              location:
+                  | 'deviceLooksDifferent'
+                  | 'firmwareAlreadyInstalled'
+                  | 'untrustedReseller'
+                  | 'securitySeal'
+                  | 'packaging';
+          };
+      }
+    | {
+          type: EventType.DeviceSetupInfo;
+          payload: {
+              location: 'untrustedReseller' | 'securitySeal';
+          };
       };

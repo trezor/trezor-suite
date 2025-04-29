@@ -1,10 +1,15 @@
+import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
+
+import { useSetAtom } from 'jotai';
 
 import {
     selectDeviceModel,
     selectHasDeviceFirmwareInstalled,
     selectIsLatestFirmwareInstalled,
 } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Image, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -17,6 +22,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
 
@@ -83,12 +89,18 @@ export const UninitializedDeviceLandingScreen = ({
 >) => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isLatestFirmwareInstalled = useSelector(selectIsLatestFirmwareInstalled);
+    const deviceModel = useSelector(selectDeviceModel);
+    const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
+    const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
             if (isLatestFirmwareInstalled) {
                 // If user already has the latest firmware installed, skip this update screen and navigate to device auth-check directly.
                 navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
+                updateOnboardingAnalytics({
+                    firmware: 'up-to-date',
+                });
             } else {
                 navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
             }
@@ -99,16 +111,45 @@ export const UninitializedDeviceLandingScreen = ({
     };
 
     const handleNeverUsedThisDeviceButtonPress = () => {
+        const suspicionCause = 'firmwareAlreadyInstalled';
         navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
             suspicionCause: 'firmwareAlreadyInstalled',
+        });
+
+        analytics.report({
+            type: EventType.DeviceSetupSecurityCheck,
+            payload: {
+                location: suspicionCause,
+            },
         });
     };
 
     const handleDeviceLooksDifferentButtonPress = () => {
+        const suspicionCause = 'deviceLooksDifferent';
         navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
-            suspicionCause: 'deviceLooksDifferent',
+            suspicionCause,
+        });
+
+        analytics.report({
+            type: EventType.DeviceSetupSecurityCheck,
+            payload: {
+                location: suspicionCause,
+            },
         });
     };
+
+    useEffect(() => {
+        resetOnboardingAnalytics();
+        analytics.report({
+            type: EventType.DeviceSetupStarted,
+            payload: {
+                osName: Platform.OS,
+                deviceModel,
+            },
+        });
+        // report device-setup event only on first render of this screen
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <DeviceOnboardingScreenWithExitButton>

@@ -1,3 +1,5 @@
+import { useSetAtom } from 'jotai';
+
 import { Box, Button, Card, CenteredTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -8,6 +10,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 
 const cardStyle = prepareNativeStyle(_ => ({
@@ -21,11 +24,19 @@ export const CreateOrRecoverCrossroadsScreen = ({
     DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads
 >) => {
     const { applyStyle } = useNativeStyles();
+    const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
+
     const handleCreateButtonPress = () => {
+        updateOnboardingAnalytics({
+            seed: 'create',
+        });
         navigation.navigate(DeviceOnboardingStackRoutes.CreateWalletLoading);
     };
 
     const handleRecoverButtonPress = () => {
+        updateOnboardingAnalytics({
+            seed: 'recovery',
+        });
         navigation.navigate(DeviceOnboardingStackRoutes.Recovery);
     };
 

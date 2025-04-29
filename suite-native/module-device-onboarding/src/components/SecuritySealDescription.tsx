@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -15,7 +16,15 @@ export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
     const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
 
-    const openBottomSheet = () => setIsBottomSheetVisible(true);
+    const handleLinkPress = () => {
+        setIsBottomSheetVisible(true);
+        analytics.report({
+            type: EventType.DeviceSetupInfo,
+            payload: {
+                location: 'securitySeal',
+            },
+        });
+    };
     const closeBottomSheet = () => setIsBottomSheetVisible(false);
 
     const deviceModel = useSelector(selectDeviceModel);
@@ -37,7 +46,7 @@ export const SecuritySealDescription = () => {
                     values={{
                         link: linkChunk => (
                             <Link
-                                onPress={openBottomSheet}
+                                onPress={handleLinkPress}
                                 label={linkChunk}
                                 isUnderlined
                                 textVariant="highlight"

@@ -16,7 +16,11 @@ import { useFirmwareAnalytics } from './useFirmwareAnalytics';
 // If progress doesn't change for 1 minute
 const MAYBE_STUCKED_TIMEOUT = 1 * 60 * 1000; // 1 minute
 
-export const useFirmware = (params?: UseFirmwareInstallationParams) => {
+export const useFirmware = (
+    params?: UseFirmwareInstallationParams & {
+        navigationLocation: 'settings' | 'onboarding';
+    },
+) => {
     const dispatch = useDispatch();
     const {
         firmwareUpdate: firmwareUpdateCommon,
@@ -33,6 +37,7 @@ export const useFirmware = (params?: UseFirmwareInstallationParams) => {
     const { handleAnalyticsReportStucked } = useFirmwareAnalytics({
         device: firmwareInstallation.originalDevice,
         targetFirmwareType: firmwareInstallation.targetFirmwareType,
+        navigationLocation: params?.navigationLocation,
     });
 
     const setIsFirmwareInstallationRunning = useCallback(

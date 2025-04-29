@@ -59,4 +59,8 @@ export enum EventType {
     TradingQuoteReceived = 'trading/quote_received',
     TradingSuccess = 'trading/success',
     TradingCompareOffers = 'trading/compare_offers',
+    DeviceSetupStarted = 'device_setup/started',
+    DeviceSetupCompleted = 'device_setup/completed',
+    DeviceSetupSecurityCheck = 'device_setup/security_check',
+    DeviceSetupInfo = 'device_setup/info',
 }

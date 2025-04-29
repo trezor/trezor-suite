@@ -3,6 +3,7 @@ import { FadeOutUp, useAnimatedStyle, withDelay, withTiming } from 'react-native
 
 import { useNavigation } from '@react-navigation/core';
 
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     AnimatedCard,
     AnimatedVStack,
@@ -81,6 +82,12 @@ export const SecurityCheckStepCard = ({
     const navigateToSuspiciousDeviceScreen = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
             suspicionCause,
+        });
+        analytics.report({
+            type: EventType.DeviceSetupSecurityCheck,
+            payload: {
+                location: suspicionCause,
+            },
         });
     };
     const animatedCardStyle = useAnimatedStyle(

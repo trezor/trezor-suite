@@ -37,6 +37,7 @@ export const FirmwareInstallationScreen = () => {
             <FirmwareInstallationScreenContent
                 onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
                 onFirmwareInstallationFailure={handleFirmwareInstallationFailure}
+                navigationLocation="settings"
             />
         </Screen>
     );

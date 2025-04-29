@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 
+import { EventType, analytics } from '@suite-native/analytics';
 import { TitleHeader, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -27,6 +28,14 @@ const stepToContentMap = {
                     link: linkChunk => (
                         <Link
                             href={TREZOR_RESELLERS_URL}
+                            onPress={() => {
+                                analytics.report({
+                                    type: EventType.DeviceSetupInfo,
+                                    payload: {
+                                        location: 'untrustedReseller',
+                                    },
+                                });
+                            }}
                             label={linkChunk}
                             isUnderlined
                             textVariant="highlight"
