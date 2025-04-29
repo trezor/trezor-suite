@@ -212,4 +212,7 @@ export type UserContextPayload =
       }
     | {
           type: 'connect-loading';
+      }
+    | {
+          type: 'auto-start-before-quit';
       };

@@ -46,5 +46,6 @@ const validChannels: Array<keyof RendererChannels> = [
     'tray/settings',
     'connect-popup/call',
     'connect-popup/cancel',
+    'app/auto-start/popup-request',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);

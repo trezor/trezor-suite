@@ -47,6 +47,7 @@ import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
 
 import type { ReduxModalProps } from '../ReduxModal';
+import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
@@ -226,6 +227,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ConnectErrorModal />;
         case 'connect-loading':
             return <ConnectLoadingModal />;
+        case 'auto-start-before-quit':
+            return <AutoStartBeforeQuitModal />;
         default:
             return null;
     }

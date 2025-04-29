@@ -1,12 +1,15 @@
 /**
  * Auto start handler
  */
+import { BrowserWindow } from 'electron';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { createDeferred } from '@trezor/utils';
 
+import { Store } from '../libs/store';
 import { app, ipcMain } from '../typed-electron';
 
 import type { ModuleInit } from './index';
@@ -65,22 +68,72 @@ const linuxAutoStart = (enabled: boolean) => {
     }
 };
 
+export const setAutoStartEnabled = (enabled: boolean) => {
+    if (process.platform === 'linux') {
+        // For Linux, we use a custom implementation
+        linuxAutoStart(enabled);
+    } else {
+        // For Windows and macOS, we use native Electron API
+        app.setLoginItemSettings({
+            openAtLogin: enabled,
+            openAsHidden: true,
+            args: ['--bridge-daemon'],
+        });
+    }
+};
+
+/**
+ * Prompt user to enable auto start before quitting the app
+ * @param mainWindow - Main window to show the dialog
+ * @returns continue - if true continue the flow of closing the app, if false, stop and only hide the window
+ */
+export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, store: Store) => {
+    if (
+        isAutoStartEnabled() ||
+        store.getConnectSettings().autoStartDontAskAgain ||
+        !store.getConnectSettings().hasUsedConnectWs
+    ) {
+        return true;
+    }
+
+    // Display popup in renderer and wait for response
+    const deferred = createDeferred<
+        'background-always' | 'background-now' | 'quit-always' | 'quit-now'
+    >();
+    ipcMain.handleOnce('app/auto-start/popup-response', (ipcEvent, response) => {
+        validateIpcMessage(ipcEvent);
+        deferred.resolve(response);
+    });
+    mainWindow.webContents.send('app/auto-start/popup-request');
+    const response = await deferred.promise;
+
+    switch (response) {
+        case 'background-always': {
+            setAutoStartEnabled(true);
+
+            return true;
+        }
+        case 'background-now': {
+            return false;
+        }
+        case 'quit-always': {
+            store.setConnectSettings({ autoStartDontAskAgain: true });
+
+            return true;
+        }
+        default:
+        case 'quit-now': {
+            return true;
+        }
+    }
+};
+
 export const init: ModuleInit = () => {
     const { logger } = global;
 
     ipcMain.on('app/auto-start', (_, enabled: boolean) => {
         logger.debug(SERVICE_NAME, 'Auto start ' + (enabled ? 'enabled' : 'disabled'));
-        if (process.platform === 'linux') {
-            // For Linux, we use a custom implementation
-            linuxAutoStart(enabled);
-        } else {
-            // For Windows and macOS, we use native Electron API
-            app.setLoginItemSettings({
-                openAtLogin: enabled,
-                openAsHidden: true,
-                args: ['--bridge-daemon'],
-            });
-        }
+        setAutoStartEnabled(enabled);
     });
 
     ipcMain.handle('app/auto-start/is-enabled', ipcEvent => {

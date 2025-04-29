@@ -137,4 +137,6 @@ declare type TraySettings = {
 
 declare type ConnectSettings = {
     enableWs: boolean;
+    autoStartDontAskAgain: boolean;
+    hasUsedConnectWs: boolean;
 };

@@ -22,7 +22,7 @@ import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules, mainThreadEmitter } from './modules';
-import { isAutoStartEnabled } from './modules/auto-start';
+import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
 import { init as initTorModule } from './modules/tor';
 import { ipcMain } from './typed-electron';
 
@@ -291,6 +291,7 @@ const init = async () => {
     });
     app.on('before-quit', async event => {
         if (readyToQuit) return;
+        event.preventDefault();
 
         const mainWindow = mainWindowProxy.getInstance();
         const windowExists =
@@ -298,15 +299,18 @@ const init = async () => {
             !mainWindow.isDestroyed() &&
             mainWindow.isClosable() &&
             (!isMacOs() || !app.isHidden());
-        const autoStartCurrentlyEnabled = isAutoStartEnabled();
         logger.info('main', `Before quit, window exists: ${windowExists}`);
+
         if (windowExists) {
+            const continued = await promptForAutoStartBeforeQuit(mainWindow, store);
             logger.info('main', 'Hiding main window');
             // NOTE: immediatly hide the main window for the better closing UX
             // for daemon mode, it doesn't matter
             mainWindow?.hide();
+            if (!continued) return;
         }
 
+        const autoStartCurrentlyEnabled = isAutoStartEnabled();
         if (
             !stoppingDaemon &&
             autoStartCurrentlyEnabled &&
@@ -314,16 +318,13 @@ const init = async () => {
         ) {
             // Prevent quitting app when in daemon mode, unless the UI is already closed
             logger.info('main', 'Preventing app quit in daemon mode');
-            event.preventDefault();
             app.dock?.hide();
             mainWindow?.close();
 
             return;
         }
 
-        event.preventDefault();
         logger.info('modules', 'Quitting all modules');
-
         await Promise.race([
             // await quitting all registered modules
             Promise.allSettled([quitModules(), quitTorModule(), quitBackgroundModules()]),

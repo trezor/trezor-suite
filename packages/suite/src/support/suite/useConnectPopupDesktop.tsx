@@ -9,6 +9,7 @@ import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectP
 import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupDesktop = () => {
@@ -39,6 +40,9 @@ export const useConnectPopupDesktop = () => {
                 });
                 desktopApi.on('connect-popup/cancel', params => {
                     dispatch(connectPopupCancelThunk(params));
+                });
+                desktopApi.on('app/auto-start/popup-request', () => {
+                    dispatch(openModal({ type: 'auto-start-before-quit' }));
                 });
                 desktopApi.connectPopupReady();
             }

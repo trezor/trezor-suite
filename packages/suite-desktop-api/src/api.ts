@@ -79,6 +79,8 @@ export interface RendererChannels {
     // connect
     'connect-popup/call': ConnectPopupCall;
     'connect-popup/cancel': ConnectPopupCancel;
+
+    'app/auto-start/popup-request': void;
 }
 
 // Invocation from renderer process
@@ -104,6 +106,9 @@ export interface InvokeChannels {
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
     'app/auto-start/is-enabled': () => InvokeResult<boolean>;
+    'app/auto-start/popup-response': (
+        response: 'background-always' | 'background-now' | 'quit-always' | 'quit-now',
+    ) => void;
     'app/is-visible': () => boolean;
     'tray/change-settings': (payload: TraySettings) => InvokeResult;
     'tray/get-settings': () => InvokeResult<TraySettings>;
@@ -131,6 +136,7 @@ export interface DesktopApi {
     appHide: DesktopApiSend<'app/hide'>;
     appAutoStart: DesktopApiSend<'app/auto-start'>;
     getAppAutoStartIsEnabled: DesktopApiInvoke<'app/auto-start/is-enabled'>;
+    appAutoStartPopupResponse: DesktopApiInvoke<'app/auto-start/popup-response'>;
     appIsVisible: DesktopApiInvoke<'app/is-visible'>;
     // Auto-updater
     checkForUpdates: DesktopApiSend<'update/check'>;

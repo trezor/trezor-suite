@@ -88,7 +88,7 @@ export const initBackground: ModuleInitBackground = ({
             restartApp();
         });
         if (connectPopupEnabled()) {
-            exposeConnectWs({ mainThreadEmitter, httpReceiver: receiver, mainWindowProxy });
+            exposeConnectWs({ mainThreadEmitter, httpReceiver: receiver, mainWindowProxy, store });
         }
 
         logger.info(SERVICE_NAME, 'Starting server');

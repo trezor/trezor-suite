@@ -90,10 +90,12 @@ export const exposeConnectWs = ({
     mainThreadEmitter,
     mainWindowProxy,
     httpReceiver,
+    store,
 }: {
     mainThreadEmitter: Dependencies['mainThreadEmitter'];
     mainWindowProxy: Dependencies['mainWindowProxy'];
     httpReceiver: ReturnType<typeof createHttpReceiver>;
+    store: Dependencies['store'];
 }) => {
     const { logger } = global;
     const messages: Record<string, Deferred<any, number>> = {};
@@ -182,6 +184,10 @@ export const exposeConnectWs = ({
 
                     return;
                 }
+
+                store.setConnectSettings({
+                    hasUsedConnectWs: true,
+                });
 
                 const { method, ...rest } = message.payload;
 

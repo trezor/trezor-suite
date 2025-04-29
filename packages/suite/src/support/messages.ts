@@ -9833,4 +9833,25 @@ export default defineMessages({
         id: 'TR_VERIFICATION_CANCELED',
         defaultMessage: 'Verification canceled',
     },
+    TR_DONT_ASK_AGAIN: {
+        id: 'TR_DONT_ASK_AGAIN',
+        defaultMessage: "Don't ask again",
+    },
+    TR_RUN_IN_BACKGROUND_TITLE: {
+        id: 'TR_RUN_IN_BACKGROUND_TITLE',
+        defaultMessage: 'Run Trezor Suite in the background',
+    },
+    TR_RUN_IN_BACKGROUND_DESCRIPTION: {
+        id: 'TR_RUN_IN_BACKGROUND_DESCRIPTION',
+        defaultMessage:
+            'Keep Trezor Suite running in the background for a better experience—this enables auto-launch when your Trezor is connected and seamless connection with third-party wallets.',
+    },
+    TR_RUN_IN_BACKGROUND: {
+        id: 'TR_RUN_IN_BACKGROUND',
+        defaultMessage: 'Run in background',
+    },
+    TR_QUIT_NOW: {
+        id: 'TR_QUIT_NOW',
+        defaultMessage: 'Quit now',
+    },
 } as const);

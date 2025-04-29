@@ -104,11 +104,16 @@ export class Store {
     public getConnectSettings() {
         return this.store.get('connectSettings', {
             enableWs: false,
+            autoStartDontAskAgain: false,
+            hasUsedConnectWs: false,
         });
     }
 
-    public setConnectSettings(connectSettings: ConnectSettings) {
-        this.store.set('connectSettings', connectSettings);
+    public setConnectSettings(connectSettings: Partial<ConnectSettings>) {
+        this.store.set('connectSettings', {
+            ...this.store.get('connectSettings'),
+            ...connectSettings,
+        });
     }
 
     /** Deletes all items from the store. */
