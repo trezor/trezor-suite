@@ -3,7 +3,7 @@
 import EventEmitter from 'events';
 
 import { Blockchain } from '../../backend/BlockchainLink';
-import { ERRORS, PROTO } from '../../constants';
+import { ERRORS } from '../../constants';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { CoinInfo, DiscoveryAccount, DiscoveryAccountType } from '../../types';
 import type { GetAccountInfo } from '../../types/api/getAccountInfo';
@@ -26,25 +26,23 @@ type DiscoveryOptions = {
 };
 
 export class Discovery extends EventEmitter {
-    types: DiscoveryType[] = [];
+    public types: DiscoveryType[] = [];
 
-    typeIndex: number;
+    private typeIndex: number;
 
-    accounts: DiscoveryAccount[];
+    public accounts: DiscoveryAccount[];
 
-    coinInfo: CoinInfo;
+    private coinInfo: CoinInfo;
 
-    blockchain: Blockchain;
+    private blockchain: Blockchain;
 
     getDescriptor: GetDescriptor;
 
-    index: number;
+    private index: number;
 
-    interrupted: boolean;
+    private interrupted: boolean;
 
-    completed: boolean;
-
-    derivationType?: PROTO.CardanoDerivationType;
+    public completed: boolean;
 
     constructor(options: DiscoveryOptions) {
         super();
