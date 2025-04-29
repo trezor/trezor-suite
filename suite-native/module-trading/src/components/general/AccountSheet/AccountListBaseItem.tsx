@@ -121,7 +121,7 @@ export const AccountListBaseItem = ({
                         )}
                     </HStack>
                     <HStack style={applyStyle(bottomContentStyle, { hasSingleChildren: false })}>
-                        {info}
+                        <Box>{info}</Box>
                         {shouldDisplayBalance && cryptoValue && (
                             <CryptoToFiatAmountFormatter
                                 value={cryptoValue}
