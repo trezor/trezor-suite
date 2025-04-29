@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { formatDurationStrict } from '@suite-common/suite-utils';
+import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 
@@ -10,6 +11,7 @@ import { useLocales } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
+import { DustPreventionNotice } from '../DustPreventionNotice';
 import { FeeOptionType, getFeeLevelTranslationId } from '../Fees';
 
 export const BitcoinFeeCards = ({
@@ -21,6 +23,7 @@ export const BitcoinFeeCards = ({
     changeFeeLevel,
     symbol,
     isDirty,
+    getValues,
 }: StandardFeeProps) => {
     const locale = useLocales();
 
@@ -80,6 +83,14 @@ export const BitcoinFeeCards = ({
                     />
                 ))}
             </FeeCardsWrapper>
+            <DustPreventionNotice
+                chosenFeePerByte={selectedLevel.feePerUnit}
+                composedFeePerByte={
+                    transactionInfo?.type === 'final' ? transactionInfo.feePerByte : undefined
+                }
+                baseFee={getValues('baseFee')}
+                feeUnits={getFeeUnits(networkType)}
+            />
             {cachedBytes && (
                 <Row alignItems="baseline" justifyContent="space-between">
                     <Text variant="tertiary" typographyStyle="hint">

@@ -7788,13 +7788,11 @@ export default defineMessages({
     TR_FEE_ROUNDING_DEFAULT_WARNING: {
         id: 'TR_FEE_ROUNDING_DEFAULT_WARNING',
         defaultMessage: 'The fee rate has been adjusted to {feeRate} to prevent unusable amounts.',
-        description: 'previously stored under key TR_FEE_ROUNDING_WARNING',
     },
     TR_FEE_ROUNDING_BASEFEE_WARNING: {
         id: 'TR_FEE_ROUNDING_BASEFEE_WARNING',
         defaultMessage:
             'The fee rate of {feeRate} has been increased to pay for the chained transactions within the mempool',
-        description: 'previously stored under key TR_FEE_ROUNDING_WARNING',
     },
     TR_FEE_RATE_CHANGED: {
         id: 'TR_FEE_RATE_CHANGED',

@@ -1,8 +1,11 @@
+import { UseFormGetValues } from 'react-hook-form';
+
 import styled from 'styled-components';
 
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
     FeeInfo,
+    FormState,
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
@@ -24,6 +27,7 @@ export type StandardFeeProps = {
     changeFeeLevel: (level: FeeLevel['label']) => void;
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
     isDirty: boolean;
+    getValues: UseFormGetValues<FormState>;
 };
 
 export const FeeCardsWrapper = styled.div`

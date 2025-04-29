@@ -32,7 +32,7 @@ export type CustomFeeBasicProps<TFieldValues extends FormState> = {
     errors: FieldErrors<TFieldValues>;
     register: UseFormRegister<TFieldValues>;
     control: Control;
-    composedFeePerByte: string;
+    composedFeePerByte: string | undefined;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
     translationString: TranslationFunction;
@@ -108,7 +108,9 @@ export const CustomFee = <TFieldValues extends FormState>({
                         register={register}
                         control={control}
                         composedFeePerByte={
-                            transactionInfo?.type === 'final' ? transactionInfo.feePerByte : ''
+                            transactionInfo?.type === 'final'
+                                ? transactionInfo.feePerByte
+                                : undefined
                         }
                         feeUnits={feeUnits}
                         translationString={translationString}

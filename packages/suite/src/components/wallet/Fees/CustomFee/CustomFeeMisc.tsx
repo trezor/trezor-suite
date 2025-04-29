@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux';
 
 import { FormState } from '@suite-common/wallet-types';
 import { getInputState } from '@suite-common/wallet-utils';
-import { Note, Text } from '@trezor/components';
+import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation } from 'src/components/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 import { CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from './CustomFee';
+import { DustPreventionNotice } from '../DustPreventionNotice';
 
 export const CustomFeeMisc = <TFieldValues extends FormState>({
     networkType,
@@ -35,25 +35,7 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
     const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feePerUnitError = errors.feePerUnit;
 
-    const isComposedFeeRateDifferent =
-        !feePerUnitError && composedFeePerByte && feePerUnitValue !== composedFeePerByte;
-
-    let feeDifferenceWarning;
-    if (isComposedFeeRateDifferent && networkType === 'bitcoin') {
-        const baseFee = getValues('baseFee');
-        feeDifferenceWarning = (
-            <Translation
-                id={baseFee ? 'TR_FEE_ROUNDING_BASEFEE_WARNING' : 'TR_FEE_ROUNDING_DEFAULT_WARNING'}
-                values={{
-                    feeRate: (
-                        <>
-                            <strong>{composedFeePerByte}</strong> {feeUnits}
-                        </>
-                    ),
-                }}
-            />
-        );
-    }
+    const isDustPreventionRelevant = feePerUnitError !== undefined && networkType === 'bitcoin';
 
     const feeRules = {
         ...sharedRules,
@@ -93,7 +75,14 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
                 rules={feeRules}
                 bottomText={feePerUnitError?.message || null}
             />
-            {feeDifferenceWarning && <Note>{feeDifferenceWarning}</Note>}
+            {isDustPreventionRelevant && (
+                <DustPreventionNotice
+                    chosenFeePerByte={feePerUnitValue}
+                    composedFeePerByte={composedFeePerByte}
+                    baseFee={getValues('baseFee')}
+                    feeUnits={feeUnits}
+                />
+            )}
         </>
     );
 };
