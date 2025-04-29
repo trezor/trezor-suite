@@ -6,7 +6,11 @@ import { Button, Input, Modal } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 
-export const WalletConnectButton = () => {
+interface WalletConnectButtonProps {
+    handleOpened: () => void;
+}
+
+export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) => {
     const dispatch = useDispatch();
     const [connectionUrl, setConnectionUrl] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
@@ -16,6 +20,10 @@ export const WalletConnectButton = () => {
         dispatch(walletConnectPairThunk({ uri: connectionUrl }));
         setConnectionUrl(''); // Clear input after attempt
         setModalOpened(false);
+    };
+    const handleOpen = () => {
+        setModalOpened(true);
+        handleOpened();
     };
     const onCancel = () => setModalOpened(false);
 
@@ -50,13 +58,8 @@ export const WalletConnectButton = () => {
                 </Modal.Backdrop>
             )}
 
-            <Button
-                icon="plus"
-                variant="tertiary"
-                size="small"
-                onClick={() => setModalOpened(true)}
-            >
-                <Translation id="TR_WALLETCONNECT" />
+            <Button icon="plus" variant="tertiary" size="small" onClick={() => handleOpen()}>
+                <Translation id="TR_ADD_WALLETCONNECT" />
             </Button>
         </>
     );

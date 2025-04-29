@@ -54,7 +54,9 @@ export const SettingsConnectedApps = () => {
                         </SubTabs.Item>
                     ))}
                 </SubTabs>
-                {wcEnabled && <WalletConnectButton />}
+                {wcEnabled && (
+                    <WalletConnectButton handleOpened={() => setActiveItemId('walletconnect')} />
+                )}
             </Row>
             {tabs.find(tab => tab.id === activeItemdId)?.component}
         </Column>

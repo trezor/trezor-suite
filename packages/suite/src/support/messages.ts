@@ -9634,7 +9634,7 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_REQUEST: {
         id: 'TR_WALLETCONNECT_REQUEST',
-        defaultMessage: 'A WalletConnect app is requesting to connect.',
+        defaultMessage: 'WalletConnect is requesting to connect Trezor Suite to this app.',
     },
     TR_WALLETCONNECT_REQUEST_EXPIRED: {
         id: 'TR_WALLETCONNECT_REQUEST_EXPIRED',
@@ -9651,12 +9651,11 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_ADD_CONNECTION: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION',
-        defaultMessage: 'Add connection',
+        defaultMessage: 'Add new WalletConnect connection',
     },
     TR_WALLETCONNECT_ADD_CONNECTION_DESC: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_DESC',
-        defaultMessage:
-            'Manually add a connection by entering the string provided by WalletConnect.',
+        defaultMessage: 'Paste the connection string from WalletConnect.',
     },
     TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER',
@@ -9737,17 +9736,22 @@ export default defineMessages({
         id: 'TR_WALLETCONNECT',
         defaultMessage: 'WalletConnect',
     },
+    TR_ADD_WALLETCONNECT: {
+        id: 'TR_ADD_WALLETCONNECT',
+        defaultMessage: 'Add with WalletConnect',
+    },
     TR_FORGET: {
         id: 'TR_FORGET',
         defaultMessage: 'Forget',
     },
     TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS: {
         id: 'TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS',
-        defaultMessage: 'Success',
+        defaultMessage: 'Accounts exported successfully',
     },
     TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION: {
         id: 'TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION',
-        defaultMessage: 'Check addresses on your device against the addresses shown in the app.',
+        defaultMessage:
+            'Before continuing, verify that the addresses exported to {thirdParty} match exactly with those displayed on your Trezor.',
     },
     TR_DONE: {
         id: 'TR_DONE',
@@ -9791,16 +9795,15 @@ export default defineMessages({
     },
     TR_NO_CONNECTED_APPS_DESCRIPTION: {
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
-        defaultMessage:
-            'You can connect Trezor to third party wallets and manage access from here.',
+        defaultMessage: 'Use your Trezor with third-party apps and wallets to manage your assets.',
     },
     TR_PERMISSION_READ: {
         id: 'TR_PERMISSION_READ',
-        defaultMessage: 'Read public keys from Trezor device',
+        defaultMessage: 'Access public keys from your Trezor device',
     },
     TR_PERMISSION_WRITE: {
         id: 'TR_PERMISSION_WRITE',
-        defaultMessage: 'Prepare Trezor device for transaction and data signing',
+        defaultMessage: 'Permit transaction and data signing on Trezor',
     },
     TR_PERMISSION_MANAGEMENT: {
         id: 'TR_PERMISSION_MANAGEMENT',
@@ -9808,7 +9811,7 @@ export default defineMessages({
     },
     TR_PERMISSION_PUSH_TX: {
         id: 'TR_PERMISSION_PUSH_TX',
-        defaultMessage: 'Broadcast transaction to the network',
+        defaultMessage: 'Broadcast transactions to the blockchain',
     },
     TR_PERMISSION_CUSTOM_MESSAGE: {
         id: 'TR_PERMISSION_CUSTOM_MESSAGE',

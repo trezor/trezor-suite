@@ -65,7 +65,7 @@ export const ConnectAddressConfirmation = () => {
                             size="medium"
                             data-testid="@connect-address-confirmation/close-button"
                         >
-                            <Translation id="TR_DONE" />
+                            <Translation id="TR_CLOSE" />
                         </Modal.Button>
                     </>
                 }
@@ -78,7 +78,13 @@ export const ConnectAddressConfirmation = () => {
                         </H3>
                     </Row>
                     <Paragraph>
-                        <Translation id="TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION" />
+                        <Translation
+                            id="TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION"
+                            values={{
+                                thirdParty:
+                                    popupCall.source.manifest?.appName ?? popupCall.source.origin,
+                            }}
+                        />
                     </Paragraph>
 
                     <Card heading={<Translation id="TR_ADDRESSES" />} margin={{ top: spacings.md }}>

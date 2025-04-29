@@ -22,7 +22,7 @@ export const ConnectErrorModal = () => {
             bottomContent={
                 <>
                     <Modal.Button variant="tertiary" onClick={onFinish} size="medium">
-                        <Translation id="TR_DONE" />
+                        <Translation id="TR_CLOSE" />
                     </Modal.Button>
                 </>
             }
