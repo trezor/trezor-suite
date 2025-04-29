@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/Discovery.js
 
-import EventEmitter from 'events';
+import { TypedEmitter } from '@trezor/utils';
 
 import { Blockchain } from '../../backend/BlockchainLink';
 import { ERRORS } from '../../constants';
@@ -25,7 +25,12 @@ type DiscoveryOptions = {
     limit?: number;
 };
 
-export class Discovery extends EventEmitter {
+interface Events {
+    progress: DiscoveryAccount[];
+    complete: void;
+}
+
+export class Discovery extends TypedEmitter<Events> {
     public types: DiscoveryType[] = [];
 
     private typeIndex: number;
