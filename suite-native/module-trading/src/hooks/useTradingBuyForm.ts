@@ -26,79 +26,77 @@ import { TradingBuyForm, TradingBuyFormValues } from '../types';
 import { buyFormValidationSchema } from '../utils/buyFormValidationSchema';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
-const useReceiveAccountChangeEffect = (form: TradingBuyForm) => {
+const useReceiveAccountChangeEffect = ({ setValue }: TradingBuyForm) => {
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
     useEffect(() => {
-        form.setValue('receiveAccount', selectedReceiveAccount);
-    }, [form, selectedReceiveAccount]);
+        setValue('receiveAccount', selectedReceiveAccount);
+    }, [selectedReceiveAccount, setValue]);
 };
 
-const useAmountAndCurrencyFieldsChangeEffect = (form: TradingBuyForm) => {
+const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: TradingBuyForm) => {
     const dispatch = useDispatch();
     const prevNetworkId = useRef<string | undefined>(undefined);
 
     useEffect(() => {
-        const { unsubscribe } = form.watch(
-            ({ focusedValue, asset, amountInCrypto }, { name, type }) => {
-                switch (name) {
-                    case 'fiatValue':
-                        if (focusedValue === 'fiatValue' && type === 'change') {
-                            form.setValue('cryptoValue', undefined, { shouldValidate: true });
-                            if (amountInCrypto) {
-                                form.setValue('amountInCrypto', false);
-                            }
+        const { unsubscribe } = watch(({ focusedValue, asset, amountInCrypto }, { name, type }) => {
+            switch (name) {
+                case 'fiatValue':
+                    if (focusedValue === 'fiatValue' && type === 'change') {
+                        setValue('cryptoValue', undefined, { shouldValidate: true });
+                        if (amountInCrypto) {
+                            setValue('amountInCrypto', false);
                         }
-                        break;
-
-                    case 'cryptoValue':
-                        if (focusedValue === 'cryptoValue' && type === 'change') {
-                            form.setValue('fiatValue', undefined, { shouldValidate: true });
-                            if (!amountInCrypto) {
-                                form.setValue('amountInCrypto', true);
-                            }
-                        }
-                        break;
-
-                    case 'fiatCurrency':
-                        form.setValue('fiatValue', undefined, { shouldValidate: true });
-                        form.setValue('cryptoValue', undefined, { shouldValidate: true });
-                        break;
-
-                    case 'asset': {
-                        form.setValue('cryptoValue', undefined, { shouldValidate: true });
-
-                        if (asset?.networkId !== prevNetworkId.current) {
-                            prevNetworkId.current = asset?.networkId;
-                            dispatch(
-                                setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }),
-                            );
-                        }
-                        break;
                     }
+                    break;
 
-                    default:
-                        // do nothing
-                        break;
+                case 'cryptoValue':
+                    if (focusedValue === 'cryptoValue' && type === 'change') {
+                        setValue('fiatValue', undefined, { shouldValidate: true });
+                        if (!amountInCrypto) {
+                            setValue('amountInCrypto', true);
+                        }
+                    }
+                    break;
+
+                case 'fiatCurrency':
+                    setValue('fiatValue', undefined, { shouldValidate: true });
+                    setValue('cryptoValue', undefined, { shouldValidate: true });
+                    break;
+
+                case 'asset': {
+                    setValue('cryptoValue', undefined, { shouldValidate: true });
+
+                    if (asset?.networkId !== prevNetworkId.current) {
+                        prevNetworkId.current = asset?.networkId;
+                        dispatch(
+                            setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }),
+                        );
+                    }
+                    break;
                 }
-            },
-        );
+
+                default:
+                    // do nothing
+                    break;
+            }
+        });
 
         return unsubscribe;
-    }, [form, dispatch]);
+    }, [dispatch, setValue, watch]);
 };
 
-const useQuotesChangeEffect = (form: TradingBuyForm) => {
+const useQuotesChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
     const quotes = useSelector(selectValidTradingBuyQuotes);
 
     useEffect(() => {
         if (quotes.length === 0) {
-            form.setValue('quote', undefined);
+            setValue('quote', undefined);
 
             return;
         }
 
-        const currentQuote = form.getValues('quote');
+        const currentQuote = getValues('quote');
         let quoteCandidates: BuyTrade[] = [];
 
         if (currentQuote) {
@@ -124,12 +122,13 @@ const useQuotesChangeEffect = (form: TradingBuyForm) => {
         }
 
         const selectedQuote = getBestRatedQuote(quoteCandidates, 'buy');
-        form.setValue('quote', selectedQuote);
-    }, [quotes, form]);
+        setValue('quote', selectedQuote);
+    }, [quotes, getValues, setValue]);
 };
 
 const useQuoteChangeEffect = (form: TradingBuyForm) => {
-    const quote = form.watch('quote');
+    const { getValues, setValue, watch } = form;
+    const quote = watch('quote');
     const symbol = getSelectedSymbolFromBuyForm(form);
 
     const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
@@ -137,14 +136,14 @@ const useQuoteChangeEffect = (form: TradingBuyForm) => {
     );
 
     useEffect(() => {
-        const [amountInCrypto, fiatValue, cryptoValue] = form.getValues([
+        const [amountInCrypto, fiatValue, cryptoValue] = getValues([
             'amountInCrypto',
             'fiatValue',
             'cryptoValue',
         ]);
 
         if (amountInCrypto && fiatValue !== quote?.fiatStringAmount) {
-            form.setValue('fiatValue', quote?.fiatStringAmount);
+            setValue('fiatValue', quote?.fiatStringAmount);
         }
 
         if (!amountInCrypto && cryptoValue !== quote?.receiveStringAmount) {
@@ -152,12 +151,15 @@ const useQuoteChangeEffect = (form: TradingBuyForm) => {
                 isAmountInSats && quote?.receiveStringAmount && symbol
                     ? amountToSmallestUnit(quote.receiveStringAmount, getNetwork(symbol).decimals)
                     : quote?.receiveStringAmount;
-            form.setValue('cryptoValue', value);
+            setValue('cryptoValue', value);
         }
-    }, [quote, isAmountInSats, symbol, form]);
+    }, [quote, isAmountInSats, symbol, getValues, setValue]);
 };
 
-const useValidations = (form: TradingBuyForm, limits: TradingAmountLimitProps | undefined) => {
+const useValidations = (
+    { trigger, setValue }: TradingBuyForm,
+    limits: TradingAmountLimitProps | undefined,
+) => {
     const { translate } = useTranslate();
     const quotes = useSelector(selectValidTradingBuyQuotes);
     const quoteRequest = useSelector(selectTradingBuyQuotesRequest);
@@ -168,12 +170,12 @@ const useValidations = (form: TradingBuyForm, limits: TradingAmountLimitProps | 
             : translate('moduleTrading.validators.noQuotes');
 
     useEffect(() => {
-        form.trigger(['fiatValue', 'cryptoValue']);
-    }, [form, limits]);
+        trigger(['fiatValue', 'cryptoValue']);
+    }, [limits, trigger]);
 
     useEffect(() => {
-        form.setValue('generalAlert', generalAlertMsg);
-    }, [form, generalAlertMsg]);
+        setValue('generalAlert', generalAlertMsg);
+    }, [generalAlertMsg, setValue]);
 };
 
 export const useTradingBuyForm = (): TradingBuyForm => {

@@ -50,15 +50,16 @@ describe('useTradingBuyFlow', () => {
         renderHookWithStoreProviderAsync(
             () => {
                 const form = useTradingBuyForm();
+                const { setValue } = form;
 
                 useEffect(() => {
                     // Set all provided form values
                     Object.entries(formValues).forEach(([key, value]) => {
                         act(() => {
-                            form.setValue(key as keyof TradingBuyFormValues, value);
+                            setValue(key as keyof TradingBuyFormValues, value);
                         });
                     });
-                }, [form]);
+                }, [setValue]);
 
                 return useTradingBuyFlow(form);
             },
