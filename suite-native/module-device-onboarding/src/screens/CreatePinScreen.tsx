@@ -73,7 +73,6 @@ export const CreatePinScreen = () => {
 
     const onCancel = () => {
         TrezorConnect.cancel();
-        navigation.goBack();
     };
 
     return (
