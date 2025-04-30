@@ -1,8 +1,11 @@
-import { ReactNode } from 'react';
+import { ReactNode, useRef } from 'react';
+import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { SharedValue } from 'react-native-reanimated';
 
 import { AnimatedBox } from '@suite-native/atoms';
+
+import { useSwipeableWalkthroughStepHeight } from '../../hooks/useSwipeableWalkthroughStepHeight';
 
 type SwipeableWalkthroughProps = {
     children: ReactNode;
@@ -17,6 +20,8 @@ export const SwipeableWalkthrough = ({
     currentStepIndex,
     totalSteps,
 }: SwipeableWalkthroughProps) => {
+    const breakpointRef = useRef<View>(null);
+    const { setStepLayoutHeight } = useSwipeableWalkthroughStepHeight();
     const panGesture = Gesture.Pan().onEnd(event => {
         const { translationY } = event;
 
@@ -30,10 +35,18 @@ export const SwipeableWalkthrough = ({
         }
     });
 
+    const onLayout = () => {
+        breakpointRef?.current?.measure((_x, _y, _width, height) => {
+            setStepLayoutHeight(height);
+        });
+    };
+
     return (
         <>
             <GestureDetector gesture={panGesture}>
-                <AnimatedBox flex={1}>{children}</AnimatedBox>
+                <AnimatedBox onLayout={onLayout} ref={breakpointRef} flex={1}>
+                    {children}
+                </AnimatedBox>
             </GestureDetector>
         </>
     );

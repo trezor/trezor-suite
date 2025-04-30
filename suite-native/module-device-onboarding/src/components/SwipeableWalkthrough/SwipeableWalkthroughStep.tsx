@@ -1,14 +1,13 @@
 import { ReactNode } from 'react';
-import { Platform } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBox, IconButton, VStack } from '@suite-native/atoms';
-import { getWindowHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
+import { useSwipeableWalkthroughStepHeight } from '../../hooks/useSwipeableWalkthroughStepHeight';
 
 export type SwipeableWalkthroughStepProps = {
     children: ReactNode;
@@ -19,8 +18,6 @@ export type SwipeableWalkthroughStepProps = {
     description?: ReactNode;
     continueButton?: ReactNode;
 };
-
-const SCREEN_HEADER_HEIGHT = 80;
 
 const SPRING_ANIMATION_CONFIG = {
     damping: 24,
@@ -39,7 +36,7 @@ const scrollViewContentStyle = prepareNativeStyle<{
     minHeight: height,
     paddingHorizontal: utils.spacings.sp16,
     // On iOS is the bottom bar transparent, so we need to add extra bottom padding to avoid content being rendered in the bottom bar.
-    paddingBottom: Platform.OS === 'ios' ? safeAreaInsetBottom + utils.spacings.sp16 : 0,
+    paddingBottom: safeAreaInsetBottom,
 }));
 
 export const SwipeableWalkthroughStep = ({
@@ -51,12 +48,10 @@ export const SwipeableWalkthroughStep = ({
     currentStepIndex,
     continueButton,
 }: SwipeableWalkthroughStepProps) => {
-    const { top: topSafeAreaInset, bottom: bottomSafeAreaInset } = useSafeAreaInsets();
+    const { bottom: bottomSafeAreaInset } = useSafeAreaInsets();
+    const { swipeableWalkthroughStepHeight } = useSwipeableWalkthroughStepHeight();
 
-    const stepContainerHeight =
-        getWindowHeight() -
-        (SCREEN_HEADER_HEIGHT -
-            (Platform.OS === 'ios' ? bottomSafeAreaInset - topSafeAreaInset : 0));
+    const stepContainerHeight = swipeableWalkthroughStepHeight;
 
     const { applyStyle } = useNativeStyles();
 
