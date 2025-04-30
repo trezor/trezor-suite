@@ -1,4 +1,4 @@
-name: "[Test] Release Suite manual e2e tests"
+name: "[Test] Release Suite Regression test publisher"
 # Triggered by push to release branch
 # Runs Playwright reporter, creating manual regressions release suite in GitHub"
 
@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - release/2*
+      - feat-pw-github-reporter-workflow
   workflow_dispatch:
 
 concurrency:
@@ -20,9 +21,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

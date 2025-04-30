@@ -10,8 +10,10 @@ const ORGANIZATION = 'trezor';
 const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';
 const QA_TEAM_ID = 'T_kwDOAD9FD84AMZXd';
 // DevOps is working on tokens in our GitHub atm. Once that is settled we can rework this
-// and try to create project separately for each build. Until then we will use one project
-// for all builds and have name hardcoded here.
+// and try to create project separately for each build. Needs to be discussed with DevOps.
+// And we would need to some kind of cleanup after each build of projects not longer used.
+// Until then we will use one project for all builds and have name hardcoded here.
+// We should first try this approach and get feedback from QA after one release.
 const PROJECT_NAME = 'Trezor Suite release testing';
 const RETRY_CONF = {
     attempts: 3,
