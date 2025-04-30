@@ -12,7 +12,7 @@ on:
       - "suite-common/**"
       - "packages/connect/**"
       - ".github/workflows/test-suite-native-e2e-android.yml"
-      - '!**.md'
+      - "!**.md"
   push:
     branches:
       - release-native/*
@@ -161,7 +161,7 @@ jobs:
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app
-        run: ../../node_modules/.bin/detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+        run: npx detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'

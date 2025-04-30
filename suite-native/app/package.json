@@ -16,8 +16,8 @@
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
         "eas-build-on-success": "./eas-post-success.sh",
         "prebuild:clean": "expo prebuild --clean",
-        "build:e2e": "../../node_modules/.bin/detox build --configuration",
-        "test:e2e": "../../node_modules/.bin/detox test --configuration",
+        "build:e2e": "npx detox build --configuration",
+        "test:e2e": "npx detox test --configuration",
         "start:e2e": "NODE_ENV=test RN_SRC_EXT=e2e.tsx expo start --dev-client",
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
