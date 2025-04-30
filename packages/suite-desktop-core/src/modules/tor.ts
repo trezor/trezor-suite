@@ -252,12 +252,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
                 `${shouldEnableTor ? 'Enabled' : 'Disabled'} proxy ${proxySettings.proxy}`,
             );
         } catch (error) {
-            await setupTor(!shouldEnableTor);
-
-            const proxySettings = getProxySettings(!shouldEnableTor);
-
-            await TrezorConnect.setProxy(proxySettings);
-
+            // When `setupTor` fails to initialize we do not want to dissable it
             const loggerMessage = shouldEnableTor
                 ? `Failed to start: ${error.message}`
                 : `Failed to stop: ${error.message}`;
