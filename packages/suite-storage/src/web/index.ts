@@ -309,6 +309,17 @@ class CommonDB<TDBStructure> {
         filters?: { key?: any; offset?: number; count?: number; reverse?: boolean },
     ) => {
         const db = await this.getDB();
+
+        // Stores are expected to exist, but if migrations go wrong, the error mustn't go unhandled,
+        // because it crashes Suite and also the raw error doesn't bear enough info for debugging.
+        // This shall help pinpoint issues in Sentry to specific stores & their migrations.
+        if (!Object.values(db.objectStoreNames).includes(store)) {
+            console.error(`IDB store ${store} (indexName: ${indexName ?? ''}) not found!`);
+
+            // this fn always returns an Array, so falling back to an empty one gives a chance that Suite won't crash completely
+            return Promise.resolve([]);
+        }
+
         const tx = db.transaction(store);
         if (indexName) {
             const index = tx.store.index(indexName);

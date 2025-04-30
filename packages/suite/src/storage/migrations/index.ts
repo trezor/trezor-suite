@@ -747,6 +747,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 41) {
         await updateAll(transaction, 'metadata', metadata => {
+            if (!metadata.selectedProvider) {
+                metadata.selectedProvider = { labels: '', passwords: '' };
+            }
             metadata.selectedProvider.passwords = '';
 
             return metadata;
