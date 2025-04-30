@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, Pressable, TextInput, TextInputProps } from 'react-native';
 
 import { useField } from '@suite-native/forms';
@@ -140,53 +140,51 @@ const useInputFormControls = (
     };
 };
 
-export const TradingAmountInput = ({
-    name,
-    inputTransformer,
-    maxLength,
-    maxDecimals,
-    onPress,
-    ...inputProps
-}: TradingAmountInputProps) => {
-    const inputRef = useRef<TextInput>(null);
-    const { applyStyle, utils } = useNativeStyles();
-    const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls();
-    const { value, hasError, onFocus, onChangeText, onBlur } = useInputFormControls(
-        name,
-        inputTransformer,
-        maxLength,
-        maxDecimals,
-    );
+export const TradingAmountInput = forwardRef<TextInput, TradingAmountInputProps>(
+    ({ name, inputTransformer, maxLength, maxDecimals, onPress, ...inputProps }, ref) => {
+        const innerRef = useRef<TextInput>(null);
+        useImperativeHandle(ref, () => innerRef.current!);
 
-    const focusInputCallback = useCallback(() => {
-        inputRef.current?.focus();
-    }, [inputRef]);
-    const wrapperOnPress = onPress ?? focusInputCallback;
+        const { applyStyle, utils } = useNativeStyles();
+        const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls();
+        const { value, hasError, onFocus, onChangeText, onBlur } = useInputFormControls(
+            name,
+            inputTransformer,
+            maxLength,
+            maxDecimals,
+        );
 
-    // Note: it would be nice to use `onContentSizeChange` instead of `<Box />` once this bug is fixed https://github.com/facebook/react-native/issues/29702
-    return (
-        <Pressable
-            style={applyStyle(boxStyle)}
-            onLayout={onBoxLayout}
-            testID="@trading/amountInput/wrapper"
-            onPress={wrapperOnPress}
-        >
-            <TextInput
-                ref={inputRef}
-                style={applyStyle(inputStyle, { hasError, fontSize })}
-                keyboardType="decimal-pad"
-                inputMode="decimal"
-                placeholder="0.0"
-                placeholderTextColor={utils.colors.textDisabled}
-                value={value ?? ''}
-                maxLength={maxLength}
-                onChangeText={onChangeText}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                onLayout={onInputLayout}
-                onPress={onPress}
-                {...inputProps}
-            />
-        </Pressable>
-    );
-};
+        const focusInputCallback = useCallback(() => {
+            innerRef.current?.focus();
+        }, [innerRef]);
+        const wrapperOnPress = onPress ?? focusInputCallback;
+
+        // Note: it would be nice to use `onContentSizeChange` instead of `onLayout` on `<Pressable />` once this bug is fixed https://github.com/facebook/react-native/issues/29702.
+        // It would also allow us to remove `innerRef` and `useImperativeHandle` logic.
+        return (
+            <Pressable
+                style={applyStyle(boxStyle)}
+                onLayout={onBoxLayout}
+                testID="@trading/amountInput/wrapper"
+                onPress={wrapperOnPress}
+            >
+                <TextInput
+                    ref={innerRef}
+                    style={applyStyle(inputStyle, { hasError, fontSize })}
+                    keyboardType="decimal-pad"
+                    inputMode="decimal"
+                    placeholder="0.0"
+                    placeholderTextColor={utils.colors.textDisabled}
+                    value={value ?? ''}
+                    maxLength={maxLength}
+                    onChangeText={onChangeText}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    onLayout={onInputLayout}
+                    onPress={onPress}
+                    {...inputProps}
+                />
+            </Pressable>
+        );
+    },
+);

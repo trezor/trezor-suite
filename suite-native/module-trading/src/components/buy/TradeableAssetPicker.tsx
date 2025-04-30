@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
@@ -9,12 +10,15 @@ import { CryptoAmountInput } from './CryptoAmountInput';
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
+import { TradeableAsset } from '../../types';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
 const noop = () => {};
 
 export const TradeableAssetPicker = () => {
+    const inputRef = useRef<TextInput>(null);
     const form = useTradingBuyFormContext();
+    const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useTradeSheetControls(form, 'asset');
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
@@ -27,6 +31,25 @@ export const TradeableAssetPicker = () => {
             setSelectedValue(btcAsset);
         }
     }, [hasBitcoinOnlyFirmware, btcAsset, selectedValue, setSelectedValue]);
+
+    const onAssetSelect = useCallback(
+        (asset: TradeableAsset) => {
+            setSelectedValue(asset);
+            if (shouldFocusInput) {
+                setShouldFocusInput(false);
+                // CryptoAmountInput is rendered disabled allow changes to propagate.
+                setTimeout(() => {
+                    inputRef.current?.focus();
+                }, 0);
+            }
+        },
+        [shouldFocusInput, setSelectedValue],
+    );
+
+    const showAssetsSheet = useCallback(() => {
+        setShouldFocusInput(true);
+        showSheet();
+    }, [showSheet]);
 
     if (hasBitcoinOnlyFirmware) {
         return (
@@ -45,12 +68,12 @@ export const TradeableAssetPicker = () => {
                     selectedAsset={selectedValue}
                     caret
                 />
-                <CryptoAmountInput showAssetsSheet={showSheet} />
+                <CryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
             </HStack>
             <BuyTradeableAssetsSheet
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
-                onAssetSelect={setSelectedValue}
+                onAssetSelect={onAssetSelect}
             />
         </>
     );
