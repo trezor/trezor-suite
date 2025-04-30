@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -29,7 +28,6 @@ type RightTextProps = {
 type ReceiveAccountPickerRightProps = {
     selectedAccountLabel: string | undefined;
     selectedAddress: string | undefined;
-    selectedSymbol: NetworkSymbol | undefined;
 };
 export type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -46,16 +44,7 @@ const RightText = ({ color, variant = 'body', children }: RightTextProps) => (
 const ReceiveAccountPickerRight = ({
     selectedAccountLabel,
     selectedAddress,
-    selectedSymbol,
 }: ReceiveAccountPickerRightProps) => {
-    if (!selectedSymbol) {
-        return (
-            <RightText color="textDisabled">
-                <Translation id="moduleTrading.selectCoinFirst" />
-            </RightText>
-        );
-    }
-
     if (!selectedAccountLabel) {
         return (
             <RightText color="textDisabled">
@@ -90,11 +79,12 @@ export const ReceiveAccountPicker = () => {
 
     const selectedSymbol = getSelectedSymbolFromBuyForm(form);
 
-    const openAccountPicker = () =>
-        selectedSymbol &&
-        navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol: selectedSymbol });
+    if (!selectedSymbol) {
+        return null;
+    }
 
-    const onPress = selectedSymbol ? openAccountPicker : undefined;
+    const openAccountPicker = () =>
+        navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol: selectedSymbol });
 
     const addressText =
         (selectedReceiveAccount?.account.addresses
@@ -104,14 +94,13 @@ export const ReceiveAccountPicker = () => {
     return (
         <TradingOverviewRow
             title={translate('moduleTrading.tradingScreen.receiveAccount')}
-            onPress={onPress}
+            onPress={openAccountPicker}
             noBottomBorder
         >
             <VStack spacing={0} paddingLeft="sp20">
                 <ReceiveAccountPickerRight
                     selectedAccountLabel={selectedReceiveAccount?.account.accountLabel}
                     selectedAddress={addressText}
-                    selectedSymbol={selectedSymbol}
                 />
             </VStack>
         </TradingOverviewRow>

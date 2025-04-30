@@ -6,6 +6,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
 import { TradingBuyForm } from '../../../types';
@@ -32,55 +33,84 @@ describe('BuyForm', () => {
 
         expect(queryAllByText('Buy').length).toBe(2);
         expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
-        expect(queryByText('Receive account')).toBeTruthy();
+        expect(queryByText('Receive account')).toBeNull();
         expect(queryByText('Payment method')).toBeNull();
         expect(queryByText('Country of residence')).toBeTruthy();
         expect(queryByText('Provider')).toBeNull();
         expect(queryByText('Continue')).toBeNull();
         // country
         expect(queryByText('Not selected')).toBeTruthy();
-        // receive account needs coin to be selected
-        expect(queryByText('Select coin first')).toBeTruthy();
     });
 
-    it('should render with default values', async () => {
+    describe('with preloaded buy data', () => {
+        let form: TradingBuyForm;
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
-        const { result } = await renderFormHook(preloadedState);
-        const { queryByText, queryAllByText, getByLabelText, getByText } = await renderBuyForm(
-            preloadedState,
-            result.current,
-        );
 
-        expect(queryAllByText('Buy').length).toBe(2);
-
-        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
-        expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
-
-        expect(getByText('Receive account')).toBeTruthy();
-        expect(getByText('Select coin first')).toBeTruthy();
-
-        expect(getByText('Country of residence')).toBeTruthy();
-        expect(getByText('🇨🇿 Czech Republic')).toBeTruthy();
-
-        expect(queryByText('Provider')).toBeNull();
-        expect(queryByText('Continue')).toBeNull();
-    });
-
-    it('should render only BuyCard and Done when amount input is active', async () => {
-        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
-        const { result } = await renderFormHook(preloadedState);
-        act(() => {
-            result.current.setValue('focusedValue', 'fiatValue');
+        beforeEach(async () => {
+            const { result } = await renderFormHook(preloadedState);
+            form = result.current;
         });
-        const { queryByText } = await renderBuyForm(preloadedState, result.current);
 
-        expect(queryByText('Buy')).toBeTruthy();
-        expect(queryByText('Fund')).toBeTruthy();
-        expect(queryByText('Receive account')).toBeTruthy();
+        it('should render with default values', async () => {
+            const { queryByText, queryAllByText, getByLabelText, getByText } = await renderBuyForm(
+                preloadedState,
+                form,
+            );
 
-        expect(queryByText('Country of residence')).toBeNull();
-        expect(queryByText('Payment method')).toBeNull();
-        expect(queryByText('Provider')).toBeNull();
-        expect(queryByText('Continue')).toBeNull();
+            expect(queryAllByText('Buy').length).toBe(2);
+
+            expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
+            expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
+
+            expect(queryByText('Receive account')).toBeNull();
+
+            expect(getByText('Country of residence')).toBeTruthy();
+            expect(getByText('🇨🇿 Czech Republic')).toBeTruthy();
+
+            expect(queryByText('Provider')).toBeNull();
+            expect(queryByText('Continue')).toBeNull();
+        });
+
+        it('should render only BuyCard and Done when amount input is active', async () => {
+            act(() => {
+                form.setValue('focusedValue', 'fiatValue');
+            });
+            const { queryByText } = await renderBuyForm(preloadedState, form);
+
+            expect(queryByText('Buy')).toBeTruthy();
+            expect(queryByText('Fund')).toBeTruthy();
+
+            expect(queryByText('Country of residence')).toBeNull();
+            expect(queryByText('Payment method')).toBeNull();
+            expect(queryByText('Provider')).toBeNull();
+            expect(queryByText('Continue')).toBeNull();
+        });
+
+        it('should not render receive account when assets is not selected', async () => {
+            const { queryByText, getByTestId } = await renderBuyForm(preloadedState, form);
+
+            expect(queryByText('Receive account')).toBeNull();
+            expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
+                borderBottomWidth: 1,
+            });
+            expect(getByTestId('@trading/buyCard/cryptoSection')).toHaveStyle({
+                borderBottomWidth: 0,
+            });
+        });
+
+        it('should render receive account once asset is selected', async () => {
+            act(() => {
+                form.setValue('asset', btcAsset);
+            });
+            const { getByText, getByTestId } = await renderBuyForm(preloadedState, form);
+
+            expect(getByText('Receive account')).toBeTruthy();
+            expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
+                borderBottomWidth: 1,
+            });
+            expect(getByTestId('@trading/buyCard/cryptoSection')).toHaveStyle({
+                borderBottomWidth: 1,
+            });
+        });
     });
 });

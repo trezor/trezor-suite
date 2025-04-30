@@ -68,17 +68,10 @@ describe('ReceiveAccountPicker', () => {
         buyForm = await renderBuyForm();
     });
 
-    it('should display "Select coin first" when selectedSymbol is not specified', async () => {
-        const { getByText } = await renderPicker();
-        expect(getByText('Select coin first')).toBeTruthy();
-    });
+    it('should display nothing when selectedSymbol is not specified', async () => {
+        const { toJSON } = await renderPicker();
 
-    it('should not call navigate on press when selectedSymbol is not specified', async () => {
-        const { getByText } = await renderPicker();
-
-        fireEvent.press(getByText('Receive account'));
-
-        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(toJSON()).toBeNull();
     });
 
     it('should display "Not selected" when selectedValue is not specified', async () => {

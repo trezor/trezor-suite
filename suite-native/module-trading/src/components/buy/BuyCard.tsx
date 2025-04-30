@@ -19,19 +19,22 @@ import { FiatCurrencyPicker } from './FiatCurrencyPicker';
 import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
 import { ReceiveAccountPicker } from './ReceiveAccountPicker';
 import { TradeableAssetPicker } from './TradeableAssetPicker';
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;
 };
 
-const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
-    borderBottomWidth: borders.widths.small,
-    borderBottomColor: colors.backgroundSurfaceElevation0,
-    paddingHorizontal: spacings.sp12,
-    paddingTop: spacings.sp16,
-    paddingBottom: spacings.sp12,
-    gap: spacings.sp8,
-}));
+const buySectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
+    ({ borders, colors, spacings }, { bottomBorder }) => ({
+        borderBottomWidth: bottomBorder ? borders.widths.small : 0,
+        borderBottomColor: colors.backgroundSurfaceElevation0,
+        paddingHorizontal: spacings.sp12,
+        paddingTop: spacings.sp16,
+        paddingBottom: spacings.sp12,
+        gap: spacings.sp8,
+    }),
+);
 
 const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
     const { utils } = useNativeStyles();
@@ -50,11 +53,17 @@ const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
 export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
     const { applyStyle } = useNativeStyles();
     const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
+    const { watch } = useTradingBuyFormContext();
+
+    const asset = watch('asset');
 
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
             <AnimatedCard style={animatedStyle} noPadding>
-                <VStack style={applyStyle(buySectionStyle)}>
+                <VStack
+                    style={applyStyle(buySectionStyle, { bottomBorder: true })}
+                    testID="@trading/buyCard/fiatSection"
+                >
                     <HStack justifyContent="space-between" alignItems="center">
                         <BuyCardTitle>
                             <Translation id="moduleTrading.selectFiat.title" />
@@ -65,7 +74,10 @@ export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
                     </HStack>
                     <FiatCurrencyPicker />
                 </VStack>
-                <VStack style={applyStyle(buySectionStyle)}>
+                <VStack
+                    style={applyStyle(buySectionStyle, { bottomBorder: !!asset })}
+                    testID="@trading/buyCard/cryptoSection"
+                >
                     <HStack justifyContent="space-between" alignItems="center">
                         <BuyCardTitle>
                             <Translation id="moduleTrading.selectCoin.title" />
