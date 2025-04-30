@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.sha }}
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
