@@ -1,25 +1,49 @@
 import { Dimensions } from 'react-native';
 
-import { BoxSkeleton, Card, Text, VStack } from '@suite-native/atoms';
+import { BoxSkeleton, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { TradingFooter } from '../general/TradingFooter';
 
-const SKELETON_WIDTH = Dimensions.get('window').width * 0.9;
+const SKELETON_LARGE_WIDTH = Dimensions.get('window').width * 0.3;
+const SKELETON_LARGE_HEIGHT = 60;
+const SKELETON_SMALL_WIDTH = Dimensions.get('window').width * 0.2;
+const SKELETON_SMALL_HEIGHT = 20;
+
+const SkeletonSmall = () => (
+    <BoxSkeleton width={SKELETON_SMALL_WIDTH} height={SKELETON_SMALL_HEIGHT} />
+);
+
+const SkeletonLarge = () => (
+    <BoxSkeleton width={SKELETON_LARGE_WIDTH} height={SKELETON_LARGE_HEIGHT} borderRadius="r16" />
+);
 
 export const BuyFormSkeleton = () => (
     <VStack spacing="sp16">
         <Text variant="titleSmall" color="textDefault">
             <Translation id="moduleTrading.tradingScreen.buyTitle" />
         </Text>
-        <VStack alignItems="center" spacing="sp16">
-            <Card noPadding>
-                <BoxSkeleton width={SKELETON_WIDTH} height={300} borderRadius="r16" />
+        <VStack spacing="sp16">
+            <Card>
+                <VStack>
+                    <SkeletonSmall />
+                    <HStack justifyContent="space-between" alignItems="center">
+                        <SkeletonLarge />
+                        <SkeletonLarge />
+                    </HStack>
+                    <SkeletonSmall />
+                    <HStack justifyContent="space-between" alignItems="center">
+                        <SkeletonLarge />
+                        <SkeletonLarge />
+                    </HStack>
+                </VStack>
             </Card>
-            <Card noPadding>
-                <BoxSkeleton width={SKELETON_WIDTH} height={60} borderRadius="r16" />
+            <Card>
+                <HStack justifyContent="space-between" alignItems="center">
+                    <SkeletonLarge />
+                    <SkeletonLarge />
+                </HStack>
             </Card>
-            <BoxSkeleton width={SKELETON_WIDTH} height={50} borderRadius="r20" />
         </VStack>
         <TradingFooter />
     </VStack>
