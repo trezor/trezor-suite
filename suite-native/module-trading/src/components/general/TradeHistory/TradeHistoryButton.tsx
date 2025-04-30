@@ -1,4 +1,5 @@
 import { Pressable } from 'react-native';
+import { FadeIn, FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +9,7 @@ import {
     TradingType,
     selectHasTradingTradesOfTradeType,
 } from '@suite-common/trading';
-import { HStack, Text } from '@suite-native/atoms';
+import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -21,6 +22,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 
 type TradeHistoryButtonProps = {
     tradeType: TradingType;
+    isFormMountedRecently?: boolean;
 };
 
 const buttonStyle = prepareNativeStyle(utils => ({
@@ -40,7 +42,10 @@ export type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const TradeHistoryButton = ({ tradeType }: TradeHistoryButtonProps) => {
+export const TradeHistoryButton = ({
+    tradeType,
+    isFormMountedRecently,
+}: TradeHistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const hasTrades = useSelector((state: TradingRootState) =>
@@ -54,13 +59,15 @@ export const TradeHistoryButton = ({ tradeType }: TradeHistoryButtonProps) => {
     const handleOnPress = () => navigation.navigate(TradingStackRoutes.TradeHistory, { tradeType });
 
     return (
-        <Pressable onPress={handleOnPress}>
-            <HStack style={applyStyle(buttonStyle)}>
-                <Text variant="body" color="textSubdued">
-                    <Translation id="moduleTrading.tradeHistory.button.title" />
-                </Text>
-                <Icon name="caretCircleRight" color="iconSubdued" />
-            </HStack>
-        </Pressable>
+        <AnimatedBox entering={isFormMountedRecently ? FadeIn : FadeInDown} exiting={FadeOutDown}>
+            <Pressable onPress={handleOnPress}>
+                <HStack style={applyStyle(buttonStyle)}>
+                    <Text variant="body" color="textSubdued">
+                        <Translation id="moduleTrading.tradeHistory.button.title" />
+                    </Text>
+                    <Icon name="caretCircleRight" color="iconSubdued" />
+                </HStack>
+            </Pressable>
+        </AnimatedBox>
     );
 };

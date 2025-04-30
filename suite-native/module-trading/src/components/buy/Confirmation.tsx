@@ -1,4 +1,4 @@
-import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { FadeIn, FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -7,7 +7,11 @@ import { LegalSheet } from './LegalSheet';
 import { useTradingBuyFlow } from '../../hooks/useTradingBuyFlow';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 
-export const Confirmation = () => {
+export type ConfirmationProps = {
+    isFormMountedRecently?: boolean;
+};
+
+export const Confirmation = ({ isFormMountedRecently }: ConfirmationProps) => {
     const form = useTradingBuyFormContext();
 
     const { canProceed, selectQuote, isConsentRequested, giveConsent, cancelConsent } =
@@ -16,7 +20,7 @@ export const Confirmation = () => {
     const quote = form.watch('quote');
 
     return (
-        <AnimatedBox entering={FadeInDown} exiting={FadeOutDown}>
+        <AnimatedBox entering={isFormMountedRecently ? FadeIn : FadeInDown} exiting={FadeOutDown}>
             {canProceed && (
                 <Button onPress={selectQuote} disabled={!canProceed}>
                     <Translation id="moduleTrading.tradingScreen.continueButton" />

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { VStack } from '@suite-native/atoms';
 import { useDebouncedValue } from '@trezor/react-utils';
@@ -14,23 +14,40 @@ import { TradeHistoryButton } from '../general/TradeHistory/TradeHistoryButton';
 import { TradingAlert } from '../general/TradingAlert';
 import { TradingFooter } from '../general/TradingFooter';
 
-const BuyFormMemoized = memo(({ isAmountInputActive }: { isAmountInputActive: boolean }) => (
-    <VStack spacing="sp16">
-        {!isAmountInputActive && <BuyHeader />}
-        <TradingAlert />
-        <BuyCard isAmountInputActive={isAmountInputActive} />
-        {isAmountInputActive ? (
-            <AmountEditingDoneButton />
-        ) : (
-            <>
-                <PaymentCard />
-                <Confirmation />
-                <TradingFooter />
-                <TradeHistoryButton tradeType="buy" />
-            </>
-        )}
-    </VStack>
-));
+const BuyFormMemoized = memo(({ isAmountInputActive }: { isAmountInputActive: boolean }) => {
+    // `isFormMountedRecently`  allows to use different animations for initial form load (FadeIn)
+    // and when user interacts with the form (FadeInUp/FadeInDown)
+    const [isFormMountedRecently, setFormMountedRecently] = useState<boolean>(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFormMountedRecently(false);
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    return (
+        <VStack spacing="sp16">
+            {!isAmountInputActive && <BuyHeader isFormMountedRecently={isFormMountedRecently} />}
+            <TradingAlert />
+            <BuyCard isAmountInputActive={isAmountInputActive} />
+            {isAmountInputActive ? (
+                <AmountEditingDoneButton />
+            ) : (
+                <>
+                    <PaymentCard isFormMountedRecently={isFormMountedRecently} />
+                    <Confirmation isFormMountedRecently={isFormMountedRecently} />
+                    <TradingFooter isFormMountedRecently={isFormMountedRecently} />
+                    <TradeHistoryButton
+                        tradeType="buy"
+                        isFormMountedRecently={isFormMountedRecently}
+                    />
+                </>
+            )}
+        </VStack>
+    );
+});
 
 export const BuyForm = () => {
     const buyForm = useTradingBuyFormContext();
