@@ -8,7 +8,7 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import { AnimatedBox, AnimatedCard, HStack, VStack } from '@suite-native/atoms';
+import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -55,15 +55,23 @@ export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
         <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
             <AnimatedCard style={animatedStyle} noPadding>
                 <VStack style={applyStyle(buySectionStyle)}>
-                    <BuyCardTitle>
-                        <Translation id="moduleTrading.selectFiat.title" />
-                    </BuyCardTitle>
+                    <HStack justifyContent="space-between" alignItems="center">
+                        <BuyCardTitle>
+                            <Translation id="moduleTrading.selectFiat.title" />
+                        </BuyCardTitle>
+                        <Box alignItems="flex-end">
+                            <BuyFormFieldErrorBadge fieldName="fiatValue" />
+                        </Box>
+                    </HStack>
                     <FiatCurrencyPicker />
                 </VStack>
                 <VStack style={applyStyle(buySectionStyle)}>
-                    <BuyCardTitle>
-                        <Translation id="moduleTrading.selectCoin.title" />
-                    </BuyCardTitle>
+                    <HStack justifyContent="space-between" alignItems="center">
+                        <BuyCardTitle>
+                            <Translation id="moduleTrading.selectCoin.title" />
+                        </BuyCardTitle>
+                        <BuyFormFieldErrorBadge fieldName="cryptoValue" />
+                    </HStack>
                     <TradeableAssetPicker />
                     <HStack
                         justifyContent="space-between"
@@ -71,10 +79,7 @@ export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
                         paddingVertical="sp4"
                     >
                         <AssetNetworkInfo />
-                        <VStack alignItems="flex-end" flex={1}>
-                            <BuyFormFieldErrorBadge fieldName="cryptoValue" />
-                            <ReceiveAccountCryptoBalance />
-                        </VStack>
+                        <ReceiveAccountCryptoBalance />
                     </HStack>
                 </VStack>
                 <ReceiveAccountPicker />
