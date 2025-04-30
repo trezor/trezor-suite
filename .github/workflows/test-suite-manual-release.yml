@@ -5,8 +5,6 @@ name: "[Test] Release Suite Regression test publisher"
 on:
   push:
     branches:
-      - release/2*
-      - feat-pw-github-reporter-workflow
   workflow_dispatch:
 
 concurrency:
