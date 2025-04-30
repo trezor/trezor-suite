@@ -12,6 +12,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
 import { Button, Column, Divider, Input, Paragraph, Tooltip } from '@trezor/components';
+import { useClickCooldown } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -36,6 +37,8 @@ interface TradingVerifyProps {
 }
 
 export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyProps) => {
+    const { handleClick, disabled } = useClickCooldown();
+
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
@@ -244,21 +247,24 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                         selectedAccountOption.account && (
                             <Button
                                 data-testid="@trading/offer/confirm-on-trezor-button"
-                                isLoading={callInProgress}
+                                isLoading={callInProgress || disabled}
                                 isDisabled={
+                                    disabled ||
                                     callInProgress ||
                                     (!device?.connected && !isTradingBuyContext(context))
                                 }
                                 onClick={() => {
-                                    if (selectedAccountOption.account && accountAddress) {
-                                        dispatch(
-                                            verifyAddress(
-                                                selectedAccountOption.account,
-                                                accountAddress.address,
-                                                accountAddress.path,
-                                            ),
-                                        );
-                                    }
+                                    handleClick(() => {
+                                        if (selectedAccountOption.account && accountAddress) {
+                                            dispatch(
+                                                verifyAddress(
+                                                    selectedAccountOption.account,
+                                                    accountAddress.address,
+                                                    accountAddress.path,
+                                                ),
+                                            );
+                                        }
+                                    });
                                 }}
                             >
                                 <Translation

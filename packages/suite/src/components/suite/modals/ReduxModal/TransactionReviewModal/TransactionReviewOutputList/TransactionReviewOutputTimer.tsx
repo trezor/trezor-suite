@@ -1,13 +1,12 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 import styled from 'styled-components';
 
 import { Badge, Banner, Button, Text } from '@trezor/components';
+import { useClickCooldown } from '@trezor/react-utils';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { Translation } from 'src/components/suite/Translation';
-
-const RETRY_THROTTLE_TIMEOUT_MS = 3000;
 
 const TimerBox = styled.div`
     font-variant-numeric: tabular-nums;
@@ -26,18 +25,7 @@ export const TransactionReviewOutputTimer = ({
     onTryAgain,
     isSending,
 }: TransactionReviewOutputTimerProps) => {
-    const lastRetryRef = useRef<number>(0);
-
-    const handleTryAgain = () => {
-        const now = Date.now();
-
-        if (now - lastRetryRef.current < RETRY_THROTTLE_TIMEOUT_MS) {
-            return;
-        }
-
-        lastRetryRef.current = now;
-        onTryAgain(true);
-    };
+    const { handleClick, disabled } = useClickCooldown();
 
     if (isMinimal) {
         return (
@@ -47,8 +35,8 @@ export const TransactionReviewOutputTimer = ({
                     variant="tertiary"
                     type="button"
                     size="tiny"
-                    isDisabled={isSending}
-                    onClick={handleTryAgain}
+                    isDisabled={isSending || disabled}
+                    onClick={() => handleClick(() => onTryAgain(true))}
                 >
                     <Translation id="TR_RETRY" />
                 </Button>
