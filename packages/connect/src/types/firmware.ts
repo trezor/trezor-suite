@@ -1,4 +1,8 @@
 import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
+import {
+    ConditionalRelease,
+    IntermediaryReleaseConfig,
+} from '@trezor/firmware-release-config/src/types';
 import { Type } from '@trezor/schema-utils';
 
 export type FirmwareRange = Record<
@@ -40,6 +44,16 @@ export type ReleaseInfo = {
      * v3 - bootloader >= 1.12.0
      */
     intermediaryVersion?: IntermediaryVersion;
+    translations?: string[];
+};
+
+export type FirmwareReleaseConfigInfo = {
+    changelog: FirmwareRelease[] | null;
+    releaseConditions: ConditionalRelease['conditions'] & { shouldBeOffered: boolean };
+    release: ConditionalRelease['release'];
+    intermediary: IntermediaryReleaseConfig | undefined;
+    isRequired: boolean | null;
+    isNewer: boolean | null;
     translations?: string[];
 };
 

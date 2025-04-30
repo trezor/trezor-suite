@@ -38,6 +38,16 @@ const config: webpack.Configuration = {
                         ),
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
+                    {
+                        from: path.join(
+                            __dirname,
+                            '../..',
+                            'firmware-release-config',
+                            'files',
+                            'releases.v1.ts',
+                        ),
+                        to: path.join(baseDir, 'build', 'static', 'firmware-release-config'),
+                    },
                 ]),
             options: {
                 concurrency: 100,

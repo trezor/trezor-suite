@@ -52,13 +52,13 @@ const parseManifest = (manifest?: Manifest) => {
 export const parseLocalFirmwares = (localFirmwares: LocalFirmwares) => {
     if (!localFirmwares) return;
     if (typeof localFirmwares.firmwareDir !== 'string') return;
-    if (Array.isArray(localFirmwares.firmwareList)) return;
+    if (!Array.isArray(localFirmwares.firmwareList)) return;
 
     return {
         firmwareDir: localFirmwares.firmwareDir,
         firmwareList: localFirmwares.firmwareList,
     };
-}
+};
 
 // Cors validation copied from Trezor Bridge
 // see: https://github.com/trezor/trezord-go/blob/05991cea5900d18bcc6ece5ae5e319d138fc5551/server/api/api.go#L229

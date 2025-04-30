@@ -19,3 +19,18 @@ export const MESSAGE_RELEASE_SCHEMA_PATH = resolve(
     'schema',
     `releases.schema.v${VERSION}.json`,
 );
+
+export const DEV_PRIVATE_KEY = `
+-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIEGiURJVYqYlJZZ5qPFGdJaHCagzTCVNomWcp6yS8P0WoAoGCCqGSM49
+AwEHoUQDQgAEEKjWdvv8SJm/UN2lXoEXl3ID35b/hsz3etxANvUgLQ4r0eEhqVUE
+L5l+dRMgEv4Ycvr3UEcMkSFRPoA8ktxX1A==
+-----END EC PRIVATE KEY-----
+`;
+
+export const DEV_PUB_KEY = `
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEKjWdvv8SJm/UN2lXoEXl3ID35b/
+hsz3etxANvUgLQ4r0eEhqVUEL5l+dRMgEv4Ycvr3UEcMkSFRPoA8ktxX1A==
+-----END PUBLIC KEY-----
+`;

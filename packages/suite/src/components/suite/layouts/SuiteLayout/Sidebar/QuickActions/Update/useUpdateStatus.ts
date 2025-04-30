@@ -1,3 +1,6 @@
+import { getSuiteVersion } from '@trezor/env-utils';
+import { versionUtils } from '@trezor/utils';
+
 import { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import {
@@ -67,11 +70,22 @@ const getDeviceStatus = ({
 
 export const useUpdateStatus = (): UpdateStatusData => {
     const { device } = useDevice();
+    console.log('device in use UpdateStatus', device);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     const isDeviceDisconnected = device?.connected !== true;
-    const isFirmwareOutdated = device?.firmware === 'outdated';
 
+    console.log('isDeviceDisconnected', isDeviceDisconnected);
+
+    const { releaseConditions: { environment, shouldBeOffered } = {} } =
+        device?.firmwareReleaseConfig || {};
+
+    const isValidSuiteVersion =
+        !isDeviceDisconnected &&
+        versionUtils.isNewerOrEqual(getSuiteVersion(), environment?.min_suite_version);
+
+    const isFirmwareOutdated =
+        isValidSuiteVersion && shouldBeOffered && device?.firmware === 'outdated';
     // If firmware is outdated and suite update download/check is in progress,
     // we suppress the Firmware notification as it can be there just for a second and then
     // it will be replaced with Suite update notification

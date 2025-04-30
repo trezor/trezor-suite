@@ -12,6 +12,7 @@ import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { DataManager } from '../data/DataManager';
 import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
+import { parseLocalFirmwares } from '../data/connectSettings';
 import type { Device, DeviceEvents } from '../device/Device';
 import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import { WebextensionStateStorage } from '../device/StateStorage';
@@ -42,7 +43,6 @@ import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
-import { parseLocalFirmwares } from '../data/connectSettings';
 
 // custom log
 const _log = initLog('Core');
@@ -1144,13 +1144,13 @@ export class Core extends EventEmitter {
             case UI.LOGIN_CHALLENGE_RESPONSE:
                 this.uiPromises.resolve(message);
                 break;
-            case UI.RECEIVE_FIRMWARE:
+            case UI.RECEIVE_FIRMWARE: {
                 const localFirmwares = message.payload && parseLocalFirmwares(message.payload);
                 if (localFirmwares) {
                     DataManager.setLocalFirmwares(localFirmwares);
                 }
                 break;
-
+            }
             // message from index
             case IFRAME.CALL:
                 // firmwareUpdate is the only procedure that expects device disconnecting
@@ -1232,7 +1232,11 @@ export class Core extends EventEmitter {
 
         try {
             await DataManager.load(settings);
-            const localFirmwares = settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
+            console.log('settings', settings);
+            const localFirmwares =
+                settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
+
+                console.log('localFirmwares', localFirmwares);
             if (localFirmwares) {
                 DataManager.setLocalFirmwares(localFirmwares);
             }

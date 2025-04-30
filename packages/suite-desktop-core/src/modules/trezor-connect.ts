@@ -8,7 +8,6 @@ import { getStoredFirmwares } from './firmware';
 
 import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
 
-
 export const SERVICE_NAME = '@trezor/connect';
 
 type EmitOnSetCustomBackendToMainThreadToAllowDomainsParams = {
@@ -119,6 +118,7 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
 
         TrezorConnect.on(UI_EVENT, event => {
             const { type } = event;
+            console.log('type event in modules trezor-connect.ts', type);
             if (type === UI.FIRMWARE_DOWNLOADED) {
                 mainThreadEmitter.emit('module/trezor-connect/firmware-store', event.payload);
             }

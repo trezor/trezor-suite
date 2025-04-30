@@ -23,7 +23,13 @@ import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
 import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
-import { getFirmwareStatus, getRelease, getReleaseInfo, getReleases } from '../data/firmwareInfo';
+import {
+    getFirmwareLocation,
+    getFirmwareRelaseConfig,
+    getFirmwareStatus,
+    getRelease,
+    getReleaseInfo,
+} from '../data/firmwareInfo';
 import { getLanguage } from '../data/getLanguage';
 import { models } from '../data/models';
 import {
@@ -145,6 +151,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private _firmwareRelease?: ReleaseInfo | null;
     public get firmwareRelease() {
         return this._firmwareRelease;
+    }
+
+    // TODO: type this !!!
+    private _firmwareReleaseConfig?: any;
+    public get firmwareReleaseConfig() {
+        return this._firmwareReleaseConfig;
     }
 
     // @ts-expect-error: strictPropertyInitialization
@@ -764,15 +776,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
+        console.log('checkFirmwareHash');
         const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
             success: false,
             error,
             errorPayload,
         });
-
-        const baseUrl = DataManager.getSettings('binFilesBaseUrl');
-        const enabled = DataManager.getSettings('enableFirmwareHashCheck');
-        if (!enabled || baseUrl === undefined) return createFailResult('check-skipped');
 
         const firmwareVersion = this.getVersion();
         // device has no features (not yet connected) or no firmware
@@ -780,54 +789,75 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return null;
         }
 
+        const firmwareLocation = getFirmwareLocation({
+            firmwareVersion,
+            internalModel: this.features.internal_model,
+            firmwareType: this.firmwareType ? this.firmwareType : FirmwareType.Regular,
+            isIntermediary: false,
+        });
+        console.log('firmwareLocation', firmwareLocation);
+
+        const enabled = DataManager.getSettings('enableFirmwareHashCheck');
+        if (!enabled || !firmwareLocation) return createFailResult('check-skipped');
+
         const checkSupported = !this.unavailableCapabilities.getFirmwareHash;
         if (!checkSupported) return createFailResult('check-unsupported');
 
-        const release = getReleases(this.features.internal_model).find(r =>
-            versionUtils.isEqual(r.version, firmwareVersion),
-        );
-        // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
-        if (release === undefined) return createFailResult('unknown-release');
-
-        const btcOnly = this.firmwareType === FirmwareType.BitcoinOnly;
-        const binary = await getBinaryOptional({ baseUrl, btcOnly, release });
-        // release was found, but not its binary - happens on desktop, where only local files are searched
-        if (binary === null) {
-            return createFailResult('check-unsupported');
-        }
-        // binary was found, but it's likely a git LFS pointer (can happen on dev) - see onCallFirmwareUpdate.ts
-        if (binary.byteLength < 200) {
-            _log.warn(`Firmware binary for hash check suspiciously small (< 200 b)`);
-
-            return createFailResult('check-unsupported');
-        }
-
-        const strippedBinary = stripFwHeaders(binary);
-        const { hash: expectedHash, challenge } = calculateFirmwareHash(
-            this.features.major_version,
-            strippedBinary,
-            randomBytes(32),
-        );
-
-        // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
-        // so device can't be used, but it's preferable to display proper message about counterfeit device
         try {
-            const deviceResponse = await this.getCurrentSession().typedCall(
-                'GetFirmwareHash',
-                'FirmwareHash',
-                { challenge },
+            const { baseUrl, firmwareName } = firmwareLocation;
+            const binary = await getBinaryOptional({
+                baseUrl,
+                firmwareName,
+            });
+
+            console.log('binary IN checkFirmwareHash', binary);
+
+            // release was found, but not its binary - happens on desktop, where only local files are searched
+            if (binary === null) {
+                console.log('THERE IS NOT AVAILABLE FW SO WE IGNOTE IT-');
+
+                return createFailResult('check-unsupported');
+            }
+            // binary was found, but it's likely a git LFS pointer (can happen on dev) - see onCallFirmwareUpdate.ts
+            if (binary.byteLength < 200) {
+                _log.warn(`Firmware binary for hash check suspiciously small (< 200 b)`);
+
+                return createFailResult('check-unsupported');
+            }
+            const strippedBinary = stripFwHeaders(binary);
+            const { hash: expectedHash, challenge } = calculateFirmwareHash(
+                this.features.major_version,
+                strippedBinary,
+                randomBytes(32),
             );
-            if (!deviceResponse?.message?.hash) {
-                return createFailResult('other-error', 'Device response is missing hash');
-            }
 
-            if (deviceResponse.message.hash !== expectedHash) {
-                return createFailResult('hash-mismatch');
-            }
+            // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
+            // so device can't be used, but it's preferable to display proper message about counterfeit device
+            try {
+                const deviceResponse = await this.getCurrentSession().typedCall(
+                    'GetFirmwareHash',
+                    'FirmwareHash',
+                    { challenge },
+                );
+                if (!deviceResponse?.message?.hash) {
+                    return createFailResult('other-error', 'Device response is missing hash');
+                }
 
-            return { success: true };
-        } catch (errorPayload) {
-            return createFailResult('other-error', serializeError(errorPayload));
+                console.log('checking Firmware hashes');
+                console.log('expectedHash', expectedHash);
+                console.log('deviceResponse.message.hash', deviceResponse.message.hash);
+                if (deviceResponse.message.hash !== expectedHash) {
+                    return createFailResult('hash-mismatch');
+                }
+
+                return { success: true };
+            } catch (errorPayload) {
+                return createFailResult('other-error', serializeError(errorPayload));
+            }
+        } catch (error) {
+            console.log('error', error);
+
+            return createFailResult('other-error', serializeError(error));
         }
     }
 
@@ -975,8 +1005,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 });
             }
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this._firmwareStatus = getFirmwareStatus(feat);
+            this._firmwareStatus = getFirmwareStatus(feat, FirmwareType.Regular);
             this._firmwareRelease = getReleaseInfo(feat);
+            this._firmwareReleaseConfig = getFirmwareRelaseConfig(feat, FirmwareType.Regular);
 
             this.availableTranslations = this.firmwareRelease?.translations ?? [];
         }
@@ -1194,6 +1225,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             color: this.color,
             firmware: this.firmwareStatus,
             firmwareRelease: this.firmwareRelease,
+            firmwareReleaseConfig: this.firmwareReleaseConfig,
             firmwareType: this.firmwareType,
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,

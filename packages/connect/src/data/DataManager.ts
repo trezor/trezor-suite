@@ -6,8 +6,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmwareReleases } from './firmwareInfo';
-import { ConnectSettings, LocalFirmwares } from '../types';
+import { parseFirmwareReleaseConfig, parseFirmwareReleases } from './firmwareInfo';
+import { ConnectSettings, FirmwareRelease, LocalFirmwares } from '../types';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
 type AssetCollection = { [key: string]: Record<string, any> };
@@ -20,7 +20,7 @@ export class DataManager {
     private static settings: ConnectSettings;
     private static messages: Record<string, any> = messages;
 
-    static load(settings: ConnectSettings, withAssets = true) {
+    static async load(settings: ConnectSettings, withAssets = true) {
         this.settings = settings;
 
         if (!withAssets) return;
@@ -47,11 +47,14 @@ export class DataManager {
         for (const model in DeviceModelInternal) {
             const firmwareKey = `firmware-${model.toLowerCase()}`;
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
+            const modelReleases = this.assets[firmwareKey] as FirmwareRelease[];
             // Check if the firmware data exists for this model
-            if (this.assets[firmwareKey]) {
-                parseFirmwareReleases(this.assets[firmwareKey], modelType);
+            if (modelReleases) {
+                parseFirmwareReleases(modelReleases, modelType);
             }
         }
+
+        await parseFirmwareReleaseConfig();
     }
 
     static getProtobufMessages() {
@@ -70,6 +73,8 @@ export class DataManager {
     }
 
     static setLocalFirmwares(firmwares: LocalFirmwares): void {
+        console.log('setLocalFirmwares');
+        console.log('firmwares', firmwares);
         localFirmwares = firmwares;
     }
     static getLocalFirmwares(): LocalFirmwares {

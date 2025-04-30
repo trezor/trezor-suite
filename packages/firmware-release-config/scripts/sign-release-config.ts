@@ -6,6 +6,7 @@ import * as jws from 'jws';
 import { join, resolve } from 'path';
 
 import {
+    DEV_PRIVATE_KEY,
     JWS_RELEASES_FILENAME_LOCAL,
     JWS_RELEASES_FILENAME_REMOTE,
     JWS_SIGN_ALGORITHM,
@@ -16,17 +17,12 @@ const RELEASES_FILENAME = `releases.v${VERSION}.json`;
 const PACKAGE_ROOT = resolve(__dirname, '..'); // firmware-release-config
 const RELEASE_PATH = join(PACKAGE_ROOT, 'releases', RELEASES_FILENAME);
 
-// There must be no extra spaces at the beginning of the line.
-const devPrivateKey = `-----BEGIN EC PRIVATE KEY-----
-MHQCAQEEINi7lfZE3Y5U9srS58A+AN7Ul7HeBXsHEfzVzijColOkoAcGBSuBBAAKoUQDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
------END EC PRIVATE KEY-----`;
-
 const getPrivateKey = () => {
     // Only CI jobs flagged with "codesign", sign firmware release config by production private key. All other branches use development key.
     // The isCodesignBuild() util cannot be used here because the lib is not built at this point. Building libs would make the release script slower.
     if (process.env.IS_CODESIGN_BUILD !== 'true') {
         console.log('Signing releases using develop private key!');
-        const privateKey = createPrivateKey(devPrivateKey);
+        const privateKey = createPrivateKey(DEV_PRIVATE_KEY);
 
         return privateKey;
     }

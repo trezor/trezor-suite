@@ -157,7 +157,7 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
 };
 
 export const getFwUpdateVersion = (device: TrezorDevice) =>
-    device.firmwareRelease?.release?.version?.join('.') || null;
+    device.firmwareReleaseConfig?.release?.version.join('.') || null;
 
 export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
     switch (reason) {

@@ -3,7 +3,7 @@ import type { ThpStateSerialized } from '@trezor/protocol';
 import { Descriptor } from '@trezor/transport';
 
 import type { PROTO } from '../constants';
-import type { ReleaseInfo } from './firmware';
+import type { FirmwareReleaseConfigInfo, ReleaseInfo } from './firmware';
 
 /**
  * - `available`  no other application has an active session
@@ -91,6 +91,7 @@ export type KnownDevice = BaseDevice & {
     error?: typeof undefined;
     firmware: DeviceFirmwareStatus;
     firmwareRelease?: ReleaseInfo | null;
+    firmwareReleaseConfig?: FirmwareReleaseConfigInfo;
     firmwareType?: FirmwareType;
     color?: string;
     status: DeviceStatus;

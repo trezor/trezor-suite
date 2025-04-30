@@ -3,7 +3,7 @@ import { decode, verify } from 'jws';
 
 import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 
-import { JWS_SIGN_ALGORITHM, RELEASES_URL_REMOTE } from './constants';
+import { DEV_PUB_KEY, JWS_SIGN_ALGORITHM, RELEASES_URL_REMOTE } from './constants';
 import { FirmwareReleaseConfig } from './types';
 import { jws as releasesJwsLocal } from '../files/releases.v1';
 
@@ -54,7 +54,8 @@ export const getReleasesJws = async () => {
     }
 };
 
-export const getReleasesMessage = async () => {
+export const getFirmwareReleaseConfig = async () => {
+    console.log('getFirmwareReleaseConfig');
     const { releasesJws } = await getReleasesJws();
 
     const decodedJws = decode(releasesJws);
@@ -69,14 +70,18 @@ export const getReleasesMessage = async () => {
     }
 
     const JWSPublicKey = getJWSPublicKey();
+    console.log('JWSPublicKey', JWSPublicKey);
     if (!JWSPublicKey) {
         throw new Error('JWS public key is not defined!');
     }
 
     try {
-        const publicKey = createPublicKey(JWSPublicKey);
+        const publicKey = createPublicKey(DEV_PUB_KEY);
+        console.log('publicKey', publicKey);
         const publicKeyString = publicKey.export({ type: 'spki', format: 'pem' });
+        console.log('publicKeyString', publicKeyString);
         const isAuthenticityValid = verify(releasesJws, JWS_SIGN_ALGORITHM, publicKeyString);
+        console.log('isAuthenticityValid', isAuthenticityValid);
 
         if (!isAuthenticityValid) {
             throw new Error('Config authenticity is invalid');
