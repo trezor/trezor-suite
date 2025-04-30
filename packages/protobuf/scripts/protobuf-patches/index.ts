@@ -29,6 +29,7 @@ export const ORDER = {
     RecoveryDevice: 'Features',
     RecoveryType: 'RecoveryDevice',
     RecoveryDeviceInputMethod: 'RecoveryType',
+    EthereumDefinitions: 'EthereumSignTypedData',
 };
 
 // enums used as keys (string), used as values (number) by default
