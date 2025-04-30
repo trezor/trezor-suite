@@ -1,14 +1,14 @@
-import { ReactNode } from 'react';
-import { Platform } from 'react-native';
+import { ReactNode, useRef, useCallback } from 'react';
+import { Platform, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBox, IconButton, VStack } from '@suite-native/atoms';
-import { getWindowHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
+import { useSwipeableWalkthroughStepHeight } from '../../hooks/useSwipeableWalkthroughStepHeight';
 
 export type SwipeableWalkthroughStepProps = {
     children: ReactNode;
@@ -19,8 +19,6 @@ export type SwipeableWalkthroughStepProps = {
     description?: ReactNode;
     continueButton?: ReactNode;
 };
-
-const SCREEN_HEADER_HEIGHT = 80;
 
 const SPRING_ANIMATION_CONFIG = {
     damping: 24,
@@ -51,12 +49,9 @@ export const SwipeableWalkthroughStep = ({
     currentStepIndex,
     continueButton,
 }: SwipeableWalkthroughStepProps) => {
-    const { top: topSafeAreaInset, bottom: bottomSafeAreaInset } = useSafeAreaInsets();
-
-    const stepContainerHeight =
-        getWindowHeight() -
-        (SCREEN_HEADER_HEIGHT -
-            (Platform.OS === 'ios' ? bottomSafeAreaInset - topSafeAreaInset : 0));
+    const { bottom: bottomSafeAreaInset } = useSafeAreaInsets();
+    const stepContainerHeight = useSwipeableWalkthroughStepHeight();
+    const boxRef = useRef<View>(null);
 
     const { applyStyle } = useNativeStyles();
 
@@ -71,6 +66,14 @@ export const SwipeableWalkthroughStep = ({
         ],
     }));
 
+    const handleLayout = useCallback(() => {
+        if (Platform.OS === 'ios' && boxRef.current) {
+            boxRef.current.measureInWindow((x, y) => {
+                console.warn('Distance from top:', y);
+            });
+        }
+    }, []);
+
     const handleNextButtonPress = () => {
         if (currentStepIndex.value < totalSteps - 1) {
             currentStepIndex.value += 1;
@@ -78,36 +81,39 @@ export const SwipeableWalkthroughStep = ({
     };
 
     return (
-        <AnimatedBox
-            style={[
-                walkthroughStepAnimatedStyle,
-                applyStyle(stepContainerStyle, { height: stepContainerHeight }),
-            ]}
-        >
-            <ScrollView
-                bounces={false}
-                contentContainerStyle={applyStyle(scrollViewContentStyle, {
-                    safeAreaInsetBottom: bottomSafeAreaInset,
-                    height: stepContainerHeight,
-                })}
+        <View onLayout={handleLayout}>
+            <AnimatedBox
+                ref={boxRef}
+                style={[
+                    walkthroughStepAnimatedStyle,
+                    applyStyle(stepContainerStyle, { height: stepContainerHeight }),
+                ]}
             >
-                <SwipeableWalkthroughStepHeader
-                    callout={callout}
-                    title={title}
-                    description={description}
-                />
-                <VStack spacing="sp24" alignItems="center" flex={1}>
-                    {children}
-                    {continueButton ?? (
-                        <IconButton
-                            iconName="caretDown"
-                            colorScheme="tertiaryElevation0"
-                            size="large"
-                            onPress={handleNextButtonPress}
-                        />
-                    )}
-                </VStack>
-            </ScrollView>
-        </AnimatedBox>
+                <ScrollView
+                    bounces={false}
+                    contentContainerStyle={applyStyle(scrollViewContentStyle, {
+                        safeAreaInsetBottom: bottomSafeAreaInset,
+                        height: stepContainerHeight,
+                    })}
+                >
+                    <SwipeableWalkthroughStepHeader
+                        callout={callout}
+                        title={title}
+                        description={description}
+                    />
+                    <VStack spacing="sp24" alignItems="center" flex={1}>
+                        {children}
+                        {continueButton ?? (
+                            <IconButton
+                                iconName="caretDown"
+                                colorScheme="tertiaryElevation0"
+                                size="large"
+                                onPress={handleNextButtonPress}
+                            />
+                        )}
+                    </VStack>
+                </ScrollView>
+            </AnimatedBox>
+        </View>
     );
 };
