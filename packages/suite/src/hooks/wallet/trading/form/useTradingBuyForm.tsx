@@ -405,13 +405,20 @@ export const useTradingBuyForm = ({
 
             return;
         }
+    }, [quotesRequest, isNotFormPage, navigateToBuyForm]);
 
+    useEffect(() => {
         if (isFromRedirect && quotesRequest) {
-            dispatch(tradingBuyActions.setIsFromRedirect(false));
+            navigateToBuyConfirm();
         }
+    }, [isFromRedirect, quotesRequest, navigateToBuyConfirm]);
 
-        checkQuotesTimer(handleChange);
-    });
+    useEffect(() => {
+        // TODO: trading - isLoading move to checkQuotesTimer
+        if (!isLoading) {
+            checkQuotesTimer(handleChange);
+        }
+    }, [isLoading, checkQuotesTimer, handleChange]);
 
     useDebounce(
         () => {

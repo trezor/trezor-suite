@@ -80,6 +80,7 @@ export const useTradingExchangeForm = ({
         addressVerified,
         amountLimits,
         isLoading,
+        formStep,
     } = useSelector(selectTradingExchange);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
@@ -584,7 +585,9 @@ export const useTradingExchangeForm = ({
 
             return;
         }
+    }, [isNotFormPage, quotesRequest, navigateToExchangeForm]);
 
+    useEffect(() => {
         if (isFromRedirect) {
             if (transactionId && trade) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(trade.data));
@@ -597,20 +600,14 @@ export const useTradingExchangeForm = ({
                 dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
             }
         }
+    }, [dispatch, formStep, isFromRedirect, pageType, trade, transactionId]);
 
-        checkQuotesTimer(handleChange);
-    }, [
-        quotesRequest,
-        isFromRedirect,
-        trade,
-        transactionId,
-        isNotFormPage,
-        pageType,
-        dispatch,
-        navigateToExchangeForm,
-        checkQuotesTimer,
-        handleChange,
-    ]);
+    useEffect(() => {
+        // TODO: trading - isLoading move to checkQuotesTimer
+        if (!isLoading) {
+            checkQuotesTimer(handleChange);
+        }
+    }, [isLoading, checkQuotesTimer, handleChange]);
 
     return {
         type,

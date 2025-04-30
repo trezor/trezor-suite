@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { useTimer } from '@trezor/react-utils';
@@ -16,23 +16,26 @@ export const useTradingInitializer = ({
     const { device } = useDevice();
     const [callInProgress, setCallInProgress] = useState<boolean>(false);
 
-    const checkQuotesTimer = (callback: () => Promise<void>) => {
-        if (!timer.isLoading && !timer.isStopped) {
-            if (timer.resetCount >= 40) {
-                timer.stop();
-            }
+    const checkQuotesTimer = useCallback(
+        (callback: () => Promise<void>) => {
+            if (!timer.isLoading && !timer.isStopped) {
+                if (timer.resetCount >= 40) {
+                    timer.stop();
+                }
 
-            if (pageType === 'confirm') {
-                timer.stop();
+                if (pageType === 'confirm') {
+                    timer.stop();
 
-                return;
-            }
+                    return;
+                }
 
-            if (timer.timeSpent.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {
-                callback();
+                if (timer.timeSpent.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {
+                    callback();
+                }
             }
-        }
-    };
+        },
+        [timer, pageType],
+    );
 
     useServerEnvironment();
 
