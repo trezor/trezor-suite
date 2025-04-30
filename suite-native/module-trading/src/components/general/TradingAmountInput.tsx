@@ -1,7 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
-import { LayoutChangeEvent, TextInput, TextInputProps } from 'react-native';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { LayoutChangeEvent, Pressable, TextInput, TextInputProps } from 'react-native';
 
-import { Box } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -146,8 +145,10 @@ export const TradingAmountInput = ({
     inputTransformer,
     maxLength,
     maxDecimals,
+    onPress,
     ...inputProps
 }: TradingAmountInputProps) => {
+    const inputRef = useRef<TextInput>(null);
     const { applyStyle, utils } = useNativeStyles();
     const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls();
     const { value, hasError, onFocus, onChangeText, onBlur } = useInputFormControls(
@@ -157,14 +158,21 @@ export const TradingAmountInput = ({
         maxDecimals,
     );
 
+    const focusInputCallback = useCallback(() => {
+        inputRef.current?.focus();
+    }, [inputRef]);
+    const wrapperOnPress = onPress ?? focusInputCallback;
+
     // Note: it would be nice to use `onContentSizeChange` instead of `<Box />` once this bug is fixed https://github.com/facebook/react-native/issues/29702
     return (
-        <Box
+        <Pressable
             style={applyStyle(boxStyle)}
             onLayout={onBoxLayout}
             testID="@trading/amountInput/wrapper"
+            onPress={wrapperOnPress}
         >
             <TextInput
+                ref={inputRef}
                 style={applyStyle(inputStyle, { hasError, fontSize })}
                 keyboardType="decimal-pad"
                 inputMode="decimal"
@@ -176,8 +184,9 @@ export const TradingAmountInput = ({
                 onFocus={onFocus}
                 onBlur={onBlur}
                 onLayout={onInputLayout}
+                onPress={onPress}
                 {...inputProps}
             />
-        </Box>
+        </Pressable>
     );
 };
