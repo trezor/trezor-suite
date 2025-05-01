@@ -40,7 +40,9 @@ export const WalletBackupSheet = ({
     onSelectType,
     selectedType,
 }: WalletBackupSheetProps) => {
-    const [showLegacyOptions, setShowLegacyOptions] = useState(false);
+    const [showLegacyOptions, setShowLegacyOptions] = useState(
+        selectedType === '12-words' || selectedType === '24-words',
+    );
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const bottomSheetRef = useRef<BottomSheetHandle>(null);

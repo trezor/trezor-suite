@@ -36,6 +36,7 @@ const trezorImageStyle = prepareNativeStyle<{ hasDeviceFirmwareInstalled: boolea
 );
 
 const trezorModelImageMap = {
+    [DeviceModelInternal.T2T1]: require('../assets/t2t1.png'),
     [DeviceModelInternal.T2B1]: require('../assets/t3b1.png'),
     [DeviceModelInternal.T3B1]: require('../assets/t3b1.png'),
     [DeviceModelInternal.T3T1]: require('../assets/t3t1.png'),
@@ -97,15 +98,21 @@ export const UninitializedDeviceLandingScreen = ({
         if (hasDeviceFirmwareInstalled) {
             if (isLatestFirmwareInstalled) {
                 // If user already has the latest firmware installed, skip this update screen and navigate to device auth-check directly.
-                navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
                 updateOnboardingAnalytics({
                     firmware: 'up-to-date',
                 });
+
+                // T2T1 does not support device tutorial so the screen is skipped.
+                if (deviceModel !== DeviceModelInternal.T2T1) {
+                    navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
+                } else {
+                    navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
+                }
             } else {
                 navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
             }
         } else {
-            // Security check is relevant for brand new devices only.
+            // Security check is relevant for brand new devices without FW only.
             navigation.navigate(DeviceOnboardingStackRoutes.SecurityCheck);
         }
     };

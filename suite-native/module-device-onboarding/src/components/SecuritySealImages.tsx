@@ -6,12 +6,12 @@ import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-const T3T1ImageStyle = prepareNativeStyle(() => ({
+const singleImageStyle = prepareNativeStyle(() => ({
     height: 240,
     width: 240,
 }));
 
-const T3B1ImageStyle = prepareNativeStyle(() => ({
+const duoImageStyle = prepareNativeStyle(() => ({
     height: 170,
     width: 170,
 }));
@@ -20,13 +20,17 @@ export const SecuritySealImages = () => {
     const { applyStyle } = useNativeStyles();
     const deviceModel = useSelector(selectDeviceModel);
 
-    if (deviceModel === DeviceModelInternal.T3T1) {
+    if (deviceModel === DeviceModelInternal.T3T1 || deviceModel === DeviceModelInternal.T2T1) {
         return (
             <Box alignItems="center">
                 <Image
-                    source={require('../assets/t3t1Seal.png')}
+                    source={
+                        deviceModel === DeviceModelInternal.T3T1
+                            ? require('../assets/t3t1Seal.png')
+                            : require('../assets/t2t1Seal.png')
+                    }
                     contentFit="contain"
-                    style={applyStyle(T3T1ImageStyle)}
+                    style={applyStyle(singleImageStyle)}
                 />
             </Box>
         );
@@ -38,12 +42,12 @@ export const SecuritySealImages = () => {
                 <Image
                     source={require('../assets/t3b1Seal1.png')}
                     contentFit="contain"
-                    style={applyStyle(T3B1ImageStyle)}
+                    style={applyStyle(duoImageStyle)}
                 />
                 <Image
                     source={require('../assets/t3b1Seal2.png')}
                     contentFit="contain"
-                    style={applyStyle(T3B1ImageStyle)}
+                    style={applyStyle(duoImageStyle)}
                 />
             </HStack>
             <InlineAlertBox
