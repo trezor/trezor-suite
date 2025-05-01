@@ -16,7 +16,7 @@ interface TradingTransactionAmountsProps {
 }
 
 export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(trade.tradeType);
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     if (trade.tradeType === 'sell') {
         const { cryptoStringAmount, cryptoCurrency, fiatStringAmount, fiatCurrency } = trade.data;

@@ -15,6 +15,7 @@ import {
     TradingExchangeRateType,
     cryptoIdToSymbol,
     exchangeUtils,
+    selectTradingPrefilledFromCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -33,9 +34,9 @@ import {
 export const useTradingExchangeFormDefaultValues = (
     account: Account,
 ): TradingExchangeFormDefaultValuesProps => {
-    const { buildDefaultCryptoOption } = useTradingInfo('exchange');
+    const { buildDefaultCryptoOption } = useTradingInfo();
     const localCurrency = useSelector(selectLocalCurrency);
-    const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
+    const prefilledFromCryptoId = useSelector(selectTradingPrefilledFromCryptoId);
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
     const cryptoGroups = useTradingBuildAccountGroups('exchange');
     const cryptoOptions = useMemo(

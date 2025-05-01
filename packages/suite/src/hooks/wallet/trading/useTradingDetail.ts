@@ -7,14 +7,13 @@ import {
     selectTrading,
     selectTradingBuyInfo,
     selectTradingExchangeInfo,
+    selectTradingSellInfo,
     tradingThunks,
 } from '@suite-common/trading';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
-import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { selectTradingSellInfo } from 'src/reducers/wallet/tradingReducer';
 import {
     TradingGetDetailDataProps,
     TradingGetTypedTradeProps,
@@ -51,33 +50,15 @@ const getTypedTrade = <T extends TradingType>({
 };
 
 const getTradingDetailData = <T extends TradingType>({
-    trading,
     tradingNew,
     tradeType,
     infos,
 }: TradingGetDetailDataProps): TradingGetDetailDataOutputProps<T> => {
-    const { trades } = trading;
     const info = infos[tradeType] as TradingTradeInfoMapProps[T];
 
-    // TODO: trading - temporary hack solution using new reducer state
-    if (tradeType === 'buy' || tradeType === 'exchange') {
-        const { trades } = tradingNew;
-        const { transactionId } = tradingNew[tradeType];
+    const { trades } = tradingNew;
+    const { transactionId } = tradingNew[tradeType];
 
-        const trade = getTypedTrade<T>({
-            trades,
-            tradeType,
-            transactionId,
-        });
-
-        return {
-            transactionId,
-            info,
-            trade,
-        };
-    }
-
-    const { transactionId } = trading[tradeType];
     const trade = getTypedTrade<T>({
         trades,
         tradeType,
@@ -95,14 +76,12 @@ export const useTradingDetail = <T extends TradingType>({
     selectedAccount,
     tradeType,
 }: TradingUseDetailProps): TradingUseDetailOutputProps<T> => {
-    const trading = useSelector(state => state.wallet.trading);
     const tradingNew = useSelector(selectTrading);
     const { account } = selectedAccount;
     const buyInfo = useSelector(selectTradingBuyInfo);
     const sellInfo = useSelector(selectTradingSellInfo);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { info, transactionId, trade } = getTradingDetailData<T>({
-        trading,
         tradingNew,
         tradeType,
         infos: {
@@ -117,7 +96,6 @@ export const useTradingDetail = <T extends TradingType>({
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: tradeType }));
     }, [dispatch, tradeType]);
-    useTradingLoadData();
     useServerEnvironment();
     useTradingWatchTrade({ account, trade });
 

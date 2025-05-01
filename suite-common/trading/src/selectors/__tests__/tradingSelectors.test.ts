@@ -35,7 +35,6 @@ import {
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
-    selectTradingInfoLegacy,
     selectTradingNativeCoinSymbolByCryptoId,
     selectTradingPaymentMethods,
     selectTradingPlatformByCryptoId,
@@ -172,12 +171,6 @@ describe('tradingSelectors', () => {
 
     beforeEach(() => {
         state = getState();
-    });
-
-    it('selectTradingInfoLegacy should select legacy info', () => {
-        const legacyState = { wallet: { trading: { info: {} } } };
-
-        expect(selectTradingInfoLegacy(legacyState)).toBe(legacyState.wallet.trading.info);
     });
 
     describe('selectTradingBuy', () => {

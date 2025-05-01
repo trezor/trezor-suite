@@ -10,6 +10,7 @@ export interface SellInfo {
     providerInfos: { [name: string]: SellProviderInfo };
     supportedFiatCurrencies: string[];
     supportedCryptoCurrencies: CryptoId[];
+    country: string;
 }
 
 export type TradingSellState = {

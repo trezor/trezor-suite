@@ -4,11 +4,12 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
-import { buyThunks, exchangeThunks } from '../../';
+import { buyThunks, exchangeThunks, sellThunks } from '../../';
 import { accountBtc, accountEth } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { tradingBuyActions } from '../../../reducers/buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from '../../../reducers/exchangeReducer';
+import { SellInfo, tradingSellActions } from '../../../reducers/sellReducer';
 import {
     TradingState,
     initialState,
@@ -117,6 +118,13 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         sellCryptoIds: [],
     };
 
+    const mockSellInfo: SellInfo = {
+        providerInfos: {},
+        supportedCryptoCurrencies: [],
+        supportedFiatCurrencies: [],
+        country: regional.UNKNOWN_COUNTRY,
+    };
+
     expect(store.getActions()).toEqual([
         {
             payload: undefined,
@@ -144,13 +152,6 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
                 platforms: {},
             },
         },
-        {
-            type: '@trading-info/save-info',
-            info: {
-                coins: {},
-                platforms: {},
-            },
-        },
         { type: buyThunks.loadInfoThunk.pending.type, payload: undefined },
         {
             type: buyThunks.loadInfoThunk.fulfilled.type,
@@ -168,6 +169,15 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         {
             type: tradingExchangeActions.saveExchangeInfo.type,
             payload: mockExchangeInfo,
+        },
+        { type: sellThunks.loadInfoThunk.pending.type, payload: undefined },
+        {
+            type: sellThunks.loadInfoThunk.fulfilled.type,
+            payload: mockSellInfo,
+        },
+        {
+            type: tradingSellActions.saveSellInfo.type,
+            payload: mockSellInfo,
         },
         {
             payload: {

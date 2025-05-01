@@ -10,8 +10,17 @@ import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTr
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 
 export const TradingOfferExchangeSend = () => {
-    const { device, account, callInProgress, selectedQuote, exchangeInfo, sendTransaction, trade } =
-        useTradingFormContext<TradingExchangeType>();
+    const {
+        device,
+        account,
+        form: {
+            state: { isFormLoading },
+        },
+        selectedQuote,
+        exchangeInfo,
+        sendTransaction,
+        trade,
+    } = useTradingFormContext<TradingExchangeType>();
     useTradingWatchTrade({
         account,
         trade,
@@ -53,7 +62,7 @@ export const TradingOfferExchangeSend = () => {
                         <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                         <Button
                             data-testid="@trading/offer/confirm-on-trezor-and-send"
-                            isLoading={callInProgress}
+                            isLoading={isFormLoading}
                             isDisabled={!device?.connected}
                             onClick={sendTransaction}
                         >

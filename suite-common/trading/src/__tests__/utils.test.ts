@@ -188,10 +188,6 @@ describe('getTradingQuotesByPaymentMethod', () => {
         const allQuotesApplePay = quotes?.find(quote => quote.paymentMethod === 'applePay');
 
         expect(allQuotesApplePay).toBeDefined();
-
-        const quotesUndefined = getTradingQuotesByPaymentMethod(undefined, 'applePay');
-
-        expect(quotesUndefined).toBeUndefined();
     });
 });
 

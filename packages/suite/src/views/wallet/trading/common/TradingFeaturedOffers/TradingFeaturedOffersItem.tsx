@@ -1,7 +1,12 @@
 import { SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import { type TradingTradeType, type TradingType, getTagAndInfoNote } from '@suite-common/trading';
+import {
+    type TradingTradeType,
+    type TradingType,
+    getTagAndInfoNote,
+    sellUtils,
+} from '@suite-common/trading';
 import { Badge, Button, Card, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -84,10 +89,15 @@ const actionButtonText = (
         return <Translation id="TR_BUY" />;
     }
     if (isTradingSellContext(context)) {
-        if (context.needToRegisterOrVerifyBankAccount(quote as SellFiatTrade))
+        if (
+            context.sellInfo &&
+            sellUtils.needToRegisterOrVerifyBankAccount({
+                quote: quote as SellFiatTrade,
+                sellInfo: context.sellInfo,
+            })
+        ) {
             return <Translation id="TR_SELL_REGISTER" />;
-
-        return <Translation id="TR_TRADING_SELL" />;
+        }
     }
     if (isTradingExchangeContext(context)) {
         return <Translation id="TR_TRADING_SWAP" />;
@@ -96,7 +106,12 @@ const actionButtonText = (
 
 export const TradingFeaturedOffersItem = ({ context, quote }: TradingOffersItemProps) => {
     const theme = useTheme();
-    const { callInProgress, type } = context;
+    const {
+        form: {
+            state: { isFormLoading },
+        },
+        type,
+    } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { tag, infoNote } = getTagAndInfoNote(quote);
@@ -136,8 +151,8 @@ export const TradingFeaturedOffersItem = ({ context, quote }: TradingOffersItemP
                         <Button
                             variant="tertiary"
                             isFullWidth
-                            isLoading={callInProgress}
-                            isDisabled={!!quote.error || callInProgress}
+                            isLoading={isFormLoading}
+                            isDisabled={!!quote.error || isFormLoading}
                             onClick={() => selectQuote(quote)}
                             data-testid="@trading/featured-offers/get-this-deal-button"
                         >

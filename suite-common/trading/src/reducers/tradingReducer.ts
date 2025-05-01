@@ -47,7 +47,7 @@ export interface TradingState {
     modalAccountKey: AccountKey | undefined;
     isLoading: boolean;
     lastLoadedTimestamp: number;
-    activeSection?: TradingType;
+    activeSection: TradingType;
     prefilledFromCryptoId: CryptoId | undefined;
 }
 
@@ -96,7 +96,7 @@ export const tradingSlice = createSliceWithExtraDeps({
                 state.trades = trades;
             }
         },
-        setModalCryptoCurrency(state, action: PayloadAction<CryptoId>) {
+        setModalCryptoCurrency(state, action: PayloadAction<CryptoId | undefined>) {
             state.modalCryptoId = action.payload;
         },
         setModalAccountKey(state, action: PayloadAction<string | undefined>) {

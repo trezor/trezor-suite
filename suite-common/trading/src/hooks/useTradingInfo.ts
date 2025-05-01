@@ -5,12 +5,11 @@ import { CryptoId } from 'invity-api';
 import { getNetwork, getNetworkByTradeCryptoId } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
-import { selectTradingInfo, selectTradingInfoLegacy } from '../selectors/tradingSelectors';
+import { selectTradingInfo } from '../selectors/tradingSelectors';
 import {
     TradingCryptoSelectItemProps,
     TradingCryptoSelectOptionProps,
     TradingInfoProps,
-    TradingType,
 } from '../types';
 import {
     cryptoIdToNetwork,
@@ -50,24 +49,8 @@ const sortPopularCurrencies = (
     return 0;
 };
 
-/**
- * TODO: trading - delete section after migration
- *
- * @param section used only for purpose in refactored desktop trading
- */
-export const useTradingInfo = (section?: TradingType): TradingInfoProps => {
-    const tradingInfo = useSelector(selectTradingInfoLegacy);
-    const tradingNewInfo = useSelector(selectTradingInfo);
-
-    const getInfo = () => {
-        if (section) {
-            // TODO: trading - refactor only buy & exchange is refactored for now
-            return ['buy', 'exchange'].includes(section) ? tradingNewInfo : tradingInfo;
-        }
-
-        return tradingInfo;
-    };
-    const info = getInfo();
+export const useTradingInfo = (): TradingInfoProps => {
+    const info = useSelector(selectTradingInfo);
 
     const { platforms, coins } = useMemo(
         () => ({

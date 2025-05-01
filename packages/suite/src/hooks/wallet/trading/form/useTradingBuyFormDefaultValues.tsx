@@ -6,6 +6,7 @@ import {
     type TradingBuyInfoSelector,
     type TradingPaymentMethodListProps,
     getDefaultCountry,
+    selectTradingPrefilledFromCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
@@ -23,8 +24,8 @@ export const useTradingBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
-    const { buildDefaultCryptoOption } = useTradingInfo('buy');
-    const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
+    const { buildDefaultCryptoOption } = useTradingInfo();
+    const prefilledFromCryptoId = useSelector(selectTradingPrefilledFromCryptoId);
     const cryptoId = prefilledFromCryptoId || networks[accountSymbol]?.tradeCryptoId;
 
     const country = buyInfo?.buyInfo?.country;

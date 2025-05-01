@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
+import { tradingThunks } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Card, Paragraph, Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
+import { useDispatch } from 'src/hooks/suite';
 
 import { TokenRow } from './TokenRow';
 import { DropdownRow } from '../../DropdownRow';
@@ -45,8 +46,12 @@ export const TokensTable = ({
     searchQuery,
     isUnverifiedTable,
 }: TokensTableProps) => {
+    const dispatch = useDispatch();
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
-    useTradingLoadData();
+
+    useEffect(() => {
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'buy' }));
+    }, [dispatch]);
 
     return (
         <Card paddingType="none" overflow="hidden">

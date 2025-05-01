@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
-
 import styled from 'styled-components';
 
 import {
+    selectTradingActiveSection,
     selectTradingBuyProviders,
     selectTradingExchangeInfo,
+    selectTradingSellInfo,
     selectTradingTrades,
 } from '@suite-common/trading';
 import { H3, Paragraph, variables } from '@trezor/components';
@@ -12,8 +12,6 @@ import { spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
-import { selectTradingSellInfo } from 'src/reducers/wallet/tradingReducer';
 import { TradingTransactionExchange } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionExchange';
 import { TradingTransactionBuy } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsBuy';
 import { TradingTransactionSell } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell';
@@ -38,32 +36,19 @@ const TransactionCount = styled.div`
 
 export const TradingTransactionsList = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const oldTradingAllTransactions = useSelector(state => state.wallet.trading.trades);
-    const activeSection = useSelector(state => state.wallet.trading.activeSection);
+    const trades = useSelector(selectTradingTrades);
     const buyProviders = useSelector(selectTradingBuyProviders);
-    const newTradingAllTransactions = useSelector(selectTradingTrades);
     const exchangeProviders = useSelector(selectTradingExchangeInfo)?.providerInfos;
     const sellProviders = useSelector(selectTradingSellInfo)?.providerInfos;
+    const activeSection = useSelector(selectTradingActiveSection);
     const isBuyAndSell = activeSection !== 'exchange';
-    const newTradingTransactions = newTradingAllTransactions.filter(
-        transaction => transaction.tradeType !== 'sell',
-    );
-    const oldTradingTransactions = oldTradingAllTransactions.filter(
-        transaction => transaction.tradeType === 'sell',
-    );
-    const allTransactions = useMemo(
-        () => [...oldTradingTransactions, ...newTradingTransactions],
-        [oldTradingTransactions, newTradingTransactions],
-    );
-
-    useTradingLoadData();
 
     if (selectedAccount.status !== 'loaded') {
         return null;
     }
 
     const { account } = selectedAccount;
-    const sortedAccountTransactions = [...allTransactions].sort((a, b) => {
+    const sortedAccountTransactions = [...trades].sort((a, b) => {
         if (a.date > b.date) return -1;
         if (a.date < b.date) return 1;
 

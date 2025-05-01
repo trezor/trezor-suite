@@ -4,6 +4,7 @@ import { CryptoId, SellListResponse, SellProviderInfo } from 'invity-api';
 import { configureMockStore } from '@suite-common/test-utils';
 
 import { sellThunks } from '../../';
+import { TRADING_UNKNOWN } from '../../../constants';
 import { invityAPI } from '../../../invityAPI';
 import { sellInitialState, tradingSellReducer } from '../../../reducers/sellReducer';
 
@@ -61,6 +62,7 @@ describe('loadSellInfoThunk', () => {
             supportedFiatCurrencies:
                 sellProvider.tradedFiatCurrencies?.map(currency => currency.toLowerCase()) ?? [],
             supportedCryptoCurrencies: sellProvider.tradedCoins,
+            country: sellInfoApi.country,
         });
     });
 
@@ -84,6 +86,7 @@ describe('loadSellInfoThunk', () => {
             },
             supportedFiatCurrencies: [],
             supportedCryptoCurrencies: sellProviderUpdated.tradedCoins,
+            country: sellInfoApi.country,
         });
     });
 
@@ -96,6 +99,7 @@ describe('loadSellInfoThunk', () => {
             providerInfos: {},
             supportedFiatCurrencies: [],
             supportedCryptoCurrencies: [],
+            country: TRADING_UNKNOWN,
         });
     });
 });

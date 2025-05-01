@@ -26,7 +26,7 @@ export const TradingFormInputFiatCrypto = <
             state: { isFormLoading, toggleAmountInCrypto },
         },
     } = useTradingFormContext();
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     const {
         cryptoCurrencyLabel,

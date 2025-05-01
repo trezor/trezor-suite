@@ -10,6 +10,7 @@ import type {
     ExchangeTradeQuoteRequest,
     FiatCurrencyCode,
     SellFiatTrade,
+    SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
 import type {
@@ -23,7 +24,7 @@ import type {
     TradingPaymentMethodProps,
     TradingPaymentMethodType,
     TradingSellFormProps,
-    TradingSellStepType,
+    TradingSellInfoSelector,
     TradingSellType,
     TradingTradeMapProps,
     TradingTradeType,
@@ -38,7 +39,6 @@ import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-com
 import { FeeLevel } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';
 
-import { TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import type { TranslationKey } from 'src/components/suite/Translation';
 import { AppState } from 'src/reducers/store';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -90,7 +90,6 @@ interface TradingFormStateProps {
 
 interface TradingCommonFormProps {
     device: AppState['device']['selectedDevice'];
-    callInProgress: boolean;
     timer: Timer;
     account: Account;
     network: Network;
@@ -149,13 +148,12 @@ export interface TradingSellFormContextProps
     sellInfo?: TradingSellInfoSelector;
     localCurrencyOption: { label: string; value: string };
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-    quotesRequest: AppState['wallet']['trading']['sell']['quotesRequest'];
+    quotesRequest: SellFiatTradeQuoteRequest | undefined;
     feeInfo: FeeInfo;
-    quotes: AppState['wallet']['trading']['sell']['quotes'];
+    quotes: SellFiatTrade[];
     selectedQuote?: SellFiatTrade;
     trade?: TradingTransactionSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
-    sellStep: TradingSellStepType;
     // form - additional helpers for form
     form: {
         state: TradingFormStateProps;
@@ -166,11 +164,9 @@ export interface TradingSellFormContextProps
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
     setAmountLimits: (limits?: AmountLimitProps) => void;
 
-    setSellStep: (step: TradingSellStepType) => void;
     addBankAccount: () => void;
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => Promise<boolean>;
-    needToRegisterOrVerifyBankAccount: (quote: SellFiatTrade) => boolean;
     selectQuote: (quote: SellFiatTrade) => void;
 }
 

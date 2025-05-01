@@ -7,7 +7,6 @@ import {
     SellFiatTrade,
     SellProviderInfo,
 } from 'invity-api';
-import { AnyAction, Dispatch } from 'redux';
 
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import type {
@@ -17,6 +16,7 @@ import type {
     TradingExchangeType,
     TradingPaymentMethodType,
     TradingSelectAssetOptionGroupProps,
+    TradingSellInfoSelector,
     TradingSellType,
     TradingStateSelector,
     TradingTransaction,
@@ -33,9 +33,7 @@ import { StaticSessionId } from '@trezor/connect';
 import { AssetOptionBaseProps } from '@trezor/product-components';
 import { Timer } from '@trezor/react-utils';
 
-import type { TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
-import { State } from 'src/reducers/wallet/tradingReducer';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 
 type TradingPageType = 'form' | 'offers' | 'confirm';
@@ -43,13 +41,12 @@ type TradingPageType = 'form' | 'offers' | 'confirm';
 export type UseTradingProps = { selectedAccount: SelectedAccountLoaded };
 export type UseTradingCommonProps = UseTradingProps & {
     pageType: TradingPageType;
+    isLoading: boolean;
 };
 export interface UseTradingCommonReturnProps {
-    callInProgress: boolean;
     account: Account;
     timer: Timer;
     device: TrezorDevice | undefined;
-    setCallInProgress: (state: boolean) => void;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
 export type UseTradingFormProps = UseTradingProps & {
@@ -87,7 +84,6 @@ export interface TradingGetTypedTradeProps {
 }
 
 export interface TradingGetDetailDataProps {
-    trading: State;
     tradingNew: TradingStateSelector;
     tradeType: TradingType;
     infos: {
@@ -100,14 +96,6 @@ export interface TradingGetDetailDataProps {
 export interface TradingUseWatchTradeProps<T extends TradingType> {
     account: Account | undefined;
     trade: TradingTradeMapProps[T] | undefined;
-}
-
-export interface TradingWatchTradeProps<T extends TradingType> {
-    trade: TradingTradeMapProps[T];
-    account: Account;
-    refreshCount: number;
-    dispatch: Dispatch<AnyAction>;
-    removeDraft: (key: string) => void;
 }
 
 export interface TradingCryptoListProps {

@@ -1,15 +1,14 @@
 import { SellProviderInfo } from 'invity-api';
 
-import type { TradingTransactionSell as TradingTxSell } from '@suite-common/trading';
+import {
+    type TradingTransactionSell as TradingTxSell,
+    selectTradingComposedTransactionInfo,
+    tradingActions,
+    tradingSellActions,
+} from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
-import {
-    saveQuoteRequest,
-    saveTransactionId,
-    setIsFromRedirect,
-} from 'src/actions/wallet/tradingSellActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
@@ -34,9 +33,7 @@ export const TradingTransactionSell = ({
     account,
 }: TradingTransactionSellProps) => {
     const dispatch = useDispatch();
-    const { composed, selectedFee } = useSelector(
-        state => state.wallet.trading.composedTransactionInfo,
-    );
+    const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
 
     const {
         amountInCrypto,
@@ -48,21 +45,21 @@ export const TradingTransactionSell = ({
     } = trade.data;
 
     const viewDetail = () => {
-        dispatch(saveTransactionId(trade.key || ''));
+        dispatch(tradingSellActions.saveTransactionId(trade.key || ''));
 
         if (trade.data.status === 'SUBMITTED' || trade.data.status === 'SEND_CRYPTO') {
             // continue to the sell flow
             dispatch(
-                saveQuoteRequest({
+                tradingSellActions.saveQuoteRequest({
                     amountInCrypto: amountInCrypto || false,
                     fiatCurrency: fiatCurrency || '',
                     cryptoCurrency: cryptoCurrency!,
                 }),
             );
-            dispatch(setIsFromRedirect(true));
+            dispatch(tradingSellActions.setIsFromRedirect(true));
             // use fee selected by user or normal
             dispatch(
-                saveComposedTransactionInfo({
+                tradingActions.saveComposedTransactionInfo({
                     selectedFee: selectedFee || 'normal',
                     composed: composed || {
                         feePerByte: '',

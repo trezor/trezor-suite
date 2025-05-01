@@ -11,7 +11,6 @@ import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core'
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
 
-import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
 import { FORM_OUTPUT_ADDRESS, FORM_OUTPUT_AMOUNT } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
@@ -150,13 +149,13 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                 clearErrors(FORM_OUTPUT_AMOUNT);
             }
 
-            dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
             dispatch(
                 tradingActions.saveComposedTransactionInfo({
                     selectedFee: selectedFeeLevel,
                     composed,
                 }),
             );
+
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
     }, [
