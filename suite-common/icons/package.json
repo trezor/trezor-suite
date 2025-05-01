@@ -15,7 +15,7 @@
     "devDependencies": {
         "chalk": "4.1.2",
         "fantasticon": "3.0.0",
-        "prettier": "3.2.5",
+        "prettier": "3.5.3",
         "sharp": "^0.34.1",
         "svgo": "3.3.2"
     }
