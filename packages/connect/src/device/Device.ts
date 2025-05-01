@@ -114,11 +114,6 @@ type DeviceParams = {
     listener: DeviceLifecycleListener;
 };
 
-/**
- * @export
- * @class Device
- * @extends {EventEmitter}
- */
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly protocol: TransportProtocol;
@@ -126,9 +121,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly bluetoothProps;
     private thp: protocolThp.ThpState | undefined;
     private readonly transportDescriptorType;
-    private session;
-    private transportSessionOwner;
-    private lastAcquiredHere;
+    private sessionAcquired: Session | null;
 
     /**
      * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
@@ -214,12 +207,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.uniquePath = id;
         this.transport = transport;
         this.transportPath = descriptor.path;
-        this.transportSessionOwner = descriptor.sessionOwner;
         this.transportDescriptorType = descriptor.type;
         this.bluetoothProps = descriptor.id ? { id: descriptor.id } : undefined;
 
-        this.session = descriptor.session;
-        this.lastAcquiredHere = false;
+        this.sessionAcquired = null;
 
         transport.deviceEvents.on(this.transportPath, this.onTransportDeviceEvent);
     }
@@ -277,21 +268,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     acquire() {
         const sessionPromise = this.getSessionChangePromise();
+        const previous = this.transport.getDescriptor(this.transportPath)?.session ?? null;
 
         this.acquirePromise = this.transport
-            .acquire({ input: { path: this.transportPath, previous: this.session } })
+            .acquire({ input: { path: this.transportPath, previous } })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
             .then(result => {
                 if (result.success) {
-                    this.session = result.payload;
-                    this.lastAcquiredHere = true;
-
+                    this.sessionAcquired = result.payload;
                     this.currentSession?.dispose();
                     this.currentSession = new DeviceCurrentSession(
                         this,
                         this.transport,
                         this.protocol,
-                        this.session,
+                        this.sessionAcquired,
                     );
 
                     return result;
@@ -307,8 +297,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async release() {
-        const localSession = this.lastAcquiredHere ? this.session : null;
-        if (!localSession || this.keepTransportSession || this.releasePromise) {
+        if (!this.sessionAcquired || this.keepTransportSession || this.releasePromise) {
             return;
         }
 
@@ -317,11 +306,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const sessionPromise = this.getSessionChangePromise();
 
         this.releasePromise = this.transport
-            .release({ session: localSession, path: this.transportPath })
+            .release({ session: this.sessionAcquired, path: this.transportPath })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
             .then(result => {
                 if (result.success) {
-                    this.session = null;
+                    this.sessionAcquired = null;
                 }
 
                 return result;
@@ -398,7 +387,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // Session changed to different than the current one
         // -> acquired by someone else
-        if (descriptor.session && descriptor.session !== this.session) {
+        if (descriptor.session && descriptor.session !== this.sessionAcquired) {
             this.usedElsewhere();
         }
 
@@ -411,8 +400,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
-        this.session = descriptor.session;
-        this.transportSessionOwner = descriptor.sessionOwner;
         this.emitLifecycle(DEVICE.CHANGED);
     }
 
@@ -469,10 +456,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private usedElsewhere() {
         // only makes sense to continue when device held by this instance
-        if (!this.lastAcquiredHere) {
+        if (!this.sessionAcquired) {
             return;
         }
-        this.lastAcquiredHere = false;
+
+        // session was acquired by another instance. but another might not have power to release interface
+        // so it only notified about its session acquiral and the interrupted instance should cooperate
+        // and release device too.
+        this.transport.releaseDevice(this.sessionAcquired);
+        this.sessionAcquired = null;
+
         this._featuresNeedsReload = true;
 
         _log.debug('interruptionFromOutside');
@@ -480,13 +473,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.currentSession?.dispose();
 
         this.runAbort?.abort(ERRORS.TypedError('Device_UsedElsewhere'));
-
-        // session was acquired by another instance. but another might not have power to release interface
-        // so it only notified about its session acquiral and the interrupted instance should cooperate
-        // and release device too.
-        if (this.session) {
-            this.transport.releaseDevice(this.session);
-        }
     }
 
     private async _runInner<X>(
@@ -657,7 +643,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // and device wasn't released in previous call (example: interrupted discovery which set "keepSession" to true but never released)
             // clear "keepTransportSession" and reset "transportSession" to ensure that "initialize" will be called
             if (this.keepTransportSession) {
-                this.lastAcquiredHere = false;
+                this.sessionAcquired = null;
                 this.keepTransportSession = false;
             }
         }
@@ -1068,7 +1054,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.sessionDfd?.reject(new Error());
 
-        this.lastAcquiredHere = false; // set to null to prevent transport.release and cancelableAction
+        this.sessionAcquired = null; // set to null to prevent transport.release and cancelableAction
 
         this.emitLifecycle(DEVICE.DISCONNECT);
         this.emitLifecycle = () => {};
@@ -1112,15 +1098,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     isUsed() {
-        return typeof this.session === 'string';
+        return !!this.transport.getDescriptor(this.transportPath)?.session;
     }
 
     isUsedHere() {
-        return this.isUsed() && this.lastAcquiredHere;
+        return !!this.sessionAcquired;
     }
 
     isUsedElsewhere() {
-        return this.isUsed() && !this.lastAcquiredHere;
+        return this.isUsed() && !this.isUsedHere();
     }
 
     getUniquePath() {
@@ -1156,8 +1142,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     dispose() {
         this.removeAllListeners();
-        if (this.session && this.lastAcquiredHere) {
-            this.transport.releaseSync(this.session);
+        if (this.sessionAcquired) {
+            this.transport.releaseSync(this.sessionAcquired);
         }
     }
 
@@ -1184,14 +1170,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
             };
         }
         if (this.isUnacquired()) {
+            const sessionOwner = this.transport.getDescriptor(this.transportPath)?.sessionOwner;
+
             return {
                 ...base,
                 type: 'unacquired',
                 label: 'Unacquired device',
                 name: this.name,
-                transportSessionOwner: this.lastAcquiredHere
-                    ? undefined
-                    : this.transportSessionOwner,
+                transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
                 bluetoothProps: this.bluetoothProps,
                 thp: this.thp?.serialize(),
             };
