@@ -34,6 +34,6 @@
         "@electron/notarize": "2.5.0",
         "electron": "35.1.2",
         "electron-builder": "26.0.3",
-        "glob": "^10.3.10"
+        "glob": "^11.0.2"
     }
 }
