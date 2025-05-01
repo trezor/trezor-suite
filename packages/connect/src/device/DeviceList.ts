@@ -6,7 +6,6 @@ import { Descriptor } from '@trezor/transport/src/types';
 import {
     TypedEmitter,
     arrayDistinct,
-    arrayPartition,
     createDeferred,
     getSynchronize,
     isNotUndefined,
@@ -159,6 +158,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             descriptor,
             listener: lifecycle => {
                 if (lifecycle === DEVICE.DISCONNECT) {
+                    this.authPenaltyManager.remove(device);
                     const index = this.devices.indexOf(device);
                     if (index >= 0) this.devices.splice(index, 1);
                 }
@@ -178,10 +178,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private getOrCreateTransportManager(apiType: TransportApiType) {
         if (!this.transportManagers[apiType]) {
-            const manager = new TransportManager({
-                startTransport: this.startTransport.bind(this),
-                stopTransport: this.stopTransport.bind(this),
-            });
+            const manager = new TransportManager(this.initializeTransport.bind(this));
             manager.on(TRANSPORT.START, transport =>
                 this.emit(TRANSPORT.START, getTransportInfo(transport)),
             );
@@ -209,19 +206,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             );
 
         await Promise.all(promises);
-    }
-
-    private async startTransport(
-        transport: Transport,
-        pendingTransportEvent: boolean,
-        signal: AbortSignal,
-    ) {
-        try {
-            await this.initializeTransport(transport, pendingTransportEvent, signal);
-        } catch (err) {
-            this.stopTransport(transport);
-            throw err;
-        }
     }
 
     private async initializeTransport(
@@ -337,26 +321,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const promises = Object.values(this.transportManagers).map(manager => manager.dispose());
 
         await Promise.all(promises);
-    }
-
-    private stopTransport(transport: Transport) {
-        let removed: Device[];
-        [removed, this.devices] = arrayPartition(
-            this.devices,
-            d => !transport || d.transport === transport,
-        );
-
-        // disconnect devices
-        removed.forEach(device => {
-            // device.disconnect();
-            this.emit(DEVICE.DISCONNECT, device);
-            this.authPenaltyManager.remove(device);
-            device.dispose();
-        });
-
-        // now we can be relatively sure that release calls have been dispatched
-        // and we can safely kill all async subscriptions in transport layer
-        transport?.stop();
     }
 
     async enumerate() {

@@ -3,8 +3,8 @@ import { randomBytes } from 'crypto';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TransportProtocol, thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
-import { Session, TRANSPORT } from '@trezor/transport';
-import { type Descriptor, TRANSPORT_ERROR, type Transport } from '@trezor/transport';
+import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import { type Descriptor, type Transport } from '@trezor/transport';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
 import {
     Deferred,
@@ -212,21 +212,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.sessionAcquired = null;
 
+        transport.on(TRANSPORT.STOPPED, this.onTransportStopped);
         transport.deviceEvents.on(this.transportPath, this.onTransportDeviceEvent);
     }
+
+    private readonly onTransportStopped = () => this.disconnect();
 
     private readonly onTransportDeviceEvent = (event: TransportDeviceEvent) => {
         switch (event.type) {
             case TRANSPORT.DEVICE_SESSION_CHANGED:
-                this.updateDescriptor(event.descriptor);
-                break;
+                return this.updateDescriptor(event.descriptor);
             case TRANSPORT.DEVICE_REQUEST_RELEASE:
-                this.usedElsewhere();
-                break;
+                return this.usedElsewhere();
             case TRANSPORT.DEVICE_DISCONNECTED: {
-                this.transport.deviceEvents.off(this.transportPath, this.onTransportDeviceEvent);
-                this.disconnect();
-                break;
+                return this.disconnect();
             }
         }
     };
@@ -1049,12 +1048,18 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private disconnect() {
-        // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
+
+        this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
+        this.transport.deviceEvents.off(this.transportPath, this.onTransportDeviceEvent);
+        this.removeAllListeners();
 
         this.sessionDfd?.reject(new Error());
 
-        this.sessionAcquired = null; // set to null to prevent transport.release and cancelableAction
+        if (this.sessionAcquired) {
+            this.transport.releaseSync(this.sessionAcquired);
+            this.sessionAcquired = null; // set to null to prevent transport.release and cancelableAction
+        }
 
         this.emitLifecycle(DEVICE.DISCONNECT);
         this.emitLifecycle = () => {};
@@ -1138,13 +1143,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         return null;
-    }
-
-    dispose() {
-        this.removeAllListeners();
-        if (this.sessionAcquired) {
-            this.transport.releaseSync(this.sessionAcquired);
-        }
     }
 
     private getMode() {

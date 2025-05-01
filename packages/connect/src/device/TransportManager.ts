@@ -40,14 +40,11 @@ type TransportManagerEvents = {
     [TRANSPORT.ERROR]: string;
 };
 
-type TransportManagerParams = {
-    startTransport: (
-        transport: Transport,
-        pendingTransportEvent: boolean,
-        signal: AbortSignal,
-    ) => Promise<void>;
-    stopTransport: (transport: Transport) => void;
-};
+type StartTransport = (
+    transport: Transport,
+    pendingTransportEvent: boolean,
+    signal: AbortSignal,
+) => Promise<void>;
 
 type InitParams = {
     transports: Transport[];
@@ -63,12 +60,10 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
     private upgradeTimeout?: ReturnType<typeof setTimeout>;
 
     private readonly startTransport;
-    private readonly stopTransport;
 
-    constructor({ startTransport, stopTransport }: TransportManagerParams) {
+    constructor(startTransport: StartTransport) {
         super();
         this.startTransport = startTransport;
-        this.stopTransport = stopTransport;
     }
 
     pending() {
@@ -96,7 +91,7 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
             if (activeTransport) {
                 clearTimeout(this.upgradeTimeout);
                 delete this.activeTransport;
-                this.stopTransport(activeTransport);
+                activeTransport.stop();
             }
 
             return Promise.resolve();
@@ -146,11 +141,16 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                 if (activeTransport) {
                     clearTimeout(this.upgradeTimeout);
                     delete this.activeTransport;
-                    this.stopTransport(activeTransport);
+                    activeTransport.stop();
                 }
 
                 if (transport) {
-                    await this.startTransport(transport, pendingTransportEvent, abortSignal);
+                    try {
+                        await this.startTransport(transport, pendingTransportEvent, abortSignal);
+                    } catch (err) {
+                        transport.stop();
+                        throw err;
+                    }
 
                     transport.on(TRANSPORT.ERROR, error => {
                         this.emit(TRANSPORT.ERROR, error);
@@ -158,7 +158,7 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                         this.lock
                             .override('Transport error', async signal => {
                                 delete this.activeTransport;
-                                this.stopTransport(transport);
+                                transport.stop();
                                 if (this.transportReconnect) {
                                     await resolveAfter(1000, signal);
                                     await this.createInitPromise(pendingTransportEvent, signal);
