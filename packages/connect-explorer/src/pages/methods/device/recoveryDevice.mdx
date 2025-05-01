@@ -1,0 +1,73 @@
+import { Callout } from 'nextra/components';
+
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+
+<ApiPlayground
+    options={[{ title: 'Advanced schema', method: 'recoveryDevice', schema: PROTO.RecoveryDevice }]}
+/>
+
+## Recover device
+
+<Callout type="error">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
+
+### type: `NormalRecovery`
+
+This mode lets the user recover an existing BIP39 seed into an empty Trezor device.
+
+### type: `DryRun`
+
+In dry run recovery, the process is used to check the validity of the recovery phrase with an already initialized device.
+
+### type: `UnlockRepeatedBackup`
+
+In this mode, the user can unlock a device into a mode where it's possible to repeat the backup process.
+This is useful for upgrading SLIP39 backups to multiple shares.
+
+```javascript
+const result = await TrezorConnect.recoveryDevice(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+<ParamsTable schema={PROTO.RecoveryDevice} />
+
+### Example
+
+```javascript
+TrezorConnect.recoveryDevice({
+    device,
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Device recovered'
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
