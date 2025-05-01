@@ -18,7 +18,6 @@ const notarizeAfterSignHook: Hooks['afterSign'] = context => {
     console.log(`notarizing ${appPath} ...`);
 
     return notarize({
-        tool: 'notarytool',
         appPath,
         appleId: process.env.APPLEID,
         appleIdPassword: process.env.APPLEIDPASS,

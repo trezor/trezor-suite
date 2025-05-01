@@ -7,7 +7,7 @@
     "homepage": "https://trezor.io/",
     "main": "src/app.ts",
     "scripts": {
-        "build:scripts": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.scripts.json",
+        "build:scripts": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.scripts.json && find ./lib -name '*.js' -exec bash -c 'mv \"$0\" \"${0%.js}.mjs\"' {} \\;",
         "build:core": "yarn g:rimraf dist && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/core.webpack.config.ts",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
@@ -57,7 +57,7 @@
     "devDependencies": {
         "@currents/playwright": "^1.11.3",
         "@electron/fuses": "^1.8.0",
-        "@electron/notarize": "2.5.0",
+        "@electron/notarize": "3.0.1",
         "@octokit/rest": "^21.1.1",
         "@playwright/browser-chromium": "^1.51.0",
         "@playwright/browser-firefox": "^1.51.0",

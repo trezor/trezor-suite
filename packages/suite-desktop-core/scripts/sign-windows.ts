@@ -1,4 +1,5 @@
 import type { CustomWindowsSign } from 'app-builder-lib';
+import { execSync } from 'node:child_process';
 
 // electron-builder TS requires the function to return Promise, but jsign MUST be called with execSync!
 // eslint-disable-next-line require-await
@@ -15,7 +16,7 @@ const signWindows: CustomWindowsSign = async configuration => {
     const CERTIFICATE_NAME = process.env.WINDOWS_SIGN_CERTIFICATE_NAME;
     const TOKEN_PASSWORD = process.env.WINDOWS_SIGN_TOKEN_PASSWORD;
 
-    require('child_process').execSync(
+    execSync(
         `java -jar ../suite-desktop-core/scripts/jsign-6.0.jar --keystore ../suite-desktop-core/scripts/hardwareToken.cfg --storepass '${TOKEN_PASSWORD}' --storetype PKCS11 --tsaurl http://timestamp.digicert.com --alias "${CERTIFICATE_NAME}" "${configuration.path}"`,
         {
             stdio: 'inherit',

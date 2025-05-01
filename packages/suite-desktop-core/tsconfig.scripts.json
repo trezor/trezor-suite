@@ -1,6 +1,10 @@
 {
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
+        "module": "ESNext",
+        "declaration": false,
+        "sourceMap": false,
+        "declarationMap": false,
         "outDir": "lib"
     },
     "include": ["./scripts"],
