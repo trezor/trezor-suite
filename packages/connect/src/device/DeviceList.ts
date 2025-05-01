@@ -147,6 +147,19 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             transport,
             descriptor,
             listener: lifecycle => {
+                if (lifecycle === DEVICE.CONNECT) {
+                    const dup = this.devices.find(
+                        d =>
+                            d.features?.device_id &&
+                            d.features.device_id === device.features?.device_id &&
+                            d.getUniquePath() !== device.getUniquePath(),
+                    );
+
+                    if (dup) {
+                        return dup.mergeWith(device);
+                    }
+                }
+
                 if (lifecycle === DEVICE.DISCONNECT) {
                     this.authPenaltyManager.remove(device);
                     const index = this.devices.indexOf(device);

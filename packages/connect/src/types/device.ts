@@ -76,6 +76,7 @@ export const DeviceUniquePath = (id: string) => id as DeviceUniquePath;
 type BaseDevice = {
     path: DeviceUniquePath;
     name: string;
+    mergedInto?: DeviceUniquePath;
 };
 
 export type BluetoothDeviceProps = {
