@@ -1,9 +1,14 @@
 import { Callout } from 'nextra/components';
 
+import { PROTO } from '@trezor/connect/src/constants';
+
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
 
-<ApiPlayground options={[{ title: 'No payload', method: 'backupDevice' }]} />
+<ApiPlayground
+    options={[{ title: 'Advanced schema', method: 'backupDevice', schema: PROTO.BackupDevice }]}
+/>
 
 ## Backup device
 
@@ -22,7 +27,7 @@ const result = await TrezorConnect.backupDevice(params);
 
 <CommonParamsLink />
 
-No other parameters.
+<ParamsTable schema={PROTO.BackupDevice} />
 
 ### Example
 
