@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import '@suite-common/test-utils/src/globalOverrides';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';

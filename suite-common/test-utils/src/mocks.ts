@@ -25,8 +25,6 @@ import {
 } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-// in-memory implementation of indexedDB
-import 'fake-indexeddb/auto';
 /**
  * Generate wallet account
  * @param {Partial<Account>} [account]

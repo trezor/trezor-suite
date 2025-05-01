@@ -20,6 +20,7 @@ bn.js
 bs58
 bs58check
 chalk
+core-js
 cors
 create-hmac
 depcheck

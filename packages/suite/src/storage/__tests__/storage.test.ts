@@ -1,4 +1,4 @@
-import '@suite-common/test-utils/src/mocks';
+import '@suite-common/test-utils/src/globalOverrides';
 
 import { db } from '../index';
 

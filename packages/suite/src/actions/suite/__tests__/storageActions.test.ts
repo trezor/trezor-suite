@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import '@suite-common/test-utils/src/globalOverrides';
 import {
     createDiscoveryThunk,
     deviceActions,
