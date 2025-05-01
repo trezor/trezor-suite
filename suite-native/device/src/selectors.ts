@@ -39,6 +39,7 @@ import {
 } from '@suite-native/feature-flags';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { revisionCheckErrorScenarios } from './config/firmware';
@@ -209,9 +210,12 @@ export const selectIsDeviceSetupSupported = createMemoizedSelector(
         selectDeviceModel,
         (state: NativeDeviceRootState) =>
             selectIsFeatureFlagEnabled(state, FeatureFlag.IsDeviceOnboardingEnabled),
+        (state: NativeDeviceRootState) =>
+            selectIsFeatureFlagEnabled(state, FeatureFlag.IsModelTDeviceOnboardingEnabled),
     ],
-    (model, isDeviceOnboardingFeatureFlagEnabled) =>
+    (model, isDeviceOnboardingFeatureFlagEnabled, isModelTDeviceOnboardingFeatureFlagEnabled) =>
         isDeviceOnboardingFeatureFlagEnabled &&
         G.isNotNullable(model) &&
-        isDeviceSetupSupported(model),
+        (isDeviceSetupSupported(model) ||
+            (isModelTDeviceOnboardingFeatureFlagEnabled && model === DeviceModelInternal.T2T1)),
 );
