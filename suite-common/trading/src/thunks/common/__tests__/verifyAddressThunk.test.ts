@@ -24,6 +24,7 @@ const mockedSuiteReducer = createReducerWithExtraDeps(
 jest.mock('@suite-common/wallet-core', () => ({
     confirmAddressOnDeviceThunk: jest.fn(),
     selectSelectedDevice: jest.fn(),
+    selectAccounts: jest.fn(),
 }));
 
 describe('verifyAddressThunk', () => {

@@ -5,7 +5,7 @@ import {
     selectTradingBuyProviders,
     selectTradingExchangeInfo,
     selectTradingSellInfo,
-    selectTradingTrades,
+    selectTradingTradesForSelectedDevice,
 } from '@suite-common/trading';
 import { H3, Paragraph, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -36,7 +36,7 @@ const TransactionCount = styled.div`
 
 export const TradingTransactionsList = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const trades = useSelector(selectTradingTrades);
+    const trades = useSelector(selectTradingTradesForSelectedDevice);
     const buyProviders = useSelector(selectTradingBuyProviders);
     const exchangeProviders = useSelector(selectTradingExchangeInfo)?.providerInfos;
     const sellProviders = useSelector(selectTradingSellInfo)?.providerInfos;
