@@ -82,7 +82,13 @@ export type HandleSellRequestThunkProps = {
     composeRequestCallback: () => void;
 };
 
-export const handleSellRequestThunk = createThunk(
+export const handleSellRequestThunk = createThunk<
+    SellFiatTrade[],
+    HandleSellRequestThunkProps,
+    {
+        rejectValue: string;
+    }
+>(
     `${TRADING_SELL_THUNK_PREFIX}/handleChange`,
     async (
         {
@@ -105,7 +111,7 @@ export const handleSellRequestThunk = createThunk(
         if (!requestData) {
             timer.stop();
 
-            throw rejectWithValue('Invalid request data');
+            return rejectWithValue('Invalid request data');
         }
 
         const allQuotes = await getQuotesRequest({ requestData, signal });
@@ -113,7 +119,7 @@ export const handleSellRequestThunk = createThunk(
         if (signal.aborted) {
             timer.reset();
 
-            throw rejectWithValue('Request was aborted');
+            return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {

@@ -1,4 +1,4 @@
-import { ExchangeTradeQuoteRequest } from 'invity-api';
+import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
@@ -68,7 +68,13 @@ export type HandleRequestThunkProps = {
     composeRequestCallback: () => void;
 };
 
-export const handleRequestThunk = createThunk(
+export const handleRequestThunk = createThunk<
+    ExchangeTrade[],
+    HandleRequestThunkProps,
+    {
+        rejectValue: string;
+    }
+>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/handleChange`,
     async (
         {
@@ -78,7 +84,7 @@ export const handleRequestThunk = createThunk(
             shouldSendInSats,
             composeRequestCallback,
         }: HandleRequestThunkProps,
-        { dispatch, getState, fulfillWithValue, signal },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
         timer.loading();
 
@@ -91,7 +97,7 @@ export const handleRequestThunk = createThunk(
         if (!requestData) {
             timer.stop();
 
-            return;
+            return rejectWithValue('Invalid request data');
         }
 
         const allQuotes = await getQuotesRequest({ requestData, signal });
@@ -99,14 +105,14 @@ export const handleRequestThunk = createThunk(
         if (signal.aborted) {
             timer.reset();
 
-            return;
+            return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
             timer.stop();
             dispatch(tradingExchangeActions.saveQuotes([]));
 
-            return;
+            return fulfillWithValue([]);
         }
 
         const currency =

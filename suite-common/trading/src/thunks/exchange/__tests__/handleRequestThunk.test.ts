@@ -232,9 +232,9 @@ describe('handleRequestThunk', () => {
             ['receiveCryptoSelect is not selected', inputReceiveCryptoSelectIncorrect],
             ['sendCryptoSelect is not selected', inputSendCryptoSelectIncorrect],
         ])(`%s`, async (_description, formValues) => {
-            const quotesResponse = await store
-                .dispatch(exchangeThunks.handleRequestThunk(formValues))
-                .unwrap();
+            const promise = store.dispatch(exchangeThunks.handleRequestThunk(formValues));
+
+            await promise;
 
             const state = store.getState().wallet.tradingNew;
 
@@ -243,7 +243,7 @@ describe('handleRequestThunk', () => {
             expect(state.exchange.quotesRequest).toBeUndefined();
             expect(state.exchange.quotes.length).toEqual(0);
             expect(state.isLoading).toBe(false);
-            expect(quotesResponse).toEqual(undefined);
+            await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
         });
     });
 
@@ -283,6 +283,6 @@ describe('handleRequestThunk', () => {
         expect(state.exchange.quotes.length).toEqual(0);
         expect(state.exchange.quotesRequest).toBeUndefined();
         expect(state.isLoading).toBe(false);
-        expect(quotesResponse).toEqual(undefined);
+        expect(quotesResponse).toEqual([]);
     });
 });
