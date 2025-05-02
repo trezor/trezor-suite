@@ -1,7 +1,9 @@
+import { useCallback, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
+import * as ExpoLinking from 'expo-linking';
 import { WebViewSource } from 'react-native-webview/lib/WebViewTypes';
 
 import { Text } from '@suite-native/atoms';
@@ -15,6 +17,8 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { TRADING_URL_DEFAULT_BACK } from '../utils/tradeFormUtils';
+
 type RouteProps = StackProps<RootStackParamList, RootStackRoutes.TradingWebView>['route'];
 
 const webViewStyle = prepareNativeStyle(_ => ({ flex: 1 }));
@@ -25,6 +29,25 @@ export const TradingWebViewScreen = () => {
     } = useRoute<RouteProps>();
     const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
+    const receivedDeeplinkUrl = ExpoLinking.useURL();
+
+    // when url matches closeCallbackUrl or TRADING_URL_DEFAULT_BACK, go back
+    const checkForGoBackOnUrl = useCallback(
+        (url: string | null) => {
+            if ([closeCallbackUrl, TRADING_URL_DEFAULT_BACK].includes(url ?? '')) {
+                navigation.goBack();
+
+                return true;
+            }
+
+            return false;
+        },
+        [closeCallbackUrl, navigation],
+    );
+
+    useEffect(() => {
+        checkForGoBackOnUrl(receivedDeeplinkUrl);
+    }, [checkForGoBackOnUrl, receivedDeeplinkUrl]);
 
     if (!source?.uri && !source?.html) {
         return (
@@ -51,16 +74,9 @@ export const TradingWebViewScreen = () => {
             <WebView
                 style={applyStyle(webViewStyle)}
                 source={{ ...sourceData }}
-                // go back on closeCallbackUrl
-                onShouldStartLoadWithRequest={(request: { url: string }) => {
-                    if (closeCallbackUrl && request.url.startsWith(closeCallbackUrl)) {
-                        navigation.goBack();
-
-                        return false; // Prevent WebView from loading the URL
-                    }
-
-                    return true; // Allow navigation
-                }}
+                onShouldStartLoadWithRequest={(request: { url: string }) =>
+                    !checkForGoBackOnUrl(request.url)
+                }
                 startInLoadingState={true}
                 renderLoading={() => <ActivityIndicator size="large" />}
             />

@@ -8,7 +8,7 @@ import { FlashList } from '@shopify/flash-list';
 import {
     TradingRootState,
     TradingTransaction,
-    selectTradingTradesByTradeType,
+    selectTradingTradesByTradeTypeOrderedByDate,
 } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -45,7 +45,7 @@ export const TradeHistoryScreen = () => {
     const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const trades = useSelector((state: TradingRootState) =>
-        selectTradingTradesByTradeType(state, tradeType),
+        selectTradingTradesByTradeTypeOrderedByDate(state, tradeType),
     );
 
     const handleSelectedTrade = useCallback(

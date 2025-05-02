@@ -15,13 +15,14 @@ type RequestFormSourceReturnType = {
     html?: string;
 };
 
-type BuildTradingUrlProps = {
+export type BuildTradingUrlProps = {
     actionType: 'quote' | 'trade';
     tradeType: TradingType;
     orderId: string | undefined;
 };
 
-export const TRADING_URL_SCHEME = 'suitetrading';
+export const TRADING_URL_BASE = 'trezorsuitelite://trading';
+export const TRADING_URL_DEFAULT_BACK = `${TRADING_URL_BASE}/back`;
 
 export const applyHtmlTemplate = (
     content = 'You may now close this window.',
@@ -61,7 +62,7 @@ export const applyHtmlTemplate = (
             <body>
                 <img style="margin-bottom:40px" alt="trezor logo" src="data:image/png;base64, ${trezorLogo}" />
                 ${content}
-                <a style="margin-top:40px" href="${options?.backUrl ?? `${TRADING_URL_SCHEME}://`}">Go back</a>
+                <a style="margin-top:40px" href="${options?.backUrl ?? TRADING_URL_DEFAULT_BACK}">Go back</a>
             </body>
         </html>
     `;
@@ -118,4 +119,12 @@ export const getSourceForForm = (form: FormResponse['form'] | undefined, backUrl
 };
 
 export const buildTradingUrl = ({ actionType, tradeType, orderId }: BuildTradingUrlProps) =>
-    `${TRADING_URL_SCHEME}://${tradeType}/${actionType}${orderId ? `?orderId=${orderId}` : ''}`;
+    `${TRADING_URL_BASE}?action=${actionType}&tradeType=${tradeType}&${orderId ? `&orderId=${orderId}` : ''}`;
+
+export const getTradeTypeAndOrderIdFromUrl = (url: string) => {
+    const urlObj = new URL(url);
+    const tradeType = urlObj.searchParams.get('tradeType');
+    const orderId = urlObj.searchParams.get('orderId');
+
+    return { tradeType, orderId };
+};

@@ -218,6 +218,13 @@ export const selectTradingTradesByTradeType: (
     (trades, tradeType) => returnStableArrayIfEmpty(trades.filter(t => t.tradeType === tradeType)),
 );
 
+export const selectTradingTradesByTradeTypeOrderedByDate: (
+    state: TradingRootState,
+    tradeType: TradingType,
+) => TradingTransaction[] = createMemoizedSelector([selectTradingTradesByTradeType], trades =>
+    trades.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+);
+
 export const selectHasTradingTradesOfTradeType = (
     state: TradingRootState,
     tradeType: TradingType,

@@ -1,10 +1,12 @@
 import { trezorLogo } from '@suite-common/suite-constants';
 
 import {
+    BuildTradingUrlProps,
     applyHtmlTemplate,
     buildTradingUrl,
     getRequestFormSource,
     getSourceForForm,
+    getTradeTypeAndOrderIdFromUrl,
 } from '../tradeFormUtils';
 
 describe('tradeFormUtils', () => {
@@ -44,7 +46,7 @@ describe('tradeFormUtils', () => {
             <body>
                 <img style="margin-bottom:40px" alt="trezor logo" src="data:image/png;base64, ${trezorLogo}" />
                 CONTENT_TO_EMBED
-                <a style="margin-top:40px" href="suitetrading://">Go back</a>
+                <a style="margin-top:40px" href="trezorsuitelite://trading/back">Go back</a>
             </body>
         </html>
     `);
@@ -191,6 +193,73 @@ describe('buildTradingUrl', () => {
                 tradeType: 'buy',
                 orderId: '1234',
             }),
-        ).toBe('suitetrading://buy/quote?orderId=1234');
+        ).toBe('trezorsuitelite://trading?action=quote&tradeType=buy&&orderId=1234');
+    });
+});
+
+describe('getTradeTypeAndOrderIdFromUrl', () => {
+    it('should extract tradeType and orderId from valid URL', () => {
+        const url = 'trezorsuitelite://trading?action=trade&tradeType=buy&orderId=1234';
+        const result = getTradeTypeAndOrderIdFromUrl(url);
+
+        expect(result).toEqual({
+            tradeType: 'buy',
+            orderId: '1234',
+        });
+    });
+
+    it('should return null values when parameters are missing', () => {
+        const url = 'trezorsuitelite://trading?action=trade';
+        const result = getTradeTypeAndOrderIdFromUrl(url);
+
+        expect(result).toEqual({
+            tradeType: null,
+            orderId: null,
+        });
+    });
+
+    it('should handle URL with only tradeType', () => {
+        const url = 'trezorsuitelite://trading?action=trade&tradeType=sell';
+        const result = getTradeTypeAndOrderIdFromUrl(url);
+
+        expect(result).toEqual({
+            tradeType: 'sell',
+            orderId: null,
+        });
+    });
+
+    it('should handle URL with only orderId', () => {
+        const url = 'trezorsuitelite://trading?action=trade&orderId=5678';
+        const result = getTradeTypeAndOrderIdFromUrl(url);
+
+        expect(result).toEqual({
+            tradeType: null,
+            orderId: '5678',
+        });
+    });
+
+    it('should handle URL with multiple parameters', () => {
+        const url =
+            'trezorsuitelite://trading?action=trade&tradeType=exchange&orderId=9012&otherParam=value';
+        const result = getTradeTypeAndOrderIdFromUrl(url);
+
+        expect(result).toEqual({
+            tradeType: 'exchange',
+            orderId: '9012',
+        });
+    });
+
+    it.each<BuildTradingUrlProps>([
+        { actionType: 'quote', tradeType: 'buy', orderId: '1234' },
+        { actionType: 'trade', tradeType: 'sell', orderId: '5678' },
+        { actionType: 'quote', tradeType: 'exchange', orderId: '9012' },
+    ])('should correctly parse URL built by buildTradingUrl for %j', testCase => {
+        const url = buildTradingUrl(testCase);
+        const result = getTradeTypeAndOrderIdFromUrl(url);
+
+        expect(result).toEqual({
+            tradeType: testCase.tradeType,
+            orderId: testCase.orderId,
+        });
     });
 });
