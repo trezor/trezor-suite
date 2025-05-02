@@ -1,3 +1,4 @@
+import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -64,7 +65,7 @@ export const sendDexTransactionThunk = createThunk<
         // after discussion with 1inch, adjust the gas limit by the factor of 1.25
         // swap can use different swap paths when mining tx than when estimating tx
         // the geth gas estimate may be too low
-        const { payload } = await dispatch(
+        const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
                 address: selectedQuote.dexTx.to,
@@ -78,7 +79,9 @@ export const sendDexTransactionThunk = createThunk<
             }),
         );
 
-        if (!payload || 'error' in payload || !payload.success) {
+        if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
+            const { payload } = recomposeAndSignTx;
+
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:
@@ -88,7 +91,7 @@ export const sendDexTransactionThunk = createThunk<
             });
         }
 
-        const { txid } = payload.payload;
+        const { txid } = recomposeAndSignTx.payload.payload;
         const trade = {
             ...selectedQuote,
             receiveAddress: selectedQuote.receiveAddress, // just for type assurance

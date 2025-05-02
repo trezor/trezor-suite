@@ -1,3 +1,4 @@
+import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -68,7 +69,7 @@ export const sendSellTransactionThunk = createThunk(
             : selectedTrade.cryptoStringAmount;
         const { destinationPaymentExtraId } = selectedTrade;
 
-        const { payload } = await dispatch(
+        const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
                 address: destinationAddress,
@@ -80,8 +81,9 @@ export const sendSellTransactionThunk = createThunk(
             }),
         );
 
-        // TODO: trading - can be used isRejected for this?
-        if (!payload || 'error' in payload || !payload.success) {
+        if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
+            const { payload } = recomposeAndSignTx;
+
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:
@@ -92,7 +94,7 @@ export const sendSellTransactionThunk = createThunk(
         }
 
         // send txid to the server as confirmation
-        const { txid } = payload.payload;
+        const { txid } = recomposeAndSignTx.payload.payload;
         const tradeRequest: SellFiatTrade = {
             ...selectedTrade,
             txid,
