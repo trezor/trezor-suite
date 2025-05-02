@@ -110,15 +110,15 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         device: {
             path: device.path,
         },
-        // In bootloader mode we need the skip the final reload otherwise we never get the resolution
+        // In bootloader mode we need the skip the final reload, otherwise we never get the resolution
         skipFinalReload: bootloaderMode,
     });
 
     if (result.success) {
-        // Wiping a device triggers device.id change and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
-        // Accounts data are related to the old device.id in order to properly clear reducers and indexed db
+        // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
+        // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
         // we need to retrieve device objects BEFORE and AFTER the wipe process.
-        // and call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
+        // And call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
         const state = getState();
         const newDevice = selectSelectedDevice(getState());
         const newDevices = selectDevices(getState());
@@ -133,16 +133,16 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
             type: EventType.SettingsDeviceWipe,
         });
 
-        // special case with webusb. device after wipe changes device_id. with webusb transport, device_id is used as path
-        // and thus as descriptor for webusb. So, after device is wiped, in the transport layer, device is still paired
-        // through old descriptor but suite already works with a new one. it kinda works but only until we try a new call,
-        // typically resetDevice when in onboarding - we get device disconnected error;
+        // Special case with webusb: Device after wipe changes device_id. With webusb transport, device_id is used as a path
+        // and thus as a descriptor for webusb. So, after the device is wiped, in the transport layer, the device is still paired
+        // through the old descriptor, but suite already works with a new one. It kinda works, but only until we try a new call,
+        // typically resetDevice when in onboarding - we get a device-disconnected error.
         //
-        // edit 1: disconnecting the device wiped from bootloader mode is also necessary
-        // edit 2: encountered libusb error with bridge 2.0.27. so let's enforce disconnecting for all devices
+        // Edit 1: disconnecting the device wiped from bootloader mode is also necessary.
+        // Edit 2: encountered libusb error with bridge 2.0.27. So let's enforce disconnecting for all devices.
         dispatch(deviceActions.requestDeviceReconnect());
         if (state.router.app === 'settings') {
-            // redirect to index to close the settings and show initial device setup
+            // redirect to the index to close the settings and show initial device setup
             dispatch(routerActions.goto('suite-index'));
         }
     } else {
