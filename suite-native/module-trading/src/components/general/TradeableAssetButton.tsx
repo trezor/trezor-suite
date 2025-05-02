@@ -26,18 +26,21 @@ const GRADIENT_START = { x: 0, y: 0.5 } as const;
 const GRADIENT_END = { x: 1, y: 0.5 } as const;
 
 const buttonStyle = prepareNativeStyle(({ spacings }) => ({
-    padding: 6,
+    height: spacings.sp40,
+    paddingHorizontal: spacings.sp8,
+    gap: spacings.sp8,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: spacings.sp8,
 }));
 
-const gradientBackgroundStyle = prepareNativeStyle(({ colors, borders }) => ({
-    borderRadius: borders.radii.round,
-    borderWidth: borders.widths.small,
-    borderColor: hexToRgba(colors.iconDefault, 0.06),
-}));
+const gradientBackgroundStyle = prepareNativeStyle<{ borderColor: ReturnType<typeof hexToRgba> }>(
+    ({ borders }, { borderColor }) => ({
+        borderRadius: borders.radii.round,
+        borderWidth: borders.widths.small,
+        borderColor,
+    }),
+);
 
 export const TradeableAssetButton = ({
     asset: { symbol, contractAddress, cryptoId },
@@ -51,6 +54,7 @@ export const TradeableAssetButton = ({
     invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
 
     const dominantAssetColor = useTradeableAssetDominantColor(networkSymbol, contractAddress);
+    const borderColor = useMemo(() => hexToRgba(dominantAssetColor, 0.16), [dominantAssetColor]);
     const gradientColors = useMemo<[string, string]>(
         () => [hexToRgba(dominantAssetColor, 0.3), hexToRgba(dominantAssetColor, 0.01)],
         [dominantAssetColor],
@@ -65,7 +69,7 @@ export const TradeableAssetButton = ({
     return (
         <LinearGradient
             colors={gradientColors}
-            style={applyStyle(gradientBackgroundStyle)}
+            style={applyStyle(gradientBackgroundStyle, { borderColor })}
             start={GRADIENT_START}
             end={GRADIENT_END}
         >
