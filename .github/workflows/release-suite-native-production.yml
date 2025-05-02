@@ -125,7 +125,29 @@ jobs:
           BUILD_URL=$(eas build:view "$BUILD_ID" --json | jq -r '.artifacts.buildUrl')
           echo "build_url=$BUILD_URL" >> $GITHUB_OUTPUT
 
-      - name: Upload APK to S3
+      - name: Download APK
         run: |
           wget -O "Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk" "${{ steps.eas_build.outputs.build_url }}"
-          aws s3 cp "./Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk" s3://data.trezor.io/suite/releases/mobile/
+
+      - name: Upload APK to S3
+        run: |
+          aws s3 cp "./Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk" s3://data.trezor.io/suite/releases/mobile/v${{ steps.get_version.outputs.app_version }}/
+
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Prepare release notes
+        run: |
+          echo "https://data.trezor.io/suite/releases/mobile/v${{ steps.get_version.outputs.app_version }}" > release-notes.md
+
+      - name: Create GitHub draft release
+        env:
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          gh config set prompt disabled
+          TAG="v${{ steps.get_version.outputs.app_version }}@mobile"
+          gh release create --repo trezor/trezor-suite --draft ${TAG}  --title ${TAG} --latest=false --target ${{ github.ref_name }} --notes-file release-notes.md "./Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk"
