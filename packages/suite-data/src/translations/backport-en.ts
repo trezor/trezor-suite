@@ -21,16 +21,15 @@ const packagesRoot = path.join(__dirname, '../../../');
 const targetPath = path.join(packagesRoot, 'suite/src/support/messages.ts');
 const sourcePath = path.join(packagesRoot, 'suite-data/files/translations/en.json');
 
-const source: { [key in keyof typeof messages]: string } = JSON.parse(
-    fs.readFileSync(sourcePath, 'utf8'),
-);
+const source: { [key in keyof typeof messages]: { message: string; description?: string } } =
+    JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
 Object.entries(source).forEach(([key, value]) => {
     if (!messages[key]) {
         return;
     }
 
-    messages[key].defaultMessage = value.replace(/\n$/, '');
+    messages[key].defaultMessage = value.message.replace(/\n$/, '');
 });
 
 fs.writeFileSync(

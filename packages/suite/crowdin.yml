@@ -8,5 +8,6 @@ files:
       "source": "master.json",
       "translation": "%two_letters_code%.json",
       "update_option": "update_as_unapproved",
+      "type": "react_intl",
     },
   ]
