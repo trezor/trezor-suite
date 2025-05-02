@@ -42,12 +42,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
+      sanitized_branch: ${{ steps.sanitize_branch.outputs.sanitized_branch }}
     steps:
       - name: Extract branch name
         id: extract_branch
         run: |
           BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Sanitize branch name for URLs
+        id: sanitize_branch
+        run: |
+          echo "sanitized_branch=$(echo '${{ steps.extract_branch.outputs.branch }}' | tr -d '+#@&=?\\:*')" >> "$GITHUB_OUTPUT"
 
   build-deploy:
     needs: [extract-branch]
@@ -64,7 +70,7 @@ jobs:
           awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
           awsRegion: "eu-central-1"
           serverHostname: "dev.suite.sldev.cz"
-          serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
+          serverPath: "connect/${{ needs.extract-branch.outputs.sanitized_branch }}"
           uploadArtifacts: "true"
           buildArtifacts: "true"
           nodeEnv: "development"
