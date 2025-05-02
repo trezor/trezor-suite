@@ -7279,7 +7279,7 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
         defaultMessage:
-            "The verification process didn't finish. Close other tabs and windows that might be using your Trezor. Then reconnect your Trezor to try again.",
+            "Failed to verify device. Reconnect your Trezor and try again. Don't send any funds until the issue is resolved. If the issue persists, contact Trezor Support.",
     },
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN',
@@ -9620,7 +9620,7 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_REQUEST: {
         id: 'TR_WALLETCONNECT_REQUEST',
-        defaultMessage: 'WalletConnect is requesting to connect Trezor Suite to this app.',
+        defaultMessage: 'A WalletConnect app is requesting to connect.',
     },
     TR_WALLETCONNECT_REQUEST_EXPIRED: {
         id: 'TR_WALLETCONNECT_REQUEST_EXPIRED',
@@ -9637,11 +9637,12 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_ADD_CONNECTION: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION',
-        defaultMessage: 'Add new WalletConnect connection',
+        defaultMessage: 'Add connection',
     },
     TR_WALLETCONNECT_ADD_CONNECTION_DESC: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_DESC',
-        defaultMessage: 'Paste the connection string from WalletConnect.',
+        defaultMessage:
+            'Manually add a connection by entering the string provided by WalletConnect.',
     },
     TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER',
@@ -9736,12 +9737,7 @@ export default defineMessages({
     },
     TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION: {
         id: 'TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION',
-        defaultMessage:
-            'Before continuing, verify that the addresses exported to {thirdParty} match exactly with those displayed on your Trezor.',
-    },
-    TR_DONE: {
-        id: 'TR_DONE',
-        defaultMessage: 'Done',
+        defaultMessage: 'Check addresses on your device against the addresses shown in the app.',
     },
     TR_ADDRESSES: {
         id: 'TR_ADDRESSES',
