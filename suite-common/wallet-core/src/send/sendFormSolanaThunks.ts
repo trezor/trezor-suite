@@ -1,5 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
 import {
     Account,
     ExternalOutput,
@@ -133,6 +134,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         const { blockhash: blockHash, blockHeight: lastValidBlockHeight } =
             selectBlockchainBlockInfoBySymbol(getState(), account.symbol);
 
+        assertIsSolanaAccount(account);
+
         // invalid token transfer -- should never happen
         if (tokenInfo && !tokenInfo.accounts)
             return rejectWithValue({
@@ -144,8 +147,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             if (tokenInfo?.balance) {
                 formState.outputs[0].amount = tokenInfo.balance;
             } else {
-                // small amount for purpose of fee estimation
-                formState.outputs[0].amount = '0.000000001';
+                // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
+                formState.outputs[0].amount = formatAmount((account.misc?.rent ?? 0) + 1, decimals);
             }
         }
 
@@ -169,6 +172,11 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             lastValidBlockHeight,
             coin: account.symbol,
             identity: getAccountIdentity(account),
+            priorityFees: {
+                // dummy value so simulation always passes
+                computeUnitPrice: formState.feePerUnit || '1',
+                computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
+            },
         });
 
         if (!transaction.success) {
@@ -215,8 +223,6 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             }));
 
         const resultLevels: PrecomposedLevels = {};
-
-        assertIsSolanaAccount(account);
 
         const response = predefinedLevels.map(level =>
             calculate(
