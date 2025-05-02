@@ -3,6 +3,7 @@ import { Coins, CryptoId, FiatCurrencyCode } from 'invity-api';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
 import addressValidator from '@trezor/address-validator';
@@ -258,6 +259,18 @@ export const selectTradingPaymentMethods = (state: TradingRootState) =>
 
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.tradingNew.trades);
+
+export const selectTradingTradesForSelectedDevice = createMemoizedSelector(
+    [selectAccounts, state => state.wallet.selectedAccount, selectTradingTrades],
+    (accounts, selectedAccount, trades): TradingTransaction[] =>
+        trades.filter(tx => {
+            const txDeviceId = accounts.find(
+                account => tx.account.descriptor === account.descriptor,
+            )?.deviceState;
+
+            return txDeviceId === selectedAccount.account?.deviceState;
+        }),
+);
 
 export const selectTradingTradesByTradeType: (
     state: TradingRootState,
