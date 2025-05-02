@@ -143,7 +143,7 @@ const useInputFormControls = (
 export const TradingAmountInput = forwardRef<TextInput, TradingAmountInputProps>(
     ({ name, inputTransformer, maxLength, maxDecimals, onPress, ...inputProps }, ref) => {
         const innerRef = useRef<TextInput>(null);
-        useImperativeHandle(ref, () => innerRef.current!);
+        useImperativeHandle(ref, () => innerRef.current!, []);
 
         const { applyStyle, utils } = useNativeStyles();
         const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls();

@@ -47,7 +47,7 @@ const ReceiveAccountPickerRight = ({
 }: ReceiveAccountPickerRightProps) => {
     if (!selectedAccountLabel) {
         return (
-            <RightText color="textDisabled">
+            <RightText color="textSubdued">
                 <Translation id="moduleTrading.notSelected" />
             </RightText>
         );

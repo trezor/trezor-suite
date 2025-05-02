@@ -89,6 +89,7 @@ export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
                         justifyContent="space-between"
                         alignItems="center"
                         paddingVertical="sp4"
+                        spacing="sp4"
                     >
                         <AssetNetworkInfo />
                         <ReceiveAccountCryptoBalance />

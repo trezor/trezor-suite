@@ -31,13 +31,14 @@ describe('NetworkIconForToken', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing for networks that are not l2 networks = op, arb, base', () => {
+    it('should render empty box for networks that are not l2 networks = op, arb, base', () => {
         act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { toJSON } = renderNetworkIconForToken();
+        const { queryByHintText, queryByLabelText } = renderNetworkIconForToken();
 
-        expect(toJSON()).toBeNull();
+        expect(queryByHintText('Network Icon')).toBeNull();
+        expect(queryByLabelText('Network name')).toBeNull();
     });
 
     it('should render network icon and name for l2 networks = op, arb, base and ETH as icon', () => {

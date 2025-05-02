@@ -27,6 +27,10 @@ const buttonWrapperStyle = prepareNativeStyle(({ spacings }) => ({
     height: spacings.sp24,
 }));
 
+const buttonStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingLeft: spacings.sp8,
+}));
+
 export const SearchInputWithCancel = ({
     onFocus = noOp,
     onBlur = noOp,
@@ -54,7 +58,7 @@ export const SearchInputWithCancel = ({
     };
 
     return (
-        <HStack alignItems="center">
+        <HStack alignItems="center" spacing={0}>
             <Animated.View layout={LinearTransition} style={applyStyle(inputWrapperStyle)}>
                 <BottomSheetSearchInput
                     ref={inputRef}
@@ -78,6 +82,7 @@ export const SearchInputWithCancel = ({
                         layout={LinearTransition}
                         entering={FadeIn.delay(100)}
                         exiting={FadeOut}
+                        style={applyStyle(buttonStyle)}
                     >
                         <TextButton onPress={handleCancel}>
                             <Translation id="generic.buttons.cancel" />

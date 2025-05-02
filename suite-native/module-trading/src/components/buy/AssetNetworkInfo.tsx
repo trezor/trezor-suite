@@ -1,7 +1,7 @@
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { HStack, Text } from '@suite-native/atoms';
+import { Box, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
@@ -25,7 +25,8 @@ export const AssetNetworkInfo = () => {
     const shouldShowNetwork = showForNativeToken || contractAddress;
 
     if (!shouldShowNetwork) {
-        return null;
+        // Return empty `View` instead of `null` to simplify the layout management
+        return <Box />;
     }
 
     return (
