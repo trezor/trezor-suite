@@ -13,6 +13,7 @@ import {
     RootStackRoutes,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 import { deviceCompromisedBannerAtom } from './DeviceCompromisedBannerAtoms';
 
@@ -24,12 +25,14 @@ export const useRenderDeviceCompromisedBanner = () => {
         HomeStackRoutes.Home,
     ]);
 
+    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
 
     const setBannerVariant = useSetAtom(deviceCompromisedBannerAtom);
 
     useEffect(() => {
         if (
+            !isOnboardingFinished ||
             isRouteExcluded ||
             revisionCheckError === null ||
             revisionCheckErrorScenarios[revisionCheckError].type === 'skipped'
@@ -42,5 +45,11 @@ export const useRenderDeviceCompromisedBanner = () => {
         }
 
         setBannerVariant(isExtendedBanner ? 'extended' : 'brief');
-    }, [isRouteExcluded, isExtendedBanner, revisionCheckError, setBannerVariant]);
+    }, [
+        isRouteExcluded,
+        isExtendedBanner,
+        revisionCheckError,
+        setBannerVariant,
+        isOnboardingFinished,
+    ]);
 };

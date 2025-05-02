@@ -111,7 +111,8 @@ export const useHandleDeviceConnection = () => {
 
     // any failing check should navigate to the DeviceCompromisedModal
     const shouldNavigateToDeviceCompromisedModal =
-        shouldDisplayEntropyCheckError || shouldDisplayFirmwareAuthenticityError;
+        isOnboardingFinished &&
+        (shouldDisplayEntropyCheckError || shouldDisplayFirmwareAuthenticityError);
     // but the DeviceCompromisedModal shall not be persistent for Entropy check, because you cannot exit the modal via normal means
     const shouldKeepDeviceCompromisedModal =
         isDeviceCompromisedModalFocused && !shouldDisplayEntropyCheckError;
