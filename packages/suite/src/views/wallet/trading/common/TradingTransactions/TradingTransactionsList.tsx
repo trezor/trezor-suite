@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import {
@@ -5,7 +7,7 @@ import {
     selectTradingBuyProviders,
     selectTradingExchangeInfo,
     selectTradingSellInfo,
-    selectTradingTrades,
+    selectTradingTradesForSelectedDevice,
 } from '@suite-common/trading';
 import { H3, Paragraph, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -36,30 +38,32 @@ const TransactionCount = styled.div`
 
 export const TradingTransactionsList = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const trades = useSelector(selectTradingTrades);
     const buyProviders = useSelector(selectTradingBuyProviders);
     const exchangeProviders = useSelector(selectTradingExchangeInfo)?.providerInfos;
     const sellProviders = useSelector(selectTradingSellInfo)?.providerInfos;
     const activeSection = useSelector(selectTradingActiveSection);
     const isBuyAndSell = activeSection !== 'exchange';
+    const trades = useSelector(selectTradingTradesForSelectedDevice);
+    const sortedTrades = useMemo(
+        () =>
+            [...trades].sort((a, b) => {
+                if (a.date > b.date) return -1;
+                if (a.date < b.date) return 1;
+
+                return 0;
+            }),
+        [trades],
+    );
 
     if (selectedAccount.status !== 'loaded') {
         return null;
     }
 
     const { account } = selectedAccount;
-    const sortedAccountTransactions = [...trades].sort((a, b) => {
-        if (a.date > b.date) return -1;
-        if (a.date < b.date) return 1;
 
-        return 0;
-    });
-
-    const buyTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'buy');
-    const exchangeTransactions = sortedAccountTransactions.filter(
-        tx => tx.tradeType === 'exchange',
-    );
-    const sellTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'sell');
+    const buyTransactions = sortedTrades.filter(tx => tx.tradeType === 'buy');
+    const exchangeTransactions = sortedTrades.filter(tx => tx.tradeType === 'exchange');
+    const sellTransactions = sortedTrades.filter(tx => tx.tradeType === 'sell');
     const buyAndSellTransactionLength = buyTransactions.length + sellTransactions.length;
     const isEmpty =
         (isBuyAndSell && buyAndSellTransactionLength === 0) ||
@@ -101,7 +105,7 @@ export const TradingTransactionsList = () => {
                             )}
                         </TransactionCount>
                     </Header>
-                    {sortedAccountTransactions.map(trade => {
+                    {sortedTrades.map(trade => {
                         if (isBuyAndSell && trade.tradeType === 'buy') {
                             return (
                                 <TradingTransactionBuy

@@ -4,8 +4,9 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    DeviceRootState,
+    type AccountsRootState,
+    type DeviceRootState,
+    selectAccounts,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -281,6 +282,18 @@ export const selectTradingPaymentMethods = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.tradingNew.trades);
 
+export const selectTradingTradesForSelectedDevice = createMemoizedSelector(
+    [selectAccounts, state => state.wallet.selectedAccount, selectTradingTrades],
+    (accounts, selectedAccount, trades): TradingTransaction[] =>
+        trades.filter(tx => {
+            const txDeviceId = accounts.find(
+                account => tx.account.descriptor === account.descriptor,
+            )?.deviceState;
+
+            return txDeviceId === selectedAccount.account?.deviceState;
+        }),
+);
+
 export const selectDeviceTradingTrades: (
     state: TradingRootState & AccountsRootState & DeviceRootState,
     tradeType: TradingType,
@@ -295,7 +308,9 @@ export const selectDeviceTradingTrades: (
 
         return returnStableArrayIfEmpty(
             trades.filter(
-                t => accountDescriptors.has(t.account?.descriptor) && t.tradeType === tradeType,
+                trade =>
+                    accountDescriptors.has(trade.account?.descriptor) &&
+                    trade.tradeType === tradeType,
             ),
         );
     },
