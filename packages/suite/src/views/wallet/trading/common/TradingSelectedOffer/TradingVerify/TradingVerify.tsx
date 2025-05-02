@@ -6,6 +6,7 @@ import {
     TradingTradeBuyExchangeType,
     cryptoIdToNetwork,
     tradingBuyActions,
+    tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -113,8 +114,8 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
 
     // close modals and reset addressVerified on device connection change
     useEffect(() => {
-        // TODO: trading - no need for exchange verify?
         dispatch(tradingBuyActions.verifyAddress(undefined));
+        dispatch(tradingExchangeActions.verifyAddress(undefined));
         dispatch(modalActions.onCancel());
     }, [device?.connected, dispatch]);
 
