@@ -29,6 +29,7 @@ export const TRANSPORT = {
     /* events */
     START: 'transport-start',
     ERROR: 'transport-error',
+    STOPPED: 'transport-stopped',
     DEVICE_CONNECTED: 'transport-device_connected',
     DEVICE_DISCONNECTED: 'transport-device_disconnected',
     DEVICE_SESSION_CHANGED: 'transport-device_session_changed',

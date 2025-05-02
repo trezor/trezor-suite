@@ -11,6 +11,7 @@ import {
     AbstractTransportMethodParams,
     AbstractTransportParams,
 } from './abstract';
+import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import {
     AnyError,
@@ -37,7 +38,7 @@ type BridgeEndpoint =
     | '/release'
     | '/read';
 
-type BridgeCommonErrors =
+export type BridgeCommonErrors =
     | typeof ERRORS.HTTP_ERROR
     | typeof ERRORS.WRONG_RESULT_TYPE
     | typeof ERRORS.UNEXPECTED_ERROR;
@@ -142,7 +143,7 @@ export class BridgeTransport extends AbstractTransport {
             if (!response.success) {
                 const time = Date.now() - listenTimestamp;
                 if (time <= 1100) {
-                    this.emit('transport-error', response.error);
+                    this.emit(TRANSPORT.ERROR, response.error);
                     break;
                 }
                 await resolveAfter(1000);

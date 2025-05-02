@@ -75,7 +75,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
 
         this.sessionsClient.on('releaseRequest', descriptor => {
-            this.emit(TRANSPORT.DEVICE_REQUEST_RELEASE, descriptor);
+            this.deviceEvents.emit(descriptor.path, { type: TRANSPORT.DEVICE_REQUEST_RELEASE });
         });
 
         return this.success(undefined);

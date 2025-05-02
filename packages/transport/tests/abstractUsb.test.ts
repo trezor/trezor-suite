@@ -115,23 +115,18 @@ describe('Usb', () => {
             const { transport } = await initTest();
             const spy = jest.fn();
             transport.on('transport-device_connected', descriptor =>
-                spy({ type: 'connected', descriptor }),
+                spy({ type: 'transport-device_connected', descriptor }),
             );
-            transport.on('transport-device_disconnected', descriptor =>
-                spy({ type: 'disconnected', descriptor }),
-            );
+            transport.deviceEvents.on(PathPublic('1'), e => spy(e));
 
             transport.handleDescriptorsChange([{ path: PathPublic('1'), session: null, type: 1 }]);
 
             expect(spy).toHaveBeenCalledWith({
-                type: 'connected',
+                type: 'transport-device_connected',
                 descriptor: { path: '1', session: null, type: 1 },
             });
             transport.handleDescriptorsChange([]);
-            expect(spy).toHaveBeenCalledWith({
-                type: 'disconnected',
-                descriptor: { path: '1', session: null, type: 1 },
-            });
+            expect(spy).toHaveBeenCalledWith({ type: 'transport-device_disconnected' });
         });
 
         it('enumerate', async () => {
@@ -163,8 +158,7 @@ describe('Usb', () => {
             jest.useFakeTimers();
             const spy = jest.fn();
             transport.on('transport-device_connected', spy);
-            transport.on('transport-device_disconnected', spy);
-            transport.on('transport-device_session_changed', spy);
+            transport.deviceEvents.on(PathPublic('1'), spy);
 
             await transport.enumerate();
 
@@ -173,10 +167,7 @@ describe('Usb', () => {
             const result = await transport.acquire({
                 input: { path: PathPublic('1'), previous: null },
             });
-            expect(result).toEqual({
-                success: true,
-                payload: '1',
-            });
+            expect(result).toEqual({ success: true, payload: '1' });
 
             expect(spy).toHaveBeenCalledTimes(0);
         });

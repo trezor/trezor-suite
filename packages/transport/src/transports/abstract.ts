@@ -2,6 +2,7 @@ import { Messages, loadDefinitions, parseConfigure } from '@trezor/protobuf';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
+import type { BridgeCommonErrors } from './bridge';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import {
@@ -70,22 +71,20 @@ export type ReadWriteError =
     | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
     | typeof ERRORS.INTERFACE_DATA_TRANSFER;
 
-class TransportEmitter extends TypedEmitter<{
+type TransportEvents = {
     [TRANSPORT.DEVICE_CONNECTED]: Descriptor;
-    [TRANSPORT.DEVICE_DISCONNECTED]: Descriptor;
-    [TRANSPORT.DEVICE_SESSION_CHANGED]: Descriptor;
-    [TRANSPORT.DEVICE_REQUEST_RELEASE]: Descriptor;
-    [TRANSPORT.ERROR]:
-        | typeof ERRORS.HTTP_ERROR // most common error - bridge was killed
-        | typeof ERRORS.API_DISCONNECTED // BluetoothApi disconnected
-        // probably never happens, wrong shape of data came from bridge
-        | typeof ERRORS.WRONG_RESULT_TYPE
-        | typeof ERRORS.UNEXPECTED_ERROR;
-}> {}
+    [TRANSPORT.ERROR]: BridgeCommonErrors | typeof ERRORS.API_DISCONNECTED; // BluetoothApi disconnected
+    [TRANSPORT.STOPPED]: void;
+};
+
+export type TransportDeviceEvent =
+    | { type: typeof TRANSPORT.DEVICE_DISCONNECTED }
+    | { type: typeof TRANSPORT.DEVICE_REQUEST_RELEASE }
+    | { type: typeof TRANSPORT.DEVICE_SESSION_CHANGED; descriptor: Descriptor };
 
 export type TransportApiType = 'usb' | 'udp' | 'bluetooth';
 
-export abstract class AbstractTransport extends TransportEmitter {
+export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
     public abstract readonly name:
         | 'BridgeTransport'
         | 'NodeUsbTransport'
@@ -132,6 +131,8 @@ export abstract class AbstractTransport extends TransportEmitter {
      */
     protected id: string;
 
+    public readonly deviceEvents;
+
     constructor({ messages, logger, id }: AbstractTransportParams) {
         super();
         this.descriptors = [];
@@ -139,6 +140,7 @@ export abstract class AbstractTransport extends TransportEmitter {
         this.abortController = new AbortController();
         this.logger = logger;
         this.id = id;
+        this.deviceEvents = new TypedEmitter<{ [path: PathPublic]: TransportDeviceEvent }>();
     }
 
     ping(_params?: AbortableParam) {
@@ -280,7 +282,9 @@ export abstract class AbstractTransport extends TransportEmitter {
      * Stop transport = remove all listeners + try to release session + cancel all requests
      */
     stop() {
+        this.emit(TRANSPORT.STOPPED);
         this.removeAllListeners();
+        this.deviceEvents.removeAllListeners();
         this.stopped = true;
         this.listening = false;
         this.abortController.abort();
@@ -307,7 +311,7 @@ export abstract class AbstractTransport extends TransportEmitter {
             .filter(d => !newDescriptors.has(getKey(d)))
             .forEach(descriptor =>
                 // descriptor in present batch but not in incoming -> disconnected device
-                this.emit(TRANSPORT.DEVICE_DISCONNECTED, descriptor),
+                this.deviceEvents.emit(descriptor.path, { type: TRANSPORT.DEVICE_DISCONNECTED }),
             );
 
         // incoming descriptors
@@ -319,7 +323,10 @@ export abstract class AbstractTransport extends TransportEmitter {
                 this.emit(TRANSPORT.DEVICE_CONNECTED, descriptor);
             } else if (prevDescriptor.session !== descriptor.session) {
                 // present session different than incoming -> device acquired or released
-                this.emit(TRANSPORT.DEVICE_SESSION_CHANGED, descriptor);
+                this.deviceEvents.emit(descriptor.path, {
+                    type: TRANSPORT.DEVICE_SESSION_CHANGED,
+                    descriptor,
+                });
             }
         });
 
