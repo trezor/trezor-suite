@@ -134,7 +134,7 @@ export const handleRequestThunk = createThunk<
             addIdsToQuotes<TradingBuyType>(allQuotes, 'buy'),
         );
         // without errors
-        const quotesSuccess = tradingGetSuccessQuotes<TradingBuyType>(quotesDefault) ?? [];
+        const quotesSuccess = tradingGetSuccessQuotes<TradingBuyType>(quotesDefault);
         const paymentMethodsFromQuotes = getTradingPaymentMethods<TradingBuyType>(quotesSuccess);
 
         const symbol =

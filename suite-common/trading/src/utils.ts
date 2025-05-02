@@ -125,10 +125,8 @@ export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
     return { tag, infoNote };
 };
 
-// TODO: trading - delete possibility of undefined quotes after sell connection
-export const tradingGetSuccessQuotes = <T extends TradingType>(
-    quotes: TradingTradeMapProps[T][] | undefined,
-) => (quotes ? quotes.filter(quote => quote.error === undefined) : undefined);
+export const tradingGetSuccessQuotes = <T extends TradingType>(quotes: TradingTradeMapProps[T][]) =>
+    quotes.filter(quote => quote.error === undefined);
 
 export const getDefaultCountry = (country: string = regional.UNKNOWN_COUNTRY) => {
     const label = regional.countriesMap.get(country);
@@ -146,17 +144,17 @@ export const getDefaultCountry = (country: string = regional.UNKNOWN_COUNTRY) =>
 };
 
 export const filterQuotesAccordingTags = <T extends TradingTradeBuySellType>(
-    allQuotes: TradingTradeBuySellMapProps[T][],
-) => allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
+    quotes: TradingTradeBuySellMapProps[T][],
+) => quotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
 
 // fill orderId for all, paymentId for sell and buy, quoteId for exchange
 export const addIdsToQuotes = <T extends TradingType>(
-    allQuotes: TradingTradeMapProps[T][] | undefined,
+    quotes: TradingTradeMapProps[T][] | undefined,
     type: TradingType,
 ): TradingTradeMapProps[T][] => {
-    if (!allQuotes) allQuotes = [];
+    if (!quotes) quotes = [];
 
-    allQuotes.forEach(quote => {
+    quotes.forEach(quote => {
         const sellBuyQuote = ['buy', 'sell'].includes(type)
             ? (quote as BuyTrade | SellFiatTrade)
             : null;
@@ -172,7 +170,7 @@ export const addIdsToQuotes = <T extends TradingType>(
         quote.orderId = uuidv4();
     });
 
-    return allQuotes;
+    return quotes;
 };
 
 interface TradingGetDecimalsProps {

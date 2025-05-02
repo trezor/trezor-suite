@@ -145,7 +145,7 @@ export const handleSellRequestThunk = createThunk<
             addIdsToQuotes<TradingSellType>(allQuotes, 'sell'),
         );
         // without errors
-        const successQuotes = tradingGetSuccessQuotes<TradingSellType>(quotesDefault) ?? [];
+        const successQuotes = tradingGetSuccessQuotes<TradingSellType>(quotesDefault);
 
         const paymentMethodsFromQuotes = getTradingPaymentMethods<TradingSellType>(successQuotes);
 
