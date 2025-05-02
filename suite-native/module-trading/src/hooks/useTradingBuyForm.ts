@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { BuyTrade } from 'invity-api';
+import { BuyTrade, FiatCurrencyCode } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -34,52 +34,58 @@ const useReceiveAccountChangeEffect = ({ setValue }: TradingBuyForm) => {
     }, [selectedReceiveAccount, setValue]);
 };
 
-const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: TradingBuyForm) => {
+const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch, getValues }: TradingBuyForm) => {
     const dispatch = useDispatch();
     const prevNetworkId = useRef<string | undefined>(undefined);
+    const prevFiatCurrency = useRef<FiatCurrencyCode | undefined>(getValues('fiatCurrency'));
 
     useEffect(() => {
-        const { unsubscribe } = watch(({ focusedValue, asset, amountInCrypto }, { name, type }) => {
-            switch (name) {
-                case 'fiatValue':
-                    if (focusedValue === 'fiatValue' && type === 'change') {
-                        setValue('cryptoValue', undefined, { shouldValidate: true });
-                        if (amountInCrypto) {
-                            setValue('amountInCrypto', false);
+        const { unsubscribe } = watch(
+            ({ focusedValue, asset, amountInCrypto, fiatCurrency }, { name, type }) => {
+                switch (name) {
+                    case 'fiatValue':
+                        if (focusedValue === 'fiatValue' && type === 'change') {
+                            setValue('cryptoValue', undefined, { shouldValidate: true });
+                            if (amountInCrypto) {
+                                setValue('amountInCrypto', false);
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                case 'cryptoValue':
-                    if (focusedValue === 'cryptoValue' && type === 'change') {
-                        setValue('fiatValue', undefined, { shouldValidate: true });
-                        if (!amountInCrypto) {
-                            setValue('amountInCrypto', true);
+                    case 'cryptoValue':
+                        if (focusedValue === 'cryptoValue' && type === 'change') {
+                            setValue('fiatValue', undefined, { shouldValidate: true });
+                            if (!amountInCrypto) {
+                                setValue('amountInCrypto', true);
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                case 'fiatCurrency':
-                    setValue('fiatValue', undefined, { shouldValidate: true });
-                    setValue('cryptoValue', undefined, { shouldValidate: true });
-                    break;
+                    case 'fiatCurrency':
+                        if (fiatCurrency !== prevFiatCurrency.current) {
+                            prevFiatCurrency.current = fiatCurrency;
+                            setValue('fiatValue', undefined, { shouldValidate: true });
+                            setValue('cryptoValue', undefined, { shouldValidate: true });
+                        }
+                        break;
 
-                case 'asset': {
-                    if (asset?.networkId !== prevNetworkId.current) {
-                        prevNetworkId.current = asset?.networkId;
-                        setValue('cryptoValue', undefined, { shouldValidate: true });
-                        dispatch(
-                            setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }),
-                        );
+                    case 'asset': {
+                        if (asset?.networkId !== prevNetworkId.current) {
+                            prevNetworkId.current = asset?.networkId;
+                            setValue('cryptoValue', undefined, { shouldValidate: true });
+                            dispatch(
+                                setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }),
+                            );
+                        }
+                        break;
                     }
-                    break;
+
+                    default:
+                        // do nothing
+                        break;
                 }
-
-                default:
-                    // do nothing
-                    break;
-            }
-        });
+            },
+        );
 
         return unsubscribe;
     }, [dispatch, setValue, watch]);
