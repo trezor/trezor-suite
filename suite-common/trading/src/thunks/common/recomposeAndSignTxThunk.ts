@@ -1,3 +1,5 @@
+import { isRejectedWithValue } from '@reduxjs/toolkit';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -151,7 +153,7 @@ export const recomposeAndSignTxThunk = createThunk<
             }),
         );
 
-        if (!selectedFee || !composedLevels.payload || 'error' in composedLevels.payload) {
+        if (!selectedFee || isRejectedWithValue(composedLevels)) {
             return rejectWithValue({
                 type: 'sign-tx-error',
                 error: {

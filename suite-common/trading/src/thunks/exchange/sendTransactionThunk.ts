@@ -1,3 +1,4 @@
+import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -91,7 +92,7 @@ export const sendTransactionThunk = createThunk<
         const sendPaymentExtraId =
             selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId;
 
-        const { payload } = await dispatch(
+        const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
                 address: sendAddress,
@@ -102,7 +103,9 @@ export const sendTransactionThunk = createThunk<
             }),
         );
 
-        if (!payload || 'error' in payload || !payload.success) {
+        if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
+            const { payload } = recomposeAndSignTx;
+
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:
@@ -123,7 +126,7 @@ export const sendTransactionThunk = createThunk<
                     accountType: account.accountType,
                     accountIndex: account.index,
                 },
-                data: { ...selectedTrade, receiveTxHash: payload.payload.txid },
+                data: { ...selectedTrade, receiveTxHash: recomposeAndSignTx.payload.payload.txid },
                 sendAccountKey,
                 receiveAccountKey,
             }),
