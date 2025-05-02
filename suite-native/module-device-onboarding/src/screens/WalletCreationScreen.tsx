@@ -82,7 +82,7 @@ export const WalletCreationScreen = ({
                     {isAccordionDisplayed && <WalletCreationHint />}
                     <AnimatedCard style={applyStyle(warningCardStyle)} layout={layoutAnimation}>
                         <VStack alignItems="center">
-                            <Icon name="cameraSlash" />
+                            <Icon name="cameraSlash" size="extraLarge" color="iconSubdued" />
                             <Text color="textSubdued" textAlign="center">
                                 <Translation id="moduleDeviceOnboarding.walletCreationScreen.backupWarning" />
                             </Text>

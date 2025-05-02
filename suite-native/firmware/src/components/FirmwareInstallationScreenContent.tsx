@@ -6,7 +6,6 @@ import Animated, {
     FadeOutDown,
     LinearTransition,
 } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -28,12 +27,14 @@ import {
 import { useFirmware } from '../hooks/useFirmware';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 
-const bottomButtonsContainerStyle = prepareNativeStyle<{ bottom: number }>((utils, { bottom }) => ({
-    position: 'absolute',
-    left: utils.spacings.sp16,
-    right: utils.spacings.sp16,
-    bottom,
-}));
+const bottomButtonsContainerStyle = prepareNativeStyle<{ isConfirmOnDeviceShown: boolean }>(
+    (utils, { isConfirmOnDeviceShown }) => ({
+        position: 'absolute',
+        left: utils.spacings.sp16,
+        right: utils.spacings.sp16,
+        bottom: isConfirmOnDeviceShown ? 180 : 0,
+    }),
+);
 
 const cancelButtonStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
@@ -65,7 +66,6 @@ export const FirmwareInstallationScreenContent = ({
     const navigation = useNavigation();
     const [isMayBeStuckBottomSheetOpened, setIsMayBeStuckBottomSheetOpened] =
         useState<boolean>(false);
-    const { bottom: bottomSafeAreaInset } = useSafeAreaInsets();
     const {
         operation,
         setIsFirmwareInstallationRunning,
@@ -199,7 +199,10 @@ export const FirmwareInstallationScreenContent = ({
 
     const showConfirmOnDevice = confirmOnDevice && !isError;
     const isCancelButtonDisplayed = isCancellationAllowed && isError;
-    const bottomButtonOffset = showConfirmOnDevice ? 180 : bottomSafeAreaInset + 12;
+
+    const buttonStyle = applyStyle(bottomButtonsContainerStyle, {
+        isConfirmOnDeviceShown: showConfirmOnDevice,
+    });
 
     return (
         <>
@@ -241,12 +244,7 @@ export const FirmwareInstallationScreenContent = ({
                 </Animated.View>
             </VStack>
             {isError && (
-                <VStack
-                    spacing="sp12"
-                    style={applyStyle(bottomButtonsContainerStyle, {
-                        bottom: bottomButtonOffset,
-                    })}
-                >
+                <VStack spacing="sp12" style={buttonStyle}>
                     {isRetryAllowed && (
                         <Button onPress={handleRetry} colorScheme="redBold">
                             <Translation id="firmware.firmwareUpdateProgress.retryButton" />
@@ -262,9 +260,7 @@ export const FirmwareInstallationScreenContent = ({
                     entering={FadeInDown}
                     exiting={FadeOutDown}
                     layout={LinearTransition}
-                    style={applyStyle(bottomButtonsContainerStyle, {
-                        bottom: bottomButtonOffset,
-                    })}
+                    style={buttonStyle}
                 >
                     <Button onPress={openMayBeStuckBottomSheet} colorScheme="tertiaryElevation0">
                         <Translation id="firmware.firmwareUpdateProgress.stuckButton" />
@@ -276,9 +272,7 @@ export const FirmwareInstallationScreenContent = ({
                     entering={FadeInDown}
                     exiting={FadeOutDown}
                     layout={LinearTransition}
-                    style={applyStyle(bottomButtonsContainerStyle, {
-                        bottom: bottomButtonOffset,
-                    })}
+                    style={buttonStyle}
                 >
                     <Button onPress={handleFirmwareUpdateFinished}>
                         <Translation id="generic.buttons.continue" />

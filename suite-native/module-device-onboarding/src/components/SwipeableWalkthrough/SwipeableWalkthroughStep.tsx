@@ -35,8 +35,9 @@ const scrollViewContentStyle = prepareNativeStyle<{
 }>((utils, { safeAreaInsetBottom, height }) => ({
     minHeight: height,
     paddingHorizontal: utils.spacings.sp16,
+    paddingTop: utils.spacings.sp16,
     // On iOS is the bottom bar transparent, so we need to add extra bottom padding to avoid content being rendered in the bottom bar.
-    paddingBottom: safeAreaInsetBottom,
+    paddingBottom: safeAreaInsetBottom + utils.spacings.sp16,
 }));
 
 export const SwipeableWalkthroughStep = ({

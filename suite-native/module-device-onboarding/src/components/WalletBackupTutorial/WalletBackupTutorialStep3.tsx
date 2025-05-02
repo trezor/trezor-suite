@@ -59,8 +59,8 @@ const SectionHeader = ({
     );
 };
 
-const IMAGE_WIDTH = 55;
-const IMAGE_HEIGHT = 52;
+const IMAGE_WIDTH = 60;
+const IMAGE_HEIGHT = 56;
 
 export const WalletBackupTutorialStep3 = ({
     currentStepIndex,

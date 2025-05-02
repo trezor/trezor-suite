@@ -27,21 +27,25 @@ export type BottomSheetProps = {
     subtitle?: ReactNode;
     isScrollable?: boolean;
     footer?: ReactNode;
+    maxHeight?: `${number}%`;
 } & BoxProps;
 
 type WrapperStyleProps = {
     insetBottom: number;
+    maxHeight: `${number}%`;
 };
 
 const DEFAULT_INSET_BOTTOM = Platform.OS === 'android' ? 48 : 0;
 
-const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderTopLeftRadius: utils.borders.radii.r20,
-    borderTopRightRadius: utils.borders.radii.r20,
-    paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
-    maxHeight: '90%',
-}));
+const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>(
+    (utils, { insetBottom, maxHeight }) => ({
+        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        borderTopLeftRadius: utils.borders.radii.r20,
+        borderTopRightRadius: utils.borders.radii.r20,
+        paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
+        maxHeight,
+    }),
+);
 
 const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
     flex: 1,
@@ -63,6 +67,7 @@ export const BottomSheet = forwardRef<BottomSheetHandle, BottomSheetProps>(
             footer,
             isScrollable = true,
             isCloseDisplayed = true,
+            maxHeight = '90%',
             ...boxProps
         },
         ref,
@@ -131,6 +136,7 @@ export const BottomSheet = forwardRef<BottomSheetHandle, BottomSheetProps>(
                                     animatedSheetWrapperStyle,
                                     applyStyle(sheetWrapperStyle, {
                                         insetBottom,
+                                        maxHeight,
                                     }),
                                 ]}
                             >

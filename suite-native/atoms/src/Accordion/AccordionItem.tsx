@@ -43,6 +43,7 @@ const accordionWrapperStyle = prepareNativeStyle(() => ({
 
 const dividerStyle = prepareNativeStyle(utils => ({
     marginHorizontal: -utils.spacings.sp16,
+    paddingTop: utils.spacings.sp8,
 }));
 
 const ANIMATION_DURATION = 200;

@@ -10,6 +10,7 @@ import {
 } from 'react-native-reanimated';
 
 import {
+    BlendColor,
     Canvas,
     Circle,
     ColorMatrix,
@@ -186,6 +187,9 @@ export const UpdateProgressIndicator = ({
         paragraphOpacity,
     ]);
 
+    const paint = Skia.Paint();
+    paint.setColor(Skia.Color('#00FF00')); // green
+
     return (
         <Canvas style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
             <Group>
@@ -215,14 +219,21 @@ export const UpdateProgressIndicator = ({
                 color={backgroundColorFinished}
             />
             <AnimatedOpacity opacity={trezorLogoOpacity}>
-                <ImageSVG
-                    svg={trezorLogoSvg}
-                    x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
-                    y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
-                    color={utils.colors.textPrimaryDefault}
-                    width={CIRCLE_DIAMETER / 2}
-                    height={CIRCLE_DIAMETER / 2}
-                />
+                <Group
+                    layer={
+                        <Paint>
+                            <BlendColor color={utils.colors.iconDefault} mode="srcIn" />
+                        </Paint>
+                    }
+                >
+                    <ImageSVG
+                        svg={trezorLogoSvg}
+                        x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
+                        y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
+                        width={CIRCLE_DIAMETER / 2}
+                        height={CIRCLE_DIAMETER / 2}
+                    />
+                </Group>
             </AnimatedOpacity>
             {isSuccess && (
                 <Path

@@ -66,6 +66,7 @@ export const WalletBackupSheet = ({
                 <WalletBackupSheetFooter selectedType={selectedType} onSubmit={submitSelection} />
             }
             style={applyStyle(containerStyle)}
+            maxHeight="98%"
         >
             <VStack spacing="sp16">
                 {walletOptions.map(type => {

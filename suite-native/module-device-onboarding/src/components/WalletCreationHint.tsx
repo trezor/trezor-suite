@@ -4,12 +4,17 @@ import { FadeInDown } from 'react-native-reanimated';
 import { AccordionList, AnimatedCard, Text } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const AccordionContentText = ({ translationKey }: { translationKey: TxKeyPath }) => (
     <Text variant="hint">
         <Translation id={translationKey} />
     </Text>
 );
+
+const cardStyle = prepareNativeStyle(utils => ({
+    paddingBottom: utils.spacings.sp8,
+}));
 
 const accordionItems = [
     {
@@ -35,8 +40,12 @@ const accordionItems = [
     },
 ] as const satisfies { title: ReactNode; content: ReactNode; iconName: IconName }[];
 
-export const WalletCreationHint = () => (
-    <AnimatedCard entering={FadeInDown} style={{ paddingBottom: 8 }}>
-        <AccordionList items={accordionItems} />
-    </AnimatedCard>
-);
+export const WalletCreationHint = () => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <AnimatedCard entering={FadeInDown} style={applyStyle(cardStyle)}>
+            <AccordionList items={accordionItems} />
+        </AnimatedCard>
+    );
+};

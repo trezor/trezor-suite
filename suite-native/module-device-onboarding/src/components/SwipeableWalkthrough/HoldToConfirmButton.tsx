@@ -22,8 +22,8 @@ const BORDER_WIDTH = 2;
 const DEFAULT_BUTTON_RADIUS = 12;
 
 const BUTTON_ANIMATION_DURATION = 1500;
-const ENTERING_ANIMATION_DURATION = 500;
-const ANIMATION_DELAY = 2500; // The button is displayed after the cards animation is finished.
+const ENTERING_ANIMATION_DURATION = 300;
+const ANIMATION_DELAY = 4500; // The button is displayed after the cards animation is finished.
 
 const LOADER_ARC_OVAL_CONFIG = {
     x: BORDER_WIDTH,

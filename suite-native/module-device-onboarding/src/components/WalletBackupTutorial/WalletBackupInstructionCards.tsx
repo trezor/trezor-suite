@@ -17,7 +17,7 @@ type WalletBackupInstructionCardsProps = {
 };
 
 const ANIMATION_DURATION = 500;
-const ANIMATION_DELAY = 1000;
+const ANIMATION_DELAY = 2000;
 const DEFAULT_CARD_TRANSLATION_Y = -25;
 
 const getCardProps = (isMultishareSelected: boolean) =>
