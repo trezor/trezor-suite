@@ -3,8 +3,9 @@ import { randomBytes } from 'crypto';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TransportProtocol, thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
-import { Session } from '@trezor/transport';
+import { Session, TRANSPORT } from '@trezor/transport';
 import { type Descriptor, TRANSPORT_ERROR, type Transport } from '@trezor/transport';
+import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
 import {
     Deferred,
     TypedEmitter,
@@ -219,7 +220,25 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.session = descriptor.session;
         this.lastAcquiredHere = false;
+
+        transport.deviceEvents.on(this.transportPath, this.onTransportDeviceEvent);
     }
+
+    private readonly onTransportDeviceEvent = (event: TransportDeviceEvent) => {
+        switch (event.type) {
+            case TRANSPORT.DEVICE_SESSION_CHANGED:
+                this.updateDescriptor(event.descriptor);
+                break;
+            case TRANSPORT.DEVICE_REQUEST_RELEASE:
+                this.usedElsewhere();
+                break;
+            case TRANSPORT.DEVICE_DISCONNECTED: {
+                this.transport.deviceEvents.off(this.transportPath, this.onTransportDeviceEvent);
+                this.disconnect();
+                break;
+            }
+        }
+    };
 
     private getSessionChangePromise() {
         if (!this.sessionDfd) {
@@ -370,7 +389,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    async updateDescriptor(descriptor: Descriptor) {
+    private async updateDescriptor(descriptor: Descriptor) {
         this.sessionDfd?.resolve(descriptor.session);
 
         await Promise.all([this.acquirePromise, this.releasePromise]);
@@ -448,7 +467,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.runPromise?.catch(() => {});
     }
 
-    public usedElsewhere() {
+    private usedElsewhere() {
         // only makes sense to continue when device held by this instance
         if (!this.lastAcquiredHere) {
             return;
@@ -1043,7 +1062,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return !!this.unreadableError;
     }
 
-    disconnect() {
+    private disconnect() {
         // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
 
