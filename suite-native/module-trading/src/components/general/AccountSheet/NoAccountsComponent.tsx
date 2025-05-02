@@ -1,8 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceInViewOnlyMode } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceInViewOnlyMode,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type NoAccountsComponentProps = {
@@ -34,33 +37,39 @@ const contentStyle = prepareNativeStyle<{ isBottomRounded: boolean }>(
 export const NoAccountsComponent = ({ isBottomRounded }: NoAccountsComponentProps) => {
     const { applyStyle } = useNativeStyles();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const title = (
-        <Translation
-            id={
-                isDeviceInViewOnlyMode
-                    ? 'moduleTrading.accountScreen.accountEmpty.viewOnly.title'
-                    : 'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.title'
-            }
-        />
-    );
-    const description = (
-        <Translation
-            id={
-                isDeviceInViewOnlyMode
-                    ? 'moduleTrading.accountScreen.accountEmpty.viewOnly.description'
-                    : 'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.description'
-            }
-        />
-    );
+    const getContent = (): { title: TxKeyPath; description: TxKeyPath } => {
+        if (isPortfolioTrackerDevice) {
+            return {
+                title: 'moduleTrading.accountScreen.accountEmpty.portfolioTracker.title',
+                description:
+                    'moduleTrading.accountScreen.accountEmpty.portfolioTracker.description',
+            };
+        }
+
+        if (isDeviceInViewOnlyMode) {
+            return {
+                title: 'moduleTrading.accountScreen.accountEmpty.viewOnly.title',
+                description: 'moduleTrading.accountScreen.accountEmpty.viewOnly.description',
+            };
+        }
+
+        return {
+            title: 'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.title',
+            description: 'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.description',
+        };
+    };
+
+    const { title, description } = getContent();
 
     return (
         <VStack style={applyStyle(contentStyle, { isBottomRounded })}>
             <Text variant="body" color="textDefault" textAlign="center">
-                {title}
+                <Translation id={title} />
             </Text>
             <Text variant="hint" color="textSubdued" textAlign="center">
-                {description}
+                <Translation id={description} />
             </Text>
         </VStack>
     );

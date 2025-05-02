@@ -70,7 +70,7 @@ describe('ReceiveAccountsPickerScreen', () => {
 
         const { getByText } = await renderScreen(getPreloadedState([]));
 
-        expect(getByText('No account found')).toBeTruthy();
+        expect(getByText('Account not found')).toBeTruthy();
     });
 
     it('should render add account button', async () => {

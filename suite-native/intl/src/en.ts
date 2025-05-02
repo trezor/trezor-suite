@@ -1565,13 +1565,18 @@ export const en = {
         accountScreen: {
             accountEmpty: {
                 viewOnly: {
-                    title: 'No account found',
+                    title: 'Account not found',
                     description: 'You need to connect your device to add new account.',
                 },
                 networkNotEnabled: {
-                    title: 'No account found',
+                    title: 'Account not found',
                     description:
-                        "It seems that you don't have any account matching selected asset.",
+                        'It seems that you don’t have any account matching selected asset.',
+                },
+                portfolioTracker: {
+                    title: 'Account not found',
+                    description:
+                        'You don’t have an account for this asset imported in Portfolio Tracker.',
                 },
             },
             addressEmpty: {
