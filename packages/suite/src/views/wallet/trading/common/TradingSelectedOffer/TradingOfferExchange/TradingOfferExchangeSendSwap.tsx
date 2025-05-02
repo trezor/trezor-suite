@@ -21,6 +21,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -74,6 +75,8 @@ const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals
 };
 
 export const TradingOfferExchangeSendSwap = () => {
+    const { handleClick, disabled } = useAsyncClickHandler();
+
     const {
         type,
         device,
@@ -305,9 +308,9 @@ export const TradingOfferExchangeSendSwap = () => {
             <Column>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
-                    isLoading={callInProgress}
-                    isDisabled={!device?.connected}
-                    onClick={confirmAndSend}
+                    isLoading={callInProgress || disabled}
+                    isDisabled={!device?.connected || disabled}
+                    onClick={() => handleClick(() => confirmAndSend())}
                 >
                     <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
                 </Button>

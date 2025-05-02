@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import type { TradingSellType } from '@suite-common/trading';
 import { Button, Column, Spinner, Text } from '@trezor/components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
@@ -41,6 +42,7 @@ const Row = styled.div`
 const Address = styled.div``;
 
 export const TradingSelectedOfferSellTransaction = () => {
+    const { handleClick, disabled } = useAsyncClickHandler();
     const { device, account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
         useTradingFormContext<TradingSellType>();
     useTradingWatchTrade({
@@ -116,9 +118,9 @@ export const TradingSelectedOfferSellTransaction = () => {
                     <ButtonWrapper>
                         <Button
                             minWidth={200}
-                            isLoading={callInProgress}
-                            isDisabled={!device?.connected}
-                            onClick={onConfirmAndSendClick}
+                            isLoading={callInProgress || disabled}
+                            isDisabled={!device?.connected || disabled}
+                            onClick={() => handleClick(() => onConfirmAndSendClick())}
                             data-testid="@trading/offer/confirm-on-trezor-and-send"
                         >
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />

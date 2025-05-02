@@ -7,4 +7,5 @@ export { useOnClickOutside } from './hooks/useOnClickOutside';
 export { useTimer } from './hooks/useTimer';
 export { useWindowFocus } from './hooks/useWindowFocus';
 export { useClickCooldown } from './hooks/useClickCooldown';
+export { useAsyncClickHandler } from './hooks/useAsyncClickHandler';
 export type { Timer } from './hooks/useTimer';

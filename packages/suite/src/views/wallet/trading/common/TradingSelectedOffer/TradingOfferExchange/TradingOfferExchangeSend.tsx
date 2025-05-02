@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import type { TradingExchangeType } from '@suite-common/trading';
 import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, Address, Translation } from 'src/components/suite';
@@ -10,6 +11,8 @@ import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTr
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 
 export const TradingOfferExchangeSend = () => {
+    const { handleClick, disabled } = useAsyncClickHandler();
+
     const { device, account, callInProgress, selectedQuote, exchangeInfo, sendTransaction, trade } =
         useTradingFormContext<TradingExchangeType>();
     useTradingWatchTrade({
@@ -53,9 +56,9 @@ export const TradingOfferExchangeSend = () => {
                         <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                         <Button
                             data-testid="@trading/offer/confirm-on-trezor-and-send"
-                            isLoading={callInProgress}
-                            isDisabled={!device?.connected}
-                            onClick={sendTransaction}
+                            isLoading={callInProgress || disabled}
+                            isDisabled={!device?.connected || disabled}
+                            onClick={() => handleClick(() => sendTransaction())}
                         >
                             <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
                         </Button>
