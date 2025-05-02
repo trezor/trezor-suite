@@ -65,10 +65,9 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: TradingBuyF
                     break;
 
                 case 'asset': {
-                    setValue('cryptoValue', undefined, { shouldValidate: true });
-
                     if (asset?.networkId !== prevNetworkId.current) {
                         prevNetworkId.current = asset?.networkId;
+                        setValue('cryptoValue', undefined, { shouldValidate: true });
                         dispatch(
                             setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }),
                         );
