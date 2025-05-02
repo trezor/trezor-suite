@@ -75,9 +75,7 @@ export const useTradingSellHandleChange = ({
                 }
             }
         } catch (error) {
-            if (error.name === 'AbortError') {
-                console.warn('Request was aborted:', error.message);
-            }
+            console.warn('Request was aborted:', error.message);
         }
     }, [formValues, network, timer, shouldSendInSats, dispatch, composeRequestCallback, setValue]);
 

@@ -78,7 +78,13 @@ export type HandleRequestThunkProps = {
     shouldSendInSats: boolean | undefined;
 };
 
-export const handleRequestThunk = createThunk(
+export const handleRequestThunk = createThunk<
+    BuyTrade[],
+    HandleRequestThunkProps,
+    {
+        rejectValue: string;
+    }
+>(
     `${TRADING_BUY_THUNK_PREFIX}/handleChange`,
     async (
         { formValues, network, timer, shouldSendInSats }: HandleRequestThunkProps,
@@ -97,7 +103,7 @@ export const handleRequestThunk = createThunk(
         if (!requestData) {
             timer.stop();
 
-            throw rejectWithValue('Invalid request data');
+            return rejectWithValue('Invalid request data');
         }
 
         const allQuotes = await getQuotesRequest({
@@ -108,7 +114,7 @@ export const handleRequestThunk = createThunk(
         if (signal.aborted) {
             timer.reset();
 
-            throw rejectWithValue('Request was aborted');
+            return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
