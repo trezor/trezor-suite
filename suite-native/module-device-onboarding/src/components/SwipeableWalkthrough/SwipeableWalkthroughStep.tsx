@@ -17,6 +17,7 @@ export type SwipeableWalkthroughStepProps = {
     callout?: ReactNode;
     description?: ReactNode;
     continueButton?: ReactNode;
+    stepId?: string;
 };
 
 const SPRING_ANIMATION_CONFIG = {
@@ -47,6 +48,7 @@ export const SwipeableWalkthroughStep = ({
     children,
     currentStepIndex,
     continueButton,
+    stepId,
 }: SwipeableWalkthroughStepProps) => {
     const { bottom: bottomSafeAreaInset } = useSafeAreaInsets();
     const { swipeableWalkthroughStepHeight } = useSwipeableWalkthroughStepHeight();
@@ -78,6 +80,7 @@ export const SwipeableWalkthroughStep = ({
                 walkthroughStepAnimatedStyle,
                 applyStyle(stepContainerStyle, { height: stepContainerHeight }),
             ]}
+            testID="@deviceOnboarding/SwipeableWalkthroughStep"
         >
             <ScrollView
                 bounces={false}
@@ -85,6 +88,7 @@ export const SwipeableWalkthroughStep = ({
                     safeAreaInsetBottom: bottomSafeAreaInset,
                     height: stepContainerHeight,
                 })}
+                testID="@deviceOnboarding/SwipeableWalkthroughStep/scrollView"
             >
                 <SwipeableWalkthroughStepHeader
                     callout={callout}
@@ -99,6 +103,7 @@ export const SwipeableWalkthroughStep = ({
                             colorScheme="tertiaryElevation0"
                             size="large"
                             onPress={handleNextButtonPress}
+                            testID={`@deviceOnboarding/${stepId}/nextButton`}
                         />
                     )}
                 </VStack>

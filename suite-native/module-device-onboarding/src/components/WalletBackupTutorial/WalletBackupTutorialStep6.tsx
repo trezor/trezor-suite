@@ -50,6 +50,7 @@ export const WalletBackupTutorialStep6 = ({
 
     return (
         <WalletBackupTutorialStep
+            stepId="walletBackupTutorialStep6"
             currentStepIndex={currentStepIndex}
             callout={
                 <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step6.callout" />

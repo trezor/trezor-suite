@@ -21,6 +21,7 @@ export const WalletBackupRecapStep2 = ({
 
     return (
         <SwipeableWalkthroughStep
+            stepId="walletBackupRecapStep2"
             totalSteps={WALLET_BACKUP_RECAP_STEPS}
             currentStepIndex={currentStepIndex}
         >

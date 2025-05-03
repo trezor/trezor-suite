@@ -11,6 +11,7 @@ export const WalletBackupRecapStep3 = ({
     <SwipeableWalkthroughStep
         totalSteps={WALLET_BACKUP_RECAP_STEPS}
         currentStepIndex={currentStepIndex}
+        stepId="walletBackupRecapStep3"
     >
         <WalletBackupRecapStepContent
             callout={

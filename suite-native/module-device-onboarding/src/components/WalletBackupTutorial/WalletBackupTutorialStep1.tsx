@@ -14,6 +14,7 @@ export const WalletBackupTutorialStep1 = ({
     currentStepIndex,
 }: WalletBackupTutorialNumberedStepProps) => (
     <WalletBackupTutorialStep
+        stepId="walletBackupTutorialStep1"
         callout={
             <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step1.callout" />
         }

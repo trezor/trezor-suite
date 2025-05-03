@@ -23,6 +23,7 @@ export const WalletBackupRecapStep1 = ({
 
     return (
         <SwipeableWalkthroughStep
+            stepId="walletBackupRecapStep1"
             totalSteps={WALLET_BACKUP_RECAP_STEPS}
             callout={
                 <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step1.callout" />

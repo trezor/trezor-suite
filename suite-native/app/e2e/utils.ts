@@ -113,11 +113,14 @@ export const prepareTrezorEmulator = async (
         await TrezorUserEnvLink.connect();
         // start with latest officially released firmware (necessary to pass the firmware checks)
         await TrezorUserEnvLink.startEmu({ model: 'T3T1', version: '2-latest', wipe: true });
-        await TrezorUserEnvLink.setupEmu({
-            label: TREZOR_E2E_DEVICE_LABEL,
-            mnemonic: seed,
-            passphrase_protection,
-        });
+
+        if (seed) {
+            await TrezorUserEnvLink.setupEmu({
+                label: TREZOR_E2E_DEVICE_LABEL,
+                mnemonic: seed,
+                passphrase_protection,
+            });
+        }
         await TrezorUserEnvLink.startBridge();
     }
 };
