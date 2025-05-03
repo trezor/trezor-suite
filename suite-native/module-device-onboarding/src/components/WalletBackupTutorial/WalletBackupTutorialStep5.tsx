@@ -72,6 +72,7 @@ export const WalletBackupTutorialStep5 = ({
 
     return (
         <WalletBackupTutorialStep
+            stepId="walletBackupTutorialStep5"
             callout={
                 <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step5.callout" />
             }
@@ -87,7 +88,12 @@ export const WalletBackupTutorialStep5 = ({
                             <Translation id={walletBackupTutorialCopyByType[selectedType].title} />
                         }
                     />
-                    <Text color="textSubdued" variant="hint" style={applyStyle(descriptionStyle)}>
+                    <Text
+                        color="textSubdued"
+                        variant="hint"
+                        style={applyStyle(descriptionStyle)}
+                        testID={`onboarding/WalletBackupTutorialStep5/selectedType=${selectedType}`}
+                    >
                         <Translation
                             id={walletBackupTutorialCopyByType[selectedType].description}
                         />

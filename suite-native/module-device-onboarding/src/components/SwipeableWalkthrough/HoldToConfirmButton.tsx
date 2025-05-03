@@ -126,7 +126,10 @@ export const HoldToConfirmButton = ({
                 <Translation id={buttonLabelId} />
             </Text>
             <GestureDetector gesture={tapGesture}>
-                <Canvas style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
+                <Canvas
+                    style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
+                    testID="@deviceOnboarding/HoldToConfirmButton"
+                >
                     <Circle
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}

@@ -57,6 +57,7 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
             {onSkipUpdate && (
                 <Button
                     onPress={onSkipUpdate}
+                    testID="@firmware/skip-button"
                     isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                     isLoading={isDiscoveryRunning}
                     colorScheme="tertiaryElevation0"

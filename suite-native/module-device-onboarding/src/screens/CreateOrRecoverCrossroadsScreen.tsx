@@ -61,7 +61,10 @@ export const CreateOrRecoverCrossroadsScreen = ({
                                     <Translation id="moduleDeviceOnboarding.createOrRecoverCrossroadsScreen.create.subtitle" />
                                 }
                             />
-                            <Button onPress={handleCreateButtonPress}>
+                            <Button
+                                testID="@deviceOnboarding/CreateOrRecoverCrossroadsScreen/createWalletBtn"
+                                onPress={handleCreateButtonPress}
+                            >
                                 <Translation id="moduleDeviceOnboarding.createOrRecoverCrossroadsScreen.create.button" />
                             </Button>
                         </VStack>

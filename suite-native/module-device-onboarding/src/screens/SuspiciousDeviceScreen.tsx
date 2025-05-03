@@ -106,7 +106,7 @@ export const SuspiciousDeviceScreen = ({
                     </VStack>
                 </VStack>
                 <Button
-                    testID="@onboarding/SuspiciousDeviceScreen/contactSupportBtn"
+                    testID="@deviceOnboarding/SuspiciousDeviceScreen/contactSupportBtn"
                     colorScheme="yellowBold"
                     onPress={handleContactSupportButtonPress}
                 >

@@ -162,7 +162,7 @@ export const UninitializedDeviceLandingScreen = ({
                     <TextButton
                         isUnderlined
                         onPress={handleDeviceLooksDifferentButtonPress}
-                        testID="@onboarding/UninitializedDeviceLandingScreen/deviceLooksDifferentBtn"
+                        testID="@deviceOnboarding/UninitializedDeviceLandingScreen/deviceLooksDifferentBtn"
                     >
                         <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.lookDifferentLabel" />
                     </TextButton>
@@ -170,7 +170,7 @@ export const UninitializedDeviceLandingScreen = ({
                 <VStack spacing="sp12">
                     <Button
                         onPress={handleConfirmButtonPress}
-                        testID="@onboarding/UninitializedDeviceLandingScreen/confirmBtn"
+                        testID="@deviceOnboarding/UninitializedDeviceLandingScreen/confirmBtn"
                     >
                         <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.button" />
                     </Button>
@@ -178,7 +178,7 @@ export const UninitializedDeviceLandingScreen = ({
                         <Button
                             colorScheme="tertiaryElevation0"
                             onPress={handleNeverUsedThisDeviceButtonPress}
-                            testID="@onboarding/UninitializedDeviceLandingScreen/declineBtn"
+                            testID="@deviceOnboarding/UninitializedDeviceLandingScreen/declineBtn"
                         >
                             <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.noButton" />
                         </Button>

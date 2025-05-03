@@ -3,6 +3,7 @@ import { Easing, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { Canvas, Group, RoundedRect } from '@shopify/react-native-skia';
 
+import { isDetoxTestBuild } from '@suite-native/config';
 import { getScreenWidth } from '@trezor/env-utils';
 import { useNativeStyles } from '@trezor/styles';
 
@@ -17,7 +18,8 @@ export const CreateWalletLoader = () => {
 
     useEffect(() => {
         animationProgress.value = withTiming(LOADER_WIDTH, {
-            duration: LOADER_DURATION,
+            // In Detox test environment we must shorten duration to prevent test hanging
+            duration: isDetoxTestBuild() ? 1 : LOADER_DURATION,
             easing: Easing.ease,
         });
     }, [animationProgress]);

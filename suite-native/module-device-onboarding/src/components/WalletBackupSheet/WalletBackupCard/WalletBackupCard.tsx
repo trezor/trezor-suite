@@ -48,7 +48,10 @@ export const WalletBackupCard = memo(
         if (!isVisible) return null;
 
         return (
-            <Pressable onPress={selectCard}>
+            <Pressable
+                onPress={selectCard}
+                testID={`@deviceOnboarding/WalletBackupTutorialStep5/WalletBackupCard/selectedType=${type}`}
+            >
                 <Card style={applyStyle(containerStyle, { isSelected })}>
                     <VStack spacing="sp16">
                         <CardHeader isSelected={isSelected} type={type} />

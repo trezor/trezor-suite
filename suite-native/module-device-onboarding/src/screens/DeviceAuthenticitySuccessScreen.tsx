@@ -34,7 +34,10 @@ export const DeviceAuthenticitySuccessScreen = ({
                     />
                 </Box>
 
-                <Button onPress={handleContinueButtonPress}>
+                <Button
+                    onPress={handleContinueButtonPress}
+                    testID="@device-authenticity/continue-button"
+                >
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </VStack>
