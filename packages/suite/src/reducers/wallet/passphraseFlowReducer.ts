@@ -43,7 +43,7 @@ export default function passphraseFlowReducer(
             ...state,
             previousState: state.state, // Store current state as previous
             state: action.payload.state,
-            loading: action.payload.mantainLoadingForState ? state.loading : false,
+            loading: action.payload.maintainLoadingForState ? state.loading : false,
         };
     }
 

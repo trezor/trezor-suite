@@ -53,7 +53,7 @@ export const startPassphraseFlow = createAction(
 
 export const setPassphraseFlowState = createAction(
     `${PASSPHRASE_FLOW_MODULE_PREFIX}/set-state`,
-    (payload: { state: PassphraseWalletState; mantainLoadingForState?: boolean }) => ({
+    (payload: { state: PassphraseWalletState; maintainLoadingForState?: boolean }) => ({
         payload,
     }),
 );

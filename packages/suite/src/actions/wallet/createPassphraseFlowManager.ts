@@ -51,16 +51,39 @@ const determineBackState = (state: PassphraseWalletState): PassphraseWalletState
             return 'exists-enter-passphrase';
         case 'exists-best-practices':
             return 'exists-empty-wallet';
-        default:
+
+        // Transition to 'initial' state
+        case 'exists-awaiting-discovery':
+        case 'exists-confirm-passphrase':
+        case 'exists-passphrase-mismatch-warning':
+        case 'not-exist-passphrase-mismatch-warning':
+        case 'initial':
+        case 'passphrase-duplicate':
             return null;
+
+        default: {
+            const _unhandledCase: never = state;
+            throw new Error(`Unhandled state: ${_unhandledCase}`);
+        }
     }
 };
 
-const STATE_CANCEL_MAP: { [K in PassphraseWalletState]?: string } = {
+const STATE_CANCEL_MAP: Record<PassphraseWalletState, string | null> = {
     'not-exist-enter-passphrase': 'enter-passphrase-back',
     'not-exist-confirm-passphrase': 'confirm-passphrase-back',
     'exists-enter-passphrase': 'enter-passphrase-back',
     'exists-confirm-passphrase': 'confirm-passphrase-back',
+
+    // Transition to 'initial' state
+    'exists-awaiting-discovery': null,
+    'exists-best-practices': null,
+    'exists-empty-wallet': null,
+    'exists-passphrase-mismatch-warning': null,
+    'not-exist-best-practices': null,
+    'not-exist-awaiting-discovery': null,
+    'not-exist-passphrase-mismatch-warning': null,
+    initial: null,
+    'passphrase-duplicate': null,
 };
 
 const matchState = <A extends PassphraseWalletState, B extends PassphraseWalletState>(
@@ -280,8 +303,8 @@ export const createPassphraseFlowManager = ({
             const isDeviceReady =
                 newDeviceInstance.connected &&
                 isDeviceAcquired(newDeviceInstance) &&
-                // Should ignore device state serves as a variant to call "reauthorize" device. For example in passphrase mode
-                // mobile has retry button which starts passphrase flow on the same device instance to override device state.
+                // Should ignore device state serves as a variant to call "reauthorize" device. For example, in passphrase mode
+                // mobile has a retry button which starts passphrase flow on the same device instance to override device state.
                 !newDeviceInstance.state?.staticSessionId &&
                 newDeviceInstance.mode === 'normal' &&
                 newDeviceInstance.firmware !== 'required';
@@ -370,7 +393,7 @@ export const createPassphraseFlowManager = ({
             _invalidateAndForgetAddedDevice(device);
         }
 
-        // NOTE: when a "physical" first devie is "base" - we started the passphrase, we want to use the one that is passed not selected one, as these may differ
+        // NOTE: when a "physical" first device is "base" - we started the passphrase, we want to use the one that is passed not selected one, as these may differ
         const baseDevice = keepDevice ? device : selectSelectedDevice(getState());
         if (!baseDevice) {
             _resetFlow();
@@ -382,7 +405,7 @@ export const createPassphraseFlowManager = ({
         }
 
         try {
-            // First get the device parameters using authorizeDevice
+            // First, get the device parameters using authorizeDevice
             const processResult = await _processPassphraseWalletAddition(baseDevice, {
                 requestWalletCreation: false,
             });
@@ -496,7 +519,7 @@ export const createPassphraseFlowManager = ({
     const transactState = (
         device: TrezorDevice,
         state: PassphraseWalletState,
-        options: { cancelReason?: string } = {},
+        options: { cancelReason: string | null } = { cancelReason: null },
     ) => {
         const flow = selectPassphraseFlow(getState());
         if (!flow) {
@@ -507,7 +530,7 @@ export const createPassphraseFlowManager = ({
 
         const prevState = flow.state;
 
-        let mantainLoadingForState = false;
+        let maintainLoadingForState = false;
 
         switch (createStateMatcher(prevState, state)) {
             case matchState('not-exist-enter-passphrase', 'not-exist-best-practices'):
@@ -519,12 +542,12 @@ export const createPassphraseFlowManager = ({
         }
 
         switch (state) {
-            // NOTE: anytime when we go to not-exist-enter-passphrase, we need to initialize the flow on the device
+            // NOTE: anytime when we go to not-exist-enter-passphrase, we need to initialize the flow on the device.
             case 'not-exist-enter-passphrase':
             case 'exists-enter-passphrase':
-                mantainLoadingForState = true;
+                maintainLoadingForState = true;
                 _initEnterPassphrase(device, {
-                    // NOTE: we do not forget the device, only when we are comming to the state for the first time
+                    // NOTE: we do not forget the device, only when we are coming to the state for the first time.
                     keepDevice: stateInStates(prevState, [
                         'exists-passphrase-mismatch-warning',
                         'not-exist-best-practices',
@@ -534,7 +557,7 @@ export const createPassphraseFlowManager = ({
                 break;
 
             case 'exists-confirm-passphrase':
-                mantainLoadingForState = true;
+                maintainLoadingForState = true;
                 _initConfirmPassphrase(device);
                 break;
 
@@ -546,14 +569,14 @@ export const createPassphraseFlowManager = ({
         dispatch(
             setPassphraseFlowState({
                 state,
-                mantainLoadingForState,
+                maintainLoadingForState,
             }),
         );
     };
 
     const goBack = (device: TrezorDevice) => {
         const flow = selectPassphraseFlow(getState());
-        if (!flow) return;
+        if (flow === null) return;
 
         const { state } = flow;
 
@@ -561,11 +584,11 @@ export const createPassphraseFlowManager = ({
 
         const cancelReason = STATE_CANCEL_MAP[state];
 
-        if (cancelReason) {
+        if (cancelReason !== null) {
             trezorConnectService.invoke(trezorConnect => trezorConnect.cancel(cancelReason));
         }
 
-        if (previousState) {
+        if (previousState !== null) {
             transactState(device, previousState, { cancelReason });
 
             return;
@@ -577,7 +600,7 @@ export const createPassphraseFlowManager = ({
     const confirmBestPractices = (device: TrezorDevice) => {
         const flow = selectPassphraseFlow(getState());
 
-        if (!flow) {
+        if (flow === null) {
             console.warn('Best practices confirm called in invalid state');
 
             return;
@@ -605,12 +628,12 @@ export const createPassphraseFlowManager = ({
     };
 
     const _resetFlow = () => {
-        dispatch(setPassphraseFlowState({ state: 'initial', mantainLoadingForState: false }));
+        dispatch(setPassphraseFlowState({ state: 'initial', maintainLoadingForState: false }));
 
-        // NOTE: hack - when the device flow is cancelled when a device prompt is on
+        // NOTE: hack - when the device flow is canceled when a device prompt is on,
         // there is a "confirm password" modal flicking in the background
-        // coz the passphrase flow state is deleted too fast
-        // so set first to "initial" which will render null and then remove it completely
+        // because the passphrase flow state is deleted too fast.
+        // So set first to "initial" which will render null and then remove it completely.
         setTimeout(() => {
             dispatch(resetPassphraseFlow());
         }, 2000);

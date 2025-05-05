@@ -161,7 +161,7 @@ describe('passphraseFlow reducer', () => {
         expect(state).toBeNull();
     });
 
-    it('PASSPHRASE_FLOW.SET_STATE with mantainLoadingForState keeps loading true', () => {
+    it('PASSPHRASE_FLOW.SET_STATE with maintainLoadingForState keeps loading true', () => {
         const initialState = {
             state: 'initial' as const,
             id: 'device:1',
@@ -173,7 +173,7 @@ describe('passphraseFlow reducer', () => {
             initialState,
             setPassphraseFlowState({
                 state: 'exists-enter-passphrase',
-                mantainLoadingForState: true,
+                maintainLoadingForState: true,
             }),
         );
         expect(state).toEqual({
@@ -184,7 +184,7 @@ describe('passphraseFlow reducer', () => {
         });
     });
 
-    it('PASSPHRASE_FLOW.SET_STATE without mantainLoadingForState sets loading to false', () => {
+    it('PASSPHRASE_FLOW.SET_STATE without maintainLoadingForState sets loading to false', () => {
         const initialState = {
             state: 'initial' as const,
             id: 'device:1',

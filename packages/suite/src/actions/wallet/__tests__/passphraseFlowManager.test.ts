@@ -469,7 +469,7 @@ describe('passphraseFlowManager', () => {
                 expect(action).toEqual(
                     setPassphraseFlowState({
                         state: 'not-exist-enter-passphrase',
-                        mantainLoadingForState: true,
+                        maintainLoadingForState: true,
                     }),
                 );
 
@@ -501,7 +501,7 @@ describe('passphraseFlowManager', () => {
                 expect(action).toEqual(
                     setPassphraseFlowState({
                         state: 'not-exist-best-practices',
-                        mantainLoadingForState: false,
+                        maintainLoadingForState: false,
                     }),
                 );
 
@@ -533,7 +533,7 @@ describe('passphraseFlowManager', () => {
                 expect(action).toEqual(
                     setPassphraseFlowState({
                         state: 'not-exist-enter-passphrase',
-                        mantainLoadingForState: true,
+                        maintainLoadingForState: true,
                     }),
                 );
 
@@ -565,7 +565,7 @@ describe('passphraseFlowManager', () => {
                 expect(action).toEqual(
                     setPassphraseFlowState({
                         state: 'initial',
-                        mantainLoadingForState: false,
+                        maintainLoadingForState: false,
                     }),
                 );
 
@@ -597,7 +597,7 @@ describe('passphraseFlowManager', () => {
                 expect(action).toEqual(
                     setPassphraseFlowState({
                         state: 'exists-enter-passphrase',
-                        mantainLoadingForState: true,
+                        maintainLoadingForState: true,
                     }),
                 );
 
@@ -629,7 +629,7 @@ describe('passphraseFlowManager', () => {
                 expect(action).toEqual(
                     setPassphraseFlowState({
                         state: 'exists-empty-wallet',
-                        mantainLoadingForState: false,
+                        maintainLoadingForState: false,
                     }),
                 );
 
@@ -697,7 +697,7 @@ describe('passphraseFlowManager', () => {
             expect(action).toEqual(
                 setPassphraseFlowState({
                     state: 'not-exist-enter-passphrase',
-                    mantainLoadingForState: true,
+                    maintainLoadingForState: true,
                 }),
             );
 
