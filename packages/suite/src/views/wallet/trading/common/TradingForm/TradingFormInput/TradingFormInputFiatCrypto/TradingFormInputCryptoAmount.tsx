@@ -1,7 +1,13 @@
 import { FieldErrors } from 'react-hook-form';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TradingBuyFormProps, useTradingInfo } from '@suite-common/trading';
+import {
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_MAX,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TradingBuyFormProps,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { FormState } from '@suite-common/wallet-types';
@@ -9,11 +15,6 @@ import { getInputState } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
-import {
-    FORM_OUTPUT_AMOUNT,
-    FORM_OUTPUT_MAX,
-    FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -73,7 +74,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
         | TradingAccountOptionsGroupOptionProps
         | undefined;
     const cryptoInputError =
-        cryptoInputName === FORM_OUTPUT_AMOUNT
+        cryptoInputName === TRADING_FORM_OUTPUT_AMOUNT
             ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<TradingBuyFormProps>).cryptoInput;
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.value);
@@ -83,7 +84,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
     );
     const decimals = getTradingNetworkDecimals({
         sendCryptoSelect: !isTradingBuyContext(context)
-            ? context.getValues()[FORM_SEND_CRYPTO_CURRENCY_SELECT]
+            ? context.getValues()[TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]
             : undefined,
         network,
     });
@@ -125,11 +126,11 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
             labelRight={labelRight}
             onChange={() => {
                 if (isTradingSellContext(context)) {
-                    context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
+                    context.setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
                     context.form.helpers.setFractionButton(undefined);
                 }
                 if (isTradingExchangeContext(context)) {
-                    context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
+                    context.setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
                     context.form.helpers.setFractionButton(undefined);
                 }
 

@@ -1,8 +1,10 @@
-import type { TradingPaymentMethodType } from '@suite-common/trading';
+import {
+    TRADING_DEFAULT_PAYMENT_METHOD,
+    type TradingPaymentMethodType,
+} from '@suite-common/trading';
 import { Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { FORM_DEFAULT_PAYMENT_METHOD } from 'src/constants/wallet/trading/form';
 
 interface TradingPaymentTypeProps {
     method?: TradingPaymentMethodType;
@@ -19,7 +21,7 @@ export const TradingPaymentPlainType = ({ method, methodName }: TradingPaymentTy
     <Text data-testid="@trading/form/info/payment-method" as="div">
         {method ? (
             <>
-                {method === 'bankTransfer' || method === FORM_DEFAULT_PAYMENT_METHOD ? (
+                {method === 'bankTransfer' || method === TRADING_DEFAULT_PAYMENT_METHOD ? (
                     <Translation id={getPaymentMethod(method)} />
                 ) : (
                     methodName || method

@@ -1,17 +1,18 @@
 import styled from 'styled-components';
 
-import type { TradingBuyFormProps, TradingSellFormProps } from '@suite-common/trading';
+import {
+    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingBuyFormProps,
+    type TradingSellFormProps,
+} from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import {
-    FORM_CRYPTO_CURRENCY_SELECT,
-    FORM_CRYPTO_INPUT,
-    FORM_FIAT_INPUT,
-    FORM_OUTPUT_AMOUNT,
-    FORM_OUTPUT_FIAT,
-    FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     isTradingBuyContext,
@@ -45,19 +46,19 @@ export const TradingHeaderFilter = () => {
                 <InputWrapper>
                     <TradingFormInputFiatCrypto<TradingBuyFormProps>
                         showLabel={false}
-                        cryptoInputName={FORM_CRYPTO_INPUT}
-                        fiatInputName={FORM_FIAT_INPUT}
+                        cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
+                        fiatInputName={TRADING_FORM_FIAT_INPUT}
                         methods={{ ...context }}
-                        cryptoSelectName={FORM_CRYPTO_CURRENCY_SELECT}
+                        cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
                     />
                 </InputWrapper>
             ) : (
                 <InputWrapper>
                     <TradingFormInputFiatCrypto<TradingSellFormProps>
                         showLabel={false}
-                        cryptoInputName={FORM_OUTPUT_AMOUNT}
-                        fiatInputName={FORM_OUTPUT_FIAT}
-                        cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                        cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                        fiatInputName={TRADING_FORM_OUTPUT_FIAT}
+                        cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                         methods={{ ...context }}
                     />
                 </InputWrapper>

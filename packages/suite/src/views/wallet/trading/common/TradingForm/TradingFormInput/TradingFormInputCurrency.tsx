@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
+import {
+    TRADING_FORM_FIAT_CURRENCY_SELECT,
+    TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_OUTPUT_CURRENCY,
+} from '@suite-common/trading';
 import { buildCurrencyOptions } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
 
-import {
-    FORM_FIAT_CURRENCY_SELECT,
-    FORM_FIAT_INPUT,
-    FORM_OUTPUT_CURRENCY,
-} from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingAllFormProps, TradingFormInputCurrencyProps } from 'src/types/trading/tradingForm';
 import { FiatCurrencyOption } from 'src/types/wallet/tradingCommonTypes';
@@ -27,7 +27,9 @@ export const TradingFormInputCurrency = ({
 }: TradingFormInputCurrencyProps) => {
     const context = useTradingFormContext();
     const { control, setAmountLimits, defaultCurrency } = context;
-    const name = isTradingBuyContext(context) ? FORM_FIAT_CURRENCY_SELECT : FORM_OUTPUT_CURRENCY;
+    const name = isTradingBuyContext(context)
+        ? TRADING_FORM_FIAT_CURRENCY_SELECT
+        : TRADING_FORM_OUTPUT_CURRENCY;
     const currentCurrency = getSelectedCurrency(context);
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
@@ -44,7 +46,7 @@ export const TradingFormInputCurrency = ({
     const onChangeAdditional = (option: FiatCurrencyOption) => {
         if (isTradingBuyContext(context)) {
             context.setValue(
-                FORM_FIAT_INPUT,
+                TRADING_FORM_FIAT_INPUT,
                 fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(option.value) ?? '',
             );
         }

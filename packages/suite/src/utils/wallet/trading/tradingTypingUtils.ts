@@ -1,16 +1,17 @@
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import type {
-    TradingBuyType,
-    TradingExchangeType,
-    TradingSellType,
-    TradingTradeMapProps,
-    TradingTradeType,
-    TradingType,
+import {
+    TRADING_FORM_FIAT_CURRENCY_SELECT,
+    TRADING_FORM_OUTPUT_CURRENCY,
+    type TradingBuyType,
+    type TradingExchangeType,
+    type TradingSellType,
+    type TradingTradeMapProps,
+    type TradingTradeType,
+    type TradingType,
 } from '@suite-common/trading';
 import { CurrencyOption } from '@suite-common/wallet-types';
 
-import { FORM_FIAT_CURRENCY_SELECT, FORM_OUTPUT_CURRENCY } from 'src/constants/wallet/trading/form';
 import {
     TradingCryptoListProps,
     TradingGetCryptoQuoteAmountProps,
@@ -140,14 +141,14 @@ export const getSelectedCurrency = (
     context: TradingFormContextValues<TradingType>,
 ): CurrencyOption => {
     if (isTradingExchangeContext(context)) {
-        return context.getValues(FORM_OUTPUT_CURRENCY);
+        return context.getValues(TRADING_FORM_OUTPUT_CURRENCY);
     }
 
     if (isTradingSellContext(context)) {
-        return context.getValues(FORM_OUTPUT_CURRENCY);
+        return context.getValues(TRADING_FORM_OUTPUT_CURRENCY);
     }
 
-    return context.getValues(FORM_FIAT_CURRENCY_SELECT);
+    return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
 };
 
 export const getPaymentMethod = (

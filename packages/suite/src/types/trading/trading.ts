@@ -177,7 +177,7 @@ export type TradingExchangeProvidersInfoProps = {
 };
 
 export interface TradingGetFiatCurrenciesProps {
-    supportedFiatCurrencies: Set<string> | undefined;
+    supportedFiatCurrencies: Set<FiatCurrencyCode> | undefined;
     defaultAmountsOfFiatCurrencies?: Map<FiatCurrencyCode, string>;
 }
 

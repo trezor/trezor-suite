@@ -1,13 +1,16 @@
 import styled from 'styled-components';
 
-import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
+import {
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    parseCryptoId,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingVerifyOptionsItemProps } from 'src/types/trading/tradingVerify';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -48,7 +51,7 @@ export const TradingVerifyOptionsItem = ({
                         symbol={symbol}
                         sendCryptoSelect={
                             isTradingExchangeContext(context)
-                                ? context.getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT)
+                                ? context.getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)
                                 : undefined
                         }
                     />

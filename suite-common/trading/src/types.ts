@@ -156,13 +156,13 @@ export interface TradingInfoProps {
 export type TradingOption = { value: string; label: string };
 
 export type TradingBuyFormProps = {
-    fiatInput?: string;
-    cryptoInput?: string;
-    currencySelect: TradingOption;
-    cryptoSelect: TradingCryptoSelectItemProps;
-    countrySelect: TradingOption;
-    paymentMethod?: TradingPaymentMethodListProps;
-    amountInCrypto: boolean;
+    [constants.TRADING_FORM_FIAT_INPUT]?: string;
+    [constants.TRADING_FORM_CRYPTO_INPUT]?: string;
+    [constants.TRADING_FORM_FIAT_CURRENCY_SELECT]: TradingOption;
+    [constants.TRADING_FORM_CRYPTO_CURRENCY_SELECT]: TradingCryptoSelectItemProps;
+    [constants.TRADING_FORM_COUNTRY_SELECT]: TradingOption;
+    [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
+    [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
 };
 
 export interface TradingAccountOptionsGroupOptionProps {
@@ -260,10 +260,12 @@ export type TradingSignAndPushSendFormTransactionProps = {
 export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 
 export interface TradingSellFormProps extends FormState {
-    sendCryptoSelect: TradingAccountOptionsGroupOptionProps | undefined;
-    paymentMethod?: TradingPaymentMethodListProps;
-    countrySelect: TradingOption;
-    amountInCrypto: boolean;
+    [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]:
+        | TradingAccountOptionsGroupOptionProps
+        | undefined;
+    [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
+    [constants.TRADING_FORM_COUNTRY_SELECT]: TradingOption;
+    [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
 }
 
 export type TradingSellUserConsentProps = {

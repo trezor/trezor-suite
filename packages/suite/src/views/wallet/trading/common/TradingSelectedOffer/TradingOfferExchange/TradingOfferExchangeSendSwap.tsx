@@ -5,7 +5,11 @@ import useDebounce from 'react-use/lib/useDebounce';
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { TradingExchangeType, useTradingInfo } from '@suite-common/trading';
+import {
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TradingExchangeType,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Button,
@@ -28,7 +32,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { AccountLabeling, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -96,7 +99,7 @@ export const TradingOfferExchangeSendSwap = () => {
     const [customSlippageError, setCustomSlippageError] = useState<
         (FieldError & { message: TranslationKey }) | undefined
     >();
-    const sendCryptoSelect = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
+    const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const decimals = getTradingNetworkDecimals({
         sendCryptoSelect,
     });

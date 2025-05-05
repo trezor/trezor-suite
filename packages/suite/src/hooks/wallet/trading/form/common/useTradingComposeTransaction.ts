@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import {
+    TRADING_FORM_OUTPUT_ADDRESS,
+    TRADING_FORM_OUTPUT_AMOUNT,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     tradingActions,
@@ -11,7 +13,6 @@ import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core'
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
 
-import { FORM_OUTPUT_ADDRESS, FORM_OUTPUT_AMOUNT } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
@@ -87,7 +88,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             );
 
             if (values?.outputs?.[0] && typeof address === 'string') {
-                setValue(FORM_OUTPUT_ADDRESS, address);
+                setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
                 setState(initState);
             }
         };
@@ -134,7 +135,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         if (!composed) return;
 
         if (composed.type === 'error' && composed.errorMessage) {
-            setError(FORM_OUTPUT_AMOUNT, {
+            setError(TRADING_FORM_OUTPUT_AMOUNT, {
                 type: COMPOSE_ERROR_TYPES.COMPOSE,
                 message: translationString(composed.errorMessage.id, composed.errorMessage.values),
             });
@@ -142,11 +143,11 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
             if (typeof setMaxOutputId === 'number' && composed.max) {
-                setValue(FORM_OUTPUT_AMOUNT, composed.max, {
+                setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
                     shouldValidate: true,
                     shouldDirty: true,
                 });
-                clearErrors(FORM_OUTPUT_AMOUNT);
+                clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
             }
 
             dispatch(

@@ -1,17 +1,17 @@
 import { UseFormReturn, useWatch } from 'react-hook-form';
 
+import {
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+} from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 
-import {
-    FORM_CRYPTO_INPUT,
-    FORM_FIAT_INPUT,
-    FORM_OUTPUT_AMOUNT,
-    FORM_OUTPUT_FIAT,
-    FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAllFormProps, TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
 import { SendContextValues } from 'src/types/wallet/sendForm';
@@ -27,8 +27,8 @@ interface TradingUseCurrencySwitcherProps<T extends TradingAllFormProps> {
     quoteFiatAmount: string | undefined;
     network: Network | null;
     inputNames: {
-        cryptoInput: typeof FORM_CRYPTO_INPUT | typeof FORM_OUTPUT_AMOUNT;
-        fiatInput: typeof FORM_FIAT_INPUT | typeof FORM_OUTPUT_FIAT;
+        cryptoInput: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
+        fiatInput: typeof TRADING_FORM_FIAT_INPUT | typeof TRADING_FORM_OUTPUT_FIAT;
     };
     composeRequest?: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
 }
@@ -49,7 +49,7 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
         methods as unknown as UseFormReturn<TradingAllFormProps>;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const cryptoInputValue = useWatch({ control, name: inputNames.cryptoInput });
-    const sendCryptoSelect = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
+    const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const networkDecimals = getTradingNetworkDecimals({
         sendCryptoSelect,
         network,
@@ -72,7 +72,7 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
 
         // should be allowed only in sell/exchange
         if (composeRequest) {
-            composeRequest(FORM_OUTPUT_AMOUNT);
+            composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         }
     };
 
