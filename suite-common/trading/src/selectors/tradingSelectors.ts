@@ -1,4 +1,4 @@
-import { Coins, CryptoId, FiatCurrencyCode } from 'invity-api';
+import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { UnreachableCaseError } from '@suite-common/suite-utils';
@@ -349,6 +349,34 @@ export const selectTradingSymbolAndContractAddressByCryptoId: (
     getTradingSymbolAndContractAddressByCryptoId,
 );
 
+const getFilteredCryptoIds = (
+    supportedCryptoIds: CryptoId[],
+    coins: Coins | undefined,
+    platforms: Platforms | undefined,
+) => {
+    if (!coins || !platforms) {
+        return [];
+    }
+
+    const supportedAddressValidatorSymbols = new Set(
+        addressValidator.getCurrencies().map(c => c.symbol),
+    );
+
+    const uniqueSupportedCryptoIds = [...new Set(supportedCryptoIds).values()];
+
+    return uniqueSupportedCryptoIds
+        .filter(cryptoId => !!coins[cryptoId])
+        .filter(cryptoId => cryptoIdToNetwork(cryptoId))
+        .filter(cryptoId => {
+            const prodCryptoId = testnetToProdCryptoId(cryptoId);
+            const nativeCoinSymbol =
+                cryptoIdToNetwork(prodCryptoId)?.symbol ??
+                getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
+
+            return nativeCoinSymbol && supportedAddressValidatorSymbols.has(nativeCoinSymbol);
+        });
+};
+
 export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
     [
         ({ wallet }) => wallet.tradingNew.info.coins,
@@ -358,29 +386,33 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
                 wallet.tradingNew.buy.buyInfo?.supportedCryptoCurrencies,
             ),
     ],
-    (coins, platforms, supportedCryptoIds) => {
-        if (!coins || !platforms) {
-            return [];
-        }
+    (coins, platforms, supportedCryptoIds) =>
+        getFilteredCryptoIds(supportedCryptoIds, coins, platforms),
+);
 
-        const supportedAddressValidatorSymbols = new Set(
-            addressValidator.getCurrencies().map(c => c.symbol),
-        );
+export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
+    [
+        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.tradingNew.info.platforms,
+        ({ wallet }) =>
+            returnStableArrayIfEmpty<CryptoId>(
+                wallet.tradingNew.sell.sellInfo?.supportedCryptoCurrencies,
+            ),
+    ],
+    (coins, platforms, supportedCryptoIds) =>
+        getFilteredCryptoIds(supportedCryptoIds, coins, platforms),
+);
 
-        const uniqueSupportedCryptoIds = [...new Set(supportedCryptoIds).values()];
-
-        return uniqueSupportedCryptoIds
-            .filter(cryptoId => !!coins[cryptoId])
-            .filter(cryptoId => cryptoIdToNetwork(cryptoId))
-            .filter(cryptoId => {
-                const prodCryptoId = testnetToProdCryptoId(cryptoId);
-                const nativeCoinSymbol =
-                    cryptoIdToNetwork(prodCryptoId)?.symbol ??
-                    getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
-
-                return nativeCoinSymbol && supportedAddressValidatorSymbols.has(nativeCoinSymbol);
-            });
-    },
+export const selectTradingExchangeSellCryptoIds = createMemoizedSelector(
+    [
+        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.tradingNew.info.platforms,
+        ({ wallet }) =>
+            returnStableArrayIfEmpty<CryptoId>(
+                wallet.tradingNew.exchange.exchangeInfo?.sellCryptoIds,
+            ),
+    ],
+    (coins, platforms, sellCryptoIds) => getFilteredCryptoIds(sellCryptoIds, coins, platforms),
 );
 
 export const selectTradingBuyIsLoading = (state: TradingRootState) =>
@@ -468,16 +500,21 @@ export const selectTradingPrefilledFromCryptoId = (state: TradingRootState) =>
 export const selectTradingActiveSection = (state: TradingRootState) =>
     state.wallet.tradingNew.activeSection ?? 'buy';
 
-// TODO: trading - update this selector, an inspiration selectTradingBuySupportedCryptoIds
-export const selectTradingSupportedSymbols =
-    (type: TradingType) =>
-    (state: TradingRootState): Set<CryptoId> | undefined => {
+export const selectTradingSupportedSymbols = createMemoizedSelector(
+    [
+        (_: TradingRootState, type: TradingType) => type,
+        selectTradingBuySupportedCryptoIds,
+        selectTradingExchangeSellCryptoIds,
+        selectTradingSellSupportedCryptoIds,
+    ],
+    (type, buyCryptoIds, exchangeCryptoIds, sellCryptoIds) => {
         switch (type) {
             case 'buy':
-                return selectTradingBuyInfo(state)?.supportedCryptoCurrencies;
+                return new Set(buyCryptoIds);
             case 'exchange':
-                return selectTradingExchangeInfo(state)?.sellCryptoIds;
+                return new Set(exchangeCryptoIds);
             case 'sell':
-                return selectTradingSellInfo(state)?.supportedCryptoCurrencies;
+                return new Set(sellCryptoIds);
         }
-    };
+    },
+);
