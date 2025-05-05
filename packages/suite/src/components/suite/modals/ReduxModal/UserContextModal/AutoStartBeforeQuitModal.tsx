@@ -32,13 +32,13 @@ export const AutoStartBeforeQuitModal = () => {
                 <>
                     <Modal.Button
                         onClick={() => handleBackground()}
-                        data-test="@auto-start-before-quit/button-background"
+                        data-testid="@auto-start-before-quit/button-background"
                     >
                         <Translation id="TR_RUN_IN_BACKGROUND" />
                     </Modal.Button>
                     <Modal.Button
                         onClick={() => handleQuit()}
-                        data-test="@auto-start-before-quit/button-quit"
+                        data-testid="@auto-start-before-quit/button-quit"
                         variant="tertiary"
                     >
                         <Translation id="TR_QUIT_NOW" />

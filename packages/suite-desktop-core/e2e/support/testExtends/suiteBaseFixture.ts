@@ -45,7 +45,7 @@ const electronSetup = async (
     return suite;
 };
 
-const electronTeardown = async (suite: Suite, testInfo: TestInfo) => {
+const electronTeardown = async (suite: Suite, testInfo: TestInfo, electronConf: ElectronConf) => {
     const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
     await suite.window.context().tracing.stop({ path: tracePath });
     testInfo.attachments.push({
@@ -63,7 +63,12 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo) => {
         path: getVideoPath(testInfo.outputDir),
         contentType: 'video/webm',
     });
-    await suite.electronApp.close();
+    const closePromise = suite.electronApp.close();
+    // Handle modal that asks to enable auto-start
+    if (electronConf.exposeConnectWs) {
+        await suite.window.getByTestId('@auto-start-before-quit/button-quit').click();
+    }
+    await closePromise;
 };
 
 const webSetup = async (browserContext: BrowserContext) => {
@@ -160,7 +165,7 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
             const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
             enhancePage(suite.window);
             await use(suite.window);
-            await electronTeardown(suite, testInfo);
+            await electronTeardown(suite, testInfo, electronConf);
         } else {
             const browserContext = await browser.newContext({
                 recordVideo: {
