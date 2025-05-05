@@ -18,7 +18,7 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
@@ -142,7 +142,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(periodicCheckStakeDataThunk());
 
     // 14. init wallet connect
-    if (selectIsDebugModeActive(getState())) {
+    if (selectHasExperimentalFeature('walletconnect')(getState())) {
         dispatch(walletConnectActions.walletConnectInitThunk());
     }
 

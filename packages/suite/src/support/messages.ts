@@ -9858,4 +9858,17 @@ export default defineMessages({
         id: 'TR_QUIT_NOW',
         defaultMessage: 'Quit now',
     },
+    TR_EXPERIMENTAL_TREZORCONNECT_WS: {
+        id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS',
+        defaultMessage: 'Trezor Connect and WalletConnect integration in Suite',
+    },
+    TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION',
+        defaultMessage:
+            'Interact with 3rd party apps through Suite for a seamless user experience. Enabling will restart the app.',
+    },
+    TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
+        defaultMessage: 'Use WalletConnect to connect your Trezor to Ethereum dApps.',
+    },
 } as const);
