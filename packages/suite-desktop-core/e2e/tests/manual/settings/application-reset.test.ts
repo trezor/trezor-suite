@@ -7,17 +7,21 @@ import {
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe.skip('Application reset', { tag: ['@group=manual'] }, () => {
+test.describe.skip('Reset application', { tag: ['@group=manual'] }, () => {
     test(
-        'Application reset',
+        'Reset application',
         {
             annotation: createTestAnnotation({
-                testCase: 'TBD',
-                prerequisites: ['TBD'],
-                steps: ['TBD'],
-                category: TestCategory.NotCategorized,
+                testCase: 'Reset application',
+                prerequisites: ['Trezor Suite application'],
+                steps: [
+                    'Navigate to Settings/Application',
+                    'Click on Reset app',
+                    'Suite should restart with Settings reset',
+                ],
+                category: TestCategory.Settings,
                 priority: TestPriority.Medium,
-                stream: TestStream.NotDefined,
+                stream: TestStream.Foundation,
                 osMatrix: [
                     TestOsMatrix.Linux,
                     TestOsMatrix.Windows,

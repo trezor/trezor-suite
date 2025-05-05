@@ -34,6 +34,7 @@ Test annotations are defined in `testAnnotations.ts`, all of them are optional a
 | `priority`      | Test priority (Critical, High, Medium, Low)            |
 | `stream`        | Team assignment (Trends, Foundation, Engagement, etc.) |
 | `deviceModel`   | Target device model (T1B1, T2T1, etc.)                 |
+| `osMatrix`      | Operating systems to test on                           |
 
 ## Project Fields
 
@@ -46,6 +47,7 @@ The GitHub project is configured with fields that correspond to test metadata:
 - **Device Model** - Target device for testing
 - **Comment** - Additional notes
 - **Release Build** - The release build identifier (branch-commit format)
+- **OS Matrix** - Operating systems to test on (macOS ARM/Intel, Linux, Windows, Android)
 
 ## How to Use
 
@@ -68,6 +70,8 @@ test.describe('Test suite name', { tag: ['@group=manual'] }, () => {
                 category: TestCategory.Security,
                 priority: TestPriority.High,
                 stream: TestStream.Foundation,
+                deviceModel: DeviceModel.T2T1,
+                osMatrix: [TestOsMatrix.Windows, TestOsMatrix.MacOSArm],
             }),
         },
 
@@ -103,6 +107,16 @@ The reporter can be run from a local environment for troubleshooting and develop
 - `yarn test:e2e:manual`
 
 ## Implementation Notes
+
+### Reporter Architecture
+
+The GitHubReporter class implements the Playwright Reporter interface and handles:
+
+1. **Initialization** - Setting up GitHub API access through Octokit
+2. **Test Result Processing** - Creating or updating GitHub issues for each test
+3. **Asynchronous Operation Management** - Tracking and ensuring completion of all API operations
+
+The reporter creates separate issues for each operating system in the test's OS matrix, adding appropriate emojis to the title (🍏 macOS ARM, 🍎 macOS Intel, 🐧 Linux, 🪟 Windows, 🤖 Android).
 
 ### Extending the Framework
 
