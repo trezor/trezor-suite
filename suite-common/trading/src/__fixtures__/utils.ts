@@ -13,6 +13,7 @@ export const accountBtc = {
             },
         ],
     },
+    deviceState: 'staticSessionId',
 };
 
 export const accountEth = {
@@ -23,6 +24,7 @@ export const accountEth = {
     descriptor: 'eth-descriptor',
     key: 'eth-descriptor-eth',
     path: "m/44'/60'/0'/0/1",
+    deviceState: 'staticSessionId',
     tokens: [
         {
             type: 'ERC20',

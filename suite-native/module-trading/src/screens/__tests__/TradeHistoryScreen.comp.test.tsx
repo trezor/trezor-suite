@@ -1,6 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { TradingTransaction, TradingType } from '@suite-common/trading';
+import { Account } from '@suite-common/wallet-types';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import {
     PreloadedState,
@@ -8,7 +9,9 @@ import {
     fireEvent,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { StaticSessionId } from '@trezor/connect';
 
+import fixturesAccounts from '../../__fixtures__/accounts.json';
 import { getBuyTrade, getExchangeTrade } from '../../__fixtures__/trades';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradeHistoryScreen } from '../TradeHistoryScreen';
@@ -41,6 +44,14 @@ const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
         tradingNew: {
             ...getInitializedTradingState(),
             trades,
+        },
+        accounts: fixturesAccounts as Account[],
+    },
+    device: {
+        selectedDevice: {
+            state: {
+                staticSessionId: 'staticSessionId' as StaticSessionId,
+            },
         },
     },
 });

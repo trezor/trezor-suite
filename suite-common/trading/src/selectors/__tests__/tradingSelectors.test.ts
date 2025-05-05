@@ -4,6 +4,8 @@ import {
     TradingPaymentMethodProps,
     selectTradingBuyLoadingTimestampAndStatus,
 } from '@suite-common/trading';
+import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
 import platforms from '../../__fixtures__/platforms.json';
@@ -16,7 +18,9 @@ import {
     TradingRootState,
     selectBestBuyQuoteByPaymentMethod,
     selectBuyQuotesByPaymentMethod,
-    selectHasTradingTradesOfTradeType,
+    selectDeviceHasTradingTradesOfTradeType,
+    selectDeviceTradingTradesByTradeType,
+    selectDeviceTradingTradesByTradeTypeOrderedByDate,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingBuy,
@@ -44,13 +48,11 @@ import {
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
     selectTradingTrades,
-    selectTradingTradesByTradeType,
-    selectTradingTradesByTradeTypeOrderedByDate,
     selectValidTradingBuyQuotes,
 } from '../tradingSelectors';
 
 describe('tradingSelectors', () => {
-    let state: TradingRootState;
+    let state: TradingRootState & DeviceRootState & AccountsRootState;
 
     const getBuyState = () =>
         ({
@@ -119,7 +121,6 @@ describe('tradingSelectors', () => {
                 },
             ],
         }) as TradingBuyState;
-
     const getState = () =>
         ({
             wallet: {
@@ -145,21 +146,55 @@ describe('tradingSelectors', () => {
                             tradeType: 'buy',
                             data: { orderId: 'orderId1' },
                             date: '2024-03-01T10:00:00Z',
+                            account: {
+                                descriptor: accountEth.descriptor,
+                                symbol: accountEth.symbol,
+                                accountType: accountEth.accountType,
+                                accountIndex: accountEth.index,
+                            },
                         },
                         {
                             tradeType: 'buy',
                             data: { orderId: 'orderId2' },
                             date: '2024-03-02T10:00:00Z',
+                            account: {
+                                descriptor: accountEth.descriptor,
+                                symbol: accountEth.symbol,
+                                accountType: accountEth.accountType,
+                                accountIndex: accountEth.index,
+                            },
                         },
                         {
                             tradeType: 'buy',
                             data: { orderId: 'orderId3' },
                             date: '2024-03-03T10:00:00Z',
+                            account: {
+                                descriptor: accountEth.descriptor,
+                                symbol: accountEth.symbol,
+                                accountType: accountEth.accountType,
+                                accountIndex: accountEth.index,
+                            },
                         },
                         {
                             tradeType: 'exchange',
                             data: { orderId: 'orderId4' },
                             date: '2024-03-04T10:00:00Z',
+                            account: {
+                                descriptor: accountEth.descriptor,
+                                symbol: accountEth.symbol,
+                                accountType: accountEth.accountType,
+                                accountIndex: accountEth.index,
+                            },
+                        },
+                        {
+                            tradeType: 'exchange',
+                            data: { orderId: 'orderId5' },
+                            account: {
+                                descriptor: accountEth.descriptor,
+                                symbol: accountEth.symbol,
+                                accountType: accountEth.accountType,
+                                accountIndex: accountEth.index,
+                            },
                         },
                     ],
                     composedTransactionInfo: {
@@ -172,6 +207,9 @@ describe('tradingSelectors', () => {
                 selectedAccount: {
                     account: accountBtc,
                     status: 'loaded',
+                    network: undefined,
+                    discovery: undefined,
+                    params: undefined,
                 },
                 accounts: [accountEth],
             },
@@ -181,7 +219,14 @@ describe('tradingSelectors', () => {
                     debug: { invityServerEnvironment: undefined },
                 },
             },
-        }) as TradingRootState;
+            device: {
+                selectedDevice: {
+                    state: {
+                        staticSessionId: 'staticSessionId' as StaticSessionId,
+                    },
+                },
+            },
+        }) as unknown as TradingRootState & DeviceRootState & AccountsRootState;
 
     beforeEach(() => {
         state = getState();
@@ -392,38 +437,19 @@ describe('tradingSelectors', () => {
         expect(selectTradingTrades(state)).toBe(state.wallet.tradingNew.trades);
     });
 
-    it('selectTradingTradesByTradeType should return only data for relevant tradeType', () => {
-        expect(selectTradingTradesByTradeType(state, 'buy')).toStrictEqual([
-            {
-                data: { orderId: 'orderId1' },
-                tradeType: 'buy',
-                date: '2024-03-01T10:00:00Z',
-            },
-            {
-                data: { orderId: 'orderId2' },
-                tradeType: 'buy',
-                date: '2024-03-02T10:00:00Z',
-            },
-            {
-                data: { orderId: 'orderId3' },
-                tradeType: 'buy',
-                date: '2024-03-03T10:00:00Z',
-            },
-        ]);
-        expect(selectTradingTradesByTradeType(state, 'exchange')).toStrictEqual([
-            {
-                data: { orderId: 'orderId4' },
-                tradeType: 'exchange',
-                date: '2024-03-04T10:00:00Z',
-            },
-        ]);
+    it('selectDeviceTradingTradesByTradeType should return only data for relevant tradeType', () => {
+        expect(
+            selectDeviceTradingTradesByTradeType(state, 'buy').map(t => t.data.orderId),
+        ).toStrictEqual(['orderId1', 'orderId2', 'orderId3']);
 
-        expect(selectTradingTradesByTradeType(state, 'sell')).toStrictEqual([]);
+        expect(
+            selectDeviceTradingTradesByTradeType(state, 'exchange').map(t => t.data.orderId),
+        ).toStrictEqual(['orderId4', 'orderId5']);
     });
 
-    describe('selectTradingTradesByTradeTypeOrderedByDate', () => {
+    describe('selectDeviceTradingTradesByTradeTypeOrderedByDate', () => {
         it('should return trades ordered by date in descending order', () => {
-            const result = selectTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+            const result = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'buy');
 
             expect(result).toHaveLength(3);
             expect(result[0].data.orderId).toBe('orderId3');
@@ -432,22 +458,22 @@ describe('tradingSelectors', () => {
         });
 
         it('should return empty array for trade type with no trades', () => {
-            const result = selectTradingTradesByTradeTypeOrderedByDate(state, 'sell');
+            const result = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'sell');
 
             expect(result).toHaveLength(0);
         });
 
         it('should be stable', () => {
-            const first = selectTradingTradesByTradeTypeOrderedByDate(state, 'buy');
-            const second = selectTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+            const first = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+            const second = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'buy');
 
             expect(first).toBe(second);
         });
     });
 
-    it('selectHasTradingTradesOfTradeType should return correctly whether there is a trade', () => {
-        expect(selectHasTradingTradesOfTradeType(state, 'buy')).toBe(true);
-        expect(selectHasTradingTradesOfTradeType(state, 'sell')).toBe(false);
+    it('selectDeviceHasTradingTradesOfTradeType should return correctly whether there is a trade', () => {
+        expect(selectDeviceHasTradingTradesOfTradeType(state, 'buy')).toBe(true);
+        expect(selectDeviceHasTradingTradesOfTradeType(state, 'sell')).toBe(false);
     });
 
     it('selectTradingTradeByOrderId should find trade for correct orderId', () => {

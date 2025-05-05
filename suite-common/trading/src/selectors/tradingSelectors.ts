@@ -2,6 +2,11 @@ import { Coins, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectDeviceAccounts,
+} from '@suite-common/wallet-core';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
 import addressValidator from '@trezor/address-validator';
@@ -77,6 +82,9 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange'> & {
 };
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
+const createMemoizedSelectorWithDeviceAndAccounts = createWeakMapSelector.withTypes<
+    TradingRootState & DeviceRootState & AccountsRootState
+>();
 
 export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
     [
@@ -213,25 +221,46 @@ export const selectTradingPaymentMethods = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.tradingNew.trades);
 
-export const selectTradingTradesByTradeType: (
-    state: TradingRootState,
+export const selectDeviceTradingTrades: (
+    state: TradingRootState & AccountsRootState & DeviceRootState,
     tradeType: TradingType,
-) => TradingTransaction[] = createMemoizedSelector(
-    [({ wallet }) => wallet.tradingNew.trades, (_, tradeType: TradingType) => tradeType],
+) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
+    [
+        state => selectDeviceAccounts(state),
+        selectTradingTrades,
+        (_, tradeType: TradingType) => tradeType,
+    ],
+    (accounts, trades, tradeType) => {
+        const accountDescriptors = new Set(accounts.map(({ descriptor }) => descriptor));
+
+        return returnStableArrayIfEmpty(
+            trades.filter(
+                t => accountDescriptors.has(t.account?.descriptor) && t.tradeType === tradeType,
+            ),
+        );
+    },
+);
+
+export const selectDeviceTradingTradesByTradeType: (
+    state: TradingRootState & AccountsRootState & DeviceRootState,
+    tradeType: TradingType,
+) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
+    [selectDeviceTradingTrades, (_, tradeType: TradingType) => tradeType],
     (trades, tradeType) => returnStableArrayIfEmpty(trades.filter(t => t.tradeType === tradeType)),
 );
 
-export const selectTradingTradesByTradeTypeOrderedByDate: (
-    state: TradingRootState,
+export const selectDeviceTradingTradesByTradeTypeOrderedByDate: (
+    state: TradingRootState & AccountsRootState & DeviceRootState,
     tradeType: TradingType,
-) => TradingTransaction[] = createMemoizedSelector([selectTradingTradesByTradeType], trades =>
-    trades.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
+    [selectDeviceTradingTradesByTradeType],
+    trades => trades.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
 );
 
-export const selectHasTradingTradesOfTradeType = (
-    state: TradingRootState,
+export const selectDeviceHasTradingTradesOfTradeType = (
+    state: TradingRootState & AccountsRootState & DeviceRootState,
     tradeType: TradingType,
-) => selectTradingTradesByTradeType(state, tradeType).length > 0;
+) => selectDeviceTradingTradesByTradeType(state, tradeType).length > 0;
 
 export const selectTradingTradeByOrderId = (state: TradingRootState, orderId: string | undefined) =>
     selectTradingTrades(state).find(t => orderId && t.data.orderId === orderId);

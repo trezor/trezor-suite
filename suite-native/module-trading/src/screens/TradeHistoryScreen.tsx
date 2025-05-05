@@ -8,8 +8,9 @@ import { FlashList } from '@shopify/flash-list';
 import {
     TradingRootState,
     TradingTransaction,
-    selectTradingTradesByTradeTypeOrderedByDate,
+    selectDeviceTradingTradesByTradeTypeOrderedByDate,
 } from '@suite-common/trading';
+import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 import {
     Screen,
@@ -46,10 +47,10 @@ export const TradeHistoryScreen = () => {
     const { bottom: insetBottom } = useSafeAreaInsets();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
     const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
-    const trades = useSelector((state: TradingRootState) =>
-        selectTradingTradesByTradeTypeOrderedByDate(state, tradeType),
-    );
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
+    const trades = useSelector((state: TradingRootState & AccountsRootState & DeviceRootState) =>
+        selectDeviceTradingTradesByTradeTypeOrderedByDate(state, tradeType),
+    );
 
     const handleSelectedTrade = useCallback(
         (trade: TradingTransaction) => {

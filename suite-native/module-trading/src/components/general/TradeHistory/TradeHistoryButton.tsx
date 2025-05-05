@@ -7,8 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import {
     TradingRootState,
     TradingType,
-    selectHasTradingTradesOfTradeType,
+    selectDeviceHasTradingTradesOfTradeType,
 } from '@suite-common/trading';
+import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -48,8 +49,8 @@ export const TradeHistoryButton = ({
 }: TradeHistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
-    const hasTrades = useSelector((state: TradingRootState) =>
-        selectHasTradingTradesOfTradeType(state, tradeType),
+    const hasTrades = useSelector((state: TradingRootState & AccountsRootState & DeviceRootState) =>
+        selectDeviceHasTradingTradesOfTradeType(state, tradeType),
     );
 
     if (!hasTrades) {
