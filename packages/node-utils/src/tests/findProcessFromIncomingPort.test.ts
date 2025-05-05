@@ -20,7 +20,7 @@ describe('findProcessFromIncomingPort', () => {
             expect(processInfo).toBeDefined();
 
             if (process.platform === 'win32') {
-                expect(processInfo?.name).toEqual('node.exe');
+                expect(processInfo?.name).toEqual('Node.js');
             } else {
                 expect(processInfo?.name).toEqual('node');
             }
