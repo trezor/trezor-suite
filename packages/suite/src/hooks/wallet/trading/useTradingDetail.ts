@@ -92,7 +92,6 @@ export const useTradingDetail = <T extends TradingType>({
     });
     const dispatch = useDispatch();
 
-    // TODO: trading - is it possible to have buyInfo before render?
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: tradeType }));
     }, [dispatch, tradeType]);
