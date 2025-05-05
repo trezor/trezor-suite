@@ -58,7 +58,7 @@ export type TradingBuyInfoSelector = Omit<
         defaultAmountsOfFiatCurrencies: TradingFiatCurrenciesProps;
     };
     supportedCryptoCurrencies: Set<CryptoId>;
-    supportedFiatCurrencies: Set<string>;
+    supportedFiatCurrencies: Set<FiatCurrencyCode>;
 };
 
 export type TradingBuyStateSelector = Omit<TradingBuyState, 'buyInfo'> & {
@@ -79,7 +79,7 @@ export type TradingSellInfoSelector = Omit<
     'supportedCryptoCurrencies' | 'supportedFiatCurrencies'
 > & {
     supportedCryptoCurrencies: Set<CryptoId>;
-    supportedFiatCurrencies: Set<string>; // TODO: trading - check if can be used FiatCurrencyCode
+    supportedFiatCurrencies: Set<FiatCurrencyCode>;
 };
 
 export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'> & {
@@ -131,7 +131,7 @@ export const selectTradingBuyInfo = createMemoizedSelector(
                 defaultAmountsOfFiatCurrencies,
             },
             supportedCryptoCurrencies: new Set(buyInfo.supportedCryptoCurrencies),
-            supportedFiatCurrencies: new Set(buyInfo.supportedFiatCurrencies),
+            supportedFiatCurrencies: new Set(buyInfo.supportedFiatCurrencies as FiatCurrencyCode[]),
         };
     },
 );
@@ -160,7 +160,9 @@ export const selectTradingSellInfo = createMemoizedSelector(
 
         return {
             ...sellInfo,
-            supportedFiatCurrencies: new Set(sellInfo.supportedFiatCurrencies),
+            supportedFiatCurrencies: new Set(
+                sellInfo.supportedFiatCurrencies as FiatCurrencyCode[],
+            ),
             supportedCryptoCurrencies: new Set(sellInfo.supportedCryptoCurrencies),
         };
     },
