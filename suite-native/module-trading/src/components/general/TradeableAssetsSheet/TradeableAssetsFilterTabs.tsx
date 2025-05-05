@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { FlatList } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -64,24 +65,27 @@ export const TradeableAssetsFilterTabs = ({
     };
 
     return (
-        <Animated.FlatList
+        <Animated.View
             entering={FadeIn.duration(animationDuration)}
             exiting={FadeOut.duration(animationDuration)}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={filterItems}
-            keyExtractor={item => item.symbol ?? 'undefined'}
-            accessible={true}
-            accessibilityRole="tablist"
-            renderItem={({ item }) => (
-                <FilterTab
-                    active={activeTab === item.symbol}
-                    onPress={() => handleFilterTap(item.symbol)}
-                >
-                    {item.label}
-                </FilterTab>
-            )}
-            keyboardShouldPersistTaps="always"
-        />
+        >
+            <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={filterItems}
+                keyExtractor={item => item.symbol ?? 'undefined'}
+                accessible={true}
+                accessibilityRole="tablist"
+                renderItem={({ item }) => (
+                    <FilterTab
+                        active={activeTab === item.symbol}
+                        onPress={() => handleFilterTap(item.symbol)}
+                    >
+                        {item.label}
+                    </FilterTab>
+                )}
+                keyboardShouldPersistTaps="always"
+            />
+        </Animated.View>
     );
 };
