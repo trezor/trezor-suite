@@ -53,6 +53,7 @@ export const TradingOfferExchangeSendApproval = () => {
         exchangeInfo,
         confirmTrade,
         sendTransaction,
+        watchTradeApproval,
     } = useTradingFormContext<TradingExchangeType>();
     const { cryptoIdToCoinSymbol } = useTradingInfo();
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
@@ -63,7 +64,7 @@ export const TradingOfferExchangeSendApproval = () => {
 
     useTradingExchangeWatchSendApproval({
         selectedQuote,
-        confirmTrade,
+        watchTradeApproval,
     });
 
     const explorers = useSelector(state => state.wallet.explorer);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { ExchangeTrade, FiatCurrencyCode } from 'invity-api';
@@ -340,40 +340,51 @@ export const useTradingExchangeForm = ({
         );
     };
 
-    const getCommonFunctions = async (trade?: ExchangeTrade) => {
-        const quoteId = trade?.quoteId ?? selectedQuote?.quoteId;
+    const getCommonFunctions = useCallback(
+        async (trade?: ExchangeTrade) => {
+            const quoteId = trade?.quoteId ?? selectedQuote?.quoteId;
 
-        if (!quotesRequest || !quoteId) return;
+            if (!quotesRequest || !quoteId) return;
 
-        const returnUrl = await createQuoteLink(
-            quotesRequest,
+            const returnUrl = await createQuoteLink(
+                quotesRequest,
+                account,
+                { selectedFee, composed },
+                quoteId,
+            );
+
+            const triggerAnalyticsTradeConfirmation = () => {
+                analytics.report({
+                    type: EventType.TradingConfirmTrade,
+                    payload: { action: type },
+                });
+            };
+
+            const processResponseData = (response: ExchangeTrade) => {
+                dispatch(submitRequestForm(response.tradeForm?.form));
+            };
+
+            const nextStep = () => {
+                navigateToExchangeDetail();
+            };
+
+            return {
+                returnUrl,
+                triggerAnalyticsTradeConfirmation,
+                processResponseData,
+                nextStep,
+            };
+        },
+        [
             account,
-            { selectedFee, composed },
-            quoteId,
-        );
-
-        const triggerAnalyticsTradeConfirmation = () => {
-            analytics.report({
-                type: EventType.TradingConfirmTrade,
-                payload: { action: type },
-            });
-        };
-
-        const processResponseData = (response: ExchangeTrade) => {
-            dispatch(submitRequestForm(response.tradeForm?.form));
-        };
-
-        const nextStep = () => {
-            navigateToExchangeDetail();
-        };
-
-        return {
-            returnUrl,
-            triggerAnalyticsTradeConfirmation,
-            processResponseData,
-            nextStep,
-        };
-    };
+            composed,
+            quotesRequest,
+            selectedFee,
+            selectedQuote?.quoteId,
+            dispatch,
+            navigateToExchangeDetail,
+        ],
+    );
 
     const confirmTrade = async ({
         receiveAddress,
@@ -524,6 +535,29 @@ export const useTradingExchangeForm = ({
             );
         };
 
+    const watchTradeApproval = useCallback(
+        async (refreshCount: number) => {
+            const commonFunctions = await getCommonFunctions(trade?.data);
+
+            if (!commonFunctions) return;
+
+            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
+                commonFunctions;
+
+            await dispatch(
+                exchangeThunks.watchTradeApprovalThunk({
+                    account,
+                    returnUrl,
+                    refreshCount,
+                    triggerAnalyticsTradeConfirmation,
+                    processResponseData,
+                    nextStep,
+                }),
+            );
+        },
+        [account, trade?.data, dispatch, getCommonFunctions],
+    );
+
     // TODO: trading - is it possible to have info data before render?
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
@@ -656,5 +690,6 @@ export const useTradingExchangeForm = ({
         verifyAddress,
         selectQuote,
         confirmTrade,
+        watchTradeApproval,
     };
 };

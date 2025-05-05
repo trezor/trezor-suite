@@ -3,15 +3,12 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { type TradingExchangeType, invityAPI } from '@suite-common/trading';
-import { tradingExchangeActions } from '@suite-common/trading';
-
 import { useDispatch } from 'src/hooks/suite';
 import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 
 interface TradingUseExchangeWatchSendApprovalProps {
     selectedQuote?: ExchangeTrade;
-    confirmTrade: TradingExchangeFormContextProps['confirmTrade'];
+    watchTradeApproval: TradingExchangeFormContextProps['watchTradeApproval'];
 }
 
 /**
@@ -20,7 +17,7 @@ interface TradingUseExchangeWatchSendApprovalProps {
  */
 export const useTradingExchangeWatchSendApproval = ({
     selectedQuote,
-    confirmTrade,
+    watchTradeApproval,
 }: TradingUseExchangeWatchSendApprovalProps) => {
     const REFRESH_SECONDS = 15;
     const shouldRefresh = (quote?: ExchangeTrade) => quote?.status === 'APPROVAL_PENDING';
@@ -44,35 +41,10 @@ export const useTradingExchangeWatchSendApproval = ({
 
         const watchTradeAsync = async () => {
             cancelRefresh();
-
-            // TODO: trading - could be moved to suite-common
-            const response = await invityAPI.watchTrade<TradingExchangeType>(
-                selectedQuote,
-                'exchange',
-                refreshCount,
-            );
-
-            if (response.status && response.status !== selectedQuote.status) {
-                const updatedSelectedQuote = {
-                    ...selectedQuote,
-                    status: response.status,
-                    error: response.error,
-                    approvalType: undefined,
-                };
-
-                dispatch(tradingExchangeActions.saveSelectedQuote(updatedSelectedQuote));
-
-                if (selectedQuote.dexTx && selectedQuote.receiveAddress) {
-                    await confirmTrade({
-                        receiveAddress: selectedQuote.receiveAddress,
-                        trade: updatedSelectedQuote,
-                    });
-                }
-            }
-
+            await watchTradeApproval(refreshCount);
             resetRefresh();
         };
 
         watchTradeAsync();
-    }, [refreshCount, selectedQuote, cancelRefresh, resetRefresh, dispatch, confirmTrade]);
+    }, [refreshCount, selectedQuote, cancelRefresh, resetRefresh, dispatch, watchTradeApproval]);
 };
