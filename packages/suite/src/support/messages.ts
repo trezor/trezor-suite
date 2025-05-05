@@ -8837,6 +8837,10 @@ export default defineMessages({
         id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
         defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your {symbol} with Trezor.',
     },
+    TR_STAKE_APY_APPROX: {
+        id: 'TR_STAKE_APY_APPROX',
+        defaultMessage: '~{apyPercent}% APY',
+    },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
         defaultMessage: '*Annual percentage yield',

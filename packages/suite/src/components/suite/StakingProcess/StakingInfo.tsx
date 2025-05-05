@@ -112,7 +112,9 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
         {
             heading: infoRowsData?.rewardsEarningHeading,
             subheading: <Translation id="TR_STAKING_REWARDS_ARE_RESTAKED" />,
-            content: { text: `~${apy}% p.a.` },
+            content: {
+                text: <Translation id="TR_STAKE_APY_APPROX" values={{ apyPercent: apy }} />,
+            },
         },
     ];
 
