@@ -1,4 +1,4 @@
-name: "[Check] Validation"
+name: "[Check] Validation - no cache test"
 
 on:
   pull_request:
@@ -6,9 +6,6 @@ on:
     branches:
       - release/2*
       - release-native/*
-
-env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -24,17 +21,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-      - name: Yarn Cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-          restore-keys: |
-            yarn-cache-folder-
-      # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
         run: |
           yarn --immutable --mode=skip-build
@@ -66,16 +52,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-
-      - name: ESlint Cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/.eslintcache
-            !**/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
       - name: Lint JS
-        run: yarn lint:js --cache-strategy content
+        run: yarn lint:js
       - name: Lint Styles
         run: yarn nx:lint:styles --output-style=stream
 
@@ -124,7 +102,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Check Files for Correct Formatting
-        run: yarn nx format:check
+        run: yarn format:verify
       - name: Verify TS Project References
         run: yarn verify-project-references
       - name: Detect unused dependencies
