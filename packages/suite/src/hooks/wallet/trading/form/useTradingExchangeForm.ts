@@ -558,7 +558,6 @@ export const useTradingExchangeForm = ({
         [account, trade?.data, dispatch, getCommonFunctions],
     );
 
-    // TODO: trading - is it possible to have info data before render?
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);

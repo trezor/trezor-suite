@@ -327,7 +327,6 @@ export const useTradingBuyForm = ({
             );
         };
 
-    // TODO: trading - is it possible to have buyInfo before render?
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
@@ -380,7 +379,6 @@ export const useTradingBuyForm = ({
         }
     }, [previousValues, values, isNotFormPage, pageType, handleChange, handleSubmit]);
 
-    // TODO: trading - this will not be necessary if data will load before this hook
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
         if (!isDraft && buyInfo) {
