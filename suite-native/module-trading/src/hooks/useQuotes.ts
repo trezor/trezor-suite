@@ -189,7 +189,7 @@ export const useQuotes = (form: TradingBuyForm) => {
     const promiseRef = useRef<PromiseType | undefined>(undefined);
 
     const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchQuotes(form);
-    const { timer, shouldReload } = useReloadTimer(isFetchAllowed);
+    const { timer, shouldReload } = useReloadTimer({ isEnabled: isFetchAllowed });
 
     useQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
     useQuotesThunk(

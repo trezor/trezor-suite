@@ -7,12 +7,18 @@ import {
     TradingTransaction,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { TradeStatusBadge } from './TradeStatusBadge';
 import { useChangeStringsExtractor } from '../../../hooks/useChangeStringsExtractor';
+import { useTradingWatchTrade } from '../../../hooks/useTradingWatchTrade';
 import { TradingProviderLogo } from '../TradingProviderLogo';
 
 type TradeHistoryListItemProps = {
@@ -24,6 +30,14 @@ export const TRADE_HISTORY_LIST_ITEM_HEIGHT = 148;
 
 export const TradeHistoryListItem = ({ transaction, onPress }: TradeHistoryListItemProps) => {
     const { DateFormatter, TimeFormatter } = useFormatters();
+    const account = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountByDescriptorAndNetworkSymbol(
+            state,
+            transaction.account.descriptor,
+            transaction.account.symbol,
+        ),
+    );
+    useTradingWatchTrade({ account: account ?? undefined, trade: transaction });
     const providerInfo = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(
             state,

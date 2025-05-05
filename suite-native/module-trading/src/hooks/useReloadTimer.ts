@@ -3,9 +3,17 @@ import { useEffect } from 'react';
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { useTimer } from '@trezor/react-utils';
 
+type UseReloadTimerProps = {
+    isEnabled?: boolean;
+    refreshLimitSeconds?: number;
+};
+
 export const MAX_RESET_COUNT = 40;
 
-export const useReloadTimer = (isEnabled: boolean) => {
+export const useReloadTimer = ({
+    isEnabled = true,
+    refreshLimitSeconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
+}: UseReloadTimerProps) => {
     const timer = useTimer();
     const {
         timeSpent: { seconds },
@@ -30,13 +38,15 @@ export const useReloadTimer = (isEnabled: boolean) => {
         return {
             timer,
             shouldReload: false,
+            resetCount,
         };
     }
 
-    const shouldReload = seconds >= INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
+    const shouldReload = seconds >= refreshLimitSeconds;
 
     return {
         timer,
         shouldReload,
+        resetCount,
     };
 };
