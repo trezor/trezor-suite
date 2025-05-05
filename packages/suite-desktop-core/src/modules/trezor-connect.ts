@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 
-import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -86,9 +86,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
     const unregisterProxy = createIpcProxyHandler(ipcMain, 'TrezorConnect', ipcProxyOptions);
 
     const onLoad = () => {
-        TrezorConnect.on(DEVICE_EVENT, event => {
-            mainThreadEmitter.emit('module/trezor-connect/device-event', event);
-        });
+        // TODO: doing nothing for now.
     };
 
     const onQuit = () => {
@@ -103,6 +101,13 @@ export const init: ModuleInit = () => {
     const onLoad = () => {
         // reset previous instance, possible left over after renderer refresh (F5)
         TrezorConnect.dispose();
+
+        // Subscribe to events afer dispose since `dispose` unsubscribes all of them.
+
+        // TODO: This `DEVICE_EVENT` is currently not used, but it might be used to display events on tray.
+        // TrezorConnect.on(DEVICE_EVENT, event => {
+        //     mainThreadEmitter.emit('module/trezor-connect/device-event', event);
+        // });
     };
 
     return { onLoad };
