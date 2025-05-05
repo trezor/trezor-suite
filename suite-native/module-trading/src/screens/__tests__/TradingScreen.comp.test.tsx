@@ -1,9 +1,17 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    PreloadedState,
+    act,
+    fireEvent,
+    renderWithStoreProviderAsync,
+    screen,
+} from '@suite-native/test-utils';
 
 import { TradingScreen } from '../TradingScreen';
 
-let mockUseTradingBuyDataValue: { isLoading: boolean; lastLoadedTimestamp: number };
+let mockUseTradingBuyData: jest.Mock;
+
+let mockIsInternetReachable: boolean | null = true;
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -11,7 +19,13 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 jest.mock('../../hooks/useTradingBuyData', () => ({
-    useTradingBuyData: () => mockUseTradingBuyDataValue,
+    useTradingBuyData: (...params: unknown[]) => mockUseTradingBuyData(...params),
+}));
+
+jest.mock('@react-native-community/netinfo', () => ({
+    useNetInfo: () => ({
+        isInternetReachable: mockIsInternetReachable,
+    }),
 }));
 
 const stateWithEnabledBuy = {
@@ -30,41 +44,126 @@ const stateWithDisabledBuy = {
 
 describe('TradingScreen', () => {
     beforeEach(() => {
-        mockUseTradingBuyDataValue = { isLoading: false, lastLoadedTimestamp: 0 };
+        mockUseTradingBuyData = jest.fn(() => ({
+            isLoading: false,
+            lastLoadedTimestamp: 0,
+            isFullyLoaded: false,
+        }));
+
+        mockIsInternetReachable = true;
     });
 
     const renderTradingScreen = (preloadedState?: PreloadedState) =>
         renderWithStoreProviderAsync(<TradingScreen />, { preloadedState });
 
+    const expectSkeleton = () => {
+        expect(screen.getByText('Buy')).toBeTruthy();
+    };
+
+    const expectBuyForm = () => {
+        expect(screen.getByText('Fund')).toBeTruthy();
+    };
+
+    const expectDeviceOffline = () => {
+        expect(screen.getByText('Trading is not available offline')).toBeTruthy();
+    };
+
+    const expectServerOffline = () => {
+        expect(screen.getByText("It's not you, it's us.")).toBeTruthy();
+    };
+
     it('should render Buy skeleton when isLoading is true', async () => {
-        mockUseTradingBuyDataValue = { isLoading: true, lastLoadedTimestamp: 1 };
+        mockUseTradingBuyData.mockReturnValue({
+            isLoading: true,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: false,
+        });
 
-        const { getAllByText } = await renderTradingScreen(stateWithEnabledBuy);
+        await renderTradingScreen(stateWithEnabledBuy);
 
-        expect(getAllByText('Buy').length).toBe(1);
+        expectSkeleton();
     });
 
     it('should render Buy skeleton when lastLoadedTimestamp is 0', async () => {
-        mockUseTradingBuyDataValue = { isLoading: false, lastLoadedTimestamp: 0 };
+        mockUseTradingBuyData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 0,
+            isFullyLoaded: false,
+        });
 
-        const { getAllByText } = await renderTradingScreen(stateWithEnabledBuy);
+        await renderTradingScreen(stateWithEnabledBuy);
 
-        expect(getAllByText('Buy').length).toBe(1);
+        expectSkeleton();
     });
 
-    it('should render Buy form when isLoading is false and lastLoadedTimestamp is greater than 0', async () => {
-        mockUseTradingBuyDataValue = { isLoading: false, lastLoadedTimestamp: 1 };
+    it('should render Buy form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
+        mockUseTradingBuyData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: true,
+        });
 
-        const { getAllByText } = await renderTradingScreen(stateWithEnabledBuy);
+        await renderTradingScreen(stateWithEnabledBuy);
 
-        expect(getAllByText('Buy').length).toBe(2);
+        expectBuyForm();
     });
 
     it('should not render Buy form when feature flag is not enabled', async () => {
-        mockUseTradingBuyDataValue = { isLoading: false, lastLoadedTimestamp: 1 };
+        mockUseTradingBuyData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: true,
+        });
 
         const { queryByText } = await renderTradingScreen(stateWithDisabledBuy);
 
         expect(queryByText('Buy')).toBeNull();
+    });
+
+    it('should render error screen when isInternetReachable is false', async () => {
+        mockIsInternetReachable = false;
+
+        await renderTradingScreen(stateWithEnabledBuy);
+
+        expectDeviceOffline();
+    });
+
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
+        mockUseTradingBuyData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: false,
+        });
+
+        await renderTradingScreen(stateWithEnabledBuy);
+
+        expectServerOffline();
+    });
+
+    it('should reload data when server error info is displayed and user presses "Try again" button', async () => {
+        mockUseTradingBuyData
+            .mockReturnValueOnce({
+                isLoading: false,
+                lastLoadedTimestamp: 1,
+                isFullyLoaded: false,
+            })
+            .mockReturnValue({
+                isLoading: false,
+                lastLoadedTimestamp: 1,
+                isFullyLoaded: true,
+            });
+
+        const { getByText } = await renderTradingScreen(stateWithEnabledBuy);
+
+        const reloadButton = getByText('Try again');
+
+        act(() => {
+            fireEvent.press(reloadButton);
+        });
+
+        expectBuyForm();
+        expect(mockUseTradingBuyData).toHaveBeenCalledTimes(2);
+        expect(mockUseTradingBuyData).toHaveBeenCalledWith(0);
+        expect(mockUseTradingBuyData).toHaveBeenCalledWith(1);
     });
 });

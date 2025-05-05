@@ -9,9 +9,9 @@ import { tradingActions } from '../../reducers/tradingReducer';
 import {
     selectTradingAccountAccordingActiveSection,
     selectTradingBuyInfo,
+    selectTradingBuyLoadingTimestampAndStatus,
     selectTradingExchangeInfo,
     selectTradingInfo,
-    selectTradingLoadingAndTimestamp,
 } from '../../selectors/tradingSelectors';
 import { TradingType } from '../../types';
 
@@ -30,7 +30,8 @@ export const loadInitialDataThunk = createThunk(
         );
         const buyInfo = selectTradingBuyInfo(getState());
         const exchangeInfo = selectTradingExchangeInfo(getState());
-        const { isLoading, lastLoadedTimestamp } = selectTradingLoadingAndTimestamp(getState());
+        const { isLoading, lastLoadedTimestamp } =
+            selectTradingBuyLoadingTimestampAndStatus(getState());
         const { platforms, coins } = selectTradingInfo(getState());
 
         const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();

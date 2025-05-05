@@ -10786,6 +10786,7 @@ __metadata:
   resolution: "@suite-native/module-trading@workspace:suite-native/module-trading"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@react-native-community/netinfo": "npm:^11.4.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:2.6.0"

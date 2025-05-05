@@ -78,14 +78,17 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange'> & {
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 
-export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
+export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
     [
         (state: TradingRootState) => state.wallet.tradingNew.isLoading,
         (state: TradingRootState) => state.wallet.tradingNew.lastLoadedTimestamp,
+        (state: TradingRootState) => state.wallet.tradingNew.info,
+        (state: TradingRootState) => state.wallet.tradingNew.buy.buyInfo,
     ],
-    (isLoading, lastLoadedTimestamp) => ({
+    (isLoading, lastLoadedTimestamp, info, buyInfo) => ({
         isLoading,
         lastLoadedTimestamp,
+        isFullyLoaded: !!(buyInfo && info?.coins && info?.platforms),
     }),
 );
 

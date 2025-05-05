@@ -4,9 +4,16 @@ import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { useTradingBuyData } from '../useTradingBuyData';
 
 describe('useTradingBuyData', () => {
-    const renderUseTradingData = () => renderHookWithStoreProviderAsync(() => useTradingBuyData());
+    const renderUseTradingData = (reloadRequestOrdinalInitialValue: number = 0) =>
+        renderHookWithStoreProviderAsync(
+            ({ reloadRequestOrdinal }) => useTradingBuyData(reloadRequestOrdinal),
+            {
+                initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
+            },
+        );
 
     beforeEach(() => {
+        jest.resetAllMocks();
         global.fetch = jest.fn().mockImplementation(() =>
             Promise.resolve({
                 json: () => Promise.resolve({}),
@@ -45,10 +52,19 @@ describe('useTradingBuyData', () => {
 
         const { result, rerender } = await renderUseTradingData();
         const firstTimestamp = result.current.lastLoadedTimestamp;
-        rerender({});
+        rerender({ reloadRequestOrdinal: 0 });
 
         expect(result.current.isLoading).toBe(false);
         expect(result.current.lastLoadedTimestamp).toBe(firstTimestamp);
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should dispatch loadInitialDataThunk when reloadRequestOrdinal changes', async () => {
+        const initialThunkLoadActionSpy = jest.spyOn(tradingThunks, 'loadInitialDataThunk');
+
+        const { rerender } = await renderUseTradingData();
+        rerender({ reloadRequestOrdinal: 1 });
+
+        expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
     });
 });

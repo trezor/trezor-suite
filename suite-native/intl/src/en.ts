@@ -1661,6 +1661,15 @@ export const en = {
                 },
             },
         },
+        error: {
+            deviceOfflineTitle: 'Trading is not available offline',
+            deviceOfflineDescription:
+                'Trading needs an internet connection to be available. Check your mobile phone settings and try again.',
+            serverOfflineTitle: "It's not you, it's us.",
+            serverOfflineDescription:
+                'Something is wrong on our end. Please, wait a minute or try again later.',
+            serverOfflineRetry: 'Try again',
+        },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
         networkName: 'Network name',

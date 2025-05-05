@@ -1,6 +1,9 @@
 import { Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
 
-import { TradingPaymentMethodProps } from '@suite-common/trading';
+import {
+    TradingPaymentMethodProps,
+    selectTradingBuyLoadingTimestampAndStatus,
+} from '@suite-common/trading';
 
 import coins from '../../__fixtures__/coins.json';
 import platforms from '../../__fixtures__/platforms.json';
@@ -721,6 +724,46 @@ describe('tradingSelectors', () => {
 
         it('should be stable', () => {
             expect(selectValidTradingBuyQuotes(state)).toBe(selectValidTradingBuyQuotes(state));
+        });
+    });
+
+    describe('selectTradingBuyLoadingTimestampAndStatus', () => {
+        it.each<[boolean, number]>([
+            [true, 0],
+            [false, 123456789],
+        ])(
+            'should return values from tradingNew state, case %#',
+            (isLoading, lastLoadedTimestamp) => {
+                state.wallet.tradingNew.isLoading = isLoading;
+                state.wallet.tradingNew.lastLoadedTimestamp = lastLoadedTimestamp;
+
+                expect(selectTradingBuyLoadingTimestampAndStatus(state)).toEqual(
+                    expect.objectContaining({
+                        isLoading,
+                        lastLoadedTimestamp,
+                    }),
+                );
+            },
+        );
+
+        describe('isFullyLoaded', () => {
+            it('should be false when trading info is empty', () => {
+                state.wallet.tradingNew.info = {
+                    paymentMethods: [],
+                };
+
+                expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
+            });
+
+            it('should be false when trading buyInfo is empty', () => {
+                state.wallet.tradingNew.buy.buyInfo = undefined;
+
+                expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
+            });
+
+            it('should be true otherwise', () => {
+                expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(true);
+            });
         });
     });
 });

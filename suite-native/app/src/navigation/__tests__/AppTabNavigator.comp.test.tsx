@@ -1,10 +1,5 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import {
-    PreloadedState,
-    fireEvent,
-    renderWithStoreProviderAsync,
-    waitFor,
-} from '@suite-native/test-utils';
+import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
@@ -41,7 +36,7 @@ describe('AppTabNavigator', () => {
     });
 
     it('should render Trade tab when at least one trading flag is enabled', async () => {
-        const { getByText, getAllByText } = await renderTabs({
+        const { getByText, getByTestId } = await renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: true,
@@ -51,8 +46,6 @@ describe('AppTabNavigator', () => {
         const tradeTab = getByText('Trade');
         fireEvent.press(tradeTab);
 
-        await waitFor(() => {
-            expect(getAllByText('Buy').length).toBe(2);
-        });
+        expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
 });

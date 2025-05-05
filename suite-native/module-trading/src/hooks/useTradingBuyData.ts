@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectTradingLoadingAndTimestamp, tradingThunks } from '@suite-common/trading';
+import { selectTradingBuyLoadingTimestampAndStatus, tradingThunks } from '@suite-common/trading';
 
-export const useTradingBuyData = () => {
+export const useTradingBuyData = (reloadRequestOrdinal: number) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'buy' }));
-    }, [dispatch]);
+    }, [dispatch, reloadRequestOrdinal]);
 
-    return useSelector(selectTradingLoadingAndTimestamp);
+    return useSelector(selectTradingBuyLoadingTimestampAndStatus);
 };
