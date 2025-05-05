@@ -22,7 +22,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, FormattedNftAmount, Translation } from 'src/components/suite';
-import { IOAddress } from 'src/components/suite/copy/IOAddress';
+import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
@@ -64,7 +64,7 @@ const IOItem = ({
 
     return (
         <Column>
-            <IOAddress
+            <TxAddress
                 txAddress={address ?? ''}
                 explorerUrl={getExplorerUrl(explorer, 'address')}
                 explorerUrlQueryString={explorer?.queryString}

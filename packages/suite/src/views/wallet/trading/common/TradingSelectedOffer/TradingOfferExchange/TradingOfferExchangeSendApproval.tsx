@@ -27,8 +27,8 @@ import {
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { AccountLabeling, Address, Translation } from 'src/components/suite';
-import { IOAddress } from 'src/components/suite/copy/IOAddress';
+import { AccountLabeling, Translation } from 'src/components/suite';
+import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
@@ -178,11 +178,11 @@ export const TradingOfferExchangeSendApproval = () => {
                     />
                 }
             >
-                <Address value={dexTx.to} />
+                <TxAddress txAddress={dexTx.to} shouldChunk />
             </InfoItem>
             {selectedQuote.approvalSendTxHash && (
                 <InfoItem label={<Translation id="TR_EXCHANGE_APPROVAL_TXID" />}>
-                    <IOAddress
+                    <TxAddress
                         txAddress={selectedQuote.approvalSendTxHash}
                         explorerUrl={getExplorerUrl(explorer, 'tx')}
                         explorerUrlQueryString={explorer?.queryString}

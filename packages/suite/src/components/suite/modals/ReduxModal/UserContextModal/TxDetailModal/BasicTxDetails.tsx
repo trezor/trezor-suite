@@ -22,7 +22,7 @@ import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet, Translation } from 'src/components/suite';
-import { IOAddress } from 'src/components/suite/copy/IOAddress';
+import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
@@ -140,7 +140,7 @@ export const BasicTxDetails = ({
 
                 {/* TX ID */}
                 <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
-                    <IOAddress
+                    <TxAddress
                         txAddress={tx.txid}
                         explorerUrl={explorerUrl}
                         explorerUrlQueryString={explorerUrlQueryString}

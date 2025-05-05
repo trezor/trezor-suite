@@ -11,7 +11,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { IOAddress } from 'src/components/suite/copy/IOAddress';
+import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
@@ -113,7 +113,7 @@ export const TradingDetailExchange = () => {
             <Card>
                 {receiveTxHash && (
                     <InfoItem label={<Translation id="TR_TXID" />}>
-                        <IOAddress
+                        <TxAddress
                             txAddress={receiveTxHash}
                             explorerUrl={network?.explorer.tx}
                             explorerUrlQueryString={network?.explorer.queryString}

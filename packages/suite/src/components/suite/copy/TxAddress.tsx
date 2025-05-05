@@ -7,6 +7,8 @@ import { copyToClipboard } from '@trezor/dom-utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
+import { useSelector } from 'src/hooks/suite';
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 const IconWrapper = styled.div`
     display: none;
@@ -60,14 +62,17 @@ interface IOAddressProps {
     txAddress?: string;
     explorerUrlQueryString?: string;
     shouldAllowCopy?: boolean;
+    shouldChunk?: boolean;
 }
 
-export const IOAddress = ({
+export const TxAddress = ({
     txAddress,
     explorerUrl,
     explorerUrlQueryString = '',
     shouldAllowCopy = true,
+    shouldChunk = false,
 }: IOAddressProps) => {
+    const isChunkedSettings = useSelector(selectAddressDisplayType);
     const [isClicked, setIsClicked] = useState(false);
     const theme = useTheme();
 
@@ -81,9 +86,14 @@ export const IOAddress = ({
         setIsClicked(true);
     };
 
+    const addSpacing = (value: string) => value.match(/.{1,4}/g)?.join(' ') || value;
+
     if (!txAddress) {
         return null;
     }
+
+    const formattedTxAddress =
+        shouldChunk && isChunkedSettings === 'chunked' ? addSpacing(txAddress) : txAddress;
 
     // HiddenPlaceholder disableKeepingWidth: it isn't needed (no numbers to redact), but inline-block disrupts overflow behavior
     return (
@@ -96,7 +106,7 @@ export const IOAddress = ({
                     $shouldAllowCopy={shouldAllowCopy}
                 >
                     <Text wordBreak="break-all" onClick={copy}>
-                        {txAddress}
+                        {formattedTxAddress}
                     </Text>
                     {shouldAllowCopy ? (
                         <IconWrapper onClick={copy}>
