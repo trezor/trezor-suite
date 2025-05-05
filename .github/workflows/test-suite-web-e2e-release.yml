@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - release/2*
+      - feat-e2e-reporter-os
   workflow_dispatch:
 
 concurrency:
