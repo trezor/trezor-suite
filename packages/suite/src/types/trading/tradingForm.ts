@@ -217,6 +217,7 @@ export interface TradingExchangeFormContextProps
     signDataAndConfirm: () => Promise<void>;
     selectQuote: (quote: ExchangeTrade) => void;
     verifyAddress: TradingVerifyAccountProps;
+    watchTradeApproval: (refreshCount: number) => Promise<void>;
 }
 
 export type TradingFormMapProps = {
