@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
 import {
+    TRADING_DEFAULT_FIAT_CURRENCY,
+    TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingPaymentMethodListProps,
     type TradingSellInfoSelector,
     cryptoIdToSymbol,
@@ -11,10 +13,6 @@ import {
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
-import {
-    FORM_DEFAULT_FIAT_CURRENCY,
-    FORM_DEFAULT_PAYMENT_METHOD,
-} from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
@@ -55,12 +53,12 @@ export const useTradingSellFormDefaultValues = (
 
     const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({
-            value: FORM_DEFAULT_PAYMENT_METHOD,
+            value: TRADING_DEFAULT_PAYMENT_METHOD,
             label: '',
         }),
         [],
     );
-    const defaultCurrency = useMemo(() => buildFiatOption(FORM_DEFAULT_FIAT_CURRENCY), []);
+    const defaultCurrency = useMemo(() => buildFiatOption(TRADING_DEFAULT_FIAT_CURRENCY), []);
     const defaultPayment: Output = useMemo(
         () => ({
             ...DEFAULT_PAYMENT,

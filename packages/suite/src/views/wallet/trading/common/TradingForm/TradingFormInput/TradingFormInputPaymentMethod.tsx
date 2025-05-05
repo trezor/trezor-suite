@@ -1,10 +1,12 @@
 import { Control, Controller } from 'react-hook-form';
 
-import type { TradingPaymentMethodListProps } from '@suite-common/trading';
+import {
+    TRADING_FORM_PAYMENT_METHOD_SELECT,
+    type TradingPaymentMethodListProps,
+} from '@suite-common/trading';
 import { Select } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import {
@@ -34,7 +36,7 @@ export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefault
 
     return (
         <Controller
-            name={FORM_PAYMENT_METHOD_SELECT}
+            name={TRADING_FORM_PAYMENT_METHOD_SELECT}
             defaultValue={defaultPaymentMethod}
             control={control as Control<TradingBuySellFormProps>}
             render={({ field: { onChange, value } }) => (

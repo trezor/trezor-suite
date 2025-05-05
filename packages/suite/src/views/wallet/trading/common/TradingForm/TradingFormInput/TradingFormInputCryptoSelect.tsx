@@ -5,6 +5,8 @@ import { CryptoId } from 'invity-api';
 
 import {
     CRYPTO_PLATFORM_SEPARATOR,
+    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
     TradingCryptoSelectItemProps,
     TradingExchangeFormProps,
@@ -26,10 +28,6 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import {
-    FORM_CRYPTO_CURRENCY_SELECT,
-    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
 import { useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -150,11 +148,13 @@ export const TradingFormInputCryptoSelect = <
         if (!findOption) return;
 
         if (isTradingExchangeContext(context)) {
-            context.setValue(FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption, {
+            context.setValue(TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption, {
                 shouldDirty: true,
             });
         } else {
-            context.setValue(FORM_CRYPTO_CURRENCY_SELECT, findOption, { shouldDirty: true });
+            context.setValue(TRADING_FORM_CRYPTO_CURRENCY_SELECT, findOption, {
+                shouldDirty: true,
+            });
         }
 
         context.setAmountLimits(undefined);

@@ -1,7 +1,14 @@
-import type {
-    TradingBuyFormProps,
-    TradingExchangeFormProps,
-    TradingSellFormProps,
+import {
+    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingBuyFormProps,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount } from '@suite-common/wallet-utils';
@@ -11,15 +18,6 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import {
-    FORM_CRYPTO_CURRENCY_SELECT,
-    FORM_CRYPTO_INPUT,
-    FORM_FIAT_INPUT,
-    FORM_OUTPUT_AMOUNT,
-    FORM_OUTPUT_FIAT,
-    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-    FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 import {
@@ -92,15 +90,15 @@ export const TradingFormInputs = () => {
         return (
             <>
                 <TradingFormInputAccount<TradingSellFormProps>
-                    accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                    accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     label="TR_TRADING_YOU_SELL"
                     methods={{ ...context }}
                 />
                 <Column gap={spacings.xs}>
                     <TradingFormInputFiatCrypto<TradingSellFormProps>
-                        cryptoInputName={FORM_OUTPUT_AMOUNT}
-                        fiatInputName={FORM_OUTPUT_FIAT}
-                        cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                        cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                        fiatInputName={TRADING_FORM_OUTPUT_FIAT}
+                        cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                         currencySelectLabel={currencySelect.label}
                         cryptoCurrencyLabel={sendCryptoSelect?.value}
                         methods={{ ...context }}
@@ -170,16 +168,16 @@ export const TradingFormInputs = () => {
         return (
             <>
                 <TradingFormInputAccount<TradingExchangeFormProps>
-                    accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                    accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     label="TR_FROM"
                     data-testid="@trading/form/trade-from/select-crypto"
                     methods={{ ...context }}
                 />
                 <Column gap={spacings.xs}>
                     <TradingFormInputFiatCrypto<TradingExchangeFormProps>
-                        cryptoInputName={FORM_OUTPUT_AMOUNT}
-                        fiatInputName={FORM_OUTPUT_FIAT}
-                        cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                        cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                        fiatInputName={TRADING_FORM_OUTPUT_FIAT}
+                        cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                         currencySelectLabel={currencySelect.label}
                         cryptoCurrencyLabel={sendCryptoSelect?.value}
                         methods={{ ...context }}
@@ -205,7 +203,7 @@ export const TradingFormInputs = () => {
                 </Column>
                 <TradingFormInputCryptoSelect<TradingExchangeFormProps>
                     label="TR_TO"
-                    cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
+                    cryptoSelectName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                     supportedCryptoCurrencies={supportedCryptoCurrencies}
                     methods={{ ...context }}
                 />
@@ -234,15 +232,15 @@ export const TradingFormInputs = () => {
         <>
             <TradingFormInputCryptoSelect<TradingBuyFormProps>
                 label="TR_TRADING_YOU_BUY"
-                cryptoSelectName={FORM_CRYPTO_CURRENCY_SELECT}
+                cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
                 supportedCryptoCurrencies={supportedCryptoCurrencies}
                 methods={{ ...context }}
                 isDisabled={hasBitcoinOnlyFirmware(device)}
             />
             <TradingFormInputFiatCrypto<TradingBuyFormProps>
-                cryptoInputName={FORM_CRYPTO_INPUT}
-                fiatInputName={FORM_FIAT_INPUT}
-                cryptoSelectName={FORM_CRYPTO_CURRENCY_SELECT}
+                cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
+                fiatInputName={TRADING_FORM_FIAT_INPUT}
+                cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
                 currencySelectLabel={currencySelect.label}
                 cryptoCurrencyLabel={cryptoSelect.value}
                 methods={{ ...context }}

@@ -6,6 +6,8 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     type TradingExchangeUserConsentProps,
@@ -32,7 +34,6 @@ import { isChanged } from '@trezor/utils';
 import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingAccountKey } from 'src/hooks/wallet/trading/form/common/useTradingAccountKey';
@@ -207,8 +208,8 @@ export const useTradingExchangeForm = ({
         quoteCryptoAmount: quotes?.[0]?.sendStringAmount,
         quoteFiatAmount: fiatOfBestScoredQuote ?? '',
         inputNames: {
-            cryptoInput: FORM_OUTPUT_AMOUNT,
-            fiatInput: FORM_OUTPUT_FIAT,
+            cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
+            fiatInput: TRADING_FORM_OUTPUT_FIAT,
         },
     });
 
@@ -218,7 +219,7 @@ export const useTradingExchangeForm = ({
         timer,
         shouldSendInSats,
         composeRequestCallback: () => {
-            composeRequest(FORM_OUTPUT_AMOUNT);
+            composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
     });
 

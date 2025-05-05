@@ -6,6 +6,8 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
     type TradingAmountLimitProps,
     type TradingSellFormProps,
     type TradingSellType,
@@ -32,7 +34,6 @@ import { openDeferredModal } from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingAccountKey } from 'src/hooks/wallet/trading/form/common/useTradingAccountKey';
@@ -197,8 +198,8 @@ export const useTradingSellForm = ({
         quoteCryptoAmount: quotesByPaymentMethod?.[0]?.cryptoStringAmount,
         quoteFiatAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
         inputNames: {
-            cryptoInput: FORM_OUTPUT_AMOUNT,
-            fiatInput: FORM_OUTPUT_FIAT,
+            cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
+            fiatInput: TRADING_FORM_OUTPUT_FIAT,
         },
     });
 
@@ -208,7 +209,7 @@ export const useTradingSellForm = ({
         timer,
         shouldSendInSats,
         composeRequestCallback: () => {
-            composeRequest(FORM_OUTPUT_AMOUNT);
+            composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
         setValue,
     });

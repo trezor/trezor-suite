@@ -1,11 +1,10 @@
 import { Control, Controller } from 'react-hook-form';
 
-import { regional } from '@suite-common/trading';
+import { TRADING_FORM_COUNTRY_SELECT, regional } from '@suite-common/trading';
 import { Flag, Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { FORM_COUNTRY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import {
@@ -21,7 +20,7 @@ export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps)
 
     return (
         <Controller
-            name={FORM_COUNTRY_SELECT}
+            name={TRADING_FORM_COUNTRY_SELECT}
             defaultValue={defaultCountry}
             control={control as Control<TradingBuySellFormProps>}
             render={({ field: { onChange, value } }) => (

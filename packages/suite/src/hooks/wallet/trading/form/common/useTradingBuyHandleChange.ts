@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
-import { TradingBuyFormProps, buyThunks, getTradingPaymentMethods } from '@suite-common/trading';
+import {
+    TRADING_FORM_PAYMENT_METHOD_SELECT,
+    TradingBuyFormProps,
+    buyThunks,
+    getTradingPaymentMethods,
+} from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
 
-import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/trading/form';
 import { useDispatch } from 'src/hooks/suite';
 
 type TradingBuyUseHandleChangeProps = {
@@ -65,7 +69,7 @@ export const useTradingBuyHandleChange = ({
                     paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
                     undefined;
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
-                    setValue(FORM_PAYMENT_METHOD_SELECT, {
+                    setValue(TRADING_FORM_PAYMENT_METHOD_SELECT, {
                         value: bestQuotePaymentMethod ?? '',
                         label: bestQuotePaymentMethodName ?? '',
                     });

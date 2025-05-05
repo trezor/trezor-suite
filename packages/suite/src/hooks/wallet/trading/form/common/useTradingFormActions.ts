@@ -5,6 +5,14 @@ import { useDebounce } from 'react-use';
 import { FiatCurrencyCode } from 'invity-api';
 
 import {
+    TRADING_FORM_CRYPTO_TOKEN,
+    TRADING_FORM_OUTPUT_ADDRESS,
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_CURRENCY,
+    TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_OUTPUT_MAX,
+    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     cryptoIdToSymbol,
@@ -21,16 +29,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber, isChanged } from '@trezor/utils';
 
-import {
-    FORM_CRYPTO_TOKEN,
-    FORM_OUTPUT_ADDRESS,
-    FORM_OUTPUT_AMOUNT,
-    FORM_OUTPUT_CURRENCY,
-    FORM_OUTPUT_FIAT,
-    FORM_OUTPUT_MAX,
-    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-    FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -100,7 +98,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         if (!tradingFiatValues) return;
 
         const rate = await tradingFiatValues.fiatRatesUpdater(value);
-        const amount = getValues(FORM_OUTPUT_AMOUNT);
+        const amount = getValues(TRADING_FORM_OUTPUT_AMOUNT);
         const formattedAmount = new BigNumber(
             shouldSendInSats ? formatAmount(amount, networkDecimals) : amount,
         );
@@ -113,7 +111,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         ) {
             const fiatValueBigNumber = formattedAmount.multipliedBy(rate.rate);
 
-            setValue(FORM_OUTPUT_FIAT, fiatValueBigNumber.toFixed(2), {
+            setValue(TRADING_FORM_OUTPUT_FIAT, fiatValueBigNumber.toFixed(2), {
                 shouldValidate: true,
             });
         }
@@ -122,7 +120,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     // watch change in fiat amount and recalculate fees on change
     const calculateCryptoAmountFromFiat = useCallback(
         (fiatAmount: string | undefined) => {
-            const fiatCurrency = getValues(FORM_OUTPUT_CURRENCY);
+            const fiatCurrency = getValues(TRADING_FORM_OUTPUT_CURRENCY);
 
             if (!tradingFiatValues || !fiatCurrency || !fiatAmount) {
                 return;
@@ -138,7 +136,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                 cryptoAmount && shouldSendInSats
                     ? amountToSmallestUnit(cryptoAmount, networkDecimals)
                     : (cryptoAmount ?? '');
-            setValue(FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
+            setValue(TRADING_FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
         },
         [getValues, tradingFiatValues, networkDecimals, shouldSendInSats, setValue],
     );
@@ -155,7 +153,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             );
 
             setValue(
-                FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+                TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
                 buildDefaultCryptoOption(receiveCryptoSelect),
             );
         }
@@ -163,7 +161,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
     const onCryptoCurrencyChange = async (selected: TradingAccountOptionsGroupOptionProps) => {
         const symbol = cryptoIdToSymbol(selected.value);
-        const cryptoSelectedCurrent = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
+        const cryptoSelectedCurrent = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
         const isSameCryptoSelected =
             cryptoSelectedCurrent &&
             cryptoSelectedCurrent.descriptor === selected.descriptor &&
@@ -175,12 +173,12 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         if (!account || isSameCryptoSelected) return;
 
         const { address, token } = getAddressAndTokenFromAccountOptionsGroupProps(selected);
-        setValue(FORM_OUTPUT_ADDRESS, address);
-        setValue(FORM_CRYPTO_TOKEN, token);
-        setValue(FORM_OUTPUT_MAX, undefined);
-        setValue(FORM_OUTPUT_FIAT, '');
-        setValue(FORM_OUTPUT_AMOUNT, '');
-        setValue(FORM_SEND_CRYPTO_CURRENCY_SELECT, selected);
+        setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
+        setValue(TRADING_FORM_CRYPTO_TOKEN, token);
+        setValue(TRADING_FORM_OUTPUT_MAX, undefined);
+        setValue(TRADING_FORM_OUTPUT_FIAT, '');
+        setValue(TRADING_FORM_OUTPUT_AMOUNT, '');
+        setValue(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, selected);
         setAmountLimits(undefined);
         setComposedLevels(undefined);
 
@@ -189,7 +187,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         changeFeeLevel('normal'); // reset fee level
 
         await tradingFiatValues?.fiatRatesUpdater(
-            getValues(FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
+            getValues(TRADING_FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
             selected.contractAddress as TokenAddress,
         );
     };
@@ -207,20 +205,20 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const cryptoInputValue = shouldSendInSats
             ? amountToSmallestUnit(amount, networkDecimals)
             : amount;
-        clearErrors([FORM_OUTPUT_FIAT, FORM_OUTPUT_AMOUNT]);
-        setValue(FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
-        setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
+        clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
+        setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
+        setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
         setFractionButton(divisor);
     };
 
     const setAllAmount = () => {
-        setValue(FORM_OUTPUT_MAX, 0, { shouldDirty: true });
-        setValue(FORM_OUTPUT_FIAT, '', { shouldDirty: true });
-        setValue(FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
-        clearErrors([FORM_OUTPUT_FIAT, FORM_OUTPUT_AMOUNT]);
+        setValue(TRADING_FORM_OUTPUT_MAX, 0, { shouldDirty: true });
+        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
+        setValue(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
+        clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
         setFractionButton(1);
-        composeRequest(FORM_OUTPUT_AMOUNT);
+        composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
     };
 
     // call change handler on every change of text inputs with debounce

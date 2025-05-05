@@ -1,13 +1,16 @@
 import { FieldErrors, UseControllerProps } from 'react-hook-form';
 
-import { TradingBuyFormProps } from '@suite-common/trading';
+import {
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+    TradingBuyFormProps,
+} from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -43,11 +46,11 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
     } = methods;
 
     const fiatInputError =
-        cryptoInputName === FORM_OUTPUT_FIAT
+        cryptoInputName === TRADING_FORM_OUTPUT_FIAT
             ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.fiat
             : (errors as FieldErrors<TradingBuyFormProps>).fiatInput;
     const cryptoInputError =
-        cryptoInputName === FORM_OUTPUT_AMOUNT
+        cryptoInputName === TRADING_FORM_OUTPUT_AMOUNT
             ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.amount
             : undefined;
 

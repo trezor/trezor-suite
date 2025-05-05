@@ -4,14 +4,13 @@ import type { MenuPlacement } from 'react-select';
 
 import { CryptoId } from 'invity-api';
 
-import { useTradingInfo } from '@suite-common/trading';
+import { TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Column, InfoSegments, Select } from '@trezor/components';
 import type { AccountAddress } from '@trezor/connect';
 
 import { Translation } from 'src/components/suite';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
@@ -99,7 +98,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
                         if (!accountAddress || !account || !receiveSymbol) return null;
 
                         const sendCryptoSelect = isTradingExchangeContext(context)
-                            ? context.getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT)
+                            ? context.getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)
                             : undefined;
 
                         const networkDecimals = getTradingNetworkDecimals({

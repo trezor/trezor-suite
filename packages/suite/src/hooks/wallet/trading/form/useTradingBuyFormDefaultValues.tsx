@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
+    TRADING_DEFAULT_FIAT_CURRENCY,
+    TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
     type TradingPaymentMethodListProps,
     getDefaultCountry,
@@ -12,10 +14,6 @@ import {
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 
-import {
-    FORM_DEFAULT_FIAT_CURRENCY,
-    FORM_DEFAULT_PAYMENT_METHOD,
-} from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
@@ -39,13 +37,13 @@ export const useTradingBuyFormDefaultValues = (
     );
     const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({
-            value: FORM_DEFAULT_PAYMENT_METHOD,
+            value: TRADING_DEFAULT_PAYMENT_METHOD,
             label: '',
         }),
         [],
     );
     const suggestedFiatCurrency = (buyInfo?.buyInfo?.suggestedFiatCurrency?.toLowerCase() ??
-        FORM_DEFAULT_FIAT_CURRENCY) as FiatCurrencyCode;
+        TRADING_DEFAULT_FIAT_CURRENCY) as FiatCurrencyCode;
     const defaultCurrency = useMemo(
         () => buildFiatOption(suggestedFiatCurrency),
         [suggestedFiatCurrency],
