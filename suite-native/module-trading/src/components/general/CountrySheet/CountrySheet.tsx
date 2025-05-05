@@ -25,7 +25,7 @@ export const CountrySheet = ({
     onCountrySelect,
     selectedCountryId,
 }: CountrySheetProps) => {
-    const { filteredData, setFilterValue } = useCountryFilteredData();
+    const { filteredData, filterValue, setFilterValue } = useCountryFilteredData();
 
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(
@@ -45,6 +45,8 @@ export const CountrySheet = ({
     };
 
     const listHeight = Dimensions.get('window').height * 0.9;
+    // re-mount FLashList component when filterValue changes (resets scroll position)
+    const flashListKey = 'countries_list-' + filterValue;
 
     return (
         <BottomSheetFlashList<Country>
@@ -64,6 +66,7 @@ export const CountrySheet = ({
             estimatedItemSize={COUNTRY_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
             keyboardShouldPersistTaps="handled"
+            flashListKey={flashListKey}
         />
     );
 };

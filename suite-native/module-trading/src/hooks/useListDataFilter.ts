@@ -5,6 +5,7 @@ export const useListDataFilter = <T>(
     filterCallback: (item: T, filterValue: string) => boolean,
 ): {
     filteredData: T[];
+    filterValue: string;
     setFilterValue: (value: string) => void;
 } => {
     const [filterValue, setFilterValue] = useState('');
@@ -17,5 +18,5 @@ export const useListDataFilter = <T>(
         return rawData;
     }, [rawData, filterValue, filterCallback]);
 
-    return { filteredData, setFilterValue };
+    return { filteredData, filterValue, setFilterValue };
 };

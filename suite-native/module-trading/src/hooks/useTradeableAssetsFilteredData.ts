@@ -41,7 +41,12 @@ export const useTradeableAssetsFilteredData = ({ assets }: { assets: TradeableAs
         return assets.filter(a => filterSymbol === cryptoIdToSymbol(a.cryptoId));
     }, [assets, filterSymbol]);
 
-    const listDataFilter = useListDataFilter(assetsFilteredByNetwork, filterCallback);
+    const { setFilterValue, filteredData, filterValue } = useListDataFilter(
+        assetsFilteredByNetwork,
+        filterCallback,
+    );
 
-    return { setFilterSymbol, ...listDataFilter };
+    const filterValueWithNetwork = `Network:${filterSymbol ? filterSymbol : 'all'};Search:${filterValue}`;
+
+    return { setFilterSymbol, setFilterValue, filteredData, filterValue: filterValueWithNetwork };
 };

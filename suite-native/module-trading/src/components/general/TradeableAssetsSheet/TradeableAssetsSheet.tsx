@@ -20,6 +20,7 @@ export type TradeableAssetsSheetProps = {
     assets: TradeableAsset[];
     onFilterChange: (value: string) => void;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
+    flashListKey: string;
 };
 
 const keyExtractor = ({ cryptoId }: TradeableAsset) => `asset_${cryptoId}`;
@@ -37,6 +38,7 @@ export const TradeableAssetsSheet = ({
     assets,
     onFilterChange,
     onSelectedNetworkFilter,
+    flashListKey,
 }: TradeableAssetsSheetProps) => {
     const onAssetSelectCallback = (asset: TradeableAsset) => {
         onAssetSelect(asset);
@@ -67,6 +69,7 @@ export const TradeableAssetsSheet = ({
             keyExtractor={keyExtractor}
             estimatedItemSize={ASSET_ITEM_HEIGHT}
             renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
+            flashListKey={flashListKey}
             noSingletonSectionHeader
         />
     );

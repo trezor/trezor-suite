@@ -56,6 +56,7 @@ describe('CountryOfResidencePicker', () => {
         mockUseListDataFilter = () => ({
             filteredData: [],
             setFilterValue: jest.fn(),
+            filterValue: 'test-key',
         });
         const { getByText } = await renderCountryOfResidencePicker();
         fireEvent.press(getByText('Country of residence'));

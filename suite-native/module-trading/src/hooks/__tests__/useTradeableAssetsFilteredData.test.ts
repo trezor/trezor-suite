@@ -115,4 +115,43 @@ describe('useTradeableAssetsFilteredData', () => {
         });
         expect(result.current.filteredData).toHaveLength(0);
     });
+
+    describe('filterValue', () => {
+        it('should have correct value for empty filter', () => {
+            const { result } = renderUseTradeableAssetsFilteredData();
+
+            expect(result.current.filterValue).toEqual('Network:all;Search:');
+        });
+
+        it('should be affected by search value', () => {
+            const { result } = renderUseTradeableAssetsFilteredData();
+
+            act(() => {
+                result.current.setFilterValue('search text');
+            });
+
+            expect(result.current.filterValue).toEqual('Network:all;Search:search text');
+        });
+
+        it('should be affected by network selection', () => {
+            const { result } = renderUseTradeableAssetsFilteredData();
+
+            act(() => {
+                result.current.setFilterSymbol('eth' as NetworkSymbol);
+            });
+
+            expect(result.current.filterValue).toEqual('Network:eth;Search:');
+        });
+
+        it('should be affected by both search value and network selection', () => {
+            const { result } = renderUseTradeableAssetsFilteredData();
+
+            act(() => {
+                result.current.setFilterValue('search text');
+                result.current.setFilterSymbol('eth' as NetworkSymbol);
+            });
+
+            expect(result.current.filterValue).toEqual('Network:eth;Search:search text');
+        });
+    });
 });

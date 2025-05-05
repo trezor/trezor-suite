@@ -61,4 +61,14 @@ describe('useFiatCurrencyFilteredData', () => {
             expect.objectContaining({ value: 'usd' }),
         ]);
     });
+
+    it('should return current filter value', async () => {
+        const { result } = await renderUseFiatCurrencyFilteredData();
+
+        act(() => {
+            result.current.setFilterValue('usd');
+        });
+
+        expect(result.current.filterValue).toEqual('usd');
+    });
 });

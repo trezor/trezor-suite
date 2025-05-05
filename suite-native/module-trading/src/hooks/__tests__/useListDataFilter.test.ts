@@ -30,4 +30,20 @@ describe('useListDataFilter', () => {
 
         expect(result.current.filteredData).toEqual([rawListData[0]]);
     });
+
+    it('should return empty string as filter value by default', () => {
+        const { result } = renderUseListDataFilter();
+
+        expect(result.current.filterValue).toEqual('');
+    });
+
+    it('should return current filter value as string', () => {
+        const { result } = renderUseListDataFilter();
+
+        act(() => {
+            result.current.setFilterValue('Item 1');
+        });
+
+        expect(result.current.filterValue).toEqual('Item 1');
+    });
 });

@@ -6,11 +6,15 @@ import {
 
 export type BuyTradeableAssetsSheetProps = Omit<
     TradeableAssetsSheetProps,
-    'assets' | 'onFilterChange' | 'onSelectedNetworkFilter'
+    'assets' | 'onFilterChange' | 'onSelectedNetworkFilter' | 'flashListKey'
 >;
 
 export const BuyTradeableAssetsSheet = (props: BuyTradeableAssetsSheetProps) => {
-    const { filteredData, setFilterValue, setFilterSymbol } = useBuyTradeableAssetsFilteredData();
+    const { filteredData, filterValue, setFilterValue, setFilterSymbol } =
+        useBuyTradeableAssetsFilteredData();
+
+    // re-mount FLashList component when filterValue changes (resets scroll position)
+    const flashListKey = 'buy_tradeable_assets-' + filterValue;
 
     return (
         <TradeableAssetsSheet
@@ -18,6 +22,7 @@ export const BuyTradeableAssetsSheet = (props: BuyTradeableAssetsSheetProps) => 
             onFilterChange={setFilterValue}
             {...props}
             onSelectedNetworkFilter={setFilterSymbol}
+            flashListKey={flashListKey}
         />
     );
 };

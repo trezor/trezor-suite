@@ -20,7 +20,7 @@ export type FiatCurrencySheetProps = {
 const keyExtractor = (item: FiatCurrencyItem) => item.value;
 
 export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurrencySheetProps) => {
-    const { filteredData, setFilterValue } = useFiatCurrencyFilteredData();
+    const { filteredData, filterValue, setFilterValue } = useFiatCurrencyFilteredData();
 
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(
@@ -40,6 +40,9 @@ export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurr
         onClose();
     };
 
+    // re-mount FLashList component when filterValue changes (resets scroll position)
+    const flashListKey = 'fiat_currencies_list-' + filterValue;
+
     return (
         <TradingBottomSheetSectionList<FiatCurrencyItem>
             isVisible={isVisible}
@@ -52,6 +55,7 @@ export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurr
             data={filteredData}
             estimatedItemSize={FIAT_CURRENCY_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
+            flashListKey={flashListKey}
             noSingletonSectionHeader
         />
     );

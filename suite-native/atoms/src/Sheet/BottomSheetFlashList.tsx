@@ -19,6 +19,7 @@ export type BottomSheetFlashListProps<TItem> = {
     subtitle?: ReactNode;
     estimatedListHeight?: number;
     handleComponent?: BottomSheetProps['handleComponent'];
+    flashListKey?: string;
 } & FlashListProps<TItem>;
 
 const DEFAULT_INSET_BOTTOM = 25;
@@ -52,6 +53,7 @@ export const BottomSheetFlashList = <TItem,>({
     subtitle,
     estimatedListHeight = 0,
     handleComponent,
+    flashListKey,
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
@@ -112,6 +114,7 @@ export const BottomSheetFlashList = <TItem,>({
             keyboardBehavior="fillParent"
         >
             <FlashList
+                key={flashListKey}
                 {...flashListProps}
                 contentContainerStyle={applyStyle(sheetContentContainerStyle, {
                     insetBottom,

@@ -64,6 +64,7 @@ describe('FiatCurrencyPicker', () => {
         mockUseListDataFilter = () => ({
             filteredData: [],
             setFilterValue: jest.fn(),
+            filterValue: 'test-key',
         });
 
         const { getByText } = await renderFiatCurrencyPicker();

@@ -11,10 +11,11 @@ const filterCallback = ({ label, value }: FiatCurrencyItem, filterValue: string)
 
 export const useFiatCurrencyFilteredData = () => {
     const supportedCurrencies = useSelector(selectBuySupportedFiatCurrenciesList);
-    const { filteredData: data, setFilterValue } = useListDataFilter(
-        supportedCurrencies,
-        filterCallback,
-    );
+    const {
+        filteredData: data,
+        filterValue,
+        setFilterValue,
+    } = useListDataFilter(supportedCurrencies, filterCallback);
 
     const filteredData = useMemo(
         () => [
@@ -30,6 +31,7 @@ export const useFiatCurrencyFilteredData = () => {
 
     return {
         filteredData,
+        filterValue,
         setFilterValue,
     };
 };
