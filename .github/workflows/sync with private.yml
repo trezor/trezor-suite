@@ -1,0 +1,74 @@
+#.github/workflows/sync-develop-to-private.yml
+name: Sync Develop to Private Repo
+
+on:
+  push:
+    branches:
+      - develop # Trigger only on pushes to the public develop branch
+
+jobs:
+  sync:
+    name: Sync Develop Branch
+    runs-on: ubuntu-latest
+    # Limit permissions for GITHUB_TOKEN to read-only for security.
+    # We use a separate credential for the private repo push.
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Public Repo (Source)
+        uses: actions/checkout@v4
+        with:
+          repository: trezor/trezor-suite # Explicitly state the public repo
+          ref: develop # Ensure we are checking out the develop branch
+          path: public-suite # Checkout to a specific directory
+          fetch-depth: 0 # Fetch all history to ensure proper sync later
+
+      - name: Setup SSH Agent for Private Repo Access
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.PRIVATE_REPO_DEPLOY_KEY }} # Use SSH Deploy Key secret
+
+      # Add the private repo's host key to known_hosts to avoid interactive prompts
+      - name: Add Private Repo Host Key
+        run: ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Clone Private Repo (Target)
+        run: |
+          # Clone only the develop branch to a separate directory using SSH
+          # Use SSH URL (git@github.com:...) which uses the key setup via ssh-agent
+          git clone --branch develop --single-branch git@github.com:trezor/trezor-suite-private.git private-suite
+        # Error handling can be added here if the clone fails (e.g., branch doesn't exist)
+
+      - name: Configure Git User
+        run: |
+          cd private-suite
+          git config user.name "Trezor Sync Bot"
+          git config user.email "actions-sync@users.noreply.github.com" # Or a dedicated bot email
+
+      - name: Perform Synchronization
+        run: |
+          cd private-suite
+          # Add the public repo as a remote
+          git remote add public../public-suite
+          # Fetch updates from the public repo's develop branch
+          git fetch public develop
+          # Reset the local develop branch to match the public develop branch
+          # WARNING: This discards history unique to the private repo's develop branch!
+          git reset --hard public/develop
+          # Remove the temporary remote
+          git remote remove public
+
+      - name: Push Changes to Private Repo (Develop Branch)
+        run: |
+          cd private-suite
+          # Push the synchronized state to the private repo's develop branch
+          # Use --force-with-lease for safety against overwriting unseen remote changes
+          #!! CAUTION: This overwrites the history on the private repo's develop branch!!
+          git push origin develop --force-with-lease
+          # If tags should also be synced (use with caution):
+          # git push origin develop --force-with-lease --tags
+
+      # Optional: Cleanup step if needed (though runner cleans workspace automatically)
+      # - name: Cleanup Workspace
+      #   run: rm -rf public-suite private-suite
