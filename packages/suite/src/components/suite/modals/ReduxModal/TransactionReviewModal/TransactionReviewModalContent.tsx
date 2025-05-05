@@ -105,10 +105,7 @@ const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormSta
 const mapRbfTypeToReporting: Record<
     RbfTransactionType,
     TransactionCreatedEvent['payload']['action']
-> = {
-    'bump-fee': 'replaced',
-    cancel: 'canceled',
-};
+> = { 'bump-fee': 'replaced', cancel: 'canceled' };
 
 type TransactionReviewModalContentProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
@@ -284,10 +281,7 @@ export const TransactionReviewModalContent = ({
             if (stakeType) {
                 return analytics.report({
                     type: EventType.StakingConfirm,
-                    payload: {
-                        action: stakeType,
-                        networkSymbol: symbol,
-                    },
+                    payload: { action: stakeType, networkSymbol: symbol },
                 });
             }
         }
@@ -297,11 +291,7 @@ export const TransactionReviewModalContent = ({
         const result = copyToClipboard(serializedTx!.tx);
 
         if (typeof result !== 'string') {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'copy-to-clipboard',
-                }),
-            );
+            dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
 
         reportTransactionCreatedEvent('copied');
@@ -361,6 +351,7 @@ export const TransactionReviewModalContent = ({
                     data-testid="@modal/send"
                     isDisabled={!serializedTx}
                     isLoading={isSending}
+                    variant={isCancelRbfAction ? 'destructive' : 'primary'}
                     onClick={handleSend}
                 >
                     <Translation id={actionLabel} />
