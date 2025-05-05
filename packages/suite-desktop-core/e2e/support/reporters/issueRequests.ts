@@ -61,33 +61,35 @@ export class IssueRequests {
         await this.octokit.graphql<UpdateProjectItemFieldResponse>(mutation);
     }
 
-    private escapeGraphQLString(input: string): string {
-        return input.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    }
-
     async createDraftIssueInProject(
         projectId: string,
         title: string,
         body: string,
     ): Promise<string> {
         const mutation = `
-        mutation {
-          addProjectV2DraftIssue(
-            input: {
-              assigneeIds: []
-              projectId: "${projectId}"
-              title: "${this.escapeGraphQLString(title)}"
-              body: "${this.escapeGraphQLString(body)}"
-            }
-          ) {
-            projectItem {
-              id
-            }
+      mutation($projectId: ID!, $title: String!, $body: String!) {
+        addProjectV2DraftIssue(
+          input: {
+            assigneeIds: []
+            projectId: $projectId
+            title: $title
+            body: $body
+          }
+        ) {
+          projectItem {
+            id
           }
         }
-    `;
+      }
+      `;
 
-        const response = await this.octokit.graphql<AddDraftIssueResponse>(mutation);
+        const variables = {
+            projectId,
+            title,
+            body,
+        };
+
+        const response = await this.octokit.graphql<AddDraftIssueResponse>(mutation, variables);
         const issueId = response.addProjectV2DraftIssue.projectItem.id;
 
         return issueId;

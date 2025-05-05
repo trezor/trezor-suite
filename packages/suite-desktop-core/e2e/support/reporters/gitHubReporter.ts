@@ -7,7 +7,12 @@ import { TestReportProvider } from './annotations';
 import { GitHubProject } from './gitHubProject';
 import { IssueRequests } from './issueRequests';
 import { LoggingFunctions, ProjectField } from './types';
-import { statusAnnotation } from '../enums/testAnnotations';
+import {
+    TestOsEmoticons,
+    TestOsMatrix,
+    osMatrixAnnotation,
+    statusAnnotation,
+} from '../enums/testAnnotations';
 
 const RETRY_CONF = {
     attempts: 3,
@@ -134,7 +139,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
                     if (report.isRetryAttempt && this.createdIssuesMap.has(test.id)) {
                         await this.updateIssue(test, report);
                     } else {
-                        await this.createIssue(test, report);
+                        await this.createIssuePerOs(test, report);
                     }
                 } catch (error) {
                     this.logError(`Failed to process test end for "${test.title}":`, error);
@@ -171,40 +176,6 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         }
     }
 
-    private async createIssue(test: TestCase, report: TestReportProvider): Promise<void> {
-        const issueNodeId = await scheduleAction(() => {
-            this.log(`Creating GitHub draft issue for test "${test.title}"...`);
-
-            return this.issueRequests.createDraftIssueInProject(
-                this.gitHubProject.id,
-                report.testCase,
-                report.bodyDescription,
-            );
-        }, RETRY_CONF);
-
-        this.createdIssuesMap.set(test.id, issueNodeId);
-        this.log(`[${issueNodeId}] Successfully created issue "${test.title}"`);
-
-        const fields = await scheduleAction(() => this.getProjectFields(), RETRY_CONF);
-
-        for (const { name, value } of report.projectValues) {
-            const { fieldId, valueOrOptionId } = this.resolveFieldAndValue(fields, name, value);
-            await scheduleAction(() => {
-                this.log(`[${issueNodeId}] Updating field ${name}:"${value}"...`);
-
-                return this.issueRequests.setItemValue(
-                    this.gitHubProject.id,
-                    issueNodeId,
-                    fieldId,
-                    valueOrOptionId,
-                );
-            }, RETRY_CONF);
-            this.log(`[${issueNodeId}] Successfully updated field ${name}:"${value}"`);
-        }
-
-        this.log(`[${issueNodeId}] Successfully recorded test result for "${test.title}"`);
-    }
-
     private async updateIssue(test: TestCase, report: TestReportProvider): Promise<void> {
         const issueNodeId = this.createdIssuesMap.get(test.id);
         if (!issueNodeId) {
@@ -233,6 +204,57 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         this.log(`[${issueNodeId}] Successfully updated test result for "${test.title}"`);
     }
 
+    private async createIssuePerOs(test: TestCase, report: TestReportProvider): Promise<void> {
+        const fields = await scheduleAction(() => this.getProjectFields(), RETRY_CONF);
+
+        for (const operationSystem of report.osMatrix) {
+            const issueNodeId = await scheduleAction(() => {
+                this.log(
+                    `Creating GitHub draft issue for test "(${operationSystem}) ${test.title}"...`,
+                );
+
+                const titleWithOptionalEmoticons = report.useOsEmoticons
+                    ? `${TestOsEmoticons[operationSystem as TestOsMatrix]} ${report.testCase}`
+                    : report.testCase;
+
+                return this.issueRequests.createDraftIssueInProject(
+                    this.gitHubProject.id,
+                    titleWithOptionalEmoticons,
+                    report.bodyDescription,
+                );
+            }, RETRY_CONF);
+
+            this.createdIssuesMap.set(test.id, issueNodeId);
+            this.log(
+                `[${issueNodeId}] Successfully created issue "(${operationSystem}) ${test.title}"`,
+            );
+
+            for (const { name, value } of report.projectValues) {
+                const { fieldId, valueOrOptionId } = this.resolveFieldAndValue(
+                    fields,
+                    name,
+                    value,
+                    operationSystem,
+                );
+                await scheduleAction(() => {
+                    this.log(`[${issueNodeId}] Updating field ${name}:"${value}"...`);
+
+                    return this.issueRequests.setItemValue(
+                        this.gitHubProject.id,
+                        issueNodeId,
+                        fieldId,
+                        valueOrOptionId,
+                    );
+                }, RETRY_CONF);
+                this.log(`[${issueNodeId}] Successfully updated field ${name}:"${value}"`);
+            }
+
+            this.log(
+                `[${issueNodeId}] Successfully recorded test result for "(${operationSystem}) ${test.title}"`,
+            );
+        }
+    }
+
     private async getProjectFields(): Promise<ProjectField[]> {
         if (this.cachedFields) {
             return this.cachedFields;
@@ -247,34 +269,60 @@ class GitHubReporter implements Reporter, LoggingFunctions {
     }
 
     private resolveFieldAndValue(
-        fields: ProjectField[],
-        name: string,
-        value: string,
+        fieldsInGitHub: ProjectField[],
+        fieldNameToResolve: string,
+        fieldValueToResolve: string,
+        operationSystem?: string,
     ): { fieldId: string; valueOrOptionId: string } {
-        const field = fields.find(f => f.name === name);
+        const resolvedField = fieldsInGitHub.find(f => f.name === fieldNameToResolve);
 
-        if (!field) {
+        if (!resolvedField) {
             throw new Error(
-                `Field "${name}" not found in project fields: \n ${JSON.stringify(fields, null, 2)}`,
+                `Field "${fieldNameToResolve}" not found in project fields: \n ${JSON.stringify(fieldsInGitHub, null, 2)}`,
             );
         }
 
-        if (field.dataType === 'SINGLE_SELECT' && field.options) {
-            const option = field.options.find(opt => opt.name === value);
-            if (!option) {
+        // resolve OS Matrix field specifically
+        // When processing OS Matrix values, we need to use the current OS being processed
+        // rather than the general field value from the test report. Since we create a new issue for each OS,
+        const isResolvingOsMatrix =
+            resolvedField.dataType === 'SINGLE_SELECT' &&
+            fieldNameToResolve === osMatrixAnnotation.name;
+        if (isResolvingOsMatrix && resolvedField.options) {
+            const resolvedOsOption = resolvedField.options.find(
+                opt => opt.name === operationSystem,
+            );
+            if (!resolvedOsOption) {
                 throw new Error(
-                    `Value "${value}" not found in field "${name}". Options: \n ${JSON.stringify(field.options, null, 2)}`,
+                    `Value "${operationSystem}" not found in field "${osMatrixAnnotation.name}". Options: \n ${JSON.stringify(resolvedField.options, null, 2)}`,
                 );
             }
 
             return {
-                fieldId: field.id,
-                valueOrOptionId: `{ singleSelectOptionId: "${option.id}" }`,
+                fieldId: resolvedField.id,
+                valueOrOptionId: `{ singleSelectOptionId: "${resolvedOsOption.id}" }`,
             };
         }
 
-        // Currently we support only SINGLE_SELECT and TEXT fields
-        return { fieldId: field.id, valueOrOptionId: `{ text: "${value}" }` };
+        // resolve SINGLE_SELECT field and value
+        if (resolvedField.dataType === 'SINGLE_SELECT' && resolvedField.options) {
+            const resolvedOption = resolvedField.options.find(
+                opt => opt.name === fieldValueToResolve,
+            );
+            if (!resolvedOption) {
+                throw new Error(
+                    `Value "${fieldValueToResolve}" not found in field "${fieldNameToResolve}". Options: \n ${JSON.stringify(resolvedField.options, null, 2)}`,
+                );
+            }
+
+            return {
+                fieldId: resolvedField.id,
+                valueOrOptionId: `{ singleSelectOptionId: "${resolvedOption.id}" }`,
+            };
+        }
+
+        // resolve TEXT field. Currently we support only SINGLE_SELECT and TEXT fields. Text values are passed as is.
+        return { fieldId: resolvedField.id, valueOrOptionId: `{ text: "${fieldValueToResolve}" }` };
     }
 
     private async waitForOnBeginInit(): Promise<void> {

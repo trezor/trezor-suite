@@ -7,6 +7,7 @@ import {
     DeviceModel,
     TestAnnotationType,
     TestCategory,
+    TestOsMatrix,
     TestPriority,
     TestStatus,
     TestStream,
@@ -22,7 +23,11 @@ type TestMetadataInput = {
     category?: TestCategory;
     priority?: TestPriority;
     stream?: TestStream;
+    deviceModel?: DeviceModel;
+    osMatrix?: TestOsMatrix[];
 };
+
+const ARRAY_DELIMITER = ', ';
 
 const formatList = (steps: string[]): string =>
     steps.map((step, index) => `${index + 1}. ${step}`).join('\n');
@@ -41,7 +46,8 @@ export const createTestAnnotation = (metadata: TestMetadataInput): TestDetailsAn
         if (annotation.needsFormatting) {
             formattedAnnotations.push({ type, description: formatList(value as string[]) });
         } else {
-            formattedAnnotations.push({ type, description: value as string });
+            const description = Array.isArray(value) ? value.join(ARRAY_DELIMITER) : value;
+            formattedAnnotations.push({ type, description });
         }
     }
 
@@ -58,6 +64,7 @@ export class TestReportProvider {
         category: TestCategory.NotCategorized,
         priority: TestPriority.Medium,
         stream: TestStream.NotDefined,
+        osMatrix: TestOsMatrix.NotDefined,
         deviceModel: DeviceModel.Unknown,
     };
 
@@ -144,6 +151,19 @@ export class TestReportProvider {
         }
     }
 
+    get osMatrix(): string[] {
+        if (this.isManual) {
+            const osAnnotation = this.getAnnotation(
+                TestAnnotationType.OsMatrix,
+                this.defaults.osMatrix,
+            );
+
+            return osAnnotation.split(ARRAY_DELIMITER);
+        }
+
+        return [TestOsMatrix.Linux];
+    }
+
     get deviceModel(): string {
         return this.getAnnotation(TestAnnotationType.DeviceModel, this.defaults.deviceModel);
     }
@@ -162,6 +182,10 @@ export class TestReportProvider {
 
     get isRetryAttempt(): boolean {
         return this.test.results.length > 1;
+    }
+
+    get useOsEmoticons(): boolean {
+        return this.isManual && this.osMatrix.length > 1;
     }
 
     get bodyDescription(): string {
@@ -201,6 +225,7 @@ export class TestReportProvider {
             stream: () => this.stream,
             status: () => this.status,
             testRun: () => this.testRun,
+            osMatrix: () => this.osMatrix.join(ARRAY_DELIMITER),
             deviceModel: () => this.deviceModel,
             comment: () => this.comment,
         };
