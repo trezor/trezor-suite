@@ -86,16 +86,20 @@ export const TestStatusColors: Record<TestStatus, string> = {
 };
 
 export enum TestOsMatrix {
-    Windows = 'Windows',
-    MacOS = 'MacOS',
+    MacOSArm = 'macOS (ARM)',
+    MacOSIntel = 'macOS (Intel)',
     Linux = 'Linux',
+    Windows = 'Windows',
+    Android = 'Android',
     NotDefined = 'Not Defined',
 }
 
 export const TestOsEmoticons: Record<TestOsMatrix, string> = {
-    [TestOsMatrix.Windows]: '🪟',
-    [TestOsMatrix.MacOS]: '🍏',
+    [TestOsMatrix.MacOSArm]: '🍏',
+    [TestOsMatrix.MacOSIntel]: '🍎',
     [TestOsMatrix.Linux]: '🐧',
+    [TestOsMatrix.Windows]: '🪟',
+    [TestOsMatrix.Android]: '🤖',
     [TestOsMatrix.NotDefined]: '❓',
 };
 
@@ -232,5 +236,6 @@ export const annotationsAddedToTest = [
     streamAnnotation,
     categoryAnnotation,
     priorityAnnotation,
+    deviceModelAnnotation,
     osMatrixAnnotation,
 ];

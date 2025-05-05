@@ -1,4 +1,9 @@
-import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
+import {
+    DeviceModel,
+    TestCategory,
+    TestPriority,
+    TestStream,
+} from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -30,6 +35,7 @@ test.describe.skip('Bootloader', { tag: ['@group=manual'] }, () => {
                 category: TestCategory.Firmware,
                 priority: TestPriority.Critical,
                 stream: TestStream.Firmware,
+                deviceModel: DeviceModel.T1B1,
             }),
         },
         async () => {},

@@ -1,4 +1,9 @@
-import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
+import {
+    TestCategory,
+    TestOsMatrix,
+    TestPriority,
+    TestStream,
+} from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -25,6 +30,12 @@ test.describe.skip('Firmware update', { tag: ['@group=manual'] }, () => {
                 category: TestCategory.Firmware,
                 priority: TestPriority.High,
                 stream: TestStream.Firmware,
+                osMatrix: [
+                    TestOsMatrix.Linux,
+                    TestOsMatrix.Windows,
+                    TestOsMatrix.MacOSArm,
+                    TestOsMatrix.MacOSIntel,
+                ],
             }),
         },
         async () => {},

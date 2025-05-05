@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import { TestCategory, TestOsMatrix, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -27,6 +27,13 @@ test.describe.skip('Web usb transport', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Wallets,
                 priority: TestPriority.Critical,
+                osMatrix: [
+                    TestOsMatrix.Linux,
+                    TestOsMatrix.Windows,
+                    TestOsMatrix.MacOSArm,
+                    TestOsMatrix.MacOSIntel,
+                    TestOsMatrix.Android,
+                ],
             }),
         },
         async () => {},
