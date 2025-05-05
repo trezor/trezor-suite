@@ -10,6 +10,7 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import { InterceptedEvent, createInterceptor } from '@trezor/request-manager';
 import { TorStatus } from '@trezor/suite-desktop-api';
+import { exhaustive } from '@trezor/type-utils';
 
 import { allowedDomains } from '../config';
 
@@ -75,10 +76,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
 
                 return;
 
-            default: {
-                const _exhaustiveCheck: never = event; // Poor-man's `switch-exhaustiveness-check`
-                throw new Error('Unhandled case: ' + _exhaustiveCheck);
-            }
+            default:
+                return exhaustive(event);
         }
     };
 

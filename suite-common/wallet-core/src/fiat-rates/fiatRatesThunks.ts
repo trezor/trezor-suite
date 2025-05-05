@@ -5,6 +5,7 @@ import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definit
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     AccountKey,
+    type FiatRatesResult,
     RateTypeWithoutHistoric,
     TickerId,
     TickerResult,
@@ -17,7 +18,7 @@ import {
     groupTokensTransactionsByContractAddress,
     isTestnet,
 } from '@suite-common/wallet-utils';
-import { TimerId } from '@trezor/type-utils';
+import { TimerId, exhaustive } from '@trezor/type-utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
@@ -125,7 +126,7 @@ export const updateFiatRatesThunk = createThunk(
 
             const isElectrumBackend = selectIsElectrumBackendSelected(getState(), ticker.symbol);
 
-            const rate = await (() => {
+            const rate = await ((): Promise<FiatRatesResult | null> => {
                 switch (rateType) {
                     case 'current':
                         return fetchCurrentFiatRates({
@@ -140,7 +141,7 @@ export const updateFiatRatesThunk = createThunk(
                             isElectrumBackend,
                         });
                     default:
-                        ((_: never) => {})(rateType);
+                        return exhaustive(rateType);
                 }
             })();
 

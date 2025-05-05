@@ -2,6 +2,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, BannerVariant } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { goto } from '../../../actions/suite/routerActions';
 import { redirectAfterWalletSelectedThunk } from '../../../actions/wallet/addWalletThunk';
@@ -51,10 +52,8 @@ const getDeviceNeedsAttentionMessage = (
         case 'unknown':
             return null;
 
-        default: {
-            const _unhandledCase: never = deviceStatus;
-            throw new Error(`Unhandled type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(deviceStatus);
     }
 };
 
@@ -117,10 +116,8 @@ export const NeedsAttentionBanner = ({
                 dispatch(acquireDevice(device));
                 break;
 
-            default: {
-                const _unhandledCase: never = deviceStatus;
-                throw new Error(`Unhandled type: ${_unhandledCase}`);
-            }
+            default:
+                return exhaustive(deviceStatus);
         }
     };
 

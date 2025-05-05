@@ -1,3 +1,5 @@
+import { exhaustive } from '@trezor/type-utils';
+
 import { BitcoinFeeLevels } from './BitcoinFeeLevels';
 import { EthereumFeeLevels } from './EthereumFeeLevels';
 import { MiscFeeLevels } from './MiscFeeLevels';
@@ -16,11 +18,8 @@ const feeLevelsPerTypeFactory = (coinInfo: CoinInfo): MiscFeeLevels => {
         case 'misc':
         case 'nem':
             return new MiscFeeLevels(coinInfo);
-        default: {
-            const _unhandledCase: never = type;
-
-            throw new Error(`Unhandled coin type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(type);
     }
 };
 

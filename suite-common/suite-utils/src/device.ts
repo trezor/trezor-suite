@@ -2,11 +2,12 @@ import { AnyAction } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import { DEVICE, Device, DeviceEvent, KnownDevice, UnavailableCapability } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
+import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
 import { isArrayMember } from '@trezor/utils';
 
 /**
- * Used in Welcome step in Onboarding
+ * Used in the Welcome step in Onboarding
  * Status 'ok' or 'initialized' is what we expect, 'bootloader', 'seedless' and 'unreadable' are no go
  *
  * @param {(TrezorDevice | undefined)} device
@@ -83,7 +84,7 @@ export const isDevicePerceivedAsNew = (device: TrezorDevice | null | undefined) 
     return deviceStatus === 'bootloader' || deviceStatus === 'initialize';
 };
 
-export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus) => {
+export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boolean => {
     switch (deviceStatus) {
         case 'bootloader': // note: this is also state when the device is completely new
         case 'initialize':
@@ -102,10 +103,8 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus) => {
         case 'unknown':
             return false;
 
-        default: {
-            const _unhandledCase: never = deviceStatus;
-            throw new Error(`Unhandled type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(deviceStatus);
     }
 };
 

@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { exhaustive } from '@trezor/type-utils';
+
 import { MODAL } from 'src/actions/suite/constants';
 import { OnboardingLayout } from 'src/components/onboarding';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
@@ -56,10 +58,8 @@ export const Onboarding = () => {
                 return BasicSettingsStep;
             case STEP.ID_FINAL_STEP:
                 return FinalStep;
-            default: {
-                const _unhandledCase: never = activeStepId;
-                throw new Error(`Unhandled activeStepId: ${_unhandledCase}`);
-            }
+            default:
+                return exhaustive(activeStepId);
         }
     }, [activeStepId, goToNextStep]);
 

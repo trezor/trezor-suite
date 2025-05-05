@@ -6,6 +6,7 @@ import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { findAccountsByAddress, isTestnet } from '@suite-common/wallet-utils';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
@@ -93,10 +94,8 @@ const getOutputTitle = (
             );
         case 'opreturn':
             return <Translation id="OP_RETURN" />;
-        default: {
-            const _unhandledCase: never = type;
-            throw new Error(`Unhandled output type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(type);
     }
 };
 
@@ -219,10 +218,8 @@ const getOutputLines = (
                     type: 'amount',
                 },
             ];
-        default: {
-            const _unhandledCase: never = type;
-            throw new Error(`Unhandled output type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(type);
     }
 };
 

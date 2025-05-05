@@ -1,6 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Device } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, typedObjectKeys } from '@trezor/utils';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
@@ -57,10 +58,8 @@ const createProviderInstance = (
         case 'inMemoryTest':
             return new InMemoryTestProvider();
 
-        default: {
-            const _unhandledCase: never = type;
-            throw new Error(`Unhandled type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(type);
     }
 };
 
@@ -204,10 +203,8 @@ export const handleProviderError =
                 case 'NOT_FOUND_ERROR':
                     break;
 
-                default: {
-                    const _unhandledCase: never = error.code;
-                    throw new Error(`Unhandled type: ${_unhandledCase}`);
-                }
+                default:
+                    exhaustive(error.code);
             }
         }
     };

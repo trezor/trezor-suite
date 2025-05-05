@@ -6,6 +6,7 @@ import { ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, useMediaQuery, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { borders, spacings, zIndices } from '@trezor/theme';
+import { exhaustive } from '@trezor/type-utils';
 
 import {
     Feedback,
@@ -31,10 +32,8 @@ const getGuideContent = (activeView: ActiveView) => {
             return <Feedback type="SUGGESTION" />;
         case 'GUIDE_DEFAULT':
             return <Guide />;
-        default: {
-            const _unhandledCase: never = activeView;
-            throw new Error(`Unhandled activeView type: ${_unhandledCase}`);
-        }
+        default:
+            exhaustive(activeView);
     }
 };
 

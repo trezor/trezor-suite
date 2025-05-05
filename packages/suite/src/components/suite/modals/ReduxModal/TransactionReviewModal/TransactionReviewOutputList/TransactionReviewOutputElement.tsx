@@ -18,6 +18,7 @@ import {
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+import { exhaustive } from '@trezor/type-utils';
 
 import { Address, FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -112,10 +113,8 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
         }
         case 'default':
             return <Text>{value}</Text>;
-        default: {
-            const _unhandledCase: never = type;
-            throw new Error(`Unhandled type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(type);
     }
 };
 

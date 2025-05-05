@@ -27,6 +27,7 @@ import TrezorConnect, {
     UI,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
+import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
@@ -653,7 +654,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                 dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
                 break;
             default:
-                ((_: never) => {})(type);
+                exhaustive(type);
         }
     },
 );

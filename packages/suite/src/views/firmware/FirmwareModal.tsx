@@ -6,6 +6,7 @@ import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
@@ -116,10 +117,8 @@ export const FirmwareModal = ({
                         isCustomFirmwareUploaded={isCustomFirmwareUploaded}
                     />
                 );
-            default: {
-                const _unhandledCase: never = status;
-                throw new Error(`Unhandled status: ${_unhandledCase}`);
-            }
+            default:
+                exhaustive(status);
         }
     };
 

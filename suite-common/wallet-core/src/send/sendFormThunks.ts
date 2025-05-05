@@ -29,6 +29,7 @@ import {
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
 import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
+import { exhaustive } from '@trezor/type-utils';
 import { cloneObject } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -176,9 +177,7 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
                 composeSolanaTransactionFeeLevelsThunk({ formState, composeContext }),
             );
         } else {
-            const _exhaustiveCheck: never = networkType;
-
-            return _exhaustiveCheck;
+            return exhaustive(networkType);
         }
 
         if (isRejected(response) || !response?.payload) {

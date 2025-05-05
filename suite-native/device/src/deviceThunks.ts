@@ -4,6 +4,7 @@ import { deviceActions, selectDevicePath, selectSelectedDevice } from '@suite-co
 import { WalletBackupType, reportCheckFail } from '@suite-native/device';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
 
@@ -45,10 +46,8 @@ const getResetDeviceConfig = (walletBackupType: WalletBackupType): PROTO.ResetDe
             return { backup_type: PROTO.BackupType.Bip39, strength: 128 };
         case '24-words':
             return { backup_type: PROTO.BackupType.Bip39, strength: 256 };
-        default: {
-            const _unhandledCase: never = walletBackupType;
-            throw new Error(`Unhandled wallet backup type: ${_unhandledCase}`);
-        }
+        default:
+            return exhaustive(walletBackupType);
     }
 };
 

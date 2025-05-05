@@ -35,6 +35,7 @@ import {
     TokenInfo,
     TokenTransfer,
 } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 import {
     HELP_CENTER_ADDRESSES_URL,
     HELP_CENTER_COINJOIN_URL,
@@ -1126,7 +1127,7 @@ export const isSameUtxo = (a: AccountUtxo, b: AccountUtxo) =>
     a.txid === b.txid && a.vout === b.vout;
 
 /**
- * Returns true if network uses receive address instead of XPUB.
+ * Returns true if the network uses receive address instead of XPUB.
  */
 export const isAddressBasedNetwork = (networkType: NetworkType) => {
     if (networkType === 'bitcoin') return false;
@@ -1135,10 +1136,7 @@ export const isAddressBasedNetwork = (networkType: NetworkType) => {
     if (networkType === 'ripple') return true;
     if (networkType === 'solana') return true;
 
-    // Checks that all networkType options were handled.
-    const exhaustiveCheck: never = networkType;
-
-    return !!exhaustiveCheck;
+    return exhaustive(networkType);
 };
 
 export const isTokenMatchesSearch = (token: TokenInfo, search: string) =>
