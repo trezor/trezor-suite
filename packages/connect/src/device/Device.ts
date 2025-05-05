@@ -122,9 +122,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly protocol: TransportProtocol;
     public readonly transportPath;
+    public readonly bluetoothProps;
     private thp: protocolThp.ThpState | undefined;
     private readonly transportDescriptorType;
-    private readonly bluetoothProps;
     private session;
     private transportSessionOwner;
     private lastAcquiredHere;
