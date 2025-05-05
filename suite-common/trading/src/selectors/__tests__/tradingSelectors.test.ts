@@ -1,4 +1,11 @@
-import { type BuyTrade, Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
+import type {
+    BuyTrade,
+    Coins,
+    CryptoId,
+    FiatCurrenciesProps,
+    FiatCurrencyCode,
+    Platforms,
+} from 'invity-api';
 
 import {
     TradingPaymentMethodProps,
@@ -286,7 +293,7 @@ describe('tradingSelectors', () => {
                             buyInfo: {
                                 buyInfo: {},
                                 providerInfos: {},
-                                supportedFiatCurrencies: [] as string[],
+                                supportedFiatCurrencies: [] as FiatCurrencyCode[],
                                 supportedCryptoCurrencies: [] as CryptoId[],
                             },
                         },
@@ -361,7 +368,7 @@ describe('tradingSelectors', () => {
                         sell: {
                             sellInfo: {
                                 providerInfos: {},
-                                supportedFiatCurrencies: [] as string[],
+                                supportedFiatCurrencies: [] as FiatCurrencyCode[],
                                 supportedCryptoCurrencies: [] as CryptoId[],
                             },
                         },

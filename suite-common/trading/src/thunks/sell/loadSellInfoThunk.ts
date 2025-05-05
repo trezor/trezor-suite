@@ -1,4 +1,4 @@
-import { CryptoId, SellProviderInfo } from 'invity-api';
+import { CryptoId, FiatCurrencyCode, SellProviderInfo } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
@@ -12,7 +12,7 @@ export const loadSellInfoThunk = createThunk<SellInfo>(
     async (_, { fulfillWithValue }) => {
         const sellList = await invityAPI.getSellList();
         const providerInfos: { [name: string]: SellProviderInfo } = {};
-        const supportedFiatCurrencies: string[] = [];
+        const supportedFiatCurrencies: FiatCurrencyCode[] = [];
         const supportedCryptoCurrencies: CryptoId[] = [];
 
         if (!Array.isArray(sellList?.providers)) {
@@ -29,7 +29,7 @@ export const loadSellInfoThunk = createThunk<SellInfo>(
         sellList.providers.forEach(provider => {
             if (provider.tradedFiatCurrencies) {
                 provider.tradedFiatCurrencies.forEach(currency =>
-                    supportedFiatCurrencies.push(currency.toLowerCase()),
+                    supportedFiatCurrencies.push(currency.toLowerCase() as FiatCurrencyCode),
                 );
             }
             provider.tradedCoins.forEach(coin => supportedCryptoCurrencies.push(coin));

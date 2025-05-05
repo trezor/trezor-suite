@@ -29,11 +29,13 @@ export const loadInfoThunk = createThunk<BuyInfo>(
 
         buyInfo.providers.forEach(provider => (providerInfos[provider.name] = provider));
 
-        const supportedFiatCurrencies: string[] = [];
+        const supportedFiatCurrencies: FiatCurrencyCode[] = [];
         const supportedCryptoCurrencies: CryptoId[] = [];
         buyInfo.providers.forEach(provider => {
             supportedFiatCurrencies.push(
-                ...provider.tradedFiatCurrencies.map(currency => currency.toLowerCase()),
+                ...provider.tradedFiatCurrencies.map(
+                    currency => currency.toLowerCase() as FiatCurrencyCode,
+                ),
             );
             supportedCryptoCurrencies.push(...provider.tradedCoins);
         });
