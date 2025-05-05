@@ -13,6 +13,7 @@ import {
     Account,
     AddressDisplayOptions,
     BlockchainNetworks,
+    EstimatedFee,
     ExternalOutput,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
@@ -42,10 +43,10 @@ const calculateTransaction = (
     feeLevel: FeeLevel,
     compareWithAmount = true,
     symbol: NetworkSymbol,
-    estimatedFee?: Fee[number],
+    estimatedFee?: EstimatedFee,
 ): PrecomposedTransaction => {
     const feeInLamports =
-        estimatedFee?.feePerTx ?? new BigNumber(SOL_STAKING_OPERATION_FEE).toString();
+        estimatedFee?.payload?.feePerTx ?? new BigNumber(SOL_STAKING_OPERATION_FEE).toString();
 
     const stakingParams = {
         feeInBaseUnits: feeInLamports,
@@ -72,6 +73,7 @@ const calculateTransaction = (
         compareWithAmount,
         symbol,
         stakingParams,
+        estimatedFee,
     );
 };
 
@@ -130,8 +132,8 @@ const getTransactionData = async (
 async function estimateFee(
     account: Account,
     txData?: PrepareStakeSolTxResponse,
-): Promise<Fee[number] | undefined> {
-    if (!txData?.success) return undefined;
+): Promise<EstimatedFee> {
+    if (!txData?.success) return { success: false };
 
     const estimatedFee = await TrezorConnect.blockchainEstimateFee({
         coin: account.symbol,
@@ -143,13 +145,13 @@ async function estimateFee(
         },
     });
 
-    if (estimatedFee && estimatedFee.payload && 'levels' in estimatedFee.payload) {
+    if (estimatedFee?.success) {
         const { levels } = estimatedFee.payload;
 
-        return levels[0];
+        return { success: true, payload: levels[0] };
     }
 
-    return undefined;
+    return { success: false };
 }
 
 export const composeTransaction =

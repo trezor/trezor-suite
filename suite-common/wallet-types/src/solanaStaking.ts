@@ -33,3 +33,8 @@ export type PrepareStakeSolTxResponse =
           success: false;
           errorMessage: string;
       };
+
+export type EstimatedFee = {
+    success: boolean;
+    payload?: Fee[number];
+};

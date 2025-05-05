@@ -1,6 +1,7 @@
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { ComposeActionContext } from '@suite-common/wallet-core';
 import {
+    EstimatedFee,
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
@@ -12,7 +13,6 @@ import {
     formatAmount,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
-import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 import { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -30,6 +30,7 @@ export const calculate = (
     compareWithAmount = true,
     symbol: NetworkSymbol,
     stakingParams: StakingParams,
+    estimatedFee?: EstimatedFee,
 ): PrecomposedTransaction => {
     const {
         feeInBaseUnits,
@@ -63,7 +64,8 @@ export const calculate = (
 
     if (
         new BigNumber(feeInBaseUnits).gt(availableBalance) ||
-        (compareWithAmount && totalSpent.isGreaterThan(availableBalance))
+        (compareWithAmount && totalSpent.isGreaterThan(availableBalance)) ||
+        estimatedFee?.success === false
     ) {
         const error = 'TR_STAKE_NOT_ENOUGH_FUNDS';
 
@@ -118,9 +120,9 @@ export const composeStakingTransaction = (
         feeLevel: FeeLevel,
         compareWithAmount: boolean,
         symbol: NetworkSymbol,
-        estimatedFee?: Fee[number],
+        estimatedFee?: EstimatedFee,
     ) => PrecomposedTransaction,
-    estimatedFee?: Fee[number],
+    estimatedFee?: EstimatedFee,
     customFeeLimit?: string,
 ) => {
     const { account, network } = formState;
