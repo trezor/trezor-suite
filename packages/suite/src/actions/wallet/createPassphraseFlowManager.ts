@@ -86,15 +86,21 @@ const STATE_CANCEL_MAP: Record<PassphraseWalletState, string | null> = {
     'passphrase-duplicate': null,
 };
 
-const matchState = <A extends PassphraseWalletState, B extends PassphraseWalletState>(
-    a: A,
-    b: B & (B extends A ? never : B),
-) => `${a}|${b}`;
+const matchStateTransition = <
+    TPreviousState extends PassphraseWalletState,
+    TNextState extends PassphraseWalletState,
+>(
+    previousState: TPreviousState,
+    newState: TNextState & (TNextState extends TPreviousState ? never : TNextState),
+) => `${previousState}|${newState}`;
 
-const createStateMatcher = <A extends PassphraseWalletState, B extends PassphraseWalletState>(
-    a: A,
-    b: B,
-) => `${a}|${b}`;
+const createStateTransitionMatcher = <
+    TPreviousState extends PassphraseWalletState,
+    TNextState extends PassphraseWalletState,
+>(
+    previousState: TPreviousState,
+    newState: TNextState,
+) => `${previousState}|${newState}`;
 
 const stateInStates = <A extends PassphraseWalletState>(toMatch: A, states: A[]) =>
     states.includes(toMatch);
@@ -532,9 +538,9 @@ export const createPassphraseFlowManager = ({
 
         let maintainLoadingForState = false;
 
-        switch (createStateMatcher(prevState, state)) {
-            case matchState('not-exist-enter-passphrase', 'not-exist-best-practices'):
-            case matchState('exists-empty-wallet', 'exists-enter-passphrase'):
+        switch (createStateTransitionMatcher(prevState, state)) {
+            case matchStateTransition('not-exist-enter-passphrase', 'not-exist-best-practices'):
+            case matchStateTransition('exists-empty-wallet', 'exists-enter-passphrase'):
                 trezorConnectService.invoke(trezorConnect =>
                     trezorConnect.cancel(options.cancelReason ?? 'enter-passphrase-back'),
                 );
@@ -542,7 +548,7 @@ export const createPassphraseFlowManager = ({
         }
 
         switch (state) {
-            // NOTE: anytime when we go to not-exist-enter-passphrase, we need to initialize the flow on the device.
+            // NOTE: anytime when we go to 'not-exist-enter-passphrase', we need to initialize the flow on the device.
             case 'not-exist-enter-passphrase':
             case 'exists-enter-passphrase':
                 maintainLoadingForState = true;
