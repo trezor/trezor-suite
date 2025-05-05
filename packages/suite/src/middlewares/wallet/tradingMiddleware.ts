@@ -42,6 +42,7 @@ export const tradingMiddleware =
             // it is necessary to clear the state because it could affect the other modal state
             if (!isTradingRoute && nextModalAccountKey) {
                 api.dispatch(tradingActions.setModalAccountKey(undefined));
+                api.dispatch(tradingActions.setModalCryptoCurrency(undefined));
             }
 
             if (isBuy) {
