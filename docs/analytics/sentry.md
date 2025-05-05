@@ -18,8 +18,8 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
 
 ### Extra data:
 
--   Enabled-coins e.g.: `[btc, ltc, eth, xrp, doge]`
--   Wallet discovery e.g.:
+- Enabled-coins e.g.: `[btc, ltc, eth, xrp, doge]`
+- Wallet discovery e.g.:
 
 ```
 [
@@ -38,7 +38,7 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
 ]
 ```
 
--   Device information (slightly redacted):
+- Device information (slightly redacted):
 
 ```
 {
@@ -131,7 +131,7 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
 }
 ```
 
--   Action logs:
+- Action logs:
 
 ```
 [

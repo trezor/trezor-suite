@@ -123,7 +123,7 @@ const calculateProgress =
         //
 
         const numberOfCardanoTotal = Math.min(
-            discovery.availableCardanoDerivations?.length ?? numberOfCardano
+            (discovery.availableCardanoDerivations?.length ?? numberOfCardano)
                 ? numberOfCardanoCoins
                 : 0,
             numberOfCardano,

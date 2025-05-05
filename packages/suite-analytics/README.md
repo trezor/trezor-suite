@@ -8,13 +8,13 @@ Specific events can be found in [src/types/events.ts](./src/types/events.ts) and
 
 Data from **production** builds (codesign branch) should be sent to:
 
--   Desktop build: https://data.trezor.io/suite/log/desktop/stable.log
--   Web build: https://data.trezor.io/suite/log/web/stable.log
+- Desktop build: https://data.trezor.io/suite/log/desktop/stable.log
+- Web build: https://data.trezor.io/suite/log/web/stable.log
 
 Data from **development** builds should be sent to:
 
--   Desktop build: https://data.trezor.io/suite/log/desktop/develop.log
--   Web build: https://data.trezor.io/suite/log/web/develop.log
+- Desktop build: https://data.trezor.io/suite/log/desktop/develop.log
+- Web build: https://data.trezor.io/suite/log/web/develop.log
 
 ## Add/Modify event
 

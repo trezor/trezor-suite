@@ -30,13 +30,13 @@ Trezor Connect leverages the ability of Trezor device to hold securely secret ke
 
 There are the following basic scenarios:
 
--   Sign in with Trezor only (use case A)
+- Sign in with Trezor only (use case A)
 
 This is the most secure option: When the user signs in with Trezor for the first time, the site offers them to create new account with their site-specific Trezor identity.
 
 There is no other way to log in and the site operator should decide carefully if they allow any other (usually much weaker) form of authentication and Trezor identity override.
 
--   Classic sign in along with Trezor option (use case B)
+- Classic sign in along with Trezor option (use case B)
 
 This case occurs when Trezor is only one of more ways of accessing the user account. Usually, theuser already has an account with username-password authentication and they pair Trezor with the account later.
 

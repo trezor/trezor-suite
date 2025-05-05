@@ -8,9 +8,9 @@ This package is bundled into web implementations. User interface is presented in
 
 Contains minimum of code required to:
 
--   Define `TrezorConnect` API object
--   Create and handle communication between `@trezor/connect-iframe` hosted on `https://connect.trezor.io/<version>/iframe.html`
--   Create and handle communication and lifecycle of `@trezor/connect-popup` hosted on `https://connect.trezor.io/<version>/popup.html`
+- Define `TrezorConnect` API object
+- Create and handle communication between `@trezor/connect-iframe` hosted on `https://connect.trezor.io/<version>/iframe.html`
+- Create and handle communication and lifecycle of `@trezor/connect-popup` hosted on `https://connect.trezor.io/<version>/popup.html`
 
 ## Installation
 
@@ -50,10 +50,10 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ## Development
 
--   clone repository: `git clone git@github.com:trezor/trezor-suite.git`
--   install node_modules: `yarn && yarn build:libs`
--   generate certs `yarn workspace @trezor/connect-web predev`
--   It is possible to run local dev server with iframe and popup using: `yarn workspace @trezor/connect-web dev` Note: don't forget to visit `https://localhost:8088/` and allow self-signed certificate. No UI is displayed here.
+- clone repository: `git clone git@github.com:trezor/trezor-suite.git`
+- install node_modules: `yarn && yarn build:libs`
+- generate certs `yarn workspace @trezor/connect-web predev`
+- It is possible to run local dev server with iframe and popup using: `yarn workspace @trezor/connect-web dev` Note: don't forget to visit `https://localhost:8088/` and allow self-signed certificate. No UI is displayed here.
 
 ## TrezorConnect Support Matrix
 
@@ -67,5 +67,5 @@ The table below details the support for different environments by TrezorConnect 
 
 ## Key Differences
 
--   **WebUSB**: Allows direct communication with Trezor devices via the browser. Supported by most modern browsers but may have limitations on mobile devices and is not supported by Safari.
--   **Trezor Bridge**: A service that runs with Trezor Suite or Standalone that facilitates communication between your Trezor device and a web browser. Required for browsers that do not support WebUSB or for a more stable connection on desktop environments.
+- **WebUSB**: Allows direct communication with Trezor devices via the browser. Supported by most modern browsers but may have limitations on mobile devices and is not supported by Safari.
+- **Trezor Bridge**: A service that runs with Trezor Suite or Standalone that facilitates communication between your Trezor device and a web browser. Required for browsers that do not support WebUSB or for a more stable connection on desktop environments.

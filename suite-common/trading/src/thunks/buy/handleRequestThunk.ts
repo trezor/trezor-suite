@@ -56,7 +56,7 @@ const getQuoteRequestData = ({
         wantCrypto: amountInCrypto,
         fiatCurrency: currencySelect
             ? currencySelect?.value.toUpperCase()
-            : quotesRequest?.fiatCurrency ?? '',
+            : (quotesRequest?.fiatCurrency ?? ''),
         receiveCurrency: cryptoSelect?.value ?? quotesRequest?.receiveCurrency,
         country: countrySelect?.value ?? quotesRequest?.country,
         fiatStringAmount: fiatInput ?? quotesRequest?.fiatStringAmount,

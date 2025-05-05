@@ -51,7 +51,7 @@ export const TradingFormInputFiatCrypto = <
         labelLeft: showLabel ? <Translation id={amountLabels.inputLabel} /> : undefined,
         labelRight: showLabel ? (
             <TradingFormSwitcherCryptoFiat
-                currency={!amountInCrypto ? displaySymbol : currencySelectLabel ?? ''}
+                currency={!amountInCrypto ? displaySymbol : (currencySelectLabel ?? '')}
                 isDisabled={isFormLoading}
                 toggleAmountInCrypto={toggleAmountInCrypto}
             />

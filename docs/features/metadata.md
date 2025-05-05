@@ -9,9 +9,9 @@ For non-technical introduction, see [Trezor Learn](https://trezor.io/learn/a/lab
 
 Because Trezor Suite is not a typical application with a backend server, data must be stored elsewhere. Currently supported providers are:
 
--   Dropbox
--   Google Drive
--   Local file system (desktop only)
+- Dropbox
+- Google Drive
+- Local file system (desktop only)
 
 ### Google Drive specifics
 
@@ -120,17 +120,17 @@ Account has metadata property which is an object of following shape:
 
 ## Where metadata is set and displayed
 
--   Wallet label is set in the modal where wallet is selected.
--   Account label is set in account header.
--   Receiving address label is set in the receive address list.
--   Output label is set in send form address field, coin control or transaction history
+- Wallet label is set in the modal where wallet is selected.
+- Account label is set in account header.
+- Receiving address label is set in the receive address list.
+- Output label is set in send form address field, coin control or transaction history
 
 Note that transaction history displays output label and address next to each other. If the output does not have a label, only the address is shown. If it does, the address is shown when the label is hovered. The address is displayed as follows:
 
--   If a receive address has a label, its label is displayed.
--   If a receive address has a label and it belongs to the same account, it is replaced by "Sent to myself".
--   If an outgoing address belongs to another discovered wallet or account, it is replaced by the account label (and wallet label, if it is a different wallet).
--   If none of the above is true, plain address is displayed.
+- If a receive address has a label, its label is displayed.
+- If a receive address has a label and it belongs to the same account, it is replaced by "Sent to myself".
+- If an outgoing address belongs to another discovered wallet or account, it is replaced by the account label (and wallet label, if it is a different wallet).
+- If none of the above is true, plain address is displayed.
 
 Wallet and account labels can also be displayed in other places in Suite as read-only, e.g. in send form when sending to an address belonging to another discovered wallet or account.
 
@@ -159,11 +159,11 @@ Controlled by `discoveryActions` and `metadataMiddleware`
 
 ## How to turn metadata off
 
--   controls for common metadata related actions are located in general settings under the labeling section
--   there is a switch which:
+- controls for common metadata related actions are located in general settings under the labeling section
+- there is a switch which:
     1. sets metadata.enabled bool value
     1. if setting to false, it triggers removal of all metadata (including keys) from devices and accounts.
     1. if setting to false, disconnects metadata provider (Dropbox, Google Drive)
--   there is a button "disconnect provider" which:
+- there is a button "disconnect provider" which:
     1. triggers removal of all metadata values (**excluding** metadata keys) from devices and accounts. This way provider might be reconnected without reconnecting device
     1. disconnects metadata provider

@@ -4,11 +4,11 @@ _Incomplete developers guide to Onboarding in Trezor Suite_
 
 There are few different ways to trigger the onboarding process:
 
--   Initial run
-    -   Initial run is what we call a state when Suite is launched for the first time. It may also be triggered by clearing the app storage (flag is stored inside a reducer `suite.flags.initialRun` and saved to persistent storage). This is stored per device. If Suite detects initial run it'll automatically launch the onboarding.
--   Connecting an uninitialized device (without a seed)
-    -   Suite will automatically launch the onboarding
--   Wiping a device from Suite UI and proceeding with device setup
+- Initial run
+    - Initial run is what we call a state when Suite is launched for the first time. It may also be triggered by clearing the app storage (flag is stored inside a reducer `suite.flags.initialRun` and saved to persistent storage). This is stored per device. If Suite detects initial run it'll automatically launch the onboarding.
+- Connecting an uninitialized device (without a seed)
+    - Suite will automatically launch the onboarding
+- Wiping a device from Suite UI and proceeding with device setup
 
 ## Prerequisites
 
@@ -31,22 +31,22 @@ In onboarding, we clear this array after each step (handled in `buttonRequestMid
 
 ## Steps
 
--   [Welcome](#Welcome)
-    -   [Data analytics](<###Data-analytics-(only-in-initial-run)>)
-    -   [Device security (genuinity) check](<###Device-security-(genuinity)-check>)
--   [Firmware](##Firmware)
-    -   Note about normal and bootloader mode
-    -   Firmware update or installation
-    -   Device with older firmware installed
-    -   Device with no firmware installed
-    -   State of currently shipped devices, intermediary firmware
--   [Generating seed](##Generating-seed)
-    -   [Generating new seed](###Generating-new-seed)
-    -   [Recovery from mnemonic](###Recovery-from-mnemonic)
--   [Backup seed](##Backup-seed)
--   [PIN Setup](##PIN-setup)
--   [Suite Settings](##Suite-Settings) (enabled coins, custom backends, TOR)
--   [Final step](##Final-step) (device label, homescreen)
+- [Welcome](#Welcome)
+    - [Data analytics](<###Data-analytics-(only-in-initial-run)>)
+    - [Device security (genuinity) check](<###Device-security-(genuinity)-check>)
+- [Firmware](##Firmware)
+    - Note about normal and bootloader mode
+    - Firmware update or installation
+    - Device with older firmware installed
+    - Device with no firmware installed
+    - State of currently shipped devices, intermediary firmware
+- [Generating seed](##Generating-seed)
+    - [Generating new seed](###Generating-new-seed)
+    - [Recovery from mnemonic](###Recovery-from-mnemonic)
+- [Backup seed](##Backup-seed)
+- [PIN Setup](##PIN-setup)
+- [Suite Settings](##Suite-Settings) (enabled coins, custom backends, TOR)
+- [Final step](##Final-step) (device label, homescreen)
 
 ## Welcome
 
@@ -57,24 +57,24 @@ In this step we handle various invalid device modes and problems with transport 
 
 #### List of valid states
 
--   Waiting for a device
-    -   We provide some troubleshooting tips and link to download Trezor Bridge as it may happen that user launched Suite for the first time without installing Trezor Bridge (only in Web environment)
-        ![waiting for device](./assets/welcome/waiting_for_device.png)
--   Device connected in normal mode
-    -   Part of happy path. After the device is connected we proceed to [Data analytics (only in initial run)](<###Data-analytics-(only-in-initial-run)>) or to [Device security (genuinity) check](<###Device-security-(genuinity)-check>)
+- Waiting for a device
+    - We provide some troubleshooting tips and link to download Trezor Bridge as it may happen that user launched Suite for the first time without installing Trezor Bridge (only in Web environment)
+      ![waiting for device](./assets/welcome/waiting_for_device.png)
+- Device connected in normal mode
+    - Part of happy path. After the device is connected we proceed to [Data analytics (only in initial run)](<###Data-analytics-(only-in-initial-run)>) or to [Device security (genuinity) check](<###Device-security-(genuinity)-check>)
 
 #### List of invalid states
 
 Invalid device states:
 
--   Device connected, but in bootloader mode
--   Device connected, but unreadable
--   [Seedless device setup](https://trezor.io/learn/a/seedless-setup) is not supported in Suite (not to be confused with regular device without seed).
+- Device connected, but in bootloader mode
+- Device connected, but unreadable
+- [Seedless device setup](https://trezor.io/learn/a/seedless-setup) is not supported in Suite (not to be confused with regular device without seed).
 
 Invalid transport states:
 
--   No transport available (Trezor Bridge is not running)
-    -   We need to provide link to download Trezor Bridge (only in Web environment)
+- No transport available (Trezor Bridge is not running)
+    - We need to provide link to download Trezor Bridge (only in Web environment)
 
 ### Data analytics (only in initial run)
 
@@ -94,8 +94,8 @@ This should be the most common case in onboarding.
 
 Scenario:
 
--   New device bought from trusted seller
--   User wiped the device (and firmware)
+- New device bought from trusted seller
+- User wiped the device (and firmware)
 
 Security questions: Check hologram, verify seller, check package...
 
@@ -107,8 +107,8 @@ Secondary action: Contact support
 
 Scenario:
 
--   User has wiped the device (without erasing a firmware)
--   Device has been tampered with
+- User has wiped the device (without erasing a firmware)
+- Device has been tampered with
 
 Security questions: Have the user used the device before?
 
@@ -120,8 +120,8 @@ Secondary action: Contact support
 
 Scenario:
 
--   User cleared app storage so the onboarding was started on initial run.
--   Device has been tampered with
+- User cleared app storage so the onboarding was started on initial run.
+- Device has been tampered with
 
 Security questions: Have the user used the device before?
 
@@ -152,27 +152,27 @@ This is the reason why, in Welcome step, we force the user to connect a device i
 
 Device could be in various states when the user enters this step.
 
--   Firmware not installed
-    -   Fresh device (`device.firmware` set to `none`)
-    -   We don't need to prompt the user to switch to bootloader mode in this case.
--   Firmware already installed and:
-    -   Update available: It can be optional (skip button is present) or mandatory. Be aware that a device, while in bootloader mode, doesn’t report its fw version, only version of bootloader.
-    -   Latest firmware already installed (just wiped seed)
+- Firmware not installed
+    - Fresh device (`device.firmware` set to `none`)
+    - We don't need to prompt the user to switch to bootloader mode in this case.
+- Firmware already installed and:
+    - Update available: It can be optional (skip button is present) or mandatory. Be aware that a device, while in bootloader mode, doesn’t report its fw version, only version of bootloader.
+    - Latest firmware already installed (just wiped seed)
 
 Possible error states:
 
--   Generic firmware installation fail
-    -   User cancelled installation on a device
-    -   Device disconnected during the process
-    -   Some unexpected error
--   Device is connected in bootloader mode from the start
-    -   We will prompt the user to connect device in normal mode
-    -   This won't happen in Onboarding so much, but it is handled as this firmware flow is used in standalone firmware update modal which can be triggered from Suite
--   Device disconnected before firmware installation starts
-    -   Prompt the user to reconnect the device
--   Device disconnected after firmware installation starts
-    -   Installation will fail with generic error
-    -   This could happen when a cable is not connected properly and the device will disconnect during the process
+- Generic firmware installation fail
+    - User cancelled installation on a device
+    - Device disconnected during the process
+    - Some unexpected error
+- Device is connected in bootloader mode from the start
+    - We will prompt the user to connect device in normal mode
+    - This won't happen in Onboarding so much, but it is handled as this firmware flow is used in standalone firmware update modal which can be triggered from Suite
+- Device disconnected before firmware installation starts
+    - Prompt the user to reconnect the device
+- Device disconnected after firmware installation starts
+    - Installation will fail with generic error
+    - This could happen when a cable is not connected properly and the device will disconnect during the process
 
 #### Device with older firmware installed
 
@@ -207,7 +207,7 @@ Support for the WebUSB came pretty late for T1B1 (bootloader [1.6.0](https://git
 
 ##### UI.FIRMWARE_PROGRESS
 
--   Devices won’t dispatch any event after the user confirms the installation on a device. We only detect that the installation has started when we receive `UI.FIRMWARE_PROGRESS` which is triggered about 10 seconds too late on T1B1.
+- Devices won’t dispatch any event after the user confirms the installation on a device. We only detect that the installation has started when we receive `UI.FIRMWARE_PROGRESS` which is triggered about 10 seconds too late on T1B1.
 
 ##### Remembered wallet, multiple devices
 
@@ -224,8 +224,8 @@ User chooses between generating a new seed or seed recovery.
 
 ### Generating new seed
 
--   Single seed
--   Shamir (not available on T1B1)
+- Single seed
+- Shamir (not available on T1B1)
 
 At first it might seem that both options are doing exactly the same, real difference between these two will present itself in [Backup seed step](##Backup-seed)
 

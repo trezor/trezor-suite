@@ -326,7 +326,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
             outputs,
             sortingStrategy:
-                skipPermutation === true ? 'none' : sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
+                skipPermutation === true ? 'none' : (sortingStrategy ?? DEFAULT_SORTING_STRATEGY),
         });
         await composer.init(blockchain);
 

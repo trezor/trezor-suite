@@ -147,7 +147,7 @@ export const scheduleAction = async <T>(
     const deadlineMs = deadline && deadline - Date.now();
     const attemptCount = isArray(attempts)
         ? attempts.length
-        : attempts ?? (deadline ? Infinity : 1);
+        : (attempts ?? (deadline ? Infinity : 1));
     const clearAborter = new AbortController();
     const clear = clearAborter.signal;
     const getParams = isArray(attempts)

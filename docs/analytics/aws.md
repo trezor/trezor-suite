@@ -12,16 +12,16 @@ Collected data are anonymous. This means that **Suite does not track** personal 
 
 Among the data **not collected** by analytics:
 
--   Device IDs
--   Public keys
--   Particular amounts
--   Transaction IDs
+- Device IDs
+- Public keys
+- Particular amounts
+- Transaction IDs
 
 When data tracking is enabled, Trezor Suite collects functional information that can be used to directly improve the app, such as:
 
--   Events triggered by a user during a session
--   Hardware, operating system and setup of the connected device
--   Errors encountered during a session
+- Events triggered by a user during a session
+- Hardware, operating system and setup of the connected device
+- Errors encountered during a session
 
 ## Data process
 

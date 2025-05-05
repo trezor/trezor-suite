@@ -31,4 +31,4 @@ const main = () => {
 
 ## Future evolutions
 
--   Control feature flags at runtime.
+- Control feature flags at runtime.

@@ -135,7 +135,7 @@ export const useSendFormImport = ({
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats
                             ? amountToSmallestUnit(cryptoValue, network.decimals)
-                            : cryptoValue ?? '';
+                            : (cryptoValue ?? '');
 
                     output.amount = cryptoAmount;
                 } else if (tokens) {

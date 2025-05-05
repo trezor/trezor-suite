@@ -58,11 +58,11 @@ You can use shorter versions of previous script commands OR navigate to suite-na
 
 Aliases available in root folder:
 
--   `yarn s` = yarn native:start
--   `yarn p` = yarn native:prebuild
--   `yarn ports` = yarn native:reverse-ports
--   `yarn a` = yarn native:android
--   `yarn ios` = yarn native:ios
+- `yarn s` = yarn native:start
+- `yarn p` = yarn native:prebuild
+- `yarn ports` = yarn native:reverse-ports
+- `yarn a` = yarn native:android
+- `yarn ios` = yarn native:ios
 
 ## DEV utils
 
@@ -80,9 +80,9 @@ You can override ENV variables locally using `.env.development.local` (or `.env.
 
 > If you use `.env` file, it has the lowest priority. See [what other .env\* files you can use](https://github.com/bkeepers/dotenv/blob/c6e583a/README.md#what-other-env-files-can-i-use).
 
--   `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally and
--   `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally.
--   `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../feature-flags/src/featureFlagsSlice.ts) for all available values.
+- `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally and
+- `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally.
+- `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../feature-flags/src/featureFlagsSlice.ts) for all available values.
 
 ## Native changes - bumping runtimeVersion
 

@@ -38,7 +38,7 @@ Access to the data is limited strictly to the members of the development, securi
 
 ## Contents
 
--   [AWS](./aws.md)
--   [Sentry](./sentry.md)
--   [Generic analytics package](https://github.com/trezor/trezor-suite/blob/develop/packages/analytics/README.md)
--   [Suite analytics package](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-analytics/README.md)
+- [AWS](./aws.md)
+- [Sentry](./sentry.md)
+- [Generic analytics package](https://github.com/trezor/trezor-suite/blob/develop/packages/analytics/README.md)
+- [Suite analytics package](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-analytics/README.md)

@@ -2,14 +2,14 @@
 
 Suite provides several types of fiat rates:
 
--   Current fiat rate: Used on Dashboard, next to the account balance, for converting a crypto amount in send form to a fiat currency, etc...
--   Weekly rates: In addition to current rate we also fetch 7 days old rate and based on the difference we either show green or red arrow next to an exchange rate (can be seen in assets table on Dashboard).
--   Historical fiat rate: Exchange rate at the time of facilitating a transaction. Used in list of transactions to calculate daily deltas and in transaction detail modal. ERC-20 tokens are not yet implemented.
+- Current fiat rate: Used on Dashboard, next to the account balance, for converting a crypto amount in send form to a fiat currency, etc...
+- Weekly rates: In addition to current rate we also fetch 7 days old rate and based on the difference we either show green or red arrow next to an exchange rate (can be seen in assets table on Dashboard).
+- Historical fiat rate: Exchange rate at the time of facilitating a transaction. Used in list of transactions to calculate daily deltas and in transaction detail modal. ERC-20 tokens are not yet implemented.
 
 ## Providers
 
--   Blockbook: For all main networks (BTC, LTC, ETH + ERC-20 tokens, ...) except XRP, SOL + SOL tokens and ADA + ADA tokens
--   CoinGecko: Used for XRP, SOL + SOL tokens and ADA + ADA tokens and as a fallback for failed requests to blockbook.
+- Blockbook: For all main networks (BTC, LTC, ETH + ERC-20 tokens, ...) except XRP, SOL + SOL tokens and ADA + ADA tokens
+- CoinGecko: Used for XRP, SOL + SOL tokens and ADA + ADA tokens and as a fallback for failed requests to blockbook.
 
 ## First fetch
 

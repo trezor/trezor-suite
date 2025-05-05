@@ -8,10 +8,10 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 ### Common
 
--   [Docker](https://docs.docker.com/desktop/mac/install/)
--   macOS only: [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
--   [Trezor user env](https://github.com/trezor/trezor-user-env)
--   No other instance of `Suite` or `trezord` service is running
+- [Docker](https://docs.docker.com/desktop/mac/install/)
+- macOS only: [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
+- [Trezor user env](https://github.com/trezor/trezor-user-env)
+- No other instance of `Suite` or `trezord` service is running
 
 **Full steps:**<br />
 _(in case of Linux with X11 support, skip to step 6.)_
@@ -83,22 +83,22 @@ Each test should be assigned a tag
 
 At the moment, there are the following tags:
 
--   @group=[string]
--   @desktopOnly
--   @webOnly
--   @snapshot
+- @group=[string]
+- @desktopOnly
+- @webOnly
+- @snapshot
 
 #### @group
 
 Assigning a @group allows filtering based on logical test category
 
--   `@group=wallet`
--   `@group=suite`
--   `@group=device-management`
--   `@group=other`
--   `@group=metadata`
--   `@group=passphrase`
--   `@group=settings`
+- `@group=wallet`
+- `@group=suite`
+- `@group=device-management`
+- `@group=other`
+- `@group=metadata`
+- `@group=passphrase`
+- `@group=settings`
 
 #### @desktopOnly or @webOnly
 

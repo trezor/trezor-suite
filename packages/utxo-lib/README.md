@@ -12,10 +12,10 @@ Not all the modules/methods from the upstream are present here (like ecpair, psb
 
 _You probably don't want to use this package directly. Try one of the alternatives instead:_
 
--   [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)
--   [@bitgo/utxo-lib](https://github.com/BitGo/BitGoJS/tree/master/modules/utxo-lib)
--   [bcoin](https://github.com/indutny/bcoin)
--   [bitcore](https://github.com/bitpay/bitcore)
+- [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)
+- [@bitgo/utxo-lib](https://github.com/BitGo/BitGoJS/tree/master/modules/utxo-lib)
+- [bcoin](https://github.com/indutny/bcoin)
+- [bitcore](https://github.com/bitpay/bitcore)
 
 ## History timeline
 
@@ -30,11 +30,11 @@ This is the fifth and hopefully the ultimate attempt to fork and maintain `bitco
 
 Differences are explicitly described in each file.
 
--   `Transaction` class is extended by each custom `altcoin` implementation.
--   `Transaction` class is parsing amounts as strings.
--   `address` module uses different encoding for `Decred` and handles `Bitcoin Cash` addresses.
--   added `coinselect` and `compose` modules (origin source: https://github.com/trezor/hd-wallet/tree/master/src/build-tx)
--   removed unused modules: `block`, `classify`, `ecpair`, `psbt`.
+- `Transaction` class is extended by each custom `altcoin` implementation.
+- `Transaction` class is parsing amounts as strings.
+- `address` module uses different encoding for `Decred` and handles `Bitcoin Cash` addresses.
+- added `coinselect` and `compose` modules (origin source: https://github.com/trezor/hd-wallet/tree/master/src/build-tx)
+- removed unused modules: `block`, `classify`, `ecpair`, `psbt`.
 
 ## Publishing
 

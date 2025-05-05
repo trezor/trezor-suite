@@ -49,7 +49,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
 
     const toggleViewOnly = () => {
         const toastTranslationId =
-            device.remember ?? false
+            (device.remember ?? false)
                 ? 'moduleSettings.viewOnly.toast.disabled'
                 : 'moduleSettings.viewOnly.toast.enabled';
         showToast({

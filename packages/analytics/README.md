@@ -3,7 +3,7 @@
 This is a generic analytics package. To use analytics in a specific environment,
 please use one of the following packages or create a new one inspired by existing ones.
 
--   [Suite Analytics](../suite-analytics)
+- [Suite Analytics](../suite-analytics)
 
 Keep in mind that global `fetch` and `URLSearchParams` methods must be available. Node and React Native use polyfills as a substitute.
 
@@ -39,11 +39,11 @@ Which tracks:
 
 Attributes which are always tracked:
 
--   **c_v**: version of analytics
--   **c_type**: type of tracked event
--   **c_commit**: current revision of app
--   **c_instance_id**: until user wipes storage, the ID does not change
--   **c_session_id**: ID changing on every launch of app
--   **c_timestamp**: time in ms when event is created (added in 1.11)
+- **c_v**: version of analytics
+- **c_type**: type of tracked event
+- **c_commit**: current revision of app
+- **c_instance_id**: until user wipes storage, the ID does not change
+- **c_session_id**: ID changing on every launch of app
+- **c_timestamp**: time in ms when event is created (added in 1.11)
 
 Other attributes are connected to a specific event type.

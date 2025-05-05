@@ -78,7 +78,7 @@ export const useTooltip = ({
     const [isUncontrolledTooltipOpen, setIsUncontrolledTooltipOpen] = useState(isInitiallyOpen);
 
     // NOTE: if the tooltip is overall inactive (isActive === false), always hide it / never display it
-    const open = isActive === false ? false : isControlledOpen ?? isUncontrolledTooltipOpen;
+    const open = isActive === false ? false : (isControlledOpen ?? isUncontrolledTooltipOpen);
     const setOpen = setControlledOpen ?? setIsUncontrolledTooltipOpen;
 
     const middleware = useMemo(() => {

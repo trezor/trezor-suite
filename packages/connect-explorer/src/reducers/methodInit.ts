@@ -85,7 +85,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
             return schemaToFields(schema.anyOf[0]).map(field => ({
                 ...field,
                 optional: field.optional || schema[OptionalKind] === 'Optional',
-                value: !isFieldBasic(field) ? undefined : field.value ?? schema.default,
+                value: !isFieldBasic(field) ? undefined : (field.value ?? schema.default),
             }));
         } else if (schema.anyOf?.length > 1) {
             return [

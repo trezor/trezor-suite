@@ -11,13 +11,13 @@ A clear and concise description of what the bug is.
 
 **Info:**
 
--   Remembered Wallet: yes/no
--   Suite Version: app/web, commit
--   Browser: name, version
--   Browser Installation Method: snap, flatpak, app store, windows store, downloaded installer, etc.
--   OS: name, version
--   Bridge: version
--   Firmware Version: model, version/commit
+- Remembered Wallet: yes/no
+- Suite Version: app/web, commit
+- Browser: name, version
+- Browser Installation Method: snap, flatpak, app store, windows store, downloaded installer, etc.
+- OS: name, version
+- Bridge: version
+- Firmware Version: model, version/commit
 
 **How to reproduce**
 Steps to reproduce the behavior:

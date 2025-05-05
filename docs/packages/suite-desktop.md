@@ -4,13 +4,13 @@
 
 ### - @trezor/connect API
 
--   suite-web
+- suite-web
 
     `@trezor/connect` is part of the JavaScript bundle as a regular module.
 
     `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-build/configs/web.webpack.config.ts)
 
--   suite-desktop
+- suite-desktop
 
     `@trezor/connect` is installed as regular node_module and works in nodejs context (electron main process).
 
@@ -20,11 +20,11 @@
 
 ### - Firmware binaries
 
--   suite-web
+- suite-web
 
     newest firmware binaries are hosted at `[url]/build/static/connect/data/firmware` and they are downloaded using regular `fetch` API.
 
--   suite-desktop
+- suite-desktop
 
     firmware binaries are bundled as application resources in `bin` directory, full path depends on OS but it could be found on the as level as `app.asar` file, and they are downloaded using `fs.readFile` API. see @trezor/connect/src/utils/assets
 

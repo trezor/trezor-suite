@@ -10,11 +10,11 @@ _You probably don't want to use this package directly._ For communication with T
 
 ## What is the purpose
 
--   translate JSON payloads to binary messages using [protobuf definitions](https://github.com/trezor/trezor-common/tree/master/protob) comprehensible to Trezor devices
--   chunking and reading chunked messages according to the [Trezor protocol](https://github.com/trezor/trezor-common/blob/master/protob/protocol.md)
--   exposing single API for various transport methods:
-    -   Trezor Bridge
-    -   WebUSB
+- translate JSON payloads to binary messages using [protobuf definitions](https://github.com/trezor/trezor-common/tree/master/protob) comprehensible to Trezor devices
+- chunking and reading chunked messages according to the [Trezor protocol](https://github.com/trezor/trezor-common/blob/master/protob/protocol.md)
+- exposing single API for various transport methods:
+    - Trezor Bridge
+    - WebUSB
 
 ## Publishing
 

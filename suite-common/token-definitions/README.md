@@ -2,22 +2,22 @@
 
 Prerequisites environments:
 
--   `COINGECKO_API_KEY` Coingecko pro api key
--   `JWS_PRIVATE_KEY_ENV` For production build, private key required
--   `IS_CODESIGN_BUILD` For production build, set to true
+- `COINGECKO_API_KEY` Coingecko pro api key
+- `JWS_PRIVATE_KEY_ENV` For production build, private key required
+- `IS_CODESIGN_BUILD` For production build, set to true
 
 Scripts:
 
--   options `yarn nfts` and `yarn coins`
--   has to be called with structure type
-    -   `simple` (used for Suite)
-    -   `advanced` (planned to be used for Solana token symbols and names)
--   and chain
-    -   `ethereum`, `polygon-pos`, `solana`,...
--   and file type
-    -   `jws` for signed data
-    -   `json` for unsigned data
--   e.g. `yarn coins advanced solana json` and you get `json` in format:
+- options `yarn nfts` and `yarn coins`
+- has to be called with structure type
+    - `simple` (used for Suite)
+    - `advanced` (planned to be used for Solana token symbols and names)
+- and chain
+    - `ethereum`, `polygon-pos`, `solana`,...
+- and file type
+    - `jws` for signed data
+    - `json` for unsigned data
+- e.g. `yarn coins advanced solana json` and you get `json` in format:
 
 ```
 {
@@ -41,7 +41,7 @@ Scripts:
 }
 ```
 
--   e.g. `yarn nfts simple polygon-pos jws` and you get `jws` in format:
+- e.g. `yarn nfts simple polygon-pos jws` and you get `jws` in format:
 
 ```
 [
@@ -58,6 +58,6 @@ Scripts:
 
 ## Naming
 
--   Token definitions: include both coin and nft definitions
--   Coin definitions: contain just tokens ERC20 and SPL
--   NFT definitions: contain just nfts ERC1155 and ERC721
+- Token definitions: include both coin and nft definitions
+- Coin definitions: contain just tokens ERC20 and SPL
+- NFT definitions: contain just nfts ERC1155 and ERC721

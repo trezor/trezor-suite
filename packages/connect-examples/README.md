@@ -16,5 +16,5 @@ A collection of example implementations of @trezor/connect in various environmen
 
 Also you may explorer 3rd party @trezor/connect integrations.
 
--   https://github.com/stellar/laboratory
--   https://github.com/vacuumlabs/adalite
+- https://github.com/stellar/laboratory
+- https://github.com/vacuumlabs/adalite

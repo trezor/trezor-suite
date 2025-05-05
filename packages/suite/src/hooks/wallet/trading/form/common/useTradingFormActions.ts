@@ -137,7 +137,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             const formattedCryptoAmount =
                 cryptoAmount && shouldSendInSats
                     ? amountToSmallestUnit(cryptoAmount, networkDecimals)
-                    : cryptoAmount ?? '';
+                    : (cryptoAmount ?? '');
             setValue(FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
         },
         [getValues, tradingFiatValues, networkDecimals, shouldSendInSats, setValue],

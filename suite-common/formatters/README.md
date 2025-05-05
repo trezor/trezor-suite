@@ -4,7 +4,7 @@ This package provides utility functions to set the standardized way to format va
 
 ### Usage
 
--   all formatters should be accessed with hook `useFormatters()`
+- all formatters should be accessed with hook `useFormatters()`
 
 ```typescript
 const { CryptoAmountFormatter, SignValueFormatter, CurrencySymbolFormatter } = useFormatters();
@@ -28,8 +28,8 @@ if (isRawString) {
 
 It can even be used as components:
 
--   **value** - the value to be formatted
--   other props - dataContext
+- **value** - the value to be formatted
+- other props - dataContext
 
 ```typescript
 const { FiatAmountFormatter } = useFormatters();
@@ -67,7 +67,7 @@ export const FormatterProvider = ({ config, children }: FormatterProviderProps) 
     ;
 ```
 
--   formatters are objects with a `format` method. Formatters should be created solely using the `makeFormatter` factory.
+- formatters are objects with a `format` method. Formatters should be created solely using the `makeFormatter` factory.
 
 ```typescript
 // src/kinds/prepareCryptoAmountFormatter.ts

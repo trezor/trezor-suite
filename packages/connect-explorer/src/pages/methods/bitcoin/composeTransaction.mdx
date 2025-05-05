@@ -86,20 +86,20 @@ _Device and backend connection is not required for this case since all data are 
 
 ## Accepted output objects:
 
--   `regular output`
-    -   `amount` - _required_ `string` value to send in satoshi
-    -   `address` - _required_ `string` recipient address
--   `send-max` - spends all available inputs from account
-    -   `type` - _required_ with `send-max` value
-    -   `address` - _required_ `string` recipient address
--   `opreturn` - [read more](https://trezor.io/learn/a/use-op_return-in-trezor-suite-app)
-    -   `type` - _required_ with `opreturn` value
-    -   `dataHex` - _required_ `hexadecimal string` with arbitrary data
--   `payment-noaddress` - incomplete output, target address is not known yet. used only in precompose
-    -   `type` - _required_ with `payment-noaddress` value
-    -   `amount` - _required_ `string` value to send in satoshi
--   `send-max-noaddress` - incomplete output, target address is not known yet. used only in precompose
-    -   `type` - _required_ with `send-max-noaddress` value
+- `regular output`
+    - `amount` - _required_ `string` value to send in satoshi
+    - `address` - _required_ `string` recipient address
+- `send-max` - spends all available inputs from account
+    - `type` - _required_ with `send-max` value
+    - `address` - _required_ `string` recipient address
+- `opreturn` - [read more](https://trezor.io/learn/a/use-op_return-in-trezor-suite-app)
+    - `type` - _required_ with `opreturn` value
+    - `dataHex` - _required_ `hexadecimal string` with arbitrary data
+- `payment-noaddress` - incomplete output, target address is not known yet. used only in precompose
+    - `type` - _required_ with `payment-noaddress` value
+    - `amount` - _required_ `string` value to send in satoshi
+- `send-max-noaddress` - incomplete output, target address is not known yet. used only in precompose
+    - `type` - _required_ with `send-max-noaddress` value
 
 ## Examples
 
@@ -248,5 +248,5 @@ For more examples see [composeTransaction fixtures](https://github.com/trezor/tr
 
 ### Additional notes
 
--   [1] `UI.SELECT_ACCOUNT` and `UI.SELECT_FEE` events are emitted when using `trusted mode`
--   [2] Account utxo selection, fee and change calculation is performed by [@trezor/utxo-lib](https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib/src/compose) module
+- [1] `UI.SELECT_ACCOUNT` and `UI.SELECT_FEE` events are emitted when using `trusted mode`
+- [2] Account utxo selection, fee and change calculation is performed by [@trezor/utxo-lib](https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib/src/compose) module

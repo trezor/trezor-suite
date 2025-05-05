@@ -3,10 +3,10 @@
 Development/Internal name consists of 4 keys
 <`product_class`> <`platform`> <`feature_class`> <`generation`>
 
--   `product_class` - `'T'` for Trezor hardware wallet
--   `platform` - `'1'` for STM32F207, `'2'` for STM32F42x
--   `feature_class` - `'B'` for Buttons, `'T'` for Touch
--   `generation`
+- `product_class` - `'T'` for Trezor hardware wallet
+- `platform` - `'1'` for STM32F207, `'2'` for STM32F42x
+- `feature_class` - `'B'` for Buttons, `'T'` for Touch
+- `generation`
 
 | Official name  | Development name |
 | :------------: | :--------------: |
@@ -15,4 +15,4 @@ Development/Internal name consists of 4 keys
 | Trezor Safe 3  |    T2B1, T3B1    |
 | Trezor Safe 5  |       T3T1       |
 
--   Trezor Safe 3 exists in two variants, depending on its chip. It was upgraded post-release.
+- Trezor Safe 3 exists in two variants, depending on its chip. It was upgraded post-release.

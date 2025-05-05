@@ -14,12 +14,12 @@ Message system was implemented to allow sending emergency messages to Trezor Sui
 
 There are multiple ways of displaying message to a user:
 
--   banner
-    -   looks like a cookie bar above the page
--   modal
-    -   _TODO: missing implementation_
--   context
-    -   messages on specific places in app (e.g. settings page, banner in account page)
+- banner
+    - looks like a cookie bar above the page
+- modal
+    - _TODO: missing implementation_
+- context
+    - messages on specific places in app (e.g. settings page, banner in account page)
 
 ### Feature
 
@@ -47,15 +47,15 @@ The configuration structure is specified in JSON file using JSON schema. The fil
 
 We use JSON schema for 2 reasons:
 
--   generating TypeScript types
--   validating configuration file
+- generating TypeScript types
+- validating configuration file
 
 ### Types
 
 Types are generated from JSON-schema during the `build:libs` process or can be generated manually by `yarn workspace @suite-common/message-system msg-system-types`. A `messageSystem.ts` file is created in `suite-common/suite-types/src` folder.
 
--   This file should never be changed manually.
--   This file is committed into the repository.
+- This file should never be changed manually.
+- This file is committed into the repository.
 
 ### Signing
 
@@ -65,20 +65,20 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
 
 #### Validation
 
--   Validation of configuration file is performed in CI job in `validation` phase. It is used to detect possible structure and semantic errors.
--   It can be run locally by `yarn workspace @suite-common/message-system validate-config` script.
+- Validation of configuration file is performed in CI job in `validation` phase. It is used to detect possible structure and semantic errors.
+- It can be run locally by `yarn workspace @suite-common/message-system validate-config` script.
 
 #### Signing
 
--   Signing of the configuration file is performed:
-    -   in CI job in `prebuild` phase for distribution and
-    -   manually by `yarn message-system-sign-config` (or `yarn build:libs`) script for local development.
--   The results are saved into `suite-common/message-system/files` as two files:
-    -   `config.v1.jws` to be uploaded to `https://data.trezor.io/config/$environment/config.vX.jws`
-    -   `config.v1.ts` to be bundled with application
--   Development private key is baked into project structure together with public keys for both development and production.
--   Production private key is available only on `codesign` branch in CI (both Gitlab and Github).
--   Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/suite-build/utils/jws.ts` file.
+- Signing of the configuration file is performed:
+    - in CI job in `prebuild` phase for distribution and
+    - manually by `yarn message-system-sign-config` (or `yarn build:libs`) script for local development.
+- The results are saved into `suite-common/message-system/files` as two files:
+    - `config.v1.jws` to be uploaded to `https://data.trezor.io/config/$environment/config.vX.jws`
+    - `config.v1.ts` to be bundled with application
+- Development private key is baked into project structure together with public keys for both development and production.
+- Production private key is available only on `codesign` branch in CI (both Gitlab and Github).
+- Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/suite-build/utils/jws.ts` file.
 
 ### Versioning of implementation
 

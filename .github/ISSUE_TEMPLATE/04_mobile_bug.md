@@ -12,8 +12,8 @@ A clear and concise description of what the bug is.
 
 **Info:**
 
--   Mobile Suite Version: version/commit
--   OS: name, version
+- Mobile Suite Version: version/commit
+- OS: name, version
 
 **How to reproduce**
 Steps to reproduce the behavior:

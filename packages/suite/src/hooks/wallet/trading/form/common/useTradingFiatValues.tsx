@@ -40,7 +40,7 @@ export const useTradingFiatValues = ({
     const dispatch = useDispatch();
     const defaultCryptoSymbol = 'btc';
     const symbol = sendCryptoSelect
-        ? cryptoIdToSymbol(sendCryptoSelect.value) ?? defaultCryptoSymbol
+        ? (cryptoIdToSymbol(sendCryptoSelect.value) ?? defaultCryptoSymbol)
         : defaultCryptoSymbol;
     const tokenAddressTyped = (sendCryptoSelect?.contractAddress ?? undefined) as
         | TokenAddress

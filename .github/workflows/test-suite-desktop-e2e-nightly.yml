@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build and Upload Suite Desktop
         uses: ./.github/actions/build-desktop
-        
+
   run-e2e-suite-desktop-tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-24.04
@@ -33,7 +33,7 @@ jobs:
       - build-app
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
         TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Checkout

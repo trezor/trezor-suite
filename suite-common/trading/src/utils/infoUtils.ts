@@ -55,7 +55,7 @@ export const toCryptoOption = (
     const isNativeToken = isCryptoIdForNativeToken(cryptoId);
     const coinInfoSymbol = coinInfo.symbol.toLowerCase();
     const symbol = isNativeToken
-        ? cryptoIdToNetwork(cryptoId)?.symbol ?? coinInfoSymbol
+        ? (cryptoIdToNetwork(cryptoId)?.symbol ?? coinInfoSymbol)
         : coinInfoSymbol;
     const displaySymbol = getDisplaySymbol(coinInfoSymbol, contractAddress);
 

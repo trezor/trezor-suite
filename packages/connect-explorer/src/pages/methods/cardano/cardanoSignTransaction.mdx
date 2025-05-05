@@ -86,12 +86,12 @@ Represents an ordinary user transaction transferring funds, delegating stake or 
 
 The transaction
 
--   _should_ have valid `path` property on all `inputs`
--   _must not_ contain a pool registration certificate
--   _must not_ contain `collateralInputs`, `collateralReturn`, `totalCollateral` and `referenceInputs`
--   _must_ contain paths as stake credentials in certificates and withdrawals (no key hashes or script hashes)
--   _may_ contain only 1852 and 1855 paths
--   _must not_ contain 1855 witness requests when transaction is not minting/burning tokens
+- _should_ have valid `path` property on all `inputs`
+- _must not_ contain a pool registration certificate
+- _must not_ contain `collateralInputs`, `collateralReturn`, `totalCollateral` and `referenceInputs`
+- _must_ contain paths as stake credentials in certificates and withdrawals (no key hashes or script hashes)
+- _may_ contain only 1852 and 1855 paths
+- _must not_ contain 1855 witness requests when transaction is not minting/burning tokens
 
 #### `POOL_REGISTRATION_AS_OWNER`
 
@@ -99,13 +99,13 @@ Represents pool registration from the perspective of pool owner.
 
 The transaction
 
--   _must_ have `path` undefined on all `inputs` (i.e., we are not witnessing any UTxO)
--   _must_ have single Pool registration certificate
--   _must_ have single owner given by path on that certificate
--   _must not_ contain withdrawals
--   _must not_ contain token minting
--   _must not_ contain `collateralInputs`, `requiredSigners`, `collateralReturn`, `totalCollateral` and `referenceInputs`
--   _must_ contain only staking witness requests
+- _must_ have `path` undefined on all `inputs` (i.e., we are not witnessing any UTxO)
+- _must_ have single Pool registration certificate
+- _must_ have single owner given by path on that certificate
+- _must not_ contain withdrawals
+- _must not_ contain token minting
+- _must not_ contain `collateralInputs`, `requiredSigners`, `collateralReturn`, `totalCollateral` and `referenceInputs`
+- _must_ contain only staking witness requests
 
 These restrictions are in place due to a possibility of maliciously signing _another_ part of the transaction with the pool owner path as we are not displaying device-owned paths on the device screen.
 
@@ -115,13 +115,13 @@ Represents a multi-sig transaction using native scripts. The transaction will on
 
 The transaction
 
--   _must_ have `path` undefined on all `inputs`
--   _must not_ contain output addresses given by parameters
--   _must not_ contain a pool registration certificate
--   _must not_ contain `collateralInputs`, `collateralReturn`, `totalCollateral` and `referenceInputs`
--   _must_ contain script hash stake credentials in certificates and withdrawals (no paths or key hashes)
--   _may_ contain only 1854 and 1855 witness requests
--   _must not_ contain 1855 witness requests when transaction is not minting/burning tokens
+- _must_ have `path` undefined on all `inputs`
+- _must not_ contain output addresses given by parameters
+- _must not_ contain a pool registration certificate
+- _must not_ contain `collateralInputs`, `collateralReturn`, `totalCollateral` and `referenceInputs`
+- _must_ contain script hash stake credentials in certificates and withdrawals (no paths or key hashes)
+- _may_ contain only 1854 and 1855 witness requests
+- _must not_ contain 1855 witness requests when transaction is not minting/burning tokens
 
 #### `PLUTUS_TRANSACTION`
 
@@ -129,10 +129,10 @@ Represents a transactions containing Plutus script evaluation. The transaction w
 
 The transaction
 
--   _should_ contain `scriptDataHash` and `collateralInputs`
--   _must not_ contain a pool registration certificate
--   _may_ contain only 1852, 1854 and 1855 required signers
--   _may_ contain only 1852, 1854 and 1855 witness requests
+- _should_ contain `scriptDataHash` and `collateralInputs`
+- _must not_ contain a pool registration certificate
+- _may_ contain only 1852, 1854 and 1855 required signers
+- _may_ contain only 1852, 1854 and 1855 witness requests
 
 Note: `requiredSigners` are meant for Plutus transactions (from the blockchain point of view), but some applications utilize them for their own purposes, so we allow them in all signing modes (except for pool registration as owner).
 
@@ -149,8 +149,8 @@ Trezor supports signing of stake pool registration certificates as a pool owner.
 
 Trezor supports signing transactions with auxiliary data containing a vote key registration. Vote key registrations used to follow [CIP-15](https://cips.cardano.org/cips/cip15/), which has been superseded by [CIP-36](https://cips.cardano.org/cips/cip36/). Currently, Trezor supports both CIP-15 and CIP-36 formats, the intended standard can be specified in the `format` field (with CIP-15 being the default). They differ in the following:
 
--   CIP-36 allows delegating the voting power to several vote public keys with different voting power ([CardanoCVoteRegistrationDelegation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)) as an alternative to providing only a single vote public key. Note that Trezor Firmware supports at most 32 delegations in a single registration.
--   CIP-36 registrations contain the [votingPurpose](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts) field. The value 0 is intended for Catalyst voting and the value 1 is intended for other purposes. If no value is provided, Trezor serializes 0 by default (if the CIP-36 format is used).
+- CIP-36 allows delegating the voting power to several vote public keys with different voting power ([CardanoCVoteRegistrationDelegation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)) as an alternative to providing only a single vote public key. Note that Trezor Firmware supports at most 32 delegations in a single registration.
+- CIP-36 registrations contain the [votingPurpose](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts) field. The value 0 is intended for Catalyst voting and the value 1 is intended for other purposes. If no value is provided, Trezor serializes 0 by default (if the CIP-36 format is used).
 
 Trezor does not support the 1694 derivation paths at the moment.
 

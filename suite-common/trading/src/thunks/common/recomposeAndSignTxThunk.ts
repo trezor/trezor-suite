@@ -87,7 +87,7 @@ export const recomposeAndSignTxThunk = createThunk<
                     address,
                     amount,
                     // if we pass ethereumDataHex, do not use the token, the details are in the ethereumDataHex
-                    token: ethereumDataHex ? null : composed.token?.contract ?? null,
+                    token: ethereumDataHex ? null : (composed.token?.contract ?? null),
                 },
             ],
             setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,

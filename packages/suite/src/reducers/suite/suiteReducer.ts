@@ -339,7 +339,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 const { udev, bridge, apiType } = action.payload;
                 const transports =
                     !draft.transport || !apiType
-                        ? draft.transport?.transports ?? []
+                        ? (draft.transport?.transports ?? [])
                         : draft.transport.transports?.filter(t => t.apiType !== apiType);
                 draft.transport = { udev, bridge, transports };
                 break;

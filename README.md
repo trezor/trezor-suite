@@ -2,9 +2,9 @@
 
 Welcome to the Trezor Suite repository! This repository contains the source code for 3 projects:
 
--   **Connect** - tool that offers developers an easy way to integrate Trezor's functionality into their own applications
--   **Trezor Suite** - desktop and web application for managing Trezor hardware wallet
--   **Trezor Suite Lite** - Mobile application designed for tracking user portfolios
+- **Connect** - tool that offers developers an easy way to integrate Trezor's functionality into their own applications
+- **Trezor Suite** - desktop and web application for managing Trezor hardware wallet
+- **Trezor Suite Lite** - Mobile application designed for tracking user portfolios
 
 ![img](https://repository-images.githubusercontent.com/148657224/439f6100-765f-11e9-9bff-b725eef3c4a6)
 
@@ -12,20 +12,20 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 
 ### Prerequisities
 
--   Install [NVM](https://github.com/nvm-sh/nvm)
--   Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
--   Install [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
+- Install [NVM](https://github.com/nvm-sh/nvm)
+- Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
+- Install [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
 
 ### Getting started
 
--   `git clone git@github.com:trezor/trezor-suite.git`
--   `cd trezor-suite`
--   `git submodule update --init --recursive`
--   `git lfs install` // Set up Git LFS for your user account. You only need to run this once per user account.
--   `git lfs pull`
--   `nvm install`
--   `yarn`
--   `yarn build:libs`
+- `git clone git@github.com:trezor/trezor-suite.git`
+- `cd trezor-suite`
+- `git submodule update --init --recursive`
+- `git lfs install` // Set up Git LFS for your user account. You only need to run this once per user account.
+- `git lfs pull`
+- `nvm install`
+- `yarn`
+- `yarn build:libs`
 
 It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
 
@@ -44,9 +44,9 @@ though development on Windows is possible by following [this guide](https://docs
 
 Run a dev build:
 
--   `yarn suite:dev` (web app)
--   `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
--   `yarn suite:dev:desktop` (electron app)
+- `yarn suite:dev` (web app)
+- `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
+- `yarn suite:dev:desktop` (electron app)
 
 ## **Trezor Suite Lite** @suite-native/app
 

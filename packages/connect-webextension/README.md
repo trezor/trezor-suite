@@ -6,10 +6,10 @@
 
 The `@trezor/connect-webextension` package provides an implementation of `@trezor/connect` designed specifically for use within web extensions. Key features include:
 
--   Compatibility with service worker environments.
--   Full access to the TrezorConnect API.
--   Automatic handling of pop-up windows for user approvals on trezor.io.
--   Direct response delivery to the calling script.
+- Compatibility with service worker environments.
+- Full access to the TrezorConnect API.
+- Automatic handling of pop-up windows for user approvals on trezor.io.
+- Direct response delivery to the calling script.
 
 ## Using the Library
 
@@ -76,16 +76,16 @@ To ensure your extension is displayed with its name rather than its ID, you need
 
 ## Examples
 
--   [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)
--   [ES6 and TypeScript example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw-ts)
+- [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)
+- [ES6 and TypeScript example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw-ts)
 
 ## Development
 
--   `yarn`
--   `yarn build:libs`
--   `yarn workspace @trezor/connect-webextension build`
--   `yarn workspace @trezor/connect-iframe build:core-module`
--   `yarn workspace @trezor/connect-popup dev`
+- `yarn`
+- `yarn build:libs`
+- `yarn workspace @trezor/connect-webextension build`
+- `yarn workspace @trezor/connect-iframe build:core-module`
+- `yarn workspace @trezor/connect-popup dev`
 
 After completing these steps, you can import from @trezor/connect-webextension or directly use the built file `build/trezor-connect-webextension.js`.
 The popup will run on your localhost, and you can specify it in the `TrezorConnect.init({ connectSrc: ... })`.

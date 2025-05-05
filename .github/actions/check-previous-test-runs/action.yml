@@ -66,13 +66,13 @@ runs:
         SUCCESSFUL_JOB_URL=$(echo "$PREVIOUS_RUN_RESPONSE" | jq -r '.workflow_runs[0].html_url')
         echo "Previous successful job found: ${SUCCESSFUL_JOB_URL} - no need to run tests again"
         echo "skip_tests=true" >> $GITHUB_OUTPUT
-    
+
     - name: Find skipped tests comment
       uses: peter-evans/find-comment@v3
       id: find-comment
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'trezor-ci'
+        comment-author: "trezor-ci"
         body-includes: ✅ Previously successful run of **${{ inputs.workflow_name }}**
 
     - name: Post skipped tests comment

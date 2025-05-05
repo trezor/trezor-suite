@@ -7,7 +7,7 @@ name: "[Test] Firmware canary Suite Desktop e2e tests"
 permissions:
   id-token: write # for fetching the OIDC token
   contents: read # for actions/checkout
-  
+
 on:
   schedule:
     - cron: "0 0 * * *"
@@ -34,7 +34,7 @@ jobs:
       - build-app
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
         TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Checkout

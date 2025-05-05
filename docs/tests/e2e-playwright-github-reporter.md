@@ -39,13 +39,13 @@ Test annotations are defined in `testAnnotations.ts`, all of them are optional a
 
 The GitHub project is configured with fields that correspond to test metadata:
 
--   **Status** - Test outcome (Todo, In Progress, Done PASS, Done FAIL, etc.)
--   **Stream** - Team assignment
--   **Test Run** - Whether the test is manual or automated (and which platform)
--   **Priority** - Test importance
--   **Device Model** - Target device for testing
--   **Comment** - Additional notes
--   **Release Build** - The release build identifier (branch-commit format)
+- **Status** - Test outcome (Todo, In Progress, Done PASS, Done FAIL, etc.)
+- **Stream** - Team assignment
+- **Test Run** - Whether the test is manual or automated (and which platform)
+- **Priority** - Test importance
+- **Device Model** - Target device for testing
+- **Comment** - Additional notes
+- **Release Build** - The release build identifier (branch-commit format)
 
 ## How to Use
 
@@ -80,9 +80,9 @@ test.describe('Test suite name', { tag: ['@group=manual'] }, () => {
 
 The reporter is configured with environment variables:
 
--   `GITHUB_TOKEN` - Required for API access
--   `RELEASE_BUILD` - Used to identify the specific release build (format: branch-commit)
--   `VERBOSE` - Set to control logging detail
+- `GITHUB_TOKEN` - Required for API access
+- `RELEASE_BUILD` - Used to identify the specific release build (format: branch-commit)
+- `VERBOSE` - Set to control logging detail
 
 ### Project Creation
 
@@ -98,9 +98,9 @@ This script creates a central "Trezor Suite release testing" project that will c
 
 The reporter can be run from a local environment for troubleshooting and development purposes:
 
--   `yarn test:e2e:web --reporter=./e2e/support/reporters/gitHubReporter.ts`
--   `yarn test:e2e:desktop --reporter=./e2e/support/reporters/gitHubReporter.ts`
--   `yarn test:e2e:manual`
+- `yarn test:e2e:web --reporter=./e2e/support/reporters/gitHubReporter.ts`
+- `yarn test:e2e:desktop --reporter=./e2e/support/reporters/gitHubReporter.ts`
+- `yarn test:e2e:manual`
 
 ## Implementation Notes
 
@@ -138,8 +138,8 @@ Tests from different release builds are added to the same GitHub project but are
 
 The reporter is integrated into release branch CI workflows:
 
--   `test-suite-web-e2e-release.yml` for Suite Web tests
--   `test-suite-desktop-e2e-release.yml` for Suite Desktop tests
--   `test-suite-manual-release.yml` for manual tests
+- `test-suite-web-e2e-release.yml` for Suite Web tests
+- `test-suite-desktop-e2e-release.yml` for Suite Desktop tests
+- `test-suite-manual-release.yml` for manual tests
 
 Each workflow passes the `RELEASE_BUILD` and `GITHUB_TOKEN` environment variables to enable test reporting.

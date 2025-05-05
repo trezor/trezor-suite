@@ -76,7 +76,7 @@ export const AccountListBaseItem = ({
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
-    const cryptoValue = isAddressDetail ? address?.balance ?? '0' : account.availableBalance;
+    const cryptoValue = isAddressDetail ? (address?.balance ?? '0') : account.availableBalance;
 
     const shouldDisplayCaret = !isAddressDetail && !!account.addresses;
     const shouldDisplayBalance = !isAddressDetail || address?.balance != null;
