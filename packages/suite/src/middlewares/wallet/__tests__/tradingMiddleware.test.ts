@@ -120,12 +120,12 @@ describe('tradingMiddleware', () => {
 
     it.each([
         [
-            'should stay modalAccountKey stable',
+            'should stay modalAccountKey stable and modalCryptoId stable',
             'mocked-key',
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
         ],
         [
-            'should clean modalAccountKey when trading is abandoned',
+            'should clean modalAccountKey and modalCryptoId when trading is abandoned',
             undefined,
             {
                 ...tradingMiddlewareFixtures.DEFAULT_ROUTE,
@@ -141,6 +141,7 @@ describe('tradingMiddleware', () => {
                 tradingNew: {
                     ...initialState,
                     modalAccountKey: 'mocked-key',
+                    modalCryptoId: 'mocked-key' as CryptoId,
                 },
                 router: routerReducer(tradingMiddlewareFixtures.TRADING_SELL_ROUTE, {} as Action),
             }),
@@ -154,6 +155,7 @@ describe('tradingMiddleware', () => {
             },
         });
 
+        expect(store.getState().wallet.tradingNew.modalCryptoId).toEqual(result);
         expect(store.getState().wallet.tradingNew.modalAccountKey).toEqual(result);
     });
 
