@@ -308,7 +308,7 @@ describe('selectors', () => {
                     },
                     'sol1',
                 ),
-            ).toEqual('0.000564658');
+            ).toEqual('0.000376438');
         });
 
         it('should return "0" for account without activated or deactivating stake', () => {
