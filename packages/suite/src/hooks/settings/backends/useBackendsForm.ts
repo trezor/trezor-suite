@@ -6,7 +6,7 @@ import { blockchainActions } from '@suite-common/wallet-core';
 import { BackendSettings } from '@suite-common/wallet-types';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { isUrl } from '@trezor/utils';
+import { isUrlWithQuery } from '@trezor/utils';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
@@ -21,15 +21,15 @@ type BackendsFormData = {
 const validateUrl = (type: BackendOption, value: string) => {
     switch (type) {
         case 'blockbook':
-            return isUrl(value);
+            return isUrlWithQuery(value);
         case 'blockfrost':
-            return isUrl(value);
+            return isUrlWithQuery(value);
         case 'electrum':
             return isElectrumUrl(value);
         case 'solana':
-            return isUrl(value);
+            return isUrlWithQuery(value);
         case 'ripple':
-            return isUrl(value);
+            return isUrlWithQuery(value);
         default:
             return false;
     }
