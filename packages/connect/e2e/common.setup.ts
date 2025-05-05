@@ -125,6 +125,14 @@ export const setup = async (
         // @ts-expect-error
         process.env.TESTS_TRANSPORT,
     );
+
+    // send a request to bridge status page to prove it is reachable
+    const bridgeStatus = await fetch('http://127.0.0.1:21325/status')
+        .then(res => res.status)
+        .catch(err => {
+            console.log('Failed to prove bridge is reachable', err);
+        });
+    console.log('Bridge status: ', bridgeStatus);
 };
 
 type InitParams = Partial<Parameters<typeof TrezorConnect.init>[0]> & { autoConfirm?: boolean };
