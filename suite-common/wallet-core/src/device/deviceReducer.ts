@@ -589,6 +589,16 @@ export const setDeviceAuthenticity = (
     };
 };
 
+// called after successful wipeDevice
+const requestDeviceReconnect = (draft: DeviceReducerState) => {
+    // only acquired devices
+    if (!draft.selectedDevice?.features) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, draft.selectedDevice);
+    if (!draft.devices[index]) return;
+    draft.selectedDevice.reconnectRequested = true;
+    draft.devices[index].reconnectRequested = true;
+};
+
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(deviceActions.deviceChanged, (state, { payload }) => {
@@ -626,9 +636,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             removeButtonRequests(state, payload.device, payload.buttonRequestCode);
         })
         .addCase(deviceActions.requestDeviceReconnect, state => {
-            if (state.selectedDevice) {
-                state.selectedDevice.reconnectRequested = true;
-            }
+            requestDeviceReconnect(state);
         })
         .addCase(deviceActions.selectDevice, (state, { payload }) => {
             updateTimestamp(state, payload);

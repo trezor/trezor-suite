@@ -2,6 +2,7 @@ import { Translation, TroubleshootingTips } from 'src/components/suite';
 
 export const DeviceDisconnectRequired = () => (
     <TroubleshootingTips
+        initiallyIsOpen={true}
         label={<Translation id="TR_DISCONNECT_YOUR_DEVICE" />}
         items={[
             {
