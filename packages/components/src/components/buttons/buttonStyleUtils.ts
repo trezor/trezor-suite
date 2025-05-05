@@ -66,7 +66,7 @@ export type ButtonState = 'normal' | 'hover';
 export const mapElevationToBackgroundToken = ({ $elevation }: { $elevation: Elevation }): Color =>
     `backgroundSurfaceElevation${$elevation === -1 ? 'Negative' : $elevation}`;
 
-const mapElevationToButtonOnBackground = ({
+export const mapElevationToButtonOnBackground = ({
     elevation,
     theme,
     state,
