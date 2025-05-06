@@ -61,7 +61,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
         // 1. transport api reports descriptors change
         this.api.on('transport-interface-change', descriptors => {
-            this?.logger?.debug('new descriptors from api', descriptors);
+            this.logger?.debug('new descriptors from api', descriptors);
             // 2. we signal this to sessions background
             this.sessionsClient.enumerateDone({
                 descriptors,
@@ -69,7 +69,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients
         this.sessionsClient.on('descriptors', descriptors => {
-            this?.logger?.debug('new descriptors from background', descriptors);
+            this.logger?.debug('new descriptors from background', descriptors);
             // 4. we propagate new descriptors to higher levels
             this.handleDescriptorsChange(descriptors);
         });

@@ -23,6 +23,7 @@ export class NodeUsbTransport extends AbstractApiTransport {
                 logger,
                 debugLink,
             }),
+            logger,
             ...rest,
         });
     }

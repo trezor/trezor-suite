@@ -13,6 +13,7 @@ export class NativeUsbTransport extends AbstractApiTransport {
                 usbInterface: new WebUSB(),
                 logger,
             }),
+            logger,
             ...rest,
         });
     }
