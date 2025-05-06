@@ -136,6 +136,25 @@ export const tradingFixtures = [
         },
     },
     {
+        description: 'should call STORAGE.LOAD and trades should stay stable',
+        initialState: {
+            ...initialState,
+            trades: [tradeBuy],
+        },
+        actions: [
+            {
+                type: extraDependenciesMock.actionTypes.storageLoad,
+                payload: {
+                    tradingTrades: undefined,
+                },
+            },
+        ],
+        result: {
+            ...initialState,
+            trades: [tradeBuy],
+        },
+    },
+    {
         description: 'should set modal account',
         initialState,
         actions: [
@@ -260,6 +279,13 @@ export const tradingFixtures = [
             {
                 type: tradingActions.saveTrade.type,
                 payload: tradeExchange,
+            },
+            {
+                type: tradingActions.saveTrade.type,
+                payload: {
+                    ...tradeBuy,
+                    key: undefined,
+                },
             },
         ],
         result: {
