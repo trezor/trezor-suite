@@ -364,11 +364,11 @@ export default defineMessages({
         id: 'TR_TRADING_MISSING_FEE_LEVEL',
     },
     TR_TRADING_CANNOT_CREATE_TRANSACTION: {
-        defaultMessage: 'Cannot create transaction',
+        defaultMessage: 'Unable to create transaction',
         id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
     },
     TR_TRADING_CANNOT_SEND_TRANSACTION: {
-        defaultMessage: 'Cannot send transaction, missing data',
+        defaultMessage: 'Unable to send transaction, missing data',
         id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
     },
     TR_CONFIRM_ADDRESS: {
@@ -3119,7 +3119,7 @@ export default defineMessages({
         id: 'TR_SELECT_DEVICE_SHORT',
     },
     TR_CONTINUE_SETUP: {
-        defaultMessage: 'Continue Setup',
+        defaultMessage: 'Continue setup',
         id: 'TR_CONTINUE_SETUP',
     },
     TR_SELECT_PASSPHRASE_SOURCE: {
@@ -6073,19 +6073,19 @@ export default defineMessages({
     },
     SETTINGS_ADV_COIN_CONN_INFO_URL: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_URL',
-        defaultMessage: 'Currently connected to',
+        defaultMessage: 'Currently connected to {url}',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH',
-        defaultMessage: 'Block hash',
+        defaultMessage: 'Block hash: {hash}',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT',
-        defaultMessage: 'Block height',
+        defaultMessage: 'Block height: {height}',
     },
     SETTINGS_ADV_COIN_CONN_INFO_VERSION: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_VERSION',
-        defaultMessage: 'Backend version',
+        defaultMessage: 'Backend version: {version}',
     },
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
@@ -6559,10 +6559,6 @@ export default defineMessages({
     TR_EXPLORER_TOKEN: {
         id: 'TR_EXPLORER_TOKEN',
         defaultMessage: 'Token',
-    },
-    TR_EXPLORER_SAVE: {
-        id: 'TR_EXPLORER_SAVE',
-        defaultMessage: 'Save',
     },
     TR_EXPLORER_SET_DEFAULT: {
         id: 'TR_EXPLORER_SET_DEFAULT',
@@ -7126,7 +7122,7 @@ export default defineMessages({
     },
     TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT: {
         id: 'TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT',
-        defaultMessage: "Your device firmware hash check couldn't be performed repeatedly.",
+        defaultMessage: 'Device firmware hash check failed multiple times.',
     },
     TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
@@ -7340,7 +7336,7 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN',
         defaultMessage:
-            "The verification process couldn't be performed repeatedly. Your Trezor may be counterfeit.",
+            'Verification failed multiple times. Your Trezor device might not be genuine.',
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
@@ -8891,7 +8887,7 @@ export default defineMessages({
     },
     TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
-        defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your {symbol} with Trezor.',
+        defaultMessage: 'Earn ~{apyPercent}% <t>APY</t> by staking your {symbol} with Trezor.',
     },
     TR_STAKE_APY_APPROX: {
         id: 'TR_STAKE_APY_APPROX',
@@ -9023,12 +9019,12 @@ export default defineMessages({
     TR_STAKE_ETH_UNSTAKING_TAKES: {
         id: 'TR_STAKE_ETH_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes up to {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
+            'Unstaking currently takes approximately {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
     },
     TR_STAKE_SOL_UNSTAKING_TAKES: {
         id: 'TR_STAKE_SOL_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking takes up to {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
+            'Unstaking takes approximately {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
         description: 'In comparison with ETH, it always takes 1 epoch',
     },
     TR_STAKE_REWARDS_EARN: {
@@ -9213,7 +9209,7 @@ export default defineMessages({
     },
     TR_UP_TO_DAYS: {
         id: 'TR_UP_TO_DAYS',
-        defaultMessage: 'up to {count, plural, one {# day} other {# days}}',
+        defaultMessage: '~{count, plural, one {# day} other {# days}}',
     },
     TR_STAKE_NO_REWARDS: {
         id: 'TR_STAKE_NO_REWARDS',
@@ -9283,12 +9279,12 @@ export default defineMessages({
     TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS: {
         id: 'TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS',
         defaultMessage:
-            'Due to Solana transaction size restrictions, you can unstake from {limit} accounts at once. In the next transaction you can unstake up to {amount} {symbol}. To unstake more, please repeat the process.',
+            'Unstaking is limited to {limit} accounts per transaction. You can unstake up to {amount} {symbol}. Repeat to unstake more.',
     },
     TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS: {
         id: 'TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS',
         defaultMessage:
-            'Due to Solana transaction size restrictions, you can claim from {limit} accounts at once. In the next transaction you can claim up to {amount} {symbol}. To claim more, please repeat the process.',
+            'Claiming is limited to {limit} accounts per transaction. You can claim up to {amount} {symbol}. Repeat to claim more.',
     },
     TR_STAKE_CLAIM_IN_NEXT_BLOCK: {
         id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',
@@ -9701,8 +9697,7 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_ADD_CONNECTION_DESC: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_DESC',
-        defaultMessage:
-            'Manually add a connection by entering the string provided by WalletConnect.',
+        defaultMessage: 'Paste the connection string from WalletConnect.',
     },
     TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER',
@@ -9797,7 +9792,8 @@ export default defineMessages({
     },
     TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION: {
         id: 'TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION',
-        defaultMessage: 'Check addresses on your device against the addresses shown in the app.',
+        defaultMessage:
+            'Before continuing, verify that the addresses exported to {thirdParty} match exactly with those displayed on your Trezor.',
     },
     TR_ADDRESSES: {
         id: 'TR_ADDRESSES',
@@ -9825,7 +9821,7 @@ export default defineMessages({
     },
     TR_NOT_ENOUGH_FUNDS: {
         id: 'TR_NOT_ENOUGH_FUNDS',
-        defaultMessage: 'Not enough funds, please select a different account.',
+        defaultMessage: 'Not enough funds in this account. Select another to continue.',
     },
     TR_SIGN_EIP712_TYPED_DATA: {
         id: 'TR_SIGN_EIP712_TYPED_DATA',
@@ -9833,7 +9829,7 @@ export default defineMessages({
     },
     TR_CONNECT_ERROR_GENERIC_DESCRIPTION: {
         id: 'TR_CONNECT_ERROR_GENERIC_DESCRIPTION',
-        defaultMessage: 'An error occured during the Trezor Connect call.',
+        defaultMessage: 'An error occured during the Trezor Connect request.',
     },
     TR_NO_CONNECTED_APPS_DESCRIPTION: {
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
@@ -9861,12 +9857,12 @@ export default defineMessages({
     },
     TR_GRANT_PERMISSIONS: {
         id: 'TR_GRANT_PERMISSIONS',
-        defaultMessage: 'Grant Permissions',
+        defaultMessage: 'Grant permissions',
     },
     TR_GRANT_PERMISSIONS_DESCRIPTION: {
         id: 'TR_GRANT_PERMISSIONS_DESCRIPTION',
         defaultMessage:
-            'A third party app is trying to connect to Trezor Suite and is requesting the following permissions.',
+            'This app wants to connect with Trezor Suite and needs the following permissions.',
     },
     TR_PERMISSIONS: {
         id: 'TR_PERMISSIONS',
@@ -9879,7 +9875,7 @@ export default defineMessages({
     TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED: {
         id: 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED',
         defaultMessage:
-            'Some of the required networks are not activated in Suite. Please activate them to ensure proper compatibility with the app.',
+            'Some required networks are inactive. Activate them for full app compatibility.',
     },
     TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
         id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
