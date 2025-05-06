@@ -256,6 +256,10 @@ export const factory = <
 
     setProxy: params => call({ ...params, method: 'setProxy' }),
 
+    thpGetCredentials: params => call({ ...params, method: 'thpGetCredentials' }),
+
+    thpRemoveCredentials: params => call({ ...params, method: 'thpRemoveCredentials' }),
+
     dispose,
 
     cancel,
