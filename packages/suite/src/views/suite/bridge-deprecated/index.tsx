@@ -39,11 +39,11 @@ export const BridgeDeprecated = () => {
             <Metadata title="Bridge | Trezor Suite" />
             <Column gap={spacings.xxs}>
                 <H3>
-                    <Translation id="TR_BRIDGE" />
+                    <Translation id="TR_STANDALONE_BRIDGE_DEPRECATED" />
                 </H3>
                 <Paragraph variant="tertiary">
                     <Translation
-                        id="TR_BRIDGE_UNINSTALL_INSTRUCTIONS"
+                        id="TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION"
                         values={{
                             a: chunks => (
                                 <Box margin={{ top: spacings.xs }}>
