@@ -297,6 +297,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
         // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
         if (!device.features || device.isBootloader()) return;
+
+        // seedless devices do not offer firmware update - it is not desirable to update something that does not have seed
+        if (device.isSeedless()) return;
+
         const range = this.firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
