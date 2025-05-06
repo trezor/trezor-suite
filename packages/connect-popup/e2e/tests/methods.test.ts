@@ -164,34 +164,36 @@ filteredFixtures.forEach(f => {
 
         let screenshotCount = 1;
         for (const v of f.views) {
-            log(f.url, v.selector, 'expecting view');
+            if ('selector' in v) {
+                log(f.url, v.selector, 'expecting view');
 
-            if (v.selector) {
-                const element = popup.locator(v.selector);
-                await element.first().waitFor({ state: 'visible' });
+                if (v.selector) {
+                    const element = popup.locator(v.selector);
+                    await element.first().waitFor({ state: 'visible' });
 
-                if (v.screenshot) {
-                    const path = `${screenshotsPath}/3-${screenshotCount}-${v.screenshot.name}.png`;
+                    if (v.screenshot) {
+                        const path = `${screenshotsPath}/3-${screenshotCount}-${v.screenshot.name}.png`;
 
-                    await popup.screenshot({
-                        path,
-                        fullPage: true,
-                    });
-                    await screenshotEmu(path);
+                        await popup.screenshot({
+                            path,
+                            fullPage: true,
+                        });
+                        await screenshotEmu(path);
 
-                    screenshotCount++;
+                        screenshotCount++;
+                    }
                 }
-            }
 
-            if ('next' in v && v.next) {
-                const nextElement = popup.locator(v.next);
-                await nextElement.waitFor();
-                // useful for debugging tests
-                // await popup.pause();
-                await nextElement.click();
-            }
+                if ('next' in v && v.next) {
+                    const nextElement = popup.locator(v.next);
+                    await nextElement.waitFor();
+                    // useful for debugging tests
+                    // await popup.pause();
+                    await nextElement.click();
+                }
 
-            log(f.url, v.selector, 'view finished');
+                log(f.url, v.selector, 'view finished');
+            }
 
             if ('nextEmu' in v && v.nextEmu) {
                 // useful for debugging tests

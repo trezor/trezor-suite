@@ -225,7 +225,15 @@ const ethereumSignTransaction = [
         device: initializedDevice,
         dir: 'ethereum',
         url: 'ethereumSignTransaction',
-        views: [followDevice, followDevice, followDevice],
+        views: [
+            followDevice,
+            followDevice,
+            {
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+        ],
     },
 ];
 
