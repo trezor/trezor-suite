@@ -1,13 +1,14 @@
 ### 🚀 New features
 
-- [EVM priority fees](https://trezor.io/learn/a/transaction-fees-in-trezor-suite) are now available on all EVM chains except BSC. This allows users to speed up transactions by adding a “tip” (priority fee) to incentivize validators.
+- Users can now set a custom blockchain explorer in place of the default Blockbook, offering more flexibility and personalization.
 
 ### 🎨 Improvements
 
-- The updated color palette enhances brand alignment and improves contrast for better visual clarity.
-- The app now opens significantly faster in View-only mode, allowing users to navigate immediately while content continues loading in the background.
-- Users can now filter out suspicious transactions on networks that support detection, improving security and transparency.
-- The DCA page has been enhanced with updated visuals and content, along with an option to display the withdrawal address for easy and quick scanning into the Invity App.
+- Bitcoin fee rate calculation has been enhanced for greater accuracy.
+- The "Bump fee" action has been renamed to "Speed up" for improved clarity and consistency.
+- Solana staking UX has been refined with updated epoch-related copy (_3 days_ → _2 days_) to reflect accurate timing.
+- The onboarding flow for Bitcoin-only firmware has been simplified by removing the coins page, streamlining the setup experience.
+- Various small UI improvements have been made, including a fix for dust calculation, contributing to overall polish and reliability.
 
 ### 🔧 Bug fixes
 
