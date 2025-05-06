@@ -452,8 +452,6 @@ export const selectTransportOfType = (type: TransportInfo['type']) => (state: Su
 
 export const selectUdevInstaller = (state: SuiteRootState) => state.suite.transport?.udev;
 
-export const selectBridgeInstaller = (state: SuiteRootState) => state.suite.transport?.bridge;
-
 export const selectIsActionAbortable = (state: SuiteRootState) => {
     const bridge = state.suite.transport?.transports.find(t => t.type === 'BridgeTransport');
 

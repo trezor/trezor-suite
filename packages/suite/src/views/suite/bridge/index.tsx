@@ -1,13 +1,11 @@
-import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { DATA_URL } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Metadata, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import {
-    selectBridgeInstaller,
     selectHasActiveTransport,
     selectHasTransportOfType,
     selectTransportOfType,
@@ -18,13 +16,7 @@ export const BridgeUnavailable = () => {
     const hasTransport = useSelector(selectHasActiveTransport);
     const isWebUsb = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
-    const bridgeInstaller = useSelector(selectBridgeInstaller);
     const dispatch = useDispatch();
-
-    const preferredTarget = bridgeInstaller?.packages?.find(i => i.preferred === true);
-    const target = preferredTarget
-        ? `${DATA_URL}${preferredTarget.url}`
-        : 'https://github.com/trezor/data/tree/master/bridge/2.0.27';
 
     const handleOpenSuite = useOpenSuiteDesktop();
 
@@ -66,13 +58,6 @@ export const BridgeUnavailable = () => {
                 </H3>
                 <Paragraph variant="tertiary">
                     {hasTransport ? description : <Translation id="TR_BRIDGE_NEEDED_DESCRIPTION" />}
-                </Paragraph>
-                <Paragraph variant="tertiary">
-                    Alternatively you may{' '}
-                    <Link variant="underline" href={target}>
-                        download
-                    </Link>{' '}
-                    a standalone Trezor Bridge binary.
                 </Paragraph>
             </Column>
         </Modal>
