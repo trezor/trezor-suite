@@ -481,20 +481,14 @@ export const en = {
                 item3: 'Once your device has been given a clean bill of health, you’re all set to Trezor with confidence.',
                 letsDoItButton: 'Let’s do it',
             },
-            summary: {
-                successful: {
-                    title: 'Device check successful',
-                    subtitle: 'You can now be sure that your device is genuine & safe to use.',
-                },
-                compromised: {
-                    title: 'Your device may have been compromised',
-                    subtitle:
-                        'Contact our support to learn what’s going on with your device and what to do next.',
-                    item1: 'Disconnect your device from your laptop or computer.',
-                    item2: 'Avoid using this device or sending any funds to it.',
-                    item3: 'Continue to Trezor support and use the Chat option.',
-                    contactSupportButton: 'Contact Trezor Support',
-                },
+            success: {
+                title: 'Device check successful',
+                subtitle: 'You can now be sure that your device is genuine & safe to use.',
+            },
+            toast: {
+                canceled: 'Authenticity check canceled',
+                error: 'Unable to validate device: {error}',
+                failed: 'Device authenticity check failed: {error}',
             },
         },
     },

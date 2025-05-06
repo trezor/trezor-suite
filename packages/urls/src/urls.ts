@@ -29,6 +29,8 @@ export const TREZOR_SUPPORT_RECOVERY_ISSUES_URL: Url =
     'https://trezor.io/support/a/trezor-recovery-issues';
 export const TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL: Url =
     'https://trezor.io/support/a/trezor-safe-device-authentication-check-failed';
+export const TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE_URL: Url =
+    'https://trezor.io/support/a/trezor-safe-device-authentication-check-failed'; // FIXME: mobile specific
 export const TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL: Url =
     'https://trezor.io/support/a/trezor-fw-authenticity-check-failed';
 export const TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL: Url =

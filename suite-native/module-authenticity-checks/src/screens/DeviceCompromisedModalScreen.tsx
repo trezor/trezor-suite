@@ -1,19 +1,31 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsEntropyCheckEnabledAndFailed } from '@suite-native/device';
+import {
+    selectIsDeviceAuthenticityCheckFailed,
+    selectIsEntropyCheckEnabledAndFailed,
+} from '@suite-native/device';
 
+import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';
 import { EntropyCheckFailModalContent } from '../components/EntropyCheckFailModalContent';
 import { FirmwareAuthenticityCheckFailModalContent } from '../components/FirmwareAuthenticityCheckFailModalContent';
 
 /**
- * The very similar modal can be displayed for entropy check failure or FW authenticity check failure
+ * Modal can be displayed for:
+ * - entropy check failure
+ * - FW authenticity check failure
+ * - device authenticity check failure
  */
 export const DeviceCompromisedModalScreen = () => {
+    const isDeviceAuthenticityCheckFailed = useSelector(selectIsDeviceAuthenticityCheckFailed);
     const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
 
-    return isEntropyCheckEnabledAndFailed ? (
-        <EntropyCheckFailModalContent />
-    ) : (
-        <FirmwareAuthenticityCheckFailModalContent />
-    );
+    if (isDeviceAuthenticityCheckFailed) {
+        return <DeviceAuthenticityCheckFailModalContent />;
+    }
+
+    if (isEntropyCheckEnabledAndFailed) {
+        return <EntropyCheckFailModalContent />;
+    }
+
+    return <FirmwareAuthenticityCheckFailModalContent />;
 };

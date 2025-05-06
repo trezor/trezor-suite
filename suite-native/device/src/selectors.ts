@@ -29,6 +29,7 @@ import {
     selectIsEntropyCheckFailed,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
+    selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
@@ -204,6 +205,12 @@ export const selectHasFirmwareAuthenticityCheckHardFailed = (state: FwAuthentici
 export const selectIsEntropyCheckEnabledAndFailed = (state: FwAuthenticityCheckState) =>
     selectIsFeatureEnabled(state, Feature.entropyCheckMobile, true) &&
     selectIsEntropyCheckFailed(state);
+
+export const selectIsDeviceAuthenticityCheckFailed = (state: DeviceRootState) => {
+    const selectedDeviceAuthenticity = selectSelectedDeviceAuthenticity(state);
+
+    return selectedDeviceAuthenticity?.valid === false;
+};
 
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [

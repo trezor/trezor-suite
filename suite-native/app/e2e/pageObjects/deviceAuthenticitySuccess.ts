@@ -1,6 +1,6 @@
-class DeviceAuthenticitySummary {
+class DeviceAuthenticitySuccess {
     async waitForScreen() {
-        await waitFor(element(by.id('@screen/AuthenticitySummary')))
+        await waitFor(element(by.id('@screen/AuthenticitySuccess')))
             .toBeVisible()
             .withTimeout(10000);
     }
@@ -13,4 +13,4 @@ class DeviceAuthenticitySummary {
     }
 }
 
-export const onDeviceAuthenticitySummary = new DeviceAuthenticitySummary();
+export const onDeviceAuthenticitySuccess = new DeviceAuthenticitySuccess();

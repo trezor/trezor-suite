@@ -201,9 +201,7 @@ export type DevicePinProtectionStackParamList = {
 
 export type DeviceAuthenticityStackParamList = {
     [DeviceAuthenticityStackRoutes.AuthenticityCheck]: undefined;
-    [DeviceAuthenticityStackRoutes.AuthenticitySummary]: {
-        checkResult: 'successful' | 'compromised';
-    };
+    [DeviceAuthenticityStackRoutes.AuthenticitySuccess]: undefined;
 };
 
 export type AuthorizeDeviceStackParamList = {

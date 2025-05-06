@@ -9,7 +9,7 @@ type CheckDeviceAuthenticityThunkParams = {
     skipSuccessToast?: boolean;
 };
 
-type CheckDeviceAuthenticityThunkResult =
+export type CheckDeviceAuthenticityThunkResult =
     | AuthenticateDeviceResult
     | { error: string; valid?: boolean }
     | undefined;

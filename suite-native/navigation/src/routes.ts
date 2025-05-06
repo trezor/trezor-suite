@@ -80,7 +80,7 @@ export enum DevicePinProtectionStackRoutes {
 
 export enum DeviceAuthenticityStackRoutes {
     AuthenticityCheck = 'AuthenticityCheck',
-    AuthenticitySummary = 'AuthenticitySummary',
+    AuthenticitySuccess = 'AuthenticitySuccess',
 }
 
 export enum AuthorizeDeviceStackRoutes {

@@ -4,7 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
-import { onDeviceAuthenticitySummary } from '../pageObjects/deviceAuthenticitySummary';
+import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySuccess';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
@@ -90,8 +90,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         await onAlertSheet.tapPrimaryButton();
         await TrezorUserEnvLink.pressYes();
 
-        await onDeviceAuthenticitySummary.waitForScreen();
-        await onDeviceAuthenticitySummary.tapCloseButton();
+        await onDeviceAuthenticitySuccess.waitForScreen();
+        await onDeviceAuthenticitySuccess.tapCloseButton();
 
         await onDeviceSettings.waitForScreen();
     });

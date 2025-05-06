@@ -38,6 +38,7 @@ import {
 } from '../deviceAtoms';
 import {
     selectHasFirmwareAuthenticityCheckHardFailed,
+    selectIsDeviceAuthenticityCheckFailed,
     selectIsDeviceSetupSupported,
     selectIsEntropyCheckEnabledAndFailed,
 } from '../selectors';
@@ -71,6 +72,7 @@ export const useHandleDeviceConnection = () => {
     const isFirmwareAuthenticityCheckDismissed = useSelector(
         selectIsFirmwareAuthenticityCheckDismissed,
     );
+    const shouldDisplayDeviceAuthenticityError = useSelector(selectIsDeviceAuthenticityCheckFailed);
     const shouldDisplayEntropyCheckError = useSelector(selectIsEntropyCheckEnabledAndFailed);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
@@ -112,7 +114,9 @@ export const useHandleDeviceConnection = () => {
     // any failing check should navigate to the DeviceCompromisedModal
     const shouldNavigateToDeviceCompromisedModal =
         isOnboardingFinished &&
-        (shouldDisplayEntropyCheckError || shouldDisplayFirmwareAuthenticityError);
+        (shouldDisplayDeviceAuthenticityError ||
+            shouldDisplayEntropyCheckError ||
+            shouldDisplayFirmwareAuthenticityError);
     // but the DeviceCompromisedModal shall not be persistent for Entropy check, because you cannot exit the modal via normal means
     const shouldKeepDeviceCompromisedModal =
         isDeviceCompromisedModalFocused && !shouldDisplayEntropyCheckError;
