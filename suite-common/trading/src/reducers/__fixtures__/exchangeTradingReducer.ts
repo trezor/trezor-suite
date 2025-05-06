@@ -184,6 +184,20 @@ export const exchangeTradingFixtures = [
         },
     },
     {
+        description: 'should set receive account key',
+        initialState: exchangeInitialState,
+        actions: [
+            {
+                type: tradingExchangeActions.setReceiveAccountKey.type,
+                payload: '1abcdef',
+            },
+        ],
+        result: {
+            ...exchangeInitialState,
+            receiveAccountKey: '1abcdef',
+        },
+    },
+    {
         description: 'should save selected quote',
         initialState: exchangeInitialState,
         actions: [

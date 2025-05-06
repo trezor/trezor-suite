@@ -1,29 +1,20 @@
-import { CoinInfo, CryptoId } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 import coins from '../../__fixtures__/coins.json';
 import platforms from '../../__fixtures__/platforms.json';
+import { toTokenCryptoId } from '../../utils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
     getTradingNativeCoinSymbolByCryptoId,
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
+    toCryptoOption,
 } from '../infoUtils';
-
-const btcCoinInfo: CoinInfo = {
-    name: 'Bitcoin',
-    symbol: 'btc',
-    coingeckoId: 'bitcoin',
-    services: {
-        buy: true,
-        sell: true,
-        exchange: true,
-    },
-};
 
 describe('infoUtils', () => {
     it('getTradingCoinInfoByCryptoId should select coin', () => {
-        expect(getTradingCoinInfoByCryptoId(coins, 'bitcoin' as CryptoId)).toEqual(btcCoinInfo);
+        expect(getTradingCoinInfoByCryptoId(coins, 'bitcoin' as CryptoId)).toEqual(coins.bitcoin);
     });
 
     describe('getTradingCoinSymbolByCryptoId', () => {
@@ -88,6 +79,60 @@ describe('infoUtils', () => {
             expect(getTradingSymbolAndContractAddressByCryptoId(coins, undefined)).toEqual({
                 coinSymbol: undefined,
                 contractAddress: undefined,
+            });
+        });
+    });
+
+    describe('toCryptoOption', () => {
+        const btcCryptoId = 'bitcoin' as CryptoId;
+
+        it('should return correct data for bitcoin', () => {
+            const bitcoinCoins = coins.bitcoin;
+
+            expect(toCryptoOption(btcCryptoId, bitcoinCoins)).toEqual({
+                type: 'currency',
+                value: btcCryptoId,
+                label: bitcoinCoins.symbol.toUpperCase(),
+                cryptoName: bitcoinCoins.name,
+                coingeckoId: 'bitcoin',
+                contractAddress: null,
+                symbol: bitcoinCoins.symbol,
+            });
+        });
+
+        it('should return correct data for ethereum on the base network', () => {
+            const baseCryptoId = toTokenCryptoId(
+                'base',
+                '0x0000000000000000000000000000000000000000',
+            );
+            const baseCoins = coins['base--0x0000000000000000000000000000000000000000'];
+
+            expect(toCryptoOption(baseCryptoId, baseCoins)).toEqual({
+                type: 'currency',
+                value: baseCryptoId,
+                label: baseCoins.symbol.toUpperCase(),
+                cryptoName: baseCoins.name,
+                coingeckoId: 'base',
+                contractAddress: '0x0000000000000000000000000000000000000000',
+                symbol: 'base',
+            });
+        });
+
+        it('should return correct data for ethereum token data', () => {
+            const ethereumCryptoId = toTokenCryptoId(
+                'eth',
+                '0x07150e919b4de5fd6a63de1f9384828396f25fdc',
+            );
+            const ethereumCoins = coins['ethereum--0x07150e919b4de5fd6a63de1f9384828396f25fdc'];
+
+            expect(toCryptoOption(ethereumCryptoId, ethereumCoins)).toEqual({
+                type: 'currency',
+                value: ethereumCryptoId,
+                label: ethereumCoins.symbol.toUpperCase(),
+                cryptoName: ethereumCoins.name,
+                coingeckoId: 'ethereum',
+                contractAddress: '0x07150e919b4de5fd6a63de1f9384828396f25fdc',
+                symbol: ethereumCoins.symbol,
             });
         });
     });

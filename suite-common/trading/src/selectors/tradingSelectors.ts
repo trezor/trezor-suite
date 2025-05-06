@@ -500,7 +500,7 @@ export const selectTradingPrefilledFromCryptoId = (state: TradingRootState) =>
     state.wallet.tradingNew.prefilledFromCryptoId;
 
 export const selectTradingActiveSection = (state: TradingRootState) =>
-    state.wallet.tradingNew.activeSection ?? 'buy';
+    state.wallet.tradingNew.activeSection;
 
 export const selectTradingSupportedSymbols = createMemoizedSelector(
     [

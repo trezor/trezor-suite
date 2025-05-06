@@ -342,8 +342,81 @@ describe('sendSellTransactionThunk', () => {
     });
 
     it('should send transaction, save trade and call next step with fallback selectedQuote', async () => {
-        const { store, account, formValues, trade, mockNextStep } = getMocks({
+        const { store, account, trade, mockNextStep } = getMocks({
+            selectedQuote: {
+                ...getQuote(),
+                exchange: undefined,
+            },
+            sellInfo: {
+                providerInfos: {
+                    cexdirect: {
+                        lockSendAmount: false,
+                    },
+                },
+            } as any,
+        });
+        const responseData = {
+            ...trade.data,
+            error: undefined,
+            status: 'SUBMITTED',
+            orderId: 'orderId',
+        } as SellFiatTrade;
+
+        invityAPI.doSellConfirm = () => Promise.resolve(responseData);
+
+        const result = await store.dispatch(
+            sellThunks.sendTransactionThunk({
+                account,
+                trade: undefined,
+                decimals: getNetwork(account.symbol).decimals,
+                shouldSendInSats: true,
+                formValues: {
+                    setMaxOutputId: 0,
+                } as TradingSellFormProps,
+                nextStep: mockNextStep,
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+        const tradingState = store.getState().wallet.tradingNew;
+        const mockedRecomposeAndSignTxThunk =
+            tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock;
+
+        expect(tradingState.modalAccountKey).toBe(account.key);
+        expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
+        expect(mockedRecomposeAndSignTxThunk.mock.calls[0][0].amount).toBe('1000000');
+        expect(mockedRecomposeAndSignTxThunk.mock.calls[0][0].setMaxOutputId).toBe(0);
+        expect(tradingState.trades).toEqual([
+            {
+                tradeType: 'sell',
+                date: dateISO,
+                data: {
+                    ...responseData,
+                },
+                key: responseData.orderId,
+                account: {
+                    descriptor: 'btc-descriptor',
+                    symbol: 'btc',
+                    accountType: 'segwit',
+                    accountIndex: 1,
+                },
+                sendAccountKey: 'btc-descriptor-btc',
+            },
+        ]);
+        expect(tradingState.sell.transactionId).toBe('orderId');
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(result.meta.requestStatus).toEqual('fulfilled');
+    });
+
+    it('should send transaction, save trade and call next step with fallback selectedQuote with set lockSendAmount', async () => {
+        const { store, account, trade, formValues, mockNextStep } = getMocks({
             selectedQuote: getQuote(),
+            sellInfo: {
+                providerInfos: {
+                    cexdirect: {
+                        lockSendAmount: true,
+                    },
+                },
+            } as any,
         });
         const responseData = {
             ...trade.data,
@@ -372,6 +445,7 @@ describe('sendSellTransactionThunk', () => {
         expect(tradingState.modalAccountKey).toBe(account.key);
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
         expect(mockedRecomposeAndSignTxThunk.mock.calls[0][0].amount).toBe('1000000');
+        expect(mockedRecomposeAndSignTxThunk.mock.calls[0][0].setMaxOutputId).toBeUndefined();
         expect(tradingState.trades).toEqual([
             {
                 tradeType: 'sell',
