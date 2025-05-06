@@ -95,6 +95,7 @@ export const NeedsAttentionBanner = ({
     const onSolveIssueClick = (): void => {
         switch (deviceStatus) {
             case 'initialize': // wiped device
+                selectDevice();
                 dispatch(goto('onboarding-index'));
                 break;
 
