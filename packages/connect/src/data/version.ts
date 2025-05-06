@@ -1,4 +1,4 @@
-export const VERSION = '9.5.4';
+export const VERSION = '9.5.5-beta.1';
 
 const versionN = VERSION.split('.').map(s => parseInt(s, 10));
 
