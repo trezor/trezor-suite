@@ -407,7 +407,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const { signal } = this.runAbort;
 
         this.runPromise = Promise.race([
-            this._runInner(fn, options),
+            this._runInner(fn, options, signal),
             new Promise<never>((_, reject) => {
                 signal.addEventListener('abort', () => reject(signal.reason));
             }),
@@ -467,6 +467,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private async _runInner<X>(
         fn: (() => Promise<X>) | undefined,
         options: RunOptions,
+        abortSignal: AbortSignal,
     ): Promise<void> {
         // typically when using cancel/override, device might be releasing
         // note: I am tempted to do this check at the beginning of device.acquire but on the other hand I would like
@@ -480,6 +481,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // acquire session
             await this.acquire();
         }
+
+        if (abortSignal.aborted) throw abortSignal.reason;
 
         const { staticSessionId, deriveCardano } = this.getState() || {};
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
