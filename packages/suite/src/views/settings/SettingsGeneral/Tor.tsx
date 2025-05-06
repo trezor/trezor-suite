@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { LoadingContent, Switch } from '@trezor/components';
+import { Switch } from '@trezor/components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
 import { openDeferredModal } from 'src/actions/suite/modalActions';
@@ -47,8 +47,9 @@ export const Tor = () => {
                 return;
             }
         }
+        const shouldEnableTor = !isTorEnabled && !isTorLoading;
         try {
-            await dispatch(toggleTor(!isTorEnabled, modalType));
+            await dispatch(toggleTor(shouldEnableTor, modalType));
         } catch {
             setHasTorError(true);
         }
@@ -57,11 +58,7 @@ export const Tor = () => {
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.Tor}>
             <TextColumn
-                title={
-                    <LoadingContent isLoading={isTorLoading} isSuccessful={!hasTorError}>
-                        <Translation id="TR_TOR_TITLE" />
-                    </LoadingContent>
-                }
+                title={<Translation id="TR_TOR_TITLE" />}
                 description={
                     <Translation
                         id="TR_TOR_DESCRIPTION"
@@ -76,7 +73,6 @@ export const Tor = () => {
                 <Switch
                     data-testid="@settings/general/tor-switch"
                     isChecked={isTorEnabled || torStatus === TorStatus.Enabling}
-                    isDisabled={isTorLoading}
                     onChange={handleTorSwitch}
                 />
             </ActionColumn>

@@ -11,6 +11,7 @@ import {
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';
 import { Analytics } from './Analytics';
@@ -41,6 +42,7 @@ export const SettingsGeneral = () => {
     );
 
     const { isTorEnabled } = useSelector(selectTorState);
+    const torStatus = useSelector(state => state.suite.torStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const metadata = useSelector(state => state.metadata);
@@ -87,7 +89,7 @@ export const SettingsGeneral = () => {
             {(isDesktop() || (isWeb() && isTorEnabled)) && (
                 <SettingsSection title={<Translation id="TR_TOR" />} icon="torBrowser">
                     {isDesktop() && <Tor />}
-                    {isTorEnabled && <TorOnionLinks />}
+                    {(isTorEnabled || torStatus === TorStatus.Enabling) && <TorOnionLinks />}
                     {torExternalExperimentalFeature && <TorExternal />}
                 </SettingsSection>
             )}
