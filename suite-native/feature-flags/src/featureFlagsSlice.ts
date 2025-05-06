@@ -9,6 +9,7 @@ export const FeatureFlag = {
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
     IsDeviceOnboardingEnabled: 'isDeviceOnboardingEnabled',
     IsModelTDeviceOnboardingEnabled: 'isModelTDeviceOnboardingEnabled',
+    IsDebugKeysAllowed: 'isDebugKeysAllowed',
     IsWalletConnectEnabled: 'isWalletConnectEnabled',
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
     IsTradingSwapEnabled: 'isTradingSwapEnabled',
@@ -36,6 +37,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_DEVICE_ONBOARDING_ENABLED === 'true',
     [FeatureFlag.IsModelTDeviceOnboardingEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_MODEL_T_DEVICE_ONBOARDING_ENABLED === 'true',
+    [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
     [FeatureFlag.IsWalletConnectEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true',
     [FeatureFlag.IsTradingBuyEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_BUY_ENABLED === 'true',

@@ -10,6 +10,7 @@ import {
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
@@ -19,6 +20,7 @@ export const useDeviceAuthenticityCheck = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { showToast } = useToast();
+    const allowDebugKeys = useFeatureFlag(FeatureFlag.IsDebugKeysAllowed);
 
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
@@ -97,16 +99,6 @@ export const useDeviceAuthenticityCheck = () => {
                     });
                     reportCheckResult('cancelled');
                     break;
-                case undefined:
-                    // Device disconnected or other unexpected error.
-                    showToast({
-                        variant: 'error',
-                        message: translate('moduleDeviceSettings.authenticity.toast.error', {
-                            error,
-                        }),
-                    });
-                    reportCheckResult('failed');
-                    break;
                 default:
                     navigation.goBack();
                     showToast({
@@ -124,8 +116,9 @@ export const useDeviceAuthenticityCheck = () => {
     const checkDeviceAuthenticity = useCallback(
         async (handleSuccess: () => void) => {
             if (!device) {
-                // checkDeviceAuthenticity can't be called without device, so this should never happen
-                throw new Error('device is not connected');
+                handleDeviceAccessError('Device is not connected');
+
+                return;
             }
 
             // Clear previous result
@@ -137,7 +130,7 @@ export const useDeviceAuthenticityCheck = () => {
                         device: {
                             path: device.path,
                         },
-                        allowDebugKeys: false, // TODO: based on the feature flag
+                        allowDebugKeys,
                     }),
             });
 
@@ -167,6 +160,7 @@ export const useDeviceAuthenticityCheck = () => {
             }
         },
         [
+            allowDebugKeys,
             device,
             dispatch,
             createStoredResult,

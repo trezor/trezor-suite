@@ -11,6 +11,8 @@ import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceS
 import { CreateOrRecoverCrossroadsScreen } from '../screens/CreateOrRecoverCrossroadsScreen';
 import { CreatePinScreen } from '../screens/CreatePinScreen';
 import { CreateWalletLoadingScreen } from '../screens/CreateWalletLoadingScreen';
+import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
+import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySuccessScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { RecoveryScreen } from '../screens/RecoveryScreen';
@@ -56,6 +58,14 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate}
             component={ConfirmFirmwareUpdateScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.DeviceAuthenticity}
+            component={DeviceAuthenticityScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess}
+            component={DeviceAuthenticitySuccessScreen}
         />
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.DeviceTutorial}

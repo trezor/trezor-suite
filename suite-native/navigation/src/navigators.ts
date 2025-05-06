@@ -129,6 +129,8 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
+    [DeviceOnboardingStackRoutes.DeviceAuthenticity]: undefined;
+    [DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess]: undefined;
     [DeviceOnboardingStackRoutes.DeviceTutorial]: undefined;
     [DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads]: undefined;
     [DeviceOnboardingStackRoutes.CreateWalletLoading]: undefined;
@@ -246,8 +248,10 @@ export type RootStackParamList = {
     [RootStackRoutes.WalletConnectSessionPopup]: undefined;
     [RootStackRoutes.WalletConnectPair]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
-    [RootStackRoutes.DeviceCompromisedModal]: undefined;
     [RootStackRoutes.BackupFailedModal]: undefined;
+    [RootStackRoutes.DeviceCompromisedModal]: {
+        failedCheck: 'device-authenticity' | 'entropy' | 'firmware-authenticity';
+    };
     [RootStackRoutes.TradingWebView]: {
         closeCallbackUrl: string;
         source?: { uri?: string; html?: string };

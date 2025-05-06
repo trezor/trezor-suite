@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     selectDeviceModel,
     selectHasDeviceFirmwareInstalled,
@@ -94,6 +95,10 @@ export const UninitializedDeviceLandingScreen = ({
     const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
+    const supportsDeviceAuthentication = deviceModel
+        ? SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel]
+        : true;
+
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
             if (isLatestFirmwareInstalled) {
@@ -102,11 +107,15 @@ export const UninitializedDeviceLandingScreen = ({
                     firmware: 'up-to-date',
                 });
 
-                // T2T1 does not support device tutorial so the screen is skipped.
-                if (deviceModel !== DeviceModelInternal.T2T1) {
-                    navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
-                } else {
+                if (deviceModel === DeviceModelInternal.T2T1) {
+                    // T2T1 does not support device tutorial and device authenticity check so those screens are skipped.
                     navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
+                } else {
+                    navigation.navigate(
+                        supportsDeviceAuthentication // TODO: check not only if supported, but also if allowed.
+                            ? DeviceOnboardingStackRoutes.DeviceAuthenticity
+                            : DeviceOnboardingStackRoutes.DeviceTutorial,
+                    );
                 }
             } else {
                 navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);

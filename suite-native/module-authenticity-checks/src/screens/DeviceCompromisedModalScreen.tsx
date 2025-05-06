@@ -1,9 +1,5 @@
-import { useSelector } from 'react-redux';
-
-import {
-    selectIsDeviceAuthenticityCheckFailed,
-    selectIsEntropyCheckEnabledAndFailed,
-} from '@suite-native/device';
+import { UnreachableCaseError } from '@suite-common/suite-utils';
+import { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';
 import { EntropyCheckFailModalContent } from '../components/EntropyCheckFailModalContent';
@@ -15,17 +11,19 @@ import { FirmwareAuthenticityCheckFailModalContent } from '../components/Firmwar
  * - FW authenticity check failure
  * - device authenticity check failure
  */
-export const DeviceCompromisedModalScreen = () => {
-    const isDeviceAuthenticityCheckFailed = useSelector(selectIsDeviceAuthenticityCheckFailed);
-    const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
+export const DeviceCompromisedModalScreen = ({
+    route,
+}: StackProps<RootStackParamList, RootStackRoutes.DeviceCompromisedModal>) => {
+    const { failedCheck } = route.params;
 
-    if (isDeviceAuthenticityCheckFailed) {
-        return <DeviceAuthenticityCheckFailModalContent />;
+    switch (failedCheck) {
+        case 'device-authenticity':
+            return <DeviceAuthenticityCheckFailModalContent />;
+        case 'entropy':
+            return <EntropyCheckFailModalContent />;
+        case 'firmware-authenticity':
+            return <FirmwareAuthenticityCheckFailModalContent />;
+        default:
+            throw new UnreachableCaseError(failedCheck);
     }
-
-    if (isEntropyCheckEnabledAndFailed) {
-        return <EntropyCheckFailModalContent />;
-    }
-
-    return <FirmwareAuthenticityCheckFailModalContent />;
 };

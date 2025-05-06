@@ -930,6 +930,10 @@ export const en = {
             },
             declineButton: 'I’m not sure',
         },
+        deviceAuthenticitySuccessScreen: {
+            title: 'Your Trezor is genuine',
+            subtitle: 'You’re good to go.',
+        },
         deviceTutorialScreen: {
             title: 'Continue with short tutorial on Trezor',
             actionLabel: 'Skip tutorial',

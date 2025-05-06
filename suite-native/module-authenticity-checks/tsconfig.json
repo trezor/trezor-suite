@@ -6,7 +6,6 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
-        { "path": "../device" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

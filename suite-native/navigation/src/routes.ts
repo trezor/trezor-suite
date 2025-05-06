@@ -43,6 +43,8 @@ export enum DeviceOnboardingStackRoutes {
     SuspiciousDevice = 'SuspiciousDevice',
     SecurityCheck = 'SecurityCheck',
     FirmwareInstallation = 'FirmwareInstallation',
+    DeviceAuthenticity = 'DeviceAuthenticity ',
+    DeviceAuthenticitySuccess = 'DeviceAuthenticitySuccess',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     DeviceTutorial = 'DeviceTutorial',
     CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',

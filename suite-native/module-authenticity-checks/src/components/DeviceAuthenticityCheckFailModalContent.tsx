@@ -1,3 +1,6 @@
+import { useDispatch, useSelector } from 'react-redux';
+
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE_URL } from '@trezor/urls';
 
@@ -7,8 +10,12 @@ const supportUrlWithChat = `${TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE
 
 export const DeviceAuthenticityCheckFailModalContent = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const dispatch = useDispatch();
     const handleClose = () => {
+        if (selectedDevice) {
+            dispatch(deviceActions.deviceDisconnect(selectedDevice));
+        }
         navigateToInitialScreen();
     };
 

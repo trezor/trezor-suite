@@ -11,7 +11,6 @@ import {
     selectIsDeviceInitialized,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
-    selectIsFirmwareAuthenticityCheckDismissed,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -36,12 +35,8 @@ import {
     isOnboardingDeviceDisconnectedAlertDisplayedAtom,
     wasDeviceOnboardingCancelledAtom,
 } from '../deviceAtoms';
-import {
-    selectHasFirmwareAuthenticityCheckHardFailed,
-    selectIsDeviceAuthenticityCheckFailed,
-    selectIsDeviceSetupSupported,
-    selectIsEntropyCheckEnabledAndFailed,
-} from '../selectors';
+import { selectIsDeviceSetupSupported } from '../selectors';
+import { useDeviceChecks } from './useDeviceChecks';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList | RootStackParamList,
@@ -66,14 +61,6 @@ export const useHandleDeviceConnection = () => {
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
-    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailed,
-    );
-    const isFirmwareAuthenticityCheckDismissed = useSelector(
-        selectIsFirmwareAuthenticityCheckDismissed,
-    );
-    const shouldDisplayDeviceAuthenticityError = useSelector(selectIsDeviceAuthenticityCheckFailed);
-    const shouldDisplayEntropyCheckError = useSelector(selectIsEntropyCheckEnabledAndFailed);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
@@ -108,18 +95,11 @@ export const useHandleDeviceConnection = () => {
         lastRoute as RootStackRoutes,
     );
 
-    const shouldDisplayFirmwareAuthenticityError =
-        hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
-
-    // any failing check should navigate to the DeviceCompromisedModal
-    const shouldNavigateToDeviceCompromisedModal =
-        isOnboardingFinished &&
-        (shouldDisplayDeviceAuthenticityError ||
-            shouldDisplayEntropyCheckError ||
-            shouldDisplayFirmwareAuthenticityError);
-    // but the DeviceCompromisedModal shall not be persistent for Entropy check, because you cannot exit the modal via normal means
-    const shouldKeepDeviceCompromisedModal =
-        isDeviceCompromisedModalFocused && !shouldDisplayEntropyCheckError;
+    const {
+        failedCheck,
+        shouldNavigateToDeviceCompromisedModal,
+        shouldKeepDeviceCompromisedModal,
+    } = useDeviceChecks(isDeviceCompromisedModalFocused);
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
@@ -184,10 +164,11 @@ export const useHandleDeviceConnection = () => {
             }
         }
         if (shouldNavigateToDeviceCompromisedModal) {
-            navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+            navigation.navigate(RootStackRoutes.DeviceCompromisedModal, { failedCheck });
         }
     }, [
         dispatch,
+        failedCheck,
         isDeviceConnected,
         isOnboardingFinished,
         isPortfolioTrackerDevice,

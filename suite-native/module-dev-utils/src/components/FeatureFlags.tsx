@@ -13,6 +13,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
     [FeatureFlagEnum.IsDeviceOnboardingEnabled]: 'Device onboarding',
     [FeatureFlagEnum.IsModelTDeviceOnboardingEnabled]: 'Device onboarding - Model T',
+    [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
     [FeatureFlagEnum.IsWalletConnectEnabled]: 'WalletConnect',
     [FeatureFlagEnum.IsTradingBuyEnabled]: '💰 Trading Buy',
     [FeatureFlagEnum.IsTradingSwapEnabled]: '💰 Trading Swap',
