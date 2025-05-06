@@ -52,7 +52,7 @@ describe('EmptyHomeRenderer', () => {
                 device: {
                     selectedDevice: {
                         connected: true,
-                        features: { initialized: false, internal_model: DeviceModelInternal.T2B1 },
+                        features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
                     },
                     devices: [{ id: 'device_id' }],
                 },
@@ -97,7 +97,7 @@ describe('EmptyHomeRenderer', () => {
                 device: {
                     selectedDevice: {
                         connected: true,
-                        features: { initialized: false, internal_model: DeviceModelInternal.T2B1 },
+                        features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
                     },
                     devices: [{ id: 'device_id' }],
                 },

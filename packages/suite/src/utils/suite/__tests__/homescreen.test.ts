@@ -122,7 +122,7 @@ describe('homescreen', () => {
     describe('isValidImageSize', () => {
         it('should return true for non-T2T1 device models', () => {
             const file = new File([], 'test.png', { type: 'image/png', lastModified: 0 });
-            expect(isValidImageSize(file, DeviceModelInternal.T2B1)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T3B1)).toBe(true);
             expect(isValidImageSize(file, DeviceModelInternal.T1B1)).toBe(true);
         });
 

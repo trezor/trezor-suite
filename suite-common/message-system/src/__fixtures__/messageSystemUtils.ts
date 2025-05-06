@@ -1180,7 +1180,7 @@ export const isDeviceCompatible = [
         description: 'isDeviceCompatible case 24',
         deviceConditions: [
             {
-                model: DeviceModelInternal.T2B1,
+                model: DeviceModelInternal.T3B1,
                 firmware: '2.6.0',
                 bootloader: '2.1.5',
                 firmwareRevision: '*',
@@ -1192,7 +1192,7 @@ export const isDeviceCompatible = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    internal_model: DeviceModelInternal.T2B1,
+                    internal_model: DeviceModelInternal.T3B1,
                     major_version: 2,
                     minor_version: 1,
                     patch_version: 5,
@@ -1210,7 +1210,7 @@ export const isDeviceCompatible = [
         description: 'isDeviceCompatible case 25',
         deviceConditions: [
             {
-                model: DeviceModelInternal.T2B1,
+                model: DeviceModelInternal.T3B1,
                 firmware: '2',
                 bootloader: '*',
                 firmwareRevision: '123456',
@@ -1222,7 +1222,7 @@ export const isDeviceCompatible = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    internal_model: DeviceModelInternal.T2B1,
+                    internal_model: DeviceModelInternal.T3B1,
                     major_version: 2,
                     minor_version: 6,
                     patch_version: 0,

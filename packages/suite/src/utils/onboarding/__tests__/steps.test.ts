@@ -21,7 +21,7 @@ const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
     supportedModels: [
-        DeviceModelInternal.T2B1,
+        DeviceModelInternal.T3B1,
         { model: DeviceModelInternal.T3T1, minFwVersion: '2.8.0' },
     ],
 };
@@ -90,11 +90,11 @@ describe('steps', () => {
         });
 
         it('should exclude steps not supported by device', () => {
-            const deviceT2B1 = {
-                features: { internal_model: DeviceModelInternal.T2B1 },
+            const deviceT3B1 = {
+                features: { internal_model: DeviceModelInternal.T3B1 },
             } as AcquiredDevice;
-            const propsWithT2B1 = { ...propsMock, device: deviceT2B1 };
-            expect(isStepUsed(backupStep, propsWithT2B1)).toEqual(true);
+            const propsWithT3B1 = { ...propsMock, device: deviceT3B1 };
+            expect(isStepUsed(backupStep, propsWithT3B1)).toEqual(true);
 
             const deviceT1B1 = {
                 features: { internal_model: DeviceModelInternal.T1B1 },

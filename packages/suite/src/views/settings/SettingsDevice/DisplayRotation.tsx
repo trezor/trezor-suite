@@ -46,7 +46,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     },
 ];
 
-// features.display_rotation cannot be used to determine support because can be defined for devices not supporting rotation (e.g. T2B1).
+// features.display_rotation cannot be used to determine support because can be defined for devices not supporting rotation (e.g. T3B1).
 const DEVICES_SUPPORTING_ROTATION = [DeviceModelInternal.T2T1, DeviceModelInternal.T3T1];
 
 interface DisplayRotationProps {

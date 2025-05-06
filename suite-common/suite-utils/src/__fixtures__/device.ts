@@ -498,11 +498,11 @@ const getChangelogUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                internal_model: DeviceModelInternal.T2B1,
+                internal_model: DeviceModelInternal.T3B1,
             },
         } as TrezorDevice,
         revision: 'ab12cd',
-        result: 'https://github.com/trezor/trezor-firmware/blob/ab12cd/core/CHANGELOG.T2B1.md',
+        result: 'https://github.com/trezor/trezor-firmware/blob/ab12cd/core/CHANGELOG.T3B1.md',
     },
     {
         description: 'Missing revision, master/legacy firmware',
@@ -537,7 +537,7 @@ const getCheckBackupUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                internal_model: DeviceModelInternal.T2B1,
+                internal_model: DeviceModelInternal.T3B1,
             },
         } as TrezorDevice,
         result: URLS[`HELP_CENTER_DRY_RUN_${DeviceModelInternal.T3B1}_URL`],
@@ -555,7 +555,7 @@ const getPackagingUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                internal_model: DeviceModelInternal.T2B1,
+                internal_model: DeviceModelInternal.T3B1,
             },
         } as TrezorDevice,
         result: URLS[`HELP_CENTER_PACKAGING_${DeviceModelInternal.T3B1}_URL`],
@@ -573,7 +573,7 @@ const getFirmwareDowngradeUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                internal_model: DeviceModelInternal.T2B1,
+                internal_model: DeviceModelInternal.T3B1,
             },
         } as TrezorDevice,
         result: URLS[`HELP_CENTER_FW_DOWNGRADE_${DeviceModelInternal.T3B1}_URL`],

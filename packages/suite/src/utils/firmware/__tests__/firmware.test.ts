@@ -44,7 +44,7 @@ describe('validateFirmware', () => {
     it('should return TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE if firmware format does not match the device model', () => {
         const fw = getT1V2FW();
 
-        const device = { features: { internal_model: DeviceModelInternal.T2B1 } } as TrezorDevice;
+        const device = { features: { internal_model: DeviceModelInternal.T3B1 } } as TrezorDevice;
 
         expect(validateFirmware(fw, device)).toBe('TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE');
     });

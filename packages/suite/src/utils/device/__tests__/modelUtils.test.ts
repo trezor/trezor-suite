@@ -26,7 +26,7 @@ const fixtures = [
     },
     {
         description: 'should return default when deviceModelInternal is not among options',
-        deviceModelInternal: DeviceModelInternal.T2B1,
+        deviceModelInternal: DeviceModelInternal.T3B1,
         expectedResult: 'default',
     },
 ];
