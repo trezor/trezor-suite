@@ -120,12 +120,6 @@ export const sendTransactionThunk = createThunk<
                 tradeType: 'exchange',
                 date: new Date().toISOString(),
                 key: selectedTrade.orderId,
-                account: {
-                    descriptor: account.descriptor,
-                    symbol: account.symbol,
-                    accountType: account.accountType,
-                    accountIndex: account.index,
-                },
                 data: { ...selectedTrade, receiveTxHash: recomposeAndSignTx.payload.payload.txid },
                 sendAccountKey,
                 receiveAccountKey,

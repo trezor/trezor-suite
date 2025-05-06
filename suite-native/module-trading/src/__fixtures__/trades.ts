@@ -11,19 +11,12 @@ import {
     TradingTransactionExchange,
     TradingTransactionSell,
 } from '@suite-common/trading';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 
 export const getBuyTrade = ({
     status,
 }: {
     status: BuyTradeStatus | undefined;
 }): TradingTransactionBuy => ({
-    account: {
-        accountIndex: 0,
-        accountType: 'normal',
-        descriptor: 'eth1-normal',
-        symbol: 'eth',
-    },
     data: {
         country: 'CZ',
         exchange: 'mercuryo',
@@ -53,6 +46,7 @@ export const getBuyTrade = ({
     key: '7546b3a9-ba27-4c9c-b3ae-45524fe63a97',
     tradeType: 'buy',
     receiveAccountKey: 'eth1',
+    selectedAccountKey: 'eth1',
 });
 
 export const getExchangeTrade = ({
@@ -63,12 +57,6 @@ export const getExchangeTrade = ({
     tradeType: 'exchange' as const,
     date: '2025-02-12T20:11:03.042Z',
     key: 'exchange-key',
-    account: {
-        symbol: 'sol' as NetworkSymbol,
-        descriptor: 'sol1-normal',
-        accountIndex: 0,
-        accountType: 'normal' as AccountType,
-    },
     data: {
         status,
         orderId: '12ffba9e-7370-4a6e-87dc-aefd3851c735',
@@ -92,12 +80,6 @@ export const getSellTrade = ({
     tradeType: 'sell',
     date: '2025-01-01T20:12:25.042Z',
     key: 'sell-key',
-    account: {
-        symbol: 'btc',
-        descriptor: 'btc1-normal',
-        accountIndex: 0,
-        accountType: 'normal',
-    },
     data: {
         cryptoStringAmount: '1.22',
         fiatStringAmount: '100',

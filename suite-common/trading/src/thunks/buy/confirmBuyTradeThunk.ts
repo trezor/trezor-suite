@@ -9,8 +9,8 @@ import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
+    selectTradingBuyReceiveAccountKey,
     selectTradingBuySelectedQuote,
-    selectTradingExchangeReceiveAccountKey,
 } from '../../selectors/tradingSelectors';
 
 export type ConfirmTradeThunkProps = {
@@ -35,7 +35,7 @@ export const confirmBuyTradeThunk = createThunk(
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingBuySelectedQuote(getState());
-        const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
+        const receiveAccountKey = selectTradingBuyReceiveAccountKey(getState());
 
         if (!selectedQuote) return;
 
@@ -73,14 +73,9 @@ export const confirmBuyTradeThunk = createThunk(
                     tradeType: 'buy',
                     date: new Date().toISOString(),
                     key: response.trade.paymentId,
-                    account: {
-                        descriptor: account.descriptor,
-                        symbol: account.symbol,
-                        accountType: account.accountType,
-                        accountIndex: account.index,
-                    },
                     data: response.trade,
                     receiveAccountKey,
+                    selectedAccountKey: account.key,
                 }),
             );
 

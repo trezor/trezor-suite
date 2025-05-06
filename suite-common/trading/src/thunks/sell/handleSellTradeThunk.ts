@@ -79,12 +79,6 @@ export const handleSellTradeThunk = createThunk(
                     data: response.trade,
                     date: new Date().toISOString(),
                     key: response.trade.orderId,
-                    account: {
-                        descriptor: account.descriptor,
-                        symbol: account.symbol,
-                        accountType: account.accountType,
-                        accountIndex: account.index,
-                    },
                     sendAccountKey: account.key,
                 }),
             );

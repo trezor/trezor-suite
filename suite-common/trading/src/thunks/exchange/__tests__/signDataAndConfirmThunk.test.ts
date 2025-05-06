@@ -341,12 +341,6 @@ describe('signDataAndConfirmThunk', () => {
             date: dateString,
             data: trade,
             key: trade.orderId,
-            account: {
-                descriptor: 'eth-descriptor',
-                symbol: 'eth',
-                accountType: 'normal',
-                accountIndex: 1,
-            },
         });
     });
 });

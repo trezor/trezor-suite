@@ -76,7 +76,7 @@ describe('verifyAddressThunk', () => {
                 }),
             );
 
-            expect(store.getActions().length).toEqual(6);
+            expect(store.getActions().length).toEqual(7);
             expect(
                 store.getState().wallet.tradingNew[type as 'buy' | 'exchange'].addressVerified,
             ).toEqual(addressData?.address);

@@ -266,9 +266,12 @@ export const selectTradingTradesForSelectedDevice = createMemoizedSelector(
     [selectAccounts, state => state.wallet.selectedAccount, selectTradingTrades],
     (accounts, selectedAccount, trades): TradingTransaction[] =>
         trades.filter(tx => {
-            const txDeviceId = accounts.find(
-                account => tx.account.descriptor === account.descriptor,
-            )?.deviceState;
+            const txDeviceId = accounts.find(account => {
+                const transactionAccountKey =
+                    'selectedAccountKey' in tx ? tx.selectedAccountKey : tx.sendAccountKey;
+
+                return transactionAccountKey === account.key;
+            })?.deviceState;
 
             return txDeviceId === selectedAccount.account?.deviceState;
         }),
@@ -486,6 +489,9 @@ export const selectValidTradingBuyQuotes = createMemoizedSelector(
         return quotes.filter(item => item.rate && item.rate !== 0);
     },
 );
+
+export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
+    state.wallet.tradingNew.buy.receiveAccountKey;
 
 export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.tradingAccountKey;

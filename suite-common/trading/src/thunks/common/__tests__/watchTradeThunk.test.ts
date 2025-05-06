@@ -23,12 +23,6 @@ describe('watchTradeThunk', () => {
 
     const tradingReducer = prepareTradingReducer(extraDependenciesMock);
     const account = accountBtc as Account;
-    const accountData = {
-        symbol: account.symbol,
-        descriptor: account.descriptor,
-        accountIndex: account.index,
-        accountType: account.accountType,
-    };
     const refreshCount = 1;
 
     const getStore = (updatedState: Partial<TradingState>) =>
@@ -71,7 +65,6 @@ describe('watchTradeThunk', () => {
                     status: 'LOGIN_REQUEST',
                     paymentId: 'tradeKey',
                 },
-                account: accountData,
             } as TradingTransaction;
 
             const store = getStore({
@@ -104,7 +97,6 @@ describe('watchTradeThunk', () => {
                 status: 'LOGIN_REQUEST',
                 paymentId: 'tradeKey',
             },
-            account: accountData,
         } as TradingTransactionBuy;
 
         const store = getStore({
@@ -139,7 +131,6 @@ describe('watchTradeThunk', () => {
                 status: 'LOGIN_REQUEST',
                 paymentId: 'tradeKey',
             },
-            account: accountData,
         } as TradingTransactionBuy;
 
         const store = getStore({
@@ -167,12 +158,13 @@ describe('watchTradeThunk', () => {
             tradeType: 'buy',
             date: dateISO,
             key: 'tradeKey',
-            account: accountData,
             data: {
                 status: 'ERROR',
                 paymentId: 'tradeKey',
                 error: 'Some error occurred',
             },
+            receiveAccountKey: undefined,
+            selectedAccountKey: account.key,
         });
     });
 
@@ -201,7 +193,6 @@ describe('watchTradeThunk', () => {
                     status: 'LOGIN_REQUEST',
                     orderId: 'tradeKey',
                 },
-                account: accountData,
                 sendAccountKey: 'sendAccountKey',
             } as TradingTransactionSell;
 
@@ -230,7 +221,6 @@ describe('watchTradeThunk', () => {
                 tradeType: 'sell',
                 date: dateISO,
                 key: 'tradeKey',
-                account: accountData,
                 data: {
                     status: 'CONFIRM',
                     orderId: 'tradeKey',
@@ -260,7 +250,6 @@ describe('watchTradeThunk', () => {
                     status: 'SENDING',
                     orderId: 'tradeKey',
                 },
-                account: accountData,
             } as TradingTransactionExchange;
 
             const store = getStore({
@@ -288,7 +277,6 @@ describe('watchTradeThunk', () => {
                 tradeType: 'exchange',
                 date: dateISO,
                 key: 'tradeKey',
-                account: accountData,
                 data: {
                     status: 'CONFIRM',
                     orderId: 'tradeKey',

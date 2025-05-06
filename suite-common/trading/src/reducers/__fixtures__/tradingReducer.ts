@@ -29,12 +29,7 @@ const tradeBuy: TradingTransactionBuy = {
         maxCrypto: 0.19952,
         paymentMethod: 'creditCard',
     },
-    account: {
-        symbol: 'btc',
-        descriptor: 'asdfasdfasdfasdfas',
-        accountIndex: 0,
-        accountType: 'normal',
-    },
+    selectedAccountKey: 'xxx',
     receiveAccountKey: 'yyy',
 };
 
@@ -50,12 +45,6 @@ const tradeExchange: TradingTransactionExchange = {
         orderId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
         exchange: 'changelly',
         status: 'CONFIRMING',
-    },
-    account: {
-        symbol: 'btc',
-        descriptor: 'asdfasdfasdfasdfas',
-        accountIndex: 0,
-        accountType: 'normal',
     },
     sendAccountKey: 'xxx',
     receiveAccountKey: 'yyy',

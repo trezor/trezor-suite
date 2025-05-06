@@ -9,13 +9,13 @@ import { Translation } from 'src/components/suite';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 interface TradingInfoHeaderProps {
-    receiveCurrency?: CryptoId;
+    receiveCurrency: CryptoId;
 }
 
 export const TradingInfoHeader = ({ receiveCurrency }: TradingInfoHeaderProps) => {
     const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
-    const { networkId } = parseCryptoId(receiveCurrency!);
+    const { networkId } = parseCryptoId(receiveCurrency);
     const platform = cryptoIdToPlatformName(networkId);
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(receiveCurrency);

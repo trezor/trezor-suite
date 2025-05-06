@@ -6,7 +6,6 @@ import {
     cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
-    tradingExchangeActions,
 } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -130,7 +129,6 @@ const useTradingVerifyAccount = ({
 
     const selectAccountOption = (option: TradingVerifyFormAccountOptionProps) => {
         setSelectedAccountOption(option);
-        dispatch(tradingExchangeActions.setReceiveAccountKey(option.account?.key));
 
         if (option.account) {
             const { address } = getUnusedAddressFromAccount(option.account);

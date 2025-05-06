@@ -1037,13 +1037,13 @@ describe('tradingSelectors', () => {
                         account: { deviceState: 'device1' },
                     },
                     accounts: [
-                        { descriptor: 'account1', deviceState: 'device1' },
-                        { descriptor: 'account2', deviceState: 'device2' },
+                        { key: 'key1', deviceState: 'device1' },
+                        { key: 'key2', deviceState: 'device2' },
                     ],
                     tradingNew: {
                         trades: [
-                            { account: { descriptor: 'account1' }, tradeType: 'buy' },
-                            { account: { descriptor: 'account2' }, tradeType: 'sell' },
+                            { selectedAccountKey: 'key1', tradeType: 'buy' },
+                            { sendAccountKey: 'key2', tradeType: 'sell' },
                         ],
                     },
                 },
@@ -1051,7 +1051,7 @@ describe('tradingSelectors', () => {
 
             const result = selectTradingTradesForSelectedDevice(mockState);
 
-            expect(result).toEqual([{ account: { descriptor: 'account1' }, tradeType: 'buy' }]);
+            expect(result).toEqual([{ selectedAccountKey: 'key1', tradeType: 'buy' }]);
         });
 
         it('should return an empty array if no trades match the selected device', () => {
@@ -1061,14 +1061,11 @@ describe('tradingSelectors', () => {
                         account: { deviceState: 'device3' },
                     },
                     accounts: [
-                        { descriptor: 'account1', deviceState: 'device1' },
-                        { descriptor: 'account2', deviceState: 'device2' },
+                        { key: 'key1', deviceState: 'device1' },
+                        { key: 'key2', deviceState: 'device2' },
                     ],
                     tradingNew: {
-                        trades: [
-                            { account: { descriptor: 'account1' }, tradeType: 'buy' },
-                            { account: { descriptor: 'account2' }, tradeType: 'sell' },
-                        ],
+                        trades: [{ tradeType: 'buy' }, { tradeType: 'sell' }],
                     },
                 },
             } as unknown as TradingRootState;
@@ -1085,8 +1082,8 @@ describe('tradingSelectors', () => {
                         account: { deviceState: 'device1' },
                     },
                     accounts: [
-                        { descriptor: 'account1', deviceState: 'device1' },
-                        { descriptor: 'account2', deviceState: 'device2' },
+                        { key: 'key1', deviceState: 'device1' },
+                        { key: 'key2', deviceState: 'device2' },
                     ],
                     tradingNew: {
                         trades: [],
