@@ -76,21 +76,28 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
               }
             : { proxy: '' };
     };
-    const handleTorProcessStatus = (status: TorProcessStatus) => {
-        const { useExternalTor, running } = store.getTorSettings();
+    const handleTorProcessStatus = (status: TorProcessStatus, shouldEnableTor: boolean) => {
+        const { useExternalTor } = store.getTorSettings();
         let type: TorStatus;
 
-        if (!status.process) {
-            type = TorStatus.Disabled;
-        } else if (status.isBootstrapping) {
-            type = TorStatus.Enabling;
-        } else if (status.service && !useExternalTor) {
-            type = TorStatus.Enabled;
-        } else if (useExternalTor && running) {
-            type = TorStatus.Enabled;
-        } else {
+        // 1. Check for Disabled state:
+        if (shouldEnableTor === false) {
             type = TorStatus.Disabled;
         }
+        // 2. Check for Enabled state (only if not Disabled):
+        //    It's Enabled if:
+        //    a) We are using External Tor and user is responsible for running the service.
+        //    b) We are using Internal Tor and the service is confirmed ready (`status.service`).
+        else if (useExternalTor || status.service) {
+            // Since we passed the first `if`, `shouldEnableTor` must be true here.
+            type = TorStatus.Enabled;
+        }
+        // 3. Otherwise, it must be Enabling:
+        //    If it's supposed to be shouldEnableTor (`shouldEnableTor` is true) but isn't fully Enabled yet.
+        else {
+            type = TorStatus.Enabling;
+        }
+
         mainThreadEmitter.emit('module/tor-status-update', type);
         mainWindowProxy.getInstance()?.webContents.send('tor/status', {
             type,
@@ -144,31 +151,38 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     };
 
     const setupTor = async (shouldEnableTor: boolean) => {
-        const { useExternalTor, externalPort } = store.getTorSettings();
+        const target = getTarget();
+        const { useExternalTor, externalPort, host } = store.getTorSettings();
 
-        const isTorRunning = (await getTarget().status()).process;
+        let isTorRunning = false;
+        try {
+            const status = await target.status();
+            isTorRunning = status.process;
+            logger.info('tor', `Current Tor status: ${isTorRunning ? 'Running' : 'Stopped'}`);
+        } catch (statusError) {
+            logger.error('Failed to get Tor status:', statusError);
+        }
 
         if (shouldEnableTor === isTorRunning && !useExternalTor) {
             return;
         }
 
-        if (shouldEnableTor === true) {
-            const { host } = store.getTorSettings();
+        if (shouldEnableTor) {
             if (useExternalTor) {
-                getTarget().updatePort(externalPort);
+                target.updatePort(externalPort);
             }
-            const port = getTarget().getPort();
+            const port = target.getPort();
             updateTorPort(port);
             const proxyRule = `socks5://${host}:${port}`;
             setProxy(proxyRule);
-            getTarget().torController.on('bootstrap/event', handleBootstrapEvent);
+            target.torController.on('bootstrap/event', handleBootstrapEvent);
 
             try {
                 if (useExternalTor) {
-                    await getTarget().start();
+                    await target.start();
                     createFakeBootstrapProcess();
                 } else {
-                    await getTarget().start();
+                    await target.start();
                 }
             } catch (error) {
                 mainWindowProxy.getInstance()?.webContents.send('tor/bootstrap', {
@@ -177,22 +191,23 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
                 });
                 // When there is error does not mean that the process is stop,
                 // so we make sure to stop it so we are able to restart it.
-                getTarget().stop();
+                await target.stop();
 
-                throw error;
+                // Curently we are retrying for ever in all the cases,
+                // but we could make it condiditional by throwing an error
+                // here in some cases.
+                setupTor(shouldEnableTor);
             } finally {
-                getTarget().torController.removeAllListeners();
+                target.torController.removeAllListeners();
             }
         } else {
             mainWindowProxy.getInstance()?.webContents.send('tor/status', {
                 type: TorStatus.Disabling,
             });
             setProxy('');
-            getTarget().torController.stop();
-            await getTarget().stop();
+            target.torController.stop();
+            await target.stop();
         }
-
-        store.setTorSettings({ ...store.getTorSettings(), running: shouldEnableTor });
     };
 
     ipcMain.handle(
@@ -237,6 +252,8 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         logger.info('tor', `Toggling ${shouldEnableTor ? 'ON' : 'OFF'}`);
 
         try {
+            store.setTorSettings({ ...store.getTorSettings(), running: shouldEnableTor });
+
             await setupTor(shouldEnableTor);
 
             // After setupTor we can assume TOR is available so we set the proxy in TrezorConnect
@@ -267,8 +284,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
 
         // Once Tor is toggled it renderer should know the new status.
         const status = await getTarget().status();
-
-        handleTorProcessStatus(status);
+        handleTorProcessStatus(status, shouldEnableTor);
 
         return { success: true };
     });
@@ -299,7 +315,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         const { running } = store.getTorSettings();
         logger.debug('tor', `Getting status (${running ? 'ON' : 'OFF'})`);
         const status = await getTarget().status();
-        handleTorProcessStatus(status);
+        handleTorProcessStatus(status, running);
     });
 
     if (hasSwitch('tor')) {
