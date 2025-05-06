@@ -82,6 +82,8 @@ import { stellarSignTransaction } from './stellarSignTransaction';
 import { tezosGetAddress } from './tezosGetAddress';
 import { tezosGetPublicKey } from './tezosGetPublicKey';
 import { tezosSignTransaction } from './tezosSignTransaction';
+import { thpGetCredentials } from './thpGetCredentials';
+import { thpRemoveCredentials } from './thpRemoveCredentials';
 import { uiResponse } from './uiResponse';
 import { unlockPath } from './unlockPath';
 import { verifyMessage } from './verifyMessage';
@@ -251,6 +253,12 @@ export interface TrezorConnect {
 
     // todo: link docs
     getSettings: typeof getSettings;
+
+    // https://connect.trezor.io/9/methods/device/thpGetCredentials/
+    thpGetCredentials: typeof thpGetCredentials;
+
+    // https://connect.trezor.io/9/methods/device/thpRemoveCredentials/
+    thpRemoveCredentials: typeof thpRemoveCredentials;
 
     // https://connect.trezor.io/9/methods/other/init/
     init: typeof init;
