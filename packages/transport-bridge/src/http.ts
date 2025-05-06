@@ -498,7 +498,10 @@ export class TrezordNode {
         this.throttler.dispose();
         this.core.dispose();
 
-        return this.server?.stop();
+        return this.server?.stop().finally(() => {
+            this.server = undefined;
+            this.logger.info('Trezor Bridge HTTP server stopped');
+        });
     }
 
     public async status() {
@@ -508,7 +511,7 @@ export class TrezordNode {
 
         return {
             service: running,
-            process: running,
+            process: Boolean(this.server),
         };
     }
 
