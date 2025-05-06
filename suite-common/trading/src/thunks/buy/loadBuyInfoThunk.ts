@@ -7,7 +7,7 @@ import { invityAPI } from '../../invityAPI';
 import { BuyInfo } from '../../reducers/buyReducer';
 import { regional } from '../../regional';
 
-export const loadInfoThunk = createThunk<BuyInfo>(
+export const loadBuyInfoThunk = createThunk<BuyInfo>(
     `${TRADING_BUY_THUNK_PREFIX}/loadInfo`,
     async (_, { fulfillWithValue }) => {
         const buyInfo = await invityAPI.getBuyList();

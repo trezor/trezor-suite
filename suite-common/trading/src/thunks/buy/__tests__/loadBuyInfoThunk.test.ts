@@ -8,7 +8,7 @@ import { invityAPI } from '../../../invityAPI';
 import { buyInitialState, tradingBuyReducer } from '../../../reducers/buyReducer';
 import { regional } from '../../../regional';
 
-describe('loadInfoThunk', () => {
+describe('loadBuyInfoThunk', () => {
     jest.mock('../../../invityAPI');
 
     invityAPI.setInvityServersEnvironment = () => {};

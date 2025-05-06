@@ -20,12 +20,13 @@ import type {
 } from 'invity-api';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { AccountType, Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import type {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { Timer } from '@trezor/react-utils';
 import { PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
@@ -271,4 +272,11 @@ export interface TradingSellFormProps extends FormState {
 export type TradingSellUserConsentProps = {
     provider: string;
     cryptoCurrency: CryptoId;
+};
+
+export type HandleBuyRequestThunkProps = {
+    formValues: TradingBuyFormProps;
+    network: Network;
+    timer: Timer;
+    shouldSendInSats: boolean | undefined;
 };

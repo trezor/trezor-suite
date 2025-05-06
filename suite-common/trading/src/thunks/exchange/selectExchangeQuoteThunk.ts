@@ -11,7 +11,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { TradingExchangeUserConsentProps } from '../../types';
 
-export type SelectQuoteThunkProps = {
+export type SelectExchangeQuoteThunkProps = {
     quote: ExchangeTrade;
     timer: Timer;
 
@@ -25,10 +25,10 @@ export type SelectQuoteThunkProps = {
     onCancel?: () => void;
 };
 
-export const selectQuoteThunk = createThunk(
+export const selectExchangeQuoteThunk = createThunk(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/selectQuote`,
     async (
-        { quote, timer, userConsent, nextStep, onCancel }: SelectQuoteThunkProps,
+        { quote, timer, userConsent, nextStep, onCancel }: SelectExchangeQuoteThunkProps,
         { dispatch, getState },
     ) => {
         const exchangeInfo = selectTradingExchangeInfo(getState());

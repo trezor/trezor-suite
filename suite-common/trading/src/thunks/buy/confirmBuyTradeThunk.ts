@@ -22,7 +22,7 @@ export type ConfirmTradeThunkProps = {
     processResponseData: (response: BuyTradeResponse) => void;
 };
 
-export const confirmTradeThunk = createThunk(
+export const confirmBuyTradeThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/confirmTrade`,
     async (
         {

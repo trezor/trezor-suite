@@ -6,7 +6,7 @@ import { BuyTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    HandleRequestThunkProps,
+    type HandleBuyRequestThunkProps,
     TradingRootState,
     buyThunks,
     cryptoIdToNetwork,
@@ -174,7 +174,7 @@ const useBuyQuotesThunk = (
                 const network = cryptoIdToNetwork(selectedAsset.cryptoId);
                 invariant(network, `Network not found for [${selectedAsset.cryptoId}]`);
 
-                const payload: HandleRequestThunkProps = {
+                const payload: HandleBuyRequestThunkProps = {
                     network,
                     formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo),
                     shouldSendInSats,

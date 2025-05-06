@@ -12,7 +12,7 @@ import { invityAPI } from '../../../invityAPI';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 
-describe('watchExchangeTradeApprovalThunk', () => {
+describe('watchTradeApprovalThunk', () => {
     jest.mock('../../../invityAPI');
 
     const date = new Date('2025-04-09');

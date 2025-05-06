@@ -60,7 +60,7 @@ export const getQuoteRequestData = ({
     return request;
 };
 
-export type HandleRequestThunkProps = {
+export type HandleExchangeRequestThunkProps = {
     formValues: TradingExchangeFormProps;
     network: Network;
     timer: Timer;
@@ -68,14 +68,14 @@ export type HandleRequestThunkProps = {
     composeRequestCallback: () => void;
 };
 
-export const handleRequestThunk = createThunk<
+export const handleExchangeRequestThunk = createThunk<
     ExchangeTrade[],
-    HandleRequestThunkProps,
+    HandleExchangeRequestThunkProps,
     {
         rejectValue: string;
     }
 >(
-    `${TRADING_EXCHANGE_THUNK_PREFIX}/handleChange`,
+    `${TRADING_EXCHANGE_THUNK_PREFIX}/handleRequest`,
     async (
         {
             formValues,
@@ -83,7 +83,7 @@ export const handleRequestThunk = createThunk<
             timer,
             shouldSendInSats,
             composeRequestCallback,
-        }: HandleRequestThunkProps,
+        }: HandleExchangeRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
         timer.loading();

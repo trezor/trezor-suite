@@ -8,7 +8,7 @@ import { invityAPI } from '../../../invityAPI';
 import { exchange } from '../../../reducers/__fixtures__/exchangeTradingReducer';
 import { exchangeInitialState, tradingExchangeReducer } from '../../../reducers/exchangeReducer';
 
-describe('loadInfoThunk', () => {
+describe('loadExchangeInfoThunk', () => {
     jest.mock('../../../invityAPI');
 
     invityAPI.setInvityServersEnvironment = () => {};

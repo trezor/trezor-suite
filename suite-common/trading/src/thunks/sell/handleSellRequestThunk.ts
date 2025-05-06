@@ -86,7 +86,7 @@ export const handleSellRequestThunk = createThunk<
         rejectValue: string;
     }
 >(
-    `${TRADING_SELL_THUNK_PREFIX}/handleChange`,
+    `${TRADING_SELL_THUNK_PREFIX}/handleRequest`,
     async (
         {
             formValues,

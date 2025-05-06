@@ -9,11 +9,11 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { TradingExchangeFormProps } from '../../../types';
-import { HandleRequestThunkProps } from '../handleRequestThunk';
+import { HandleExchangeRequestThunkProps } from '../handleExchangeRequestThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
-describe('handleRequestThunk', () => {
+describe('handleExchangeRequestThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -62,7 +62,7 @@ describe('handleRequestThunk', () => {
             loading: mockTimerLoading,
             stop: mockTimerStop,
             reset: mockTimerReset,
-        } as unknown as HandleRequestThunkProps['timer'];
+        } as unknown as HandleExchangeRequestThunkProps['timer'];
 
         const mockComposeRequestCallback = jest.fn();
 
@@ -114,7 +114,7 @@ describe('handleRequestThunk', () => {
             exchangeComparatorKycFilter: 'all',
             exchangeComparatorRateFilter: 'all',
         };
-        const input: HandleRequestThunkProps = {
+        const input: HandleExchangeRequestThunkProps = {
             formValues,
             network: getNetwork('btc'),
             timer: mockTimer,

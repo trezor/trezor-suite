@@ -8,11 +8,11 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { invityAPI } from '../../../invityAPI';
 import { ExchangeInfo, TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { SelectQuoteThunkProps } from '../../exchange/selectQuoteThunk';
+import { SelectExchangeQuoteThunkProps } from '../selectExchangeQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
-describe('selectQuoteThunk', () => {
+describe('selectExchangeQuoteThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -96,7 +96,7 @@ describe('selectQuoteThunk', () => {
         const mockTimerStop = jest.fn();
         const mockTimer = {
             stop: mockTimerStop,
-        } as unknown as SelectQuoteThunkProps['timer'];
+        } as unknown as SelectExchangeQuoteThunkProps['timer'];
 
         const mockNextStep = jest.fn();
         const mockOnCancel = jest.fn();
