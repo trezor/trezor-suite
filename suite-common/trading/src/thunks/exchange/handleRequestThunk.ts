@@ -132,7 +132,9 @@ export const handleRequestThunk = createThunk<
 
         // compose transaction only when is not computed from max balance
         // max balance has to be computed before request
-        if (setMaxOutputId === undefined && !limits) {
+        const shouldComposeRequest = setMaxOutputId === undefined && !limits;
+
+        if (shouldComposeRequest) {
             composeRequestCallback();
         }
 

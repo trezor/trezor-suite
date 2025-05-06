@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import { CryptoId, SellFiatFlowType } from 'invity-api';
 
 export const TRADING_PREFIX = '@trading';
 export const TRADING_BUY_PREFIX = `${TRADING_PREFIX}-buy`;
@@ -14,6 +14,7 @@ export const TRADING_DEFAULT_CRYPTO_CURRENCY = 'bitcoin' as CryptoId;
 export const TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY = 'ethereum' as CryptoId;
 export const TRADING_DEFAULT_PAYMENT_METHOD = 'creditCard' as const;
 export const TRADING_DEFAULT_FIAT_CURRENCY = 'eur' as const;
+export const TRADING_DEFAULT_SELL_FLOWS: SellFiatFlowType[] = ['BANK_ACCOUNT', 'PAYMENT_GATE'];
 
 export const TRADING_EXCHANGE_RATE = 'rateType';
 export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';

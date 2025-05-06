@@ -1,11 +1,11 @@
-import { SellFiatFlowType, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
+import { SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Timer } from '@trezor/react-utils';
 
-import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
+import { TRADING_DEFAULT_SELL_FLOWS, TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
@@ -42,7 +42,6 @@ const getQuoteRequestData = ({
     const { outputs, countrySelect, sendCryptoSelect, amountInCrypto } = formValues;
     const decimals = getTradingNetworkDecimals({ network, sendCryptoSelect });
 
-    const flows: SellFiatFlowType[] = ['BANK_ACCOUNT', 'PAYMENT_GATE'];
     const fiatStringAmount = outputs[0].fiat;
     const unformattedOutputAmount = outputs[0].amount;
     const cryptoStringAmount =
@@ -66,7 +65,7 @@ const getQuoteRequestData = ({
         country: countrySelect.value,
         cryptoStringAmount,
         fiatStringAmount,
-        flows,
+        flows: TRADING_DEFAULT_SELL_FLOWS,
     };
 
     return request;
@@ -158,7 +157,9 @@ export const handleSellRequestThunk = createThunk<
 
         // compose transaction only when is not computed from max balance
         // max balance has to be computed before request
-        if (setMaxOutputId === undefined && !limits) {
+        const shouldComposeRequest = setMaxOutputId === undefined && !limits;
+
+        if (shouldComposeRequest) {
             composeRequestCallback();
         }
 
