@@ -6,7 +6,7 @@ import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { ExchangeInfo } from '../../reducers/exchangeReducer';
 
-export const loadInfoThunk = createThunk<ExchangeInfo>(
+export const loadExchangeInfoThunk = createThunk<ExchangeInfo>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/loadInfo`,
     async (_, { fulfillWithValue }) => {
         const exchangeList = await invityAPI.getExchangeList();

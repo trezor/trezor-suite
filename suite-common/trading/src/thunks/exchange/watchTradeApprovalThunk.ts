@@ -10,7 +10,7 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
 import { TradingExchangeType } from '../../types';
 
-export type WatchExchangeTradeApprovalThunkThunk = {
+export type WatchTradeApprovalThunkThunk = {
     account: Account;
     returnUrl: string;
     refreshCount: number;
@@ -20,8 +20,8 @@ export type WatchExchangeTradeApprovalThunkThunk = {
     nextStep: () => void;
 };
 
-export const watchExchangeTradeApprovalThunk = createThunk(
-    `${TRADING_EXCHANGE_THUNK_PREFIX}/watchExchangeTradeApproval`,
+export const watchTradeApprovalThunk = createThunk(
+    `${TRADING_EXCHANGE_THUNK_PREFIX}/watchTradeApproval`,
     async (
         {
             account,
@@ -30,7 +30,7 @@ export const watchExchangeTradeApprovalThunk = createThunk(
             triggerAnalyticsTradeConfirmation,
             processResponseData,
             nextStep,
-        }: WatchExchangeTradeApprovalThunkThunk,
+        }: WatchTradeApprovalThunkThunk,
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());

@@ -13,7 +13,7 @@ import {
     selectTradingCoinSymbolByCryptoId,
 } from '../../selectors/tradingSelectors';
 
-export type SelectQuoteThunkProps = {
+export type SelectBuyQuoteThunkProps = {
     quote: BuyTrade;
     timer: Timer;
     returnUrl: string;
@@ -24,7 +24,7 @@ export type SelectQuoteThunkProps = {
     onCancel?: () => void;
 };
 
-export const selectQuoteThunk = createThunk(
+export const selectBuyQuoteThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/selectQuote`,
     async (
         {
@@ -35,7 +35,7 @@ export const selectQuoteThunk = createThunk(
             userConsent,
             nextStep,
             onCancel,
-        }: SelectQuoteThunkProps,
+        }: SelectBuyQuoteThunkProps,
         { dispatch, getState },
     ) => {
         const buyInfo = selectTradingBuyInfo(getState());

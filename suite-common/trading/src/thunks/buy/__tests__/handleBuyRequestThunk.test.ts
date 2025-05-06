@@ -8,13 +8,16 @@ import { buyThunks } from '../../';
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { TradingBuyFormProps, TradingCryptoSelectItemProps } from '../../../types';
+import {
+    HandleBuyRequestThunkProps,
+    TradingBuyFormProps,
+    TradingCryptoSelectItemProps,
+} from '../../../types';
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
-import { HandleRequestThunkProps } from '../handleRequestThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
-describe('handleRequestThunk', () => {
+describe('handleBuyRequestThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -63,7 +66,7 @@ describe('handleRequestThunk', () => {
             loading: mockTimerLoading,
             stop: mockTimerStop,
             reset: mockTimerReset,
-        } as unknown as HandleRequestThunkProps['timer'];
+        } as unknown as HandleBuyRequestThunkProps['timer'];
 
         const formValues: TradingBuyFormProps = {
             fiatInput: '1000',
@@ -89,7 +92,7 @@ describe('handleRequestThunk', () => {
             },
             amountInCrypto: false,
         };
-        const input: HandleRequestThunkProps = {
+        const input: HandleBuyRequestThunkProps = {
             formValues,
             network: getNetwork('btc'),
             timer: mockTimer,

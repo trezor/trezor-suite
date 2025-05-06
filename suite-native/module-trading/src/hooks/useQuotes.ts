@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    HandleRequestThunkProps,
+    type HandleBuyRequestThunkProps,
     TradingRootState,
     buyThunks,
     selectTradingBuyIsLoading,
@@ -163,7 +163,7 @@ const useQuotesThunk = (
                 const network = getNetworkByCoingeckoId(selectedAsset.networkId);
                 invariant(network, `Network not found for ${selectedAsset.networkId}`);
 
-                const payload: HandleRequestThunkProps = {
+                const payload: HandleBuyRequestThunkProps = {
                     network,
                     formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo),
                     shouldSendInSats,

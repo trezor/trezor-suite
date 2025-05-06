@@ -1,27 +1,25 @@
-import { confirmTradeThunk as confirmBuyTradeThunk } from './buy/confirmTradeThunk';
-import { handleRequestThunk as handleBuyRequestThunk } from './buy/handleRequestThunk';
-import { loadInfoThunk as loadBuyInfoThunk } from './buy/loadInfoThunk';
-import { selectQuoteThunk as selectBuyQuoteThunk } from './buy/selectQuoteThunk';
+import { confirmBuyTradeThunk } from './buy/confirmBuyTradeThunk';
+import { handleBuyRequestThunk } from './buy/handleBuyRequestThunk';
+import { loadBuyInfoThunk } from './buy/loadBuyInfoThunk';
+import { selectBuyQuoteThunk } from './buy/selectBuyQuoteThunk';
 import { loadInitialDataThunk } from './common/loadInitialDataThunk';
 import { recomposeAndSignTxThunk } from './common/recomposeAndSignTxThunk';
 import { verifyAddressThunk } from './common/verifyAddressThunk';
 import { watchTradeThunk } from './common/watchTradeThunk';
-import { confirmTradeThunk as confirmExchangeTradeThunk } from './exchange/confirmTradeThunk';
-import { handleRequestThunk as handleExchangeRequestThunk } from './exchange/handleRequestThunk';
-import { loadInfoThunk as loadExchangeInfoThunk } from './exchange/loadInfoThunk';
-import { selectQuoteThunk as selectExchangeQuoteThunk } from './exchange/selectQuoteThunk';
+import { confirmExchangeTradeThunk } from './exchange/confirmExchangeTradeThunk';
+import { handleExchangeRequestThunk } from './exchange/handleExchangeRequestThunk';
+import { loadExchangeInfoThunk } from './exchange/loadExchangeInfoThunk';
+import { selectExchangeQuoteThunk } from './exchange/selectExchangeQuoteThunk';
 import { sendDexTransactionThunk } from './exchange/sendDexTransactionThunk';
 import { sendTransactionThunk } from './exchange/sendTransactionThunk';
 import { signDataAndConfirmThunk } from './exchange/signDataAndConfirmThunk';
-import { watchExchangeTradeApprovalThunk } from './exchange/watchExchangeTradeApprovalThunk';
+import { watchTradeApprovalThunk } from './exchange/watchTradeApprovalThunk';
 import { confirmSellTradeThunk } from './sell/confirmSellTradeThunk';
 import { handleSellRequestThunk } from './sell/handleSellRequestThunk';
 import { handleSellTradeThunk } from './sell/handleSellTradeThunk';
 import { loadSellInfoThunk } from './sell/loadSellInfoThunk';
 import { selectSellQuoteThunk } from './sell/selectSellQuoteThunk';
 import { sendSellTransactionThunk } from './sell/sendSellTransactionThunk';
-
-export { type HandleRequestThunkProps } from './buy/handleRequestThunk';
 
 export const tradingThunks = {
     verifyAddressThunk,
@@ -45,7 +43,7 @@ export const exchangeThunks = {
     signDataAndConfirmThunk,
     sendDexTransactionThunk,
     sendTransactionThunk,
-    watchTradeApprovalThunk: watchExchangeTradeApprovalThunk,
+    watchTradeApprovalThunk,
 };
 
 export const sellThunks = {

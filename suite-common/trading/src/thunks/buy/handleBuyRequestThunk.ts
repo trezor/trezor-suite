@@ -3,7 +3,6 @@ import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
-import { Timer } from '@trezor/react-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -13,7 +12,7 @@ import {
     selectTradingBuyQuotesRequest,
     selectTradingCoinSymbolByCryptoId,
 } from '../../selectors/tradingSelectors';
-import type { TradingBuyFormProps, TradingBuyType } from '../../types';
+import type { HandleBuyRequestThunkProps, TradingBuyFormProps, TradingBuyType } from '../../types';
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
@@ -71,23 +70,16 @@ const getQuoteRequestData = ({
     return request;
 };
 
-export type HandleRequestThunkProps = {
-    formValues: TradingBuyFormProps;
-    network: Network;
-    timer: Timer;
-    shouldSendInSats: boolean | undefined;
-};
-
-export const handleRequestThunk = createThunk<
+export const handleBuyRequestThunk = createThunk<
     BuyTrade[],
-    HandleRequestThunkProps,
+    HandleBuyRequestThunkProps,
     {
         rejectValue: string;
     }
 >(
-    `${TRADING_BUY_THUNK_PREFIX}/handleChange`,
+    `${TRADING_BUY_THUNK_PREFIX}/handleRequest`,
     async (
-        { formValues, network, timer, shouldSendInSats }: HandleRequestThunkProps,
+        { formValues, network, timer, shouldSendInSats }: HandleBuyRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
         timer.loading();

@@ -17,7 +17,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
 
-export type ConfirmTradeThunkProps = {
+export type ConfirmExchangeTradeThunkProps = {
     returnUrl: string;
     receiveAddress: string;
     account: Account;
@@ -29,7 +29,7 @@ export type ConfirmTradeThunkProps = {
     nextStep: () => void;
 };
 
-export const confirmTradeThunk = createThunk(
+export const confirmExchangeTradeThunk = createThunk(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmTrade`,
     async (
         {
@@ -41,7 +41,7 @@ export const confirmTradeThunk = createThunk(
             triggerAnalyticsTradeConfirmation,
             processResponseData,
             nextStep,
-        }: ConfirmTradeThunkProps,
+        }: ConfirmExchangeTradeThunkProps,
         { dispatch, getState },
     ) => {
         triggerAnalyticsTradeConfirmation();

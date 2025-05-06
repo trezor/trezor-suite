@@ -4,17 +4,17 @@ import { CryptoId, ExchangeTrade } from 'invity-api';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
+import { exchangeThunks } from '../../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../../utils';
-import { confirmTradeThunk } from '../confirmTradeThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
-describe('confirmTradeThunk', () => {
+describe('confirmExchangeTradeThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -95,7 +95,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -128,7 +128,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account: {
@@ -163,7 +163,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -196,7 +196,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -231,7 +231,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -301,7 +301,7 @@ describe('confirmTradeThunk', () => {
 
             const response = await store
                 .dispatch(
-                    confirmTradeThunk({
+                    exchangeThunks.confirmTradeThunk({
                         returnUrl,
                         receiveAddress,
                         account,
@@ -377,7 +377,7 @@ describe('confirmTradeThunk', () => {
 
             const response = await store
                 .dispatch(
-                    confirmTradeThunk({
+                    exchangeThunks.confirmTradeThunk({
                         returnUrl,
                         receiveAddress,
                         account,
@@ -425,7 +425,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -483,7 +483,7 @@ describe('confirmTradeThunk', () => {
 
             const response = await store
                 .dispatch(
-                    confirmTradeThunk({
+                    exchangeThunks.confirmTradeThunk({
                         returnUrl,
                         receiveAddress,
                         account,
@@ -533,7 +533,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -583,7 +583,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -652,7 +652,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -725,7 +725,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,
@@ -788,7 +788,7 @@ describe('confirmTradeThunk', () => {
 
         const response = await store
             .dispatch(
-                confirmTradeThunk({
+                exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
                     account,

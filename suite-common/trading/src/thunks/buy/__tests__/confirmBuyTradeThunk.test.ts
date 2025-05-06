@@ -4,15 +4,15 @@ import { BuyTradeResponse } from 'invity-api';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
+import { buyThunks } from '../../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { confirmTradeThunk } from '../confirmTradeThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
-describe('confirmTradeThunk', () => {
+describe('confirmBuyTradeThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -72,7 +72,7 @@ describe('confirmTradeThunk', () => {
         });
 
         await store.dispatch(
-            confirmTradeThunk({
+            buyThunks.confirmTradeThunk({
                 returnUrl: 'returnUrl',
                 address: 'address',
                 account: {
@@ -100,7 +100,7 @@ describe('confirmTradeThunk', () => {
             invityAPI.doBuyTrade = () => Promise.resolve(undefined as unknown as BuyTradeResponse);
 
             await store.dispatch(
-                confirmTradeThunk({
+                buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
                     account: {
@@ -132,7 +132,7 @@ describe('confirmTradeThunk', () => {
             invityAPI.doBuyTrade = () => Promise.resolve({} as BuyTradeResponse);
 
             await store.dispatch(
-                confirmTradeThunk({
+                buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
                     account: {
@@ -170,7 +170,7 @@ describe('confirmTradeThunk', () => {
                 });
 
             await store.dispatch(
-                confirmTradeThunk({
+                buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
                     account: {
@@ -209,7 +209,7 @@ describe('confirmTradeThunk', () => {
                 });
 
             await store.dispatch(
-                confirmTradeThunk({
+                buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
                     account: {
@@ -249,7 +249,7 @@ describe('confirmTradeThunk', () => {
             });
 
         await store.dispatch(
-            confirmTradeThunk({
+            buyThunks.confirmTradeThunk({
                 returnUrl: 'returnUrl',
                 address: 'address',
                 account: {
