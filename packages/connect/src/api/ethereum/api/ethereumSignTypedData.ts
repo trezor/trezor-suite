@@ -166,7 +166,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const { data, metamask_v4_compat } = this.params;
         const { types, primaryType, domain, message } = data;
 
-        // For T2T1, T2B1 we use EthereumSignTypedData
+        // For core devices, we use EthereumSignTypedData
         let response = await cmd.typedCall(
             'EthereumSignTypedData',
             [

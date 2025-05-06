@@ -24,7 +24,7 @@ const customFirmwareBuild =
 
 const tests = [
     {
-        description: 'T2T1/T2B1 features',
+        description: 'core devices features',
         skip: ['1'],
         params: {},
         result: {
@@ -74,7 +74,7 @@ const tests = [
                 'Capability_EOS',
             ]),
             backup_type: 'Bip39',
-            sd_card_present: expect.any(Boolean), // T2T1 true, T2B1 false
+            sd_card_present: expect.any(Boolean),
             sd_protection: false,
             wipe_code_protection: false,
             session_id: expect.any(String),

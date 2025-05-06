@@ -22,7 +22,7 @@ describe('TrezorConnect.authenticateDevice', () => {
     const config = {
         version: 1,
         timestamp: '2023-09-07T14:00:00+00:00',
-        T2B1: {
+        T3B1: {
             rootPubKeys: [
                 '047f77368dea2d4d61e989f474a56723c3212dacf8a808d8795595ef38441427c4389bc454f02089d7f08b873005e4c28d432468997871c0bf286fd3861e21e96a',
             ],
@@ -58,8 +58,8 @@ describe('TrezorConnect.authenticateDevice', () => {
         const result = await TrezorConnect.authenticateDevice({
             config: {
                 ...config,
-                T2B1: {
-                    ...config.T2B1,
+                T3B1: {
+                    ...config.T3B1,
                     rootPubKeys: [],
                 },
             },
@@ -75,8 +75,8 @@ describe('TrezorConnect.authenticateDevice', () => {
         const result = await TrezorConnect.authenticateDevice({
             config: {
                 ...config,
-                T2B1: {
-                    ...config.T2B1,
+                T3B1: {
+                    ...config.T3B1,
                     caPubKeys: [],
                 },
             },
