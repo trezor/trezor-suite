@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { selectTradingModalAccountKey } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
@@ -22,10 +23,7 @@ interface ConfirmAddressModalProps
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
-    const isTradingFlow = useSelector(
-        state =>
-            !!state.wallet.trading.modalAccountKey || !!state.wallet.tradingNew.modalAccountKey,
-    );
+    const isTradingFlow = useSelector(selectTradingModalAccountKey);
     const isConnectPopup = useSelector(
         state => selectConnectPopupCall(state)?.state === 'address-confirmation',
     );

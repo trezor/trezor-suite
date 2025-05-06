@@ -1,7 +1,7 @@
 import { SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import { TradingTradeMapProps, getTagAndInfoNote } from '@suite-common/trading';
+import { TradingTradeMapProps, getTagAndInfoNote, sellUtils } from '@suite-common/trading';
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -95,7 +95,11 @@ export interface TradingOffersItemProps {
 export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
     const theme = useTheme();
     const context = useTradingFormContext();
-    const { callInProgress } = context;
+    const {
+        form: {
+            state: { isFormLoading },
+        },
+    } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
@@ -109,6 +113,13 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
     const onSelectQuote = () => {
         selectQuote(quote);
     };
+    const isSellVerificationRequired =
+        isTradingSellContext(context) &&
+        context.sellInfo &&
+        sellUtils.needToRegisterOrVerifyBankAccount({
+            quote: quote as SellFiatTrade,
+            sellInfo: context.sellInfo,
+        });
 
     if (!cryptoAmountProps) return null;
 
@@ -157,17 +168,14 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                             ) : (
                                 <Button
                                     isFullWidth
-                                    isLoading={callInProgress}
+                                    isLoading={isFormLoading}
                                     isDisabled={!!quote.error || tradingDeviceDisconnected}
                                     onClick={onSelectQuote}
                                     data-testid="@trading/offers/get-this-deal-button"
                                 >
                                     <Translation
                                         id={
-                                            isTradingSellContext(context) &&
-                                            context.needToRegisterOrVerifyBankAccount(
-                                                quote as SellFiatTrade,
-                                            )
+                                            isSellVerificationRequired
                                                 ? 'TR_SELL_REGISTER'
                                                 : 'TR_TRADING_OFFERS_SELECT'
                                         }

@@ -7,7 +7,13 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { TradingType, getUnusedAddressFromAccount, toTokenCryptoId } from '@suite-common/trading';
+import {
+    TradingType,
+    getUnusedAddressFromAccount,
+    selectTradingInfo,
+    toTokenCryptoId,
+    tradingActions,
+} from '@suite-common/trading';
 import { Explorer, Network, getCoingeckoId } from '@suite-common/wallet-config';
 import { selectExplorer, selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
@@ -36,7 +42,6 @@ import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { setTradingPrefilledFromAccount } from 'src/actions/wallet/trading/tradingCommonActions';
 import {
     Address,
     FiatValue,
@@ -89,7 +94,7 @@ export const TokenRow = ({
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
     );
-    const { coins } = useSelector(state => state.wallet.trading.info);
+    const { coins } = useSelector(selectTradingInfo);
     const isDeviceLocked = isLocked(true);
     const networkContractAddress = getContractAddressForNetworkSymbol(
         account.symbol,
@@ -165,7 +170,12 @@ export const TokenRow = ({
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
 
     const onTradeButtonClick = (type: TradingType, ...[routeName]: Parameters<typeof goto>) => {
-        dispatch(setTradingPrefilledFromAccount(account.descriptor, tokenCryptoId));
+        dispatch(
+            tradingActions.setTradingFromPrefilledAccount({
+                cryptoId: tokenCryptoId,
+                descriptor: account.descriptor,
+            }),
+        );
 
         goToWithAnalytics(routeName, {
             params: {

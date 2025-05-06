@@ -1,4 +1,5 @@
-import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
+import { TradingComposedTransactionInfo } from '@suite-common/trading';
+
 import { Account } from 'src/types/wallet';
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
@@ -20,7 +21,7 @@ describe('trading/sell utils', () => {
                 maxPriorityFeePerGas: '3',
                 feeLimit: '4',
             },
-        } as ComposedTransactionInfo;
+        } as TradingComposedTransactionInfo;
         expect(
             await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock, composedInfoMock),
         ).toStrictEqual(

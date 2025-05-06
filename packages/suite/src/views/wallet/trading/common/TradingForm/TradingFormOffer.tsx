@@ -58,7 +58,7 @@ export const TradingFormOffer = () => {
         getValues,
         form: { state },
     } = context;
-    const { cryptoIdToPlatformName } = useTradingInfo(type);
+    const { cryptoIdToPlatformName } = useTradingInfo();
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
     const quote = getSelectedQuote(context, bestScoredQuote);

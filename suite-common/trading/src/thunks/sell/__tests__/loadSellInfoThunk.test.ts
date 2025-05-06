@@ -6,6 +6,7 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { sellThunks } from '../../';
 import { invityAPI } from '../../../invityAPI';
 import { sellInitialState, tradingSellReducer } from '../../../reducers/sellReducer';
+import { regional } from '../../../regional';
 
 describe('loadSellInfoThunk', () => {
     jest.mock('../../../invityAPI');
@@ -61,6 +62,7 @@ describe('loadSellInfoThunk', () => {
             supportedFiatCurrencies:
                 sellProvider.tradedFiatCurrencies?.map(currency => currency.toLowerCase()) ?? [],
             supportedCryptoCurrencies: sellProvider.tradedCoins,
+            country: sellInfoApi.country,
         });
     });
 
@@ -84,6 +86,7 @@ describe('loadSellInfoThunk', () => {
             },
             supportedFiatCurrencies: [],
             supportedCryptoCurrencies: sellProviderUpdated.tradedCoins,
+            country: sellInfoApi.country,
         });
     });
 
@@ -96,6 +99,7 @@ describe('loadSellInfoThunk', () => {
             providerInfos: {},
             supportedFiatCurrencies: [],
             supportedCryptoCurrencies: [],
+            country: regional.UNKNOWN_COUNTRY,
         });
     });
 });

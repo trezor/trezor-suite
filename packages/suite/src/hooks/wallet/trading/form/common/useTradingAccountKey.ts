@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { mapTestnetSymbol, tradingExchangeActions } from '@suite-common/trading';
+import {
+    mapTestnetSymbol,
+    tradingExchangeActions,
+    tradingSellActions,
+} from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
-import { setTradingSellAccountKey } from 'src/actions/wallet/tradingSellActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TradingTradeSellExchangeType } from 'src/types/trading/trading';
 import { tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
@@ -59,7 +62,7 @@ export const useTradingAccountKey = ({
     useEffect(() => {
         if (!shouldUseTradingAccountKey) {
             if (type === 'sell') {
-                dispatch(setTradingSellAccountKey(accountKey));
+                dispatch(tradingSellActions.setTradingAccountKey(accountKey));
             } else {
                 dispatch(tradingExchangeActions.setTradingAccountKey(accountKey));
             }

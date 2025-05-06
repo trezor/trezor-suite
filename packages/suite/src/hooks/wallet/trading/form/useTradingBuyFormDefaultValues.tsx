@@ -7,6 +7,7 @@ import {
     type TradingPaymentMethodListProps,
     getDefaultCountry,
     regional,
+    selectTradingPrefilledFromAccount,
     useTradingInfo,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
@@ -25,12 +26,10 @@ export const useTradingBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
-    const { buildDefaultCryptoOption } = useTradingInfo('buy');
     const { isTorEnabled } = useSelector(selectTorState);
-    const prefilledFromCryptoId = useSelector(
-        state => state.wallet.trading.prefilledFromAccount.cryptoId,
-    );
-    const cryptoId = prefilledFromCryptoId || networks[accountSymbol]?.tradeCryptoId;
+    const { buildDefaultCryptoOption } = useTradingInfo();
+    const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
+    const cryptoId = prefilledFromAccount.cryptoId ?? networks[accountSymbol]?.tradeCryptoId;
 
     const country = !isTorEnabled ? buyInfo?.buyInfo?.country : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);

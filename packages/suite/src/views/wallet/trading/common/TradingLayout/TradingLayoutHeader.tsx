@@ -1,7 +1,7 @@
 import { PropsWithChildren, useMemo } from 'react';
 
 import { Route } from '@suite-common/suite-types';
-import type { TradingType } from '@suite-common/trading';
+import { type TradingType, selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -30,7 +30,7 @@ type TradingPageHeaderProps = {
 const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
     const dispatch = useDispatch();
     const currentRouteName = useSelector(selectRouteName);
-    const activeSection = useSelector(state => state.wallet.trading.activeSection);
+    const activeSection = useSelector(selectTradingActiveSection);
 
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto(route, { preserveParams: true }));
@@ -66,7 +66,7 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
 };
 
 export const TradingLayoutHeader = ({ children }: PropsWithChildren) => {
-    const { activeSection } = useSelector(state => state.wallet.trading);
+    const activeSection = useSelector(selectTradingActiveSection);
     const { translationString } = useTranslation();
     const fallbackTitle = useMemo(
         () => (activeSection === 'exchange' ? 'TR_TRADING_SWAP' : 'TR_TRADING_BUY_AND_SELL'),

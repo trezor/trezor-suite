@@ -23,7 +23,6 @@ import graphReducer from './graphReducer';
 import receiveReducer from './receiveReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import settingsReducer from './settingsReducer';
-import { tradingReducer } from './tradingReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
@@ -47,7 +46,6 @@ const WalletReducers = combineReducers({
     fees: feesReducer,
     blockchain: blockchainReducer,
     explorer: explorerReducer,
-    trading: tradingReducer,
     tradingNew: tradingNewReducer, // TODO: trading - tradingNew is temporary
     send: sendFormReducer,
     accountSearch: accountSearchReducer,

@@ -11,6 +11,7 @@ import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingSellState, sellInitialState } from '../../../reducers/sellReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { TradingSellFormProps } from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
@@ -86,8 +87,11 @@ describe('sendSellTransactionThunk', () => {
             data: getQuote(),
         };
         const mockNextStep = jest.fn();
+        const formValues = {
+            setMaxOutputId: undefined,
+        } as TradingSellFormProps;
 
-        return { store, account, trade, mockNextStep };
+        return { store, account, trade, formValues, mockNextStep };
     };
 
     describe('should return error', () => {
@@ -100,7 +104,7 @@ describe('sendSellTransactionThunk', () => {
                 { trade: { orderId: 'orderId', cryptoStringAmount: '1' } },
             ],
         ])('%s', async (_, tradeTest) => {
-            const { store, account, mockNextStep } = getMocks();
+            const { store, account, formValues, mockNextStep } = getMocks();
 
             jest.spyOn(invityAPI, 'doSellConfirm');
 
@@ -112,6 +116,7 @@ describe('sendSellTransactionThunk', () => {
                     },
                     decimals: getNetwork(account.symbol).decimals,
                     shouldSendInSats: false,
+                    formValues,
                     nextStep: mockNextStep,
                     signAndPushSendFormTransaction: jest.fn(),
                 }),
@@ -141,7 +146,7 @@ describe('sendSellTransactionThunk', () => {
             ['when payload contains error', { type: 'error', error: { id: 'TR_ERROR' } }],
             ['when payload is not successful', { success: false }],
         ])('%s', async (_, recomposeAndSignPayload) => {
-            const { store, account, trade, mockNextStep } = getMocks();
+            const { store, account, formValues, trade, mockNextStep } = getMocks();
 
             jest.spyOn(tradingThunks, 'recomposeAndSignTxThunk').mockImplementation(
                 createThunk(
@@ -159,6 +164,7 @@ describe('sendSellTransactionThunk', () => {
                     trade: { ...trade.data },
                     decimals: getNetwork(account.symbol).decimals,
                     shouldSendInSats: false,
+                    formValues,
                     nextStep: mockNextStep,
                     signAndPushSendFormTransaction: jest.fn(),
                 }),
@@ -204,7 +210,7 @@ describe('sendSellTransactionThunk', () => {
                 { id: 'TR_TRADING_INVALID_RESPONSE' },
             ],
         ])('%s', async (_, response, error) => {
-            const { store, account, trade, mockNextStep } = getMocks();
+            const { store, account, formValues, trade, mockNextStep } = getMocks();
 
             invityAPI.doSellConfirm = () => Promise.resolve(response as unknown as SellFiatTrade);
 
@@ -214,6 +220,7 @@ describe('sendSellTransactionThunk', () => {
                     trade: { ...trade.data },
                     decimals: getNetwork(account.symbol).decimals,
                     shouldSendInSats: false,
+                    formValues,
                     nextStep: mockNextStep,
                     signAndPushSendFormTransaction: jest.fn(),
                 }),
@@ -236,7 +243,7 @@ describe('sendSellTransactionThunk', () => {
     });
 
     it('should send transaction, save trade and call next step', async () => {
-        const { store, account, trade, mockNextStep } = getMocks();
+        const { store, account, formValues, trade, mockNextStep } = getMocks();
         const responseData = {
             ...trade.data,
             error: undefined,
@@ -252,6 +259,7 @@ describe('sendSellTransactionThunk', () => {
                 trade: { ...trade.data },
                 decimals: getNetwork(account.symbol).decimals,
                 shouldSendInSats: false,
+                formValues,
                 nextStep: mockNextStep,
                 signAndPushSendFormTransaction: jest.fn(),
             }),
@@ -283,7 +291,7 @@ describe('sendSellTransactionThunk', () => {
     });
 
     it('should send transaction, save trade and call next step with shouldSendInSats true', async () => {
-        const { store, account, trade, mockNextStep } = getMocks();
+        const { store, account, formValues, trade, mockNextStep } = getMocks();
         const responseData = {
             ...trade.data,
             error: undefined,
@@ -299,6 +307,7 @@ describe('sendSellTransactionThunk', () => {
                 trade: { ...trade.data },
                 decimals: getNetwork(account.symbol).decimals,
                 shouldSendInSats: true,
+                formValues,
                 nextStep: mockNextStep,
                 signAndPushSendFormTransaction: jest.fn(),
             }),
@@ -333,7 +342,7 @@ describe('sendSellTransactionThunk', () => {
     });
 
     it('should send transaction, save trade and call next step with fallback selectedQuote', async () => {
-        const { store, account, trade, mockNextStep } = getMocks({
+        const { store, account, formValues, trade, mockNextStep } = getMocks({
             selectedQuote: getQuote(),
         });
         const responseData = {
@@ -351,6 +360,7 @@ describe('sendSellTransactionThunk', () => {
                 trade: undefined,
                 decimals: getNetwork(account.symbol).decimals,
                 shouldSendInSats: true,
+                formValues,
                 nextStep: mockNextStep,
                 signAndPushSendFormTransaction: jest.fn(),
             }),

@@ -7,12 +7,15 @@ import {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import { tradingActions, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
+import {
+    tradingActions,
+    tradingBuyActions,
+    tradingExchangeActions,
+    tradingSellActions,
+} from '@suite-common/trading';
 import { FeeLevel } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
@@ -151,7 +154,12 @@ export const useTradingRedirect = () => {
             maxFeePerGas,
             maxPriorityFeePerGas,
         };
-        dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
+        dispatch(
+            tradingActions.saveComposedTransactionInfo({
+                selectedFee: selectedFee || 'normal',
+                composed,
+            }),
+        );
         dispatch(tradingSellActions.saveTransactionId(orderId));
         dispatch(
             goto(orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers', {

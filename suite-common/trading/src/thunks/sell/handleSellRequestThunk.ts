@@ -52,9 +52,7 @@ const getQuoteRequestData = ({
     const currencySelect = outputs[0].currency;
 
     if (
-        !fiatStringAmount ||
-        !cryptoStringAmount ||
-        Number(cryptoStringAmount) === 0 ||
+        (!fiatStringAmount && (!cryptoStringAmount || Number(cryptoStringAmount) === 0)) ||
         !currencySelect ||
         !sendCryptoSelect
     ) {

@@ -2,14 +2,15 @@ import { useMemo } from 'react';
 
 import {
     type TradingPaymentMethodListProps,
+    type TradingSellInfoSelector,
     cryptoIdToSymbol,
     getDefaultCountry,
     regional,
+    selectTradingPrefilledFromAccount,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
-import { TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
@@ -29,9 +30,7 @@ export const useTradingSellFormDefaultValues = (
     sellInfo: TradingSellInfoSelector | undefined,
 ): TradingSellFormDefaultValuesProps => {
     const cryptoGroups = useTradingBuildAccountGroups('sell');
-    const prefilledFromCryptoId = useSelector(
-        state => state.wallet.trading.prefilledFromAccount.cryptoId,
-    );
+    const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
     const { isTorEnabled } = useSelector(selectTorState);
 
     const cryptoOptions = useMemo(
@@ -40,16 +39,16 @@ export const useTradingSellFormDefaultValues = (
     );
     const defaultSendCryptoSelect = useMemo(
         () =>
-            (prefilledFromCryptoId &&
-                cryptoOptions.find(option => option.value === prefilledFromCryptoId)) ||
+            (prefilledFromAccount.cryptoId &&
+                cryptoOptions.find(option => option.value === prefilledFromAccount.cryptoId)) ||
             cryptoOptions.find(
                 option =>
                     option.descriptor === account.descriptor &&
                     account.symbol === cryptoIdToSymbol(option.value),
             ),
-        [account.descriptor, account.symbol, prefilledFromCryptoId, cryptoOptions],
+        [account.descriptor, account.symbol, prefilledFromAccount, cryptoOptions],
     );
-    const country = !isTorEnabled ? sellInfo?.sellList?.country : regional.UNKNOWN_COUNTRY;
+    const country = !isTorEnabled ? sellInfo?.country : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const { address, token } =
         getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);

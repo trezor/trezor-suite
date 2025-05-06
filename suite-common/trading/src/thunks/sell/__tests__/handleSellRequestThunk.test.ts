@@ -268,48 +268,34 @@ describe('handleSellRequestThunk', () => {
         expect(state.isLoading).toBe(false);
     });
 
-    describe('should not save quotes when', () => {
+    it('should not save quotes when output fiat amount and output amount are incorrect at the same time', async () => {
         const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
-        const fiatAmountIncorrect = {
+        const incorrectData = {
             ...input,
             formValues: {
                 ...input.formValues,
                 outputs: input.formValues.outputs.map(output => ({
                     ...output,
                     fiat: undefined as unknown as string, // Invalid fiat amount
-                })),
-            },
-        };
-        const amountIncorrect = {
-            ...input,
-            formValues: {
-                ...input.formValues,
-                outputs: input.formValues.outputs.map(output => ({
-                    ...output,
                     amount: undefined as unknown as string, // Invalid amount
                 })),
             },
         };
 
-        it.each([
-            ['output fiat amount is incorrect', fiatAmountIncorrect],
-            ['output amount is incorrect', amountIncorrect],
-        ])(`%s`, async (_description, formValues) => {
-            jest.spyOn(invityAPI, 'getSellQuotes');
+        jest.spyOn(invityAPI, 'getSellQuotes');
 
-            const promise = store.dispatch(sellThunks.handleRequestThunk(formValues));
-            await promise;
+        const promise = store.dispatch(sellThunks.handleRequestThunk(incorrectData));
+        await promise;
 
-            const state = store.getState().wallet.tradingNew;
+        const state = store.getState().wallet.tradingNew;
 
-            expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
-            expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-            expect(mockTimerStop).toHaveBeenCalledTimes(1);
-            expect(state.sell.quotesRequest).toBeUndefined();
-            expect(state.sell.quotes.length).toEqual(0);
-            expect(state.isLoading).toBe(false);
-            await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
-        });
+        expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
+        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.sell.quotesRequest).toBeUndefined();
+        expect(state.sell.quotes.length).toEqual(0);
+        expect(state.isLoading).toBe(false);
+        await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
     });
 
     it('should not proceed when requestData is null', async () => {
@@ -323,6 +309,7 @@ describe('handleSellRequestThunk', () => {
                     {
                         ...input.formValues.outputs[0],
                         amount: undefined as unknown as string, // Invalid amount
+                        fiat: undefined as unknown as string, // Invalid fiat
                     },
                 ],
             },

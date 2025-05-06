@@ -44,10 +44,10 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         }
     };
 
-    const handleTryAgainSignTx = () => {
+    const handleTryAgainSignTx = async () => {
         if (send.precomposedForm && send.precomposedTx) {
             dispatch(sendFormActions.discardTransaction());
-            dispatch(
+            await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formState: send.precomposedForm,
                     precomposedTransaction: send.precomposedTx,
@@ -56,7 +56,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             );
         } else if (stake.precomposedForm && stake.precomposedTx) {
             dispatch(stakeActions.dispose());
-            dispatch(
+            await dispatch(
                 signTransaction(
                     stake.precomposedForm,
                     stake.precomposedTx as PrecomposedTransactionFinal,

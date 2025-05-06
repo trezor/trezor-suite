@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/tradingCommonConstants';
+import { tradingActions } from '@suite-common/trading';
+
 import { useDispatch } from 'src/hooks/suite';
 
 interface TradingModalCryptoProps {
@@ -18,20 +19,14 @@ export const useTradingModalCrypto = ({ receiveCurrency }: TradingModalCryptoPro
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch({
-            type: SET_MODAL_CRYPTO_CURRENCY,
-            modalCryptoId: receiveCurrency,
-        });
+        dispatch(tradingActions.setModalCryptoCurrency(receiveCurrency));
     }, [receiveCurrency, dispatch]);
 
     // TODO: trading - could be moved to middleware to have safer cleanup
     // after unmount set off CryptoSymbol for modals
     useEffect(
         () => () => {
-            dispatch({
-                type: SET_MODAL_CRYPTO_CURRENCY,
-                modalCryptoId: undefined,
-            });
+            dispatch(tradingActions.setModalCryptoCurrency(undefined));
         },
         [dispatch],
     );

@@ -1,6 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import { TradingType, parseCryptoId, useTradingInfo } from '@suite-common/trading';
+import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -10,11 +10,10 @@ import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo
 
 interface TradingInfoHeaderProps {
     receiveCurrency?: CryptoId;
-    type: TradingType;
 }
 
-export const TradingInfoHeader = ({ receiveCurrency, type }: TradingInfoHeaderProps) => {
-    const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
+export const TradingInfoHeader = ({ receiveCurrency }: TradingInfoHeaderProps) => {
+    const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     const { networkId } = parseCryptoId(receiveCurrency!);
     const platform = cryptoIdToPlatformName(networkId);

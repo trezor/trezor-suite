@@ -1,8 +1,5 @@
-import { CryptoId } from 'invity-api';
-
-import { TradingPreffiledFromAccount, type TradingType } from '@suite-common/trading';
 import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
-import { AccountKey, Output } from '@suite-common/wallet-types/src';
+import { Output } from '@suite-common/wallet-types/src';
 import {
     amountToSmallestUnit,
     formatAmount,
@@ -13,70 +10,14 @@ import {
 import { PROTO } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
-import { TRADING_COMMON } from 'src/actions/wallet/constants';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
-import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
-
-export type TradingCommonAction =
-    | {
-          type: typeof TRADING_COMMON.SAVE_COMPOSED_TRANSACTION_INFO;
-          info: ComposedTransactionInfo;
-      }
-    | {
-          type: typeof TRADING_COMMON.SET_LOADING;
-          isLoading: boolean;
-          lastLoadedTimestamp: number;
-      }
-    | {
-          type: typeof TRADING_COMMON.LOAD_DATA;
-      }
-    | {
-          type: typeof TRADING_COMMON.SET_MODAL_CRYPTO_CURRENCY;
-          modalCryptoId: CryptoId | undefined;
-      }
-    | {
-          type: typeof TRADING_COMMON.SET_MODAL_ACCOUNT_KEY;
-          modalAccountKey: AccountKey | undefined;
-      }
-    | {
-          type: typeof TRADING_COMMON.SET_TRADING_ACTIVE_SECTION;
-          activeSection: TradingType;
-      }
-    | {
-          type: typeof TRADING_COMMON.SET_TRADING_FROM_PREFILLED_ACCOUNT;
-          preffiledFromAccount: TradingPreffiledFromAccount;
-      };
 
 type FormState = {
     cryptoInput?: string;
     outputs?: Output[];
 };
-
-/**
- * Set modalAccountKey to retrieve the correct account key in modals.
- * Used in ConfirmAddressModal and TransactionReviewModalContent through selectAccountKeyIncludingChosenInTrading.
- * Unset in middleware after modal is closed.
- */
-export const setTradingModalAccountKey = (
-    modalAccountKey: AccountKey | undefined,
-): TradingCommonAction => ({
-    type: TRADING_COMMON.SET_MODAL_ACCOUNT_KEY,
-    modalAccountKey,
-});
-
-export const setActiveSection = (activeSection: TradingType): TradingCommonAction => ({
-    type: TRADING_COMMON.SET_TRADING_ACTIVE_SECTION,
-    activeSection,
-});
-
-export const saveComposedTransactionInfo = (
-    info: ComposedTransactionInfo,
-): TradingCommonAction => ({
-    type: TRADING_COMMON.SAVE_COMPOSED_TRANSACTION_INFO,
-    info,
-});
 
 export const submitRequestForm =
     (form?: {
@@ -101,16 +42,6 @@ export const submitRequestForm =
             );
         }
     };
-
-export const setLoading = (isLoading: boolean, lastLoadedTimestamp = 0): TradingCommonAction => ({
-    type: TRADING_COMMON.SET_LOADING,
-    isLoading,
-    lastLoadedTimestamp,
-});
-
-export const loadInvityData = (): TradingCommonAction => ({
-    type: TRADING_COMMON.LOAD_DATA,
-});
 
 export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
     const { accounts, formDrafts, settings } = getState().wallet;
@@ -148,11 +79,3 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
         }
     });
 };
-
-export const setTradingPrefilledFromAccount = (
-    descriptor: string | undefined,
-    cryptoId: CryptoId | undefined,
-): TradingCommonAction => ({
-    type: TRADING_COMMON.SET_TRADING_FROM_PREFILLED_ACCOUNT,
-    preffiledFromAccount: { descriptor, cryptoId },
-});

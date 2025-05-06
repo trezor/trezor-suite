@@ -116,8 +116,14 @@ const IconWrapper = styled.div`
 
 export const TradingOfferSellBankAccount = () => {
     const theme = useTheme();
-    const { callInProgress, confirmTrade, addBankAccount, selectedQuote } =
-        useTradingFormContext<TradingSellType>();
+    const {
+        form: {
+            state: { isFormLoading },
+        },
+        confirmTrade,
+        addBankAccount,
+        selectedQuote,
+    } = useTradingFormContext<TradingSellType>();
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );
@@ -193,11 +199,11 @@ export const TradingOfferSellBankAccount = () => {
             <ButtonWrapper>
                 <Button
                     minWidth={200}
-                    isLoading={callInProgress}
+                    isLoading={isFormLoading}
                     onClick={() => {
                         if (bankAccount) confirmTrade(bankAccount);
                     }}
-                    isDisabled={callInProgress || !bankAccount}
+                    isDisabled={isFormLoading || !bankAccount}
                 >
                     <Translation id="TR_SELL_GO_TO_TRANSACTION" />
                 </Button>

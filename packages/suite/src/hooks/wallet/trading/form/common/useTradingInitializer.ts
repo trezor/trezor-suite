@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { useTimer } from '@trezor/react-utils';
@@ -10,14 +10,16 @@ import { UseTradingCommonProps, UseTradingCommonReturnProps } from 'src/types/tr
 export const useTradingInitializer = ({
     selectedAccount,
     pageType,
+    isLoading,
 }: UseTradingCommonProps): UseTradingCommonReturnProps => {
     const timer = useTimer();
     const { account } = selectedAccount;
     const { device } = useDevice();
-    const [callInProgress, setCallInProgress] = useState<boolean>(false);
 
     const checkQuotesTimer = useCallback(
         (callback: () => Promise<void>) => {
+            if (!isLoading) return;
+
             if (!timer.isLoading && !timer.isStopped) {
                 if (timer.resetCount >= 40) {
                     timer.stop();
@@ -34,17 +36,15 @@ export const useTradingInitializer = ({
                 }
             }
         },
-        [timer, pageType],
+        [timer, pageType, isLoading],
     );
 
     useServerEnvironment();
 
     return {
-        callInProgress,
         account,
         timer,
         device,
-        setCallInProgress,
         checkQuotesTimer,
     };
 };

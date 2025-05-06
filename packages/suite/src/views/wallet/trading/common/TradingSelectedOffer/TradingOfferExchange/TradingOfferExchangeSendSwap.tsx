@@ -79,17 +79,18 @@ export const TradingOfferExchangeSendSwap = () => {
     const { handleClick, disabled } = useAsyncClickHandler();
 
     const {
-        type,
+        form: {
+            state: { isFormLoading },
+        },
         device,
         account,
-        callInProgress,
         selectedQuote,
         exchangeInfo,
         confirmTrade,
         sendTransaction,
         getValues,
     } = useTradingFormContext<TradingExchangeType>();
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<
@@ -309,7 +310,7 @@ export const TradingOfferExchangeSendSwap = () => {
             <Column>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
-                    isLoading={callInProgress || disabled}
+                    isLoading={isFormLoading || disabled}
                     isDisabled={!device?.connected || disabled}
                     onClick={() => handleClick(() => confirmAndSend())}
                 >

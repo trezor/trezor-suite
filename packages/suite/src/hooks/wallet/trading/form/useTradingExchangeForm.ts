@@ -85,7 +85,7 @@ export const useTradingExchangeForm = ({
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
 
-    const { buildDefaultCryptoOption } = useTradingInfo(type);
+    const { buildDefaultCryptoOption } = useTradingInfo();
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
     const [accountKey, setAccountKey] = useTradingAccountKey({
         type,
@@ -99,6 +99,7 @@ export const useTradingExchangeForm = ({
     const { timer, device, checkQuotesTimer } = useTradingInitializer({
         selectedAccount,
         pageType,
+        isLoading,
     });
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const {
@@ -603,11 +604,8 @@ export const useTradingExchangeForm = ({
     }, [dispatch, formStep, isFromRedirect, pageType, trade, transactionId]);
 
     useEffect(() => {
-        // TODO: trading - isLoading move to checkQuotesTimer
-        if (!isLoading) {
-            checkQuotesTimer(handleChange);
-        }
-    }, [isLoading, checkQuotesTimer, handleChange]);
+        checkQuotesTimer(handleChange);
+    }, [checkQuotesTimer, handleChange]);
 
     return {
         type,
@@ -627,7 +625,6 @@ export const useTradingExchangeForm = ({
 
         device,
         timer,
-        callInProgress: isLoading,
         exchangeInfo,
         quotes,
         dexQuotes,

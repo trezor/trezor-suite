@@ -32,7 +32,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import { METADATA, STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as storageActions from 'src/actions/suite/storageActions';
-import { FORM_DRAFT, GRAPH, TRADING_COMMON } from 'src/actions/wallet/constants';
+import { FORM_DRAFT, GRAPH } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
@@ -278,12 +278,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     if (isDeviceRemembered(device)) {
                         storageActions.saveGraph([action.payload]);
                     }
-                    break;
-                }
-                // TODO: trading - delete after refactor
-                case TRADING_COMMON.SAVE_TRADE: {
-                    const { type, ...trade } = action;
-                    storageActions.saveTradingTrade(trade);
                     break;
                 }
                 case tradingActions.saveTrade.type: {

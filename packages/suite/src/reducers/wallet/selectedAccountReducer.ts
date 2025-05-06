@@ -3,7 +3,6 @@ import { TradingState as TradingNewState } from '@suite-common/trading';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import { State as TradingState } from 'src/reducers/wallet/tradingReducer';
 import type { Action } from 'src/types/suite';
 
 export type State = SelectedAccountStatus;
@@ -16,7 +15,6 @@ export type SelectedAccountRootState = {
 
 export type SelectedAccountRootStateWithTrading = SelectedAccountRootState & {
     wallet: {
-        trading: TradingState;
         tradingNew: TradingNewState;
     };
     connectPopup: ConnectPopupState;
@@ -32,6 +30,9 @@ const selectedAccountReducer = (state: State = initialState, action: Action): St
 
     return state;
 };
+
+export const selectFullSelectedAccount = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount;
 
 export const selectSelectedAccount = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.account;
@@ -58,16 +59,10 @@ export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =
 export const selectAccountIncludingChosenInTrading = (
     state: SelectedAccountRootStateWithTrading,
 ) => {
-    const { modalAccountKey } = state.wallet.trading;
-    const { modalAccountKey: modalAccountKeyNew } = state.wallet.tradingNew;
+    const { modalAccountKey } = state.wallet.tradingNew;
 
-    // TODO: trading - temporary solution, should not be in the conflict
     if (modalAccountKey) {
         return selectAccountByKey(state, modalAccountKey) ?? undefined;
-    }
-
-    if (modalAccountKeyNew) {
-        return selectAccountByKey(state, modalAccountKeyNew) ?? undefined;
     }
 
     const { activeCall } = state.connectPopup;

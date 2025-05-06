@@ -216,16 +216,12 @@ export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(
 };
 
 export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(
-    quotes: TradingTradeMapProps[T][] | undefined,
+    quotes: TradingTradeMapProps[T][],
     currentPaymentMethod: TradingPaymentMethodProps,
-): TradingTradeMapProps[T][] | undefined => {
-    // TODO: trading - delete after trading will be refactored
-    if (!quotes) return undefined;
-
-    return quotes.filter(
+): TradingTradeMapProps[T][] =>
+    quotes.filter(
         quote => quote.paymentMethod === currentPaymentMethod && quote.error === undefined,
     );
-};
 
 export const getBestRatedQuote = <T extends TradingType>(
     quotes: TradingTradeMapProps[T][] | undefined,

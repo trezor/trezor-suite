@@ -7,6 +7,7 @@ const sellInfo: SellInfo = {
     providerInfos: {},
     supportedFiatCurrencies: ['USD'],
     supportedCryptoCurrencies: ['bitcoin'] as CryptoId[],
+    country: 'US',
 };
 
 const quotesRequest: SellFiatTradeQuoteRequest = {

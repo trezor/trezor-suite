@@ -1,17 +1,19 @@
 import { createThunk } from '@suite-common/redux-utils';
 
-import { buyThunks, exchangeThunks } from '../';
+import { buyThunks, exchangeThunks, sellThunks } from '../';
 import { INVITY_API_RELOAD_DATA_AFTER_MS, TRADING_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
+import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
     selectTradingAccountAccordingActiveSection,
     selectTradingBuyInfo,
-    selectTradingBuyLoadingTimestampAndStatus,
     selectTradingExchangeInfo,
     selectTradingInfo,
+    selectTradingLoadingAndTimestamp,
+    selectTradingSellInfo,
 } from '../../selectors/tradingSelectors';
 import { TradingType } from '../../types';
 
@@ -30,8 +32,8 @@ export const loadInitialDataThunk = createThunk(
         );
         const buyInfo = selectTradingBuyInfo(getState());
         const exchangeInfo = selectTradingExchangeInfo(getState());
-        const { isLoading, lastLoadedTimestamp } =
-            selectTradingBuyLoadingTimestampAndStatus(getState());
+        const sellInfo = selectTradingSellInfo(getState());
+        const { isLoading, lastLoadedTimestamp } = selectTradingLoadingAndTimestamp(getState());
         const { platforms, coins } = selectTradingInfo(getState());
 
         const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
@@ -54,11 +56,6 @@ export const loadInitialDataThunk = createThunk(
                 const info = await invityAPI.getInfo();
 
                 dispatch(tradingActions.saveInfo(info));
-                // TODO: trading - delete this, just to avoiding trigger same request again
-                dispatch({
-                    type: '@trading-info/save-info',
-                    info,
-                });
             }
 
             if (isDifferentAccount || !buyInfo) {
@@ -71,6 +68,12 @@ export const loadInitialDataThunk = createThunk(
                 const exchangeInfoData = await dispatch(exchangeThunks.loadInfoThunk()).unwrap();
 
                 dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfoData));
+            }
+
+            if (isDifferentAccount || !sellInfo) {
+                const sellInfoData = await dispatch(sellThunks.loadInfoThunk()).unwrap();
+
+                dispatch(tradingSellActions.saveSellInfo(sellInfoData));
             }
 
             dispatch(

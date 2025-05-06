@@ -43,7 +43,6 @@ export const TradingHeaderSummary = ({
                         {receiveCurrency && (
                             <H3>
                                 <TradingCryptoAmount
-                                    type={context.type}
                                     amount={receiveAmount}
                                     cryptoId={receiveCurrency}
                                     displayLogo
