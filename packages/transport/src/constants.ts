@@ -1,5 +1,4 @@
 // usb const
-export const CONFIGURATION_ID = 1;
 export const INTERFACE_ID = 0;
 export const ENDPOINT_ID = 1;
 export const DEBUGLINK_INTERFACE_ID = 1;

@@ -2,7 +2,6 @@ import { arrayPartition, createDeferred, getSynchronize, resolveAfter } from '@t
 
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
 import {
-    CONFIGURATION_ID,
     DEBUGLINK_ENDPOINT_ID,
     DEBUGLINK_INTERFACE_ID,
     ENDPOINT_ID,
@@ -311,20 +310,6 @@ export class UsbApi extends AbstractApi {
                 error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                 message: err.message,
             });
-        }
-
-        if (device.configuration?.configurationValue !== CONFIGURATION_ID) {
-            try {
-                this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
-                await this.abortableMethod(() => device.selectConfiguration(CONFIGURATION_ID), {
-                    signal,
-                });
-                this.logger?.debug(`usb: device.selectConfiguration done: ${CONFIGURATION_ID}.`);
-            } catch (err) {
-                this.logger?.error(
-                    `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
-                );
-            }
         }
 
         if (reset) {
