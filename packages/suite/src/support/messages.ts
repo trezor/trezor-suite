@@ -9823,7 +9823,12 @@ export default defineMessages({
     TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED: {
         id: 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED',
         defaultMessage:
-            'Some required networks are not activated. Please activate them to ensure proper compatibility with the app.',
+            'Some of the required networks are not activated in Suite. Please activate them to ensure proper compatibility with the app.',
+    },
+    TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
+        id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
+        defaultMessage:
+            'None of the supported networks are activated in Suite. Please activate them to connect to the app.',
     },
     TR_REQUESTED_NETWORKS: {
         id: 'TR_REQUESTED_NETWORKS',

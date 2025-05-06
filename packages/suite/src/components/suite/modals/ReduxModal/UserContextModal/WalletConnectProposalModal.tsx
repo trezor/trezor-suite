@@ -50,6 +50,10 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
         dispatch(sessionProposalRejectThunk({ eventId }));
         dispatch(onCancel());
     };
+    const handleGoToCoinSettings = async () => {
+        await dispatch(onCancel());
+        dispatch(goto('settings-coins'));
+    };
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {
         if (network.status !== 'active')
@@ -66,6 +70,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
 
     if (!pendingProposal) return null;
 
+    const requiredNetworksNotActivated = pendingProposal.networks.some(
+        network => network.required && network.status !== 'active',
+    );
+    const noNetworksActivated = !pendingProposal.networks.some(
+        network => network.status === 'active',
+    );
+
     return (
         <Modal
             onCancel={handleReject}
@@ -74,7 +85,9 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     <Modal.Button
                         variant="primary"
                         onClick={handleAccept}
-                        isDisabled={pendingProposal.expired || pendingProposal.isScam}
+                        isDisabled={
+                            pendingProposal.expired || pendingProposal.isScam || noNetworksActivated
+                        }
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
@@ -163,14 +176,12 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     </Row>
                 </Card>
 
-                {pendingProposal.networks.some(
-                    network => network.required && network.status !== 'active',
-                ) && (
+                {(requiredNetworksNotActivated || noNetworksActivated) && (
                     <Banner
                         variant="warning"
                         rightContent={
                             <BannerButton
-                                onClick={() => dispatch(goto('settings-coins'))}
+                                onClick={() => handleGoToCoinSettings()}
                                 icon="arrowRight"
                                 iconAlignment="end"
                             >
@@ -178,7 +189,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             </BannerButton>
                         }
                     >
-                        <Translation id="TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED" />
+                        <Translation
+                            id={
+                                requiredNetworksNotActivated
+                                    ? 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED'
+                                    : 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED'
+                            }
+                        />
                     </Banner>
                 )}
 
