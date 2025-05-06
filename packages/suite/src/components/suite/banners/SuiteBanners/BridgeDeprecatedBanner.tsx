@@ -20,7 +20,7 @@ export const BridgeDeprecated = () => {
                 </Banner.Button>
             }
         >
-            <Translation id="TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED" />
+            <Translation id="TR_STANDALONE_BRIDGE_DEPRECATED" />
         </Banner>
     );
 };

@@ -10454,6 +10454,15 @@ export default defineMessages({
         defaultMessage:
             'To connect to the app, activate at least one supported asset in Trezor Suite.',
     },
+    TR_STANDALONE_BRIDGE_DEPRECATED: {
+        id: 'TR_STANDALONE_BRIDGE_DEPRECATED',
+        defaultMessage: 'Standalone Trezor Bridge is deprecated',
+    },
+    TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION: {
+        id: 'TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION',
+        defaultMessage:
+            'We recommend <a>uninstalling</a> standalone Trezor Bridge as explained in this article. Having standalone Trezor Bridge installed on your computer may interfere with using your Trezor device in future releases.',
+    },
     TR_REQUESTED_NETWORKS: {
         id: 'TR_REQUESTED_NETWORKS',
         defaultMessage: 'Requested networks',
