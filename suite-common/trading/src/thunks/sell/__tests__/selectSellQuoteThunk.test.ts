@@ -47,6 +47,7 @@ describe('selectSellQuoteThunk', () => {
                     flow: 'BANK_ACCOUNT',
                 },
             },
+            country: 'CZ',
         };
 
         const quotesRequest: SellFiatTradeQuoteRequest = {

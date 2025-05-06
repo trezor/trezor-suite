@@ -338,6 +338,7 @@ describe('handleSellTradeThunk', () => {
                 },
                 supportedCryptoCurrencies: ['bitcoin'] as CryptoId[],
                 supportedFiatCurrencies: ['USD'],
+                country: 'CZ',
             },
         });
 

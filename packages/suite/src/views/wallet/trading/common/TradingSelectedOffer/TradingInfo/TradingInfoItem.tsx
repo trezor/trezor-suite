@@ -35,7 +35,7 @@ export const TradingInfoItem = ({
                     {currency && (
                         <>
                             <TradingCoinLogo cryptoId={currency} size={20} />
-                            <TradingCryptoAmount amount={amount} cryptoId={currency} type={type} />
+                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
                         </>
                     )}
                 </Row>

@@ -113,6 +113,7 @@ describe('sellUtils', () => {
             },
             supportedFiatCurrencies: new Set(),
             supportedCryptoCurrencies: new Set(),
+            country: 'CZ',
         };
 
         const quote: SellFiatTrade = {

@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 
 import { SellFiatTradeQuoteRequest } from 'invity-api';
 
-import { type TradingSellFormProps, getDefaultCountry } from '@suite-common/trading';
+import {
+    type TradingSellFormProps,
+    getDefaultCountry,
+    selectTradingComposedTransactionInfo,
+} from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 
 import { useSelector } from 'src/hooks/suite';
@@ -16,7 +20,7 @@ export const useTradingSellFormRedirectValues = (
     isFromRedirect: boolean,
     quotesRequest: SellFiatTradeQuoteRequest | undefined,
 ): TradingSellFormProps | null => {
-    const { composedTransactionInfo } = useSelector(state => state.wallet.trading);
+    const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
 
     const cryptoGroups = useTradingBuildAccountGroups('sell');
     const cryptoOptions = useMemo(
@@ -44,9 +48,9 @@ export const useTradingSellFormRedirectValues = (
                   value: quotesRequest.paymentMethod,
                   label: quotesRequest.paymentMethod,
               },
-              feeLimit: composedTransactionInfo.composed?.feeLimit ?? '',
-              feePerUnit: composedTransactionInfo.composed?.feePerByte ?? '',
-              selectedFee: composedTransactionInfo.selectedFee,
+              feeLimit: composed?.feeLimit ?? '',
+              feePerUnit: composed?.feePerByte ?? '',
+              selectedFee,
               selectedUtxos: [],
               options: ['broadcast'],
               outputs: [

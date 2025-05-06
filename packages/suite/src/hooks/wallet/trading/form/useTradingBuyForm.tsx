@@ -72,6 +72,7 @@ export const useTradingBuyForm = ({
     const { account, timer, device, checkQuotesTimer } = useTradingInitializer({
         selectedAccount,
         pageType,
+        isLoading,
     });
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useTradingNavigation(account);
@@ -126,7 +127,7 @@ export const useTradingBuyForm = ({
     const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<TradingBuyType>(
         quotes,
         values?.paymentMethod?.value ?? '',
-    ) as BuyTrade[];
+    );
     // based on selected cryptoSymbol, because of using for validation cryptoInput
     const network =
         cryptoIdToNetwork(
@@ -247,8 +248,6 @@ export const useTradingBuyForm = ({
                 },
                 userConsent,
                 nextStep: () => {
-                    navigateToBuyConfirm();
-
                     analytics.report({
                         type: EventType.TradingBuy,
                         payload: {
@@ -256,6 +255,8 @@ export const useTradingBuyForm = ({
                             step: 'buy-terms-modal',
                         },
                     });
+
+                    navigateToBuyConfirm();
                 },
                 onCancel: () => {
                     analytics.report({
@@ -414,11 +415,8 @@ export const useTradingBuyForm = ({
     }, [isFromRedirect, quotesRequest, navigateToBuyConfirm]);
 
     useEffect(() => {
-        // TODO: trading - isLoading move to checkQuotesTimer
-        if (!isLoading) {
-            checkQuotesTimer(handleChange);
-        }
-    }, [isLoading, checkQuotesTimer, handleChange]);
+        checkQuotesTimer(handleChange);
+    }, [checkQuotesTimer, handleChange]);
 
     useDebounce(
         () => {
@@ -471,7 +469,6 @@ export const useTradingBuyForm = ({
         cryptoInputValue: values.cryptoInput,
         formState,
         device,
-        callInProgress: isLoading,
         addressVerified,
         timer,
         quotes: quotesByPaymentMethod,

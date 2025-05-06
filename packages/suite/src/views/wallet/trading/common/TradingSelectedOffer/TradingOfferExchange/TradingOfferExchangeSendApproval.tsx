@@ -44,16 +44,17 @@ const BreakableValue = styled.span`
 export const TradingOfferExchangeSendApproval = () => {
     const dispatch = useDispatch();
     const {
-        type,
+        form: {
+            state: { isFormLoading },
+        },
         device,
         account,
-        callInProgress,
         selectedQuote,
         exchangeInfo,
         confirmTrade,
         sendTransaction,
     } = useTradingFormContext<TradingExchangeType>();
-    const { cryptoIdToCoinSymbol } = useTradingInfo(type);
+    const { cryptoIdToCoinSymbol } = useTradingInfo();
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
@@ -325,7 +326,7 @@ export const TradingOfferExchangeSendApproval = () => {
                 {(selectedQuote.status === 'APPROVAL_REQ' ||
                     (selectedQuote.status === 'CONFIRM' && approvalType === 'ZERO')) && (
                     <Button
-                        isLoading={callInProgress}
+                        isLoading={isFormLoading}
                         isDisabled={!device?.connected}
                         onClick={confirmAndSend}
                     >
@@ -335,8 +336,8 @@ export const TradingOfferExchangeSendApproval = () => {
 
                 {selectedQuote.status === 'CONFIRM' && approvalType !== 'ZERO' && (
                     <Button
-                        isLoading={callInProgress}
-                        isDisabled={callInProgress}
+                        isLoading={isFormLoading}
+                        isDisabled={isFormLoading}
                         onClick={proceedToSwap}
                     >
                         <Translation id="TR_EXCHANGE_APPROVAL_TO_SWAP_BUTTON" />

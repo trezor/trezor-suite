@@ -16,8 +16,16 @@ const Pre = styled.pre`
 `;
 
 export const TradingOfferExchangeSignData = () => {
-    const { device, account, callInProgress, selectedQuote, exchangeInfo, signDataAndConfirm } =
-        useTradingFormContext<TradingExchangeType>();
+    const {
+        device,
+        account,
+        form: {
+            state: { isFormLoading },
+        },
+        selectedQuote,
+        exchangeInfo,
+        signDataAndConfirm,
+    } = useTradingFormContext<TradingExchangeType>();
 
     if (!selectedQuote) return null;
 
@@ -95,7 +103,7 @@ export const TradingOfferExchangeSignData = () => {
             <Column>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
-                    isLoading={callInProgress}
+                    isLoading={isFormLoading}
                     isDisabled={!device?.connected}
                     onClick={signDataAndConfirm}
                 >

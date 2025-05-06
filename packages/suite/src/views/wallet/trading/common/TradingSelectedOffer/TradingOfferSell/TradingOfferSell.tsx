@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import type { TradingSellType } from '@suite-common/trading';
+import { type TradingSellType, selectTradingSellFormStep } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -18,7 +18,8 @@ import {
 
 export const TradingOfferSell = (props: TradingOfferSellProps) => {
     const accounts = useSelector(selectAccounts);
-    const { sellStep, trade } = useTradingFormContext<TradingSellType>();
+    const formStep = useSelector(selectTradingSellFormStep);
+    const { trade } = useTradingFormContext<TradingSellType>();
 
     const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
 
@@ -28,13 +29,13 @@ export const TradingOfferSell = (props: TradingOfferSellProps) => {
         {
             step: 'BANK_ACCOUNT',
             translationId: 'TR_SELL_BANK_ACCOUNT_STEP',
-            isActive: sellStep === 'BANK_ACCOUNT',
+            isActive: formStep === 'BANK_ACCOUNT',
             component: <TradingOfferSellBankAccount />,
         },
         {
             step: 'SEND_TRANSACTION',
             translationId: 'TR_SELL_CONFIRM_SEND_STEP',
-            isActive: sellStep === 'SEND_TRANSACTION',
+            isActive: formStep === 'SEND_TRANSACTION',
             component: <TradingSelectedOfferSellTransaction />,
         },
     ];

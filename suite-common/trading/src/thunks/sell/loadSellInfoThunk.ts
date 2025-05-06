@@ -2,7 +2,7 @@ import { CryptoId, SellProviderInfo } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
-import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
+import { TRADING_SELL_THUNK_PREFIX, TRADING_UNKNOWN } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { SellInfo } from '../../reducers/sellReducer';
 
@@ -19,6 +19,7 @@ export const loadSellInfoThunk = createThunk<SellInfo>(
                 providerInfos,
                 supportedFiatCurrencies,
                 supportedCryptoCurrencies,
+                country: TRADING_UNKNOWN,
             });
         }
 
@@ -37,6 +38,7 @@ export const loadSellInfoThunk = createThunk<SellInfo>(
             providerInfos,
             supportedFiatCurrencies: [...new Set(supportedFiatCurrencies)],
             supportedCryptoCurrencies: [...new Set(supportedCryptoCurrencies)],
+            country: sellList.country,
         });
     },
 );

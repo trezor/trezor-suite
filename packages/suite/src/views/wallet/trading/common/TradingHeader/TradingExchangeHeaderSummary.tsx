@@ -44,7 +44,6 @@ export const TradingExchangeHeaderSummary = ({
                 {sendCurrency && (
                     <H3>
                         <TradingCryptoAmount
-                            type={context.type}
                             amount={sendAmount}
                             cryptoId={sendCurrency as CryptoId}
                             displayLogo
@@ -54,11 +53,7 @@ export const TradingExchangeHeaderSummary = ({
                 <Icon variant="tertiary" name="arrowRight" />
                 {receiveCurrency && (
                     <H3>
-                        <TradingCryptoAmount
-                            type={context.type}
-                            cryptoId={receiveCurrency}
-                            displayLogo
-                        />
+                        <TradingCryptoAmount cryptoId={receiveCurrency} displayLogo />
                     </H3>
                 )}
             </Row>

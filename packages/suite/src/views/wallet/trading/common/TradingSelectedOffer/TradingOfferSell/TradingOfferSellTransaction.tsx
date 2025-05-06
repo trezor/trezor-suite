@@ -43,8 +43,18 @@ const Address = styled.div``;
 
 export const TradingSelectedOfferSellTransaction = () => {
     const { handleClick, disabled } = useAsyncClickHandler();
-    const { device, account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
-        useTradingFormContext<TradingSellType>();
+    const {
+        device,
+        account,
+        form: {
+            state: { isFormLoading },
+        },
+        selectedQuote,
+        sellInfo,
+        sendTransaction,
+        trade,
+    } = useTradingFormContext<TradingSellType>();
+
     useTradingWatchTrade({
         account,
         trade,
@@ -118,7 +128,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                     <ButtonWrapper>
                         <Button
                             minWidth={200}
-                            isLoading={callInProgress || disabled}
+                            isLoading={isFormLoading || disabled}
                             isDisabled={!device?.connected || disabled}
                             onClick={() => handleClick(() => onConfirmAndSendClick())}
                             data-testid="@trading/offer/confirm-on-trezor-and-send"

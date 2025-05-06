@@ -42,10 +42,16 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
-    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo(
-        context.type,
-    );
-    const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
+    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const {
+        form: {
+            state: { isFormLoading },
+        },
+        device,
+        verifyAddress,
+        addressVerified,
+        confirmTrade,
+    } = context;
     const exchangeQuote = isTradingExchangeContext(context) ? context.selectedQuote : null;
     const {
         form,
@@ -121,13 +127,13 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
         switch (selectedAccountOption?.type) {
             case 'NON_SUITE':
             case 'ADD_SUITE':
-                return callInProgress || isFormInvalid || isAddressInvalid || isExtraFieldInvalid;
+                return isFormLoading || isFormInvalid || isAddressInvalid || isExtraFieldInvalid;
             case 'SUITE':
-                return callInProgress || isFormInvalid || isExtraFieldInvalid;
+                return isFormLoading || isFormInvalid || isExtraFieldInvalid;
         }
 
-        return callInProgress || isFormInvalid || isAddressInvalid || isExtraFieldInvalid;
-    }, [selectedAccountOption, form, address, callInProgress, exchangeQuote, extraField]);
+        return isFormLoading || isFormInvalid || isAddressInvalid || isExtraFieldInvalid;
+    }, [selectedAccountOption, form, address, isFormLoading, exchangeQuote, extraField]);
 
     const onFinishTransactionClick = () => {
         if (!address) {
@@ -247,12 +253,8 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                         selectedAccountOption.account && (
                             <Button
                                 data-testid="@trading/offer/confirm-on-trezor-button"
-                                isLoading={callInProgress || disabled}
-                                isDisabled={
-                                    disabled ||
-                                    callInProgress ||
-                                    (!device?.connected && !isTradingBuyContext(context))
-                                }
+                                isLoading={isFormLoading || disabled}
+                                isDisabled={disabled || isFormLoading}
                                 onClick={() => {
                                     handleClick(() => {
                                         if (selectedAccountOption.account && accountAddress) {
@@ -280,7 +282,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                         selectedAccountOption?.type === 'NON_SUITE') && (
                         <Button
                             data-testid="@trading/offer/continue-transaction-button"
-                            isLoading={callInProgress}
+                            isLoading={isFormLoading}
                             onClick={onFinishTransactionClick}
                             isDisabled={isButtonDisabled}
                         >

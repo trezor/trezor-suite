@@ -10,7 +10,7 @@ import addressValidator from '@trezor/address-validator';
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
 import { SellInfo, TradingSellState } from '../reducers/sellReducer';
-import type { TradingInfo, TradingState } from '../reducers/tradingReducer';
+import type { TradingState } from '../reducers/tradingReducer';
 import {
     InvityServerEnvironment,
     TradingFiatCurrenciesProps,
@@ -105,8 +105,6 @@ export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
 );
 
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.tradingNew?.info;
-export const selectTradingInfoLegacy = (state: any) =>
-    state.wallet?.trading?.info as TradingInfo | undefined; // TODO: trading - delete after migration
 
 export const selectTradingBuyInfo = createMemoizedSelector(
     [state => state.wallet.tradingNew.buy],
@@ -405,6 +403,9 @@ export const selectBestBuyQuoteByPaymentMethod = createMemoizedSelector(
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.formStep;
 
+export const selectTradingSellFormStep = (state: TradingRootState) =>
+    state.wallet.tradingNew.sell.formStep;
+
 export const selectTradingComposedTransactionInfo = (state: TradingRootState) =>
     state.wallet.tradingNew.composedTransactionInfo;
 
@@ -444,3 +445,26 @@ export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
 
 export const selectTradingExchangeReceiveAccountKey = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.receiveAccountKey;
+
+export const selectTradingModalAccountKey = (state: TradingRootState) =>
+    state.wallet.tradingNew.modalAccountKey;
+
+export const selectTradingPrefilledFromCryptoId = (state: TradingRootState) =>
+    state.wallet.tradingNew.prefilledFromCryptoId;
+
+export const selectTradingActiveSection = (state: TradingRootState) =>
+    state.wallet.tradingNew.activeSection ?? 'buy';
+
+// TODO: trading - update this selector, an inspiration selectTradingBuySupportedCryptoIds
+export const selectTradingSupportedSymbols =
+    (type: TradingType) =>
+    (state: TradingRootState): Set<CryptoId> | undefined => {
+        switch (type) {
+            case 'buy':
+                return selectTradingBuyInfo(state)?.supportedCryptoCurrencies;
+            case 'exchange':
+                return selectTradingExchangeInfo(state)?.sellCryptoIds;
+            case 'sell':
+                return selectTradingSellInfo(state)?.supportedCryptoCurrencies;
+        }
+    };

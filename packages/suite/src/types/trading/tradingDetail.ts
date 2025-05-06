@@ -1,11 +1,10 @@
 import type { TradingType } from '@suite-common/trading';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
-import type { TradingTradeCommonProps } from 'src/reducers/wallet/tradingReducer';
 import { TradingTradeInfoMapProps, TradingTradeMapProps } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
 
-export interface TradingDetailContextValues<T extends TradingType> extends TradingTradeCommonProps {
+export interface TradingDetailContextValues<T extends TradingType> {
     account: Account;
     trade: TradingTradeMapProps[T] | undefined;
     info?: TradingTradeInfoMapProps[T] | undefined;
