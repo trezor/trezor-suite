@@ -108,7 +108,7 @@ jobs:
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: |
-            trezor/trezor-suite
+            trezor-suite
 
       - name: Create GitHub draft release
         env:
