@@ -20,6 +20,7 @@ export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
     favouriteAssets: Record<CryptoId, true>;
     tradingEnvironment: InvityServerEnvironment;
+    tradeOrderIdToBeOpened: string | undefined;
 }
 
 export type TradingRootState = {
@@ -33,6 +34,7 @@ export const initialState: TradingState = {
     buy: { ...commonInitialState.buy, selectedReceiveAccount: undefined },
     favouriteAssets: {},
     tradingEnvironment: 'production',
+    tradeOrderIdToBeOpened: undefined,
 };
 
 export const tradingSlice = createSliceWithExtraDeps({
@@ -53,6 +55,13 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
+            // clear buy state so everything is fetched for new environment
+            state.buy.selectedReceiveAccount = undefined;
+            state.buy.quotesRequest = undefined;
+            state.buy.quotes = [];
+            state.buy.selectedQuote = undefined;
+            state.buy.amountLimits = undefined;
+            state.tradeOrderIdToBeOpened = undefined;
         },
         clearBuyState: state => {
             state.buy.selectedReceiveAccount = undefined;
@@ -60,10 +69,17 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.buy.quotes = [];
             state.buy.selectedQuote = undefined;
             state.buy.amountLimits = undefined;
+            state.tradeOrderIdToBeOpened = undefined;
         },
         clearQuotesAndQuotesRequest: state => {
             state.buy.quotesRequest = undefined;
             state.buy.quotes = [];
+        },
+        setTradeOrderIdToBeOpened: (state, { payload }: PayloadAction<string>) => {
+            state.tradeOrderIdToBeOpened = payload;
+        },
+        clearTradeOrderIdToBeOpened: state => {
+            state.tradeOrderIdToBeOpened = undefined;
         },
     },
     extraReducers: (builder, extra) => {
@@ -83,6 +99,8 @@ export const {
     setTradingEnvironment,
     clearBuyState,
     clearQuotesAndQuotesRequest,
+    setTradeOrderIdToBeOpened,
+    clearTradeOrderIdToBeOpened,
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();

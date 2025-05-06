@@ -72,7 +72,7 @@ describe('TradeDetailFooter', () => {
 
         expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingWebView', {
             closeCallbackUrl:
-                'trezorsuitelite://trading?action=trade&tradeType=buy&&orderId=d3ef3451-8f68-4250-9e08-580ece5e7d12',
+                'trezorsuitelite://trading?action=trade&tradeType=buy&orderId=d3ef3451-8f68-4250-9e08-580ece5e7d12',
             source: { uri: (buyTrade.data as BuyTrade).partnerData },
         });
     });

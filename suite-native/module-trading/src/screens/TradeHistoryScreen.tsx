@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
@@ -25,6 +25,8 @@ import {
     TradeHistoryListItem,
 } from '../components/general/TradeHistory/TradeHistoryListItem';
 import { useBottomSheetControls } from '../hooks/useBottomSheetControls';
+import { selectTradeToBeOpened } from '../selectors/commonSelectors';
+import { clearTradeOrderIdToBeOpened } from '../tradingSlice';
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
@@ -40,13 +42,14 @@ export const TradeHistoryScreen = () => {
     } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.TradeHistory>>();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
+    const dispatch = useDispatch();
     const { bottom: insetBottom } = useSafeAreaInsets();
-
+    const tradeToBeOpened = useSelector(selectTradeToBeOpened);
     const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
-    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const trades = useSelector((state: TradingRootState) =>
         selectTradingTradesByTradeTypeOrderedByDate(state, tradeType),
     );
+    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
 
     const handleSelectedTrade = useCallback(
         (trade: TradingTransaction) => {
@@ -59,6 +62,14 @@ export const TradeHistoryScreen = () => {
         },
         [isSheetVisible, showSheet],
     );
+
+    useEffect(() => {
+        // if there was trade to be opened, open it right away and clear the tradeOrderIdToBeOpened
+        if (tradeToBeOpened) {
+            handleSelectedTrade(tradeToBeOpened);
+            dispatch(clearTradeOrderIdToBeOpened());
+        }
+    }, [tradeToBeOpened, handleSelectedTrade, dispatch]);
 
     const renderItem = ({ item }: { item: TradingTransaction }) => (
         <TradeHistoryListItem transaction={item} onPress={() => handleSelectedTrade(item)} />

@@ -42,6 +42,7 @@ import {
     selectTradingTradeByOrderId,
     selectTradingTrades,
     selectTradingTradesByTradeType,
+    selectTradingTradesByTradeTypeOrderedByDate,
     selectValidTradingBuyQuotes,
 } from '../tradingSelectors';
 
@@ -137,8 +138,26 @@ describe('tradingSelectors', () => {
                         tradingAccountKey: accountEth.key,
                     },
                     trades: [
-                        { tradeType: 'buy', data: { orderId: 'orderId1' } },
-                        { tradeType: 'exchange', data: { orderId: 'orderId2' } },
+                        {
+                            tradeType: 'buy',
+                            data: { orderId: 'orderId1' },
+                            date: '2024-03-01T10:00:00Z',
+                        },
+                        {
+                            tradeType: 'buy',
+                            data: { orderId: 'orderId2' },
+                            date: '2024-03-02T10:00:00Z',
+                        },
+                        {
+                            tradeType: 'buy',
+                            data: { orderId: 'orderId3' },
+                            date: '2024-03-03T10:00:00Z',
+                        },
+                        {
+                            tradeType: 'exchange',
+                            data: { orderId: 'orderId4' },
+                            date: '2024-03-04T10:00:00Z',
+                        },
                     ],
                     composedTransactionInfo: {
                         composed: {
@@ -375,16 +394,52 @@ describe('tradingSelectors', () => {
             {
                 data: { orderId: 'orderId1' },
                 tradeType: 'buy',
+                date: '2024-03-01T10:00:00Z',
+            },
+            {
+                data: { orderId: 'orderId2' },
+                tradeType: 'buy',
+                date: '2024-03-02T10:00:00Z',
+            },
+            {
+                data: { orderId: 'orderId3' },
+                tradeType: 'buy',
+                date: '2024-03-03T10:00:00Z',
             },
         ]);
         expect(selectTradingTradesByTradeType(state, 'exchange')).toStrictEqual([
             {
-                data: { orderId: 'orderId2' },
+                data: { orderId: 'orderId4' },
                 tradeType: 'exchange',
+                date: '2024-03-04T10:00:00Z',
             },
         ]);
 
         expect(selectTradingTradesByTradeType(state, 'sell')).toStrictEqual([]);
+    });
+
+    describe('selectTradingTradesByTradeTypeOrderedByDate', () => {
+        it('should return trades ordered by date in descending order', () => {
+            const result = selectTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+
+            expect(result).toHaveLength(3);
+            expect(result[0].data.orderId).toBe('orderId3');
+            expect(result[1].data.orderId).toBe('orderId2');
+            expect(result[2].data.orderId).toBe('orderId1');
+        });
+
+        it('should return empty array for trade type with no trades', () => {
+            const result = selectTradingTradesByTradeTypeOrderedByDate(state, 'sell');
+
+            expect(result).toHaveLength(0);
+        });
+
+        it('should be stable', () => {
+            const first = selectTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+            const second = selectTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+
+            expect(first).toBe(second);
+        });
     });
 
     it('selectHasTradingTradesOfTradeType should return correctly whether there is a trade', () => {
@@ -397,7 +452,7 @@ describe('tradingSelectors', () => {
     });
 
     it('selectTradingTradeByOrderId should return undefined when orderId is not found', () => {
-        expect(selectTradingTradeByOrderId(state, 'orderId4')).toBeUndefined();
+        expect(selectTradingTradeByOrderId(state, 'unknown_order')).toBeUndefined();
     });
 
     it('selectTradingCoinInfoByCryptoId should return coin data', () => {

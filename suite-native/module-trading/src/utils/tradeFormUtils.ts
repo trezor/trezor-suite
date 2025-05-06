@@ -118,13 +118,23 @@ export const getSourceForForm = (form: FormResponse['form'] | undefined, backUrl
     return null;
 };
 
-export const buildTradingUrl = ({ actionType, tradeType, orderId }: BuildTradingUrlProps) =>
-    `${TRADING_URL_BASE}?action=${actionType}&tradeType=${tradeType}&${orderId ? `&orderId=${orderId}` : ''}`;
+export const buildTradingUrl = ({ actionType, tradeType, orderId }: BuildTradingUrlProps) => {
+    const url = new URL(TRADING_URL_BASE);
+    const { searchParams } = url;
+    searchParams.set('action', actionType);
+    searchParams.set('tradeType', tradeType);
+    if (orderId) {
+        searchParams.set('orderId', orderId);
+    }
 
-export const getTradeTypeAndOrderIdFromUrl = (url: string) => {
+    return url.toString();
+};
+
+export const getTradeTypeActionAndOrderIdFromUrl = (url: string) => {
     const urlObj = new URL(url);
     const tradeType = urlObj.searchParams.get('tradeType');
+    const action = urlObj.searchParams.get('action');
     const orderId = urlObj.searchParams.get('orderId');
 
-    return { tradeType, orderId };
+    return { tradeType, action, orderId };
 };

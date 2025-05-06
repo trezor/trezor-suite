@@ -8,9 +8,11 @@ import { adaAsset, btcAsset, usdcAsset } from '../__fixtures__/tradeableAssets';
 import {
     TradingState,
     addTradeableAssetToFavourites,
+    clearTradeOrderIdToBeOpened,
     initialState,
     removeTradeableAssetFromFavourites,
     setBuySelectedReceiveAccount,
+    setTradeOrderIdToBeOpened,
     setTradingEnvironment,
     tradingSlice,
 } from '../tradingSlice';
@@ -120,10 +122,19 @@ describe('tradingSlice', () => {
             expect(state.tradingEnvironment).toBe('production');
         });
 
-        it('setTradingEnvironment should set trading environment', () => {
+        it('setTradingEnvironment should set trading environment and clear buy state', () => {
             const state = tradingReducer(undefined, setTradingEnvironment('dev'));
 
             expect(state.tradingEnvironment).toBe('dev');
+            expect(state.buy).toEqual({
+                selectedReceiveAccount: undefined,
+                quotesRequest: undefined,
+                quotes: [],
+                selectedQuote: undefined,
+                amountLimits: undefined,
+                isFromRedirect: false,
+                isLoading: false,
+            });
         });
     });
 
@@ -193,6 +204,30 @@ describe('tradingSlice', () => {
                 quotes: [],
                 selectedQuote: expect.any(Object),
             });
+        });
+    });
+
+    describe('tradeOrderIdToBeOpened', () => {
+        it('should have undefined as initial tradeOrderIdToBeOpened', () => {
+            const state = tradingReducer(undefined, { type: 'undefined_action' });
+
+            expect(state.tradeOrderIdToBeOpened).toBeUndefined();
+        });
+
+        it('setTradeOrderIdToBeOpened should set tradeOrderIdToBeOpened', () => {
+            const state = tradingReducer(undefined, setTradeOrderIdToBeOpened('orderId'));
+
+            expect(state.tradeOrderIdToBeOpened).toBe('orderId');
+        });
+    });
+
+    describe('clearTradeOrderIdToBeOpened', () => {
+        it('should clear tradeOrderIdToBeOpened', () => {
+            const actions = [setTradeOrderIdToBeOpened('orderId'), clearTradeOrderIdToBeOpened()];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.tradeOrderIdToBeOpened).toBeUndefined();
         });
     });
 });

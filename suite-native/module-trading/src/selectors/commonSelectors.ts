@@ -30,3 +30,11 @@ export const selectIsTradingEnabled = (state: MessageSystemRootState & FeatureFl
     selectIsTradingBuyEnabled(state) ||
     selectIsTradingSwapEnabled(state) ||
     selectIsTradingSellEnabled(state);
+
+// trade for opening in detail
+export const selectTradeToBeOpened = (state: TradingRootState) => {
+    const orderId = state.wallet.tradingNew.tradeOrderIdToBeOpened;
+    if (!orderId) return undefined;
+
+    return state.wallet.tradingNew.trades.find(trade => trade.data.orderId === orderId);
+};
