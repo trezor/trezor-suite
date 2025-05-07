@@ -21,6 +21,8 @@ export const useHomeRefreshControl = ({
     } = useNativeStyles();
 
     const handleRefresh = useCallback(async () => {
+        if (isDiscoveredDeviceAccountless) return;
+
         setIsRefreshing(true);
         try {
             await Promise.all([
@@ -31,19 +33,18 @@ export const useHomeRefreshControl = ({
             // Do nothing
         }
         setIsRefreshing(false);
-    }, [dispatch, portfolioContentRef]);
+    }, [dispatch, portfolioContentRef, isDiscoveredDeviceAccountless]);
 
-    const refreshControl = useMemo(() => {
-        if (isDiscoveredDeviceAccountless) return undefined;
-
-        return (
+    const refreshControl = useMemo(
+        () => (
             <RefreshControl
                 refreshing={isRefreshing}
                 onRefresh={handleRefresh}
                 colors={[colors.backgroundPrimaryDefault]}
             />
-        );
-    }, [isDiscoveredDeviceAccountless, handleRefresh, colors, isRefreshing]);
+        ),
+        [handleRefresh, colors, isRefreshing],
+    );
 
     return refreshControl;
 };
