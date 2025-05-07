@@ -436,6 +436,17 @@ export const onCallFirmwareUpdate = async ({
             'onCallFirmwareUpdate',
             'waiting for disconnected event after rebootToBootloader...',
         );
+
+        device.releaseTransportSession();
+        await device.release(); // close device
+        if (device.bluetoothProps) {
+            postMessage(
+                createUiMessage(UI.FIRMWARE_DISCONNECT, {
+                    device: device.toMessageObject(),
+                }),
+            );
+        }
+
         await disconnectedPromise;
 
         // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
@@ -484,6 +495,17 @@ export const onCallFirmwareUpdate = async ({
             postMessage,
             reconnectedDevice,
             { payload: stripped },
+        );
+    }
+
+    device.releaseTransportSession();
+    await device.release(); // close device
+    if (device.bluetoothProps) {
+        await resolveAfter(4000); // T3W1 countdown after FW installation
+        postMessage(
+            createUiMessage(UI.FIRMWARE_DISCONNECT, {
+                device: device.toMessageObject(),
+            }),
         );
     }
 
