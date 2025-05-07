@@ -1,0 +1,59 @@
+name: "Check Duplicate Runs"
+description: "Check if there is duplicate run of this workflow on same commit Hash"
+
+inputs:
+  github_token:
+    description: "GitHub token for accessing the API"
+    required: true
+  commit_sha:
+    description: "The commit hash to check"
+    required: true
+  repo:
+    description: "The repository name (format: owner/repo)"
+    required: true
+  workflow_name:
+    description: "The workflow name to filter runs"
+    required: true
+  current_run_id:
+    description: "ID of the current workflow run (to exclude from results)"
+    required: true
+
+outputs:
+  skip_run:
+    description: "Indicates whether workflow should be skipped"
+    value: ${{ steps.check-duplicate-run.outputs.skip_run }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check Duplicate Run
+      id: check-duplicate-run
+      continue-on-error: true
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        COMMIT_SHA: "${{ inputs.commit_sha }}"
+        REPO: "${{ inputs.repo }}"
+        WORKFLOW_NAME: "${{ inputs.workflow_name }}"
+        CURRENT_RUN_ID: "${{ inputs.current_run_id }}"
+      shell: bash
+      run: |
+        # Fetch workflow ID
+        WORKFLOW_ID=$(gh workflow list \
+          --repo "$REPO" \
+          --json id,name \
+          --limit 100 \
+          --jq ".[] | select(.name == \"${WORKFLOW_NAME}\") | .id")
+
+        # Check for previous runs on this commit
+        API_URL="https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW_ID}/runs?head_sha=${COMMIT_SHA}"
+        RESPONSE=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" "${API_URL}")
+
+        PREVIOUS_RUNS=$(echo "$RESPONSE" | jq --arg current_id "${CURRENT_RUN_ID}" '[.workflow_runs[] | select(.id != ($current_id | tonumber))] | length')
+  
+        if [ "${PREVIOUS_RUNS}" -gt 0 ]; then
+          echo "Found ${PREVIOUS_RUNS} previous runs for commit ${COMMIT_SHA}"
+          echo "skip_run=true" >> $GITHUB_OUTPUT
+        else
+          echo "No previous runs found for commit ${COMMIT_SHA}"
+          echo "skip_run=false" >> $GITHUB_OUTPUT
+        fi

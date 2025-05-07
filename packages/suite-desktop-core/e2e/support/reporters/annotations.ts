@@ -97,7 +97,7 @@ export class TestReportProvider {
     }
 
     get status(): string {
-        // This condition covers manual and automated tests that are skipped
+        // This condition covers all manual test and skipped automated tests
         if (this.test.outcome() === 'skipped') {
             return TestStatus.Todo;
         }
@@ -186,6 +186,10 @@ export class TestReportProvider {
 
     get useOsEmoticons(): boolean {
         return this.isManual && this.osMatrix.length > 1;
+    }
+
+    get isAutomatedAndPassed(): boolean {
+        return this.status === TestStatus.AutoPass;
     }
 
     get bodyDescription(): string {
