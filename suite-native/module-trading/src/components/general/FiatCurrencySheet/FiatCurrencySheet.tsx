@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useFiatCurrencyFilteredData } from '../../../hooks/useFiatCurrencyFilteredData';
 import { FiatCurrencyItem } from '../../../types';
@@ -21,6 +21,7 @@ const keyExtractor = (item: FiatCurrencyItem) => item.value;
 
 export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurrencySheetProps) => {
     const { filteredData, filterValue, setFilterValue } = useFiatCurrencyFilteredData();
+    const { translate } = useTranslate();
 
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(
@@ -30,9 +31,12 @@ export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurr
                 onClose={onClose}
                 title={<Translation id="moduleTrading.fiatCurrencySheet.title" />}
                 onFilterChange={setFilterValue}
+                searchInputPlaceholder={translate(
+                    'moduleTrading.fiatCurrencySheet.searchInputPlaceholder',
+                )}
             />
         ),
-        [onClose, setFilterValue],
+        [onClose, setFilterValue, translate],
     );
 
     const onFiatSelectCallback = (currency: FiatCurrencyCode) => {

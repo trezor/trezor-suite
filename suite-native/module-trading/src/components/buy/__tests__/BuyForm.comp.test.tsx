@@ -26,12 +26,9 @@ describe('BuyForm', () => {
 
     it('should render when buy data are not preloaded', async () => {
         const { result } = await renderFormHook({});
-        const { queryByText, queryAllByText, getByLabelText } = await renderBuyForm(
-            {},
-            result.current,
-        );
+        const { queryByText, getByText, getByLabelText } = await renderBuyForm({}, result.current);
 
-        expect(queryAllByText('Buy').length).toBe(2);
+        expect(getByText('You pay')).toBeTruthy();
         expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
         expect(queryByText('Receive account')).toBeNull();
         expect(queryByText('Payment method')).toBeNull();
@@ -39,7 +36,7 @@ describe('BuyForm', () => {
         expect(queryByText('Provider')).toBeNull();
         expect(queryByText('Continue')).toBeNull();
         // country
-        expect(queryByText('Not selected')).toBeTruthy();
+        expect(getByText('Not selected')).toBeTruthy();
     });
 
     describe('with preloaded buy data', () => {
@@ -52,12 +49,12 @@ describe('BuyForm', () => {
         });
 
         it('should render with default values', async () => {
-            const { queryByText, queryAllByText, getByLabelText, getByText } = await renderBuyForm(
+            const { queryByText, getByLabelText, getByText } = await renderBuyForm(
                 preloadedState,
                 form,
             );
 
-            expect(queryAllByText('Buy').length).toBe(2);
+            expect(getByText('You pay')).toBeTruthy();
 
             expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
             expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
@@ -75,10 +72,10 @@ describe('BuyForm', () => {
             act(() => {
                 form.setValue('focusedValue', 'fiatValue');
             });
-            const { queryByText } = await renderBuyForm(preloadedState, form);
+            const { queryByText, getByText } = await renderBuyForm(preloadedState, form);
 
-            expect(queryByText('Buy')).toBeTruthy();
-            expect(queryByText('Fund')).toBeTruthy();
+            expect(getByText('You pay')).toBeTruthy();
+            expect(getByText('You get')).toBeTruthy();
 
             expect(queryByText('Country of residence')).toBeNull();
             expect(queryByText('Payment method')).toBeNull();

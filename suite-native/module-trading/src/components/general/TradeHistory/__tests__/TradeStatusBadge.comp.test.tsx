@@ -62,7 +62,7 @@ describe('TradeStatusBadge', () => {
         ['SUCCESS', /Approved/],
         ['BLOCKED', /Blocked/],
         ['ERROR', /Rejected/],
-        ['CANCELLED', /Cancelled/],
+        ['CANCELLED', /Canceled/],
         ['REFUNDED', /Refunded/],
         ['REQUESTING', /Requesting/],
         ['LOGIN_REQUEST', /Pending/],

@@ -41,7 +41,10 @@ export const LegalSheet = ({ isVisible, onConsent, onClose, tradeProvider }: Leg
                         <Translation id="moduleTrading.legalSheet.subheaderSecurity" />
                     </Subheader>
                     <Info>
-                        <Translation id="moduleTrading.legalSheet.infoSecurity1" />
+                        <Translation
+                            id="moduleTrading.legalSheet.infoSecurity1"
+                            values={{ companyName }}
+                        />
                     </Info>
                     <Info>
                         <Translation id="moduleTrading.legalSheet.infoSecurity2" />

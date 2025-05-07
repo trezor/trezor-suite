@@ -12,10 +12,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-export type SearchInputWithCancelProps = Omit<
-    BottomSheetSearchInputProps,
-    'placeholder' | 'elevation'
->;
+export type SearchInputWithCancelProps = Omit<BottomSheetSearchInputProps, 'elevation'>;
 
 const noOp = () => {};
 
@@ -35,6 +32,7 @@ export const SearchInputWithCancel = ({
     onFocus = noOp,
     onBlur = noOp,
     onChange,
+    placeholder,
     ...props
 }: SearchInputWithCancelProps) => {
     const { applyStyle } = useNativeStyles();
@@ -62,7 +60,7 @@ export const SearchInputWithCancel = ({
             <Animated.View layout={LinearTransition} style={applyStyle(inputWrapperStyle)}>
                 <BottomSheetSearchInput
                     ref={inputRef}
-                    placeholder={translate('moduleTrading.defaultSearchLabel')}
+                    placeholder={placeholder ?? translate('moduleTrading.defaultSearchLabel')}
                     onFocus={() => {
                         setIsInputActive(true);
                         onFocus();

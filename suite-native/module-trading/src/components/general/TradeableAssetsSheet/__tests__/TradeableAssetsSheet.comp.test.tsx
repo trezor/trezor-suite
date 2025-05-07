@@ -41,6 +41,9 @@ describe('TradeableAssetsSheet', () => {
             assets: [],
         });
 
-        expect(getByText('No coin found')).toBeTruthy();
+        expect(getByText('Coin not found')).toBeTruthy();
+        expect(
+            getByText('Check the spelling or browse the list to select an option.'),
+        ).toBeTruthy();
     });
 });

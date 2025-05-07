@@ -54,7 +54,7 @@ describe('ReceiveAccountsPickerScreen', () => {
 
         const { getByText } = await renderScreen(getPreloadedState([]));
 
-        expect(getByText('Pick account')).toBeTruthy();
+        expect(getByText('Select account')).toBeTruthy();
     });
 
     it('should render account list with accounts', async () => {

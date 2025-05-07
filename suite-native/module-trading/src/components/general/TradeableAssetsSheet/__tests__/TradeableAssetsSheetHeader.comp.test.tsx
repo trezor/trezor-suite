@@ -25,14 +25,14 @@ describe('TradeableAssetsSheetHeader', () => {
     it('should display "Coins" and do not display tabs by default', async () => {
         const { getByText, queryByText } = await renderComponent();
 
-        expect(getByText('Coins')).toBeTruthy();
+        expect(getByText('Assets')).toBeTruthy();
         expect(queryByText('All')).toBeNull();
     });
 
     it('should display tabs after focusing search input', async () => {
         const { getByPlaceholderText, getByText, queryByText } = await renderComponent();
 
-        fireEvent(getByPlaceholderText('Search'), 'focus');
+        fireEvent(getByPlaceholderText(/Search/), 'focus');
 
         expect(getByText('All')).toBeTruthy();
         expect(queryByText('Coins')).toBeNull();
@@ -47,7 +47,7 @@ describe('TradeableAssetsSheetHeader', () => {
     it('should display cancel button after focusing search input', async () => {
         const { getByPlaceholderText, getByText } = await renderComponent();
 
-        fireEvent(getByPlaceholderText('Search'), 'focus');
+        fireEvent(getByPlaceholderText(/Search/), 'focus');
 
         expect(getByText('Cancel')).toBeTruthy();
     });

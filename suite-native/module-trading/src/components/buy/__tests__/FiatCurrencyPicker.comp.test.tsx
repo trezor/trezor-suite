@@ -69,7 +69,9 @@ describe('FiatCurrencyPicker', () => {
 
         const { getByText } = await renderFiatCurrencyPicker();
 
-        expect(getByText('No currency found')).toBeTruthy();
-        expect(getByText(/ a currency matching your search/)).toBeTruthy();
+        expect(getByText('Currency not found')).toBeTruthy();
+        expect(
+            getByText('Check the spelling or browse the list to select an option.'),
+        ).toBeTruthy();
     });
 });

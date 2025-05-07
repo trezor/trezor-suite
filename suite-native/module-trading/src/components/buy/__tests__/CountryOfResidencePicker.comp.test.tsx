@@ -61,7 +61,9 @@ describe('CountryOfResidencePicker', () => {
         const { getByText } = await renderCountryOfResidencePicker();
         fireEvent.press(getByText('Country of residence'));
 
-        expect(getByText('No country found')).toBeTruthy();
-        expect(getByText(/a country matching your search/)).toBeTruthy();
+        expect(getByText('Country not found')).toBeTruthy();
+        expect(
+            getByText('Check the spelling or browse the list to select an option.'),
+        ).toBeTruthy();
     });
 });

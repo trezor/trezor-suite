@@ -19,6 +19,7 @@ export type SearchableSheetHeaderProps = {
     style?: NativeStyleObject;
     onFilterChange?: (value: string) => void;
     filterValue?: string;
+    searchInputPlaceholder?: string;
 };
 
 export const SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT = 160 as const;
@@ -41,6 +42,7 @@ export const SearchableSheetHeader = ({
     leftButtonA11yLabel,
     onFilterChange = noOp,
     filterValue,
+    searchInputPlaceholder,
 }: SearchableSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -82,6 +84,7 @@ export const SearchableSheetHeader = ({
                     onFocus={() => changeFilterFocus(true)}
                     onBlur={() => changeFilterFocus(false)}
                     value={filterValue}
+                    placeholder={searchInputPlaceholder}
                 />
             </Animated.View>
             {children}

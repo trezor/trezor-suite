@@ -1531,36 +1531,36 @@ export const en = {
             balance: 'Balance:',
         },
         selectFiat: {
-            title: 'Fund',
+            title: 'You pay',
             buttonTitle: 'Select fiat currency',
             amountLabel: 'You pay',
         },
         selectCoin: {
-            title: 'Buy',
+            title: 'You get',
             buttonTitle: 'Select coin',
             amountLabel: 'You get',
         },
         fiatCurrencySheet: {
             title: 'Currency',
-            emptyTitle: 'No currency found',
-            emptyDescription:
-                'We couldn’t find a currency matching your search. Try checking the spelling or exploring the list for the right option.',
+            emptyTitle: 'Currency not found',
+            emptyDescription: 'Check the spelling or browse the list to select an option.',
+            searchInputPlaceholder: 'Search country or ticker',
         },
         tradeableAssetsSheet: {
-            title: 'Coins',
+            title: 'Assets',
             favouritesTitle: 'Favourites',
-            allTitle: 'All coins',
+            allTitle: 'All assets',
             favouritesAdd: 'Add to favourites',
             favouritesRemove: 'Remove from favourites',
-            emptyTitle: 'No coin found',
-            emptyDescription:
-                'We couldn’t find a coin matching your search. Try checking the spelling or exploring the list for the right option.',
+            emptyTitle: 'Coin not found',
+            emptyDescription: 'Check the spelling or browse the list to select an option.',
+            searchInputPlaceholder: 'Search tokens or address',
         },
         countrySheet: {
             title: 'Country of residence',
-            emptyTitle: 'No country found',
-            emptyDescription:
-                'We couldn’t find a country matching your search. Try checking the spelling or exploring the list for the right option.',
+            emptyTitle: 'Country not found',
+            emptyDescription: 'Check the spelling or browse the list to select an option.',
+            searchInputPlaceholder: 'Search country',
         },
         accountScreen: {
             accountEmpty: {
@@ -1580,11 +1580,10 @@ export const en = {
                 },
             },
             addressEmpty: {
-                title: 'No address found',
-                description:
-                    'We couldn’t find an address matching your search. Try checking the spelling or exploring the list for the right option.',
+                title: 'Address not found',
+                description: 'Check the spelling or browse the list to select an option.',
             },
-            titleStep1: 'Pick account',
+            titleStep1: 'Select account',
             newAddress: 'New address',
             usedAddresses: 'Used addresses',
             step2Hint: 'Select to display account addresses',
@@ -1595,19 +1594,19 @@ export const en = {
             title: 'Buy with {companyName}',
             subheaderSecurity: 'Security first with your Trezor',
             infoSecurity1:
-                "I’m here to swap cryptocurrencies. If I were directed to this site for any other reason, I'll contact Trezor Support before proceeding.",
+                "You're here to buy cryptocurrencies. If you were directed to this site for any other reason, contact {companyName} support before proceeding.",
             infoSecurity2:
-                "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
+                "You're buying cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
             infoSecurity3:
-                "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+                " You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
             subheaderPartners: 'Verified partners by Invity',
             infoPartners:
-                "I understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms and Conditions.",
+                "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
             subheaderLegal: 'Legal notice',
             infoLegal1:
-                "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+                "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
             infoLegal2:
-                'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
+                'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
         },
         validators: {
             min: 'Minimum is {min}',
@@ -1634,7 +1633,7 @@ export const en = {
                 siteActionRequest: 'Site action requested',
                 sendCrypto: 'Send crypto',
                 pending: 'Pending',
-                cancelled: 'Cancelled',
+                cancelled: 'Canceled',
                 refunded: 'Refunded',
                 loading: 'Loading',
                 confirm: 'Confirm',

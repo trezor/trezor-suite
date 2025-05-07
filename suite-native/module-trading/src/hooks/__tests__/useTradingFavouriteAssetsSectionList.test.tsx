@@ -63,7 +63,7 @@ describe('useTradingFavouriteAssetsSectionList', () => {
         expect(result.current).toEqual([
             {
                 key: 'section_all',
-                label: 'All coins',
+                label: 'All assets',
                 data: [btcAsset, usdcAsset, adaAsset],
                 sectionData: { isFavourite: false },
             },
@@ -101,7 +101,7 @@ describe('useTradingFavouriteAssetsSectionList', () => {
             },
             {
                 key: 'section_all',
-                label: 'All coins',
+                label: 'All assets',
                 data: [adaAsset],
                 sectionData: { isFavourite: false },
             },

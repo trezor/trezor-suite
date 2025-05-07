@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Dimensions } from 'react-native';
 
 import { BottomSheetFlashList } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useCountryFilteredData } from '../../../hooks/useCountryFilteredData';
 import { Country } from '../../../types';
@@ -26,6 +26,7 @@ export const CountrySheet = ({
     selectedCountryId,
 }: CountrySheetProps) => {
     const { filteredData, filterValue, setFilterValue } = useCountryFilteredData();
+    const { translate } = useTranslate();
 
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(
@@ -34,9 +35,12 @@ export const CountrySheet = ({
                 onClose={onClose}
                 title={<Translation id="moduleTrading.countrySheet.title" />}
                 onFilterChange={setFilterValue}
+                searchInputPlaceholder={translate(
+                    'moduleTrading.countrySheet.searchInputPlaceholder',
+                )}
             />
         ),
-        [onClose, setFilterValue],
+        [onClose, setFilterValue, translate],
     );
 
     const onCountrySelectCallback = (country: Country) => {

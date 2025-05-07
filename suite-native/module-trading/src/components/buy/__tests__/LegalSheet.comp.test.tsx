@@ -29,11 +29,8 @@ describe('LegalSheet', () => {
         const { getByText } = await renderLegalSheet();
 
         expect(getByText('Buy with Invity Finance')).toBeTruthy();
-        expect(
-            getByText(
-                "I understand that Invity doesn't provide this service. It's governed by Invity Finance’s Terms and Conditions.",
-            ),
-        ).toBeTruthy();
+        expect(getByText(/contact Invity Finance support/)).toBeTruthy();
+        expect(getByText(/It's governed by Invity Finance’s Terms & Conditions./)).toBeTruthy();
     });
 
     it('should call onConsent callback on Continue button press and onClose not to be called', async () => {
