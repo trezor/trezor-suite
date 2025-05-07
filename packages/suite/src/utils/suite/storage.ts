@@ -1,8 +1,31 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DeviceWithEmptyPath } from '@suite-common/suite-types';
 
+import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/constants/suite/firmware';
 import { AcquiredDevice } from 'src/types/suite';
 import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
+
+type AuthenticityChecks = AcquiredDevice['authenticityChecks'];
+const filterInconclusiveAuthenticityChecks = (checks: AuthenticityChecks): AuthenticityChecks => {
+    if (checks === undefined) return undefined;
+    let { firmwareRevision, firmwareHash } = checks;
+    if (
+        firmwareRevision !== null &&
+        !firmwareRevision.success &&
+        revisionCheckErrorScenarios[firmwareRevision.error].isConclusive === false
+    ) {
+        firmwareRevision = null;
+    }
+    if (
+        firmwareHash !== null &&
+        !firmwareHash.success &&
+        hashCheckErrorScenarios[firmwareHash.error].isConclusive === false
+    ) {
+        firmwareHash = null;
+    }
+
+    return { firmwareRevision, firmwareHash };
+};
 
 /**
  * Strip fields from Device
@@ -18,6 +41,7 @@ export const serializeDevice = (
         remember: true,
         connected: false,
         buttonRequests: [],
+        authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
     };
     if (forceRemember) sd.forceRemember = true;
 
