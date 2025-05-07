@@ -21,6 +21,7 @@ import { zIndices } from '@trezor/theme';
 
 import { PopoverPlacement, convertPopoverPlacement } from './utils';
 import { intermediaryTheme } from '../../config/colors';
+import { ElevationContext } from '../ElevationContext/ElevationContext';
 
 const DEFAULT_POPOVER_PLACEMENT: PopoverPlacement = {
     position: 'bottom',
@@ -206,7 +207,9 @@ export const Popover = forwardRef(
         return (
             <PopoverContext.Provider value={popover}>
                 <PopoverTrigger>{children}</PopoverTrigger>
-                <PopoverContent style={{ zIndex }}>{content}</PopoverContent>
+                <PopoverContent style={{ zIndex }}>
+                    <ElevationContext baseElevation={0}>{content}</ElevationContext>
+                </PopoverContent>
             </PopoverContext.Provider>
         );
     },

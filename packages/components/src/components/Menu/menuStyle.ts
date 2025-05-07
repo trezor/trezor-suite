@@ -23,6 +23,7 @@ export const menuStyle = css`
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    outline: 1px solid ${({ theme }) => theme.baseBorderSurfaceAction};
     z-index: ${zIndices.modal};
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
     list-style-type: none;

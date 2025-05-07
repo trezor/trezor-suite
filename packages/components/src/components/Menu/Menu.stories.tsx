@@ -30,10 +30,6 @@ export const Menu: StoryObj<MenuProps> = {
                 },
             ]}
             setToggled={() => {}}
-            addon={{
-                icon: 'arrowRight',
-                label: 'More',
-            }}
             content={<div>Settings</div>}
         />
     ),

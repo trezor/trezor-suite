@@ -32,7 +32,7 @@ const DropdownTriggerStyledIcon = styled(IconButton)<{ $isToggled: boolean }>`
     }
 `;
 
-export type DropdownProps = Omit<MenuProps, 'setToggled'> &
+export type DropdownProps = Omit<MenuProps, 'setToggled' | 'addon'> &
     AllowedFrameProps & {
         placement?: PopoverPlacement;
         isDisabled?: boolean;
@@ -57,7 +57,6 @@ export const Dropdown = forwardRef(
             items,
             content,
             isDisabled,
-            addon,
             placement,
             onToggle,
             children,
@@ -128,9 +127,7 @@ export const Dropdown = forwardRef(
             <Popover
                 ref={popoverRef}
                 placement={placement}
-                content={
-                    <Menu items={items} content={content} setToggled={setToggled} addon={addon} />
-                }
+                content={<Menu items={items} content={content} setToggled={setToggled} />}
             >
                 {ToggleComponent}
             </Popover>

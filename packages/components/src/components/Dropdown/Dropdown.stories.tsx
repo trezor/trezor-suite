@@ -60,13 +60,6 @@ export const Dropdown: StoryObj<DropdownProps> = {
         </Center>
     ),
     args: {
-        addon: {
-            onClick: () => {
-                console.log('navigate somewhere');
-            },
-            label: 'some link',
-            icon: 'arrowRight',
-        },
         placement: {
             position: 'bottom',
             alignment: 'center',
@@ -123,12 +116,11 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         },
                     },
                     {
-                        label: 'item with iconRight and separator',
+                        label: 'item with iconRight',
                         onClick: () => {
                             console.log('item 5 clicked');
                         },
                         iconRight: 'caretRight',
-                        separatorBefore: true,
                     },
                 ],
             },
@@ -136,7 +128,6 @@ export const Dropdown: StoryObj<DropdownProps> = {
         ...getFramePropsStory(allowedDropdownFrameProps).args,
     },
     argTypes: {
-        addon: { control: { disable: true } },
         items: { control: { disable: true } },
         placement: {
             control: {
