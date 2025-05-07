@@ -99,16 +99,10 @@ export type UserContextPayload =
           type: 'pin-mismatch';
       }
     | {
-          type: 'wipe-device';
-      }
-    | {
           type: 'device-authenticity-check-opt-out';
       }
     | {
           type: 'firmware-authenticity-checks-opt-out';
-      }
-    | {
-          type: 'disconnect-device';
       }
     | {
           type: 'metadata-provider';

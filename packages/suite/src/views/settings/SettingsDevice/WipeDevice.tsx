@@ -1,10 +1,13 @@
+import { useState } from 'react';
+
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice } from 'src/hooks/suite';
+
+import { WipeDeviceModal } from './WipeDeviceModal';
 
 interface WipeDeviceProps {
     isDeviceLocked: boolean;
@@ -12,11 +15,9 @@ interface WipeDeviceProps {
 
 export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
     const { device } = useDevice();
-    const dispatch = useDispatch();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const isBootloaderMode = isDeviceInBootloaderMode(device);
-
-    const handleClick = () => dispatch(openModal({ type: 'wipe-device' }));
 
     const headingTranslation = isBootloaderMode
         ? 'TR_DEVICE_SETTINGS_FACTORY_RESET'
@@ -24,6 +25,7 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.WipeDevice}>
+            {isModalOpen && <WipeDeviceModal onCancel={() => setIsModalOpen(false)} />}
             <TextColumn
                 title={<Translation id={headingTranslation} />}
                 description={
@@ -38,7 +40,7 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={handleClick}
+                    onClick={() => setIsModalOpen(true)}
                     variant="destructive"
                     isDisabled={isDeviceLocked}
                     data-testid="@settings/device/open-wipe-modal-button"
