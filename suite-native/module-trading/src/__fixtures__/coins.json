@@ -48,5 +48,15 @@
             "sell": false,
             "exchange": true
         }
+    },
+    "binancecoin": {
+        "symbol": "bnb",
+        "name": "BNB",
+        "coingeckoId": "binancecoin",
+        "services": {
+            "buy": true,
+            "sell": true,
+            "exchange": true
+        }
     }
 }

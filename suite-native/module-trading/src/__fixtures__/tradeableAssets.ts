@@ -84,3 +84,11 @@ export const usdtOnBscAsset: TradeableAsset = {
     coingeckoId: 'binance-smart-chain',
     networkId: 'binance-smart-chain',
 };
+
+export const bnbAsset: TradeableAsset = {
+    cryptoId: 'binancecoin' as CryptoId,
+    symbol: 'bnb',
+    name: 'BNB',
+    coingeckoId: 'binancecoin',
+    networkId: 'binancecoin',
+};

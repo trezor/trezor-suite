@@ -6,11 +6,11 @@ import {
     HandleRequestThunkProps,
     TradingRootState,
     buyThunks,
+    cryptoIdToNetwork,
     selectTradingBuyIsLoading,
     selectTradingBuyQuotes,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
-import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { useDebounce } from '@trezor/react-utils';
 
@@ -160,8 +160,8 @@ const useQuotesThunk = (
             debounce(() => {
                 const selectedAsset = form.getValues('asset');
                 invariant(selectedAsset, 'Asset is not defined');
-                const network = getNetworkByCoingeckoId(selectedAsset.networkId);
-                invariant(network, `Network not found for ${selectedAsset.networkId}`);
+                const network = cryptoIdToNetwork(selectedAsset.cryptoId);
+                invariant(network, `Network not found for [${selectedAsset.cryptoId}]`);
 
                 const payload: HandleRequestThunkProps = {
                     network,
