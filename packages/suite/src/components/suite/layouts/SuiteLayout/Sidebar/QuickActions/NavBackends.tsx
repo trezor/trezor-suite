@@ -1,53 +1,24 @@
 import React, { ReactNode, useRef } from 'react';
 
-import styled from 'styled-components';
-
 import { BlockchainState } from '@suite-common/wallet-core';
-import { Dropdown, DropdownRef } from '@trezor/components';
+import {
+    Box,
+    Card,
+    Column,
+    DotIndicator,
+    Note,
+    Popover,
+    PopoverRef,
+    Row,
+    Text,
+} from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { StatusLight, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { CustomBackend } from 'src/types/wallet';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledDropdown = styled(Dropdown)`
-    display: block;
-    width: 100%;
-`;
-
-const RowWrapper = styled.div`
-    display: flex;
-    width: 260px;
-    align-items: center;
-
-    > * + * {
-        margin-left: ${spacingsPx.xs};
-    }
-
-    > div:nth-child(2) {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        margin-left: ${spacingsPx.xs};
-        overflow: hidden;
-
-        > span:first-child {
-            ${typography.body}
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        > span:last-child {
-            ${typography.hint}
-            color: ${({ theme }) => theme.textSubdued};
-            text-transform: capitalize;
-        }
-    }
-`;
 
 const BackendRow = ({
     backend: { symbol, type },
@@ -56,104 +27,64 @@ const BackendRow = ({
     backend: CustomBackend;
     blockchain: BlockchainState;
 }) => {
+    const dispatch = useDispatch();
     const chain = blockchain[symbol];
 
     return (
-        <RowWrapper>
-            <CoinLogo symbol={symbol} />
-            <div>
-                {chain?.url ? (
-                    <span>{chain.url}</span>
-                ) : (
-                    <Translation id="TR_BACKEND_DISCONNECTED" />
-                )}
-                <span>{type}</span>
-            </div>
-            <StatusLight variant={chain?.connected ? 'primary' : 'destructive'} />
-        </RowWrapper>
+        <Box
+            onClick={() => dispatch(openModal({ type: 'advanced-coin-settings', symbol }))}
+            cursor="pointer"
+            width={260}
+        >
+            <Row gap={spacings.sm}>
+                <CoinLogo symbol={symbol} />
+                <Column flex="1">
+                    <Text typographyStyle="hint" ellipsisLineCount={1}>
+                        {chain?.url ?? <Translation id="TR_BACKEND_DISCONNECTED" />}
+                    </Text>
+                    <Text typographyStyle="label" variant="tertiary" case="capitalize">
+                        {type}
+                    </Text>
+                </Column>
+                <DotIndicator isActive={chain?.connected} />
+            </Row>
+        </Box>
     );
 };
-
-const DefaultBackendsLabel = styled.div`
-    white-space: normal;
-`;
 
 type NavBackendsProps = {
     customBackends: CustomBackend[];
     children: ReactNode;
 };
 
-/**
- * The must be div so Dropdown works. Its mess, Dropdown shall be reworked.
- *
- * The issue here is that `Dropdown` component expects child with `isDisabled` prop,
- * as it passes this props via `cloneElement()`.
- */
-const WrapperDiv = ({
-    children,
-    isDisabled: _, // `isDisabled` is needed here despite not being used
-    onClick,
-}: {
-    isDisabled?: boolean;
-    children: ReactNode;
-    onClick?: () => void;
-}) => (
-    // eslint-disable-next-line
-    <div onClick={onClick}>{children}</div>
-);
-
 export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
-    const dropdownRef = useRef<DropdownRef>();
+    const popoverRef = useRef<PopoverRef>();
     const blockchain = useSelector(state => state.wallet.blockchain);
-    const dispatch = useDispatch();
-
-    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
-    const items = [
-        {
-            key: 'backends',
-            label: <Translation id="TR_BACKENDS" />,
-            options: customBackends.map(backend => ({
-                key: backend.symbol,
-                label: <BackendRow backend={backend} blockchain={blockchain} />,
-                onClick: () =>
-                    dispatch(
-                        openModal({
-                            type: 'advanced-coin-settings',
-                            symbol: backend.symbol,
-                        }),
-                    ),
-            })),
-        },
-        {
-            key: 'note',
-            options: [
-                {
-                    key: '1',
-                    label: (
-                        <DefaultBackendsLabel>
-                            <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
-                        </DefaultBackendsLabel>
-                    ),
-                    isDisabled: true,
-                    separatorBefore: true,
-                },
-            ],
-        },
-    ];
 
     return (
-        <StyledDropdown
-            ref={dropdownRef}
+        <Popover
+            ref={popoverRef}
             placement={{ position: 'top' }}
-            addon={{
-                onClick: goToCoinsSettings,
-                label: <Translation id="TR_MANAGE" />,
-                icon: 'arrowRight',
-            }}
-            items={items}
+            content={
+                <Card>
+                    <Column gap={spacings.lg}>
+                        <Column gap={spacings.sm}>
+                            {customBackends.map(backend => (
+                                <BackendRow
+                                    key={backend.symbol}
+                                    backend={backend}
+                                    blockchain={blockchain}
+                                />
+                            ))}
+                        </Column>
+                        <Note>
+                            <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
+                        </Note>
+                    </Column>
+                </Card>
+            }
         >
-            {/* The must be div so Dropdown works. Its mess, Dropdown shall be reworked. */}
-            <WrapperDiv>{children}</WrapperDiv>
-        </StyledDropdown>
+            {children}
+        </Popover>
     );
 };

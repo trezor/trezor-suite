@@ -10,7 +10,10 @@ export const GraphScaleDropdownItem = (props: Omit<SelectBarProps<GraphScale>, '
     return (
         <SelectBar
             onChange={setSelectedView}
+            orientation="vertical"
             selectedOption={selectedView}
+            label={<Translation id="TR_GRAPH_VIEW" />}
+            size="small"
             options={[
                 { label: <Translation id="TR_GRAPH_LINEAR" />, value: 'linear' },
                 { label: <Translation id="TR_GRAPH_LOGARITHMIC" />, value: 'log' },

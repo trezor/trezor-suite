@@ -1,8 +1,9 @@
 import { memo, useMemo } from 'react';
 
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Card, Column, Dropdown, Tooltip } from '@trezor/components';
+import { Card, Column, Dropdown, Switch, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -99,34 +100,26 @@ export const PortfolioCard = memo(() => {
                 !isWalletEmpty && !isWalletLoading && !isWalletError ? (
                     <Dropdown
                         placement={{ position: 'bottom', alignment: 'start' }}
-                        items={[
-                            {
-                                key: 'group1',
-                                label: 'Graph View',
-                                options: [
-                                    {
-                                        label: <GraphScaleDropdownItem />,
-                                        shouldCloseOnClick: false,
-                                    },
-                                    {
-                                        icon: dashboardGraphHidden ? 'eye' : 'eyeSlash',
-                                        label: dashboardGraphHidden ? (
-                                            <Translation id="TR_SHOW_GRAPH" />
-                                        ) : (
-                                            <Translation id="TR_HIDE_GRAPH" />
-                                        ),
-                                        shouldCloseOnClick: false,
-                                        onClick: () =>
-                                            dispatch(
-                                                setFlag(
-                                                    'dashboardGraphHidden',
-                                                    !dashboardGraphHidden,
-                                                ),
-                                            ),
-                                    },
-                                ],
-                            },
-                        ]}
+                        content={
+                            <Column
+                                alignItems="flex-start"
+                                gap={spacings.lg}
+                                padding={spacings.xxs}
+                            >
+                                <GraphScaleDropdownItem />
+                                <Switch
+                                    isChecked={!dashboardGraphHidden}
+                                    size="small"
+                                    onChange={() =>
+                                        dispatch(
+                                            setFlag('dashboardGraphHidden', !dashboardGraphHidden),
+                                        )
+                                    }
+                                    label={<Translation id="TR_SHOW_GRAPH" />}
+                                    labelPosition="start"
+                                />
+                            </Column>
+                        }
                     />
                 ) : undefined
             }

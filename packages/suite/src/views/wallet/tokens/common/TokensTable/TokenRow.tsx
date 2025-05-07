@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { ReactNode } from 'react';
 
 import {
     DefinitionType,
@@ -19,17 +19,17 @@ import {
     AssetLogo,
     Button,
     ButtonGroup,
+    Card,
     Column,
     Dropdown,
-    GroupedMenuItems,
-    Icon,
     IconButton,
+    InfoItem,
     Row,
     Table,
     Text,
 } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
@@ -38,6 +38,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { setTradingPrefilledFromCryptoId } from 'src/actions/wallet/trading/tradingCommonActions';
 import {
+    Address,
     FiatValue,
     FormattedCryptoAmount,
     PriceTicker,
@@ -50,7 +51,6 @@ import {
     useExternalLink,
     useLayoutSize,
     useSelector,
-    useTranslation,
 } from 'src/hooks/suite';
 import {
     selectIsCopyAddressModalShown,
@@ -60,19 +60,7 @@ import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
 
 import { BlurUrls } from '../BlurUrls';
 
-const ContractAddress = styled.div`
-    display: inline-block;
-    max-width: 200px;
-    word-break: break-all;
-    white-space: wrap;
-`;
-
-const IconWrapper = styled.div`
-    display: inline-block;
-    margin-left: ${spacingsPx.xxs};
-`;
-
-interface TokenRowProps {
+type TokenRowProps = {
     account: Account;
     token: EnhancedTokenInfo;
     network: Network;
@@ -80,7 +68,7 @@ interface TokenRowProps {
     hideRates?: boolean;
     isUnverifiedTable?: boolean;
     isCollapsed?: boolean;
-}
+};
 
 export const TokenRow = ({
     account,
@@ -93,7 +81,6 @@ export const TokenRow = ({
 }: TokenRowProps) => {
     const dispatch = useDispatch();
     const { isMobileLayout } = useLayoutSize();
-    const { translationString } = useTranslation();
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
     const device = useSelector(selectSelectedDevice);
     const { isLocked } = useDevice();
@@ -135,6 +122,36 @@ export const TokenRow = ({
             dispatch(showAddress(path, unusedAddress));
         }
     };
+
+    const TokenAddressItem = ({
+        label,
+        address,
+        type,
+    }: {
+        label: ReactNode;
+        address: string;
+        type: 'contract' | 'fingerprint' | 'policyId';
+    }) => (
+        <InfoItem typographyStyle="label" label={label} gap={spacings.zero}>
+            <Row>
+                <Text typographyStyle="label" as="div">
+                    <Address isChunked={false} value={address} />
+                </Text>
+                <IconButton
+                    icon="copy"
+                    size="tiny"
+                    variant="tertiary"
+                    onClick={() => {
+                        dispatch(
+                            shouldShowCopyAddressModal
+                                ? showCopyAddressModal(address, type)
+                                : copyAddressToClipboard(address),
+                        );
+                    }}
+                />
+            </Row>
+        </InfoItem>
+    );
 
     const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
 
@@ -225,200 +242,145 @@ export const TokenRow = ({
                 <Row gap={spacings.xs}>
                     <Dropdown
                         placement={{ position: 'bottom', alignment: 'start' }}
-                        items={
-                            [
-                                {
-                                    key: 'options',
-                                    options: [
-                                        {
-                                            label: <Translation id="TR_BUY" />,
-                                            'data-testid': '@trading/tokens/buy-button',
-                                            icon: 'currencyCircleDollar',
-                                            onClick: () =>
-                                                onTradeButtonClick('buy', 'wallet-trading-buy'),
-                                            isDisabled: !canBuyToken,
-                                        },
-                                        {
-                                            label: <Translation id="TR_TRADING_SELL" />,
-                                            'data-testid': '@trading/tokens/sell-button',
-                                            icon: 'currencyCircleDollar',
-                                            onClick: () =>
-                                                onTradeButtonClick('sell', 'wallet-trading-sell'),
-                                            isDisabled: token.balance === '0' || !canSellToken,
-                                        },
-                                        {
-                                            label: <Translation id="TR_TRADING_SWAP" />,
-                                            'data-testid': '@trading/tokens/swap-button',
-                                            icon: 'arrowsLeftRight',
-                                            onClick: () =>
-                                                onTradeButtonClick(
-                                                    'exchange',
-                                                    'wallet-trading-exchange',
-                                                ),
-                                            isHidden: !isMobileLayout,
-                                            isDisabled: !canSwapToken,
-                                        },
-                                        {
-                                            label: <Translation id="TR_NAV_SEND" />,
-                                            'data-testid': '@trading/tokens/send-button',
-                                            icon: 'send',
-                                            onClick: () => {
-                                                goToWithAnalytics('wallet-send', {
-                                                    params: {
-                                                        symbol: account.symbol,
-                                                        accountIndex: account.index,
-                                                        accountType: account.accountType,
-                                                    },
-                                                });
-                                            },
-                                            isDisabled: token.balance === '0',
-                                            isHidden:
-                                                tokenStatusType === TokenManagementAction.HIDE
-                                                    ? !isMobileLayout
-                                                    : true,
-                                        },
-                                        {
-                                            label: <Translation id="TR_NAV_RECEIVE" />,
-                                            'data-testid': '@trading/tokens/receive-button',
-                                            icon: 'receive',
-                                            onClick: onReceive,
-                                            isDisabled: isReceiveButtonDisabled,
-                                            isHidden:
-                                                tokenStatusType === TokenManagementAction.HIDE
-                                                    ? !isMobileLayout
-                                                    : true,
-                                        },
-                                        {
-                                            label: (
-                                                <Translation
-                                                    id={
-                                                        tokenStatusType ===
-                                                        TokenManagementAction.SHOW
-                                                            ? 'TR_UNHIDE_TOKEN'
-                                                            : 'TR_HIDE_TOKEN'
-                                                    }
-                                                />
-                                            ),
-                                            icon: 'eyeSlash',
-                                            onClick: () =>
-                                                dispatch(
-                                                    tokenDefinitionsActions.setTokenStatus({
-                                                        symbol: network.symbol,
-                                                        contractAddress: token.contract,
-                                                        status: tokenStatusType,
-                                                        type: DefinitionType.COIN,
-                                                    }),
-                                                ),
-                                            isHidden:
-                                                tokenStatusType === TokenManagementAction.SHOW &&
-                                                !isMobileLayout,
-                                        },
-                                        {
-                                            label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
-                                            'data-testid': '@trading/tokens/transactions-button',
-                                            icon: 'newspaper',
-                                            onClick: () => {
-                                                dispatch({
-                                                    type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
-                                                    payload: token.contract,
-                                                });
-                                                goToWithAnalytics('wallet-index', {
-                                                    params: {
-                                                        symbol: account.symbol,
-                                                        accountIndex: account.index,
-                                                        accountType: account.accountType,
-                                                    },
-                                                });
-                                            },
-                                        },
-                                        {
-                                            label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                                            icon: 'arrowUpRight',
-                                            onClick: () => {
-                                                window.open(explorerUrl, '_blank');
-                                            },
-                                        },
-                                    ],
-                                },
-                                {
-                                    key: 'contract-address',
-                                    label: translationString('TR_CONTRACT_ADDRESS'),
-                                    options: [
-                                        {
-                                            label: (
-                                                <ContractAddress>
-                                                    {token.contract}
-                                                    <IconWrapper>
-                                                        <Icon name="copy" size={14} />
-                                                    </IconWrapper>
-                                                </ContractAddress>
-                                            ),
-                                            onClick: () =>
-                                                dispatch(
-                                                    shouldShowCopyAddressModal
-                                                        ? showCopyAddressModal(
-                                                              token.contract,
-                                                              'contract',
-                                                          )
-                                                        : copyAddressToClipboard(token.contract),
-                                                ),
-                                        },
-                                    ],
-                                },
-                                token.fingerprint && {
-                                    key: 'fingerprint',
-                                    label: translationString('TR_FINGERPRINT_ADDRESS'),
-                                    options: [
-                                        {
-                                            label: (
-                                                <ContractAddress>
-                                                    {token.fingerprint}
-                                                    <IconWrapper>
-                                                        <Icon name="copy" size={14} />
-                                                    </IconWrapper>
-                                                </ContractAddress>
-                                            ),
-                                            onClick: () =>
-                                                token.fingerprint &&
-                                                dispatch(
-                                                    shouldShowCopyAddressModal
-                                                        ? showCopyAddressModal(
-                                                              token.fingerprint,
-                                                              'fingerprint',
-                                                          )
-                                                        : copyAddressToClipboard(token.contract),
-                                                ),
-                                        },
-                                    ],
-                                },
-                                token.policyId && {
-                                    key: 'policyId',
-                                    label: translationString('TR_POLICY_ID_ADDRESS'),
-                                    options: [
-                                        {
-                                            label: (
-                                                <ContractAddress>
-                                                    {token.policyId}
-                                                    <IconWrapper>
-                                                        <Icon name="copy" size={14} />
-                                                    </IconWrapper>
-                                                </ContractAddress>
-                                            ),
-                                            onClick: () =>
-                                                token.policyId &&
-                                                dispatch(
-                                                    shouldShowCopyAddressModal
-                                                        ? showCopyAddressModal(
-                                                              token.policyId,
-                                                              'policyId',
-                                                          )
-                                                        : copyAddressToClipboard(token.contract),
-                                                ),
-                                        },
-                                    ],
-                                },
-                            ].filter(category => category) as GroupedMenuItems[]
+                        content={
+                            <Card paddingType="small">
+                                <Column maxWidth={200} gap={spacings.md}>
+                                    <TokenAddressItem
+                                        label={<Translation id="TR_CONTRACT_ADDRESS" />}
+                                        address={token.contract}
+                                        type="contract"
+                                    />
+                                    {token.fingerprint && (
+                                        <TokenAddressItem
+                                            label={<Translation id="TR_FINGERPRINT_ADDRESS" />}
+                                            address={token.fingerprint}
+                                            type="fingerprint"
+                                        />
+                                    )}
+                                    {token.policyId && (
+                                        <TokenAddressItem
+                                            label={<Translation id="TR_POLICY_ID_ADDRESS" />}
+                                            address={token.policyId}
+                                            type="policyId"
+                                        />
+                                    )}
+                                </Column>
+                            </Card>
                         }
+                        items={[
+                            {
+                                key: 'options',
+                                options: [
+                                    {
+                                        label: <Translation id="TR_BUY" />,
+                                        'data-testid': '@trading/tokens/buy-button',
+                                        icon: 'currencyCircleDollar',
+                                        onClick: () =>
+                                            onTradeButtonClick('buy', 'wallet-trading-buy'),
+                                        isDisabled: !canBuyToken,
+                                    },
+                                    {
+                                        label: <Translation id="TR_TRADING_SELL" />,
+                                        'data-testid': '@trading/tokens/sell-button',
+                                        icon: 'currencyCircleDollar',
+                                        onClick: () =>
+                                            onTradeButtonClick('sell', 'wallet-trading-sell'),
+                                        isDisabled: token.balance === '0' || !canSellToken,
+                                    },
+                                    {
+                                        label: <Translation id="TR_TRADING_SWAP" />,
+                                        'data-testid': '@trading/tokens/swap-button',
+                                        icon: 'arrowsLeftRight',
+                                        onClick: () =>
+                                            onTradeButtonClick(
+                                                'exchange',
+                                                'wallet-trading-exchange',
+                                            ),
+                                        isHidden: !isMobileLayout,
+                                        isDisabled: !canSwapToken,
+                                    },
+                                    {
+                                        label: <Translation id="TR_NAV_SEND" />,
+                                        'data-testid': '@trading/tokens/send-button',
+                                        icon: 'arrowUp',
+                                        onClick: () => {
+                                            goToWithAnalytics('wallet-send', {
+                                                params: {
+                                                    symbol: account.symbol,
+                                                    accountIndex: account.index,
+                                                    accountType: account.accountType,
+                                                },
+                                            });
+                                        },
+                                        isDisabled: token.balance === '0',
+                                        isHidden:
+                                            tokenStatusType === TokenManagementAction.HIDE
+                                                ? !isMobileLayout
+                                                : true,
+                                    },
+                                    {
+                                        label: <Translation id="TR_NAV_RECEIVE" />,
+                                        'data-testid': '@trading/tokens/receive-button',
+                                        icon: 'arrowDown',
+                                        onClick: onReceive,
+                                        isDisabled: isReceiveButtonDisabled,
+                                        isHidden:
+                                            tokenStatusType === TokenManagementAction.HIDE
+                                                ? !isMobileLayout
+                                                : true,
+                                    },
+                                    {
+                                        label: (
+                                            <Translation
+                                                id={
+                                                    tokenStatusType === TokenManagementAction.SHOW
+                                                        ? 'TR_UNHIDE_TOKEN'
+                                                        : 'TR_HIDE_TOKEN'
+                                                }
+                                            />
+                                        ),
+                                        icon: 'eyeSlash',
+                                        onClick: () =>
+                                            dispatch(
+                                                tokenDefinitionsActions.setTokenStatus({
+                                                    symbol: network.symbol,
+                                                    contractAddress: token.contract,
+                                                    status: tokenStatusType,
+                                                    type: DefinitionType.COIN,
+                                                }),
+                                            ),
+                                        isHidden:
+                                            tokenStatusType === TokenManagementAction.SHOW &&
+                                            !isMobileLayout,
+                                    },
+                                    {
+                                        label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
+                                        'data-testid': '@trading/tokens/transactions-button',
+                                        icon: 'newspaper',
+                                        onClick: () => {
+                                            dispatch({
+                                                type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
+                                                payload: token.contract,
+                                            });
+                                            goToWithAnalytics('wallet-index', {
+                                                params: {
+                                                    symbol: account.symbol,
+                                                    accountIndex: account.index,
+                                                    accountType: account.accountType,
+                                                },
+                                            });
+                                        },
+                                    },
+                                    {
+                                        label: <Translation id="TR_VIEW_IN_EXPLORER" />,
+                                        icon: 'arrowUpRight',
+                                        onClick: () => {
+                                            window.open(explorerUrl, '_blank');
+                                        },
+                                    },
+                                ],
+                            },
+                        ]}
                     />
                     {!isMobileLayout && (
                         <IconButton

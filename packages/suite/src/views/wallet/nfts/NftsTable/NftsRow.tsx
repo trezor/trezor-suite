@@ -10,13 +10,27 @@ import { Explorer, Network } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
-import { Badge, Button, Dropdown, Icon, IconCircle, Row, Table, Text } from '@trezor/components';
+import {
+    Badge,
+    Button,
+    Card,
+    Column,
+    Dropdown,
+    Icon,
+    IconButton,
+    IconCircle,
+    InfoItem,
+    Row,
+    Table,
+    Text,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { goto } from 'src/actions/suite/routerActions';
 import {
+    Address,
     HiddenPlaceholder,
     RedactNumericalValue,
     Translation,
@@ -77,6 +91,43 @@ const NftsRow = ({
                     <Row gap={spacings.xs}>
                         <Dropdown
                             placement={{ position: 'bottom', alignment: 'start' }}
+                            content={
+                                <Card paddingType="small">
+                                    <Column maxWidth={200} gap={spacings.md}>
+                                        <InfoItem
+                                            typographyStyle="label"
+                                            label={<Translation id="TR_CONTRACT_ADDRESS" />}
+                                            gap={spacings.zero}
+                                        >
+                                            <Row>
+                                                <Text typographyStyle="label" as="div">
+                                                    <Address
+                                                        isChunked={false}
+                                                        value={nft.contract}
+                                                    />
+                                                </Text>
+                                                <IconButton
+                                                    icon="copy"
+                                                    size="tiny"
+                                                    variant="tertiary"
+                                                    onClick={() => {
+                                                        dispatch(
+                                                            shouldShowCopyAddressModal
+                                                                ? showCopyAddressModal(
+                                                                      nft.contract || '',
+                                                                      'contract',
+                                                                  )
+                                                                : copyAddressToClipboard(
+                                                                      nft.contract,
+                                                                  ),
+                                                        );
+                                                    }}
+                                                />
+                                            </Row>
+                                        </InfoItem>
+                                    </Column>
+                                </Card>
+                            }
                             items={[
                                 {
                                     key: 'export',
@@ -123,30 +174,6 @@ const NftsRow = ({
                                                 window.open(
                                                     getNftContractExplorerUrl(explorer, nft),
                                                     '_blank',
-                                                );
-                                            },
-                                        },
-                                    ],
-                                },
-                                {
-                                    key: 'contract-address',
-                                    label: <Translation id="TR_CONTRACT_ADDRESS" />,
-                                    options: [
-                                        {
-                                            label: (
-                                                <Row gap={spacings.xxs}>
-                                                    {nft.contract}
-                                                    <Icon name="copy" size={14} />
-                                                </Row>
-                                            ),
-                                            onClick: () => {
-                                                dispatch(
-                                                    shouldShowCopyAddressModal
-                                                        ? showCopyAddressModal(
-                                                              nft.contract || '',
-                                                              'contract',
-                                                          )
-                                                        : copyAddressToClipboard(nft.contract),
                                                 );
                                             },
                                         },
