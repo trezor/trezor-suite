@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Run this script to freeze development of the next SUite version.
+# Run this script to freeze development of the next Suite version.
 # Prepare release branch, push it to the release repository, bump beta version, and create a pull request.
 # You need to have the permission to push to pretected branches in order to execute the script correctly.
 # You need to have the permission to push to the release repository, otherwise that step is not performed.
@@ -11,7 +11,7 @@
 
 MAIN_BRANCH=develop
 FILEPATH=packages/suite/package.json
-ORIGIN='origin'
+RELEASE_REMOTE=https://github.com/trezor/trezor-suite-release.git
 
 if ! git diff --cached --quiet; then
   tput setaf 1
@@ -51,10 +51,10 @@ git switch -c release/"$RELEASE_MONTH" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*)/\1$RELEASE_VERSION\2/" $FILEPATH
 git add $FILEPATH
 git commit -m "chore(suite): bump Suite version to $RELEASE_VERSION [RELEASE ONLY]"
-git push --set-upstream $ORIGIN "$(git branch --show-current)"
+git push --set-upstream origin "$(git branch --show-current)"
 
 echo Pushing to the release repository...
-if ! OUTPUT=$(git push -f https://github.com/trezor/trezor-suite-release.git HEAD 2>&1); then
+if ! OUTPUT=$(git lfs push $RELEASE_REMOTE HEAD && git push -f $RELEASE_REMOTE HEAD 2>&1); then
   tput setaf 3
   echo -e "Could not push to the release repository.\n${OUTPUT}"
   tput sgr0
@@ -65,7 +65,7 @@ git switch -c chore/bump-suite-version-"$BETA_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$BETA_VERSION\2/" $FILEPATH
 git add $FILEPATH
 git commit -m "chore(suite): bump beta version to $BETA_VERSION"
-git push --set-upstream $ORIGIN "$(git branch --show-current)"
+git push --set-upstream origin "$(git branch --show-current)"
 
 echo Creating pull request...
 if ! OUTPUT=$(gh pr create --repo trezor/trezor-suite --base $MAIN_BRANCH --title "Bump beta version to $BETA_VERSION" --body "Automatically generated PR to bump beta Suite version" --label deployment --web 2>&1); then
