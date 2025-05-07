@@ -19,6 +19,7 @@ export const allowedFlexFrameProps = [
     'width',
     'height',
     'minHeight',
+    'minWidth',
     'maxWidth',
     'overflow',
     'cursor',

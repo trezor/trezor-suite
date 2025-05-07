@@ -8,7 +8,7 @@ import { Row } from '../Flex/Flex';
 import { Icon, IconName } from '../Icon/Icon';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
 
-export const allowedNoteFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedNoteFrameProps = ['margin', 'minWidth'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNoteFrameProps)[number]>;
 
 export const noteVariants = ['tertiary', 'info', 'warning', 'destructive'] as const;
@@ -27,9 +27,10 @@ export const Note = ({
     iconName = 'info',
     margin,
     gap = spacings.xxs,
+    minWidth,
     variant = 'tertiary',
 }: NoteProps) => (
-    <Row gap={gap} margin={margin}>
+    <Row gap={gap} margin={margin} minWidth={minWidth}>
         <Icon name={iconName} size={16} variant={variant} />
         <Paragraph typographyStyle="hint" variant={variant}>
             {children}

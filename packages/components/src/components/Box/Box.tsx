@@ -45,6 +45,7 @@ const Container = styled.div<
     }
 >`
     border: 0 solid ${mapElevationToBorder};
+    transition: background 0.2s ease;
 
     ${({ $borderRadius }) =>
         $borderRadius &&
@@ -93,6 +94,9 @@ export type BoxProps = AllowedFrameProps & {
     'data-testid'?: string;
     'aria-hidden'?: boolean;
     as?: React.ElementType;
+    onClick?: () => void;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
 };
 
 export const Box = ({
@@ -103,6 +107,9 @@ export const Box = ({
     'data-testid': dataTestId,
     'aria-hidden': ariaHidden,
     as = 'div',
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
     ...rest
 }: BoxProps) => {
     const { elevation } = useElevation();
@@ -117,6 +124,9 @@ export const Box = ({
             $borderWidth={borderWidth}
             $hasBackground={hasBackground}
             $elevation={elevation}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
             {...frameProps}
         >
             {children}

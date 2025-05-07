@@ -135,7 +135,6 @@ export const Card = ({
                     <Box
                         padding={mapPaddingTypeToPadding({
                             paddingType,
-                            hasHeading: true,
                         })}
                     >
                         <Text as="div" typographyStyle="callout">
@@ -148,7 +147,6 @@ export const Card = ({
             <Box
                 padding={mapPaddingTypeToPadding({
                     paddingType,
-                    hasHeading: !!heading,
                 })}
                 height="100%"
             >

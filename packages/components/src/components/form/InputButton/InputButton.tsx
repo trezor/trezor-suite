@@ -56,7 +56,7 @@ const InputWrapper = styled(motion.div)`
 `;
 
 export type InputButtonProps = {
-    iconName: IconName;
+    iconName?: IconName;
     isExpanded: boolean;
     value: string;
     setExpanded: Dispatch<SetStateAction<boolean>>;
@@ -155,7 +155,7 @@ export const InputButton = ({
                     ref={contentRef}
                 >
                     <Input
-                        $width={Math.max(placeholderWidth, 160)}
+                        $width={Math.max(placeholderWidth, 120)}
                         type="text"
                         placeholder={placeholder}
                         data-testid={dataTest}
