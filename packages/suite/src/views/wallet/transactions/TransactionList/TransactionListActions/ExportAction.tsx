@@ -6,7 +6,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
-import { Dropdown, Spinner } from '@trezor/components';
+import { Dropdown, Note } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
@@ -98,36 +98,35 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
     );
 
     const dataTest = '@wallet/accounts/export-transactions';
-
-    if (isExportRunning) {
-        return <Spinner size={18} />;
-    }
+    const exportTypes = ['csv', 'pdf', 'json'] as const;
 
     return (
         <Dropdown
             placement={{ position: 'bottom', alignment: 'start' }}
+            content={
+                <Note iconName={searchQuery ? 'checks' : 'magnifyingGlass'} minWidth={240}>
+                    <Translation
+                        id={
+                            searchQuery
+                                ? 'TR_EXPORT_SEARCH_FILTER_ACTIVE'
+                                : 'TR_EXPORT_SEARCH_FILTER_INACTIVE'
+                        }
+                    />
+                </Note>
+            }
             items={[
                 {
                     key: 'export',
-                    options: [
-                        {
-                            label: <Translation id="TR_EXPORT_AS" values={{ as: 'CSV' }} />,
-                            onClick: () => runExport('csv'),
-                            'data-testid': `${dataTest}/csv`,
-                        },
-                        {
-                            label: <Translation id="TR_EXPORT_AS" values={{ as: 'PDF' }} />,
-                            onClick: () => runExport('pdf'),
-                            'data-testid': `${dataTest}/pdf`,
-                        },
-                        {
-                            label: <Translation id="TR_EXPORT_AS" values={{ as: 'JSON' }} />,
-                            onClick: () => runExport('json'),
-                            'data-testid': `${dataTest}/json`,
-                        },
-                    ],
+                    options: exportTypes.map(type => ({
+                        label: <Translation id="TR_EXPORT_AS" values={{ as: `.${type}` }} />,
+                        onClick: () => runExport(type),
+                        'data-testid': `${dataTest}/${type}`,
+                        iconRight: 'caretRight',
+                    })),
                 },
             ]}
+            icon="fileArrowDown"
+            isDisabled={isExportRunning}
             data-testid={`${dataTest}/dropdown`}
         />
     );

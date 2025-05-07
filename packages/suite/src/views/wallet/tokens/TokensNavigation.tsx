@@ -3,14 +3,14 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { IconButton, IconName, Row, SubTabs } from '@trezor/components';
+import { IconButton, IconName, InputButton, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { SearchAction } from 'src/components/wallet/SearchAction';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
@@ -72,6 +72,7 @@ export const TokensNavigation = ({
     );
     const isDebug = useSelector(selectIsDebugModeActive);
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const tokens = getTokens({
         tokens: selectedAccount.account.tokens || [],
@@ -115,17 +116,16 @@ export const TokensNavigation = ({
                     </SubTabs.Item>
                 ))}
             </SubTabs>
-            <Row>
-                <SearchAction
-                    tooltipText={
-                        isNft ? 'TR_COLLECTIONS_SEARCH_TOOLTIP' : 'TR_TOKENS_SEARCH_TOOLTIP'
-                    }
-                    placeholder={isNft ? 'TR_SEARCH_COLLECTIONS' : 'TR_SEARCH_TOKENS'}
+            <Row gap={spacings.sm}>
+                <InputButton
+                    placeholder={translationString(
+                        isNft ? 'TR_SEARCH_COLLECTIONS' : 'TR_SEARCH_TOKENS',
+                    )}
                     isExpanded={isExpanded}
-                    searchQuery={searchQuery}
+                    value={searchQuery}
                     setExpanded={setExpanded}
-                    setSearch={setSearchQuery}
-                    onSearch={setSearchQuery}
+                    setValue={setSearchQuery}
+                    onChange={setSearchQuery}
                     data-testid="@wallet/accounts/search-icon"
                 />
                 {showAddToken && (

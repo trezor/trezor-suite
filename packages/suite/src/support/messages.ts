@@ -6500,6 +6500,14 @@ export default defineMessages({
         id: 'TR_COLOR_SCHEME_LIGHT',
         defaultMessage: 'Light',
     },
+    TR_EXPORT_SEARCH_FILTER_ACTIVE: {
+        id: 'TR_EXPORT_SEARCH_FILTER_ACTIVE',
+        defaultMessage: 'Search filter applied for export',
+    },
+    TR_EXPORT_SEARCH_FILTER_INACTIVE: {
+        id: 'TR_EXPORT_SEARCH_FILTER_INACTIVE',
+        defaultMessage: 'Filter export by searching',
+    },
     TR_EXPORT_AS: {
         id: 'TR_EXPORT_AS',
         defaultMessage: 'Export as {as}',
@@ -6702,11 +6710,11 @@ export default defineMessages({
     },
     TR_SEARCH_TOKENS: {
         id: 'TR_SEARCH_TOKENS',
-        defaultMessage: 'Search tokens',
+        defaultMessage: 'Token, symbol, or contract address',
     },
     TR_SEARCH_COLLECTIONS: {
         id: 'TR_SEARCH_COLLECTIONS',
-        defaultMessage: 'Search collections',
+        defaultMessage: 'Name, symbol, or contract address',
     },
     TR_TOKENS_SEARCH_TOOLTIP: {
         id: 'TR_TOKENS_SEARCH_TOOLTIP',
@@ -6718,7 +6726,7 @@ export default defineMessages({
     },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
-        defaultMessage: 'Search transactions',
+        defaultMessage: 'Amount, label, date, or ID',
     },
     TR_NO_SEARCH_RESULTS: {
         id: 'TR_NO_SEARCH_RESULTS',

@@ -5,11 +5,11 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { InputButton } from '@trezor/components';
 import { Row } from '@trezor/components/src/components/Flex/Flex';
 import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { SearchAction } from 'src/components/wallet/SearchAction';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
 import { ExportAction } from './ExportAction';
@@ -88,15 +88,14 @@ export const TransactionListActions = ({
     }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
 
     return (
-        <Row gap={spacings.xxs}>
-            <SearchAction
-                tooltipText="TR_TRANSACTIONS_SEARCH_TOOLTIP"
-                placeholder="TR_SEARCH_TRANSACTIONS"
+        <Row gap={spacings.sm}>
+            <InputButton
+                placeholder={translationString('TR_SEARCH_TRANSACTIONS')}
                 isExpanded={isExpanded}
-                searchQuery={searchQuery}
+                value={searchQuery}
                 setExpanded={setExpanded}
-                setSearch={setSearch}
-                onSearch={onSearch}
+                onChange={onSearch}
+                setValue={setSearch}
                 data-testid="@wallet/accounts/search-icon"
             />
             {hasNetworkPotentialFraudTransactions(account.symbol) && <FilterAction />}

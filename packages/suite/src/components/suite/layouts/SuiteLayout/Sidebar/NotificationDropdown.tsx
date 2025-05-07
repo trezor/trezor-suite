@@ -60,7 +60,6 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
                             <Notifications onCancel={handleToggleChange} />
                         </Box>
                     }
-                    setToggled={handleToggleChange}
                 />
             }
             placement={{ position: 'right', alignment: 'start' }}

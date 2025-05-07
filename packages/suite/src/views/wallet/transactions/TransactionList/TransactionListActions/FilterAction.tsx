@@ -60,23 +60,21 @@ export const FilterAction = () => {
             isOpen={isOpen}
             placement="bottom-end"
             content={
-                <Row gap={spacings.sm} margin={{ horizontal: spacings.xs, vertical: spacings.sm }}>
+                <Row gap={spacings.sm} padding={spacings.xs}>
                     <Box maxWidth={290}>
-                        <Text>
+                        <Paragraph>
                             <Translation id="TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP" />
-                        </Text>
+                        </Paragraph>
                     </Box>
-                    <Box>
-                        <Button
-                            minWidth={70}
-                            variant="tertiary"
-                            size="small"
-                            onClick={handleClose}
-                            data-testid="@hideScamTransactionsTooltip/gotIt"
-                        >
-                            <Translation id="TR_GOT_IT_BUTTON" />
-                        </Button>
-                    </Box>
+                    <Button
+                        variant="tertiary"
+                        size="small"
+                        textWrap={false}
+                        onClick={handleClose}
+                        data-testid="@hideScamTransactionsTooltip/gotIt"
+                    >
+                        <Translation id="TR_GOT_IT_BUTTON" />
+                    </Button>
                 </Row>
             }
         >
@@ -86,22 +84,20 @@ export const FilterAction = () => {
                 placement={{ position: 'bottom', alignment: 'end' }}
                 isDisabled={false}
                 content={
-                    <Column
-                        maxWidth={272}
-                        margin={{ horizontal: spacings.xxs, vertical: spacings.xxs }}
-                        gap={spacings.md}
-                    >
+                    <Column maxWidth={250} padding={spacings.xxs} gap={spacings.md}>
                         {options.map(option => (
-                            <Row
+                            <Radio
                                 key={option.id}
-                                cursor="pointer"
-                                justifyContent="space-between"
-                                gap={spacings.md}
+                                isChecked={
+                                    Boolean(suspiciousTransactionsHidden) === Boolean(option.id)
+                                }
                                 onClick={() => {
                                     handleToggleSuspiciousTransactionsRequest(Boolean(option.id));
                                 }}
+                                data-testid={dataTest}
+                                verticalAlignment="center"
                             >
-                                <Box>
+                                <Column>
                                     <Text
                                         typographyStyle="callout"
                                         variant={
@@ -115,30 +111,15 @@ export const FilterAction = () => {
                                     </Text>
                                     {'description' in option && option.description && (
                                         <Paragraph
-                                            typographyStyle="hint"
+                                            typographyStyle="label"
                                             variant="tertiary"
-                                            textWrap="balance"
+                                            textWrap="pretty"
                                         >
                                             {option.description}
                                         </Paragraph>
                                     )}
-                                </Box>
-                                <Box>
-                                    <Radio
-                                        isChecked={
-                                            Boolean(suspiciousTransactionsHidden) ===
-                                            Boolean(option.id)
-                                        }
-                                        data-testid={dataTest}
-                                        onClick={event => {
-                                            event.stopPropagation();
-                                            handleToggleSuspiciousTransactionsRequest(
-                                                Boolean(option.id),
-                                            );
-                                        }}
-                                    />
-                                </Box>
-                            </Row>
+                                </Column>
+                            </Radio>
                         ))}
                     </Column>
                 }
