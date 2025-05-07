@@ -2,9 +2,9 @@ import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-fla
 import {
     PreloadedState,
     act,
-    fireEvent,
     renderWithStoreProviderAsync,
     screen,
+    userEvent,
 } from '@suite-native/test-utils';
 
 import { TradingScreen } from '../TradingScreen';
@@ -61,7 +61,7 @@ describe('TradingScreen', () => {
     };
 
     const expectBuyForm = () => {
-        expect(screen.getByText('Fund')).toBeTruthy();
+        expect(screen.getByText('You pay')).toBeTruthy();
     };
 
     const expectDeviceOffline = () => {
@@ -157,8 +157,8 @@ describe('TradingScreen', () => {
 
         const reloadButton = getByText('Try again');
 
-        act(() => {
-            fireEvent.press(reloadButton);
+        await act(async () => {
+            await userEvent.press(reloadButton);
         });
 
         expectBuyForm();

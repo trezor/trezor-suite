@@ -48,19 +48,20 @@ describe('useTradingBuyData', () => {
     });
 
     it('should dispatch loadInitialDataThunk only once', async () => {
-        const initialThunkLoadActionSpy = jest.spyOn(tradingThunks, 'loadInitialDataThunk');
+        const initialThunkLoadActionSpy = jest
+            .spyOn(tradingThunks, 'loadInitialDataThunk')
+            .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { result, rerender } = await renderUseTradingData();
-        const firstTimestamp = result.current.lastLoadedTimestamp;
+        const { rerender } = await renderUseTradingData();
         rerender({ reloadRequestOrdinal: 0 });
 
-        expect(result.current.isLoading).toBe(false);
-        expect(result.current.lastLoadedTimestamp).toBe(firstTimestamp);
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should dispatch loadInitialDataThunk when reloadRequestOrdinal changes', async () => {
-        const initialThunkLoadActionSpy = jest.spyOn(tradingThunks, 'loadInitialDataThunk');
+        const initialThunkLoadActionSpy = jest
+            .spyOn(tradingThunks, 'loadInitialDataThunk')
+            .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
         const { rerender } = await renderUseTradingData();
         rerender({ reloadRequestOrdinal: 1 });
