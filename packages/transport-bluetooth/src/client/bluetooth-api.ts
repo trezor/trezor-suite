@@ -83,13 +83,36 @@ export class BluetoothApi extends AbstractApi {
         return this.api.disconnect();
     }
 
-    read(path: string, signal?: AbortSignal) {
-        return this.readBuffer.read(path, signal);
+    recentChunk: Record<string, any> = {};
+
+    // @ts-expect-erro
+    async read(path: string, signal?: AbortSignal) {
+        const bufferMessage = await this.readBuffer.read(path, signal);
+        if (bufferMessage.success) {
+            const prevMessage = this.recentChunk[path] || [];
+            const isTheSame = Buffer.compare(
+                Buffer.from(bufferMessage.payload),
+                Buffer.from(prevMessage),
+            );
+            if (isTheSame === 0) {
+                console.warn('--> is the same!!!!');
+
+                // return this.read(path);
+            } else {
+                console.warn('--> is NOT the same!!!!', this.recentChunk[path]);
+            }
+
+            this.recentChunk[path] = bufferMessage.payload;
+        }
+
+        return bufferMessage;
     }
 
     write(path: string, buffer: Buffer) {
         const chunk = Buffer.alloc(this.chunkSize);
         buffer.copy(chunk);
+
+        delete this.recentChunk[path];
 
         return this.api
             .send('write', { id: path, data: Array.from(chunk) })
