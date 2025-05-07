@@ -12,8 +12,10 @@ import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-nati
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
+import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
+import { isArrayMember } from '@trezor/utils';
 
 export const useDeviceAuthenticityCheck = () => {
     const navigation = useNavigation();
@@ -25,12 +27,36 @@ export const useDeviceAuthenticityCheck = () => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
     const reportCheckResult = useCallback(
-        (result: DeviceAuthenticityCheckResult) =>
+        (
+            result: DeviceAuthenticityCheckResult,
+            error?: string,
+            payload?: CheckDeviceAuthenticityThunkResult,
+        ) => {
             analytics.report({
-                type: EventType.DeviceSettingsAuthenticityCheck, // TODO: fix for onboarding
+                type: EventType.DeviceSettingsAuthenticityCheck,
                 payload: { result },
-            }),
-        // TODO: report compromised, expired and failed to Sentry including the error
+            });
+            if (isArrayMember(result, ['compromised', 'configExpired', 'failed'])) {
+                const sentryLevelMap = {
+                    compromised: 'fatal',
+                    configExpired: 'warning',
+                    failed: 'error',
+                } as const;
+                const sentryLevel = sentryLevelMap[result];
+
+                withSentryScope(scope => {
+                    scope.setLevel(sentryLevel);
+                    scope.setTag('deviceAuthenticityResult', result);
+                    scope.setTag('deviceAuthenticityError', error);
+
+                    const exceptionForSentry = new Error(
+                        `Device authenticity ${result}!\n${JSON.stringify(payload)}`,
+                    );
+                    exceptionForSentry.name = 'reportCheckFail'; // Custom issue title
+                    captureSentryException(exceptionForSentry, scope);
+                });
+            }
+        },
         [],
     );
 
@@ -42,7 +68,7 @@ export const useDeviceAuthenticityCheck = () => {
                 payload?.configExpired
             ) {
                 // CA_PUBKEY_NOT_FOUND with configExpired is temporarily allowed and just logged to Sentry
-                reportCheckResult('configExpired');
+                reportCheckResult('configExpired', payload.error, payload);
 
                 return {
                     ...payload,
@@ -68,7 +94,7 @@ export const useDeviceAuthenticityCheck = () => {
                 variant: 'error',
                 message: translate('moduleDeviceSettings.authenticity.toast.failed', { error }),
             });
-            reportCheckResult('failed'); // TODO: send deviceAccessResponse.error to Sentry
+            reportCheckResult('failed', error);
         },
         [reportCheckResult, showToast, translate],
     );
@@ -107,7 +133,7 @@ export const useDeviceAuthenticityCheck = () => {
                             error,
                         }),
                     });
-                    reportCheckResult('failed');
+                    reportCheckResult('failed', error);
             }
         },
         [isDeviceBootloaderUnlocked, navigation, reportCheckResult, showToast, translate],
@@ -154,9 +180,10 @@ export const useDeviceAuthenticityCheck = () => {
             dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
 
             if (storedResult?.valid === false) {
-                reportCheckResult('compromised');
+                reportCheckResult('compromised', storedResult.error, storedResult);
             } else if (result.success) {
                 handleSuccess();
+                reportCheckResult('successful');
             }
         },
         [
