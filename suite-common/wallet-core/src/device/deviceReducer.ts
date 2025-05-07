@@ -815,6 +815,11 @@ export const selectIsDeviceInitialized = createMemoizedSelector(
     },
 );
 
+export const selectIsDeviceConnected = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device?.connected,
+);
+
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
     [selectSelectedDevice, selectIsDeviceInitialized],
     (device, isDeviceInitialized) => device && !isDeviceInitialized,
@@ -926,8 +931,9 @@ export const selectIsEntropyCheckFailed = createMemoizedSelector(
 );
 
 export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
-    [state => state.device.lastConnectedAuthenticityChecks],
-    lastConnectedAuthenticityChecks => {
+    [state => state.device.lastConnectedAuthenticityChecks, selectIsDeviceConnected],
+    (lastConnectedAuthenticityChecks, isDeviceConnected) => {
+        if (!isDeviceConnected) return false;
         const lastHashCheck = lastConnectedAuthenticityChecks?.firmwareHash;
 
         return lastHashCheck && !lastHashCheck.success && lastHashCheck.error === 'other-error';
@@ -1048,11 +1054,6 @@ export const selectRememberedHiddenWalletsCount = createMemoizedSelector(
         returnStableArrayIfEmpty(
             devices.filter(device => device.remember && !device.useEmptyPassphrase),
         ).length,
-);
-
-export const selectIsDeviceConnected = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => !!device?.connected,
 );
 
 export const selectIsDeviceInViewOnlyMode = createMemoizedSelector(
