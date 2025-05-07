@@ -6,8 +6,9 @@ import styled, { css } from 'styled-components';
 import {
     Button,
     DeviceAnimation,
-    Dropdown,
-    DropdownRef,
+    Menu,
+    Popover,
+    PopoverRef,
     Tooltip,
     variables,
 } from '@trezor/components';
@@ -25,14 +26,6 @@ const Content = styled.div`
     flex-direction: column;
     flex: 1;
     display: flex;
-`;
-
-const GalleryWrapper = styled.div`
-    width: 330px;
-    padding: ${spacingsPx.xs} 0;
-    height: 200px;
-    overflow-y: auto;
-    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const DeviceImageWrapper = styled.div`
@@ -105,7 +98,7 @@ const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();
 
-    const dropdownRef = useRef<DropdownRef>();
+    const popoverRef = useRef<PopoverRef>();
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
@@ -169,18 +162,19 @@ export const FinalStep = () => {
                                     )
                                 }
                             >
-                                <Dropdown
-                                    ref={dropdownRef}
+                                <Popover
+                                    ref={popoverRef}
                                     placement={{ position: 'bottom', alignment: 'end' }}
-                                    isDisabled={!shouldOfferChangeHomescreen || isWaitingForConfirm}
                                     content={
-                                        <GalleryWrapper>
-                                            <HomescreenGallery
-                                                onConfirm={() => {
-                                                    dropdownRef.current?.close();
-                                                }}
-                                            />
-                                        </GalleryWrapper>
+                                        <Menu
+                                            content={
+                                                <HomescreenGallery
+                                                    onConfirm={() => {
+                                                        popoverRef.current?.close();
+                                                    }}
+                                                />
+                                            }
+                                        />
                                     }
                                 >
                                     <Button
@@ -188,10 +182,13 @@ export const FinalStep = () => {
                                         size="small"
                                         onClick={() => setState(null)}
                                         icon="chartBar"
+                                        isDisabled={
+                                            !shouldOfferChangeHomescreen || isWaitingForConfirm
+                                        }
                                     >
                                         <Translation id="TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN" />
                                     </Button>
-                                </Dropdown>
+                                </Popover>
                             </Tooltip>
                         </SetupActions>
                     )}

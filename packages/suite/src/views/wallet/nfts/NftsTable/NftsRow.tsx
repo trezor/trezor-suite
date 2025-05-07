@@ -130,54 +130,49 @@ const NftsRow = ({
                             }
                             items={[
                                 {
-                                    key: 'export',
-                                    options: [
-                                        {
-                                            label: <Translation id="TR_HIDE_COLLECTION" />,
-                                            icon: 'eyeSlash',
-                                            onClick: () =>
-                                                dispatch(
-                                                    tokenDefinitionsActions.setTokenStatus({
-                                                        symbol: network.symbol,
-                                                        contractAddress: nft.contract || '',
-                                                        status: TokenManagementAction.HIDE,
-                                                        type: DefinitionType.NFT,
-                                                    }),
-                                                ),
-                                            isHidden: !isShown,
-                                        },
-                                        {
-                                            label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
-                                            icon: 'newspaper',
-                                            onClick: () => {
-                                                dispatch({
-                                                    type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
-                                                    payload: nft.contract || '',
-                                                });
-                                                if (account) {
-                                                    dispatch(
-                                                        goto('wallet-index', {
-                                                            params: {
-                                                                symbol: account.symbol,
-                                                                accountIndex: account.index,
-                                                                accountType: account.accountType,
-                                                            },
-                                                        }),
-                                                    );
-                                                }
-                                            },
-                                        },
-                                        {
-                                            label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                                            icon: 'arrowUpRight',
-                                            onClick: () => {
-                                                window.open(
-                                                    getNftContractExplorerUrl(explorer, nft),
-                                                    '_blank',
-                                                );
-                                            },
-                                        },
-                                    ],
+                                    label: <Translation id="TR_HIDE_COLLECTION" />,
+                                    icon: 'eyeSlash',
+                                    onClick: () =>
+                                        dispatch(
+                                            tokenDefinitionsActions.setTokenStatus({
+                                                symbol: network.symbol,
+                                                contractAddress: nft.contract || '',
+                                                status: TokenManagementAction.HIDE,
+                                                type: DefinitionType.NFT,
+                                            }),
+                                        ),
+                                    isHidden: !isShown,
+                                },
+                                {
+                                    label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
+                                    icon: 'newspaper',
+                                    onClick: () => {
+                                        dispatch({
+                                            type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
+                                            payload: nft.contract || '',
+                                        });
+                                        if (account) {
+                                            dispatch(
+                                                goto('wallet-index', {
+                                                    params: {
+                                                        symbol: account.symbol,
+                                                        accountIndex: account.index,
+                                                        accountType: account.accountType,
+                                                    },
+                                                }),
+                                            );
+                                        }
+                                    },
+                                },
+                                {
+                                    label: <Translation id="TR_VIEW_IN_EXPLORER" />,
+                                    icon: 'arrowUpRight',
+                                    onClick: () => {
+                                        window.open(
+                                            getNftContractExplorerUrl(explorer, nft),
+                                            '_blank',
+                                        );
+                                    },
                                 },
                             ]}
                         />

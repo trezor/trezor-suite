@@ -1,53 +1,29 @@
-import {
-    MouseEvent,
-    ReactElement,
-    cloneElement,
-    forwardRef,
-    useEffect,
-    useImperativeHandle,
-    useRef,
-    useState,
-} from 'react';
-
-import styled from 'styled-components';
-
-import { useOnClickOutside } from '@trezor/react-utils';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { IconName } from '../Icon/Icon';
 import { DropdownMenuItemProps, Menu, MenuProps } from '../Menu/Menu';
 import { Popover, PopoverRef } from '../Popover/Popover';
 import { PopoverPlacement } from '../Popover/utils';
-import { type IconOrComponent } from '../buttons/Button/Button';
 import { IconButton } from '../buttons/IconButton/IconButton';
 
 export const allowedDropdownFrameProps = ['width'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDropdownFrameProps)[number]>;
 
-const DropdownTriggerStyledIcon = styled(IconButton)<{ $isToggled: boolean }>`
-    background: ${({ isDisabled, $isToggled, theme }) =>
-        !isDisabled && $isToggled && theme.backgroundNeutralSubdued};
-
-    &:hover {
-        background: ${({ theme, $isToggled }) => $isToggled && theme.backgroundNeutralSubdued};
-    }
-`;
-
-export type DropdownProps = Omit<MenuProps, 'setToggled' | 'addon'> &
+export type DropdownProps = Omit<MenuProps, 'onClose'> &
     AllowedFrameProps & {
         placement?: PopoverPlacement;
         isDisabled?: boolean;
-        icon?: IconOrComponent;
-        renderOnClickPosition?: boolean;
-        onToggle?: (isToggled: boolean) => void;
+        isLoading?: boolean;
+        iconName?: IconName;
         className?: string;
         'data-testid'?: string;
-        children?: ((isToggled: boolean) => ReactElement<any>) | ReactElement<any>;
     };
 
-export interface DropdownRef {
+export type DropdownRef = {
     close: () => void;
     open: () => void;
-}
+};
 
 export type { DropdownMenuItemProps };
 
@@ -57,79 +33,53 @@ export const Dropdown = forwardRef(
             items,
             content,
             isDisabled,
+            isLoading,
             placement,
-            onToggle,
-            children,
-            icon = 'dotsThree',
+            iconName = 'dotsThree',
             'data-testid': dataTest,
         }: DropdownProps,
         ref,
     ) => {
-        const [isToggled, setIsToggledState] = useState(false);
-
         const popoverRef = useRef<PopoverRef>(null);
         const menuRef = useRef<HTMLUListElement>(null);
-        const toggleRef = useRef<HTMLDivElement>(null);
-
-        useEffect(() => {
-            if (!isToggled) {
-                toggleRef.current?.blur();
-            }
-
-            // focus the menu when it's toggled and there is content, not items
-            if (isToggled && content) {
-                menuRef.current?.focus();
-            }
-        }, [isToggled, content]);
-
-        const setToggled = (isToggled2: boolean) => {
-            if (onToggle) onToggle(isToggled2);
-            setIsToggledState(isToggled2);
-        };
 
         useImperativeHandle(ref, () => ({
             close: () => {
-                setToggled(false);
                 popoverRef.current?.close();
             },
+            open: () => {
+                popoverRef.current?.open();
+            },
         }));
-
-        useOnClickOutside([menuRef, toggleRef], () => {
-            if (isToggled) {
-                setToggled(false);
-            }
-        });
-
-        const childComponent = typeof children === 'function' ? children(isToggled) : children;
-
-        const ToggleComponent = childComponent ? (
-            <div>
-                {cloneElement(childComponent, {
-                    isDisabled,
-                    onClick: (e: MouseEvent) => {
-                        childComponent?.props.onClick?.(e);
-                    },
-                })}
-            </div>
-        ) : (
-            <DropdownTriggerStyledIcon
-                size="small"
-                variant="tertiary"
-                icon={icon}
-                tabIndex={-1}
-                $isToggled={isToggled}
-                isDisabled={isDisabled}
-                data-testid={dataTest}
-            />
-        );
 
         return (
             <Popover
                 ref={popoverRef}
                 placement={placement}
-                content={<Menu items={items} content={content} setToggled={setToggled} />}
+                onOpenChange={isOpen => {
+                    // Focus the menu when it opens and there is content
+                    if (isOpen && content && menuRef.current) {
+                        menuRef.current.focus();
+                    }
+                }}
+                content={
+                    <Menu
+                        ref={menuRef}
+                        items={items}
+                        content={content}
+                        onClose={popoverRef.current?.close}
+                    />
+                }
             >
-                {ToggleComponent}
+                <IconButton
+                    size="small"
+                    variant="tertiary"
+                    icon={iconName}
+                    tabIndex={-1}
+                    isDisabled={isDisabled}
+                    isLoading={isLoading}
+                    data-testid={dataTest}
+                />
             </Popover>
         );
     },

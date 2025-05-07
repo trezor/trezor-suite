@@ -101,17 +101,12 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                     placement={{ position: 'bottom', alignment: 'start' }}
                     isDisabled={isDisabled}
                     data-testid="@wallet/menu/extra-dropdown"
-                    items={[
-                        {
-                            key: 'extra',
-                            options: visibleAdditionalActions.map<DropdownMenuItemProps>(item => ({
-                                key: item.id,
-                                onClick: isDisabled ? undefined : item.callback,
-                                label: item.title,
-                                'data-testid': `@wallet/menu/${item.id}`,
-                            })),
-                        },
-                    ]}
+                    items={visibleAdditionalActions.map<DropdownMenuItemProps>(item => ({
+                        key: item.id,
+                        onClick: isDisabled ? undefined : item.callback,
+                        label: item.title,
+                        'data-testid': `@wallet/menu/${item.id}`,
+                    }))}
                 />
             </AppNavigationTooltip>
         )

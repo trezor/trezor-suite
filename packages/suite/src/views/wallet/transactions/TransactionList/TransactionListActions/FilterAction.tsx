@@ -79,7 +79,7 @@ export const FilterAction = () => {
             }
         >
             <Dropdown
-                icon="funnelSimple"
+                iconName="funnelSimple"
                 ref={dropdownRef}
                 placement={{ position: 'bottom', alignment: 'end' }}
                 isDisabled={false}

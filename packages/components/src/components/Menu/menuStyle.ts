@@ -19,7 +19,7 @@ export const menuStyle = css`
     flex-direction: column;
     flex: 1;
     padding: ${spacingsPx.sm};
-    min-width: 140px;
+    min-width: 180px;
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};

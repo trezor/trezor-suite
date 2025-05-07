@@ -106,20 +106,15 @@ export const WalletConnectList = () => {
                             placement={{ position: 'bottom', alignment: 'end' }}
                             items={[
                                 {
-                                    key: 'group1',
-                                    options: [
-                                        {
-                                            icon: 'xCircle',
-                                            label: <Translation id="TR_DISCONNECT" />,
-                                            onClick: () => {
-                                                dispatch(
-                                                    walletConnectDisconnectThunk({
-                                                        topic: session.topic,
-                                                    }),
-                                                );
-                                            },
-                                        },
-                                    ],
+                                    icon: 'xCircle',
+                                    label: <Translation id="TR_DISCONNECT" />,
+                                    onClick: () => {
+                                        dispatch(
+                                            walletConnectDisconnectThunk({
+                                                topic: session.topic,
+                                            }),
+                                        );
+                                    },
                                 },
                             ]}
                         />

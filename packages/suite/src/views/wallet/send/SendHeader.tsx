@@ -72,12 +72,7 @@ export const SendHeader = () => {
                 <Dropdown
                     placement={{ position: 'bottom', alignment: 'start' }}
                     data-testid="@send/header-dropdown"
-                    items={[
-                        {
-                            key: 'header',
-                            options,
-                        },
-                    ]}
+                    items={options}
                 />
             </WalletSubpageHeading>
             {!isDeviceConnected && <ConnectDeviceSendPromo />}

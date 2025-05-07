@@ -269,116 +269,106 @@ export const TokenRow = ({
                         }
                         items={[
                             {
-                                key: 'options',
-                                options: [
-                                    {
-                                        label: <Translation id="TR_BUY" />,
-                                        'data-testid': '@trading/tokens/buy-button',
-                                        icon: 'currencyCircleDollar',
-                                        onClick: () =>
-                                            onTradeButtonClick('buy', 'wallet-trading-buy'),
-                                        isDisabled: !canBuyToken,
-                                    },
-                                    {
-                                        label: <Translation id="TR_TRADING_SELL" />,
-                                        'data-testid': '@trading/tokens/sell-button',
-                                        icon: 'currencyCircleDollar',
-                                        onClick: () =>
-                                            onTradeButtonClick('sell', 'wallet-trading-sell'),
-                                        isDisabled: token.balance === '0' || !canSellToken,
-                                    },
-                                    {
-                                        label: <Translation id="TR_TRADING_SWAP" />,
-                                        'data-testid': '@trading/tokens/swap-button',
-                                        icon: 'arrowsLeftRight',
-                                        onClick: () =>
-                                            onTradeButtonClick(
-                                                'exchange',
-                                                'wallet-trading-exchange',
-                                            ),
-                                        isHidden: !isMobileLayout,
-                                        isDisabled: !canSwapToken,
-                                    },
-                                    {
-                                        label: <Translation id="TR_NAV_SEND" />,
-                                        'data-testid': '@trading/tokens/send-button',
-                                        icon: 'arrowUp',
-                                        onClick: () => {
-                                            goToWithAnalytics('wallet-send', {
-                                                params: {
-                                                    symbol: account.symbol,
-                                                    accountIndex: account.index,
-                                                    accountType: account.accountType,
-                                                },
-                                            });
+                                label: <Translation id="TR_BUY" />,
+                                'data-testid': '@trading/tokens/buy-button',
+                                icon: 'currencyCircleDollar',
+                                onClick: () => onTradeButtonClick('buy', 'wallet-trading-buy'),
+                                isDisabled: !canBuyToken,
+                            },
+                            {
+                                label: <Translation id="TR_TRADING_SELL" />,
+                                'data-testid': '@trading/tokens/sell-button',
+                                icon: 'currencyCircleDollar',
+                                onClick: () => onTradeButtonClick('sell', 'wallet-trading-sell'),
+                                isDisabled: token.balance === '0' || !canSellToken,
+                            },
+                            {
+                                label: <Translation id="TR_TRADING_SWAP" />,
+                                'data-testid': '@trading/tokens/swap-button',
+                                icon: 'arrowsLeftRight',
+                                onClick: () =>
+                                    onTradeButtonClick('exchange', 'wallet-trading-exchange'),
+                                isHidden: !isMobileLayout,
+                                isDisabled: !canSwapToken,
+                            },
+                            {
+                                label: <Translation id="TR_NAV_SEND" />,
+                                'data-testid': '@trading/tokens/send-button',
+                                icon: 'arrowUp',
+                                onClick: () => {
+                                    goToWithAnalytics('wallet-send', {
+                                        params: {
+                                            symbol: account.symbol,
+                                            accountIndex: account.index,
+                                            accountType: account.accountType,
                                         },
-                                        isDisabled: token.balance === '0',
-                                        isHidden:
-                                            tokenStatusType === TokenManagementAction.HIDE
-                                                ? !isMobileLayout
-                                                : true,
-                                    },
-                                    {
-                                        label: <Translation id="TR_NAV_RECEIVE" />,
-                                        'data-testid': '@trading/tokens/receive-button',
-                                        icon: 'arrowDown',
-                                        onClick: onReceive,
-                                        isDisabled: isReceiveButtonDisabled,
-                                        isHidden:
-                                            tokenStatusType === TokenManagementAction.HIDE
-                                                ? !isMobileLayout
-                                                : true,
-                                    },
-                                    {
-                                        label: (
-                                            <Translation
-                                                id={
-                                                    tokenStatusType === TokenManagementAction.SHOW
-                                                        ? 'TR_UNHIDE_TOKEN'
-                                                        : 'TR_HIDE_TOKEN'
-                                                }
-                                            />
-                                        ),
-                                        icon: 'eyeSlash',
-                                        onClick: () =>
-                                            dispatch(
-                                                tokenDefinitionsActions.setTokenStatus({
-                                                    symbol: network.symbol,
-                                                    contractAddress: token.contract,
-                                                    status: tokenStatusType,
-                                                    type: DefinitionType.COIN,
-                                                }),
-                                            ),
-                                        isHidden:
-                                            tokenStatusType === TokenManagementAction.SHOW &&
-                                            !isMobileLayout,
-                                    },
-                                    {
-                                        label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
-                                        'data-testid': '@trading/tokens/transactions-button',
-                                        icon: 'newspaper',
-                                        onClick: () => {
-                                            dispatch({
-                                                type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
-                                                payload: token.contract,
-                                            });
-                                            goToWithAnalytics('wallet-index', {
-                                                params: {
-                                                    symbol: account.symbol,
-                                                    accountIndex: account.index,
-                                                    accountType: account.accountType,
-                                                },
-                                            });
+                                    });
+                                },
+                                isDisabled: token.balance === '0',
+                                isHidden:
+                                    tokenStatusType === TokenManagementAction.HIDE
+                                        ? !isMobileLayout
+                                        : true,
+                            },
+                            {
+                                label: <Translation id="TR_NAV_RECEIVE" />,
+                                'data-testid': '@trading/tokens/receive-button',
+                                icon: 'arrowDown',
+                                onClick: onReceive,
+                                isDisabled: isReceiveButtonDisabled,
+                                isHidden:
+                                    tokenStatusType === TokenManagementAction.HIDE
+                                        ? !isMobileLayout
+                                        : true,
+                            },
+                            {
+                                label: (
+                                    <Translation
+                                        id={
+                                            tokenStatusType === TokenManagementAction.SHOW
+                                                ? 'TR_UNHIDE_TOKEN'
+                                                : 'TR_HIDE_TOKEN'
+                                        }
+                                    />
+                                ),
+                                icon: 'eyeSlash',
+                                onClick: () =>
+                                    dispatch(
+                                        tokenDefinitionsActions.setTokenStatus({
+                                            symbol: network.symbol,
+                                            contractAddress: token.contract,
+                                            status: tokenStatusType,
+                                            type: DefinitionType.COIN,
+                                        }),
+                                    ),
+                                isHidden:
+                                    tokenStatusType === TokenManagementAction.SHOW &&
+                                    !isMobileLayout,
+                            },
+                            {
+                                label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
+                                'data-testid': '@trading/tokens/transactions-button',
+                                icon: 'newspaper',
+                                onClick: () => {
+                                    dispatch({
+                                        type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
+                                        payload: token.contract,
+                                    });
+                                    goToWithAnalytics('wallet-index', {
+                                        params: {
+                                            symbol: account.symbol,
+                                            accountIndex: account.index,
+                                            accountType: account.accountType,
                                         },
-                                    },
-                                    {
-                                        label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                                        icon: 'arrowUpRight',
-                                        onClick: () => {
-                                            window.open(explorerUrl, '_blank');
-                                        },
-                                    },
-                                ],
+                                    });
+                                },
+                            },
+                            {
+                                label: <Translation id="TR_VIEW_IN_EXPLORER" />,
+                                icon: 'arrowUpRight',
+                                onClick: () => {
+                                    window.open(explorerUrl, '_blank');
+                                },
                             },
                         ]}
                     />

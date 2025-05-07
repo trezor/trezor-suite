@@ -114,19 +114,14 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                     />
                 </Note>
             }
-            items={[
-                {
-                    key: 'export',
-                    options: exportTypes.map(type => ({
-                        label: <Translation id="TR_EXPORT_AS" values={{ as: `.${type}` }} />,
-                        onClick: () => runExport(type),
-                        'data-testid': `${dataTest}/${type}`,
-                        iconRight: 'caretRight',
-                    })),
-                },
-            ]}
+            items={exportTypes.map(type => ({
+                label: <Translation id="TR_EXPORT_AS" values={{ as: `.${type}` }} />,
+                onClick: () => runExport(type),
+                'data-testid': `${dataTest}/${type}`,
+                iconRight: 'caretRight',
+            }))}
             icon="fileArrowDown"
-            isDisabled={isExportRunning}
+            isLoading={isExportRunning}
             data-testid={`${dataTest}/dropdown`}
         />
     );

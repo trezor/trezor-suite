@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacings } from '@trezor/theme';
 
 import { menuStyle } from './menuStyle';
 import { Box } from '../Box/Box';
@@ -15,15 +15,9 @@ const Container = styled.div`
     ${menuStyle};
 `;
 
-const GroupLabel = styled.li`
-    padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xxs};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    ${typography.label};
-    cursor: default;
-
-    :first-of-type {
-        padding-top: ${spacingsPx.xxs};
-    }
+const MenuList = styled.ul`
+    list-style: none;
+    display: block;
 `;
 
 export type DropdownMenuItemProps = {
@@ -38,7 +32,6 @@ export type DropdownMenuItemProps = {
 
 type MenuItemComponentProps = DropdownMenuItemProps & {
     isKeyboardSelected: boolean;
-    setToggled: (toggled: boolean) => void;
     onMouseEnter: () => void;
 };
 
@@ -84,199 +77,108 @@ const MenuItem = ({
     </Box>
 );
 
-export type GroupedMenuItems = {
-    key: string;
-    options: DropdownMenuItemProps[];
-    label?: React.ReactNode;
-};
-
-type GroupComponentProps = GroupedMenuItems & {
-    index: number;
-    keyboardFocusedItemId: string | undefined;
-    setToggled: (toggled: boolean) => void;
-    handleItemHover: (itemId: string) => void;
-};
-
-const Group = ({
-    options,
-    index,
-    keyboardFocusedItemId,
-    label,
-    setToggled,
-    handleItemHover,
-}: GroupComponentProps) => (
-    <div>
-        {label && <GroupLabel>{label}</GroupLabel>}
-
-        {options.map((item, itemIndex) => {
-            const itemId = `${index}.${itemIndex}`;
-
-            return (
-                <MenuItem
-                    setToggled={setToggled}
-                    isKeyboardSelected={itemId === keyboardFocusedItemId}
-                    onMouseEnter={() => !item.isDisabled && handleItemHover(itemId)}
-                    data-testid={item['data-testid']}
-                    {...item}
-                    key={itemId}
-                />
-            );
-        })}
-    </div>
-);
-
-const getNextIndex =
-    (keyboardKey: string, flatGroupItems: Array<{ id: string; isDisabled?: boolean }>) =>
-    (currentIndex: number | null) => {
-        if (currentIndex === null) {
-            return null;
-        }
-
-        let nextIndex = currentIndex;
-        const lastIndex = flatGroupItems.length - 1;
-
-        if (keyboardKey === 'ArrowUp') {
-            const getPrevIndex = (current: number) => (current > 0 ? current - 1 : lastIndex);
-            nextIndex = getPrevIndex(nextIndex);
-            // skip disabled items
-            while (flatGroupItems[nextIndex].isDisabled) {
-                nextIndex = getPrevIndex(nextIndex);
-            }
-        } else if (keyboardKey === 'ArrowDown') {
-            const getNextIndex2 = (current: number) => (current < lastIndex ? current + 1 : 0);
-            nextIndex = getNextIndex2(nextIndex);
-            // skip disabled items
-            while (flatGroupItems[nextIndex].isDisabled) {
-                nextIndex = getNextIndex2(nextIndex);
-            }
-        }
-
-        return nextIndex;
-    };
-
-type FlatGroupItems = Array<{
-    id: string;
-    onClick?: () => void;
-    isDisabled?: boolean;
-}>;
-
-const flattenVisibleItems = (visibleItems: MenuProps['items']) => {
-    const flatGroupItems = visibleItems?.reduce((ids, group, groupIndex) => {
-        const groupIds = group.options.map(({ onClick, isDisabled }, index) => ({
-            id: `${groupIndex}.${index}`,
-            onClick,
-            isDisabled,
-        }));
-
-        return [...ids, ...groupIds];
-    }, [] as FlatGroupItems);
-
-    return flatGroupItems;
-};
-
-const getDefaultFocusItemIndex = (items: MenuProps['items']) => {
-    if (items?.length) {
-        return 0;
-    }
-
-    return null;
-};
-
-export interface MenuProps {
-    items?: GroupedMenuItems[];
+export type MenuProps = {
+    items?: DropdownMenuItemProps[];
     content?: React.ReactNode;
-    setToggled: (toggled: boolean) => void;
-}
+    onClose?: () => void;
+};
 
-export const Menu = forwardRef<HTMLUListElement, MenuProps>(
-    ({ items, content, setToggled }, ref) => {
-        const [focusedItemIndex, setFocusedItemIndex] = useState(getDefaultFocusItemIndex(items));
+export const Menu = forwardRef<HTMLUListElement, MenuProps>(({ items, content, onClose }, ref) => {
+    const visibleItems = items?.filter(item => !item.isHidden);
+    const [focusedItemIndex, setFocusedItemIndex] = useState(
+        visibleItems?.length ? visibleItems.findIndex(item => !item.isDisabled) : null,
+    );
 
-        const visibleItems = items?.map(group => ({
-            ...group,
-            options: group.options.filter(item => !item.isHidden),
-        }));
-
-        const flatGroupItems = flattenVisibleItems(visibleItems);
-
-        // handle selecting an item
-        useEffect(() => {
-            const handleKeyDown = (e: KeyboardEvent) => {
-                if (!flatGroupItems || !flatGroupItems.length || focusedItemIndex === null) {
-                    return;
-                }
-
-                if (e.key === ' ' || e.key === 'Enter') {
-                    e.preventDefault();
-
-                    const focusedItem = flatGroupItems[focusedItemIndex];
-                    focusedItem?.onClick?.();
-                }
-            };
-
-            if (focusedItemIndex !== null && flatGroupItems?.length) {
-                document.addEventListener('keydown', handleKeyDown);
-
-                return () => {
-                    document.removeEventListener('keydown', handleKeyDown);
-                };
+    // handle selecting an item
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!visibleItems || !visibleItems.length || focusedItemIndex === null) {
+                return;
             }
-        }, [focusedItemIndex, flatGroupItems, setToggled]);
 
-        // handle keyboard navigation
-        useEffect(() => {
-            const handleKeyDown = (e: KeyboardEvent) => {
-                if (
-                    (e.key === 'ArrowUp' || e.key === 'ArrowDown') &&
-                    flatGroupItems &&
-                    flatGroupItems.length > 0 &&
-                    focusedItemIndex !== null
-                ) {
-                    e.preventDefault();
-                    setFocusedItemIndex(getNextIndex(e.key, flatGroupItems));
-                }
-            };
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
 
-            if (focusedItemIndex !== null && flatGroupItems?.length) {
-                document.addEventListener('keydown', handleKeyDown);
+                const focusedItem = visibleItems[focusedItemIndex];
 
-                return () => {
-                    document.removeEventListener('keydown', handleKeyDown);
-                };
+                onClose?.();
+                focusedItem?.onClick?.();
             }
-        }, [flatGroupItems, focusedItemIndex]);
-
-        const handleItemHover = (itemId: string) => {
-            const itemIndex = flatGroupItems?.findIndex(({ id }) => id === itemId);
-
-            setFocusedItemIndex(itemIndex ?? null);
         };
 
-        const keyboardFocusedItemId =
-            focusedItemIndex !== null ? flatGroupItems?.[focusedItemIndex]?.id : undefined;
+        if (focusedItemIndex !== null && visibleItems?.length) {
+            document.addEventListener('keydown', handleKeyDown);
 
-        return (
-            <Container
-                ref={ref}
-                tabIndex={content ? 0 : 1} // do not affect tab order when there is no content
-                onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
-            >
-                <ElevationUp>
-                    <Column gap={spacings.md}>
-                        {content}
-                        {visibleItems?.map((group, index) => (
-                            <Group
-                                setToggled={setToggled}
-                                index={index}
-                                keyboardFocusedItemId={keyboardFocusedItemId}
-                                handleItemHover={handleItemHover}
-                                {...group}
-                                key={group.key}
-                            />
-                        ))}
-                    </Column>
-                </ElevationUp>
-            </Container>
-        );
-    },
-);
+            return () => {
+                document.removeEventListener('keydown', handleKeyDown);
+            };
+        }
+    }, [focusedItemIndex, visibleItems, onClose]);
+
+    // handle keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (
+                (e.key === 'ArrowUp' || e.key === 'ArrowDown') &&
+                visibleItems &&
+                visibleItems.length > 0 &&
+                focusedItemIndex !== null
+            ) {
+                e.preventDefault();
+                let indexCandidate = focusedItemIndex;
+                const direction = e.key === 'ArrowUp' ? -1 : 1;
+                const getNextIndex = (index: number, dir: number) =>
+                    (index + dir + visibleItems.length) % visibleItems.length;
+
+                do {
+                    indexCandidate = getNextIndex(indexCandidate, direction);
+                } while (
+                    visibleItems[indexCandidate].isDisabled &&
+                    indexCandidate !== focusedItemIndex
+                );
+
+                setFocusedItemIndex(indexCandidate);
+            }
+        };
+
+        if (focusedItemIndex !== null && visibleItems?.length) {
+            document.addEventListener('keydown', handleKeyDown);
+
+            return () => {
+                document.removeEventListener('keydown', handleKeyDown);
+            };
+        }
+    }, [visibleItems, focusedItemIndex]);
+
+    return (
+        <Container
+            tabIndex={content ? 0 : 1} // do not affect tab order when there is no content
+            onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
+        >
+            <ElevationUp>
+                <Column gap={spacings.md}>
+                    {content}
+                    {visibleItems?.length && (
+                        <MenuList ref={ref}>
+                            {visibleItems?.map((item, index) => (
+                                <MenuItem
+                                    isKeyboardSelected={index === focusedItemIndex}
+                                    onMouseEnter={() =>
+                                        !item.isDisabled && setFocusedItemIndex(index)
+                                    }
+                                    data-testid={item['data-testid']}
+                                    {...item}
+                                    onClick={() => {
+                                        onClose?.();
+                                        item.onClick?.();
+                                    }}
+                                    key={index}
+                                />
+                            ))}
+                        </MenuList>
+                    )}
+                </Column>
+            </ElevationUp>
+        </Container>
+    );
+});

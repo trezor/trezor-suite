@@ -13,24 +13,18 @@ export const Menu: StoryObj<MenuProps> = {
         <MenuComponent
             items={[
                 {
-                    key: 'appearance',
-                    label: 'Appearance',
-                    options: [
-                        {
-                            label: 'Light mode',
-                            icon: 'sun',
-                            onClick: () => {},
-                        },
-                        {
-                            label: 'Dark mode',
-                            icon: 'moon',
-                            onClick: () => {},
-                        },
-                    ],
+                    label: 'Light mode',
+                    icon: 'sun',
+                    onClick: () => {},
+                },
+                {
+                    label: 'Dark mode',
+                    icon: 'moon',
+                    onClick: () => {},
                 },
             ]}
-            setToggled={() => {}}
             content={<div>Settings</div>}
+            onClose={() => {}}
         />
     ),
 };

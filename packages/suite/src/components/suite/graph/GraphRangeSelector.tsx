@@ -12,9 +12,9 @@ import {
 import styled, { css } from 'styled-components';
 
 import {
-    Dropdown,
-    DropdownRef,
+    Popover,
     PopoverPlacement,
+    PopoverRef,
     Timerange,
     intermediaryTheme,
     variables,
@@ -123,7 +123,7 @@ export const GraphRangeSelector = ({
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
     const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
 
-    const dropdownRef = useRef<DropdownRef>();
+    const popoverRef = useRef<PopoverRef>();
     const locale = useLocales();
     const { selectedRange, setSelectedRange } = useGraph();
 
@@ -136,7 +136,7 @@ export const GraphRangeSelector = ({
         setCustomTimerangeStart(startDate);
         setCustomTimerangeEnd(endDate);
 
-        dropdownRef.current!.close();
+        popoverRef.current!.close();
 
         const range: GraphRange = {
             label: 'range',
@@ -170,8 +170,8 @@ export const GraphRangeSelector = ({
                     {getFormattedLabel(range.label)}
                 </RangeItem>
             ))}
-            <Dropdown
-                ref={dropdownRef}
+            <Popover
+                ref={popoverRef}
                 placement={placement}
                 content={
                     <Timerange
@@ -180,7 +180,7 @@ export const GraphRangeSelector = ({
                         }
                         startDate={customTimerangeStart}
                         endDate={customTimerangeEnd}
-                        onCancel={() => dropdownRef.current!.close()}
+                        onCancel={() => popoverRef.current!.close()}
                         ctaSubmit={<Translation id="TR_CONFIRM" />}
                         ctaCancel={<Translation id="TR_CANCEL" />}
                         locale={locale}
@@ -190,7 +190,7 @@ export const GraphRangeSelector = ({
                 <RangeItem $selected={selectedRange.label === 'range'} $separated>
                     <Translation id="TR_RANGE" />
                 </RangeItem>
-            </Dropdown>
+            </Popover>
         </Wrapper>
     );
 };

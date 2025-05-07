@@ -1,27 +1,10 @@
-import { useState } from 'react';
+import { useRef } from 'react';
 
-import styled from 'styled-components';
-
-import { Card, Column, variables } from '@trezor/components';
-import { typography } from '@trezor/theme';
-import { getWeakRandomNumberInRange } from '@trezor/utils';
+import { Card, Column, H4, Paragraph, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { getWeakRandomInt } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
-
-const NoResults = styled.div`
-    text-align: center;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    ${typography.hint}
-`;
-
-const Examples = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: 12px;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-style: italic;
-`;
 
 const getTip = (num: number) => {
     switch (num) {
@@ -49,25 +32,48 @@ const getTip = (num: number) => {
 };
 
 export const NoSearchResults = () => {
-    const [tip] = useState(getWeakRandomNumberInRange(1, 10));
+    const tip = useRef(getWeakRandomInt(1, 10));
 
     return (
-        <Card>
-            <NoResults>
-                <Column alignItems="center">
+        <Card paddingType="none">
+            <Column
+                alignItems="center"
+                gap={spacings.md}
+                margin={{ horizontal: 'auto' }}
+                padding={spacings.xxxl}
+                maxWidth={750}
+            >
+                <H4 align="center">
                     <Translation id="TR_NO_SEARCH_RESULTS" />
-
-                    <Examples>
-                        <Translation
-                            id={getTip(tip)}
-                            values={{
-                                strong: chunks => <strong>{chunks}</strong>, // search string is wrapped in strong tag for additional styling
-                                lastYear: new Date().getFullYear() - 1,
-                            }}
-                        />
-                    </Examples>
-                </Column>
-            </NoResults>
+                </H4>
+                <Paragraph align="center">
+                    <Translation
+                        id="TR_TRANSACTIONS_SEARCH_PRO_TIP"
+                        values={{
+                            strong: chunks => <strong>{chunks}</strong>,
+                            span: chunks => (
+                                <Text as="code" isHighlighted>
+                                    {chunks}
+                                </Text>
+                            ),
+                        }}
+                    />
+                </Paragraph>
+                <Paragraph align="center" variant="tertiary" textWrap="pretty">
+                    <Translation
+                        id={getTip(tip.current)}
+                        values={{
+                            strong: chunks => <strong>{chunks}</strong>,
+                            span: chunks => (
+                                <Text as="code" isHighlighted>
+                                    {chunks}
+                                </Text>
+                            ),
+                            lastYear: new Date().getFullYear() - 1,
+                        }}
+                    />
+                </Paragraph>
+            </Column>
         </Card>
     );
 };

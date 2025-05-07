@@ -96,18 +96,11 @@ export const ConnectPermissions = () => {
                             placement={{ position: 'bottom', alignment: 'end' }}
                             items={[
                                 {
-                                    key: 'group1',
-                                    options: [
-                                        {
-                                            icon: 'xCircle',
-                                            label: <Translation id="TR_FORGET" />,
-                                            onClick: () => {
-                                                dispatch(
-                                                    connectPopupActions.forgetAppPermissions(app),
-                                                );
-                                            },
-                                        },
-                                    ],
+                                    icon: 'xCircle',
+                                    label: <Translation id="TR_FORGET" />,
+                                    onClick: () => {
+                                        dispatch(connectPopupActions.forgetAppPermissions(app));
+                                    },
                                 },
                             ]}
                         />

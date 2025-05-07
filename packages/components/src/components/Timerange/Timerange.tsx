@@ -4,9 +4,9 @@ import { DateRange } from 'react-date-range';
 import type { Locale } from 'date-fns';
 import styled, { css } from 'styled-components';
 
-import { mediaQueries } from '@trezor/styles';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
+import { DROPDOWN_MENU } from '../Menu/menuStyle';
 import { Button } from '../buttons/Button/Button';
 
 type Selection = {
@@ -419,13 +419,12 @@ const StyledTimerange = styled.div`
     width: 345px;
     display: flex;
     flex-direction: column;
+    border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    border-radius: ${borders.radii.sm};
-    margin: -${spacingsPx.sm};
-
-    ${mediaQueries.dark_theme} {
-        border: 1px solid ${({ theme }) => theme.borderElevation1};
-    }
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    outline: 1px solid ${({ theme }) => theme.baseBorderSurfaceAction};
+    z-index: ${zIndices.modal};
+    animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
 `;
 
 const Buttons = styled.div`

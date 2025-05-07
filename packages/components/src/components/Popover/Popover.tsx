@@ -131,6 +131,9 @@ export const PopoverTrigger = ({ children }: PopoverTriggerProps) => {
             ref={ref}
             data-state={context.open ? 'open' : 'closed'}
             {...context.getReferenceProps()}
+            style={{
+                display: 'flex',
+            }}
         >
             {children}
         </div>
