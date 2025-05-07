@@ -1,3 +1,4 @@
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
@@ -7,6 +8,7 @@ import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-commo
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -101,7 +103,7 @@ export const changeWipeCode =
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
-    const bootloaderMode = device.mode === 'bootloader';
+    const isBootloaderMode = device.mode === 'bootloader';
     const devices = selectDevices(getState());
     // collect devices with old "device.id" to be removed (see description below)
     const deviceInstances = deviceUtils.getDeviceInstances(device, devices);
@@ -111,14 +113,30 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
             path: device.path,
         },
         // In bootloader mode we need the skip the final reload, otherwise we never get the resolution
-        skipFinalReload: bootloaderMode,
+        skipFinalReload: isBootloaderMode,
     });
 
-    if (result.success) {
+    if (
+        result.success ||
+        // This is an expected success for Bluetooth-connected devices
+        (device.bluetoothProps !== undefined && result.payload.code === 'Device_Disconnected')
+    ) {
         // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
         // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
         // we need to retrieve device objects BEFORE and AFTER the wipe process.
         // And call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
+        if (device.bluetoothProps !== undefined) {
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
+
+            const resultForget = await bluetoothIpc.forgetDevice(device.bluetoothProps.id);
+            if (!resultForget.success) {
+                dispatch(
+                    bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval({
+                        needsManualRemoval: true,
+                    }),
+                );
+            }
+        }
         const state = getState();
         const newDevice = selectSelectedDevice(getState());
         const newDevices = selectDevices(getState());

@@ -9844,6 +9844,23 @@ export default defineMessages({
         id: 'TR_TREZOR_SAFE_7',
         defaultMessage: 'Trezor Safe 7',
     },
+    TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS: {
+        id: 'TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS',
+        defaultMessage: 'Open Bluetooth Settings',
+    },
+    TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS: {
+        id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS',
+        defaultMessage: 'Cannot open bluetooth settings. Please enable bluetooth manually.',
+    },
+    TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS: {
+        id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS',
+        defaultMessage: 'Remove Trezor from Bluetooth settings',
+    },
+    TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION: {
+        id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION',
+        defaultMessage:
+            "To unpair completely, make sure you remove your Trezor from your computer's Bluetooth settings. If not, your Trezor won't appear in Trezor Suite when you try to pair it again.",
+    },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
         defaultMessage: 'Trezor Bridge will soon no longer be supported.',

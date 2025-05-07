@@ -134,6 +134,13 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(bluetoothActions.setBluetoothListOpen, (state, { payload: { isOpen } }) => {
                 state.isBluetoothListOpen = isOpen;
             })
+
+            .addCase(
+                bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval,
+                (state, { payload: { needsManualRemoval } }) => {
+                    state.unpairedDeviceNeedsManualOsRemoval = needsManualRemoval;
+                },
+            )
             .addMatcher(
                 action =>
                     action.type === deviceActions.connectDevice.type ||

@@ -2,6 +2,7 @@ import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { DiscoveryLoader } from './DiscoveryLoader';
 import { ForegroundAppModal } from './ForegroundAppModal';
+import { UnpairedBluetoothDeviceNeedsManualOsRemovalModal } from '../../bluetooth/UnpairedBluetoothDeviceNeedsManualOsRemovalModal';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 /** Displays whichever redux modal or foreground app should be displayed */
@@ -26,5 +27,10 @@ export const ModalSwitcher = () => {
         }
     };
 
-    return <Inner />;
+    return (
+        <>
+            <UnpairedBluetoothDeviceNeedsManualOsRemovalModal />
+            <Inner />
+        </>
+    );
 };
