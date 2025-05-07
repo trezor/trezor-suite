@@ -439,6 +439,15 @@ export const onCallFirmwareUpdate = async ({
             'onCallFirmwareUpdate',
             'waiting for disconnected event after rebootToBootloader...',
         );
+
+        device.releaseTransportSession();
+        await device.release(); // close device
+        postMessage(
+            createUiMessage(UI.FIRMWARE_DISCONNECT, {
+                device: device.toMessageObject(),
+            }),
+        );
+
         await disconnectedPromise;
 
         // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
@@ -489,6 +498,14 @@ export const onCallFirmwareUpdate = async ({
             { payload: stripped },
         );
     }
+
+    device.releaseTransportSession();
+    await device.release(); // close device
+    postMessage(
+        createUiMessage(UI.FIRMWARE_DISCONNECT, {
+            device: device.toMessageObject(),
+        }),
+    );
 
     reconnectedDevice = await waitForReconnectedDevice(
         { bootloader: false, method: 'wait' },

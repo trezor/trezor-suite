@@ -3,6 +3,7 @@ import { MiddlewareAPI } from 'redux';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
+import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { SUITE } from 'src/actions/suite/constants';
@@ -48,6 +49,14 @@ const buttonRequest =
                 }),
             );
             TrezorConnect.cancel('Device_Unreadable');
+        }
+
+        if (action.type === 'ui-firmware_disconnect' && action.payload.device.bluetoothProps) {
+            const { id } = action.payload.device.bluetoothProps;
+
+            bluetoothIpc.disconnectDevice(id).then(() => {
+                bluetoothIpc.connectDevice(id);
+            });
         }
 
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35
