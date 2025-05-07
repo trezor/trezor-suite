@@ -108,7 +108,7 @@ export const SettingsGeneral = () => {
                 <EnableViewOnly />
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_EXPERIMENTAL_FEATURES" />} icon="diamond">
+            <SettingsSection title={<Translation id="TR_EXPERIMENTAL_FEATURES" />} icon="atom">
                 {desktopUpdate.enabled && <EarlyAccess />}
                 <Experimental />
             </SettingsSection>

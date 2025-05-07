@@ -72,7 +72,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 <MobileActionItem
                     onClick={() => action('settings-index')}
                     label={<Translation id="TR_EARLY_ACCESS_MENU" />}
-                    icon="diamond"
+                    icon="atom"
                 />
             )}
 
