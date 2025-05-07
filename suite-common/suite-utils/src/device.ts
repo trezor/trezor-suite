@@ -170,32 +170,15 @@ export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
 
 /**
  * Generate new instance number
- * @param {TrezorDevice[]} devices
- * @param {AcquiredDevice} device
- * @returns number
  */
-export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevice | Device) => {
-    if (!device.features) return undefined;
-    // find all instances with device "device_id"
-    // and sort them by instance number
-    const affectedDevices = devices
-        .filter(d => d.features && d.id === device.id)
-        .sort((a, b) => {
-            if (!a.instance) {
-                return -1;
-            }
-
-            return !b.instance || a.instance > b.instance ? 1 : -1;
-        });
-
-    // calculate new instance number
-    const instance = affectedDevices.reduce(
-        (inst, dev) => (dev.instance ? dev.instance + 1 : inst + 1),
-        0,
+export const getNewInstanceNumber = (devices: TrezorDevice[], device: Pick<KnownDevice, 'id'>) =>
+    devices.reduce(
+        (instance, d) =>
+            d.id === device.id
+                ? Math.max(instance ?? 0, d.instance ? d.instance + 1 : 1)
+                : instance,
+        undefined as number | undefined,
     );
-
-    return instance > 0 ? instance : undefined;
-};
 
 export const getNewWalletNumber = (devices: TrezorDevice[], device: TrezorDevice) => {
     const relevantDevices = devices
