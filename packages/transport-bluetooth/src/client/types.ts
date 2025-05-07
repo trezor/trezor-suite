@@ -1,12 +1,7 @@
+import type { Logger } from '@trezor/transport/src/types';
 import type { TypedEmitter } from '@trezor/utils';
 
-export interface Logger {
-    info(...args: any[]): void;
-    debug(...args: any[]): void;
-    log(...args: any[]): void;
-    warn(...args: any[]): void;
-    error(...args: any[]): void;
-}
+export type { Logger } from '@trezor/transport/src/types';
 
 export interface TrezorBluetoothSettings {
     url: string;
