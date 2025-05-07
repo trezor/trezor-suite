@@ -35,13 +35,28 @@ export const en = {
                 fwRevisionCheckOfflineError:
                     "Firmware authenticity check couldn't be performed.\nGo online to verify your firmware version.",
             },
-            deviceCompromised: {
-                title: 'Unofficial firmware detected',
-                subtitle:
-                    'Your Trezor may be counterfeit. To ensure your safety, receiving funds has been disabled. Contact Trezor Support immediately.',
-                contactSupportButton: 'Contact Trezor Support',
+            deviceDanger: {
+                compromised: {
+                    title: 'Unofficial firmware detected',
+                    subtitle:
+                        'Your Trezor may be counterfeit. To ensure your safety, receiving funds has been disabled. Contact Trezor Support immediately.',
+                    cta: 'Contact Trezor Support',
+                },
+                revisionNotChecked: {
+                    title: "Couldn't perform firmware authenticity check.",
+                },
+                backupFailed: {
+                    title: 'Wallet backup failed',
+                    subtitle: 'Wipe your Trezor, then create a wallet backup.',
+                    cta: 'Wipe device & create backup',
+                },
+                backupNeeded: {
+                    title: 'You need a wallet backup',
+                    subtitle:
+                        'A wallet backup is essential for recovering your assets. Don’t send or receive funds with this device until you’ve created a backup.',
+                    cta: 'Create wallet backup',
+                },
             },
-            fwRevisionCheckOtherError: "Couldn't perform firmware authenticity check.",
         },
         tokens: '+ Tokens',
     },
@@ -1063,6 +1078,26 @@ export const en = {
         },
         walletCreatedSuccessScreen: {
             successLabel: 'All good!',
+        },
+
+        backupFailedModalScreen: {
+            title: 'Your wallet backup failed.',
+            subtitle: 'You need to wipe your device and create a wallet backup.',
+            steps: {
+                wipe: 'Wipe your device to continue. This will erase all of its existing data.',
+                contact:
+                    'If you have assets associated with this device, contact Trezor support now.',
+            },
+            primaryButton: 'Wipe device',
+            secondaryButton: 'Contact Trezor Support',
+
+            alert: {
+                title: 'Erase all data?',
+                description:
+                    'You should not have any funds associated with this device. Wiping it will erase its data. This action can’t be undone.',
+                primaryButton: 'Wipe device',
+                secondaryButton: 'Contact Trezor Support',
+            },
         },
         deviceDisconnectedAlert: {
             title: 'Your Trezor has been disconnected',

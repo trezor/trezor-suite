@@ -1,6 +1,11 @@
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { deviceActions, selectDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    selectDevicePath,
+    selectIsDeviceInitialized,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { WalletBackupType, reportCheckFail } from '@suite-native/device';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -59,6 +64,7 @@ export const createAndBackupWalletThunk = createThunk(
     ) => {
         const device = selectSelectedDevice(getState());
         const devicePath = selectDevicePath(getState());
+        const isDeviceInitialized = selectIsDeviceInitialized(getState());
         const isEntropyCheckEnabled = selectIsFeatureEnabled(
             getState(),
             Feature.entropyCheckMobile,
@@ -67,6 +73,26 @@ export const createAndBackupWalletThunk = createThunk(
 
         if (!device || !device.features || !devicePath) {
             throw new Error('Device not found');
+        }
+
+        // If the device already has a seed, backup is created.
+        if (isDeviceInitialized) {
+            const { backup_type } = device.features;
+
+            const backupParams: PROTO.BackupDevice =
+                backup_type === 'Slip39_Basic' || backup_type === 'Slip39_Basic_Extendable'
+                    ? {
+                          group_threshold: 1,
+                          groups: [{ member_count: 1, member_threshold: 1 }],
+                      }
+                    : {};
+
+            return await TrezorConnect.backupDevice({
+                ...backupParams,
+                device: {
+                    path: device.path,
+                },
+            });
         }
 
         const result = await TrezorConnect.resetDevice({

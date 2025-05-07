@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import * as Haptics from 'expo-haptics';
 
+import { selectIsDeviceInitialized } from '@suite-common/wallet-core';
 import { Box, Button, Card, InlineAlertBox, Text, TitleHeader } from '@suite-native/atoms';
 import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
@@ -46,6 +48,7 @@ export const WalletBackupTutorialStep5 = ({
     selectedType,
     onSelectType,
 }: WalletBackupTutorialStep5Props) => {
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
     const [isModalShown, setIsModalShown] = useState(false);
@@ -107,15 +110,17 @@ export const WalletBackupTutorialStep5 = ({
                         />
                     )}
                 </Card>
-                <Button
-                    viewLeft={<Icon name="caretDown" size="medium" />}
-                    colorScheme="tertiaryElevation0"
-                    size="small"
-                    style={applyStyle(moreOptionsStyle)}
-                    onPress={openBackupSelection}
-                >
-                    <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step5.moreOptionsButton" />
-                </Button>
+                {!isDeviceInitialized && (
+                    <Button
+                        viewLeft={<Icon name="caretDown" size="medium" />}
+                        colorScheme="tertiaryElevation0"
+                        size="small"
+                        style={applyStyle(moreOptionsStyle)}
+                        onPress={openBackupSelection}
+                    >
+                        <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step5.moreOptionsButton" />
+                    </Button>
+                )}
             </Box>
             <WalletBackupSheet
                 isDisplayed={isModalShown}

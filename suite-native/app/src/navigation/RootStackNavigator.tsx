@@ -17,7 +17,10 @@ import {
     WalletConnectSessionPopupScreen,
 } from '@suite-native/module-connect-popup';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
-import { DeviceOnboardingStackNavigator } from '@suite-native/module-device-onboarding';
+import {
+    BackupFailedModalScreen,
+    DeviceOnboardingStackNavigator,
+} from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { SendStackNavigator } from '@suite-native/module-send';
@@ -101,6 +104,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.DeviceCompromisedModal}
                 component={DeviceCompromisedModalScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.BackupFailedModal}
+                component={BackupFailedModalScreen}
             />
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>

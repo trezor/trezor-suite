@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceBackupRequired,
+    selectIsDeviceBackupUnfinished,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { spacingsPx } from '@trezor/theme';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
@@ -41,6 +45,8 @@ export const SuiteBanners = () => {
     const bannerMessage = useSelector(selectBannerMessage);
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
+    const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
+    const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -54,10 +60,10 @@ export const SuiteBanners = () => {
     if (firmwareRevisionError || firmwareHashError) {
         banner = <FirmwareAuthenticityCheckBanner />;
         priority = 91;
-    } else if (device?.features?.unfinished_backup) {
+    } else if (isDeviceBackupUnfinished) {
         banner = <FailedBackup />;
         priority = 90;
-    } else if (device?.features?.backup_availability === 'Required') {
+    } else if (isDeviceBackupRequired) {
         banner = <NoBackup />;
         priority = 70;
     } else if (device?.connected && device?.features?.safety_checks === 'PromptAlways') {

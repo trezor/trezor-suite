@@ -777,6 +777,16 @@ export const selectIsDeviceBackedUp = createMemoizedSelector(
     features => features?.backup_availability !== 'Required' && !features?.unfinished_backup,
 );
 
+export const selectIsDeviceBackupRequired = createMemoizedSelector(
+    [selectDeviceFeatures],
+    features => features?.backup_availability === 'Required',
+);
+
+export const selectIsDeviceBackupUnfinished = createMemoizedSelector(
+    [selectDeviceFeatures],
+    features => features?.unfinished_backup,
+);
+
 export const selectDeviceButtonRequests = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.buttonRequests ?? [],

@@ -249,6 +249,7 @@ export type RootStackParamList = {
     [RootStackRoutes.WalletConnectPair]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.DeviceCompromisedModal]: undefined;
+    [RootStackRoutes.BackupFailedModal]: undefined;
     [RootStackRoutes.TradingWebView]: {
         closeCallbackUrl: string;
         source?: { uri?: string; html?: string };
