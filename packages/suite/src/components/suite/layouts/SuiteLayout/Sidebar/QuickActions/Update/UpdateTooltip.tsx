@@ -130,7 +130,7 @@ export const UpdateTooltip = ({
     const isDesktopSuite = isDesktop();
 
     return (
-        <Column gap={spacings.md} alignItems="start">
+        <Column gap={spacings.md} padding={spacings.xxs} alignItems="start">
             <DeviceRow updateStatus={updateStatusDevice} onClick={onClickDevice} />
             {isDesktopSuite && <SuiteRow updateStatus={updateStatusSuite} onClick={onClickSuite} />}
         </Column>

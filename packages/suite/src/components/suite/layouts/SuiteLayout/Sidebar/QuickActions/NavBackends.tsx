@@ -1,17 +1,7 @@
-import React, { ReactNode, useRef } from 'react';
+import React from 'react';
 
 import { BlockchainState } from '@suite-common/wallet-core';
-import {
-    Box,
-    Card,
-    Column,
-    DotIndicator,
-    Note,
-    Popover,
-    PopoverRef,
-    Row,
-    Text,
-} from '@trezor/components';
+import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -38,7 +28,7 @@ const BackendRow = ({
         >
             <Row gap={spacings.sm}>
                 <CoinLogo symbol={symbol} />
-                <Column flex="1">
+                <Column flex="1" overflow="hidden">
                     <Text typographyStyle="hint" ellipsisLineCount={1}>
                         {chain?.url ?? <Translation id="TR_BACKEND_DISCONNECTED" />}
                     </Text>
@@ -54,37 +44,21 @@ const BackendRow = ({
 
 type NavBackendsProps = {
     customBackends: CustomBackend[];
-    children: ReactNode;
 };
 
-export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
-    const popoverRef = useRef<PopoverRef>();
+export const NavBackends = ({ customBackends }: NavBackendsProps) => {
     const blockchain = useSelector(state => state.wallet.blockchain);
 
     return (
-        <Popover
-            ref={popoverRef}
-            placement={{ position: 'top' }}
-            content={
-                <Card>
-                    <Column gap={spacings.lg}>
-                        <Column gap={spacings.sm}>
-                            {customBackends.map(backend => (
-                                <BackendRow
-                                    key={backend.symbol}
-                                    backend={backend}
-                                    blockchain={blockchain}
-                                />
-                            ))}
-                        </Column>
-                        <Note>
-                            <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
-                        </Note>
-                    </Column>
-                </Card>
-            }
-        >
-            {children}
-        </Popover>
+        <Column gap={spacings.sm} padding={spacings.xxs}>
+            <Column gap={spacings.sm}>
+                {customBackends.map(backend => (
+                    <BackendRow key={backend.symbol} backend={backend} blockchain={blockchain} />
+                ))}
+            </Column>
+            <Note>
+                <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
+            </Note>
+        </Column>
     );
 };
