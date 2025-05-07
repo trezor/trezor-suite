@@ -6,7 +6,10 @@ import { FilterPropertiesByType } from '@trezor/type-utils';
  * see suite-native/device/src/config/firmware.ts for Suite Lite
  */
 
-type BehaviorBaseType = { shouldReport: boolean };
+type BehaviorBaseType = {
+    shouldReport: boolean; // whether to report the check result to Sentry
+    isConclusive: boolean; // result is considered final, not expected to change when check is rerun
+};
 
 // will be ignored completely
 type SkippedBehavior = BehaviorBaseType & { type: 'skipped' };
@@ -22,19 +25,23 @@ type HashErrorBehavior = SkippedBehavior | HardModalBehavior;
 type HashCheckErrorScenarios = Record<FirmwareHashCheckError, HashErrorBehavior>;
 
 export const revisionCheckErrorScenarios = {
-    'revision-mismatch': { type: 'hardModal', shouldReport: true },
-    'firmware-version-unknown': { type: 'hardModal', shouldReport: true },
-    'cannot-perform-check-offline': { type: 'softWarning', shouldReport: false },
-    'other-error': { type: 'softWarning', shouldReport: true },
+    'revision-mismatch': { type: 'hardModal', shouldReport: true, isConclusive: true },
+    'firmware-version-unknown': { type: 'hardModal', shouldReport: true, isConclusive: true },
+    'cannot-perform-check-offline': {
+        type: 'softWarning',
+        shouldReport: false,
+        isConclusive: false,
+    },
+    'other-error': { type: 'softWarning', shouldReport: true, isConclusive: false },
 } satisfies RevisionCheckErrorScenarios;
 
 export const hashCheckErrorScenarios = {
-    'hash-mismatch': { type: 'hardModal', shouldReport: true },
-    'check-skipped': { type: 'skipped', shouldReport: false },
-    'check-unsupported': { type: 'skipped', shouldReport: false },
+    'hash-mismatch': { type: 'hardModal', shouldReport: true, isConclusive: true },
+    'check-skipped': { type: 'skipped', shouldReport: false, isConclusive: false },
+    'check-unsupported': { type: 'skipped', shouldReport: false, isConclusive: false },
     // could mean counterfeit firmware, but it's also caught by revision check, which handles edge-cases better
-    'unknown-release': { type: 'skipped', shouldReport: false },
-    'other-error': { type: 'hardModal', shouldReport: true },
+    'unknown-release': { type: 'skipped', shouldReport: false, isConclusive: true },
+    'other-error': { type: 'hardModal', shouldReport: true, isConclusive: false },
 } satisfies HashCheckErrorScenarios;
 
 export type SkippedHashCheckError = keyof FilterPropertiesByType<
