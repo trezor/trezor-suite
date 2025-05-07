@@ -10,6 +10,7 @@ export class InvariantError extends Error {
  */
 export function invariant<T>(condition: T, message?: string): asserts condition {
     if (!condition) {
+        console.error('Invariant violation:', message);
         throw new InvariantError(message);
     }
 }
