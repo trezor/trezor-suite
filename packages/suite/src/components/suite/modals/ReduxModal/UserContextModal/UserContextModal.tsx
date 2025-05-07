@@ -1,5 +1,7 @@
 import { CryptoId } from 'invity-api';
 
+import { exhaustive } from '@trezor/type-utils';
+
 import { MODAL } from 'src/actions/suite/constants';
 import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import {
@@ -41,7 +43,6 @@ import {
     UnecoCoinjoinModal,
     UnhideTokenModal,
     UnstakeModal,
-    WipeDeviceModal,
 } from 'src/components/suite/modals';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
@@ -93,8 +94,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ConfirmXpubModal {...payload} onCancel={onCancel} />;
         case 'device-background-gallery':
             return <BackgroundGalleryModal onCancel={onCancel} />;
-        case 'wipe-device':
-            return <WipeDeviceModal onCancel={onCancel} />;
         case 'device-authenticity-check-opt-out':
             return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
         case 'firmware-authenticity-checks-opt-out':
@@ -230,6 +229,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
         case 'auto-start-before-quit':
             return <AutoStartBeforeQuitModal />;
         default:
-            return null;
+            return exhaustive(payload);
     }
 };
