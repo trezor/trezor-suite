@@ -9,6 +9,11 @@ globalThis.Event = Event;
 globalThis.EventTarget = EventTarget;
 globalThis.CustomEvent = CustomEvent;
 
+// polyfill for `abortcontroller-polyfill`, which throws DOMException at occasions, and it'd crash the app
+if (typeof DOMException === 'undefined') {
+    global.DOMException = class DOMException extends Error {};
+}
+
 // Ensures that crypto functions required by Solana and device authenticity check are available.
 install();
 
