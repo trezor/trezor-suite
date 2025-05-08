@@ -4,7 +4,6 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_EXCHANGE_RATE,
     TRADING_EXCHANGE_RATE_FLOATING,
-    type TradingTradeType,
     type TradingUtilsProvidersProps,
 } from '@suite-common/trading';
 import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
@@ -19,7 +18,6 @@ interface TradingFormOffersSwitcherProps {
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: TradingUtilsProvidersProps | undefined;
-    bestRatedQuote: TradingTradeType | undefined;
 }
 
 export const TradingFormOffersSwitcher = ({
@@ -27,7 +25,6 @@ export const TradingFormOffersSwitcher = ({
     isFormLoading,
     isFormInvalid,
     providers,
-    bestRatedQuote,
 }: TradingFormOffersSwitcherProps) => {
     const { setValue, getValues, dexQuotes, cexQuotes } = context;
     const { exchangeType } = getValues();
@@ -83,7 +80,6 @@ export const TradingFormOffersSwitcher = ({
                         onSelect={() => setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX)}
                         providers={providers}
                         quote={cexQuote}
-                        isBestRate={bestRatedQuote?.orderId === cexQuote?.orderId}
                     />
                 ) : (
                     <Paragraph
@@ -105,7 +101,6 @@ export const TradingFormOffersSwitcher = ({
                         }}
                         providers={providers}
                         quote={dexQuote}
-                        isBestRate={bestRatedQuote?.orderId === dexQuote?.orderId}
                     />
                 ) : (
                     <Paragraph

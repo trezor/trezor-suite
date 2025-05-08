@@ -7,7 +7,6 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingTradeType,
     type TradingType,
-    getBestRatedQuote,
     parseCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
@@ -63,7 +62,6 @@ export const TradingFormOffer = () => {
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
     const quote = getSelectedQuote(context, bestScoredQuote);
-    const bestRatedQuote = getBestRatedQuote(quotes, type);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
 
     const selectedCrypto = getSelectedCrypto(context);
@@ -146,7 +144,6 @@ export const TradingFormOffer = () => {
                         isFormLoading={state.isFormLoading}
                         isFormInvalid={state.isFormInvalid}
                         providers={providers}
-                        bestRatedQuote={bestRatedQuote}
                     />
                 ) : (
                     <TradingFormOfferItem
@@ -154,7 +151,6 @@ export const TradingFormOffer = () => {
                         isFormLoading={state.isFormLoading}
                         isFormInvalid={state.isFormInvalid}
                         providers={providers}
-                        isBestRate={bestRatedQuote?.orderId === quote?.orderId}
                     />
                 )}
             </Column>
