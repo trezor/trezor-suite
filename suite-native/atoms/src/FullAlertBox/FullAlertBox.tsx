@@ -1,4 +1,4 @@
-import { Icon } from '@suite-native/icons';
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box, BoxProps } from '../Box';
@@ -27,6 +27,7 @@ export type FullAlertBoxProps = {
     primaryButtonProps?: Partial<ButtonProps>;
     secondaryButtonProps?: Partial<ButtonProps>;
     variant?: AlertVariant;
+    iconName?: IconName;
 } & BoxProps;
 
 export const FullAlertBox = ({
@@ -39,6 +40,7 @@ export const FullAlertBox = ({
     primaryButtonProps,
     secondaryButtonProps,
     variant = 'neutral',
+    iconName,
     ...restProps
 }: FullAlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
@@ -49,7 +51,7 @@ export const FullAlertBox = ({
         <Box style={applyStyle(containerStyle, { backgroundColor, borderColor })} {...restProps}>
             <HStack spacing="sp12" alignItems="flex-start">
                 <Box>
-                    <Icon name={variantToIconName[variant]} size="large" />
+                    <Icon name={iconName ?? variantToIconName[variant]} size="large" />
                 </Box>
                 <Box flex={1}>
                     <Text>{title}</Text>
