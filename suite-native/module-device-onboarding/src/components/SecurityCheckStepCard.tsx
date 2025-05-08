@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { FadeOutUp, useAnimatedStyle, withDelay, withTiming } from 'react-native-reanimated';
+import { FadeInUp, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/core';
 
@@ -39,13 +39,12 @@ type NavigationProps = StackNavigationProps<
     DeviceOnboardingStackRoutes.SecurityCheck
 >;
 
-const ANIMATION_DURATION = 300;
-
 const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabled }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderColor: utils.colors.borderOnElevation1,
     borderWidth: 1,
     paddingVertical: utils.spacings.sp12,
+    overflow: 'hidden',
 
     extend: {
         condition: isDisabled,
@@ -64,6 +63,11 @@ const dividerStyle = prepareNativeStyle(utils => ({
 const buttonStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
+
+const DAMPING = 14;
+const LAYOUT_ANIMATION = LinearTransition.springify().damping(DAMPING);
+const ENTERING_ANIMATION = FadeInUp.springify().damping(DAMPING);
+const EXITING_ANIMATION = FadeOutDown.springify().damping(DAMPING);
 
 export const SecurityCheckStepCard = ({
     header,
@@ -90,36 +94,11 @@ export const SecurityCheckStepCard = ({
             },
         });
     };
-    const animatedCardStyle = useAnimatedStyle(
-        () => ({
-            minHeight: withDelay(
-                isOpened ? ANIMATION_DURATION : 0,
-                withTiming(isOpened ? 180 : 44, {
-                    duration: ANIMATION_DURATION,
-                }),
-            ),
-        }),
-        [isOpened],
-    );
-
-    const contentAnimatedStyle = useAnimatedStyle(() => ({
-        height: withTiming(isOpened ? 110 : 0, {
-            duration: ANIMATION_DURATION,
-        }),
-        opacity: withDelay(
-            ANIMATION_DURATION,
-            withTiming(isOpened ? 1 : 0, {
-                duration: ANIMATION_DURATION,
-            }),
-        ),
-    }));
 
     return (
         <AnimatedCard
-            style={[
-                animatedCardStyle,
-                applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked }),
-            ]}
+            layout={LAYOUT_ANIMATION}
+            style={[applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })]}
         >
             <VStack spacing="sp16">
                 <VStack spacing="sp12">
@@ -132,7 +111,12 @@ export const SecurityCheckStepCard = ({
                     {isOpened && <Divider style={applyStyle(dividerStyle)} />}
                 </VStack>
                 {isOpened && (
-                    <AnimatedVStack spacing="sp16" style={contentAnimatedStyle} exiting={FadeOutUp}>
+                    <AnimatedVStack
+                        spacing="sp16"
+                        layout={LAYOUT_ANIMATION}
+                        entering={ENTERING_ANIMATION}
+                        exiting={EXITING_ANIMATION}
+                    >
                         <Text variant="highlight">{description}</Text>
                         <HStack
                             flex={1}
