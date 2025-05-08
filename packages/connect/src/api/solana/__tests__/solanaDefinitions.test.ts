@@ -1,0 +1,81 @@
+import fetch from 'cross-fetch';
+
+import { decodeSolanaTokenDefinition, getSolanaTokenDefinition } from '../solanaDefinitions';
+
+jest.mock('cross-fetch');
+
+const mockedFetch = fetch as jest.MockedFunction<typeof fetch>;
+
+describe('getSolanaTokenDefinition', () => {
+    const mintAddress = 'fakeMintAddress';
+
+    it('should return ArrayBuffer when fetch is successful', async () => {
+        const mockArrayBuffer = new ArrayBuffer(10);
+        mockedFetch.mockResolvedValue({
+            status: 200,
+            arrayBuffer: () => Promise.resolve(mockArrayBuffer),
+        } as any);
+
+        const result = await getSolanaTokenDefinition({ mintAddress });
+        expect(fetch).toHaveBeenCalledWith(
+            `https://data.trezor.io/firmware/definitions/solana/token/${mintAddress}.dat`,
+        );
+        expect(result).toBe(mockArrayBuffer);
+    });
+
+    it('should return undefined for 404 status', async () => {
+        mockedFetch.mockResolvedValue({ status: 404 } as any);
+        const result = await getSolanaTokenDefinition({ mintAddress });
+        expect(result).toBeUndefined();
+    });
+
+    it('should log warning and return undefined for non-404 error', async () => {
+        console.warn = jest.fn();
+        mockedFetch.mockResolvedValue({ status: 500 } as any);
+        const result = await getSolanaTokenDefinition({ mintAddress });
+        expect(console.warn).toHaveBeenCalled();
+        expect(result).toBeUndefined();
+    });
+
+    it('should return undefined and log warning if fetch throws error', async () => {
+        console.warn = jest.fn();
+        mockedFetch.mockRejectedValue(new Error('network error'));
+        const result = await getSolanaTokenDefinition({ mintAddress });
+        expect(console.warn).toHaveBeenCalledWith(
+            expect.stringContaining('unable to download or parse solana token'),
+        );
+        expect(result).toBeUndefined();
+    });
+
+    it('should return undefined if no mintAddress is provided', async () => {
+        const result = await getSolanaTokenDefinition({});
+        expect(result).toBeUndefined();
+    });
+});
+
+const mockEncodedDefinition = new Uint8Array([
+    0x74, 0x72, 0x7a, 0x64, 0x31, 0x02, 0x51, 0xc8, 0x19, 0x68, 0x30, 0x00, 0x0a, 0x20, 0xce, 0x01,
+    0x0e, 0x60, 0xaf, 0xed, 0xb2, 0x27, 0x17, 0xbd, 0x63, 0x19, 0x2f, 0x54, 0x14, 0x5a, 0x3f, 0x96,
+    0x5a, 0x33, 0xbb, 0x82, 0xd2, 0xc7, 0x02, 0x9e, 0xb2, 0xce, 0x1e, 0x20, 0x82, 0x64, 0x12, 0x04,
+    0x55, 0x53, 0x44, 0x43, 0x1a, 0x06, 0x54, 0x65, 0x74, 0x68, 0x65, 0x72, 0x10, 0x95, 0x41, 0xe2,
+    0x74, 0xfd, 0x35, 0x6f, 0xbd, 0xd5, 0xc5, 0xae, 0x5a, 0xeb, 0xfd, 0xa3, 0xa7, 0x1e, 0x2d, 0x38,
+    0x89, 0xd3, 0x96, 0xb3, 0xc6, 0x5d, 0xb7, 0x72, 0x4f, 0x61, 0x96, 0x7f, 0x09, 0x45, 0x1d, 0x74,
+    0xf6, 0x63, 0xec, 0x56, 0x19, 0x6f, 0x87, 0x2b, 0xd2, 0x35, 0xdf, 0xc4, 0x53, 0xb6, 0x6f, 0x9d,
+    0x10, 0x88, 0x1d, 0x3c, 0x66, 0x44, 0x2a, 0x7b, 0x64, 0xc4, 0x5d, 0x80, 0xd5, 0x5c, 0xcc, 0xe8,
+    0x93, 0x9e, 0xec, 0x78, 0x8f, 0x89, 0xc7, 0x96, 0x41, 0xd0, 0xbd, 0x14, 0x62, 0xef, 0xac, 0x27,
+    0x73, 0x01, 0xe8, 0x4f, 0xa5, 0x4b, 0x77, 0x66, 0x4b, 0x67, 0x13, 0x53, 0x82, 0xf4, 0x8c, 0x46,
+    0x90, 0x67, 0x6e, 0x52, 0x2e, 0x2e, 0x1f, 0xa7, 0xd3, 0xc1, 0x30, 0xf8, 0x92, 0xa1, 0x08, 0x06,
+    0xa2, 0x58, 0x70, 0x5a, 0x00, 0x62, 0x9b, 0x62, 0x9d, 0x1e, 0x08, 0x8c, 0x20, 0x01,
+]).buffer;
+
+describe('decodeSolanaTokenDefinition', () => {
+    it('should decode the fake USD token definition', () => {
+        const result = decodeSolanaTokenDefinition(mockEncodedDefinition);
+
+        expect(result.name).toBe('Tether');
+        expect(result.symbol).toBe('USDC');
+        expect(result.mint).toBe(
+            'ce010e60afedb22717bd63192f54145a3f965a33bb82d2c7029eb2ce1e208264',
+        );
+    });
+});

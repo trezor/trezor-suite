@@ -37,6 +37,7 @@ import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../t
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { transformAdditionalInfo } from '../additionalInfo';
+import { getSolanaTokenDefinition } from '../solanaDefinitions';
 import { SOLANA_BASE_FEE, createTransactionShimFromHex } from '../solanaUtils';
 
 type Params = PROTO.SolanaSignTx & { serialize: boolean };
@@ -65,6 +66,20 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             additional_info: transformAdditionalInfo(payload.additionalInfo),
             serialize: !!payload.serialize,
         };
+    }
+
+    async initAsync(): Promise<void> {
+        const token = this.params.additional_info?.token_accounts_infos?.[0];
+
+        if (token) {
+            const tokenDefinition = await getSolanaTokenDefinition({
+                mintAddress: token.token_mint,
+            });
+
+            if (!tokenDefinition) return;
+
+            this.params.additional_info!.encoded_token = tokenDefinition;
+        }
     }
 
     get info() {
