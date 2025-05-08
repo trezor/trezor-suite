@@ -23,7 +23,7 @@ if (!isValidPackageName) {
 //  1. rename "packages" folder in monorepo to "@trezor"
 //  2. find and replace all the problematic occurrences before actual release.
 //     not very good solution and yarn advices against doing it https://yarnpkg.com/advanced/lifecycle-scripts
-const scriptPath = path.join(__dirname, '..', 'replace-imports.sh');
+const scriptPath = path.join(__dirname, 'replace-imports.sh');
 const args = [path.join(__dirname, '..', 'packages', packageName, 'lib')];
 execFileSync(scriptPath, args, {
     encoding: 'utf-8',
