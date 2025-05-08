@@ -1,4 +1,5 @@
 import {
+    WALLET_SETTINGS,
     accountsActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
     sendFormActions,
@@ -6,7 +7,6 @@ import {
 import { Account, Output, FormState as SendFormState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 

@@ -46,8 +46,7 @@ describe('useAmountInputTransformers', () => {
     describe('cryptoAmountTransformer', () => {
         it('should return decimalTransformer for fiat amount when isAmountInSats is false', () => {
             mockState = {
-                settings: { isAmountInSats: false },
-                appSettings: { bitcoinUnits: PROTO.AmountUnit.BITCOIN },
+                wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN } },
             };
 
             const { cryptoAmountTransformer } = useAmountInputTransformers('btc');
@@ -57,7 +56,7 @@ describe('useAmountInputTransformers', () => {
 
         it('should return integerTransformer for crypto amount when isAmountInSats is true', () => {
             mockState = {
-                appSettings: { bitcoinUnits: PROTO.AmountUnit.SATOSHI },
+                wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
             };
 
             const { cryptoAmountTransformer } = useAmountInputTransformers('btc');
@@ -67,7 +66,7 @@ describe('useAmountInputTransformers', () => {
 
         it('should return decimalTransformer for fiat amount when isAmountInSats is true and network is eth', () => {
             mockState = {
-                appSettings: { bitcoinUnits: PROTO.AmountUnit.BITCOIN },
+                wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN } },
             };
 
             const { cryptoAmountTransformer } = useAmountInputTransformers('eth');
@@ -78,7 +77,7 @@ describe('useAmountInputTransformers', () => {
 
     it('should always return decimalTransformer as fiatAmountTransformer', () => {
         mockState = {
-            appSettings: { bitcoinUnits: PROTO.AmountUnit.SATOSHI },
+            wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
 
         const { fiatAmountTransformer } = useAmountInputTransformers('btc');

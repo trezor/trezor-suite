@@ -14,6 +14,7 @@ import {
     DiscoveryRootState,
     FiatRatesRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
+    WalletSettingsRootState,
     getAccountsByDeviceState,
     selectAccounts,
     selectAccountsByDeviceState,
@@ -28,6 +29,7 @@ import {
     selectIsDiscoveredDeviceAccountless,
     selectIsEntropyCheckFailed,
     selectIsUnacquiredDevice,
+    selectLocalCurrency,
     selectSelectedDevice,
     selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
@@ -38,7 +40,7 @@ import {
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
+import { SettingsSliceRootState } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
@@ -50,6 +52,7 @@ type NativeDeviceRootState = DeviceRootState &
     AccountsRootState &
     DiscoveryRootState &
     SettingsSliceRootState &
+    WalletSettingsRootState &
     FiatRatesRootState &
     FeatureFlagsRootState &
     MessageSystemRootState;
@@ -117,13 +120,13 @@ const getTotalFiatBalanceNative = ({
 };
 
 export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
-    [selectDeviceAccounts, selectCurrentFiatRates, selectFiatCurrencyCode],
+    [selectDeviceAccounts, selectCurrentFiatRates, selectLocalCurrency],
     (deviceAccounts, rates, localCurrency) =>
         getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
 );
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
-    [selectAccountsByDeviceState, selectCurrentFiatRates, selectFiatCurrencyCode],
+    [selectAccountsByDeviceState, selectCurrentFiatRates, selectLocalCurrency],
     (deviceAccounts, rates, localCurrency) =>
         getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
 );

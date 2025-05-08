@@ -2,12 +2,17 @@ import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { addLog } from '@suite-common/logger';
-import { authorizeDeviceThunk, deviceActions, discoveryActions } from '@suite-common/wallet-core';
+import {
+    WALLET_SETTINGS,
+    authorizeDeviceThunk,
+    changeNetworks,
+    deviceActions,
+    discoveryActions,
+    setLocalCurrency,
+} from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import {
     DESKTOP_UPDATE,
     METADATA,
@@ -26,7 +31,7 @@ const log =
         // IMPORTANT: Part of the middleware that's using actions from suite-common/wallet-core package
         // can be found in this file: suite-common/logger/src/logsMiddleware.ts
 
-        if (walletSettingsActions.changeNetworks.match(action)) {
+        if (changeNetworks.match(action)) {
             api.dispatch(
                 addLog({
                     action,
@@ -66,7 +71,7 @@ const log =
             case SUITE.SET_THEME:
             case SUITE.SET_ADDRESS_DISPLAY_TYPE:
             case SUITE.SET_AUTODETECT:
-            case walletSettingsActions.setLocalCurrency.type:
+            case setLocalCurrency.type:
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
             case METADATA.ENABLE:
             case METADATA.DISABLE:

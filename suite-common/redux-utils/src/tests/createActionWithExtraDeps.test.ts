@@ -6,20 +6,20 @@ const dummyAction = createActionWithExtraDeps(
     'dummyAction',
     (payload: { greetings: string }, { extra, getState }) => ({
         ...payload,
-        currency: extra.selectors.selectLocalCurrency(getState()),
+        language: extra.selectors.selectLanguage(getState()),
     }),
 );
 
-const dummyReducer = createReducer({ greetings: 'ciao', currency: 'czk' }, builder => {
+const dummyReducer = createReducer({ greetings: 'ciao', language: 'it' }, builder => {
     builder.addCase(dummyAction, (state, action) => {
         state.greetings = action.payload.greetings;
-        state.currency = action.payload.currency;
+        state.language = action.payload.language;
     });
 });
 
 const extraDependencies = {
     selectors: {
-        selectLocalCurrency: (_state: any) => 'usd',
+        selectLanguage: (_state: any) => 'en',
     },
 };
 
@@ -51,7 +51,7 @@ describe('createActionWithExtraDeps', () => {
             type: 'dummyAction',
             payload: {
                 greetings: 'bella ciao',
-                currency: 'usd',
+                language: 'en',
             },
         });
     });
@@ -65,7 +65,7 @@ describe('createActionWithExtraDeps', () => {
         );
         expect(store.getState().dummy).toEqual({
             greetings: 'bella ciao',
-            currency: 'usd',
+            language: 'en',
         });
     });
 
@@ -81,8 +81,8 @@ describe('createActionWithExtraDeps', () => {
         // @ts-expect-error - this is expected to fail payload shound be empty
         store.dispatch(dummyAction());
 
-        // @ts-expect-error - this is expected to fail, `currency` is injected by extra deps in payload creator
-        store.dispatch(dummyAction({ currency: 'eur' }));
+        // @ts-expect-error - this is expected to fail, `language` is injected by extra deps in payload creator
+        store.dispatch(dummyAction({ language: 'cz' }));
 
         // @ts-expect-error - this is expected to fail, there is no `blahblah` in payload
         store.dispatch(dummyAction({ blahblah: 'blahblah', greetings: 'bella ciao' }));

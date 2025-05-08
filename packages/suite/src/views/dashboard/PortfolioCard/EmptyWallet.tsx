@@ -1,4 +1,4 @@
-import { selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
+import { selectEnabledNetworks, selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
 import { Button, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -7,7 +7,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 export const EmptyWallet = () => {
     const { supportedMainnets } = useNetworkSupport();

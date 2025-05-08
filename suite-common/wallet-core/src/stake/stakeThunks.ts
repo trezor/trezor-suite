@@ -27,6 +27,7 @@ import {
     ValidatorsQueue,
 } from './stakeTypes';
 import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsReducer';
+import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
@@ -154,11 +155,11 @@ export const fetchEverstakeRewards = createThunk<
 
 export const initStakeDataThunk = createThunk(
     `${STAKE_MODULE}/initStakeDataThunk`,
-    (_, { getState, dispatch, extra }) => {
+    (_, { getState, dispatch }) => {
         //because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
         const accountsNetworks = selectAllNetworkSymbolsOfVisibleAccounts(getState());
         //also join with enabled networks in case account was not yet discovered, but network is already enabled
-        const enabledNetworks = extra.selectors.selectEnabledNetworks(getState());
+        const enabledNetworks = selectEnabledNetworks(getState());
         const mergedNetworks = [...new Set([...accountsNetworks, ...enabledNetworks])];
 
         const ethereumBasedNetworksWithStaking = getStakingSymbols(mergedNetworks);

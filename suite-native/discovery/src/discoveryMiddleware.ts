@@ -3,22 +3,21 @@ import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definiti
 import {
     accountsActions,
     authorizeDeviceThunk,
+    changeCoinVisibility,
+    changeNetworks,
     deviceActions,
     discoveryActions,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
 } from '@suite-common/wallet-core';
 import { isFirmwareVersionSupported } from '@suite-native/device';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-
 import {
-    addEnabledDiscoveryNetworkSymbol,
     selectAreTestnetsEnabled,
     selectIsCoinEnablingInitFinished,
-    setEnabledDiscoveryNetworkSymbols,
     toggleAreTestnetsEnabled,
-    toggleEnabledDiscoveryNetworkSymbol,
-} from './discoveryConfigSlice';
+} from '@suite-native/settings';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+
 import { discoveryCheckThunk, startDescriptorPreloadedDiscoveryThunk } from './discoveryThunks';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
@@ -76,7 +75,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (deviceActions.selectDevice.match(action)) {
             const device = action.payload;
             if (device?.connected && hasBitcoinOnlyFirmware(device)) {
-                dispatch(addEnabledDiscoveryNetworkSymbol('btc'));
+                dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
             }
         }
 
@@ -90,11 +89,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // if we changed enabled networks, check for token definitions right away
-        if (
-            (toggleEnabledDiscoveryNetworkSymbol.match(action) ||
-                setEnabledDiscoveryNetworkSymbols.match(action)) &&
-            isCoinEnablingInitFinished
-        ) {
+        if (changeNetworks.match(action) && isCoinEnablingInitFinished) {
             dispatch(periodicCheckTokenDefinitionsThunk());
         }
 

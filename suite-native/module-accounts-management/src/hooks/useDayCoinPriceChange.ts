@@ -6,9 +6,12 @@ import { getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BlockchainRootState, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
+import {
+    BlockchainRootState,
+    selectIsElectrumBackendSelected,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { percentageDiff } from '@suite-native/graph';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
@@ -18,7 +21,7 @@ export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
     const [yesterdayValue, setYesterdayValue] = useState<number | null>(null);
     const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
 
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, symbol ?? 'btc'),
     );

@@ -19,10 +19,9 @@ import {
     selectIsPendingTransportEvent,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
-import { PROTO, StaticSessionId } from '@trezor/connect';
+import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -74,13 +73,8 @@ export const extraDependencies: ExtraDependencies = {
     },
     selectors: {
         selectDevices: (state: AppState) => state.device.devices,
-        selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
-        selectAreSatsAmountUnit: (state: AppState) =>
-            state.wallet.settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI,
-        selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
             state.wallet.settings.enabledNetworks,
-        selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
@@ -102,7 +96,6 @@ export const extraDependencies: ExtraDependencies = {
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
-        setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
         lockDevice: suiteActions.lockDevice,
         appChanged: suiteActions.appChanged,
         setSelectedDevice: deviceActions.selectDevice,
@@ -208,6 +201,8 @@ export const extraDependencies: ExtraDependencies = {
                 state.drafts[d.key] = d.value;
             });
         },
+        storageLoadWalletSettings: (state, { payload }: StorageLoadAction) =>
+            payload.walletSettings || state,
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),

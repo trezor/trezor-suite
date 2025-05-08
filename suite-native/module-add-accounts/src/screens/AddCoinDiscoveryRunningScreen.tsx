@@ -7,6 +7,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
+    changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
@@ -15,7 +16,6 @@ import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms'
 import {
     applyDiscoveryChangesThunk,
     selectDeviceEnabledDiscoveryNetworkSymbols,
-    toggleEnabledDiscoveryNetworkSymbol,
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
@@ -87,7 +87,12 @@ export const AddCoinDiscoveryRunningScreen = ({
             accounts.length === 0 &&
             !hasDiscovery
         ) {
-            dispatch(toggleEnabledDiscoveryNetworkSymbol(networkSymbol));
+            dispatch(
+                changeCoinVisibility({
+                    symbol: networkSymbol,
+                    shouldBeVisible: true,
+                }),
+            );
             dispatch(applyDiscoveryChangesThunk());
         }
 

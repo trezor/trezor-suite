@@ -2,14 +2,11 @@ import { TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { changeCoinVisibility, selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';
-import {
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-    toggleEnabledDiscoveryNetworkSymbol,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -101,7 +98,7 @@ export const NetworkSymbolSwitchItem = ({
                 ),
             });
         }
-        dispatch(toggleEnabledDiscoveryNetworkSymbol(symbol));
+        dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isChecked }));
 
         if (allowChangeAnalytics) {
             analytics.report({

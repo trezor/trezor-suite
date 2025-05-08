@@ -5,7 +5,6 @@
         {
             "path": "../../suite-common/wallet-config"
         },
-        { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" }
     ]

@@ -8,11 +8,11 @@ import {
     initDevices,
     initStakeDataThunk,
     periodicFetchFiatRatesThunk,
+    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
 
 let isAlreadyInitialized = false;
@@ -48,7 +48,7 @@ export const applicationInit = createThunk(
         dispatch(
             periodicFetchFiatRatesThunk({
                 rateType: 'current',
-                localCurrency: selectFiatCurrencyCode(getState()),
+                localCurrency: selectLocalCurrency(getState()),
             }),
         );
 

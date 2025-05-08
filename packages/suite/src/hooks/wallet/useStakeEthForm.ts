@@ -4,7 +4,11 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
 
-import { StakeContextValues, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import {
+    StakeContextValues,
+    selectFiatRatesByFiatRateKey,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import {
     fromFiatCurrency,
@@ -18,7 +22,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     CRYPTO_INPUT,
     FIAT_INPUT,

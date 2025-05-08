@@ -2,22 +2,26 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { Account, WalletSettings } from '@suite-common/wallet-types';
 
+import { prepareWalletSettingsReducer } from '../../settings/walletSettingsReducer';
 import { AccountsRootState, prepareAccountsReducer } from '../accountsReducer';
 import { disableAccountsThunk } from '../accountsThunks';
 
 const accountsReducer = prepareAccountsReducer(extraDependenciesMock);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesMock);
 
 interface InitStoreArgs {
     extra?: ExtraDependenciesPartial;
-    preloadedState?: AccountsRootState;
+    preloadedState?: AccountsRootState & { wallet: { settings: Partial<WalletSettings> } };
 }
 
 const initStore = ({ extra = {}, preloadedState }: InitStoreArgs = {}) =>
     configureMockStore({
         extra,
-        reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
+        reducer: {
+            wallet: combineReducers({ accounts: accountsReducer, settings: walletSettingsReducer }),
+        },
         preloadedState,
     });
 
@@ -33,11 +37,9 @@ describe('Account Actions', () => {
             preloadedState: {
                 wallet: {
                     accounts: [getAccount() as Account, getAccount() as Account],
-                },
-            },
-            extra: {
-                selectors: {
-                    selectEnabledNetworks: () => ['ltc'],
+                    settings: {
+                        enabledNetworks: ['ltc'],
+                    },
                 },
             },
         });
@@ -50,11 +52,9 @@ describe('Account Actions', () => {
             preloadedState: {
                 wallet: {
                     accounts: [getAccount({ symbol: 'ltc' }) as Account, getAccount() as Account],
-                },
-            },
-            extra: {
-                selectors: {
-                    selectEnabledNetworks: () => ['ltc'],
+                    settings: {
+                        enabledNetworks: ['ltc'],
+                    },
                 },
             },
         });

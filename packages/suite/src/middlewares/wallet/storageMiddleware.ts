@@ -9,8 +9,10 @@ import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { tradingActions } from '@suite-common/trading';
 import {
+    WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
+    changeNetworks,
     deviceActions,
     discoveryActions,
     explorerActions,
@@ -21,14 +23,13 @@ import {
     selectHistoricFiatRates,
     selectSelectedDevice,
     sendFormActions,
+    setLocalCurrency,
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { METADATA, STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as storageActions from 'src/actions/suite/storageActions';
@@ -75,7 +76,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
-            if (walletSettingsActions.changeNetworks.match(action)) {
+            if (changeNetworks.match(action)) {
                 api.dispatch(storageActions.saveWalletSettings());
             }
 
@@ -235,7 +236,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             switch (action.type) {
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
-                case walletSettingsActions.setLocalCurrency.type:
+                case setLocalCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                     api.dispatch(storageActions.saveWalletSettings());
                     break;

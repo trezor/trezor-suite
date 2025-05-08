@@ -2,15 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/suite-config"
-        },
-        {
-            "path": "../../suite-common/wallet-config"
-        },
         { "path": "../atoms" },
         { "path": "../icons" },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/styles" }
     ]
 }

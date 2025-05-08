@@ -4,6 +4,7 @@ import type { MiddlewareAPI } from 'redux';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingBuyActions } from '@suite-common/trading';
 import {
+    WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
@@ -16,7 +17,6 @@ import {
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import { ROUTER } from 'src/actions/suite/constants';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';

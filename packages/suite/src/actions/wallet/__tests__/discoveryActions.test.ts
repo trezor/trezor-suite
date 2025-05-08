@@ -19,9 +19,7 @@ import * as discoveryActions from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { ArrayElement } from '@trezor/type-utils';
 
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { accountsReducer } from 'src/reducers/wallet';
-import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 
@@ -34,6 +32,7 @@ import {
 } from '../__fixtures__/discoveryActions';
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
+const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
 
 const { getSuiteDevice } = testMocks;
 
@@ -181,7 +180,7 @@ const getInitialState = (device = SUITE_DEVICE) => ({
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
         settings: walletSettingsReducer(undefined, {
-            type: walletSettingsActions.changeNetworks.type,
+            type: discoveryActions.changeNetworks.type,
             payload: BITCOIN_ONLY_SYMBOLS,
         }),
     },
@@ -219,7 +218,7 @@ describe('Discovery Actions', () => {
             setTrezorConnectFixtures(f);
             const store = initStore(getInitialState(f.device));
             if (f.enabledNetworks) {
-                store.dispatch(walletSettingsActions.changeNetworks(f.enabledNetworks));
+                store.dispatch(discoveryActions.changeNetworks(f.enabledNetworks));
             }
 
             store.dispatch(
@@ -310,7 +309,7 @@ describe('Discovery Actions', () => {
                     // call "updateNetworkSettings" if added account is a trigger from fixtures
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
                     if (trigger) {
-                        store.dispatch(walletSettingsActions.changeNetworks(trigger.networks));
+                        store.dispatch(discoveryActions.changeNetworks(trigger.networks));
                         store.dispatch(updateNetworkSettingsThunk());
                     }
                 }
@@ -351,7 +350,7 @@ describe('Discovery Actions', () => {
                     device: f.device || SUITE_DEVICE,
                 }),
             );
-            store.dispatch(walletSettingsActions.changeNetworks(f.networks));
+            store.dispatch(discoveryActions.changeNetworks(f.networks));
             store.dispatch(updateNetworkSettingsThunk());
 
             const discovery = store.getState().wallet.discovery[0];

@@ -14,11 +14,13 @@ import {
     DeviceRootState,
     FiatRatesRootState,
     TransactionsRootState,
+    WalletSettingsRootState,
     selectAccountByKey,
     selectAccounts,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
     selectIsPortfolioTrackerDevice,
+    selectLocalCurrency,
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
@@ -30,7 +32,6 @@ import {
     getFirstFreshAddress,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import { isCoinWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import type { StaticSessionId } from '@trezor/connect';
@@ -45,7 +46,7 @@ import {
 
 export type NativeAccountsRootState = AccountsRootState &
     FiatRatesRootState &
-    SettingsSliceRootState &
+    WalletSettingsRootState &
     DeviceRootState &
     TokenDefinitionsRootState &
     TransactionsRootState;
@@ -97,7 +98,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
     [
         selectCurrentFiatRates,
         selectAccountByKey,
-        selectFiatCurrencyCode,
+        selectLocalCurrency,
         (_, _accountKey: AccountKey, shouldIncludeStaking?: boolean) =>
             shouldIncludeStaking ?? true,
         (
@@ -129,7 +130,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
 );
 
 export const selectAccountTokenFiatBalance = createMemoizedSelector(
-    [selectCurrentFiatRates, selectFiatCurrencyCode, selectAccountByKey, selectAccountTokenInfo],
+    [selectCurrentFiatRates, selectLocalCurrency, selectAccountByKey, selectAccountTokenInfo],
     (fiatRates, localCurrency, account, tokenInfo) => {
         if (!account || !fiatRates || !tokenInfo) return '0';
         const { contract, balance } = tokenInfo;

@@ -1,4 +1,5 @@
 import { getNetwork } from '@suite-common/wallet-config';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
@@ -10,7 +11,6 @@ import {
     selectIsSettingsDesktopAppPromoBannerShown,
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';

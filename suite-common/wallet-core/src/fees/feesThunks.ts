@@ -13,6 +13,7 @@ import { isNative } from '@trezor/env-utils';
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
 import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
 import { selectFees } from '../fees/feesReducer';
+import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -27,10 +28,7 @@ export const sortLevels = (levels: FeeLevel[]) =>
 
 export const preloadFeeInfoThunk = createThunk(
     `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
-    async (_, { dispatch, getState, extra }) => {
-        const {
-            selectors: { selectEnabledNetworks },
-        } = extra;
+    async (_, { dispatch, getState }) => {
         const enabledNetworks = selectEnabledNetworks(getState());
 
         // Fetch default fee levels

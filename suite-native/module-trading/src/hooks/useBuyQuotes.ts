@@ -14,8 +14,8 @@ import {
     selectTradingBuyQuotes,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { useDebounce } from '@trezor/react-utils';
 
 import { clearBuyState, clearQuotesAndQuotesRequest } from '../tradingSlice';
@@ -155,7 +155,7 @@ const useBuyQuotesThunk = (
 
     const asset = form.watch('asset');
     const symbol = getSelectedSymbolFromBuyForm(form);
-    const shouldSendInSats = useSelector((state: SettingsSliceRootState) =>
+    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );
     const coinInfo = useSelector((state: TradingRootState) =>

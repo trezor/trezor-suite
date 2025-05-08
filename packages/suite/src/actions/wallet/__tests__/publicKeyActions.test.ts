@@ -60,6 +60,12 @@ const rootReducer = combineReducers({
             () => ({}),
         ),
         accounts: createReducer([{ metadata: {}, networkType: 'bitcoin' }], () => {}),
+        settings: createReducer(
+            {
+                enabledNetworks: [],
+            },
+            () => ({}),
+        ),
     }),
 
     metadata: createReducer(

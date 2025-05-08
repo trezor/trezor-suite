@@ -19,7 +19,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
-        "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/firmware": "workspace:*",
         "@suite-native/helpers": "workspace:*",

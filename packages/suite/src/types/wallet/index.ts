@@ -7,6 +7,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import {
+    WalletSettingsAction,
     accountsActions,
     blockchainActions,
     discoveryActions,
@@ -95,4 +96,5 @@ export type WalletAction =
     | CoinjoinClientAction
     | AccountsAction
     | StakeAction
-    | ConnectPopupAction;
+    | ConnectPopupAction
+    | WalletSettingsAction;

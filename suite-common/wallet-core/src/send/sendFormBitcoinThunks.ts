@@ -34,6 +34,10 @@ import {
     SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectSelectedDevice } from '../device/deviceReducer';
+import {
+    selectAreSatsAmountUnit,
+    selectBitcoinAmountUnit,
+} from '../settings/walletSettingsReducer';
 import { selectTransactions } from '../transactions/transactionsReducer';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
@@ -56,11 +60,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, getState, extra, rejectWithValue }) => {
-        const {
-            selectors: { selectAreSatsAmountUnit },
-        } = extra;
-
+    async ({ formState, composeContext }, { dispatch, getState, rejectWithValue }) => {
         const { account, excludedUtxos, feeInfo, prison } = composeContext;
 
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
@@ -252,7 +252,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         { getState, extra, rejectWithValue },
     ) => {
         const {
-            selectors: { selectBitcoinAmountUnit, selectAddressDisplayType },
+            selectors: { selectAddressDisplayType },
         } = extra;
 
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());

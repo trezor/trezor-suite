@@ -1,6 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { deviceConnectThunks, selectDevices } from '@suite-common/wallet-core';
+import {
+    deviceConnectThunks,
+    selectDevices,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,
@@ -32,7 +36,7 @@ export const connectInitThunk = createThunk<
     void
 >(`${CONNECT_INIT_MODULE}/initThunk`, async (connectInitHooks, { dispatch, getState, extra }) => {
     const {
-        selectors: { selectEnabledNetworks, selectIsPendingTransportEvent, selectDebugSettings },
+        selectors: { selectIsPendingTransportEvent, selectDebugSettings },
         actions: { lockDevice },
         utils: { connectInitSettings },
     } = extra;

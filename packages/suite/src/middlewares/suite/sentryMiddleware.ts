@@ -3,17 +3,18 @@ import { MiddlewareAPI } from 'redux';
 import { analyticsActions } from '@suite-common/analytics';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import {
+    WALLET_SETTINGS,
     accountsActions,
     authorizeDeviceThunk,
     blockchainActions,
+    changeNetworks,
     deviceActions,
     discoveryActions,
+    setLocalCurrency,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import {
     DESKTOP_UPDATE,
     METADATA,
@@ -39,7 +40,7 @@ const breadcrumbActions = [
     SUITE.SET_THEME,
     SUITE.SET_ADDRESS_DISPLAY_TYPE,
     SUITE.SET_AUTODETECT,
-    walletSettingsActions.setLocalCurrency.type,
+    setLocalCurrency.type,
     WALLET_SETTINGS.SET_HIDE_BALANCE,
     METADATA.ENABLE,
     METADATA.DISABLE,
@@ -60,7 +61,7 @@ const breadcrumbActions = [
     deviceActions.updateSelectedDevice.type,
     deviceActions.rememberDevice.type,
     METADATA.ADD_PROVIDER,
-    walletSettingsActions.changeNetworks.type,
+    changeNetworks.type,
     TRANSPORT.START,
     TRANSPORT.ERROR,
     blockchainActions.setBackend.type,

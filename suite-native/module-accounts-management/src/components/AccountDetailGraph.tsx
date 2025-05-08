@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountsRootState, selectLocalCurrency } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     NativeAccountsRootState,
@@ -12,7 +12,6 @@ import {
 import { VStack } from '@suite-native/atoms';
 import { Graph, TimeSwitch, useGraphAtoms, useGraphForSingleAccount } from '@suite-native/graph';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { AccountDetailHeader } from './AccountDetailHeader';
 import { referencePointAtom, selectedPointAtom } from '../accountDetailGraphAtoms';
@@ -23,7 +22,7 @@ type AccountDetailGraphProps = {
 };
 
 export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
         selectIsHistoryEnabledAccountByAccountKey(state, accountKey),
     );

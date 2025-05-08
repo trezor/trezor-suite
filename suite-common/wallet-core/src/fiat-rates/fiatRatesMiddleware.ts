@@ -12,16 +12,14 @@ import {
 } from './fiatRatesThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { blockchainActions } from '../blockchain/blockchainActions';
+import { setLocalCurrency } from '../settings/walletSettingsActions';
+import { selectLocalCurrency } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { fetchAllTransactionsForAccountThunk } from '../transactions/transactionsThunks';
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, extra, next, getState }) => {
+    (action, { dispatch, next, getState }) => {
         next(action); //next must be at the beginning, othervise tickers are not going to be updated and fiat rates wont fetch (the user will have to wait for 1m timeout)
-        const {
-            actions: { setWalletSettingsLocalCurrency },
-            selectors: { selectLocalCurrency },
-        } = extra;
 
         if (isAnyOf(accountsActions.updateAccount, accountsActions.createAccount)(action)) {
             dispatch(
@@ -73,7 +71,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             );
         }
 
-        if (setWalletSettingsLocalCurrency.match(action)) {
+        if (setLocalCurrency.match(action)) {
             const { localCurrency } = action.payload;
             // We need to pass localCurrency as a parameter, because it is not yet updated in the store
             dispatch(fetchFiatRatesThunk({ rateType: 'current', localCurrency }));

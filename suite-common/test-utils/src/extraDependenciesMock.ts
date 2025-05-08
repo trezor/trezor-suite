@@ -1,10 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
-import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
 
 import { testMocks } from './mocks';
 
@@ -71,14 +69,10 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     selectors: {
         selectDevices: mockSelector('selectDevices', []),
-        selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
-        selectAreSatsAmountUnit: mockSelector('selectAreSatsAmountUnit', false),
-        selectEnabledNetworks: mockSelector('selectEnabledNetworks', BITCOIN_ONLY_SYMBOLS),
         selectTokenDefinitionsEnabledNetworks: mockSelector(
             'selectTokenDefinitonsEnabledNetworks',
             ['eth'],
         ),
-        selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
         selectDebugSettings: mockSelector('selectDebugSettings', {
             checkFirmwareAuthenticity: false,
@@ -111,7 +105,6 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
-        setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
         lockDevice: mockAction('lockDevice'),
         appChanged: mockAction('appChanged'),
         setSelectedDevice: mockAction('setSelectedDevice'),
@@ -137,6 +130,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadDevices: mockReducer('storageLoadDevices'),
         storageLoadFormDrafts: mockReducer('storageLoadFormDrafts'),
         storageLoadTokenManagement: mockReducer('storageLoadTokenManagement'),
+        storageLoadWalletSettings: mockReducer('storageLoadWalletSettings'),
     },
     utils: {
         saveAs: (data, fileName) =>

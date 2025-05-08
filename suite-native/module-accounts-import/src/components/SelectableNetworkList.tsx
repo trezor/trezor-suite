@@ -5,11 +5,9 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { HeaderedCard, VStack } from '@suite-native/atoms';
 import { getNativeMainnetSymbols } from '@suite-native/config';
-import {
-    selectAreTestnetsEnabled,
-    selectSupportedTestnetNetworkSymbols,
-} from '@suite-native/discovery';
+import { selectSupportedTestnetNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
+import { selectAreTestnetsEnabled } from '@suite-native/settings';
 
 type SelectableAssetListProps = {
     onSelectItem: (symbol: NetworkSymbol) => void;

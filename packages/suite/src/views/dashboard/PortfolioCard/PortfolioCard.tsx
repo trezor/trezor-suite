@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Card, Column, Dropdown, Switch, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -12,7 +12,6 @@ import { GraphScaleDropdownItem, GraphSkeleton, Translation } from 'src/componen
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';

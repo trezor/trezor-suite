@@ -18,7 +18,6 @@ import {
 import * as discoveryActions from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { MODAL, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 import { getApp } from 'src/utils/suite/router';
@@ -81,7 +80,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // Note: TS says next(action) generally isn't async, but the action may return anything; sometimes it's a Promise → needs to be awaited
         await next(action);
 
-        if (walletSettingsActions.changeNetworks.match(action)) {
+        if (discoveryActions.changeNetworks.match(action)) {
             // update Discovery fields
             dispatch(updateNetworkSettingsThunk());
             // remove accounts which are no longer part of Discovery
@@ -167,7 +166,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             authorizeDeviceThunk.fulfilled.match(action) ||
-            walletSettingsActions.changeNetworks.match(action) ||
+            discoveryActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
             const discovery = selectDeviceDiscovery(getState());

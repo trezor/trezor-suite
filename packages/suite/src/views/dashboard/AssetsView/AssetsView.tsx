@@ -9,7 +9,11 @@ import {
     getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import {
+    selectCurrentFiatRates,
+    selectEnabledNetworks,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { RatesByKey } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
@@ -30,7 +34,6 @@ import { Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
-import { selectEnabledNetworks, selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { Account } from 'src/types/wallet';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';

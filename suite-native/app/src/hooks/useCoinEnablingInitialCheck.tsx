@@ -4,20 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { changeNetworks, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { selectShouldShowCoinEnablingInitFlow } from '@suite-native/coin-enabling';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
-import {
-    applyDiscoveryChangesThunk,
-    setEnabledDiscoveryNetworkSymbols,
-    setIsCoinEnablingInitFinished,
-} from '@suite-native/discovery';
+import { applyDiscoveryChangesThunk } from '@suite-native/discovery';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { selectIsOnboardingFinished, setIsCoinEnablingInitFinished } from '@suite-native/settings';
 import { TimerId } from '@trezor/type-utils';
 
 export const useCoinEnablingInitialCheck = () => {
@@ -51,9 +47,7 @@ export const useCoinEnablingInitialCheck = () => {
             } else {
                 // if there are remembered accounts, enable its networks before showing UI
                 if (A.isNotEmpty(viewOnlyDevicesAccountsNetworkSymbols)) {
-                    dispatch(
-                        setEnabledDiscoveryNetworkSymbols(viewOnlyDevicesAccountsNetworkSymbols),
-                    );
+                    dispatch(changeNetworks(viewOnlyDevicesAccountsNetworkSymbols));
                 }
                 timeoutId = setTimeout(() => {
                     wasInitScreenShown.current = true;

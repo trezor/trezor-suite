@@ -1,5 +1,6 @@
 import { Dispatch } from 'react';
 
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -10,7 +11,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 import { ContentType } from './types';
 

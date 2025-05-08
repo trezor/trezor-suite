@@ -1,5 +1,5 @@
 import { SignOperator } from '@suite-common/suite-types';
-import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { selectHistoricFiatRatesByTimestamp, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
     formatCardanoDeposit,
@@ -11,7 +11,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 

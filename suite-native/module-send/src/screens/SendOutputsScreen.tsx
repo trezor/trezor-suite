@@ -13,9 +13,11 @@ import {
     AccountsRootState,
     FeesRootState,
     SendRootState,
+    WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectDeviceUnavailableCapabilities,
+    selectIsAmountInSats,
     selectNetworkFeeInfo,
     selectSendFormDraftByKey,
     sendFormActions,
@@ -34,7 +36,6 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -93,7 +94,7 @@ export const SendOutputsScreen = ({
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
-    const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
+    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, account?.symbol),
     );
     const networkFeeInfo = useSelector((state: FeesRootState) =>

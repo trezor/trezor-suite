@@ -5,10 +5,9 @@ import {
     messageSystemActions,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { changeNetworks, deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { SUITE } from 'src/actions/suite/constants';
 import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
@@ -18,7 +17,7 @@ const actions = [
     deviceActions.selectDevice.type,
     SUITE.TOR_STATUS,
     messageSystemActions.fetchSuccessUpdate.type,
-    walletSettingsActions.changeNetworks.type,
+    changeNetworks.type,
     TRANSPORT.START,
     DEVICE.CONNECT,
 ];

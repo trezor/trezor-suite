@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { openModal } from 'src/actions/suite/modalActions';
 import { CoinList } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -25,7 +25,7 @@ export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
     const isAtLeastOneActive = networks.some(({ symbol }) => enabledNetworks?.includes(symbol));
 
     const onToggle: CoinListProps['onToggle'] = (symbol, shouldBeVisible) =>
-        dispatch(changeCoinVisibility(symbol, shouldBeVisible));
+        dispatch(changeCoinVisibility({ symbol, shouldBeVisible }));
     const onSettings = (symbol: NetworkSymbol) => {
         setSettingsMode(false);
         dispatch(

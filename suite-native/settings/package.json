@@ -11,11 +11,8 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
-        "@suite-common/suite-config": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0"
     }

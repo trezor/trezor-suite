@@ -1,6 +1,7 @@
 import {
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
+    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -20,7 +21,6 @@ import { BigNumber } from '@trezor/utils';
 import { FiatValue, FormattedCryptoAmount, FormattedDate, Translation } from 'src/components/suite';
 import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 type AmountDetailsProps = {

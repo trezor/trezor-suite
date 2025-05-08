@@ -9,7 +9,6 @@ import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     applyDiscoveryChangesThunk,
     selectDeviceEnabledDiscoveryNetworkSymbols,
-    setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
@@ -22,6 +21,7 @@ import {
     StackNavigationProps,
     useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
+import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 

@@ -6,7 +6,7 @@ import {
     isNetworkSymbol,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
-import type { BackendSettings } from '@suite-common/wallet-types';
+import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
     formatNetworkAmount,
@@ -20,7 +20,6 @@ import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import type { State } from 'src/reducers/wallet/settingsReducer';
 import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
 import { migrationCoinmarketToTrading } from 'src/storage/migrations/trading/migrationCoinmarketToTrading';
 import type { BlockbookUrl, CustomBackend } from 'src/types/wallet/backend';
@@ -247,7 +246,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 25) {
         await updateAll<
             'walletSettings',
-            State & {
+            WalletSettings & {
                 blockbookUrls?: BlockbookUrl[];
             } & WalletWithBackends
         >(transaction, 'walletSettings', settings => {
@@ -298,7 +297,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 27) {
         const backendSettings = db.createObjectStore('backendSettings');
 
-        await updateAll<'walletSettings', State & WalletWithBackends>(
+        await updateAll<'walletSettings', WalletSettings & WalletWithBackends>(
             transaction,
             'walletSettings',
             settings => {

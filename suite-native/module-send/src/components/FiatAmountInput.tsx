@@ -2,11 +2,11 @@ import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
+import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { Input } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { useNativeStyles } from '@trezor/styles';
 
 import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
@@ -27,7 +27,7 @@ export const FiatAmountInput = ({
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext<SendOutputsFormValues>();
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
 

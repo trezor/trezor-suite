@@ -2,6 +2,10 @@ import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+    selectIsHideSuspiciousTransactions,
+    toggleHideSuspiciousTransactions,
+} from '@suite-common/wallet-core';
+import {
     Box,
     Button,
     Column,
@@ -15,11 +19,9 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { toggleHideSuspiciousTransactions } from 'src/actions/settings/walletSettingsActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
-import { selectIsHideSuspiciousTransactions } from 'src/reducers/wallet/settingsReducer';
 
 const options = [
     {

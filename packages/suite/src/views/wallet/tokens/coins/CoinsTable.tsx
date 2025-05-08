@@ -1,11 +1,10 @@
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     enhanceTokensWithRates,
     getTokens,

@@ -1,12 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT, UseStakeFormsProps } from 'src/types/wallet/stakeForms';
 import {

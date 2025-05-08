@@ -1,6 +1,7 @@
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
+
 import { useNetworkSupport } from '../../../../hooks/settings/useNetworkSupport';
 import { useSelector } from '../../../../hooks/suite';
-import { selectEnabledNetworks } from '../../../../reducers/wallet/settingsReducer';
 
 export const useAvailableNetworkSymbols = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);

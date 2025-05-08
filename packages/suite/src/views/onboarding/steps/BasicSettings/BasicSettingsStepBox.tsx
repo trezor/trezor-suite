@@ -2,15 +2,14 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
+import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 const Separator = styled.hr`
     height: 1px;
@@ -29,7 +28,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
 
     // BTC should be enabled by default
     useEffect(() => {
-        dispatch(changeCoinVisibility('btc', true));
+        dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
     }, [dispatch]);
 
     return (

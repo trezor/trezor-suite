@@ -34,7 +34,6 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
-        { "path": "../settings" },
         { "path": "../staking" },
         { "path": "../toasts" },
         { "path": "../tokens" },

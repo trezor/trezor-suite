@@ -19,11 +19,11 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { FormState, Output } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TradingExchangeFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import {

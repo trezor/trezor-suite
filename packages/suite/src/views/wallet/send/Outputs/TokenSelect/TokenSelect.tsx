@@ -18,6 +18,7 @@ import {
 import {
     selectCurrentFiatRates,
     selectExplorer,
+    selectLocalCurrency,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -53,7 +54,6 @@ import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     enhanceTokensWithRates,
     getTokens,

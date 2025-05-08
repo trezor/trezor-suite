@@ -29,7 +29,6 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../transactions" },
         { "path": "../../packages/styles" },

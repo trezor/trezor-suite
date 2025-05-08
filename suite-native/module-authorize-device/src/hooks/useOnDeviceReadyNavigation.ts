@@ -5,10 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
-import {
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-    selectIsCoinEnablingInitFinished,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 import {
@@ -20,6 +17,7 @@ import {
     RootStackRoutes,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
+import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 const LOADING_TIMEOUT = 2500;
 

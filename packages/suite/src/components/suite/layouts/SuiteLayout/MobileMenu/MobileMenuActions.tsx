@@ -3,14 +3,13 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import type { Route } from '@suite-common/suite-types';
+import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
 
-import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useGuide } from 'src/hooks/guide/useGuide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { MobileActionItem } from './MobileActionItem';
 import { useEnabledBackends } from '../utils';

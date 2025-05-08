@@ -1,17 +1,15 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { PROTO } from '@trezor/connect';
+import { isDetoxTestBuild } from '@suite-native/config';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
-    fiatCurrencyCode: FiatCurrencyCode;
-    bitcoinUnits: PROTO.AmountUnit;
+    isCoinEnablingInitFinished: boolean;
     viewOnlyCancelationTimestamp?: number;
     isDeviceAuthenticityCheckEnabled: boolean;
     isFirmwareRevisionCheckEnabled: boolean;
     isFirmwareHashCheckEnabled: boolean;
+    areTestnetsEnabled: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -19,40 +17,31 @@ export type SettingsSliceRootState = {
 };
 
 export const appSettingsInitialState: AppSettingsState = {
-    fiatCurrencyCode: 'usd',
-    bitcoinUnits: PROTO.AmountUnit.BITCOIN,
     isOnboardingFinished: false,
+    isCoinEnablingInitFinished: false,
     viewOnlyCancelationTimestamp: undefined,
     isDeviceAuthenticityCheckEnabled: true,
     isFirmwareRevisionCheckEnabled: true,
     isFirmwareHashCheckEnabled: true,
+    areTestnetsEnabled: isDetoxTestBuild(),
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isOnboardingFinished',
-    'fiatCurrencyCode',
-    'bitcoinUnits',
+    'isCoinEnablingInitFinished',
     'viewOnlyCancelationTimestamp',
     'isDeviceAuthenticityCheckEnabled',
     'isFirmwareRevisionCheckEnabled',
     'isFirmwareHashCheckEnabled',
+    'areTestnetsEnabled',
 ];
 
 export const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState: appSettingsInitialState,
     reducers: {
-        setFiatCurrency: (
-            state,
-            { payload: { localCurrency } }: PayloadAction<{ localCurrency: FiatCurrencyCode }>,
-        ) => {
-            state.fiatCurrencyCode = localCurrency;
-        },
         setIsOnboardingFinished: state => {
             state.isOnboardingFinished = true;
-        },
-        setBitcoinUnits: (state, { payload }: PayloadAction<PROTO.AmountUnit>) => {
-            state.bitcoinUnits = payload;
         },
         setViewOnlyCancelationTimestamp: (state, { payload }: PayloadAction<number>) => {
             state.viewOnlyCancelationTimestamp = payload;
@@ -64,20 +53,27 @@ export const appSettingsSlice = createSlice({
         setDeviceAuthenticityCheckEnabled: (state, { payload }: PayloadAction<boolean>) => {
             state.isDeviceAuthenticityCheckEnabled = payload;
         },
+        toggleAreTestnetsEnabled: state => {
+            state.areTestnetsEnabled = !state.areTestnetsEnabled;
+        },
+        setIsCoinEnablingInitFinished: (state, { payload }: PayloadAction<boolean>) => {
+            state.isCoinEnablingInitFinished = payload;
+        },
     },
 });
 
-export const selectFiatCurrencyCode = (state: SettingsSliceRootState) =>
-    state.appSettings.fiatCurrencyCode;
-export const selectBitcoinUnits = (state: SettingsSliceRootState) => state.appSettings.bitcoinUnits;
-export const selectAreSatsAmountUnit = (state: SettingsSliceRootState) =>
-    selectBitcoinUnits(state) === PROTO.AmountUnit.SATOSHI;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
 export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState) =>
     state.appSettings.viewOnlyCancelationTimestamp;
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isDeviceAuthenticityCheckEnabled;
+
+export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
+    state.appSettings.areTestnetsEnabled;
+
+export const selectIsCoinEnablingInitFinished = (state: SettingsSliceRootState) =>
+    state.appSettings.isCoinEnablingInitFinished;
 
 /**
  * Determine if either FW revision or FW hash check is disabled
@@ -87,26 +83,12 @@ export const selectIsFirmwareAuthenticityCheckEnabled = (state: SettingsSliceRoo
     state.appSettings.isFirmwareRevisionCheckEnabled &&
     state.appSettings.isFirmwareHashCheckEnabled;
 
-export const selectIsAmountInSats = (
-    state: SettingsSliceRootState,
-    symbol: NetworkSymbol | null | undefined,
-) => {
-    if (!symbol) {
-        return false;
-    }
-
-    const network = getNetwork(symbol);
-    const isAmountUnitSupported = network && network.features.includes('amount-unit');
-
-    return isAmountUnitSupported && selectAreSatsAmountUnit(state);
-};
-
 export const {
     setIsOnboardingFinished,
-    setFiatCurrency,
-    setBitcoinUnits,
     setViewOnlyCancelationTimestamp,
     setDeviceAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticityEnabled,
+    toggleAreTestnetsEnabled,
+    setIsCoinEnablingInitFinished,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

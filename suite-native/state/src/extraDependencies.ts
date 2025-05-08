@@ -9,17 +9,8 @@ import {
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import {
-    selectEnabledDiscoveryNetworkSymbols,
-    selectTokenDefinitionsEnabledNetworks,
-} from '@suite-native/discovery';
+import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
-import {
-    selectAreSatsAmountUnit,
-    selectBitcoinUnits,
-    selectFiatCurrencyCode,
-    setFiatCurrency,
-} from '@suite-native/settings';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -37,15 +28,8 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
-        // using all enabled networks even those current device does not support,
-        // otherwise disableAccountsThunk might erase accounts not supported by current device
-        selectEnabledNetworks: selectEnabledDiscoveryNetworkSymbols,
-        // todo: this is temporary solution to make token definitions work on native in portfolio tracker
-        selectTokenDefinitionsEnabledNetworks,
-        selectBitcoinAmountUnit: selectBitcoinUnits,
-        selectAreSatsAmountUnit,
-        selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,
+        selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
         selectDeviceDiscovery,
         selectDebugSettings: () => ({
@@ -54,9 +38,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectTradingEnvironment,
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {} as Partial<ExtraDependencies['thunks']>,
-    actions: {
-        setWalletSettingsLocalCurrency: setFiatCurrency,
-    } as Partial<ExtraDependencies['actions']>,
+    actions: {} as Partial<ExtraDependencies['actions']>,
     actionTypes: {} as Partial<ExtraDependencies['actionTypes']>,
     reducers: {} as Partial<ExtraDependencies['reducers']>,
     utils: {

@@ -35,7 +35,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../settings" },
         { "path": "../tokens" },
         {
             "path": "../../packages/blockchain-link-types"

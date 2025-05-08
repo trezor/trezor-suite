@@ -2,14 +2,15 @@ import { useSelector } from 'react-redux';
 
 import { convertCryptoToFiatAmount, convertFiatToCryptoAmount } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import {
+    FiatRatesRootState,
+    WalletSettingsRootState,
+    selectFiatRatesByFiatRateKey,
+    selectIsAmountInSats,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet } from '@suite-common/wallet-utils';
-import {
-    SettingsSliceRootState,
-    selectFiatCurrencyCode,
-    selectIsAmountInSats,
-} from '@suite-native/settings';
 
 type UseConvertFiatToCryptoParams = {
     symbol: NetworkSymbol | null;
@@ -27,11 +28,11 @@ export const useCryptoFiatConverters = ({
     useHistoricRate,
 }: UseConvertFiatToCryptoParams) => {
     const symbolHelper = symbol ?? 'btc'; // handles passing the value to selectors
-    const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
+    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbolHelper),
     );
 
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbolHelper, fiatCurrencyCode, tokenContract);
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),

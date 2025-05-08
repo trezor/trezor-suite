@@ -40,6 +40,7 @@ import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { selectDeviceByStaticSessionId } from '../device/deviceReducer';
+import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -716,11 +717,8 @@ export const createDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/create`,
     (
         { deviceState, device }: { deviceState: StaticSessionId; device: TrezorDevice },
-        { dispatch, getState, extra },
+        { dispatch, getState },
     ) => {
-        const {
-            selectors: { selectEnabledNetworks },
-        } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const filteredNetworks = filterUnavailableNetworks(enabledNetworks, device);
         const networksSymbols = filteredNetworks.map(n => n.symbol);
@@ -752,7 +750,7 @@ export const updateNetworkSettingsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/updateNetworkSettings`,
     (_, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectEnabledNetworks, selectDevices },
+            selectors: { selectDevices },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const discovery = selectDiscovery(getState());

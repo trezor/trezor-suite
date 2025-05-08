@@ -1,13 +1,17 @@
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { STORAGE } from 'src/actions/suite/constants';
-import reducer, { initialState } from 'src/reducers/wallet/settingsReducer';
+import { extraDependenciesMock } from '@suite-common/test-utils';
+
+import { initialWalletSettingsState, prepareWalletSettingsReducer } from '../../src';
+import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
+import { WALLET_SETTINGS } from '../../src/settings/walletSettingsConstants';
+
+const initialState = initialWalletSettingsState;
+
+const reducer = prepareWalletSettingsReducer(extraDependenciesMock);
 
 describe('settings reducer', () => {
     it('test initial state', () => {
         expect(
             reducer(undefined, {
-                // @ts-expect-error
                 type: 'none',
             }),
         ).toEqual(initialState);
@@ -16,7 +20,7 @@ describe('settings reducer', () => {
     it('STORAGE.LOAD', () => {
         expect(
             reducer(undefined, {
-                type: STORAGE.LOAD,
+                type: extraDependenciesMock.actionTypes.storageLoad,
                 payload: {
                     walletSettings: initialState,
                 },

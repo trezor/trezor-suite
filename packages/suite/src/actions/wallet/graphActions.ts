@@ -1,11 +1,10 @@
 import { fromUnixTime, isWithinInterval } from 'date-fns';
 
-import { selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
+import { selectIsElectrumBackendSelected, selectLocalCurrency } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 
 import { State } from 'src/reducers/wallet/graphReducer';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';

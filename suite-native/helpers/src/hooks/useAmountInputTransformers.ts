@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 
 export const decimalTransformer = (value: string) =>
     value
@@ -17,7 +17,7 @@ export const integerTransformer = (value: string) =>
         .replace(/^0+(?=\d)/g, ''); // remove all leading zeros except the first one
 
 export const useAmountInputTransformers = (symbol: NetworkSymbol | undefined) => {
-    const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
+    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );
 

@@ -4,6 +4,7 @@ import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import {
     TRANSACTIONS_MODULE_PREFIX,
     selectHistoricFiatRates,
+    selectLocalCurrency,
     selectTransactions,
 } from '@suite-common/wallet-core';
 import { Account, ExportFileType } from '@suite-common/wallet-types';
@@ -29,11 +30,11 @@ export const exportTransactionsThunk = createThunk(
         },
         { getState, extra },
     ) => {
-        const { utils, selectors } = extra;
+        const { utils } = extra;
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const historicFiatRates = selectHistoricFiatRates(getState());
-        const localCurrency = selectors.selectLocalCurrency(getState());
+        const localCurrency = selectLocalCurrency(getState());
         const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
 
         // TODO: this is not nice (copy-paste)

@@ -21,15 +21,13 @@ import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectAccountByKey, selectAccounts } from './accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectBitcoinAmountUnit, selectEnabledNetworks } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsReducer';
 
 export const disableAccountsThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,
-    (_, { dispatch, extra, getState }) => {
-        const {
-            selectors: { selectEnabledNetworks },
-        } = extra;
+    (_, { dispatch, getState }) => {
         const accounts = selectAccounts(getState());
         const enabledNetworks = selectEnabledNetworks(getState());
         // find disabled networks
@@ -81,7 +79,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
     async ({ accountKey }: { accountKey: AccountKey }, { dispatch, extra, getState }) => {
         const {
-            selectors: { selectDevices, selectBitcoinAmountUnit },
+            selectors: { selectDevices },
         } = extra;
         const account = selectAccountByKey(getState(), accountKey);
 

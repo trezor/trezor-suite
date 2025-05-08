@@ -8,17 +8,14 @@ import {
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import {
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-    toggleEnabledDiscoveryNetworkSymbol,
-} from '@suite-native/discovery';
+import { changeNetworks, deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 
 const isAnyOfMessageSystemAffectingActions = isAnyOf(
     messageSystemActions.fetchSuccessUpdate,
     deviceActions.selectDevice,
     deviceActions.connectDevice,
-    toggleEnabledDiscoveryNetworkSymbol,
+    changeNetworks,
 );
 
 export const messageSystemMiddleware = createMiddleware(

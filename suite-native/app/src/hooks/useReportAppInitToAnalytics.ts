@@ -4,18 +4,16 @@ import { useSelector } from 'react-redux';
 
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
+    selectBitcoinAmountUnit,
+    selectEnabledNetworks,
+    selectLocalCurrency,
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';
-import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
-import {
-    selectBitcoinUnits,
-    selectFiatCurrencyCode,
-    selectIsOnboardingFinished,
-} from '@suite-native/settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { selectIsConnectInitialized } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
 
@@ -27,12 +25,12 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
     const { isDiscreetMode } = useDiscreetMode();
-    const currencyCode = useSelector(selectFiatCurrencyCode);
-    const bitcoinUnit = useSelector(selectBitcoinUnits);
+    const currencyCode = useSelector(selectLocalCurrency);
+    const bitcoinUnit = useSelector(selectBitcoinAmountUnit);
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const rememberedStandardWallets = useSelector(selectRememberedStandardWalletsCount);
     const rememberedHiddenWallets = useSelector(selectRememberedHiddenWalletsCount);
-    const enabledNetworks = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
 
     useEffect(() => {
         if (isConnectInitialized && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);

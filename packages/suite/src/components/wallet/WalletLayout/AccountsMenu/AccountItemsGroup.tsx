@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
 import {
     areTokenFiatRatesLoading,
     getAccountTokensFiatBalance,
@@ -11,7 +11,6 @@ import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { Account } from 'src/types/wallet';
 
 import { AccountItem } from './AccountItem/AccountItem';

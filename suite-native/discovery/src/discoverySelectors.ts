@@ -26,13 +26,13 @@ import {
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 import { StaticSessionId } from '@trezor/connect';
 
 import {
     DiscoveryConfigSliceRootState,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoverySupportedNetworks,
-    selectIsCoinEnablingInitFinished,
 } from './discoveryConfigSlice';
 import { getNetworksWithUnfinishedDiscovery } from './utils';
 

@@ -8,7 +8,6 @@ import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/w
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Image, TitleHeader } from '@suite-native/atoms';
 import { usePinAction } from '@suite-native/device';
-import { selectIsCoinEnablingInitFinished } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import { deviceImageMap } from '@suite-native/module-authorize-device';
 import {
@@ -22,6 +21,7 @@ import {
     ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';

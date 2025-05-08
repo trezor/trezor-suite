@@ -25,7 +25,6 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/settings": "workspace:*",
         "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "react": "^18.2.0",

@@ -33,9 +33,13 @@ describe('useTradingBuyForm', () => {
 
     const getInitializedStore = async (amountInSats = false) => {
         const preloadedState: PreloadedState = {
-            wallet: { tradingNew: getInitializedTradingState() },
-            appSettings: {
-                bitcoinUnits: amountInSats ? PROTO.AmountUnit.SATOSHI : PROTO.AmountUnit.BITCOIN,
+            wallet: {
+                tradingNew: getInitializedTradingState(),
+                settings: {
+                    bitcoinAmountUnit: amountInSats
+                        ? PROTO.AmountUnit.SATOSHI
+                        : PROTO.AmountUnit.BITCOIN,
+                },
             },
         };
         preloadedState.wallet!.tradingNew!.buy!.selectedReceiveAccount = {

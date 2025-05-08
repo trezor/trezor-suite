@@ -3,20 +3,22 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Network, NetworkAccount, NetworkSymbol, networks } from '@suite-common/wallet-config';
-import { accountsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    changeCoinVisibility,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
 import { CollapsibleBox, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
-import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { CoinList, Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 
@@ -155,7 +157,9 @@ export const AddAccountModal = ({
     const enableNetwork = () => {
         onCancel();
         if (selectedNetwork) {
-            dispatch(changeCoinVisibility(selectedNetwork.symbol, true));
+            dispatch(
+                changeCoinVisibility({ symbol: selectedNetwork.symbol, shouldBeVisible: true }),
+            );
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 dispatch(

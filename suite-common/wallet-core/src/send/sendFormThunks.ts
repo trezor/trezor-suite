@@ -72,6 +72,10 @@ import { selectAccountByKey } from '../accounts/accountsReducer';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
 import { selectSelectedDevice } from '../device/deviceReducer';
 import {
+    selectAreSatsAmountUnit,
+    selectBitcoinAmountUnit,
+} from '../settings/walletSettingsReducer';
+import {
     addFakePendingCardanoTxThunk,
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
@@ -83,7 +87,7 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
         { dispatch, getState, extra, rejectWithValue },
     ) => {
         const {
-            selectors: { selectRoute, selectAreSatsAmountUnit },
+            selectors: { selectRoute },
         } = extra;
         const suiteRoute = selectRoute(getState());
         const sendFormDrafts = selectSendFormDrafts(getState());
@@ -274,7 +278,6 @@ export const pushSendFormTransactionThunk = createThunk<
     ) => {
         const {
             actions: { onModalCancel },
-            selectors: { selectBitcoinAmountUnit },
         } = extra;
         const precomposedTransaction = selectSendPrecomposedTx(getState());
         const serializedTx = selectSendSerializedTx(getState());

@@ -7,6 +7,7 @@ import {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
     selectFiatRatesByFiatRateKey,
+    selectLocalCurrency,
 } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
@@ -20,7 +21,6 @@ import { BigNumber, isChanged } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     CRYPTO_INPUT,
     FIAT_INPUT,

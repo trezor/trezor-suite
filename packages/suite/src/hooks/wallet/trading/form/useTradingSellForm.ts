@@ -24,7 +24,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectLocalCurrency } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 
@@ -46,7 +46,6 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,

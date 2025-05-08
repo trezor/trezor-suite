@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, HStack, Switch, Text } from '@suite-native/atoms';
-import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from '@suite-native/discovery';
+import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from '@suite-native/settings';
 
 export const TestnetsToggle = () => {
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);

@@ -7,7 +7,9 @@ describe('TrezorConnect Actions', () => {
     let store = configureMockStore();
 
     beforeEach(() => {
-        store = configureMockStore();
+        store = configureMockStore({
+            preloadedState: { wallet: { settings: { enabledNetworks: [] } } },
+        });
     });
 
     it('Success', async () => {

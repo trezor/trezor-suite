@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { SpinnerLoadingState } from '@suite-native/atoms';
 import {
     AccountsImportStackParamList,
@@ -10,7 +11,6 @@ import {
     StackToStackCompositeScreenProps,
     useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { AccountInfo } from '@trezor/connect';
 
 import { getAccountInfoThunk } from '../accountsImportThunks';
@@ -31,7 +31,7 @@ export const AccountImportLoadingScreen = ({
     const dispatch = useDispatch();
     const showImportError = useShowImportError(networkSymbol, navigation);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const fiatCurrency = useSelector(selectFiatCurrencyCode);
+    const fiatCurrency = useSelector(selectLocalCurrency);
     const [error, setError] = useState<string>();
     const [accountInfoFetchResult, setAccountInfoFetchResult] =
         useState<SpinnerLoadingState>('idle');

@@ -6,14 +6,15 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
+    WalletSettingsRootState,
     filterUnavailableNetworks,
     selectDeviceSupportedNetworks,
+    selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import {
     filterTestnetNetworks,
     getNativeMainnetSymbols,
     getNativeTestnetSymbols,
-    isDetoxTestBuild,
     sortNetworks,
 } from '@suite-native/config';
 import {
@@ -21,6 +22,7 @@ import {
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
+import { SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 import {
     TokensRootState,
     isCoinWithTokens,
@@ -33,69 +35,30 @@ type DiscoveryInfo = {
 };
 
 export type DiscoveryConfigState = {
-    areTestnetsEnabled: boolean;
     discoveryInfo: DiscoveryInfo | null;
-    isCoinEnablingInitFinished: boolean;
-    enabledDiscoveryNetworkSymbols: NetworkSymbol[];
 };
 
 export type DiscoveryConfigSliceRootState = {
     discoveryConfig: DiscoveryConfigState;
 } & AccountsRootState &
     DeviceRootState &
-    TokensRootState;
+    TokensRootState &
+    WalletSettingsRootState &
+    SettingsSliceRootState;
 
 const discoveryConfigInitialState: DiscoveryConfigState = {
-    areTestnetsEnabled: isDetoxTestBuild(),
     discoveryInfo: null,
-    isCoinEnablingInitFinished: false,
-    enabledDiscoveryNetworkSymbols: [],
 };
-
-export const discoveryConfigPersistWhitelist: Array<keyof DiscoveryConfigState> = [
-    'areTestnetsEnabled',
-    'isCoinEnablingInitFinished',
-    'enabledDiscoveryNetworkSymbols',
-];
 
 export const discoveryConfigSlice = createSlice({
     name: 'discoveryConfig',
     initialState: discoveryConfigInitialState,
     reducers: {
-        toggleAreTestnetsEnabled: state => {
-            state.areTestnetsEnabled = !state.areTestnetsEnabled;
-        },
         setDiscoveryInfo: (state, { payload }: PayloadAction<DiscoveryInfo | null>) => {
             state.discoveryInfo = payload;
         },
-        addEnabledDiscoveryNetworkSymbol: (state, { payload }: PayloadAction<NetworkSymbol>) => {
-            if (!state.enabledDiscoveryNetworkSymbols.includes(payload)) {
-                state.enabledDiscoveryNetworkSymbols.push(payload);
-            }
-        },
-        toggleEnabledDiscoveryNetworkSymbol: (state, { payload }: PayloadAction<NetworkSymbol>) => {
-            const symbol = payload;
-            const index = state.enabledDiscoveryNetworkSymbols.indexOf(symbol);
-
-            if (index !== -1) {
-                // If the network is already in the list, remove it
-                state.enabledDiscoveryNetworkSymbols.splice(index, 1);
-            } else {
-                // If the network is not in the list, add it
-                state.enabledDiscoveryNetworkSymbols.push(symbol);
-            }
-        },
-        setEnabledDiscoveryNetworkSymbols: (state, { payload }: PayloadAction<NetworkSymbol[]>) => {
-            state.enabledDiscoveryNetworkSymbols = payload;
-        },
-        setIsCoinEnablingInitFinished: (state, { payload }: PayloadAction<boolean>) => {
-            state.isCoinEnablingInitFinished = payload;
-        },
     },
 });
-
-export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =>
-    state.discoveryConfig.areTestnetsEnabled;
 
 export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryInfo;
@@ -108,7 +71,6 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
     [
         selectDeviceSupportedNetworks,
         selectAreTestnetsEnabled,
-
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
     ],
     (deviceNetworks, defaultAreTestnetsEnabled, forcedAreTestnetsEnabled) => {
@@ -147,23 +109,15 @@ export const selectSupportedNetworkSymbols = createMemoizedSelector(
     testnets => returnStableArrayIfEmpty([...getNativeMainnetSymbols(), ...testnets]),
 );
 
-export const selectIsCoinEnablingInitFinished = (
-    state: DiscoveryConfigSliceRootState & FeatureFlagsRootState,
-) => state.discoveryConfig.isCoinEnablingInitFinished;
-
-// this includes all networks, including those that are not supported by current device
-export const selectEnabledDiscoveryNetworkSymbols = (state: DiscoveryConfigSliceRootState) =>
-    state.discoveryConfig.enabledDiscoveryNetworkSymbols;
-
 // this includes only networks supported by current device
 export const selectDeviceEnabledDiscoveryNetworkSymbols = createMemoizedSelector(
-    [selectDiscoveryNetworkSymbols, selectEnabledDiscoveryNetworkSymbols],
+    [selectDiscoveryNetworkSymbols, selectEnabledNetworks],
     (networkSymbols, enabledSymbols) =>
         returnStableArrayIfEmpty(networkSymbols.filter(s => enabledSymbols.includes(s))),
 );
 
 export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
-    [selectEnabledDiscoveryNetworkSymbols, selectNetworkSymbolsOfAccountsWithTokensAllowed],
+    [selectEnabledNetworks, selectNetworkSymbolsOfAccountsWithTokensAllowed],
     (enabledNetworkSymbols, accountNetworkSymbols) =>
         returnStableArrayIfEmpty(
             pipe(
@@ -174,12 +128,5 @@ export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
         ),
 );
 
-export const {
-    toggleAreTestnetsEnabled,
-    setDiscoveryInfo,
-    addEnabledDiscoveryNetworkSymbol,
-    toggleEnabledDiscoveryNetworkSymbol,
-    setEnabledDiscoveryNetworkSymbols,
-    setIsCoinEnablingInitFinished,
-} = discoveryConfigSlice.actions;
+export const { setDiscoveryInfo } = discoveryConfigSlice.actions;
 export const discoveryConfigReducer = discoveryConfigSlice.reducer;

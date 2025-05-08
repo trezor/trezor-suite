@@ -1,12 +1,11 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { TokenIconSet } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     TokensWithRates,
     enhanceTokensWithRates,

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
+import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row, variables } from '@trezor/components';
 
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
@@ -13,7 +14,6 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { Account } from 'src/types/wallet';
 import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
 

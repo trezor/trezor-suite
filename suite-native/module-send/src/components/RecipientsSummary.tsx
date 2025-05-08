@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import {
     AccountsRootState,
     SendRootState,
+    WalletSettingsRootState,
     selectAccountNetworkSymbol,
+    selectIsAmountInSats,
     selectSendFormDraftOutputsByAccountKey,
 } from '@suite-common/wallet-core';
 import {
@@ -16,7 +18,6 @@ import {
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type FeesRecipientsProps = {
@@ -50,7 +51,7 @@ export const RecipientsSummary = ({
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
+    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );
 

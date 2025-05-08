@@ -7,12 +7,11 @@ import {
 
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { RouterState } from 'src/reducers/suite/routerReducer';
-import { accountsReducer, blockchainReducer } from 'src/reducers/wallet';
+import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
 import formDraftReducer from 'src/reducers/wallet/formDraftReducer';
 import selectedAccountReducer, {
     State as SelectedAccountState,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';

@@ -3,23 +3,23 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import {
+    changeNetworks,
+    selectEnabledNetworks,
+    selectHasBitcoinOnlyFirmware,
+} from '@suite-common/wallet-core';
 import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
-import {
-    selectDiscoveryNetworkSymbols,
-    selectEnabledDiscoveryNetworkSymbols,
-    setEnabledDiscoveryNetworkSymbols,
-    setIsCoinEnablingInitFinished,
-} from '@suite-native/discovery';
+import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 export const SettingsCoinEnablingScreen = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
 
-    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const availableNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const viewOnlyDevicesAccountsNetworkSymbols = useSelector(
@@ -33,7 +33,7 @@ export const SettingsCoinEnablingScreen = () => {
         // in case the user has view only devices and gets to the settings
         // before the Coin Enabling has been initialized, we need to set the networks
         if (enabledNetworkSymbols.length === 0) {
-            dispatch(setEnabledDiscoveryNetworkSymbols(viewOnlyDevicesAccountsNetworkSymbols));
+            dispatch(changeNetworks(viewOnlyDevicesAccountsNetworkSymbols));
         }
     }, [enabledNetworkSymbols.length, dispatch, viewOnlyDevicesAccountsNetworkSymbols]);
 

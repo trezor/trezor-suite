@@ -98,27 +98,31 @@ export const DeviceManagerContent = () => {
                 alwaysBounceVertical={false}
                 showsVerticalScrollIndicator={false}
             >
-                <DeviceList
-                    isVisible={isChangeDeviceRequested || isPortfolioTrackerDevice}
-                    onSelectDevice={handleSelectDevice}
-                />
+                <VStack spacing="sp24">
+                    <DeviceList
+                        isVisible={isChangeDeviceRequested || isPortfolioTrackerDevice}
+                        onSelectDevice={handleSelectDevice}
+                    />
 
-                {!isPortfolioTrackerDevice && (
-                    <VStack spacing="sp12" paddingTop="sp24">
-                        <WalletList onSelectDevice={handleSelectDevice} />
-                        <Stack
-                            orientation={
-                                ACCESSIBILITY_FONTSIZE_MULTIPLIER > 1 ? 'vertical' : 'horizontal'
-                            }
-                            style={applyStyle(deviceButtonsStyle)}
-                        >
-                            <DeviceSettingsButton
-                                showAsFullWidth={!isAddHiddenWalletButtonVisible}
-                            />
-                            {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
-                        </Stack>
-                    </VStack>
-                )}
+                    {!isPortfolioTrackerDevice && (
+                        <VStack spacing="sp12">
+                            <WalletList onSelectDevice={handleSelectDevice} />
+                            <Stack
+                                orientation={
+                                    ACCESSIBILITY_FONTSIZE_MULTIPLIER > 1
+                                        ? 'vertical'
+                                        : 'horizontal'
+                                }
+                                style={applyStyle(deviceButtonsStyle)}
+                            >
+                                <DeviceSettingsButton
+                                    showAsFullWidth={!isAddHiddenWalletButtonVisible}
+                                />
+                                {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
+                            </Stack>
+                        </VStack>
+                    )}
+                </VStack>
             </ScrollView>
         </DeviceManagerModal>
     );

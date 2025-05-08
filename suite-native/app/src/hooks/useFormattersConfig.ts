@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import { getCalendars } from 'expo-localization';
 
 import { FormatterProviderConfig } from '@suite-common/formatters';
-import { selectBitcoinUnits, selectFiatCurrencyCode } from '@suite-native/settings';
+import { selectBitcoinAmountUnit, selectLocalCurrency } from '@suite-common/wallet-core';
 
 const is24HourFormat = getCalendars()[0].uses24hourClock ?? true;
 
 export const useFormattersConfig = (): FormatterProviderConfig => {
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const bitcoinAmountUnit = useSelector(selectBitcoinUnits);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
 
     return useMemo(
         () => ({

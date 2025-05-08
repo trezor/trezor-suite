@@ -2,8 +2,10 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
 import { firmwareUpdate } from '@suite-common/firmware';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {
+    WALLET_SETTINGS,
     authorizeDeviceThunk,
     deviceActions,
     discoveryActions,
@@ -26,6 +28,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import {
@@ -269,6 +272,41 @@ const analyticsMiddleware =
                         ? EventType.SwitchDeviceRemember
                         : EventType.SwitchDeviceForget,
                 });
+                break;
+            }
+
+            case WALLET_SETTINGS.SET_HIDE_BALANCE: {
+                if (!state.suite.flags.discreetModeCompleted) {
+                    api.dispatch(setFlag('discreetModeCompleted', true));
+                }
+                analytics.report({
+                    type: EventType.MenuToggleDiscreet,
+                    payload: {
+                        value: action.toggled,
+                    },
+                });
+                break;
+            }
+
+            case WALLET_SETTINGS.CHANGE_COIN_VISIBILITY: {
+                analytics.report({
+                    type: EventType.SettingsCoins,
+                    payload: {
+                        symbol: action.payload.symbol,
+                        value: action.payload.shouldBeVisible,
+                    },
+                });
+                break;
+            }
+
+            case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS: {
+                analytics.report({
+                    type: EventType.SettingsGeneralChangeBitcoinUnit,
+                    payload: {
+                        unit: UNIT_ABBREVIATIONS[action.payload],
+                    },
+                });
+
                 break;
             }
 

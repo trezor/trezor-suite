@@ -43,3 +43,6 @@ export * from './stake/stakeTypes';
 export * from './transactions/transactionsActions';
 export * from './transactions/transactionsReducer';
 export * from './transactions/transactionsThunks';
+export * from './settings/walletSettingsActions';
+export * from './settings/walletSettingsConstants';
+export * from './settings/walletSettingsReducer';

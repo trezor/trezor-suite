@@ -12,15 +12,16 @@ import {
     AccountsRootState,
     DeviceRootState,
     FiatRatesRootState,
+    WalletSettingsRootState,
     selectCurrentFiatRates,
     selectDeviceAccounts,
+    selectLocalCurrency,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
-import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import {
     NativeStakingRootState,
     doesCoinSupportStaking,
@@ -35,7 +36,7 @@ export interface AssetType {
 
 export type AssetsRootState = AccountsRootState &
     FiatRatesRootState &
-    SettingsSliceRootState &
+    WalletSettingsRootState &
     TokenDefinitionsRootState &
     NativeStakingRootState &
     DeviceRootState;
@@ -101,7 +102,7 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     [
         selectVisibleDeviceAccounts,
         selectDeviceNetworksWithAssets,
-        selectFiatCurrencyCode,
+        selectLocalCurrency,
         selectCurrentFiatRates,
     ],
     (accounts, deviceNetworksWithAssets, fiatCurrencyCode, rates) => {

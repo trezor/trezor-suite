@@ -2,10 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import {
+    FiatRatesRootState,
+    selectFiatRatesByFiatRateKey,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { convertTokenValueToDecimal } from '../utils';
 
@@ -28,7 +31,7 @@ export const useFiatFromCryptoValue = ({
     isBalance = false,
     tokenDecimals = 0,
 }: useFiatFromCryptoValueParams) => {
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),

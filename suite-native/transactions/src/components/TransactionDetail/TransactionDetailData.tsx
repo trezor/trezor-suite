@@ -7,6 +7,7 @@ import {
     TransactionsRootState,
     selectHistoricFiatRatesByTimestamp,
     selectIsPhishingTransaction,
+    selectLocalCurrency,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
 import { AccountKey, Timestamp } from '@suite-common/wallet-types';
@@ -15,7 +16,6 @@ import { Box, Card, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
 
@@ -47,7 +47,7 @@ export const TransactionDetailData = ({
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
     const historicRate = useSelector((state: FiatRatesRootState) =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),

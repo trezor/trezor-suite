@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { selectIsDiscreteModeActive, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
@@ -21,10 +22,6 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
-import {
-    selectIsDiscreteModeActive,
-    selectLocalCurrency,
-} from 'src/reducers/wallet/settingsReducer';
 import { AccountItemType } from 'src/types/wallet';
 
 const AccountLabelContainer = styled.div`

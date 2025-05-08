@@ -5,7 +5,6 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -17,13 +16,7 @@ import {
     WalletAccountTransaction,
     WalletType,
 } from '@suite-common/wallet-types';
-import {
-    BlockchainBlock,
-    ConnectSettings,
-    Manifest,
-    PROTO,
-    StaticSessionId,
-} from '@trezor/connect';
+import { BlockchainBlock, ConnectSettings, Manifest, StaticSessionId } from '@trezor/connect';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
@@ -65,11 +58,7 @@ export type ExtraDependencies = {
     };
     selectors: {
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
-        selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
-        selectAreSatsAmountUnit: SuiteCompatibleSelector<boolean>;
-        selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectTokenDefinitionsEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
-        selectLocalCurrency: SuiteCompatibleSelector<FiatCurrencyCode>;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
         // todo: we do not want to, so far, transfer coinjoin to @suite-common
         // but this is exactly what I need to get DebugModeOptions type instead of any
@@ -97,16 +86,6 @@ export type ExtraDependencies = {
     // but that shouldn't be problem.
     actions: {
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
-        setWalletSettingsLocalCurrency:
-            | ActionCreatorWithPreparedPayload<
-                  [localCurrency: FiatCurrencyCode],
-                  {
-                      localCurrency: FiatCurrencyCode;
-                  }
-              >
-            | ActionCreatorWithPayload<{
-                  localCurrency: FiatCurrencyCode;
-              }>;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
         appChanged: ActionCreatorWithPayload<any>;
         setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
@@ -136,6 +115,7 @@ export type ExtraDependencies = {
         storageLoadDevices: StorageLoadReducer;
         storageLoadFormDrafts: StorageLoadReducer;
         storageLoadTokenManagement: StorageLoadReducer;
+        storageLoadWalletSettings: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;

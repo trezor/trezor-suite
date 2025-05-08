@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
@@ -15,7 +15,6 @@ import {
 } from '@suite-native/graph';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { referencePointAtom, selectedPointAtom } from '../portfolioGraphAtoms';
@@ -57,7 +56,7 @@ const IgnoredNetworksBanner = () => {
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const hasDeviceDiscovery = useSelector(selectHasDeviceDiscovery);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();

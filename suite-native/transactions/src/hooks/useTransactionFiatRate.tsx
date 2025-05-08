@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     FiatRatesRootState,
     selectHistoricFiatRatesByTimestamp,
+    selectLocalCurrency,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import {
@@ -13,7 +14,6 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 
 export const useTransactionFiatRate = ({
     accountKey,
@@ -26,13 +26,10 @@ export const useTransactionFiatRate = ({
 }) => {
     const dispatch = useDispatch();
 
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode, tokenAddress);
+    const localCurrency = useSelector(selectLocalCurrency);
+    const fiatRateKey = getFiatRateKey(transaction.symbol, localCurrency, tokenAddress);
     const historicRate = useSelector((state: FiatRatesRootState) =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
-    const localCurrency = useSelector((state: SettingsSliceRootState) =>
-        selectFiatCurrencyCode(state),
     );
     const transactionHasFiatRates = !!historicRate;
 

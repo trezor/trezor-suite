@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FiatCurrency, FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/settings';
 
 export const transformFiatCurrencyToSelectItem = ({ code, label }: FiatCurrency) => ({
     value: code,
@@ -14,11 +14,11 @@ export const transformFiatCurrencyToSelectItem = ({ code, label }: FiatCurrency)
 const fiatCurrencyItems = Object.values(fiatCurrencies).map(transformFiatCurrencyToSelectItem);
 
 export const CurrencySelector = () => {
-    const selectedFiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const selectedFiatCurrencyCode = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 
     const handleSelectCurrency = (localCurrency: FiatCurrencyCode) => {
-        dispatch(setFiatCurrency({ localCurrency }));
+        dispatch(setLocalCurrency(localCurrency));
         analytics.report({
             type: EventType.SettingsChangeCurrency,
             payload: { localCurrency },

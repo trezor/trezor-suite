@@ -6,6 +6,7 @@ import {
     selectCurrentFiatRates,
     selectDeviceThunk,
     selectDiscoveryByDeviceState,
+    selectLocalCurrency,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
@@ -19,7 +20,6 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConfirmation';

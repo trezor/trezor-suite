@@ -92,7 +92,7 @@ describe('CryptoAmountInput', () => {
 
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
         const preloadedState = {
-            appSettings: { bitcoinUnits: PROTO.AmountUnit.SATOSHI },
+            wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
         const form = await renderUseTradingBuyForm();
         act(() => {
@@ -108,7 +108,7 @@ describe('CryptoAmountInput', () => {
 
     it('should always escape non-numeric characters', async () => {
         const preloadedState = {
-            appSettings: { bitcoinUnits: PROTO.AmountUnit.SATOSHI },
+            wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
         const form = await renderUseTradingBuyForm();
         act(() => {
