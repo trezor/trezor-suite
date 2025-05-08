@@ -164,15 +164,25 @@ class InvityAPI {
 
         return await fetch(finalUrl, opts).then(response => {
             if (response.ok) {
-                return response.json();
+                return response
+                    .json()
+                    .then(json => json)
+                    .catch(error => {
+                        throw Error(`Not possible to parse response ${error.message}`);
+                    });
             }
 
-            return response.json().then(output => {
-                if (output.error) {
-                    return output;
-                }
-                throw Error(`Request rejected with status ${response.status}`);
-            });
+            return response
+                .json()
+                .then(output => {
+                    if (output.error) {
+                        return output;
+                    }
+                    throw Error(`Request rejected with status ${response.status}`);
+                })
+                .catch(error => {
+                    throw Error(`Not possible to parse response ${error.message}`);
+                });
         });
     }
 

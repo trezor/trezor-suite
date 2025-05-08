@@ -95,7 +95,7 @@ describe('InvityAPI', () => {
             };
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => mockInfo,
+                json: () => Promise.resolve(mockInfo),
             });
 
             const info = await invityAPI.getInfo();
@@ -105,7 +105,7 @@ describe('InvityAPI', () => {
         it('should handle fetch info when the response is undefined', async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce({
                 ok: true,
-                json: () => undefined,
+                json: () => Promise.resolve(undefined),
             });
 
             const info = await invityAPI.getInfo();
@@ -129,7 +129,7 @@ describe('InvityAPI', () => {
         it(`should get ${service} list`, async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => listFixture,
+                json: () => Promise.resolve(listFixture),
             });
 
             const list = await invityAPI[method]();
@@ -175,7 +175,7 @@ describe('InvityAPI', () => {
         it(`should get ${service} quotes`, async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => quotesFixture,
+                json: () => Promise.resolve(quotesFixture),
             });
 
             const quotes = await invityAPI[method](body as any);
@@ -244,7 +244,7 @@ describe('InvityAPI', () => {
         it(`should do ${service} trade`, async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => tradeResponse,
+                json: () => Promise.resolve(tradeResponse),
             });
 
             const trade = await invityAPI[method](body as any);
@@ -283,7 +283,7 @@ describe('InvityAPI', () => {
         it(`should watch ${service} trade`, async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => response,
+                json: () => Promise.resolve(response),
             });
 
             const list = await invityAPI.watchTrade(body as any, service, 0);
@@ -305,7 +305,7 @@ describe('InvityAPI', () => {
         it('should get buy trade form', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => invityAPIFixtures.buyTradeForm,
+                json: () => Promise.resolve(invityAPIFixtures.buyTradeForm),
             });
 
             const trade = await invityAPI.getBuyTradeForm(invityAPIFixtures.buyTradeFormBody);
@@ -325,7 +325,7 @@ describe('InvityAPI', () => {
         it('should do sell confirm', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => invityAPIFixtures.buyTradeForm,
+                json: () => Promise.resolve(invityAPIFixtures.buyTradeForm),
             });
 
             const trade = await invityAPI.doSellConfirm(invityAPIFixtures.sellTrade);
@@ -345,7 +345,7 @@ describe('InvityAPI', () => {
         it('should do sell confirm', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => invityAPIFixtures.otc,
+                json: () => Promise.resolve(invityAPIFixtures.otc),
             });
 
             const trade = await invityAPI.getOTCData();
