@@ -11,6 +11,7 @@
 @ethereumjs/common
 @ethereumjs/tx
 @everstake/wallet-sdk
+@exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @metamask/eth-sig-util
 @pmmmwh/react-refresh-webpack-plugin
