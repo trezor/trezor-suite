@@ -3184,6 +3184,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@exodus/patch-broken-hermes-typed-arrays@npm:^1.0.0-alpha.1":
+  version: 1.0.0-alpha.1
+  resolution: "@exodus/patch-broken-hermes-typed-arrays@npm:1.0.0-alpha.1"
+  checksum: 10/43f4d1581d0da619b12399cfa4f33cb6fb25f9f6f5763200b280cc623f15b13a6579d8e8b216acd9f5f0a24383747194b179f5e405ef3b183e1e2bd9379891f8
+  languageName: node
+  linkType: hard
+
 "@expo/bunyan@npm:^4.0.0":
   version: 4.0.0
   resolution: "@expo/bunyan@npm:4.0.0"
