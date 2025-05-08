@@ -59,7 +59,7 @@ export const getTokenDefinitionThunk = createThunk(
                 throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
             }
 
-            const authenticityPublicKey = getJWSPublicKey();
+            const authenticityPublicKey = getJWSPublicKey('token-definitions');
 
             if (G.isNullable(authenticityPublicKey)) {
                 throw Error('Public key check token definitions authenticity was not found.');
