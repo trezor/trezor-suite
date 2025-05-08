@@ -6,3 +6,17 @@ MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63k
 MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAES7MbBzU/v5BsljkTM8Mz0Jsk+Nn5n2wH\no2/+MUI3TgCVdTbEHhn3HXaY7GJ6TLyWqxn+pIDY9wUUAyUqOStTUQ==
 -----END PUBLIC KEY-----`,
 };
+
+export const firmwareConfigPublicKey = {
+    dev: `
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEKjWdvv8SJm/UN2lXoEXl3ID35b/
+hsz3etxANvUgLQ4r0eEhqVUEL5l+dRMgEv4Ycvr3UEcMkSFRPoA8ktxX1A==
+-----END PUBLIC KEY-----
+`,
+    codesign: `
+-----BEGIN PUBLIC KEY-----
+TODO
+-----END PUBLIC KEY-----
+`,
+};

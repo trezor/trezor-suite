@@ -1,5 +1,7 @@
 export type Environment = 'desktop' | 'web' | 'mobile';
 
+export type JWSPublicKeyUse = 'message-system' | 'firmware-release' | 'token-definitions';
+
 export interface EnvUtils {
     isWeb: () => boolean;
     isDesktop: () => boolean;
@@ -34,5 +36,5 @@ export interface EnvUtils {
     getOsName: () => '' | 'android' | 'linux' | 'windows' | 'macos' | 'chromeos' | 'ios';
     getOsNameWeb: () => string | undefined;
     getOsFamily: () => 'Windows' | 'MacOS' | 'Linux';
-    getJWSPublicKey: () => string;
+    getJWSPublicKey: (use: JWSPublicKeyUse) => string;
 }
