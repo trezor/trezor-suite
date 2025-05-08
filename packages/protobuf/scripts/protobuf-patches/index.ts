@@ -169,6 +169,7 @@ export const TYPE_PATCH = {
     'EthereumDefinitions.encoded_token': 'ArrayBuffer',
     'EthereumSignMessage.encoded_network': 'ArrayBuffer',
     'EthereumSignTypedHash.encoded_network': 'ArrayBuffer',
+    'SolanaTxAdditionalInfo.encoded_token': 'ArrayBuffer',
     'CardanoCVoteRegistrationDelegation.weight': UINT_TYPE,
     'CardanoCVoteRegistrationParametersType.nonce': UINT_TYPE,
     'CardanoCVoteRegistrationParametersType.voting_purpose': UINT_TYPE,

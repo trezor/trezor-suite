@@ -1908,7 +1908,7 @@ export type SolanaTxTokenAccountInfo = {
 
 export type SolanaTxAdditionalInfo = {
     token_accounts_infos: SolanaTxTokenAccountInfo[];
-    encoded_token?: string;
+    encoded_token?: ArrayBuffer;
 };
 
 export type SolanaSignTx = {

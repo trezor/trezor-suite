@@ -2942,7 +2942,7 @@ export type SolanaTxAdditionalInfo = Static<typeof SolanaTxAdditionalInfo>;
 export const SolanaTxAdditionalInfo = Type.Object(
     {
         token_accounts_infos: Type.Array(SolanaTxTokenAccountInfo),
-        encoded_token: Type.Optional(Type.String()),
+        encoded_token: Type.Optional(Type.ArrayBuffer()),
     },
     { $id: 'SolanaTxAdditionalInfo' },
 );
