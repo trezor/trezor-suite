@@ -355,7 +355,7 @@ export const formatNetworkAmount = (
 
         if (isSatoshis) {
             formattedAmount = amount || '0';
-            formattedSymbol = symbol === 'btc' ? 'sat' : `sat ${getNetworkDisplaySymbol(symbol)}`;
+            formattedSymbol = `sat ${getNetworkDisplaySymbol(symbol)}`;
         }
 
         return `${formattedAmount} ${formattedSymbol}`;
