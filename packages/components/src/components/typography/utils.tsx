@@ -159,7 +159,9 @@ export const getTextPropsStory = (allowedTextProps: Array<TextPropsKeys>) => {
             ...(allowedTextProps.includes('wordBreak') ? { wordBreak: undefined } : {}),
             ...(allowedTextProps.includes('typographyStyle') ? { typographyStyle: undefined } : {}),
             ...(allowedTextProps.includes('align') ? { align: undefined } : {}),
-            ...(allowedTextProps.includes('ellipsisLineCount') ? { hasEllipsis: undefined } : {}),
+            ...(allowedTextProps.includes('ellipsisLineCount')
+                ? { ellipsisLineCount: undefined }
+                : {}),
             ...(allowedTextProps.includes('case') ? { case: undefined } : {}),
         },
         argTypes,

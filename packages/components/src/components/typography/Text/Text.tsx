@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { CSSColor, Color, Colors } from '@trezor/theme';
+import { CSSColor, Color, Colors, borders, spacingsPx } from '@trezor/theme';
 
 import { uiVariants } from '../../../config/types';
 import {
@@ -77,6 +77,7 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
 
 type StyledTextProps = ExclusiveColorOrVariant & {
     $isMonospaced?: boolean;
+    $isHighlighted?: boolean;
 } & TransientProps<AllowedFrameProps & AllowedTextTextProps>;
 
 const StyledText = styled.span<StyledTextProps>`
@@ -88,6 +89,16 @@ const StyledText = styled.span<StyledTextProps>`
             font-family: monospace;
         `}
 
+    ${({ $isHighlighted }) =>
+        $isHighlighted &&
+        css`
+            display: inline;
+            padding: 0 ${spacingsPx.xxs};
+            border-radius: ${borders.radii.xxs};
+            background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
+            box-decoration-break: clone;
+        `}
+
     ${withTextProps}
     ${withFrameProps}
 `;
@@ -96,6 +107,7 @@ export type TextProps = {
     children: ReactNode;
     className?: string;
     isMonospaced?: boolean;
+    isHighlighted?: boolean;
     as?: string;
     onClick?: () => void;
     'data-testid'?: string;
@@ -112,6 +124,7 @@ export const Text = ({
     'data-testid': dataTest,
     onClick,
     isMonospaced,
+    isHighlighted,
     ...rest
 }: TextProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTextFrameProps);
@@ -125,6 +138,7 @@ export const Text = ({
             onClick={onClick}
             data-testid={dataTest}
             $isMonospaced={isMonospaced}
+            $isHighlighted={isHighlighted}
             {...textProps}
             {...frameProps}
         >

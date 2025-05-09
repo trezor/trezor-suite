@@ -11,8 +11,15 @@ import { Paragraph } from '../typography/Paragraph/Paragraph';
 export const allowedNoteFrameProps = ['margin', 'minWidth'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNoteFrameProps)[number]>;
 
-export const noteVariants = ['tertiary', 'info', 'warning', 'destructive'] as const;
-
+export const noteVariants = [
+    'tertiary',
+    'primary',
+    'default',
+    'info',
+    'warning',
+    'destructive',
+    'disabled',
+] as const;
 export type NoteVariant = Extract<UIVariant, (typeof noteVariants)[number]>;
 
 export type NoteProps = AllowedFrameProps & {

@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Paragraph as P } from './Paragraph';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { TextProps, allowedTextFrameProps, allowedTextTextProps, textVariants } from '../Text/Text';
+import { TextProps, allowedTextFrameProps, allowedTextTextProps } from '../Text/Text';
 import { getTextPropsStory } from '../utils';
 
 const meta: Meta = {
@@ -20,12 +20,6 @@ export const Paragraph: StoryObj<TextProps> = {
         ...getTextPropsStory(allowedTextTextProps).args,
     },
     argTypes: {
-        variant: {
-            control: {
-                type: 'select',
-            },
-            options: textVariants,
-        },
         ...getFramePropsStory(allowedTextFrameProps).argTypes,
         ...getTextPropsStory(allowedTextTextProps).argTypes,
     },
