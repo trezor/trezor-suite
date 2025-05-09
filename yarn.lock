@@ -12416,7 +12416,7 @@ __metadata:
   dependencies:
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
-    idb: "npm:^8.0.2"
+    idb: "npm:^8.0.3"
   languageName: unknown
   linkType: soft
 
@@ -12557,7 +12557,7 @@ __metadata:
     file-saver: "npm:^2.0.5"
     framer-motion: "npm:^12.9.1"
     history: "npm:^4.10.1"
-    idb: "npm:^8.0.2"
+    idb: "npm:^8.0.3"
     immer: "npm:10.1.1"
     jest-canvas-mock: "npm:^2.5.2"
     jest-watch-typeahead: "npm:2.2.2"
@@ -25713,10 +25713,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"idb@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "idb@npm:8.0.2"
-  checksum: 10/64f5ed239bc4f91a59bcc82248971f36fe6f1ff9562a0b1fe476dd86993c63a1e82e6bc20852c7d561000fd0844e35defe72cc771bb1ccaf5e1ebba36ee6521a
+"idb@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "idb@npm:8.0.3"
+  checksum: 10/e2beccb0be7c6af562a5e92b209363358571a770aecdc68e891d1141d994d8f1e8f34b79dafa309ed7467d0f4df2b7b4c15f67cfd0611100282bfc3d85f9c73c
   languageName: node
   linkType: hard
 

@@ -19,6 +19,6 @@
     "dependencies": {
         "@trezor/eslint": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "idb": "^8.0.2"
+        "idb": "^8.0.3"
     }
 }
