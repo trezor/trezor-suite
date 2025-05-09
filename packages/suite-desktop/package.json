@@ -25,7 +25,7 @@
         "blake-hash": "^2.0.0",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "8.2.0",
-        "electron-updater": "6.6.3",
+        "electron-updater": "6.6.4",
         "openpgp": "^6.1.0",
         "usb": "^2.15.0"
     },
@@ -33,7 +33,7 @@
         "@electron/fuses": "^1.8.0",
         "@electron/notarize": "3.0.1",
         "electron": "35.1.2",
-        "electron-builder": "26.0.3",
+        "electron-builder": "26.0.15",
         "glob": "^11.0.2"
     }
 }
