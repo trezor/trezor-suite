@@ -284,7 +284,7 @@ describe('useTradingBuyForm', () => {
             expect(result.current.getValues('cryptoValue')).toBe('1');
         });
 
-        it('should update cryptoValue when selected quote is changed', async () => {
+        it('should update cryptoValue when selected quote is changed and truncate it to 9 decimals', async () => {
             const store = await getInitializedStore();
             const { result } = await renderUseTradingBuyForm(store);
 
@@ -294,11 +294,11 @@ describe('useTradingBuyForm', () => {
                 result.current.setValue('quote', quotes[0] as BuyTrade);
             });
 
-            expect(result.current.getValues('cryptoValue')).toEqual('0.0010001683607972866');
+            expect(result.current.getValues('cryptoValue')).toEqual('0.001000168');
             expect(result.current.getValues('fiatValue')).toEqual('10');
         });
 
-        it('should update fiatAmount when selected quote is changed and user inserted cryptoAmount', async () => {
+        it('should update fiatAmount when selected quote is changed and user inserted cryptoAmount and truncate it to 3 decimals', async () => {
             const store = await getInitializedStore();
             const { result } = await renderUseTradingBuyForm(store);
 
@@ -310,11 +310,12 @@ describe('useTradingBuyForm', () => {
             });
 
             act(() => {
-                result.current.setValue('quote', quotes[0] as BuyTrade);
+                const newQuote = { ...quotes[0], fiatStringAmount: '10.123456789' } as BuyTrade;
+                result.current.setValue('quote', newQuote);
             });
 
             expect(result.current.getValues('cryptoValue')).toEqual('100');
-            expect(result.current.getValues('fiatValue')).toEqual('10');
+            expect(result.current.getValues('fiatValue')).toEqual('10.123');
         });
 
         describe('when quote is selected and new quotes are fetched', () => {

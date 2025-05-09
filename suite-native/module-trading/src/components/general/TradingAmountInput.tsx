@@ -1,10 +1,11 @@
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { LayoutChangeEvent, Pressable, TextInput, TextInputProps } from 'react-native';
 
 import { useField } from '@suite-native/forms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+import { truncateDecimals } from '../../utils/amountUtils';
 
 export type TradingAmountInputProps = {
     name: 'fiatValue' | 'cryptoValue';
@@ -107,23 +108,15 @@ const useInputFormControls = (
         setValue('focusedValue', name);
     }, [name, setValue]);
 
-    const maxDecimalRegex = useMemo(
-        () =>
-            maxDecimals !== undefined ? new RegExp(`[.](\\d{${maxDecimals}})(\\d+)$`) : undefined,
-        [maxDecimals],
-    );
-
     const handleTextChange = useCallback(
         (text: string) => {
             let transformedText = inputTransformer(text);
-            if (maxDecimalRegex) {
-                transformedText = transformedText.replace(maxDecimalRegex, '.$1');
-            }
+            transformedText = truncateDecimals(transformedText, maxDecimals);
             transformedText = transformedText.slice(0, maxLength);
 
             return onChange(transformedText === '' ? undefined : transformedText);
         },
-        [maxLength, maxDecimalRegex, inputTransformer, onChange],
+        [maxLength, maxDecimals, inputTransformer, onChange],
     );
 
     const clearFocusedValueAndBlur = useCallback(() => {

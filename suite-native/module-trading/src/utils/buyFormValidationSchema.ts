@@ -22,7 +22,7 @@ export const buyFormValidationSchema = yup.object({
         // This (untranslated) error will be hopefully never displayed to user,
         // but let's keep it here just to be safe
         .typeError('Invalid number')
-        .positive()
+        .min(0, 'Invalid value')
         .test('crypto-min', (value, testContext) => {
             const { currency, minCrypto, translate, CryptoAmountFormatter } =
                 getAmountLimitContext(testContext);
@@ -56,7 +56,7 @@ export const buyFormValidationSchema = yup.object({
         // This (untranslated) error will be hopefully never displayed to user,
         // but let's keep it here just to be safe
         .typeError('Invalid number')
-        .positive()
+        .min(0, 'Invalid value')
         .test('fiat-min', (value, testContext) => {
             const { currency, minFiat, translate, FiatAmountFormatter } =
                 getAmountLimitContext(testContext);

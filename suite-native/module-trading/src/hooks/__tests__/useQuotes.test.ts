@@ -109,6 +109,29 @@ describe('useQuotes', () => {
         );
     });
 
+    it.each<string>(['0', '-1'])(
+        'should not query quotes when amount is zero or less',
+        async amount => {
+            const store = await getInitializedStore();
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseQuotes(store);
+
+            act(() => {
+                result.current.setValue('asset', bnbAsset);
+                result.current.setValue('fiatCurrency', 'usd');
+            });
+            act(() => {
+                result.current.setValue('fiatValue', amount);
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'handleRequestThunkMock',
+                }),
+            );
+        },
+    );
+
     it('should accept amount in crypto when requested', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');

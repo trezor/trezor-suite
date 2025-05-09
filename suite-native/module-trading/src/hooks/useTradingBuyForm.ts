@@ -16,6 +16,7 @@ import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 
+import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../consts';
 import {
     selectBuyAmountLimits,
     selectBuyFormDefaultValues,
@@ -23,6 +24,7 @@ import {
 } from '../selectors/buySelectors';
 import { setBuySelectedReceiveAccount } from '../tradingSlice';
 import { TradingBuyForm, TradingBuyFormValues } from '../types';
+import { truncateDecimals } from '../utils/amountUtils';
 import { buyFormValidationSchema } from '../utils/buyFormValidationSchema';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
@@ -146,16 +148,22 @@ const useQuoteChangeEffect = (form: TradingBuyForm) => {
             'fiatValue',
             'cryptoValue',
         ]);
+        const truncatedFiatAmount = truncateDecimals(quote?.fiatStringAmount, MAX_FIAT_DECIMALS);
 
-        if (amountInCrypto && fiatValue !== quote?.fiatStringAmount) {
-            setValue('fiatValue', quote?.fiatStringAmount);
+        const truncatedCryptoAmount = truncateDecimals(
+            quote?.receiveStringAmount,
+            MAX_CRYPTO_DECIMALS,
+        );
+
+        if (amountInCrypto && fiatValue !== truncatedFiatAmount) {
+            setValue('fiatValue', truncatedFiatAmount);
         }
 
-        if (!amountInCrypto && cryptoValue !== quote?.receiveStringAmount) {
+        if (!amountInCrypto && cryptoValue !== truncatedCryptoAmount) {
             const value =
-                isAmountInSats && quote?.receiveStringAmount && symbol
-                    ? amountToSmallestUnit(quote.receiveStringAmount, getNetwork(symbol).decimals)
-                    : quote?.receiveStringAmount;
+                isAmountInSats && truncatedCryptoAmount && symbol
+                    ? amountToSmallestUnit(truncatedCryptoAmount, getNetwork(symbol).decimals)
+                    : truncatedCryptoAmount;
             setValue('cryptoValue', value);
         }
     }, [quote, isAmountInSats, symbol, getValues, setValue]);

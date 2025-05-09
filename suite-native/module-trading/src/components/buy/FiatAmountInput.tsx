@@ -5,14 +5,13 @@ import { BoxSkeleton } from '@suite-native/atoms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
+import { MAX_FIAT_DECIMALS } from '../../consts';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import {
     MAX_INPUT_HEIGHT,
     MIN_INPUT_WIDTH,
     TradingAmountInput,
 } from '../general/TradingAmountInput';
-
-const MAX_FIAT_DECIMALS = 3;
 
 export const FiatAmountInput = () => {
     const { translate } = useTranslate();

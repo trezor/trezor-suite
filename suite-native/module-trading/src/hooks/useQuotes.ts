@@ -55,7 +55,7 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
     ]);
 
     const amount = amountInCrypto ? cryptoValue : fiatValue;
-    const isFetchAllowed = !!(asset && fiatCurrency && amount);
+    const isFetchAllowed = !!(asset && fiatCurrency && amount && parseFloat(amount) > 0);
 
     if (
         asset?.cryptoId === prevState.current.cryptoId &&

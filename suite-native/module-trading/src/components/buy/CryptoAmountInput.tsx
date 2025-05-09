@@ -7,6 +7,7 @@ import { BoxSkeleton } from '@suite-native/atoms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
+import { MAX_CRYPTO_DECIMALS } from '../../consts';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { getSelectedSymbolFromBuyForm } from '../../utils/tradeableAssetUtils';
 import {
@@ -18,8 +19,6 @@ import {
 export type CryptoAmountInputProps = {
     showAssetsSheet: () => void;
 };
-
-const MAX_CRYPTO_DECIMALS = 9;
 
 export const CryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
