@@ -110,6 +110,8 @@ const getBalanceFromAccountInfo = ({
         case 'ripple':
             // On Ripple, if we use availableBalance, we will get higher balance, IDK why.
             return accountInfo.balance;
+        case 'stellar':
+            return accountInfo.availableBalance;
         case 'ethereum':
         case 'solana':
         case 'cardano':

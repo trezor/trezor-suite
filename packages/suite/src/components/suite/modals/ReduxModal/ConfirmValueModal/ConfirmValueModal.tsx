@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -32,7 +33,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ThunkAction } from 'src/types/suite';
-import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/RippleOptions/DestinationTag';
+import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
     account?: Account;
@@ -145,7 +146,7 @@ export const ConfirmValueModal = ({
                             </Paragraph>
                         </Banner>
                     )}
-                    {account?.networkType === 'ripple' && (
+                    {(account?.networkType === 'ripple' || account?.networkType === 'stellar') && (
                         <Banner variant="info" icon="info">
                             <Translation
                                 id="DESTINATION_TAG_BANNER_RECEIVE"
@@ -160,6 +161,7 @@ export const ConfirmValueModal = ({
                                             {chunks}
                                         </Link>
                                     ),
+                                    displaySymbol: getDisplaySymbol(account.symbol),
                                 }}
                             />
                         </Banner>

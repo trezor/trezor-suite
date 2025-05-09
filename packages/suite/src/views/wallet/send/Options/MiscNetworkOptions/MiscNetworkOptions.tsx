@@ -23,7 +23,7 @@ const Inline = styled.span`
     display: inline-flex;
 `;
 
-export const RippleOptions = () => {
+export const MiscNetworkOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
 
     const options = getDefaultValue('options', []);

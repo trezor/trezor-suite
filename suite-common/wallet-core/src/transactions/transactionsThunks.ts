@@ -273,14 +273,15 @@ export const fetchTransactionsPageThunk = createThunk(
             return 'ALREADY_FETCHED' as const;
         }
 
-        const { marker } = account;
+        const { marker, stellarCursor } = account;
         const result = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
-            page, // useful for every network except ripple
+            page, // useful for every network except ripple and stellar
             pageSize: perPage,
+            pageCursor: stellarCursor,
             // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
@@ -386,7 +387,8 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
             }
 
             totalPages = result.page?.total || totalPages;
-            const areThereMorePages = page < totalPages || !!result.marker;
+            const areThereMorePages =
+                page < totalPages || !!result.marker || !!result.stellarCursor;
 
             if (!areThereMorePages) {
                 break;

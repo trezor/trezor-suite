@@ -8,7 +8,7 @@ export type FormOptions =
     | 'bitcoinLockTime'
     | 'ethereumData'
     | 'ethereumNonce' // TODO
-    | 'rippleDestinationTag';
+    | 'destinationTag';
 
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
 
@@ -38,7 +38,7 @@ export interface FormState {
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
-    rippleDestinationTag?: string;
+    destinationTag?: string; // For Ripple and Stellar
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;

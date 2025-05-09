@@ -261,6 +261,7 @@ const mapNetworkTypeToFeeUnits: Record<NetworkType, string> = {
     ethereum: 'Gwei',
     ripple: 'Drops',
     solana: 'Lamports',
+    stellar: 'Stroops',
 };
 
 export const getFeeUnits = (networkType: NetworkType) => mapNetworkTypeToFeeUnits[networkType];
@@ -476,7 +477,7 @@ export const restoreOrigOutputsOrder = (
 
 export const getDefaultValues = (currency: Output['currency']): FormState => ({
     ...DEFAULT_VALUES,
-    options: ['broadcast', 'rippleDestinationTag'],
+    options: ['broadcast', 'destinationTag'],
     outputs: [{ ...DEFAULT_PAYMENT, currency }],
     selectedUtxos: [],
 });

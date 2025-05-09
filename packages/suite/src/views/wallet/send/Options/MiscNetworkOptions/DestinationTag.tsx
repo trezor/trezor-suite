@@ -1,4 +1,5 @@
 import { formInputsMaxLength } from '@suite-common/validators';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Input, Note, Row, Switch } from '@trezor/components';
@@ -13,7 +14,11 @@ import { useSendFormContext } from 'src/hooks/wallet';
 export const DESTINATION_TAG_GUIDE_PATH =
     '/3_send-and-receive/transactions-in-depth/destination-tags.md';
 
-export const DestinationTag = () => {
+interface DestinationTagProps {
+    networkSymbol: NetworkSymbol;
+}
+
+export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
     const {
         register,
         getDefaultValue,
@@ -26,32 +31,40 @@ export const DestinationTag = () => {
     const { translationString } = useTranslation();
     const { openNodeById } = useGuideOpenNode();
 
-    const options = getDefaultValue('options', []);
-    const destinationEnabled = options.includes('rippleDestinationTag');
+    const { networkType, name } = getNetwork(networkSymbol);
 
-    const inputName = 'rippleDestinationTag';
+    if (networkType !== 'ripple' && networkType !== 'stellar') {
+        return null;
+    }
+
+    const options = getDefaultValue('options', []);
+    const destinationEnabled = options.includes('destinationTag');
+
+    const inputName = 'destinationTag';
     const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
     const { ref: inputRef, ...inputField } = register(inputName, {
         onChange: () => composeTransaction(inputName),
         required: translationString('DESTINATION_TAG_NOT_SET'),
         validate: (value = '') => {
-            const amountBig = new BigNumber(value);
-            if (amountBig.isNaN()) {
-                return translationString('DESTINATION_TAG_IS_NOT_NUMBER');
-            }
-            if (!isInteger(value) || amountBig.lt(0) || amountBig.gt(U_INT_32)) {
-                return translationString('DESTINATION_TAG_IS_NOT_VALID');
+            if (networkType === 'ripple') {
+                const amountBig = new BigNumber(value);
+                if (amountBig.isNaN()) {
+                    return translationString('DESTINATION_TAG_IS_NOT_NUMBER');
+                }
+                if (!isInteger(value) || amountBig.lt(0) || amountBig.gt(U_INT_32)) {
+                    return translationString('DESTINATION_TAG_IS_NOT_VALID');
+                }
             }
         },
     });
 
     const handleToggleOption = () => {
         if (destinationEnabled) {
-            resetDefaultValue('rippleDestinationTag');
+            resetDefaultValue('destinationTag');
         }
 
-        toggleOption('rippleDestinationTag');
+        toggleOption('destinationTag');
         composeTransaction();
     };
 
@@ -78,7 +91,11 @@ export const DestinationTag = () => {
                         inputState={getInputState(error)}
                         data-testid={inputName}
                         defaultValue={inputValue}
-                        maxLength={formInputsMaxLength.xrpDestinationTag}
+                        maxLength={
+                            networkType === 'ripple'
+                                ? formInputsMaxLength.xrpDestinationTag
+                                : formInputsMaxLength.stellarTextMemo
+                        }
                         label={<Translation id="DESTINATION_TAG" />}
                         bottomText={error?.message || null}
                         innerRef={inputRef}
@@ -90,7 +107,7 @@ export const DestinationTag = () => {
                 </>
             ) : (
                 <Banner variant="warning" icon="warning">
-                    <Translation id="DESTINATION_TAG_BANNER_SEND" />
+                    <Translation id="DESTINATION_TAG_BANNER_SEND" values={{ networkName: name }} />
                 </Banner>
             )}
         </Column>

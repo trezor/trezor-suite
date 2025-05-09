@@ -1,4 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
     AddressDisplayOptions,
@@ -13,7 +14,8 @@ import {
     getExternalComposeOutput,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
+import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
+import TrezorConnect, { FeeLevel, RipplePayment, StellarOperation } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -88,12 +90,12 @@ const calculate = (
     return payloadData;
 };
 
-export const composeRippleTransactionFeeLevelsThunk = createThunk<
+export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
     { rejectValue: ComposeFeeLevelsError }
 >(
-    `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
+    `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { rejectWithValue }) => {
         const { account, network, feeInfo } = composeContext;
         const composeOutputs = getExternalComposeOutput(formState, account, network);
@@ -180,6 +182,7 @@ export const composeRippleTransactionFeeLevelsThunk = createThunk<
                     id: 'AMOUNT_IS_LESS_THAN_RESERVE',
                     values: {
                         reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
+                        displaySymbol: getDisplaySymbol(account.symbol),
                     },
                 };
             }
@@ -189,12 +192,12 @@ export const composeRippleTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-export const signRippleSendFormTransactionThunk = createThunk<
+export const signRippleStellarSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
     { rejectValue: SignTransactionError }
 >(
-    `${SEND_MODULE_PREFIX}/signRippleSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device },
         { getState, extra, rejectWithValue },
@@ -205,50 +208,115 @@ export const signRippleSendFormTransactionThunk = createThunk<
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
-        if (selectedAccount.networkType !== 'ripple')
+        let response;
+
+        if (selectedAccount.networkType === 'ripple') {
+            const payment: RipplePayment = {
+                destination: formState.outputs[0].address,
+                amount: networkAmountToSmallestUnit(
+                    formState.outputs[0].amount,
+                    selectedAccount.symbol,
+                ),
+            };
+
+            if (formState.destinationTag) {
+                payment.destinationTag = parseInt(formState.destinationTag, 10);
+            }
+
+            response = await TrezorConnect.rippleSignTransaction({
+                device: {
+                    path: device.path,
+                    instance: device.instance,
+                    state: device.state,
+                },
+                useEmptyPassphrase: device.useEmptyPassphrase,
+                path: selectedAccount.path,
+                transaction: {
+                    fee: precomposedTransaction.feePerByte,
+                    flags: XRP_FLAG,
+                    sequence: selectedAccount.misc.sequence,
+                    payment,
+                },
+                chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+            });
+            if (response.success) {
+                return { serializedTx: response.payload.serializedTx };
+            }
+        } else if (selectedAccount.networkType === 'stellar') {
+            const destinationAccount = await TrezorConnect.getAccountInfo({
+                descriptor: formState.outputs[0].address,
+                coin: selectedAccount.symbol,
+                suppressBackupWarning: true,
+            });
+
+            const destinationActivated =
+                destinationAccount.success && !destinationAccount.payload.empty;
+
+            let operation: StellarOperation;
+            if (destinationActivated) {
+                operation = {
+                    type: 'payment',
+                    asset: { code: 'XLM', type: 0 },
+                    amount: toStroops(formState.outputs[0].amount).toString(),
+                    destination: formState.outputs[0].address,
+                };
+            } else {
+                operation = {
+                    type: 'createAccount',
+                    startingBalance: toStroops(formState.outputs[0].amount).toString(),
+                    destination: formState.outputs[0].address,
+                };
+            }
+
+            const transaction = buildSendTransaction(
+                selectedAccount.descriptor,
+                selectedAccount.misc.stellarSequence,
+                precomposedTransaction.feePerByte,
+                destinationActivated,
+                formState.outputs[0].address,
+                formState.outputs[0].amount,
+                formState.destinationTag,
+            );
+
+            // It would be better if we could use `@trezor/connect-plugin-stellar`.
+            // const transformedTransaction = transformTransaction(selectedAccount.path, transaction);
+            const transformedTransaction = {
+                path: selectedAccount.path,
+                networkPassphrase: transaction.networkPassphrase,
+                transaction: {
+                    source: transaction.source,
+                    fee: Number.parseInt(transaction.fee, 10),
+                    sequence: transaction.sequence,
+                    memo: formState.destinationTag
+                        ? { type: 1, text: formState.destinationTag }
+                        : { type: 0 },
+                    timebounds: {
+                        minTime: 0,
+                        maxTime: 0,
+                    },
+                    operations: [operation],
+                },
+            };
+            response = await TrezorConnect.stellarSignTransaction(transformedTransaction);
+
+            if (response.success) {
+                const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
+                transaction.addSignature(selectedAccount.descriptor, signature);
+
+                return { serializedTx: transaction.toEnvelope().toXDR('hex') };
+            }
+        } else {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid network type.',
             });
-
-        const payment: RipplePayment = {
-            destination: formState.outputs[0].address,
-            amount: networkAmountToSmallestUnit(
-                formState.outputs[0].amount,
-                selectedAccount.symbol,
-            ),
-        };
-
-        if (formState.rippleDestinationTag) {
-            payment.destinationTag = parseInt(formState.rippleDestinationTag, 10);
         }
 
-        const response = await TrezorConnect.rippleSignTransaction({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-            },
-            useEmptyPassphrase: device.useEmptyPassphrase,
-            path: selectedAccount.path,
-            transaction: {
-                fee: precomposedTransaction.feePerByte,
-                flags: XRP_FLAG,
-                sequence: selectedAccount.misc.sequence,
-                payment,
-            },
-            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+        // catch manual error from TransactionReviewModal
+        return rejectWithValue({
+            error: 'sign-transaction-failed',
+            errorCode: response.payload.code,
+            message: response.payload.error,
         });
-
-        if (!response.success) {
-            // catch manual error from TransactionReviewModal
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
-            });
-        }
-
-        return { serializedTx: response.payload.serializedTx };
     },
 );

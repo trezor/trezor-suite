@@ -205,7 +205,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'stellar',
         contractAddress: null,
         ticker: 'XLM',
-        symbol: 'stellar',
+        symbol: 'xlm',
     },
     {
         type: 'currency',

@@ -136,12 +136,13 @@ export const TransactionList = ({
         [confirmedTxs],
     );
 
-    // if total pages cannot be determined check current page and number of txs (XRP)
-    // Edge case: if there is exactly 25 Ripple txs, pagination will be displayed
-    const isRipple = account.networkType === 'ripple';
-    const isLastRipplePage = isRipple && slicedTransactions.length < perPage;
-    const showRipplePagination = !(isLastRipplePage && currentPage === 1);
-    const showPagination = isRipple ? showRipplePagination : totalItems > perPage;
+    // if total pages cannot be determined check current page and number of txs (XRP/XLM)
+    // Edge case: if there is exactly 25 Ripple/Stellar txs, pagination will be displayed
+    const isRippleOrStellar = account.networkType === 'ripple' || account.networkType === 'stellar';
+    const isLastRippleOrStellarPage = isRippleOrStellar && slicedTransactions.length < perPage;
+    const showRippleOrStellarPagination = !(isLastRippleOrStellarPage && currentPage === 1);
+    const showPagination = isRippleOrStellar ? showRippleOrStellarPagination : totalItems > perPage;
+
     const areTransactionsAvailable = transactions.length > 0 && searchedTransactions.length === 0;
 
     return (
@@ -204,9 +205,9 @@ export const TransactionList = ({
             {showPagination && (
                 <Pagination
                     isPageListLimited={Boolean(isPagingLimited)}
-                    hasPages={!isRipple}
+                    hasPages={!isRippleOrStellar}
                     currentPage={currentPage}
-                    isLastPage={isLastRipplePage}
+                    isLastPage={isLastRippleOrStellarPage}
                     perPage={perPage}
                     totalItems={totalItems}
                     onPageSelected={onPageSelected}

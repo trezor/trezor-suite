@@ -65,7 +65,8 @@ export const PortfolioCard = memo(() => {
         !!accounts.some(
             account =>
                 account.history &&
-                (account.tokens?.length || ['ripple', 'solana'].includes(account.networkType)),
+                (account.tokens?.length ||
+                    ['ripple', 'solana', 'stellar'].includes(account.networkType)),
         );
 
     const goToReceive = () => dispatch(goto('wallet-receive'));

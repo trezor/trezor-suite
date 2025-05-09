@@ -42,6 +42,7 @@ const helpLink: Record<
     },
     ripple: null,
     solana: null,
+    stellar: null,
 };
 
 export const ReplaceByFeeFailedOriginalTxConfirmed = ({

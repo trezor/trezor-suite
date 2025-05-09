@@ -22,8 +22,8 @@ import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction
 
 const getPaging = (network: Account['networkType'], txFetched: number, txTotal: number) => {
     const perPage = getTxsPerPage(network);
-    // There is no total in XRP, so always presume there could be one more tx and calculate page count accordingly
-    const totalItems = network === 'ripple' ? txFetched + 1 : txTotal;
+    // There is no total in XRP and Stellar, so always presume there could be one more tx and calculate page count accordingly
+    const totalItems = network === 'ripple' || network === 'stellar' ? txFetched + 1 : txTotal;
     const pagesTotal = Math.ceil(totalItems / perPage);
     // Consider incomplete pages unfetched unless fetched tx count equals total
     const page = txFetched === totalItems ? pagesTotal : Math.floor(txFetched / perPage);

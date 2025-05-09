@@ -593,6 +593,9 @@ export const confirmAddressOnDeviceThunk = createThunk(
             case 'solana':
                 response = TrezorConnect.solanaGetAddress(params);
                 break;
+            case 'stellar':
+                response = TrezorConnect.stellarGetAddress(params);
+                break;
             default:
                 response = {
                     success: false,

@@ -23,6 +23,8 @@ const getFeeLabel = (networkType: NetworkType) => {
     switch (networkType) {
         case 'ethereum':
             return 'MAX_FEE';
+        case 'stellar':
+            return 'MAX_FEE';
         case 'solana':
             return 'EXPECTED_FEE';
         default:
@@ -94,6 +96,8 @@ const getOutputTitle = (
             );
         case 'opreturn':
             return <Translation id="OP_RETURN" />;
+        case 'timebounds':
+            return <Translation id="TIME_BOUNDS" />;
         default:
             return exhaustive(type);
     }
@@ -202,6 +206,7 @@ const getOutputLines = (
         case 'opreturn':
         case 'destination-tag':
         case 'locktime':
+        case 'timebounds':
             return [
                 {
                     id: type,
@@ -271,6 +276,20 @@ export const TransactionReviewOutput = ({
                     isTrading || stakeType || relevantAccounts.length > 0
                         ? ('safe-address' as OutputElementLine['type'])
                         : line.type,
+            };
+        }
+
+        if (type === 'timebounds') {
+            return {
+                ...line,
+                value: translationString('TIME_BOUNDS_IS_NOT_SET'),
+            };
+        }
+
+        if (type === 'destination-tag' && value === '') {
+            return {
+                ...line,
+                value: translationString('DESTINATION_TAG_NOT_SET'),
             };
         }
 

@@ -1,6 +1,6 @@
 import { Formatter } from '@suite-common/formatters';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     findToken,
@@ -207,12 +207,15 @@ export const validateReserveOrBalance =
         const amountBig = new BigNumber(value);
         if (amountBig.gt(formattedAvailableBalance)) {
             const reserve =
-                account.networkType === 'ripple'
+                account.networkType === 'ripple' || account.networkType === 'stellar'
                     ? formatNetworkAmount(account.misc.reserve, account.symbol)
                     : undefined;
 
             if (reserve && amountBig.lt(formatNetworkAmount(account.balance, account.symbol))) {
-                return translationString('AMOUNT_IS_MORE_THAN_RESERVE', { reserve });
+                return translationString('AMOUNT_IS_MORE_THAN_RESERVE', {
+                    reserve,
+                    displaySymbol: getDisplaySymbol(account.symbol),
+                });
             }
 
             return translationString('AMOUNT_IS_NOT_ENOUGH');

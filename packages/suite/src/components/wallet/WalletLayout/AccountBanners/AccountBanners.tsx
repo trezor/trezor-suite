@@ -16,10 +16,10 @@ import { BackendDisconnected } from './BackendDisconnected';
 import { ContextMessage } from './ContextMessage';
 import { DeviceUnavailable } from './DeviceUnavailable';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
+import { ReserveBanner } from './ReserveBanner';
 import { StakingBanner } from './StakingBanner';
 import { TaprootBanner } from './TaprootBanner';
 import { TorDisconnected } from './TorDisconnected';
-import { XRPReserve } from './XRPReserve';
 
 type AccountBannersProps = {
     account?: Account;
@@ -41,7 +41,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <BackendDisconnected />
             <DeviceUnavailable />
             <TorDisconnected />
-            <XRPReserve account={account} />
+            <ReserveBanner account={account} />
             <AccountImported account={account} />
             <AccountOutOfSync account={account} />
             <EvmExplanationBanner account={account} />

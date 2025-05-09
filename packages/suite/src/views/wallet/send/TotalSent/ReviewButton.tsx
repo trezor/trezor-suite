@@ -92,9 +92,9 @@ export const ReviewButton = () => {
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
     const requireDestinationTag =
-        networkType === 'ripple' &&
-        options.includes('rippleDestinationTag') &&
-        values.rippleDestinationTag === '';
+        (networkType === 'ripple' || networkType === 'stellar') &&
+        options.includes('destinationTag') &&
+        values.destinationTag === '';
 
     const isDeviceConnected = device?.connected && device?.available;
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;

@@ -76,7 +76,7 @@ export const useTradingRecomposeAndSign = () => {
                 feeLimit: composed.feeLimit || '',
                 estimatedFeeLimit: composed.estimatedFeeLimit,
                 options,
-                rippleDestinationTag: destinationTag,
+                destinationTag,
                 ethereumDataHex,
                 ethereumAdjustGasLimit,
                 selectedUtxos: [],

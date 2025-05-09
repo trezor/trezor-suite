@@ -3,7 +3,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { BitcoinOptions } from './BitcoinOptions/BitcoinOptions';
 import { CardanoOptions } from './CardanoOptions';
 import { EthereumOptions } from './EthereumOptions/EthereumOptions';
-import { RippleOptions } from './RippleOptions/RippleOptions';
+import { MiscNetworkOptions } from './MiscNetworkOptions/MiscNetworkOptions';
 
 export const Options = () => {
     const {
@@ -14,7 +14,7 @@ export const Options = () => {
         <>
             {networkType === 'bitcoin' && <BitcoinOptions />}
             {networkType === 'ethereum' && <EthereumOptions />}
-            {networkType === 'ripple' && <RippleOptions />}
+            {(networkType === 'ripple' || networkType === 'stellar') && <MiscNetworkOptions />}
             {networkType === 'cardano' && <CardanoOptions />}
         </>
     );

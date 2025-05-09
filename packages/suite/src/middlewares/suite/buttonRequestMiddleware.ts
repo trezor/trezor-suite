@@ -63,7 +63,7 @@ const buttonRequest =
                 router: { route },
             } = api.getState();
             const isInSuite =
-                ['cardano', 'ethereum'].includes(account?.networkType || '') &&
+                ['cardano', 'ethereum', 'stellar'].includes(account?.networkType || '') &&
                 [
                     'wallet-send',
                     'wallet-staking',
@@ -73,7 +73,11 @@ const buttonRequest =
                 ].includes(route?.name || '');
             const isInConnectCall =
                 activeCall?.state === 'ongoing' &&
-                ['cardanoSignTransaction', 'ethereumSignTransaction'].includes(activeCall.method);
+                [
+                    'cardanoSignTransaction',
+                    'ethereumSignTransaction',
+                    'stellarSignTransaction',
+                ].includes(activeCall.method);
             if (isInSuite || isInConnectCall) {
                 api.dispatch({
                     ...action,

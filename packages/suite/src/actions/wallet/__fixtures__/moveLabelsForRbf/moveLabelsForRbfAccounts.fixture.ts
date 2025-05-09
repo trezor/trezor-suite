@@ -7,6 +7,7 @@ export const accountSpendingCoins: Account = {
     backendType: undefined,
     misc: undefined,
     marker: undefined,
+    stellarCursor: undefined,
     path: "m/84'/1'/0'",
     descriptor:
         '(accountSpendingCoins:descriptor)vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
@@ -401,6 +402,7 @@ export const accountReceivingCoins: Account = {
     backendType: undefined,
     misc: undefined,
     marker: undefined,
+    stellarCursor: undefined,
     path: "m/84'/1'/1'",
     descriptor:
         '(accountReceivingCoins:descriptor)vpub5YX1yJFY8E238aESifzcpXQHLzNDYJC22yLWqCwJ5pN85E27ku5wUXdhnh3HSMs3HibDQzeWmVeH52bAAa9LvkK4L1V9XfZbmHxGDuZSJks',

@@ -257,7 +257,7 @@ export const TransactionReviewModalContent = ({
                 bitcoinLockTime: !!options.includes('bitcoinLockTime'),
                 ethereumData: !!options.includes('ethereumData'),
                 ethereumNonce: !!options.includes('ethereumNonce'),
-                rippleDestinationTag: !!options.includes('rippleDestinationTag'),
+                destinationTag: !!options.includes('destinationTag'),
                 selectedFee: selectedFee || 'normal',
                 isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
                 hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
@@ -266,7 +266,7 @@ export const TransactionReviewModalContent = ({
         });
 
     const handleSend = () => {
-        if (networkType === 'solana') {
+        if (networkType === 'solana' || networkType === 'stellar') {
             setIsSending(true);
         }
 

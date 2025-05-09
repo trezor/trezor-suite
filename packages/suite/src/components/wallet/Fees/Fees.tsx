@@ -176,6 +176,8 @@ export const Fees = <TFieldValues extends FormState>({
         switch (networkType) {
             case 'ethereum':
                 return 'TR_EVM_MAX_FEE_DESC';
+            case 'stellar':
+                return 'TR_STELLAR_FEE_DESC';
             case 'solana':
                 return 'TR_SOL_FEE_DESC';
             default:

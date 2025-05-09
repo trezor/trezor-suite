@@ -3498,10 +3498,10 @@ export default defineMessages({
         defaultMessage: 'Show more ({count})',
         id: 'TR_SHOW_MORE_ADDRESSES',
     },
-    TR_XRP_RESERVE_INFO: {
+    TR_RESERVE_INFO: {
         defaultMessage:
-            'XRP addresses require a minimum balance of {minBalance} XRP to activate and maintain the account.',
-        id: 'TR_XRP_RESERVE_INFO',
+            '{networkName} addresses require a minimum balance of {minBalance} {displaySymbol} to activate and maintain the account.',
+        id: 'TR_RESERVE_INFO',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage:
@@ -3663,6 +3663,11 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE_XRP_DESC',
         defaultMessage:
             'XRP is a digital currency that enables fast, low-cost cross-border payments without relying on traditional mining, using a consensus ledger for quick transaction confirmations.',
+    },
+    TR_ACCOUNT_TYPE_STELLAR_DESC: {
+        id: 'TR_ACCOUNT_TYPE_STELLAR_DESC',
+        defaultMessage:
+            'Stellar is a decentralized, public blockchain that gives developers the tools to create experiences that are more like cash than crypto. The network is faster, cheaper, and far more energy-efficient than most blockchain-based systems. It’s designed so Stellar’s ecosystem can make a real-world, lasting impact.',
     },
     TR_ACCOUNT_DETAILS_XPUB_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
@@ -5500,11 +5505,13 @@ export default defineMessages({
         id: 'AMOUNT_IS_BELOW_DUST',
     },
     AMOUNT_IS_MORE_THAN_RESERVE: {
-        defaultMessage: 'Amount is above the required unspendable reserve ({reserve} XRP)',
+        defaultMessage:
+            'Amount is above the required unspendable reserve ({reserve} {displaySymbol})',
         id: 'AMOUNT_IS_MORE_THAN_RESERVE',
     },
     AMOUNT_IS_LESS_THAN_RESERVE: {
-        defaultMessage: 'Recipient account requires minimum reserve {reserve} XRP to activate',
+        defaultMessage:
+            'Recipient account requires minimum reserve {reserve} {displaySymbol} to activate',
         id: 'AMOUNT_IS_LESS_THAN_RESERVE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
@@ -5594,17 +5601,17 @@ export default defineMessages({
     },
     DESTINATION_TAG_NOTE: {
         defaultMessage:
-            'Online exchanges require this to identify your account. Get your destination tag from your online exchange.',
+            'Online exchanges require this to identify your account. Get your memo/destination tag from your online exchange.',
         id: 'DESTINATION_TAG_NOTE',
     },
     DESTINATION_TAG_BANNER_SEND: {
         defaultMessage:
-            'Online exchanges require this to identify your account. Get your memo/destination tag from your Ripple account on your online exchange.',
+            'Online exchanges require this to identify your account. Get your memo/destination tag from your {networkName} account on your online exchange.',
         id: 'DESTINATION_TAG_BANNER_SEND',
     },
     DESTINATION_TAG_BANNER_RECEIVE: {
         defaultMessage:
-            'Trezor doesn’t require a memo or destination tag to receive XRP. Enter any value in the memo/destination tag field to complete your transfer. <a>Learn more</a>',
+            'Trezor doesn’t require a memo or destination tag to receive {displaySymbol}. Enter any value in the memo/destination tag field to complete your transfer. <a>Learn more</a>',
         id: 'DESTINATION_TAG_BANNER_RECEIVE',
     },
     DESTINATION_TAG_NOT_SET: {
@@ -5618,6 +5625,15 @@ export default defineMessages({
     DESTINATION_TAG_IS_NOT_NUMBER: {
         defaultMessage: "Memo/Destination tag isn't a number",
         id: 'DESTINATION_TAG_IS_NOT_NUMBER',
+    },
+    TIME_BOUNDS: {
+        id: 'TIME_BOUNDS',
+        description: 'Used in reviewTransaction modal',
+        defaultMessage: 'TimeBounds',
+    },
+    TIME_BOUNDS_IS_NOT_SET: {
+        id: 'TIME_BOUNDS_IS_NOT_SET',
+        defaultMessage: 'No Restriction',
     },
     DATA_ETH: {
         id: 'DATA_ETH',
@@ -6167,7 +6183,7 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA: {
         id: 'TR_GRAPH_MISSING_DATA',
         defaultMessage:
-            "XRP, SOL, and all token amounts are in the portfolio balance but aren't currently supported in graph view.",
+            "XRP, XLM, SOL, and all token amounts are in the portfolio balance but aren't currently supported in graph view.",
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
@@ -9066,6 +9082,11 @@ export default defineMessages({
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
             'Network fees are payments made to validators for processing transactions. Paying a higher fee can speed up confirmation times. {br}Rent is a charge for storing data on the blockchain. The cost is based on the size of the account’s storage.',
+    },
+    TR_STELLAR_FEE_DESC: {
+        id: 'TR_STELLAR_FEE_DESC',
+        defaultMessage:
+            "The maximum fee you're willing to pay for the transaction. You'll only pay what's necessary — typically the minimum fee during light network traffic. Higher fees help prioritize your transaction during network congestion.",
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',

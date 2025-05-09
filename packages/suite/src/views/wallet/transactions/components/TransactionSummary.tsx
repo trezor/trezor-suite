@@ -49,7 +49,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
 
-    if (account.networkType === 'ripple') {
+    if (account.networkType === 'ripple' || account.networkType === 'stellar') {
         return null;
     }
 

@@ -49,7 +49,7 @@ export const DEFAULT_VALUES = {
     ethereumNonce: '',
     ethereumDataAscii: '',
     ethereumDataHex: '',
-    rippleDestinationTag: '',
+    destinationTag: '',
     outputs: [],
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
