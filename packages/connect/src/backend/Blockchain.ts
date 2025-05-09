@@ -13,6 +13,7 @@ import {
     ElectrumWorker,
     RippleWorker,
     SolanaWorker,
+    StellarWorker,
 } from '../workers/workers';
 
 const getWorker = (type: string) => {
@@ -27,6 +28,8 @@ const getWorker = (type: string) => {
             return ElectrumWorker;
         case 'solana':
             return SolanaWorker;
+        case 'stellar':
+            return StellarWorker;
         default:
             return null;
     }
@@ -89,8 +92,10 @@ export class Blockchain {
             server,
             debug: options.debug,
             proxy: options.proxy,
-            ...(blockchainLink.type === 'ripple' ? { throttleBlockEvent: 60 * 1000 } : {}),
             ...(this.coinInfo.type === 'ethereum' ? { throttleBlockEvent: 10 * 1000 } : {}), // register EVM block once per 10+ seconds
+            ...(['ripple', 'stellar'].includes(blockchainLink.type)
+                ? { throttleBlockEvent: 60 * 1000 }
+                : {}),
         });
     }
 

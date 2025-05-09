@@ -22,5 +22,16 @@ const SolanaWorker: WorkerAsyncImporter = () =>
     import(
         /* webpackChunkName: "solana-worker" */ '@trezor/blockchain-link/src/workers/solana'
     ).then(w => w.default());
+const StellarWorker: WorkerAsyncImporter = () =>
+    import(
+        /* webpackChunkName: "stellar-worker" */ '@trezor/blockchain-link/src/workers/stellar'
+    ).then(w => w.default());
 
-export { BlockbookWorker, RippleWorker, BlockfrostWorker, ElectrumWorker, SolanaWorker };
+export {
+    BlockbookWorker,
+    RippleWorker,
+    BlockfrostWorker,
+    ElectrumWorker,
+    SolanaWorker,
+    StellarWorker,
+};

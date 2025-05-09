@@ -2812,7 +2812,10 @@
             }
         },
         {
-            "blockchain_link": null,
+            "blockchain_link": {
+                "type": "stellar",
+                "url": ["https://horizon.stellar.org"]
+            },
             "curve": "ed25519",
             "decimals": 7,
             "is_testnet": false,

@@ -246,6 +246,17 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             };
         }
 
+        if (coinInfo.shortcut === 'XLM') {
+            const { message } = await typedCall('StellarGetAddress', 'StellarAddress', {
+                address_n,
+            });
+
+            return {
+                descriptor: message.address,
+                address_n,
+            };
+        }
+
         throw ERRORS.TypedError(
             'Runtime',
             'DeviceCommands.getAccountDescriptor: unsupported coinInfo.type',

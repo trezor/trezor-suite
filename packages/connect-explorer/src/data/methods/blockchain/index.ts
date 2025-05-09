@@ -22,6 +22,7 @@ const select = [
     { value: 'dsol', label: 'Solana devnet' },
     { value: 'ada', label: 'Cardano' },
     { value: 'tada', label: 'Cardano Testnet' },
+    { value: 'xlm', label: 'Stellar' },
 ];
 
 const json = `[

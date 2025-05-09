@@ -97,6 +97,9 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         if (info.shortcut === 'XRP' || info.shortcut === 'tXRP') {
             return !capabilities.includes('Capability_Ripple');
         }
+        if (info.shortcut === 'XLM') {
+            return !capabilities.includes('Capability_Stellar');
+        }
         if (info.shortcut === 'SOL' || info.shortcut === 'DSOL') {
             return !capabilities.includes('Capability_Solana');
         }
