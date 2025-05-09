@@ -405,7 +405,7 @@ export const networks = {
         bip43Path: "m/44'/148'/i'",
         decimals: 7,
         testnet: false,
-        explorer: getExplorerUrls('https://stellar.expert', 'stellar'),
+        explorer: getExplorerUrls('https://stellar.expert/explorer/public', 'stellar'),
         features: [],
         backendTypes: ['stellar'],
         accountTypes: {},

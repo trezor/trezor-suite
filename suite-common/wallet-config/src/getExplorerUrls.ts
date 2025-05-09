@@ -44,9 +44,10 @@ export const getExplorerUrls = (
             token: `${baseUrl}/asset/`,
         },
         stellar: {
-            tx: `${baseUrl}/explorer/public/tx/`,
-            account: `${baseUrl}/explorer/public/account/`,
-            address: `${baseUrl}/explorer/public/account/`,
+            base: baseUrl,
+            tx: `${baseUrl}/tx/`,
+            account: `${baseUrl}/account/`,
+            address: `${baseUrl}/account/`,
         },
     };
 
@@ -91,6 +92,12 @@ export const getExplorerUrlsRaw = (
             account: 'address',
             address: 'address',
             token: 'asset',
+        },
+        stellar: {
+            base: baseUrl,
+            tx: 'tx',
+            account: 'account',
+            address: 'account',
         },
     };
 
