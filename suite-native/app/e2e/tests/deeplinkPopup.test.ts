@@ -1,13 +1,13 @@
 import { exec } from 'child_process';
+import { expect as detoxExpect } from 'detox';
 import http from 'http';
 
+import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
-import { onConnectingDevice } from '../pageObjects/connectingDevice';
-import { onHome } from '../pageObjects/homeActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import {
     appIsFullyLoaded,
@@ -15,6 +15,7 @@ import {
     openApp,
     prepareTrezorEmulator,
     restartApp,
+    wait,
 } from '../utils';
 
 const SERVER_PORT = 8080;
@@ -37,9 +38,7 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
     });
 };
 
-// FIXME: Test started failing recently, disabling it for now so it doesn't block all the PRs.
-// Issue demanding fix: https://github.com/trezor/trezor-suite/issues/17883
-describe.skip('Deeplink connect popup.', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.', () => {
     beforeAll(async () => {
         await new Promise(resolve => {
             server = http.createServer((req, res) => {
@@ -58,16 +57,18 @@ describe.skip('Deeplink connect popup.', () => {
                 resolve(null);
             });
         });
+        await device.reverseTcpPort(SERVER_PORT);
 
         await prepareTrezorEmulator();
         await openApp({ newInstance: true });
         await onOnboarding.skipOnboarding();
 
         await onCoinEnabling.waitForInitScreen();
-        await onCoinEnabling.toggleNetwork('regtest');
+        await onCoinEnabling.toggleNetwork('btc');
         await onCoinEnabling.clickOnConfirmButton();
 
         await onAlertSheet.skipViewOnlyMode();
+        await detoxExpect(element(by.id('@home/portfolio/header'))).toExist();
 
         // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
         await TrezorConnect.init({
@@ -87,16 +88,12 @@ describe.skip('Deeplink connect popup.', () => {
         await prepareTrezorEmulator(MNEMONICS.mnemonic_12);
         await restartApp();
 
-        await device.reverseTcpPort(SERVER_PORT);
-
         await appIsFullyLoaded();
-
-        await onConnectingDevice.waitForScreen();
-        await onHome.waitForScreen();
+        await wait(5000); // wait for trezor device to start communicating with the app
     });
 
     afterAll(async () => {
-        disconnectTrezorUserEnv();
+        await disconnectTrezorUserEnv();
         await new Promise(resolve => {
             if (server) {
                 server.close(() => {
