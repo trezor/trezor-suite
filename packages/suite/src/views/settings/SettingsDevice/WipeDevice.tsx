@@ -1,5 +1,4 @@
-import { useState } from 'react';
-
+import { useModal } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
 import { SettingsSectionItem } from 'src/components/settings';
@@ -9,13 +8,13 @@ import { useDevice } from 'src/hooks/suite';
 
 import { WipeDeviceModal } from './WipeDeviceModal';
 
-interface WipeDeviceProps {
+type WipeDeviceProps = {
     isDeviceLocked: boolean;
-}
+};
 
 export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
     const { device } = useDevice();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { Modal, openModal } = useModal(WipeDeviceModal);
 
     const isBootloaderMode = isDeviceInBootloaderMode(device);
 
@@ -25,7 +24,6 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.WipeDevice}>
-            {isModalOpen && <WipeDeviceModal onCancel={() => setIsModalOpen(false)} />}
             <TextColumn
                 title={<Translation id={headingTranslation} />}
                 description={
@@ -40,7 +38,7 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={openModal}
                     variant="destructive"
                     isDisabled={isDeviceLocked}
                     data-testid="@settings/device/open-wipe-modal-button"
@@ -50,6 +48,7 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
                     <Translation id={headingTranslation} />
                 </ActionButton>
             </ActionColumn>
+            <Modal />
         </SettingsSectionItem>
     );
 };
