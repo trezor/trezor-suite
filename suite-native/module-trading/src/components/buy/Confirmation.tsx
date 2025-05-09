@@ -22,12 +22,14 @@ export const Confirmation = ({ isFormMountedRecently }: ConfirmationProps) => {
     return (
         <AnimatedBox entering={isFormMountedRecently ? FadeIn : FadeInDown} exiting={FadeOutDown}>
             {canProceed && (
-                <Button onPress={selectQuote} disabled={!canProceed}>
-                    <Translation id="moduleTrading.tradingScreen.continueButton" />
-                </Button>
+                <AnimatedBox entering={FadeIn}>
+                    <Button onPress={selectQuote}>
+                        <Translation id="moduleTrading.tradingScreen.continueButton" />
+                    </Button>
+                </AnimatedBox>
             )}
             <LegalSheet
-                onClose={cancelConsent}
+                onDismiss={cancelConsent}
                 isVisible={isConsentRequested}
                 onConsent={giveConsent}
                 tradeProvider={quote?.exchange ?? ''}

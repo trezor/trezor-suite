@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -71,21 +71,24 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
         }
     };
 
-    const handleConsent = {
-        give: () => {
-            resolveConsent(true);
-            setIsConsentRequested(false);
-        },
-        cancel: () => {
-            resolveConsent(false);
-            setIsConsentRequested(false);
-        },
-        request: async (_provider: string, _cryptoCurrency: string) => {
-            setIsConsentRequested(true);
+    const handleConsent = useMemo(
+        () => ({
+            give: () => {
+                resolveConsent(true);
+                setIsConsentRequested(false);
+            },
+            cancel: () => {
+                resolveConsent(false);
+                setIsConsentRequested(false);
+            },
+            request: async (_provider: string, _cryptoCurrency: string) => {
+                setIsConsentRequested(true);
 
-            return await waitForConsent();
-        },
-    };
+                return await waitForConsent();
+            },
+        }),
+        [],
+    );
 
     const handleWebview = (formData: FormResponse['form'], returnUrl: string) => {
         const source = getSourceForForm(formData);

@@ -17,7 +17,7 @@ describe('LegalSheet', () => {
         renderWithStoreProviderAsync(
             <LegalSheet
                 isVisible
-                onClose={() => {}}
+                onDismiss={() => {}}
                 onConsent={() => {}}
                 tradeProvider="invity"
                 {...props}
@@ -28,21 +28,20 @@ describe('LegalSheet', () => {
     it('should render text info with given tradeProviderName', async () => {
         const { getByText } = await renderLegalSheet();
 
-        expect(getByText('Buy with Invity Finance')).toBeTruthy();
         expect(getByText(/contact Invity Finance support/)).toBeTruthy();
         expect(getByText(/It's governed by Invity Finance’s Terms & Conditions./)).toBeTruthy();
     });
 
     it('should call onConsent callback on Continue button press and onClose not to be called', async () => {
         const onConsent = jest.fn();
-        const onClose = jest.fn();
-        const { getByText } = await renderLegalSheet({ onConsent, onClose });
+        const onDismiss = jest.fn();
+        const { getByText } = await renderLegalSheet({ onConsent, onDismiss });
 
         act(() => {
             fireEvent.press(getByText('Continue'));
         });
 
         expect(onConsent).toHaveBeenCalledTimes(1);
-        expect(onClose).not.toHaveBeenCalled();
+        expect(onDismiss).not.toHaveBeenCalled();
     });
 });

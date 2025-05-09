@@ -27,6 +27,7 @@ export type BottomSheetModalProps = {
     title?: string;
     subtitle?: string;
     isCloseDisplayed?: boolean;
+    onDismiss?: () => void;
 } & BoxProps;
 
 const containerStyle = prepareNativeStyle(() => ({
@@ -45,7 +46,7 @@ const backgroundStyle = prepareNativeStyle(utils => ({
 }));
 
 export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetModalProps>(
-    ({ children, footer, style, title, isCloseDisplayed = false, subtitle }, ref) => {
+    ({ children, footer, style, title, isCloseDisplayed = false, subtitle, onDismiss }, ref) => {
         const { applyStyle } = useNativeStyles();
         const { bottom } = useSafeAreaInsets();
 
@@ -61,10 +62,13 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         );
 
         const onCloseModal = useCallback(() => {
+            if (onDismiss) {
+                onDismiss();
+            }
             if (ref && 'current' in ref && ref.current) {
                 ref.current.dismiss();
             }
-        }, [ref]);
+        }, [ref, onDismiss]);
 
         return (
             <GestureHandlerRootView style={applyStyle(containerStyle)}>
@@ -82,6 +86,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                             scrollDivider={scrollDivider}
                         />
                     )}
+                    onDismiss={onDismiss}
                 >
                     <BottomSheetScrollView
                         style={applyStyle(containerStyle)}
