@@ -12178,10 +12178,10 @@ __metadata:
     "@types/semver": "npm:^7.7.0"
     chalk: "npm:^4.1.2"
     fs-extra: "npm:^11.3.0"
-    minimatch: "npm:^9.0.3"
+    minimatch: "npm:^10.0.1"
     prettier: "npm:3.5.3"
     semver: "npm:^7.7.1"
-    sort-package-json: "npm:^3.1.0"
+    sort-package-json: "npm:^3.2.1"
     tar: "npm:^7.0.1"
     tsx: "npm:^4.19.3"
     yargs: "npm:17.7.2"
@@ -31242,7 +31242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^10.0.0":
+"minimatch@npm:^10.0.0, minimatch@npm:^10.0.1":
   version: 10.0.1
   resolution: "minimatch@npm:10.0.1"
   dependencies:
@@ -38040,9 +38040,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sort-package-json@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "sort-package-json@npm:3.1.0"
+"sort-package-json@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "sort-package-json@npm:3.2.1"
   dependencies:
     detect-indent: "npm:^7.0.1"
     detect-newline: "npm:^4.0.1"
@@ -38053,7 +38053,7 @@ __metadata:
     tinyglobby: "npm:^0.2.12"
   bin:
     sort-package-json: cli.js
-  checksum: 10/851bb46ed01924f002f344efd7b2c9dc4ced4b8202e85e97a93910dec0243910e9e59ee8fadf66c9b94d193183d4235fe7708c52054f0368734fecbad66aa01d
+  checksum: 10/71a84a6f9d68d0ad3b3cbe5091a563115977de758f8578d4db8756a57f7ded6ed93f8a90a36acbf026503a57f70bd835af098422757c89d02cc955ac807b6c4f
   languageName: node
   linkType: hard
 
