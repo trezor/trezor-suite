@@ -1,8 +1,10 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { FormProvider } from 'react-hook-form';
 
 import useMeasure from 'react-use/lib/useMeasure';
 import styled, { css } from 'styled-components';
 
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Button,
     DeviceAnimation,
@@ -17,8 +19,9 @@ import { spacingsPx, typography } from '@trezor/theme';
 
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { HomescreenGallery, Translation } from 'src/components/suite';
-import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
+import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 
@@ -97,6 +100,7 @@ const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
 
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();
+    const dispatch = useDispatch();
 
     const popoverRef = useRef<PopoverRef>();
 
@@ -113,15 +117,54 @@ export const FinalStep = () => {
 
     const isWaitingForConfirm = modalContext === '@modal/context-device';
 
-    const onClick = () => {
-        setState(null);
-    };
+    const { form, onSubmit } = useChangeDeviceLabel();
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setState(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     const [wrapperRef, { width }] = useMeasure<HTMLDivElement>();
 
     if (!device?.features) return null;
 
     const shouldOfferChangeHomescreen = isHomescreenSupportedOnDevice(device);
+
+    const handleClick = async () => {
+        const payload = {
+            ...onboardingAnalytics,
+            duration: Date.now() - onboardingAnalytics.startTime!,
+            device: device.features.internal_model,
+            unitPackaging: device.features.unit_packaging ?? 0,
+        };
+        delete payload.startTime;
+
+        analytics.report({
+            type: EventType.DeviceSetupCompleted,
+            payload,
+        });
+
+        try {
+            await onSubmit();
+            goToSuite();
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    // TODO: replace with `translationString('TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL_ERROR')`,
+                    error: 'Error when saving name',
+                }),
+            );
+        }
+    };
 
     return (
         <OnboardingStepBox
@@ -194,29 +237,19 @@ export const FinalStep = () => {
                     )}
                     {state === 'rename' && (
                         <SetupActions>
-                            <ChangeDeviceLabel onClick={onClick} isDeviceLocked={isDeviceLocked} />
+                            <FormProvider {...form}>
+                                <ChangeDeviceLabelForm
+                                    isDeviceLocked={isDeviceLocked}
+                                    onClick={handleClick}
+                                />
+                            </FormProvider>
                         </SetupActions>
                     )}
 
                     <EnterSuiteButton
                         variant="primary"
                         data-testid="@onboarding/exit-app-button"
-                        onClick={() => {
-                            const payload = {
-                                ...onboardingAnalytics,
-                                duration: Date.now() - onboardingAnalytics.startTime!,
-                                device: device.features.internal_model,
-                                unitPackaging: device.features.unit_packaging ?? 0,
-                            };
-                            delete payload.startTime;
-
-                            analytics.report({
-                                type: EventType.DeviceSetupCompleted,
-                                payload,
-                            });
-
-                            goToSuite(true);
-                        }}
+                        onClick={handleClick}
                         icon="arrowRight"
                         iconAlignment="end"
                         isDisabled={isWaitingForConfirm}
