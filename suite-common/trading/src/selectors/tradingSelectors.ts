@@ -96,7 +96,8 @@ export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
     (isLoading, lastLoadedTimestamp, info, buyInfo) => ({
         isLoading,
         lastLoadedTimestamp,
-        isFullyLoaded: !!(buyInfo && info?.coins && info?.platforms),
+        isFullyLoaded:
+            !!(info?.coins && info?.platforms && buyInfo) && buyInfo.buyInfo?.providers.length > 0,
     }),
 );
 

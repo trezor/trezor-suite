@@ -1,4 +1,4 @@
-import { Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
+import { type BuyTrade, Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
 
 import {
     TradingPaymentMethodProps,
@@ -8,6 +8,7 @@ import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
+import { invityAPIFixtures } from '../../__fixtures__/invityAPI';
 import platforms from '../../__fixtures__/platforms.json';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { TradingBuyState } from '../../reducers/buyReducer';
@@ -69,7 +70,7 @@ describe('tradingSelectors', () => {
             buyInfo: {
                 buyInfo: {
                     country: 'CZ',
-                    providers: [] as any[],
+                    providers: invityAPIFixtures.buyList,
                     defaultAmountsOfFiatCurrencies: { usd: 150, eur: 100 } as FiatCurrenciesProps,
                     suggestedFiatCurrency: 'CZK',
                 },
@@ -82,7 +83,7 @@ describe('tradingSelectors', () => {
                     'base--0x0000000000000000000000000000000000000000',
                     'ethereum--0xWithoutObjectInCoinsInfo', // there are values not presented in info.coins map
                 ] as CryptoId[],
-                providerInfos: {},
+                providerInfos: { test: invityAPIFixtures.buyList[0] },
                 supportedFiatCurrencies: ['usd', 'eur', 'czk'],
             },
             quotes: [
@@ -119,7 +120,7 @@ describe('tradingSelectors', () => {
                     orderId: 'orderId3',
                     exchange: 'invity',
                 },
-            ],
+            ] as BuyTrade[],
         }) as TradingBuyState;
     const getState = () =>
         ({
@@ -783,6 +784,13 @@ describe('tradingSelectors', () => {
 
             it('should be false when trading buyInfo is empty', () => {
                 state.wallet.tradingNew.buy.buyInfo = undefined;
+
+                expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
+            });
+
+            it('should be false when providers info is empty', () => {
+                state.wallet.tradingNew.buy.buyInfo!.providerInfos = {};
+                state.wallet.tradingNew.buy.buyInfo!.buyInfo.providers = [];
 
                 expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
