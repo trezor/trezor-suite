@@ -20,6 +20,8 @@ export type CryptoAmountInputProps = {
     showAssetsSheet: () => void;
 };
 
+const CRYPTO_AMOUNT_TEST_ID = '@trading/buy/crypto-amount-input';
+
 export const CryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
@@ -50,6 +52,7 @@ export const CryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps>(
                 inputTransformer={cryptoAmountTransformer}
                 maxDecimals={MAX_CRYPTO_DECIMALS}
                 onPress={isAssetSelected ? undefined : showAssetsSheet}
+                testID={CRYPTO_AMOUNT_TEST_ID}
             />
         );
     },

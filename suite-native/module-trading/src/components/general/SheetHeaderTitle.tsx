@@ -13,13 +13,15 @@ export type SheetHeaderTitleProps = {
     rightButtonA11yLabel: string;
 }>;
 
+const SHEET_HEADER_TITLE_TEST_ID = '@trading/sheet-header-title';
+
 export const SheetHeaderTitle = ({
     onRightButtonPress,
     rightButtonIcon,
     rightButtonA11yLabel,
     children,
 }: SheetHeaderTitleProps) => (
-    <HStack alignItems="center" justifyContent="space-between">
+    <HStack alignItems="center" justifyContent="space-between" testID={SHEET_HEADER_TITLE_TEST_ID}>
         <Text variant="titleSmall" ellipsizeMode="tail" numberOfLines={1}>
             {children}
         </Text>

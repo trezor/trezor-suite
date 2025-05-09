@@ -12,6 +12,7 @@ import { FiatCurrencyIcon } from './FiatCurrencyIcon';
 export type FiatCurrencyButtonProps = {
     currency?: FiatCurrencyCode;
     onPress: () => void;
+    testID?: string;
 };
 
 const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
@@ -27,7 +28,7 @@ const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     borderWidth: borders.widths.small,
 }));
 
-export const FiatCurrencyButton = ({ currency, onPress }: FiatCurrencyButtonProps) => {
+export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
@@ -40,9 +41,10 @@ export const FiatCurrencyButton = ({ currency, onPress }: FiatCurrencyButtonProp
             accessible
             accessibilityRole="button"
             accessibilityLabel={translate('moduleTrading.selectFiat.buttonTitle')}
+            testID={testID}
         >
             <FiatCurrencyIcon size="small" />
-            <Text variant="callout" color="textSubdued">
+            <Text variant="callout" color="textSubdued" testID={testID + '/ticker'}>
                 {displayCurrency}
             </Text>
             <Icon name="caretDown" color="textSubdued" size="medium" />

@@ -26,6 +26,14 @@ type TradeHistoryButtonProps = {
     isFormMountedRecently?: boolean;
 };
 
+export type NavigationProps = StackToStackCompositeNavigationProps<
+    TradingStackParamList,
+    TradingStackRoutes.TradeHistory,
+    RootStackParamList
+>;
+
+const TRADE_HISTORY_BUTTON_TEST_ID = '@trading/history/button';
+
 const buttonStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
     borderColor: utils.colors.borderOnElevationNegative,
@@ -37,11 +45,6 @@ const buttonStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     alignItems: 'center',
 }));
-export type NavigationProps = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradeHistory,
-    RootStackParamList
->;
 
 export const TradeHistoryButton = ({
     tradeType,
@@ -61,7 +64,7 @@ export const TradeHistoryButton = ({
 
     return (
         <AnimatedBox entering={isFormMountedRecently ? FadeIn : FadeInDown} exiting={FadeOutDown}>
-            <Pressable onPress={handleOnPress}>
+            <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
                 <HStack style={applyStyle(buttonStyle)}>
                     <Text variant="body" color="textSubdued">
                         <Translation id="moduleTrading.tradeHistory.button.title" />

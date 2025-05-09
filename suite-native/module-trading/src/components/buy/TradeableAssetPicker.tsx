@@ -13,6 +13,8 @@ import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
 import { TradeableAsset } from '../../types';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
+const ASSET_PICKER_TEST_ID = '@trading/buy/asset-button';
+
 const noop = () => {};
 
 export const TradeableAssetPicker = () => {
@@ -67,6 +69,7 @@ export const TradeableAssetPicker = () => {
                     onPress={showSheet}
                     selectedAsset={selectedValue}
                     caret
+                    testID={ASSET_PICKER_TEST_ID}
                 />
                 <CryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
             </HStack>

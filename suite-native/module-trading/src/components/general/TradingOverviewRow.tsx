@@ -11,6 +11,7 @@ export type TradeOverviewOptionProps = {
     onPress?: () => void;
     noBottomBorder?: boolean;
     noCaret?: boolean;
+    testID?: string;
 };
 
 const pressableStyle = prepareNativeStyle<{ noBottomBorder: boolean }>(
@@ -33,6 +34,7 @@ export const TradingOverviewRow = ({
     onPress,
     noBottomBorder = false,
     noCaret = false,
+    testID,
 }: TradeOverviewOptionProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -43,6 +45,7 @@ export const TradingOverviewRow = ({
             accessibilityLabel={title}
             accessibilityRole="button"
             style={applyStyle(pressableStyle, { noBottomBorder })}
+            testID={testID}
         >
             <HStack paddingHorizontal="sp12" justifyContent="space-between">
                 <Box paddingVertical="sp20" paddingHorizontal="sp8" flex={0}>

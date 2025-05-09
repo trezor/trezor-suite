@@ -23,20 +23,31 @@ type RightTextProps = {
     children: ReactNode;
     color: Color;
     variant?: 'body' | 'hint';
+    testID?: string;
 };
 
 type ReceiveAccountPickerRightProps = {
     selectedAccountLabel: string | undefined;
     selectedAddress: string | undefined;
 };
+
 export type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
     TradingStackRoutes.ReceiveAccounts,
     RootStackParamList
 >;
 
-const RightText = ({ color, variant = 'body', children }: RightTextProps) => (
-    <Text color={color} variant={variant} textAlign="right" ellipsizeMode="tail" numberOfLines={1}>
+const RECEIVE_ACCOUNT_PICKER_TEST_ID = '@trading/buy/receive-account';
+
+const RightText = ({ color, variant = 'body', testID, children }: RightTextProps) => (
+    <Text
+        color={color}
+        variant={variant}
+        testID={testID}
+        textAlign="right"
+        ellipsizeMode="tail"
+        numberOfLines={1}
+    >
         {children}
     </Text>
 );
@@ -54,12 +65,24 @@ const ReceiveAccountPickerRight = ({
     }
 
     if (!selectedAddress) {
-        return <RightText color="textSubdued">{selectedAccountLabel}</RightText>;
+        return (
+            <RightText
+                color="textSubdued"
+                testID={RECEIVE_ACCOUNT_PICKER_TEST_ID + '/selected-account'}
+            >
+                {selectedAccountLabel}
+            </RightText>
+        );
     }
 
     return (
         <>
-            <RightText color="textSubdued">{selectedAccountLabel}</RightText>
+            <RightText
+                color="textSubdued"
+                testID={RECEIVE_ACCOUNT_PICKER_TEST_ID + '/selected-account'}
+            >
+                {selectedAccountLabel}
+            </RightText>
             <AccountAddress
                 address={selectedAddress}
                 form="short"
@@ -95,6 +118,7 @@ export const ReceiveAccountPicker = () => {
         <TradingOverviewRow
             title={translate('moduleTrading.tradingScreen.receiveAccount')}
             onPress={openAccountPicker}
+            testID={RECEIVE_ACCOUNT_PICKER_TEST_ID}
             noBottomBorder
         >
             <VStack spacing={0} paddingLeft="sp20">

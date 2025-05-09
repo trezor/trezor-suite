@@ -5,7 +5,7 @@ import { Translation } from '@suite-native/intl';
 
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 
-export const RECEIVE_ACCOUNT_BALANCE_TEST_ID = '@module-trading/receive-account-balance';
+export const RECEIVE_ACCOUNT_BALANCE_TEST_ID = '@trading/buy/receive-account-balance';
 
 export const ReceiveAccountCryptoBalance = () => {
     const form = useTradingBuyFormContext();
@@ -31,6 +31,7 @@ export const ReceiveAccountCryptoBalance = () => {
                     color="textSubdued"
                     isBalance={false}
                     decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
+                    testID={RECEIVE_ACCOUNT_BALANCE_TEST_ID + '/value'}
                 />
             </DiscreetTextTrigger>
         </HStack>

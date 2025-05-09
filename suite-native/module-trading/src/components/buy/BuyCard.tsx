@@ -25,6 +25,8 @@ type BuyCardProps = {
     isAmountInputActive: boolean;
 };
 
+const BUY_CARD_TEST_ID = '@trading/buyCard';
+
 const buySectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
     ({ borders, colors, spacings }, { bottomBorder }) => ({
         borderBottomWidth: bottomBorder ? borders.widths.small : 0,
@@ -62,7 +64,7 @@ export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
             <AnimatedCard style={animatedStyle} noPadding>
                 <VStack
                     style={applyStyle(buySectionStyle, { bottomBorder: true })}
-                    testID="@trading/buyCard/fiatSection"
+                    testID={BUY_CARD_TEST_ID + '/fiatSection'}
                 >
                     <HStack justifyContent="space-between" alignItems="center">
                         <BuyCardTitle>
@@ -76,7 +78,7 @@ export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
                 </VStack>
                 <VStack
                     style={applyStyle(buySectionStyle, { bottomBorder: !!asset })}
-                    testID="@trading/buyCard/cryptoSection"
+                    testID={BUY_CARD_TEST_ID + '/cryptoSection'}
                 >
                     <HStack justifyContent="space-between" alignItems="center">
                         <BuyCardTitle>

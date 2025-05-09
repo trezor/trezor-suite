@@ -70,6 +70,7 @@ export const BottomSheetSearchInput = forwardRef<
                         ref={searchInputRef}
                         onChangeText={handleOnChangeText}
                         placeholder={placeholder}
+                        accessibilityLabel={placeholder}
                         placeholderTextColor={utils.colors.textSubdued}
                         editable={!isDisabled}
                         onFocus={() => {

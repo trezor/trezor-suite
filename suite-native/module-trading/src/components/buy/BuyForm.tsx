@@ -15,13 +15,15 @@ import { TradeHistoryButton } from '../general/TradeHistory/TradeHistoryButton';
 import { TradingAlert } from '../general/TradingAlert';
 import { TradingFooter } from '../general/TradingFooter';
 
+const BUY_FORM_TEST_ID = '@trading/buy/form';
+
 const BuyFormMemoized = memo(({ isAmountInputActive }: { isAmountInputActive: boolean }) => {
     // `isFormMountedRecently` allows to use different animations for initial form load (FadeIn)
     // and when user interacts with the form (FadeInUp/FadeInDown)
     const isFormMountedRecently = useMountedRecentlyFlag();
 
     return (
-        <VStack spacing="sp16">
+        <VStack spacing="sp16" testID={BUY_FORM_TEST_ID}>
             {!isAmountInputActive && <BuyHeader isFormMountedRecently={isFormMountedRecently} />}
             <TradingAlert />
             <BuyCard isAmountInputActive={isAmountInputActive} />

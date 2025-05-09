@@ -11,6 +11,8 @@ export type ConfirmationProps = {
     isFormMountedRecently?: boolean;
 };
 
+const CONFIRMATION_TEST_ID = '@trading/buy/continue-button';
+
 export const Confirmation = ({ isFormMountedRecently }: ConfirmationProps) => {
     const form = useTradingBuyFormContext();
 
@@ -23,7 +25,7 @@ export const Confirmation = ({ isFormMountedRecently }: ConfirmationProps) => {
         <AnimatedBox entering={isFormMountedRecently ? FadeIn : FadeInDown} exiting={FadeOutDown}>
             {canProceed && (
                 <AnimatedBox entering={FadeIn}>
-                    <Button onPress={selectQuote}>
+                    <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
                         <Translation id="moduleTrading.tradingScreen.continueButton" />
                     </Button>
                 </AnimatedBox>

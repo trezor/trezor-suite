@@ -6,6 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 type TradeDetailInfoRowProps = {
     title: ReactNode;
     content: ReactNode;
+    contentTestID?: string;
 };
 
 export const DETAIL_INFO_ROW_MIN_HEIGHT = 66;
@@ -17,7 +18,7 @@ const wrapperStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
 }));
 
-export const TradeDetailInfoRow = ({ title, content }: TradeDetailInfoRowProps) => {
+export const TradeDetailInfoRow = ({ title, content, contentTestID }: TradeDetailInfoRowProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -25,7 +26,13 @@ export const TradeDetailInfoRow = ({ title, content }: TradeDetailInfoRowProps) 
             <Text variant="hint" color="textSubdued">
                 {title}
             </Text>
-            {typeof content === 'string' ? <Text variant="hint">{content}</Text> : content}
+            {typeof content === 'string' ? (
+                <Text variant="hint" testID={contentTestID}>
+                    {content}
+                </Text>
+            ) : (
+                content
+            )}
         </HStack>
     );
 };

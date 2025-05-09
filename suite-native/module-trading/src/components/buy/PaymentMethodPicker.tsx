@@ -11,6 +11,8 @@ import { PaymentMethodsSheet } from '../general/PaymentMethodsSheet/PaymentMetho
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSkeleton';
 
+const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
+
 export const PaymentMethodPicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
@@ -39,6 +41,7 @@ export const PaymentMethodPicker = () => {
             <TradingOverviewRow
                 title={translate('moduleTrading.tradingScreen.paymentMethod')}
                 onPress={showSheet}
+                testID={PAYMENT_METHOD_PICKER_TEST_ID}
             >
                 {selectedValue ? (
                     <Text
@@ -47,6 +50,7 @@ export const PaymentMethodPicker = () => {
                         accessibilityLabel={translate(
                             'moduleTrading.tradingScreen.selectedPaymentMethod',
                         )}
+                        testID={PAYMENT_METHOD_PICKER_TEST_ID + '/value'}
                     >
                         {selectedValue.paymentMethodName}
                     </Text>

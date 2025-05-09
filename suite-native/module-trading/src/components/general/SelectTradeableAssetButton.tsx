@@ -9,12 +9,14 @@ export type SelectAssetButtonProps = {
     onPress: () => void;
     selectedAsset: TradeableAsset | undefined;
     caret?: boolean;
+    testID?: string;
 };
 
 export const SelectTradeableAssetButton = ({
     onPress,
     selectedAsset,
     caret,
+    testID,
 }: SelectAssetButtonProps) => {
     const { translate } = useTranslate();
     const { iconColor } = buttonSchemeToColorsMap.primary;
@@ -26,6 +28,7 @@ export const SelectTradeableAssetButton = ({
                 onPress={onPress}
                 accessibilityLabel={translate('moduleTrading.selectCoin.buttonTitle')}
                 caret={caret}
+                testID={testID}
             />
         );
     }
@@ -36,6 +39,7 @@ export const SelectTradeableAssetButton = ({
             viewRight={<Icon name="caretDown" color={iconColor} size="medium" />}
             accessibilityLabel={translate('moduleTrading.selectCoin.buttonTitle')}
             size="small"
+            testID={testID}
         >
             <Translation id="moduleTrading.selectCoin.buttonTitle" />
         </Button>

@@ -22,6 +22,8 @@ export type LegalSheetProps = {
     tradeProvider: string;
 };
 
+const CONFIRM_BUTTON_TEST_ID = '@trading/buy/confirm-button';
+
 const Subheader = ({ children }: { children: ReactNode }) => (
     <Text variant="highlight" color="textDefault">
         {children}
@@ -113,7 +115,7 @@ export const LegalSheet = memo(
                         // and some tests need to target the "Continue" button on the form screen.
                         isVisible && (
                             <Box paddingVertical="sp20">
-                                <Button onPress={closeWithConsent}>
+                                <Button onPress={closeWithConsent} testID={CONFIRM_BUTTON_TEST_ID}>
                                     <Translation id="moduleTrading.tradingScreen.continueButton" />
                                 </Button>
                             </Box>

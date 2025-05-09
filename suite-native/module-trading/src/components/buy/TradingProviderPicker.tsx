@@ -18,6 +18,8 @@ import { TradingOverviewRow } from '../general/TradingOverviewRow';
 import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSkeleton';
 import { TradingProviderLogo } from '../general/TradingProviderLogo';
 
+const PROVIDER_PICKER_TEST_ID = '@trading/buy/provider-picker';
+
 export const TradingProviderPicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
@@ -66,6 +68,7 @@ export const TradingProviderPicker = () => {
                 title={translate('moduleTrading.tradingScreen.provider')}
                 noBottomBorder
                 onPress={handleProviderPress}
+                testID={PROVIDER_PICKER_TEST_ID}
             >
                 <HStack>
                     <TradingProviderLogo logo={logo} />
@@ -75,6 +78,7 @@ export const TradingProviderPicker = () => {
                         accessibilityLabel={translate(
                             'moduleTrading.tradingScreen.selectedProvider',
                         )}
+                        testID={PROVIDER_PICKER_TEST_ID + '/value'}
                     >
                         {companyName}
                     </Text>

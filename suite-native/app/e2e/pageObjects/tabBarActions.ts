@@ -29,6 +29,14 @@ class TabBarActions {
         await waitFor(backButton).toBeVisible().withTimeout(10000);
         await backButton.tap();
     }
+
+    async navigateToTrade() {
+        const tradeTabBarItem = element(by.id('@tabBar/TradeStack'));
+        await waitFor(tradeTabBarItem).toBeVisible().withTimeout(10000);
+        await tradeTabBarItem.tap();
+
+        await detoxExpect(element(by.id('@screen/Trading'))).toBeVisible();
+    }
 }
 
 export const onTabBar = new TabBarActions();

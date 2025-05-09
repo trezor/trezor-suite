@@ -20,6 +20,7 @@ export type TradeableAssetButtonProps = {
     caret?: boolean;
     onPress: () => void;
     accessibilityLabel: string;
+    testID?: string;
 };
 
 const GRADIENT_START = { x: 0, y: 0.5 } as const;
@@ -47,6 +48,7 @@ export const TradeableAssetButton = ({
     caret,
     onPress,
     accessibilityLabel,
+    testID,
 }: TradeableAssetButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -79,13 +81,18 @@ export const TradeableAssetButton = ({
                 accessible
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
+                testID={testID}
             >
                 <CryptoIcon
                     symbol={adjustedSymbol}
                     contractAddress={contractAddress}
                     size="extraSmall"
                 />
-                <NetworkSymbolExtendedFormatter symbol={symbol} variant="callout" />
+                <NetworkSymbolExtendedFormatter
+                    symbol={symbol}
+                    variant="callout"
+                    testID={testID + '/symbol'}
+                />
                 {caret ? <Icon name="caretDown" color="textSubdued" size="medium" /> : <Box />}
             </Pressable>
         </LinearGradient>

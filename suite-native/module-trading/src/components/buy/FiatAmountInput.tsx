@@ -13,6 +13,8 @@ import {
     TradingAmountInput,
 } from '../general/TradingAmountInput';
 
+const FIAT_AMOUNT_TEST_ID = '@trading/buy/fiat-amount-input';
+
 export const FiatAmountInput = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
@@ -37,6 +39,7 @@ export const FiatAmountInput = () => {
             accessibilityLabel={translate('moduleTrading.selectFiat.amountLabel')}
             inputTransformer={fiatAmountTransformer}
             maxDecimals={MAX_FIAT_DECIMALS}
+            testID={FIAT_AMOUNT_TEST_ID}
         />
     );
 };

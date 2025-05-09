@@ -6,6 +6,8 @@ import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { CountrySheet } from '../general/CountrySheet/CountrySheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 
+const COUNTRY_PICKER_TEST_ID = '@trading/buy/country';
+
 export const CountryOfResidencePicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
@@ -17,6 +19,7 @@ export const CountryOfResidencePicker = () => {
             <TradingOverviewRow
                 title={translate('moduleTrading.tradingScreen.countryOfResidence')}
                 onPress={showSheet}
+                testID={COUNTRY_PICKER_TEST_ID}
             >
                 {selectedValue ? (
                     <HStack>
@@ -26,6 +29,7 @@ export const CountryOfResidencePicker = () => {
                             accessibilityLabel={translate(
                                 'moduleTrading.tradingScreen.selectedCountryOfResidence',
                             )}
+                            testID={COUNTRY_PICKER_TEST_ID + '/value'}
                         >
                             {selectedValue.label}
                         </Text>
@@ -37,6 +41,7 @@ export const CountryOfResidencePicker = () => {
                         accessibilityLabel={translate(
                             'moduleTrading.tradingScreen.noCountryOfResidence',
                         )}
+                        testID={COUNTRY_PICKER_TEST_ID + '/value'}
                     >
                         {translate('moduleTrading.notSelected')}
                     </Text>

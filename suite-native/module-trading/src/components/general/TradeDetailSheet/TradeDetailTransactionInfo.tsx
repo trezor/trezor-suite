@@ -26,6 +26,8 @@ export type TradeDetailTransactionInfoProps = {
 
 type CryptoIdIconProps = { cryptoId: CryptoId | undefined };
 
+const TRADE_DETAIL_TEST_ID = '@trading/history/detail';
+
 const CryptoIdIcon = ({ cryptoId }: CryptoIdIconProps) => {
     if (!cryptoId) {
         return null;
@@ -72,7 +74,9 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                 content={
                     <HStack alignItems="center" spacing="sp2">
                         <CryptoIdIcon cryptoId={fromCryptoId} />
-                        <Text variant="hint">{fromStringValue}</Text>
+                        <Text variant="hint" testID={TRADE_DETAIL_TEST_ID + '/paid'}>
+                            {fromStringValue}
+                        </Text>
                     </HStack>
                 }
             />
@@ -95,6 +99,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                 <TradeDetailInfoRow
                     title={<Translation id="moduleTrading.tradeHistory.detail.toAccount" />}
                     content={account?.accountLabel}
+                    contentTestID={TRADE_DETAIL_TEST_ID + '/receive-account'}
                 />
             )}
         </Card>
