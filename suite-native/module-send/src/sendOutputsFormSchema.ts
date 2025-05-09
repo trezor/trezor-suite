@@ -1,6 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
-import { yup } from '@suite-common/validators';
+import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { FeeInfo } from '@suite-common/wallet-types';
@@ -194,15 +194,31 @@ export const sendOutputsFormValidationSchema = yup.object({
             }),
         )
         .required(),
-    isRippleDestinationTagEnabled: yup.boolean(),
-    rippleDestinationTag: yup
+    isDestinationTagEnabled: yup.boolean(),
+    destinationTag: yup
         .string()
-        .when('isRippleDestinationTagEnabled', {
+        .when('isDestinationTagEnabled', {
             is: true,
             then: schema => schema.required('Destination Tag is required'),
             otherwise: schema => schema.notRequired(),
         })
-        .matches(/^\d*$/, 'You can only use positive numbers for the destination tag.')
+        .test(
+            'is-destination-tag-a-number',
+            'You can only use positive numbers for the destination tag.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                const { symbol } = context!;
+
+                if (!symbol) return true;
+                const networkType = getNetworkType(symbol);
+                if (networkType === 'stellar') return true;
+
+                if (!value) return true;
+
+                if (!/^\d*$/.test(value)) return false;
+
+                return true;
+            },
+        )
         .test(
             'is-destination-tag-required',
             'Destination tag was not set.',
@@ -210,16 +226,17 @@ export const sendOutputsFormValidationSchema = yup.object({
                 value,
                 {
                     options: { context },
-                    schema: { isRippleDestinationTagEnabled },
+                    schema: { isDestinationTagEnabled },
                 }: yup.TestContext<SendFormFormContext>,
             ) => {
                 const { symbol } = context!;
 
                 if (!symbol) return true;
-                if (getNetworkType(symbol) !== 'ripple') return true;
+                const networkType = getNetworkType(symbol);
+                if (networkType !== 'ripple' && networkType !== 'stellar') return true;
 
-                // isRippleDestinationTagEnabled is enabled, tag should be set
-                if (!value && isRippleDestinationTagEnabled) return false;
+                // isDestinationTagEnabled is enabled, tag should be set
+                if (!value && isDestinationTagEnabled) return false;
 
                 return true;
             },
@@ -238,6 +255,24 @@ export const sendOutputsFormValidationSchema = yup.object({
                 const numberValue = Number(value);
 
                 if (numberValue > U_INT_32) {
+                    return false;
+                }
+
+                return true;
+            },
+        )
+        .test(
+            'is-destination-tag-length-valid',
+            'Destination tag is too long.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                const { symbol } = context!;
+
+                if (!symbol) return true;
+                if (getNetworkType(symbol) !== 'stellar') return true;
+
+                if (!value) return true;
+
+                if (value.length > formInputsMaxLength.stellarTextMemo) {
                     return false;
                 }
 

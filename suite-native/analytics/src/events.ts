@@ -281,7 +281,7 @@ export type SuiteNativeAnalyticsEvent =
               tokenAddresses?: TokenAddress[];
               hasEthereumData?: boolean;
               hasEthereumNonce?: boolean;
-              hasRippleDestinationTag?: boolean;
+              hasDestinationTag?: boolean;
               hasBitcoinLocktime?: boolean;
           };
       }

@@ -23,6 +23,7 @@ export const networkTypeToTitleMap: Record<NetworkType, string> = {
     ethereum: 'Scan receive address',
     ripple: 'Scan receive address',
     solana: 'Scan receive address',
+    stellar: 'Scan receive address',
 };
 
 export const XpubImportSection = ({ onRequestCamera, symbol }: XpubImportSectionProps) => {

@@ -181,6 +181,7 @@ describe('selectFreshAccountAddress', () => {
         misc: undefined,
         marker: undefined,
         page: undefined,
+        stellarCursor: undefined,
     } as Account;
 
     const mockState = {

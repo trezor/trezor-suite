@@ -97,7 +97,7 @@ describe('handleSellRequestThunk', () => {
             ethereumNonce: '',
             ethereumDataAscii: '',
             ethereumDataHex: '',
-            rippleDestinationTag: '',
+            destinationTag: '',
             isCoinControlEnabled: false,
             hasCoinControlBeenOpened: false,
             utxoSorting: 'newestFirst',

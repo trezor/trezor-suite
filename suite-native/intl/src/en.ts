@@ -496,8 +496,8 @@ export const en = {
         receiveTitle: 'Receive',
         screenTitle: '{coinSymbol} Receive address',
         deviceCancelError: 'Address confirmation canceled.',
-        xrpDestinationTag:
-            'When sending XRP to Trezor, your online exchange may require a destination tag, but Trezor doesn’t. Enter any random number to proceed. <link>Learn more.</link>',
+        destinationTag:
+            'When sending {coinSymbol} to Trezor, your online exchange may require a memo/destination tag, but Trezor doesn’t. Enter any random number to proceed. <link>Learn more.</link>',
         receiveAddressCard: {
             alert: {
                 success: 'Receive address has been confirmed on your Trezor.',
@@ -1398,10 +1398,10 @@ export const en = {
                 amountLabel: 'Amount to be sent',
                 maxButton: 'Send max',
                 destinationTag: {
-                    label: 'Destination tag',
+                    label: 'Memo/Destination tag',
                     warning:
-                        'Online exchanges require this to identify your account. Get your destination tag from your Ripple account. Make sure you really don’t need it.',
-                    info: 'Online exchanges require this to identify your account. Get your destination tag from your exchange.',
+                        'Online exchanges require this to identify your account. Get your memo/destination tag from your {network} account. Make sure you really don’t need it.',
+                    info: 'Online exchanges require this to identify your account. Get your memo/destination tag from your exchange.',
                     linkText: '<link>What’s this?</link>',
                 },
             },
@@ -1489,6 +1489,9 @@ export const en = {
                 addressLabel: 'Recipient address',
                 amountLabel: 'Amount',
                 destinationTagLabel: 'Destination tag',
+                timeboundsLabel: 'TimeBounds',
+                timeboundsNotSet: 'No restriction',
+                destinationTagNotSet: "Memo/Destination tag isn't set",
                 contractLabel: 'Token address',
                 summary: {
                     label: 'Total including fee',
