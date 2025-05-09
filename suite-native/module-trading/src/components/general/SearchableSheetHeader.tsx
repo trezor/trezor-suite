@@ -12,8 +12,8 @@ import { SheetHeaderTitle } from './SheetHeaderTitle';
 export type SearchableSheetHeaderProps = {
     onClose: () => void;
     title: ReactNode;
-    leftButtonIcon?: IconName;
-    leftButtonA11yLabel?: string;
+    rightButtonIcon?: IconName;
+    rightButtonA11yLabel?: string;
     onFilterFocusChange?: (isFilterActive: boolean) => void;
     children?: ReactNode;
     style?: NativeStyleObject;
@@ -38,8 +38,8 @@ export const SearchableSheetHeader = ({
     children,
     onFilterFocusChange = noOp,
     style,
-    leftButtonIcon = 'x',
-    leftButtonA11yLabel,
+    rightButtonIcon = 'x',
+    rightButtonA11yLabel,
     onFilterChange = noOp,
     filterValue,
     searchInputPlaceholder,
@@ -67,10 +67,10 @@ export const SearchableSheetHeader = ({
                         exiting={FadeOut.duration(FOCUS_ANIMATION_DURATION)}
                     >
                         <SheetHeaderTitle
-                            leftButtonIcon={leftButtonIcon}
-                            onLeftButtonPress={onClose}
-                            leftButtonA11yLabel={
-                                leftButtonA11yLabel ?? translate('generic.buttons.close')
+                            rightButtonIcon={rightButtonIcon}
+                            onRightButtonPress={onClose}
+                            rightButtonA11yLabel={
+                                rightButtonA11yLabel ?? translate('generic.buttons.close')
                             }
                         >
                             {title}

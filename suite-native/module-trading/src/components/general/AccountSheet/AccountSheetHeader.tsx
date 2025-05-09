@@ -29,8 +29,8 @@ export const AccountSheetHeader = ({
             <SearchableSheetHeader
                 onClose={clearSelectedAccount}
                 title={selectedAccountLabel}
-                leftButtonIcon="caretLeft"
-                leftButtonA11yLabel={translate('generic.buttons.back')}
+                rightButtonIcon="caretLeft"
+                rightButtonA11yLabel={translate('generic.buttons.back')}
             />
         );
     }
@@ -39,9 +39,9 @@ export const AccountSheetHeader = ({
         <VStack style={applyStyle(wrapperStyle)}>
             <BottomSheetGrabber />
             <SheetHeaderTitle
-                leftButtonIcon="x"
-                onLeftButtonPress={onClose}
-                leftButtonA11yLabel={translate('generic.buttons.close')}
+                rightButtonIcon="x"
+                onRightButtonPress={onClose}
+                rightButtonA11yLabel={translate('generic.buttons.close')}
             >
                 <Translation id="moduleTrading.accountScreen.titleStep1" />
             </SheetHeaderTitle>

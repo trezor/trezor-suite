@@ -26,9 +26,9 @@ export const SimpleSheetHeader = ({ onClose, title }: SimpleSheetHeaderProps) =>
         <VStack style={applyStyle(wrapperStyle)}>
             <BottomSheetGrabber />
             <SheetHeaderTitle
-                leftButtonIcon="x"
-                onLeftButtonPress={onClose}
-                leftButtonA11yLabel={translate('generic.buttons.close')}
+                rightButtonIcon="x"
+                onRightButtonPress={onClose}
+                rightButtonA11yLabel={translate('generic.buttons.close')}
             >
                 {title}
             </SheetHeaderTitle>
