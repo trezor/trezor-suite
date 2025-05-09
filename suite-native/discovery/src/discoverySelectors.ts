@@ -80,7 +80,13 @@ export const selectDiscoveryAccountsAnalytics = (
         selectDeviceAccounts(state),
         A.groupBy(account => account.symbol),
         D.mapWithKey((symbol, accounts) => {
-            const numberOfAccounts = accounts?.length ?? 0;
+            const accountsWithTransactionHistory = accounts?.filter(acc => !acc.empty) || [];
+
+            const numberOfAccounts = accountsWithTransactionHistory?.length;
+
+            const numberOfNonZeroAccounts = accountsWithTransactionHistory?.filter(
+                acc => parseFloat(acc.balance) > 0,
+            ).length;
 
             const validTokens = selectValidTokensByDeviceStateAndNetworkSymbol(
                 state,
@@ -91,6 +97,7 @@ export const selectDiscoveryAccountsAnalytics = (
             if (A.isNotEmpty(validTokens)) {
                 return {
                     numberOfAccounts,
+                    numberOfNonZeroAccounts,
                     tokenSymbols: validTokens.map(([_, tokenSymbol]) => tokenSymbol),
                     tokenAddresses: validTokens.map(([tokenAddress, _]) => tokenAddress),
                 };
@@ -98,6 +105,7 @@ export const selectDiscoveryAccountsAnalytics = (
 
             return {
                 numberOfAccounts,
+                numberOfNonZeroAccounts,
             };
         }),
     );

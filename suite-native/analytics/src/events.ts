@@ -210,6 +210,7 @@ export type SuiteNativeAnalyticsEvent =
               discoveryId: string;
               symbol: NetworkSymbol;
               numberOfAccounts: number;
+              numberOfNonZeroAccounts: number;
               tokenSymbols?: TokenSymbol[];
               tokenAddresses?: TokenAddress[];
           };
