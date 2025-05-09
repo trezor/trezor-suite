@@ -70,7 +70,7 @@
         "@types/lodash": "^4.17.16",
         "@types/ws": "^8.5.13",
         "dotenv": "^16.4.7",
-        "electron": "35.1.2",
+        "electron": "36.2.0",
         "fs-extra": "^11.3.0",
         "glob": "^11.0.2",
         "jest-diff": "^29.7.0",
