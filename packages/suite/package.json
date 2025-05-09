@@ -102,7 +102,7 @@
         "react-dom": "18.2.0",
         "react-focus-lock": "^2.13.6",
         "react-helmet-async": "^2.0.5",
-        "react-hook-form": "^7.56.1",
+        "react-hook-form": "^7.56.3",
         "react-intl": "^7.1.11",
         "react-qr-reader": "^2.2.1",
         "react-redux": "9.2.0",

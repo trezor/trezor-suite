@@ -38,7 +38,7 @@
         "@trezor/styles": "workspace:*",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-hook-form": "^7.56.1",
+        "react-hook-form": "^7.56.3",
         "react-native": "0.76.9",
         "react-native-reanimated": "^3.16.7",
         "react-redux": "9.2.0"
