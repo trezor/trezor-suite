@@ -13,6 +13,7 @@ import { addressConfirmationModalHooks } from './addressConfirmation';
 import { bitcoinSignTransaction } from './bitcoinSignTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { solanaSignTransaction } from './solanaSignTransaction';
+import { ConnectCallSource } from '../connectPopupTypes';
 
 export type PreCallHookParams<M extends keyof TrezorConnect> = {
     method: M;
@@ -20,6 +21,7 @@ export type PreCallHookParams<M extends keyof TrezorConnect> = {
     dispatch: Dispatch;
     getState: () => any;
     txSigningPrecomposed?: PrecomposedTransactionFinal;
+    source: ConnectCallSource;
 };
 export type PostCallHookParams<M extends keyof TrezorConnect> = PreCallHookParams<M> & {
     originalPayload: Omit<CallMethodParams<M>, 'method'>;

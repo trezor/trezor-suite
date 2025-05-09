@@ -53,10 +53,14 @@ const preCallHook = <M extends keyof typeof TrezorConnect>({
 
 export function postCallHook<M extends keyof typeof TrezorConnect>({
     method,
+    source,
     originalPayload,
     response,
     dispatch,
 }: PostCallHookParams<M>) {
+    // Skip on deeplink for now
+    if (source.type === 'deeplink') return false;
+
     if (methods.includes(method) && response.success) {
         const bundledResponse = (
             Array.isArray(response.payload) ? response.payload : [response.payload]

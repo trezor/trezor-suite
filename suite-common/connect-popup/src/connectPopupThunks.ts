@@ -100,6 +100,7 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch,
                 getState,
                 txSigningPrecomposed,
+                source,
             });
 
             // @ts-expect-error: method is dynamic
@@ -124,6 +125,7 @@ export const connectPopupCallThunkInner = createThunk<
                 response,
                 dispatch,
                 getState,
+                source,
             });
             if (!response.success) {
                 throw response.payload;

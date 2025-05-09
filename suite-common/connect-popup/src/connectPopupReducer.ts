@@ -96,6 +96,14 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(connectPopupActions.finishCall, state => {
                 if (state.activeCall) state.activeCall.state = 'finished';
             })
+            .addCase(connectPopupActions.deeplinkCallback, (state, { payload }) => {
+                if (state.activeCall?.state === 'finished')
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'deeplink-callback',
+                        callbackUrl: payload.callbackUrl,
+                    };
+            })
             .addCase(connectPopupActions.setError, (state, { payload }) => {
                 if (state.activeCall && state.activeCall.state !== 'error') {
                     state.activeCall = {
