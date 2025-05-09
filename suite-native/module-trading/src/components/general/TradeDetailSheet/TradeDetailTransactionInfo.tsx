@@ -78,11 +78,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
             />
             {trade.tradeType === 'sell' && (
                 <TradeDetailInfoRow
-                    title={
-                        <Text variant="hint">
-                            <Translation id="moduleTrading.tradeHistory.detail.fromAccount" />
-                        </Text>
-                    }
+                    title={<Translation id="moduleTrading.tradeHistory.detail.fromAccount" />}
                     content={account?.accountLabel}
                 />
             )}
@@ -97,11 +93,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
             />
             {trade.tradeType !== 'sell' && (
                 <TradeDetailInfoRow
-                    title={
-                        <Text variant="hint">
-                            <Translation id="moduleTrading.tradeHistory.detail.toAccount" />
-                        </Text>
-                    }
+                    title={<Translation id="moduleTrading.tradeHistory.detail.toAccount" />}
                     content={account?.accountLabel}
                 />
             )}
