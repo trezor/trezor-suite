@@ -9562,6 +9562,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.6.0"
+    "@stellar/stellar-sdk": "npm:^13.3.0"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"

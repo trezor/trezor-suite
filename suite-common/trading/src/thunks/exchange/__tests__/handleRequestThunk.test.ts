@@ -74,7 +74,7 @@ describe('handleRequestThunk', () => {
             ethereumNonce: '',
             ethereumDataAscii: '',
             ethereumDataHex: '',
-            rippleDestinationTag: '',
+            destinationTag: '',
             outputs: [
                 {
                     type: 'payment',

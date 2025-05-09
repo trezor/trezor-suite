@@ -43,6 +43,11 @@ export const getExplorerUrls = (
             address: `${baseUrl}/address/`,
             token: `${baseUrl}/asset/`,
         },
+        stellar: {
+            tx: `${baseUrl}/explorer/public/tx/`,
+            account: `${baseUrl}/explorer/public/account/`,
+            address: `${baseUrl}/explorer/public/account/`,
+        },
     };
 
     return networkTypeExplorerMap[networkType];

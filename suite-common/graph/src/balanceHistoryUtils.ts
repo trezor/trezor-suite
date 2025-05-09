@@ -87,7 +87,7 @@ const getAccountHistoryMovementItemBTC = ({
     return { main: Array.from(summaryMap.values()).sort((a, b) => a.time - b.time), tokens: {} };
 };
 
-const getAccountHistoryMovementItemRipple = ({
+const getAccountHistoryMovementItemMisc = ({
     transactions,
     from,
     to,
@@ -96,8 +96,8 @@ const getAccountHistoryMovementItemRipple = ({
 
     transactions.forEach(tx => {
         const { blockTime } = tx;
-        let sentDrops = new BigNumber(0);
-        let receivedDrops = new BigNumber(0);
+        let sentUnits = new BigNumber(0);
+        let receivedUnits = new BigNumber(0);
 
         if (!blockTime) {
             return;
@@ -110,22 +110,22 @@ const getAccountHistoryMovementItemRipple = ({
         const amount = new BigNumber(tx.amount);
 
         if (tx.type === 'sent') {
-            sentDrops = amount;
+            sentUnits = amount;
         } else if (tx.type === 'recv') {
-            receivedDrops = amount;
+            receivedUnits = amount;
         }
 
         if (summaryMap.has(blockTime)) {
             const summary = summaryMap.get(blockTime)!;
             summary.txs += 1;
-            summary.received = summary.received.plus(receivedDrops);
-            summary.sent = summary.sent.plus(sentDrops);
+            summary.received = summary.received.plus(receivedUnits);
+            summary.sent = summary.sent.plus(sentUnits);
         } else {
             summaryMap.set(blockTime, {
                 time: blockTime,
                 txs: 1,
-                received: receivedDrops,
-                sent: sentDrops,
+                received: receivedUnits,
+                sent: sentUnits,
                 sentToSelf: new BigNumber(0),
             });
         }
@@ -323,7 +323,8 @@ export const getAccountHistoryMovementFromTransactions = ({
         case 'btc':
             return getAccountHistoryMovementItemBTC({ transactions, from, to });
         case 'xrp':
-            return getAccountHistoryMovementItemRipple({ transactions, from, to });
+        case 'xlm':
+            return getAccountHistoryMovementItemMisc({ transactions, from, to });
         case 'eth':
         case 'pol':
         case 'bsc':

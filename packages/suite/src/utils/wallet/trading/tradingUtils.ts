@@ -140,6 +140,7 @@ export const getComposeAddressPlaceholder = async (
         case 'solana':
         case 'ethereum':
         case 'ripple':
+        case 'stellar':
             return account.descriptor;
         // no default
     }

@@ -30,6 +30,8 @@ const validateUrl = (type: BackendOption, value: string) => {
             return isUrlWithQuery(value);
         case 'ripple':
             return isUrlWithQuery(value);
+        case 'stellar':
+            return isUrlWithQuery(value);
         default:
             return false;
     }

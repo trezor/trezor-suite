@@ -50,7 +50,7 @@ export type TransactionCreatedEvent = {
         bitcoinLockTime: boolean;
         ethereumData: boolean;
         ethereumNonce: boolean;
-        rippleDestinationTag: boolean;
+        destinationTag: boolean;
         selectedFee: string;
         isCoinControlEnabled: boolean;
         hasCoinControlBeenOpened: boolean;
@@ -587,7 +587,8 @@ export type SuiteAnalyticsEvent =
                   | 'blockfrost'
                   | 'coinjoin'
                   | 'default'
-                  | 'solana';
+                  | 'solana'
+                  | 'stellar';
               totalRegular: number;
               totalOnion: number;
           };

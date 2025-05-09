@@ -247,6 +247,8 @@ export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccoun
             return 'TR_ACCOUNT_TYPE_CARDANO_DESC';
         case 'ripple':
             return 'TR_ACCOUNT_TYPE_XRP_DESC';
+        case 'stellar':
+            return 'TR_ACCOUNT_TYPE_STELLAR_DESC';
     }
 
     const accountTypePrefix = getAccountTypePrefix(path);
@@ -745,6 +747,13 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 freshInfo.balance !== account.balance ||
                 freshInfo.misc!.reserve !== account.misc.reserve
             );
+        case 'stellar':
+            // different sequence or balance
+            return (
+                freshInfo.misc!.stellarSequence !== account.misc.stellarSequence ||
+                freshInfo.balance !== account.balance ||
+                freshInfo.misc!.reserve !== account.misc.reserve
+            );
         case 'ethereum':
             return (
                 freshInfo.misc!.nonce !== account.misc.nonce ||
@@ -784,6 +793,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                 reserve: misc && misc.reserve ? misc.reserve : '0',
             },
             marker: accountInfo.marker,
+            stellarCursor: undefined,
             page: undefined,
         };
     }
@@ -796,6 +806,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                 nonce: misc && misc.nonce ? misc.nonce : '0',
             },
             marker: undefined,
+            stellarCursor: undefined,
             page: accountInfo.page,
         };
     }
@@ -813,6 +824,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                 },
             },
             marker: undefined,
+            stellarCursor: undefined,
             page: accountInfo.page,
         };
     }
@@ -826,7 +838,21 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                 solEpoch: misc?.solEpoch,
             },
             marker: undefined,
+            stellarCursor: undefined,
             page: accountInfo.page,
+        };
+    }
+
+    if (networkType === 'stellar') {
+        return {
+            networkType,
+            misc: {
+                stellarSequence: misc?.stellarSequence ?? '0',
+                reserve: misc?.reserve ?? '0',
+            },
+            marker: undefined,
+            stellarCursor: accountInfo.stellarCursor,
+            page: undefined,
         };
     }
 
@@ -834,6 +860,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
         networkType,
         misc: undefined,
         marker: undefined,
+        stellarCursor: undefined,
         page: accountInfo.page,
     };
 };
@@ -1135,6 +1162,7 @@ export const isAddressBasedNetwork = (networkType: NetworkType) => {
     if (networkType === 'ethereum') return true;
     if (networkType === 'ripple') return true;
     if (networkType === 'solana') return true;
+    if (networkType === 'stellar') return true;
 
     return exhaustive(networkType);
 };

@@ -7,7 +7,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/RippleOptions/DestinationTag';
+import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export interface TradingVerifyDestinationTagProps {
     inputComponent: ReactNode;

@@ -34,6 +34,8 @@ const getLines = (
         switch (network) {
             case 'ethereum':
                 return 'MAX_FEE';
+            case 'stellar':
+                return 'MAX_FEE';
             case 'solana':
                 return 'TR_TX_FEE_INCLUDING_RENT';
             default:

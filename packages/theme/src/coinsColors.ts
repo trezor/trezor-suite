@@ -27,4 +27,5 @@ export const coinsColors: CoinsColors = {
     txrp: '#e75f5f',
     xrp: '#24292e',
     zec: '#f5b300',
+    xlm: '#000000',
 };

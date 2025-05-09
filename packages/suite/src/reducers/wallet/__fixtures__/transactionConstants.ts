@@ -92,6 +92,7 @@ export const accounts: CommonAccount[] = [
         },
         misc: undefined,
         marker: undefined,
+        stellarCursor: undefined,
         ts: 0,
     },
     {
@@ -177,6 +178,7 @@ export const accounts: CommonAccount[] = [
         },
         misc: undefined,
         marker: undefined,
+        stellarCursor: undefined,
         ts: 0,
     },
 ];

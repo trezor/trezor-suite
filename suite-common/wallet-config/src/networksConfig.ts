@@ -397,6 +397,22 @@ export const networks = {
         coingeckoId: 'zcash',
         tradeCryptoId: 'zcash',
     },
+    xlm: {
+        symbol: 'xlm',
+        displaySymbol: 'XLM',
+        name: 'Stellar',
+        networkType: 'stellar',
+        bip43Path: "m/44'/148'/i'",
+        decimals: 7,
+        testnet: false,
+        explorer: getExplorerUrls('https://stellar.expert', 'stellar'),
+        features: [],
+        backendTypes: ['stellar'],
+        accountTypes: {},
+        coingeckoId: 'stellar',
+        tradeCryptoId: 'stellar',
+        isDebugOnlyNetwork: true,
+    },
     // testnets
     test: {
         symbol: 'test',

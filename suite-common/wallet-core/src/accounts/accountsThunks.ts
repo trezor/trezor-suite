@@ -129,7 +129,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
-            page: 1, // useful for every network except ripple
+            page: 1, // useful for every network except ripple and stellar
             pageSize,
             suppressBackupWarning: true,
         });

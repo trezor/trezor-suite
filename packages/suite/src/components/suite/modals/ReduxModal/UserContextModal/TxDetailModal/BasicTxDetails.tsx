@@ -25,6 +25,7 @@ import { FormattedDateWithBullet, Translation } from 'src/components/suite';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { WalletAccountTransaction } from 'src/types/wallet';
+import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 const IconWrapper = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -265,6 +266,12 @@ export const BasicTxDetails = ({
                 {tx.rippleSpecific && (
                     <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
                         {tx.rippleSpecific.destinationTag ?? '-'}
+                    </Item>
+                )}
+
+                {tx.stellarSpecific?.memo && (
+                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                        <BlurUrls text={tx.stellarSpecific.memo} />
                     </Item>
                 )}
             </Grid>
