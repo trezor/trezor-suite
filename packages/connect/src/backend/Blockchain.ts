@@ -13,6 +13,7 @@ import {
     ElectrumWorker,
     RippleWorker,
     SolanaWorker,
+    StellarWorker,
 } from '../workers/workers';
 
 const getWorker = (type: string) => {
@@ -27,6 +28,8 @@ const getWorker = (type: string) => {
             return ElectrumWorker;
         case 'solana':
             return SolanaWorker;
+        case 'stellar':
+            return StellarWorker;
         default:
             return null;
     }
