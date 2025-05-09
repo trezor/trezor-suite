@@ -5,6 +5,7 @@ import BlockbookWorker from '../workers/blockbook/index';
 import BlockfrostWorker from '../workers/blockfrost/index';
 import RippleWorker from '../workers/ripple/index';
 import SolanaWorker from '../workers/solana';
+import StellarWorker from '../workers/stellar';
 
 const instances: BlockchainLink[] = [];
 
@@ -380,6 +381,10 @@ CONFIG.forEach(i => {
 
     if (i.blockchain.worker.includes('solana')) {
         worker = SolanaWorker;
+    }
+
+    if (i.blockchain.worker.includes('stellar')) {
+        worker = StellarWorker;
     }
 
     const b = new BlockchainLink({

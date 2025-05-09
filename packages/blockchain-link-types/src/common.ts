@@ -161,6 +161,9 @@ export interface Transaction {
     rippleSpecific?: {
         destinationTag?: number;
     };
+    stellarSpecific?: {
+        memo?: string;
+    };
 }
 
 /* Account */
@@ -248,6 +251,8 @@ export interface AccountInfo {
         addressAliases?: { [key: string]: AddressAlias };
         // XRP
         sequence?: number;
+        // Stellar
+        stellarSequence?: string;
         reserve?: string;
         // blockfrost
         rewards?: string;
@@ -283,6 +288,7 @@ export interface AccountInfo {
         ledger: number;
         seq: number;
     };
+    stellarCursor?: string; // stellar only, cursor for pagination
 }
 
 export interface SubscriptionAccountInfo {

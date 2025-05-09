@@ -8,6 +8,7 @@ module.exports = {
         'ripple-worker': `${SRC}workers/ripple/index.ts`,
         'blockfrost-worker': `${SRC}workers/blockfrost/index.ts`,
         'solana-worker': `${SRC}workers/solana/index.ts`,
+        'stellar-worker': `${SRC}workers/stellar/index.ts`,
     },
     output: {
         filename: '[name].js',

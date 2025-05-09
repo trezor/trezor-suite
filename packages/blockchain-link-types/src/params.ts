@@ -47,6 +47,7 @@ export interface AccountInfoParams {
     tokens?: 'nonzero' | 'used' | 'derived'; // blockbook only, default: 'derived' - show all derived addresses, 'used' - show only used addresses, 'nonzero' - show only address with balance
     page?: number; // blockbook only, page index
     pageSize?: number; // how many transactions on page
+    pageCursor?: string; // stellar only, cursor for pagination
     from?: number; // from block
     to?: number; // to block
     contractFilter?: string; // blockbook only, ethereum token filter

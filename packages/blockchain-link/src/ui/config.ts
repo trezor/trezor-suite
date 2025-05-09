@@ -36,6 +36,26 @@ export default [
     },
     {
         blockchain: {
+            name: 'Stellar',
+            worker: 'js/stellar-worker.js',
+            server: ['https://horizon.stellar.org'],
+            debug: true,
+        },
+        data: {
+            address: 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET',
+            accountInfoOptions: {
+                pageSize: 25,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET',
+        },
+    },
+    {
+        blockchain: {
             name: 'Ripple Testnet',
             worker: 'js/ripple-worker.js',
             server: ['wss://txrp1.trezor.io'],
