@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { TextInput } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import { AnimatedVStack, HStack, InlineAlertBox, Switch, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { integerTransformer } from '@suite-native/helpers';
@@ -24,13 +25,17 @@ const inputWrapperStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
 }));
 
-export const DestinationTagInput = () => {
+interface DestinationTagInputProps {
+    networkSymbol: NetworkSymbol;
+}
+
+export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps) => {
     const inputRef = useRef<TextInput | null>(null);
     const { applyStyle } = useNativeStyles();
 
     const [isInputDisplayed, setIsInputDisplayed] = useState(true);
-    const destinationTagFieldName: SendFieldName = 'rippleDestinationTag';
-    const isRippleDestinationTagEnabledFieldName: SendFieldName = 'isRippleDestinationTagEnabled';
+    const destinationTagFieldName: SendFieldName = 'destinationTag';
+    const isDestinationTagEnabledFieldName: SendFieldName = 'isDestinationTagEnabled';
 
     const debounce = useDebounce();
 
@@ -38,13 +43,13 @@ export const DestinationTagInput = () => {
 
     const handleShowInputChange = () => {
         if (!isInputDisplayed) {
-            setValue(isRippleDestinationTagEnabledFieldName, true);
+            setValue(isDestinationTagEnabledFieldName, true);
             // Wait for input element to be mounted.
             setTimeout(() => {
                 inputRef.current?.focus();
             });
         } else {
-            setValue(isRippleDestinationTagEnabledFieldName, false);
+            setValue(isDestinationTagEnabledFieldName, false);
         }
         trigger(destinationTagFieldName);
         setIsInputDisplayed(!isInputDisplayed);
@@ -86,7 +91,11 @@ export const DestinationTagInput = () => {
             {isInputDisplayed ? (
                 <AnimatedVStack spacing="sp8" entering={FadeIn} exiting={FadeOut}>
                     <TextInputField
-                        valueTransformer={integerTransformer}
+                        valueTransformer={
+                            getNetworkType(networkSymbol) === 'ripple'
+                                ? integerTransformer
+                                : undefined
+                        }
                         ref={inputRef}
                         onChangeText={handleChangeValue}
                         name={destinationTagFieldName}
@@ -105,7 +114,10 @@ export const DestinationTagInput = () => {
                     <InlineAlertBox
                         variant="warning"
                         title={
-                            <Translation id="moduleSend.outputs.recipients.destinationTag.warning" />
+                            <Translation
+                                id="moduleSend.outputs.recipients.destinationTag.warning"
+                                values={{ network: getNetwork(networkSymbol).name }}
+                            />
                         }
                     />
                 </Animated.View>

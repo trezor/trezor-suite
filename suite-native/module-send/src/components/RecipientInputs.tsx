@@ -21,18 +21,18 @@ export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => 
 
     if (!account) return null;
 
-    const isRipple = account.networkType === 'ripple';
+    const hasDestinationTag = account.networkType === 'ripple' || account.networkType === 'stellar';
 
     return (
         <VStack spacing="sp16">
             <AddressInput index={index} accountKey={accountKey} />
             <CardDivider />
             <AmountInputs index={index} />
-            {isRipple && (
+            {hasDestinationTag && (
                 <Animated.View layout={LinearTransition}>
                     <VStack spacing="sp16">
                         <CardDivider />
-                        <DestinationTagInput />
+                        <DestinationTagInput networkSymbol={account.symbol} />
                     </VStack>
                 </Animated.View>
             )}

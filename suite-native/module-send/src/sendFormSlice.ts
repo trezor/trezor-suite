@@ -110,14 +110,14 @@ export const selectFeeLevelTransactionBytes = createMemoizedSelector(
     },
 );
 
-export const selectRippleDestinationTagFromDraft = (
+export const selectDestinationTagFromDraft = (
     state: NativeSendRootState,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
 ) => {
     const draftKey = getSendFormDraftKey(accountKey, tokenContract);
 
-    return state.wallet.send.drafts[draftKey]?.rippleDestinationTag;
+    return state.wallet.send.drafts[draftKey]?.destinationTag;
 };
 
 export const { storeFeeLevels } = sendFormSlice.actions;

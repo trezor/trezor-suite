@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     removeButtonRequests,
@@ -67,7 +68,8 @@ export const ReceiveAddressScreen = ({
     const isConfirmOnTrezorReady =
         isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
 
-    const showXrpInfo = account.networkType === 'ripple';
+    const showDestinationTagInfo =
+        account.networkType === 'ripple' || account.networkType === 'stellar';
 
     return (
         <Screen
@@ -90,12 +92,12 @@ export const ReceiveAddressScreen = ({
         >
             <Box flex={1}>
                 <VStack marginTop="sp8" spacing="sp16">
-                    {showXrpInfo && (
+                    {showDestinationTagInfo && (
                         <InlineAlertBox
                             variant="info"
                             title={
                                 <Translation
-                                    id="moduleReceive.xrpDestinationTag"
+                                    id="moduleReceive.destinationTag"
                                     values={{
                                         link: chunk => (
                                             <Link
@@ -107,6 +109,7 @@ export const ReceiveAddressScreen = ({
                                                 textPressedColor="textSubdued"
                                             />
                                         ),
+                                        coinSymbol: getDisplaySymbol(account.symbol),
                                     }}
                                 />
                             }

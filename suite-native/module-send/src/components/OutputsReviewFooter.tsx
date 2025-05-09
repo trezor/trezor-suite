@@ -159,7 +159,7 @@ export const OutputsReviewFooter = ({
                         tokenSymbols: tokenSymbol ? [tokenSymbol] : undefined,
                         outputsCount: formValues.outputs.length,
                         selectedFee: formValues.selectedFee ?? 'normal',
-                        hasRippleDestinationTag: G.isNotNullable(formValues.rippleDestinationTag),
+                        hasDestinationTag: G.isNotNullable(formValues.destinationTag),
                         wasAppLeftDuringReview,
                     },
                 });

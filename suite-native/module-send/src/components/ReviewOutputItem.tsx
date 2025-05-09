@@ -18,6 +18,7 @@ const outputLabelTranslationMap = {
     amount: 'moduleSend.review.outputs.amountLabel',
     'destination-tag': 'moduleSend.review.outputs.destinationTagLabel',
     contract: 'moduleSend.review.outputs.contractLabel',
+    timebounds: 'moduleSend.review.outputs.timeboundsLabel',
 } as const satisfies Partial<Record<ReviewOutputType, TxKeyPath>>;
 
 const isTranslationDefined = (

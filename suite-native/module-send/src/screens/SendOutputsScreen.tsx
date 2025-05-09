@@ -8,7 +8,7 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     FeesRootState,
@@ -50,13 +50,13 @@ import { constructFormDraft } from '../utils';
 
 const getDefaultValues = ({
     tokenContract,
-    isRippleDestinationTagEnabled,
+    isDestinationTagEnabled,
 }: {
     tokenContract?: TokenAddress;
-    isRippleDestinationTagEnabled: boolean;
+    isDestinationTagEnabled: boolean;
 }): Readonly<SendOutputsFormValues> =>
     ({
-        isRippleDestinationTagEnabled,
+        isDestinationTagEnabled,
         outputs: [
             {
                 amount: '',
@@ -126,7 +126,8 @@ export const SendOutputsScreen = ({
         },
         defaultValues: getDefaultValues({
             tokenContract,
-            isRippleDestinationTagEnabled: network?.networkType === 'ripple',
+            isDestinationTagEnabled:
+                network?.networkType === 'ripple' || network?.networkType === 'stellar',
         }),
     });
 
@@ -168,7 +169,7 @@ export const SendOutputsScreen = ({
 
                 if (isReserveError) {
                     setError('outputs.0.amount', {
-                        message: 'Recipient account requires minimum reserve of 1 XRP to activate.',
+                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
                     });
                 }
 
@@ -218,7 +219,7 @@ export const SendOutputsScreen = ({
             if (sendFormDraft?.outputs) {
                 // TODO: use reset() instead of setValue()
                 setValue('outputs', sendFormDraft.outputs, { shouldTouch: true });
-                setValue('rippleDestinationTag', sendFormDraft.rippleDestinationTag, {
+                setValue('destinationTag', sendFormDraft.destinationTag, {
                     shouldTouch: true,
                 });
                 // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)

@@ -40,8 +40,8 @@ import { FeesFooter } from './FeesFooter';
 import { RecipientsSummary } from './RecipientsSummary';
 import {
     NativeSendRootState,
+    selectDestinationTagFromDraft,
     selectFeeLevels,
-    selectRippleDestinationTagFromDraft,
 } from '../sendFormSlice';
 import { NativeSupportedFeeLevel } from '../types';
 
@@ -77,8 +77,8 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const minimalFeeLimit =
         'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
 
-    const rippleDestinationTag = useSelector((state: NativeSendRootState) =>
-        selectRippleDestinationTagFromDraft(state, accountKey, tokenContract),
+    const destinationTag = useSelector((state: NativeSendRootState) =>
+        selectDestinationTagFromDraft(state, accountKey, tokenContract),
     );
     const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
 
@@ -125,9 +125,9 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     if (!account) return;
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
-        if (networkType === 'ripple' && rippleDestinationTag) {
+        if (networkType === 'ripple' && destinationTag) {
             navigation.navigate(SendStackRoutes.SendDestinationTagReview, {
-                destinationTag: rippleDestinationTag,
+                destinationTag,
                 accountKey,
                 tokenContract,
                 transaction: selectedFeeLevelTransaction,

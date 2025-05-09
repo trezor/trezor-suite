@@ -37,6 +37,7 @@ export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly 
         'op',
         'base',
         'arb',
+        'xlm',
     ],
     testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp'],
 };
