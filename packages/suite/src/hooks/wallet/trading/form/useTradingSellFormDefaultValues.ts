@@ -4,6 +4,7 @@ import {
     type TradingPaymentMethodListProps,
     cryptoIdToSymbol,
     getDefaultCountry,
+    regional,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
@@ -15,6 +16,7 @@ import {
 } from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import {
@@ -26,9 +28,10 @@ export const useTradingSellFormDefaultValues = (
     account: Account,
     sellInfo: TradingSellInfoSelector | undefined,
 ): TradingSellFormDefaultValuesProps => {
-    const country = sellInfo?.sellList?.country;
     const cryptoGroups = useTradingBuildAccountGroups('sell');
     const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
+    const { isTorEnabled } = useSelector(selectTorState);
+
     const cryptoOptions = useMemo(
         () => cryptoGroups.flatMap(group => group.options),
         [cryptoGroups],
@@ -44,6 +47,7 @@ export const useTradingSellFormDefaultValues = (
             ),
         [account.descriptor, account.symbol, prefilledFromCryptoId, cryptoOptions],
     );
+    const country = !isTorEnabled ? sellInfo?.sellList?.country : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const { address, token } =
         getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);
