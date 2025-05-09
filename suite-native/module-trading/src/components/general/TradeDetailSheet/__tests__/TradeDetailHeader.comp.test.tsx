@@ -14,12 +14,21 @@ const getPreloadedState = (trades: TradingTransaction[]) => ({
     },
 });
 
+const mockNavigation = {
+    navigate: jest.fn(),
+};
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => mockNavigation,
+}));
+
 describe('TradeDetailHeader', () => {
     it('should not render when trade is not found', async () => {
         const preloadedState = getPreloadedState([]);
 
         const { toJSON } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId="nonexistent_order_id" />,
+            <TradeDetailHeader orderId="nonexistent_order_id" onOpenedWebview={jest.fn()} />,
             { preloadedState },
         );
 
@@ -27,11 +36,11 @@ describe('TradeDetailHeader', () => {
     });
 
     it('should render header with spinner for in-progress trade', async () => {
-        const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+        const buyTrade = getBuyTrade({ status: 'APPROVAL_PENDING' });
         const preloadedState = getPreloadedState([buyTrade]);
 
         const { getByTestId } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId={buyTrade.data.orderId!} />,
+            <TradeDetailHeader orderId={buyTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
             { preloadedState },
         );
 
@@ -43,10 +52,34 @@ describe('TradeDetailHeader', () => {
         const preloadedState = getPreloadedState([sellTrade]);
 
         const { queryByTestId } = await renderWithStoreProviderAsync(
-            <TradeDetailHeader orderId={sellTrade.data.orderId!} />,
+            <TradeDetailHeader orderId={sellTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
             { preloadedState },
         );
 
         expect(queryByTestId('@circular-spinner')).toBeNull();
+    });
+
+    it('should render error message for error status', async () => {
+        const buyTrade = getBuyTrade({ status: 'ERROR' });
+        const preloadedState = getPreloadedState([buyTrade]);
+
+        const { getByText } = await renderWithStoreProviderAsync(
+            <TradeDetailHeader orderId={buyTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
+            { preloadedState },
+        );
+
+        expect(getByText('Transaction failed')).toBeTruthy();
+    });
+
+    it('should render waiting message for waiting status', async () => {
+        const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+        const preloadedState = getPreloadedState([buyTrade]);
+
+        const { getByText } = await renderWithStoreProviderAsync(
+            <TradeDetailHeader orderId={buyTrade.data.orderId!} onOpenedWebview={jest.fn()} />,
+            { preloadedState },
+        );
+
+        expect(getByText('Waiting for your payment ...')).toBeTruthy();
     });
 });

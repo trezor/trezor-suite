@@ -31,10 +31,10 @@ export const TradeDetailSheet = ({ orderId, isVisible, onClose }: TradeDetailShe
 
     return (
         <BottomSheet isVisible={isVisible} onClose={onClose} style={applyStyle(bottomSheetStyle)}>
-            <TradeDetailHeader orderId={orderId} />
+            <TradeDetailHeader orderId={orderId} onOpenedWebview={onClose} />
             <TradeDetailTransactionInfo orderId={orderId} />
             <TradeDetailInfo orderId={orderId} />
-            <TradeDetailFooter orderId={orderId} onOpenedWebview={onClose} />
+            <TradeDetailFooter orderId={orderId} />
         </BottomSheet>
     );
 };

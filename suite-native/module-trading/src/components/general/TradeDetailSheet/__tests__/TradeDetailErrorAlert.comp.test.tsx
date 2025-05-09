@@ -8,14 +8,14 @@ import {
 import { mercuryo } from '../../../../__fixtures__/providers';
 import { getBuyTrade } from '../../../../__fixtures__/trades';
 import { getInitializedTradingStateWithQuotes } from '../../../../__fixtures__/tradingState';
-import { TradeDetailProviderSupportButton } from '../TradeDetailProviderSupportButton';
+import { TradeDetailErrorAlert } from '../TradeDetailErrorAlert';
 const mockOpenLink = jest.fn();
 
 jest.mock('@suite-native/link', () => ({
     useOpenLink: () => mockOpenLink,
 }));
 
-describe('TradeDetailProviderSupportButton', () => {
+describe('TradeDetailErrorAlert', () => {
     const getPreloadedState = (supportUrl: string | undefined): PreloadedState => ({
         wallet: {
             tradingNew: {
@@ -46,7 +46,7 @@ describe('TradeDetailProviderSupportButton', () => {
 
     const renderComponent = (supportUrl?: string | undefined) =>
         renderWithStoreProviderAsync(
-            <TradeDetailProviderSupportButton provider="mercuryo" tradeType="buy" />,
+            <TradeDetailErrorAlert provider="mercuryo" tradeType="buy" />,
             { preloadedState: getPreloadedState(supportUrl) },
         );
 
@@ -68,15 +68,15 @@ describe('TradeDetailProviderSupportButton', () => {
         expect(mockOpenLink).toHaveBeenCalledWith(mercuryoSupportUrl);
     });
 
-    it('should not render when supportUrl is not provided', async () => {
-        const { toJSON } = await renderComponent();
+    it('should not render button when supportUrl is not provided', async () => {
+        const { queryByText } = await renderComponent();
 
-        expect(toJSON()).toBeNull();
+        expect(queryByText('Go to provider support')).toBeNull();
     });
 
-    it('should not render when supportUrl is empty string', async () => {
-        const { toJSON } = await renderComponent(undefined);
+    it('should not render button when supportUrl is empty string', async () => {
+        const { queryByText } = await renderComponent('');
 
-        expect(toJSON()).toBeNull();
+        expect(queryByText('Go to provider support')).toBeNull();
     });
 });

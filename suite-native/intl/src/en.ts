@@ -1658,6 +1658,17 @@ export const en = {
                     providerSupport: 'Go to provider support',
                     proceedToPay: 'Proceed to pay',
                 },
+                errorAlert: {
+                    title: 'Transaction failed',
+                    description:
+                        'Your transaction failed or was rejected. Your payment method hasn’t been charged.',
+                    button: 'Go to provider support',
+                },
+                waitingAlert: {
+                    title: 'Waiting for your payment ...',
+                    description: 'Click to complete your details on the provider’s site.',
+                    button: 'Proceed to pay',
+                },
             },
         },
         error: {

@@ -73,6 +73,7 @@ const usedIcons = [
     'gearFilled',
     'githubLogo',
     'handPalm',
+    'hourglass',
     'house',
     'houseFilled',
     'image',

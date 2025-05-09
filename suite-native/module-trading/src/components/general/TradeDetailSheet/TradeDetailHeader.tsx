@@ -5,11 +5,14 @@ import { Box, CircularSpinner, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { isFinalStatus } from '../../../utils/tradeUtils';
+import { TradeDetailErrorAlert } from './TradeDetailErrorAlert';
+import { TradeDetailWaitingAlert } from './TradeDetailWaitingAlert';
+import { getTradeStatusStep, isFinalStatus } from '../../../utils/tradeUtils';
 import { TradeStatusBadge } from '../TradeHistory/TradeStatusBadge';
 
 type TradeDetailHeaderProps = {
     orderId: string;
+    onOpenedWebview: () => void;
 };
 
 const iconWrapperStyle = prepareNativeStyle(utils => ({
@@ -20,7 +23,7 @@ const iconWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
 }));
 
-export const TradeDetailHeader = ({ orderId }: TradeDetailHeaderProps) => {
+export const TradeDetailHeader = ({ orderId, onOpenedWebview }: TradeDetailHeaderProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
@@ -30,6 +33,16 @@ export const TradeDetailHeader = ({ orderId }: TradeDetailHeaderProps) => {
     }
 
     const isInProgress = !isFinalStatus(trade.tradeType, trade.data.status);
+
+    const statusStep = getTradeStatusStep(trade);
+
+    if (statusStep === 'status-error') {
+        return <TradeDetailErrorAlert provider={trade.data.exchange} tradeType={trade.tradeType} />;
+    }
+
+    if (statusStep === 'status-waiting') {
+        return <TradeDetailWaitingAlert orderId={orderId} onOpenedWebview={onOpenedWebview} />;
+    }
 
     return (
         <VStack spacing="sp16" alignItems="center" justifyContent="center">
@@ -43,7 +56,7 @@ export const TradeDetailHeader = ({ orderId }: TradeDetailHeaderProps) => {
                     />
                 )}
             </Box>
-            <TradeStatusBadge status={trade?.data.status} />
+            <TradeStatusBadge status={trade.data.status} />
         </VStack>
     );
 };
