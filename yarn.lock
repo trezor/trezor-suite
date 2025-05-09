@@ -12728,7 +12728,7 @@ __metadata:
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
     "@trezor/eslint": "workspace:*"
-    bignumber.js: "npm:^9.1.2"
+    bignumber.js: "npm:^9.3.0"
     tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
@@ -12751,7 +12751,7 @@ __metadata:
     bitcoin-ops: "npm:^1.4.1"
     blake-hash: "npm:^2.0.0"
     blakejs: "npm:^1.2.1"
-    bn.js: "npm:^5.2.1"
+    bn.js: "npm:^5.2.2"
     bs58: "npm:^6.0.0"
     bs58check: "npm:^4.0.0"
     create-hmac: "npm:^1.1.7"
@@ -16471,10 +16471,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:9.1.2, bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.1.2":
-  version: 9.1.2
-  resolution: "bignumber.js@npm:9.1.2"
-  checksum: 10/d89b8800a987225d2c00dcbf8a69dc08e92aa0880157c851c287b307d31ceb2fc2acb0c62c3e3a3d42b6c5fcae9b004035f13eb4386e56d529d7edac18d5c9d8
+"bignumber.js@npm:9.3.0":
+  version: 9.3.0
+  resolution: "bignumber.js@npm:9.3.0"
+  checksum: 10/60b79efcf7b56b925fca8eebd10d1f4b70aa2bf6eade7f5af0266f0092226dd2abcd9a3ee315ecb39459750d5a630ce3980b707e5d7bea32c97ffd378e8cc159
   languageName: node
   linkType: hard
 
@@ -16552,10 +16552,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bn.js@npm:5.2.1":
-  version: 5.2.1
-  resolution: "bn.js@npm:5.2.1"
-  checksum: 10/7a7e8764d7a6e9708b8b9841b2b3d6019cc154d2fc23716d0efecfe1e16921b7533c6f7361fb05471eab47986c4aa310c270f88e3507172104632ac8df2cfd84
+"bn.js@npm:5.2.2":
+  version: 5.2.2
+  resolution: "bn.js@npm:5.2.2"
+  checksum: 10/51ebb2df83b33e5d8581165206e260d5e9c873752954616e5bf3758952b84d7399a9c6d00852815a0aeefb1150a7f34451b62d4287342d457fa432eee869e83e
   languageName: node
   linkType: hard
 

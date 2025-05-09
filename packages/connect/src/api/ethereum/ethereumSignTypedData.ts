@@ -66,7 +66,6 @@ function twosComplement(number: BigNumber, bytes: number) {
 }
 
 function intToHex(number: BigNumber | bigint | number | string, bytes: number, signed: boolean) {
-    // @ts-expect-error bigint typ not supported in BigNumber, but supported in runtime
     let bigNumber = new BigNumber(number);
     if (signed) {
         bigNumber = twosComplement(bigNumber, bytes);

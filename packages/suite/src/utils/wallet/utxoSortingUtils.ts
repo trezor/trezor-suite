@@ -31,7 +31,7 @@ const wrapSecondarySorting =
     };
 
 const sortFromLargestToSmallest: UtxoSortingFunctionWithContext = () => (a, b) =>
-    new BigNumber(b.amount).comparedTo(new BigNumber(a.amount));
+    new BigNumber(b.amount).comparedTo(new BigNumber(a.amount)) ?? 0;
 
 const sortFromNewestToOldest: UtxoSortingFunctionWithContext =
     ({ accountTransactions }) =>

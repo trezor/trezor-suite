@@ -59,7 +59,7 @@ const setTrezorData = (
     network: CardanoNetwork,
 ) => {
     // sorted from least saturated to most
-    trezorPools.pools.sort((a, b) => new BigNumber(a.live_stake).comparedTo(b.live_stake));
+    trezorPools.pools.sort((a, b) => new BigNumber(a.live_stake).comparedTo(b.live_stake) ?? 0);
     state[network].trezorPools = trezorPools;
     state[network].trezorDRep = trezorDRep;
 };

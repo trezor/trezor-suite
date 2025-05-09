@@ -278,7 +278,7 @@ export const getMinimumRequiredTokenAccountsForTransfer = (
     const requiredAccounts = F.toMutable(
         pipe(
             tokenAccounts,
-            A.sort((a, b) => new BigNumber(b.balance).comparedTo(new BigNumber(a.balance))),
+            A.sort((a, b) => new BigNumber(b.balance).comparedTo(new BigNumber(a.balance)) ?? 0),
             A.takeWhile(tokenAccount => {
                 const needMoreAccounts = accumulatedBalance.lt(requiredAmount);
                 accumulatedBalance = accumulatedBalance.plus(tokenAccount.balance);
