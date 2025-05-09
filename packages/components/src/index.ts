@@ -103,6 +103,7 @@ export {
     withFrameProps,
     getFramePropsStory,
 } from './utils/frameProps';
+export { useModal } from './components/Modal/useModal';
 
 export * from './constants/keyboardEvents';
 
