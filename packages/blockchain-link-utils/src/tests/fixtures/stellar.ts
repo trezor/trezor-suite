@@ -1,3 +1,11 @@
+import {
+    Account,
+    Asset,
+    Memo,
+    Networks,
+    Operation,
+    TransactionBuilder,
+} from '@stellar/stellar-sdk';
 export const fixtures = {
     toStroops: [
         {
@@ -1841,6 +1849,103 @@ export const fixtures = {
                 txid: 'a15e5979d25e1eaa9682a4524dcdad557fd7733879e3ac9899958af79e9991ff',
                 type: 'unknown',
             },
+        },
+    ],
+    buildSendTransactoin: [
+        {
+            description: 'transaction contains a payment operation',
+            input: {
+                descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                sequence: '123456789',
+                fee: '1200',
+                destinationActivated: true,
+                destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                amount: '100.125',
+                destinationTag: 'Hello, World!',
+            },
+            expectedOutput: new TransactionBuilder(
+                new Account(
+                    'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                    '123456789',
+                ),
+                {
+                    fee: '1200',
+                    networkPassphrase: Networks.PUBLIC,
+                },
+            )
+                .addMemo(Memo.text('Hello, World!'))
+                .setTimebounds(0, 0)
+                .addOperation(
+                    Operation.payment({
+                        destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                        amount: '100.125',
+                        asset: Asset.native(),
+                    }),
+                )
+                .build(),
+        },
+        {
+            description: 'transaction contains a create account operation',
+            input: {
+                descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                sequence: '123456789',
+                fee: '1200',
+                destinationActivated: false,
+                destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                amount: '100.125',
+                destinationTag: 'Hello, World!',
+            },
+            expectedOutput: new TransactionBuilder(
+                new Account(
+                    'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                    '123456789',
+                ),
+                {
+                    fee: '1200',
+                    networkPassphrase: Networks.PUBLIC,
+                },
+            )
+                .addMemo(Memo.text('Hello, World!'))
+                .setTimebounds(0, 0)
+                .addOperation(
+                    Operation.createAccount({
+                        destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                        startingBalance: '100.125',
+                    }),
+                )
+                .build(),
+        },
+        {
+            description:
+                'transaction contains a payment operation, but destinationTag is undefined',
+            input: {
+                descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                sequence: '123456789',
+                fee: '1200',
+                destinationActivated: true,
+                destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                amount: '100.125',
+                destinationTag: undefined,
+            },
+            expectedOutput: new TransactionBuilder(
+                new Account(
+                    'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                    '123456789',
+                ),
+                {
+                    fee: '1200',
+                    networkPassphrase: Networks.PUBLIC,
+                },
+            )
+                .setTimebounds(0, 0)
+                .addOperation(
+                    Operation.payment({
+                        destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                        amount: '100.125',
+                        asset: Asset.native(),
+                    }),
+                )
+                .build(),
         },
     ],
 };

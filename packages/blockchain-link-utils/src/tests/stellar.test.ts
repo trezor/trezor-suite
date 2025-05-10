@@ -2,7 +2,7 @@ import { Horizon } from '@stellar/stellar-sdk';
 
 import { BigNumber } from '@trezor/utils';
 
-import { toStroops, transformTransaction } from '../stellar';
+import { buildSendTransaction, toStroops, transformTransaction } from '../stellar';
 import { fixtures } from './fixtures/stellar';
 
 describe('stellar/utils', () => {
@@ -24,6 +24,23 @@ describe('stellar/utils', () => {
             it(description, () => {
                 const result = toStroops(input);
                 expect(result).toEqual(new BigNumber(expectedOutput));
+            });
+        });
+    });
+
+    describe('buildSendTransactoin', () => {
+        fixtures.buildSendTransactoin.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                const result = buildSendTransaction(
+                    input.descriptor,
+                    input.sequence,
+                    input.fee,
+                    input.destinationActivated,
+                    input.destination,
+                    input.amount,
+                    input.destinationTag,
+                );
+                expect(result).toEqual(expectedOutput);
             });
         });
     });
