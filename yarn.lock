@@ -8626,19 +8626,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:^13.3.0":
-  version: 13.3.0
-  resolution: "@stellar/stellar-sdk@npm:13.3.0"
+"@stellar/stellar-sdk@npm:^13.2.0":
+  version: 13.2.0
+  resolution: "@stellar/stellar-sdk@npm:13.2.0"
   dependencies:
     "@stellar/stellar-base": "npm:^13.1.0"
     axios: "npm:^1.8.4"
-    bignumber.js: "npm:^9.3.0"
+    bignumber.js: "npm:^9.1.2"
     eventsource: "npm:^2.0.2"
     feaxios: "npm:^0.0.23"
     randombytes: "npm:^2.1.0"
     toml: "npm:^3.0.0"
     urijs: "npm:^1.19.1"
-  checksum: 10/878e624e6222c61b01453cd401cc6d9015bb3941b51ea10f41298b032ed8d859fa1c00a560d181a63a2221b960e4e5448387c6456e085e68b62d0e269354e5e5
+  checksum: 10/8ed8585ad81a8f330b0c82ecc6dab724565a72a2d9bf03bf5d40f11d6d1cb309f1e5e94d9fdb0c7391bfa6a92389851c149e4a765d6f0cc814b1161366ae79ae
   languageName: node
   linkType: hard
 
@@ -9562,7 +9562,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.6.0"
-    "@stellar/stellar-sdk": "npm:^13.3.0"
+    "@stellar/stellar-sdk": "npm:^13.2.0"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -11443,7 +11443,7 @@ __metadata:
     "@solana/keys": "npm:^2.1.0"
     "@solana/rpc-api": "npm:^2.1.0"
     "@solana/rpc-types": "npm:^2.1.0"
-    "@stellar/stellar-sdk": "npm:^13.3.0"
+    "@stellar/stellar-sdk": "npm:^13.2.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -11464,7 +11464,7 @@ __metadata:
     "@solana-program/token": "npm:^0.5.1"
     "@solana-program/token-2022": "npm:^0.4.0"
     "@solana/kit": "npm:^2.0.0"
-    "@stellar/stellar-sdk": "npm:^13.3.0"
+    "@stellar/stellar-sdk": "npm:^13.2.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
@@ -11742,11 +11742,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
   dependencies:
-    "@stellar/stellar-sdk": "npm:^13.3.0"
+    "@stellar/stellar-sdk": "npm:^13.2.0"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
   peerDependencies:
-    "@stellar/stellar-sdk": ^13.3.0
+    "@stellar/stellar-sdk": ^13.2.0
     "@trezor/connect": 9.x.x
     tslib: ^2.6.2
   languageName: unknown
@@ -16443,17 +16443,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:9.1.2":
+"bignumber.js@npm:9.1.2, bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.1.2":
   version: 9.1.2
   resolution: "bignumber.js@npm:9.1.2"
   checksum: 10/d89b8800a987225d2c00dcbf8a69dc08e92aa0880157c851c287b307d31ceb2fc2acb0c62c3e3a3d42b6c5fcae9b004035f13eb4386e56d529d7edac18d5c9d8
-  languageName: node
-  linkType: hard
-
-"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.1.2, bignumber.js@npm:^9.3.0":
-  version: 9.3.0
-  resolution: "bignumber.js@npm:9.3.0"
-  checksum: 10/60b79efcf7b56b925fca8eebd10d1f4b70aa2bf6eade7f5af0266f0092226dd2abcd9a3ee315ecb39459750d5a630ce3980b707e5d7bea32c97ffd378e8cc159
   languageName: node
   linkType: hard
 
