@@ -1,8 +1,6 @@
 import { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
@@ -14,14 +12,11 @@ type DeviceInteractionScreenWrapperProps = {
 export const DeviceInteractionScreenWrapper = ({
     children,
 }: DeviceInteractionScreenWrapperProps) => {
-    const navigation = useNavigation();
-
     const device = useSelector(selectSelectedDevice);
 
     const closeAction = useCallback(() => {
         TrezorConnect.cancel();
-        navigation.goBack();
-    }, [navigation]);
+    }, []);
 
     if (!device) {
         return null;
