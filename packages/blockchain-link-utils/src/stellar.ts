@@ -1,8 +1,12 @@
 import {
+    Account,
+    Asset,
     Horizon,
     Memo,
     Networks,
+    Operation,
     Transaction as StellarTransaction,
+    TransactionBuilder,
     extractBaseAddress,
 } from '@stellar/stellar-sdk';
 
@@ -151,4 +155,44 @@ export const transformTransaction = (
     const type = descriptor === params.fromAddress ? 'sent' : 'recv';
 
     return { ...tx, amount: params.amount, details, targets, type };
+};
+
+export const buildSendTransaction = (
+    descriptor: string,
+    sequence: string,
+    fee: string,
+    destinationActivated: boolean,
+    destination: string,
+    amount: string,
+    destinationTag?: string,
+) => {
+    const source = new Account(descriptor, sequence);
+
+    const txBuilder = new TransactionBuilder(source, {
+        fee,
+        networkPassphrase: Networks.PUBLIC,
+    }).setTimebounds(0, 0);
+
+    if (destinationTag) {
+        txBuilder.addMemo(Memo.text(destinationTag));
+    }
+
+    if (destinationActivated) {
+        txBuilder.addOperation(
+            Operation.payment({
+                destination,
+                amount,
+                asset: Asset.native(),
+            }),
+        );
+    } else {
+        txBuilder.addOperation(
+            Operation.createAccount({
+                destination,
+                startingBalance: amount,
+            }),
+        );
+    }
+
+    return txBuilder.build();
 };
