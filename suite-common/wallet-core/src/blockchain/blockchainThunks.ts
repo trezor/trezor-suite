@@ -47,6 +47,7 @@ const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
     sol: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
     ada: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
     xrp: DEFAULT_ACCOUNT_SYNC_INTERVAL * 3,
+    xlm: DEFAULT_ACCOUNT_SYNC_INTERVAL * 3,
 };
 
 const getAccountSyncInterval = (symbol: NetworkSymbol) =>

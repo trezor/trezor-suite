@@ -6175,7 +6175,7 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA: {
         id: 'TR_GRAPH_MISSING_DATA',
         defaultMessage:
-            "XRP, SOL, and all token amounts are in the portfolio balance but aren't currently supported in graph view.",
+            "XRP, XLM, SOL, and all token amounts are in the portfolio balance but aren't currently supported in graph view.",
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',

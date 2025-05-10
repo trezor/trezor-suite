@@ -1057,7 +1057,7 @@
   "TR_GRANT_PERMISSIONS_DESCRIPTION": "This app wants to connect with Trezor Suite and needs the following permissions.",
   "TR_GRAPH_LINEAR": "Linear",
   "TR_GRAPH_LOGARITHMIC": "Logarithmic",
-  "TR_GRAPH_MISSING_DATA": "XRP, SOL, and all token amounts are in the portfolio balance but aren't currently supported in graph view.",
+  "TR_GRAPH_MISSING_DATA": "XRP, XLM, SOL, and all token amounts are in the portfolio balance but aren't currently supported in graph view.",
   "TR_GRAPH_VIEW": "Graph View",
   "TR_GUIDE_ARTICLES": "Articles",
   "TR_GUIDE_BUG_LABEL": "Is something wrong?",
