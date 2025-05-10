@@ -68,9 +68,7 @@ describe('Stellar', () => {
             accountRawResp.balances[accountRawResp.balances.length - 1].balance,
         );
         const expectedReverse = '15000000';
-        const expectedAvailableBalance = (
-            Number(expectedBalance) - Number(expectedReverse)
-        ).toString();
+        const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
             availableBalance: expectedAvailableBalance,
             balance: expectedBalance,
@@ -140,9 +138,7 @@ describe('Stellar', () => {
             accountRawResp.balances[accountRawResp.balances.length - 1].balance,
         );
         const expectedReverse = '15000000';
-        const expectedAvailableBalance = (
-            Number(expectedBalance) - Number(expectedReverse)
-        ).toString();
+        const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
             availableBalance: expectedAvailableBalance,
             balance: expectedBalance,
