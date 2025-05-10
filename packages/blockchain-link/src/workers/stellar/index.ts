@@ -115,16 +115,16 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         } as const;
     }
 
-    const requestBuiler = await api
+    const requestBuilder = await api
         .transactions()
         .forAccount(payload.descriptor)
         .includeFailed(true)
         .limit(payload.pageSize || 20)
         .order('desc');
     if (payload.page && payload.page !== 1 && payload.pageCursor) {
-        requestBuiler.cursor(payload.pageCursor);
+        requestBuilder.cursor(payload.pageCursor);
     }
-    const transactions = await requestBuiler.call();
+    const transactions = await requestBuilder.call();
 
     const cursor = transactions.records[transactions.records.length - 1]?.paging_token;
     account.history.transactions = transactions.records.map(record =>
