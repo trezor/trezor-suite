@@ -71,7 +71,7 @@ describe('Stellar', () => {
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
             availableBalance: expectedAvailableBalance,
-            balance: expectedBalance,
+            balance: expectedBalance.toString(),
             descriptor,
             empty: false,
             history: {
@@ -141,7 +141,7 @@ describe('Stellar', () => {
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
             availableBalance: expectedAvailableBalance,
-            balance: expectedBalance,
+            balance: expectedBalance.toString(),
             descriptor,
             empty: false,
             history: {
