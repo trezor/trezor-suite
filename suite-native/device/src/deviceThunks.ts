@@ -1,6 +1,7 @@
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    ConnectDeviceSettings,
     deviceActions,
     selectDevicePath,
     selectIsDeviceInitialized,
@@ -30,6 +31,15 @@ export const setTemporaryRememberedDeviceThunk = createThunk(
                 temporaryRemember,
             }),
         );
+
+        // if the device is not connected and it was remembered only temporarily, we need to forget it
+        if (!device.connected && device.temporaryRemember && !temporaryRemember) {
+            const settings: ConnectDeviceSettings = {
+                defaultWalletLoading: 'standard',
+            };
+
+            dispatch(deviceActions.forgetDevice({ device, settings }));
+        }
 
         return;
     },
