@@ -1,12 +1,3 @@
-import {
-    Account,
-    Asset,
-    Memo,
-    Networks,
-    Operation,
-    TransactionBuilder,
-} from '@stellar/stellar-sdk';
-
 import { createThunk } from '@suite-common/redux-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
@@ -23,7 +14,7 @@ import {
     getExternalComposeOutput,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
-import { toStroops } from '@trezor/blockchain-link-utils/src/stellar';
+import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect, { FeeLevel, RipplePayment, StellarOperation } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -252,37 +243,17 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 return { serializedTx: response.payload.serializedTx };
             }
         } else if (selectedAccount.networkType === 'stellar') {
-            const source = new Account(
-                selectedAccount.descriptor,
-                selectedAccount.misc.stellarSequence,
-            );
-
-            const txBuilder = new TransactionBuilder(source, {
-                fee: precomposedTransaction.feePerByte,
-                networkPassphrase: Networks.PUBLIC,
-            }).setTimebounds(0, 0);
-
-            if (formState.destinationTag) {
-                txBuilder.addMemo(Memo.text(formState.destinationTag));
-            }
-
             const destinationAccount = await TrezorConnect.getAccountInfo({
                 descriptor: formState.outputs[0].address,
                 coin: selectedAccount.symbol,
                 suppressBackupWarning: true,
             });
+
             const destinationActivated =
                 destinationAccount.success && !destinationAccount.payload.empty;
 
             let operation: StellarOperation;
             if (destinationActivated) {
-                txBuilder.addOperation(
-                    Operation.payment({
-                        destination: formState.outputs[0].address,
-                        asset: Asset.native(),
-                        amount: formState.outputs[0].amount,
-                    }),
-                );
                 operation = {
                     type: 'payment',
                     asset: { code: 'XLM', type: 0 },
@@ -290,12 +261,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     destination: formState.outputs[0].address,
                 };
             } else {
-                txBuilder.addOperation(
-                    Operation.createAccount({
-                        destination: formState.outputs[0].address,
-                        startingBalance: formState.outputs[0].amount,
-                    }),
-                );
                 operation = {
                     type: 'createAccount',
                     startingBalance: toStroops(formState.outputs[0].amount).toString(),
@@ -303,11 +268,18 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 };
             }
 
-            const transaction = txBuilder.build();
+            const transaction = buildSendTransaction(
+                selectedAccount.descriptor,
+                selectedAccount.misc.stellarSequence,
+                precomposedTransaction.feePerByte,
+                destinationActivated,
+                formState.outputs[0].address,
+                formState.outputs[0].amount,
+                formState.destinationTag,
+            );
 
             // It would be better if we could use `@trezor/connect-plugin-stellar`.
             // const transformedTransaction = transformTransaction(selectedAccount.path, transaction);
-
             const transformedTransaction = {
                 path: selectedAccount.path,
                 networkPassphrase: transaction.networkPassphrase,
