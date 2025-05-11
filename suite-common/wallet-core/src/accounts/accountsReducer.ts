@@ -122,6 +122,9 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.updateAccount, (state, action) => {
                 update(state, action.payload);
             })
+            .addCase(accountsActions.updateAccountRefreshTimestamp, (state, action) => {
+                update(state, action.payload);
+            })
             .addCase(accountsActions.renameAccount, (state, action) => {
                 const { accountKey, accountLabel } = action.payload;
                 const accountByAccountKey = state.find(account => account.key === accountKey);
