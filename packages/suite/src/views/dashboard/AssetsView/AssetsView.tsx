@@ -38,6 +38,7 @@ import { AssetTable } from './AssetTable/AssetTable';
 
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
+    align-items: center;
     display: flex;
     color: ${({ theme }) => theme.textAlertRed};
     ${typography.label}
@@ -265,7 +266,12 @@ export const AssetsView = () => {
                     />
                     {isError && (
                         <InfoMessage>
-                            <Icon name="warning" color={theme.iconAlertRed} size={14} />
+                            <Icon
+                                name="warning"
+                                color={theme.iconAlertRed}
+                                size={14}
+                                margin={{ right: spacings.xxs }}
+                            />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                         </InfoMessage>
                     )}
