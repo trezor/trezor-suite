@@ -11,6 +11,8 @@ import {
 import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { TradingTradeStatusType, TradingTransaction, TradingType } from '@suite-common/trading';
 
+import { TRADING_URL_DEFAULT_BACK } from './tradeFormUtils';
+
 export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
     buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
     sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
@@ -149,3 +151,6 @@ export const getTradeStatusStep = (trade: TradingTransaction) => {
             throw new UnreachableCaseError(tradeType);
     }
 };
+
+export const doesUrlContainCloseCallbackUrl = (url: string, closeCallbackUrl: string) =>
+    url.includes(closeCallbackUrl) || url.includes(TRADING_URL_DEFAULT_BACK);

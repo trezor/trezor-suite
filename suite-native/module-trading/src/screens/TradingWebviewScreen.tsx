@@ -19,10 +19,8 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { setTradeOrderIdToBeOpened } from '../tradingSlice';
-import {
-    TRADING_URL_DEFAULT_BACK,
-    getTradeTypeActionAndOrderIdFromUrl,
-} from '../utils/tradeFormUtils';
+import { getTradeTypeActionAndOrderIdFromUrl } from '../utils/tradeFormUtils';
+import { doesUrlContainCloseCallbackUrl } from '../utils/tradeUtils';
 
 type RouteProps = StackProps<RootStackParamList, RootStackRoutes.TradingWebView>['route'];
 
@@ -37,11 +35,11 @@ export const TradingWebViewScreen = () => {
     const dispatch = useDispatch();
     const receivedDeeplinkUrl = useURL();
 
-    // when url matches closeCallbackUrl or TRADING_URL_DEFAULT_BACK, go back and mark the trade to be opened
+    // when url contains closeCallbackUrl or TRADING_URL_DEFAULT_BACK, go back and mark the trade to be opened
     const checkForGoBackOnUrl = useCallback(
         (url: string | null) => {
             const urlString = url ?? '';
-            if ([closeCallbackUrl, TRADING_URL_DEFAULT_BACK].includes(urlString)) {
+            if (doesUrlContainCloseCallbackUrl(urlString, closeCallbackUrl)) {
                 const { orderId } = getTradeTypeActionAndOrderIdFromUrl(urlString);
                 if (orderId) {
                     dispatch(setTradeOrderIdToBeOpened(orderId));
