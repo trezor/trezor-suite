@@ -46,7 +46,10 @@ const backgroundStyle = prepareNativeStyle(utils => ({
 }));
 
 export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetModalProps>(
-    ({ children, footer, style, title, isCloseDisplayed = false, subtitle, onDismiss }, ref) => {
+    (
+        { children, footer, style, title, isCloseDisplayed = false, subtitle, onDismiss, ...rest },
+        ref,
+    ) => {
         const { applyStyle } = useNativeStyles();
         const { bottom } = useSafeAreaInsets();
 
@@ -97,6 +100,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                         <AnimatedBox
                             paddingHorizontal="sp16"
                             style={[applyStyle(childWrapperStyle, { bottomInset: bottom }), style]}
+                            {...rest}
                         >
                             {children}
                         </AnimatedBox>

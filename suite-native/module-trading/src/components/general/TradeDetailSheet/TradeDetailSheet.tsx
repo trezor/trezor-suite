@@ -1,7 +1,10 @@
+import { memo, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type BottomSheetModal as BottomSheetModalType } from '@gorhom/bottom-sheet';
+
 import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import { BottomSheet } from '@suite-native/atoms';
+import { BottomSheetModal } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TradeDetailFooter } from './TradeDetailFooter';
@@ -12,29 +15,46 @@ import { TradeDetailTransactionInfo } from './TradeDetailTransactionInfo';
 type TradeDetailSheetProps = {
     orderId?: string;
     isVisible: boolean;
-    onClose: () => void;
+    onDismiss: () => void;
 };
 
 const bottomSheetStyle = prepareNativeStyle(({ spacings }) => ({
     gap: spacings.sp16,
+    marginVertical: spacings.sp10,
 }));
 
-export const TradeDetailSheet = ({ orderId, isVisible, onClose }: TradeDetailSheetProps) => {
+export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDetailSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
+    const bottomSheetModalRef = useRef<BottomSheetModalType>(null);
+
+    useEffect(() => {
+        if (isVisible) {
+            bottomSheetModalRef.current?.present();
+        }
+    }, [isVisible]);
 
     if (!orderId || !trade) {
         return null;
     }
 
+    const onOpenedWebview = () => {
+        bottomSheetModalRef.current?.close();
+    };
+
     return (
-        <BottomSheet isVisible={isVisible} onClose={onClose} style={applyStyle(bottomSheetStyle)}>
-            <TradeDetailHeader orderId={orderId} onOpenedWebview={onClose} />
+        <BottomSheetModal
+            ref={bottomSheetModalRef}
+            onDismiss={onDismiss}
+            style={applyStyle(bottomSheetStyle)}
+            isCloseDisplayed
+        >
+            <TradeDetailHeader orderId={orderId} onOpenedWebview={onOpenedWebview} />
             <TradeDetailTransactionInfo orderId={orderId} />
             <TradeDetailInfo orderId={orderId} />
             <TradeDetailFooter orderId={orderId} />
-        </BottomSheet>
+        </BottomSheetModal>
     );
-};
+});

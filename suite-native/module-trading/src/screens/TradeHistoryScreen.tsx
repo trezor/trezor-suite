@@ -97,7 +97,7 @@ export const TradeHistoryScreen = () => {
             <TradeDetailSheet
                 isVisible={isSheetVisible}
                 orderId={detailOrderId}
-                onClose={hideSheet}
+                onDismiss={hideSheet}
             />
         </Screen>
     );
