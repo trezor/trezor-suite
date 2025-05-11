@@ -1,13 +1,10 @@
-import { ReactNode, forwardRef, useCallback, useRef } from 'react';
+import { ReactNode, forwardRef, useCallback } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
     BottomSheetBackdropProps,
     BottomSheetModal as BottomSheetModalBase,
-    BottomSheetScrollView,
-    BottomSheetScrollViewMethods,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
@@ -15,8 +12,9 @@ import { useScrollDivider } from '@suite-native/navigation';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { AnimatedBox, BoxProps } from '../Box';
+import { BoxProps } from '../Box';
 import { BottomSheetHeader } from './BottomSheetHeader';
+import { BottomSheetModalContent } from './BottomSheetModalContent';
 
 const SCREEN_HEIGHT = getScreenHeight();
 const MAX_HEIGHT = SCREEN_HEIGHT * 0.9;
@@ -34,13 +32,6 @@ const containerStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
-const childWrapperStyle = prepareNativeStyle<{ bottomInset?: number }>(
-    (utils, { bottomInset }) => ({
-        flex: 1,
-        paddingBottom: bottomInset || utils.spacings.sp16,
-    }),
-);
-
 const backgroundStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
 }));
@@ -51,9 +42,6 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         ref,
     ) => {
         const { applyStyle } = useNativeStyles();
-        const { bottom } = useSafeAreaInsets();
-
-        const scrollViewRef = useRef<BottomSheetScrollViewMethods>(null);
 
         const { scrollDivider, handleScroll } = useScrollDivider();
 
@@ -91,20 +79,9 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                     )}
                     onDismiss={onDismiss}
                 >
-                    <BottomSheetScrollView
-                        style={applyStyle(containerStyle)}
-                        ref={scrollViewRef}
-                        onScroll={handleScroll}
-                        testID="@bottom-sheet/scroll-view"
-                    >
-                        <AnimatedBox
-                            paddingHorizontal="sp16"
-                            style={[applyStyle(childWrapperStyle, { bottomInset: bottom }), style]}
-                            {...rest}
-                        >
-                            {children}
-                        </AnimatedBox>
-                    </BottomSheetScrollView>
+                    <BottomSheetModalContent handleScroll={handleScroll} style={style} {...rest}>
+                        {children}
+                    </BottomSheetModalContent>
                     {footer}
                 </BottomSheetModalBase>
             </GestureHandlerRootView>
