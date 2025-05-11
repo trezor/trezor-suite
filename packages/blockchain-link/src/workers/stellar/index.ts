@@ -1,6 +1,6 @@
 import { Horizon, Networks, Transaction as StellarTransaction } from '@stellar/stellar-sdk';
 
-import type { AccountInfo, Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
+import type { AccountInfo, Response } from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
@@ -195,96 +195,8 @@ const unsubscribeBlock = ({ state }: Context) => {
         es(); // To stop listening for new events call the function returned by this method.
         state.removeSubscription('block');
     }
-};
 
-const addTransactionListener = async (context: Context, address: string): Promise<() => void> => {
-    const { connect } = context;
-    const api = await connect();
-
-    const es = api
-        .transactions()
-        .forAccount(address)
-        .cursor('now')
-        .includeFailed(true)
-        .stream({
-            onmessage: record => {
-                context.post({
-                    id: -1,
-                    type: RESPONSES.NOTIFICATION,
-                    payload: {
-                        type: 'notification',
-                        payload: {
-                            descriptor: address,
-                            tx: utils.transformTransaction(record),
-                        },
-                    },
-                });
-            },
-        });
-
-    return es;
-};
-
-const subscribeAccounts = async (context: Context, accounts: SubscriptionAccountInfo[]) => {
-    const { state } = context;
-    const subscribedAccounts = state.getAccounts();
-    const newAccounts = accounts.filter(
-        acc => !subscribedAccounts.find(a => a.descriptor === acc.descriptor),
-    );
-
-    for (const account of newAccounts) {
-        const es = await addTransactionListener(context, account.descriptor);
-        state.addSubscription(`account:${account.descriptor}`, es);
-        state.addAccounts([account]);
-    }
-
-    return { subscribed: newAccounts.length > 0 };
-};
-
-const unsubscribeAccounts = ({ state }: Context, accounts?: SubscriptionAccountInfo[]) => {
-    if (!accounts) {
-        // remove all accounts
-        accounts = state.getAccounts();
-    }
-    for (const account of accounts) {
-        const es = state.getSubscription(`account:${account.descriptor}`) as
-            | (() => void)
-            | undefined;
-        if (es) {
-            es();
-            state.removeSubscription(`account:${account.descriptor}`);
-        }
-        state.removeAccounts([account]);
-    }
-};
-
-const subscribeAddresses = async (context: Context, addresses: string[]) => {
-    const { state } = context;
-    const subscribedAddresses = state.getAddresses();
-    const newAddresses = addresses.filter(addr => !subscribedAddresses.includes(addr));
-    for (const address of newAddresses) {
-        const es = await addTransactionListener(context, address);
-        state.addSubscription(`address:${address}`, es);
-        state.addAddresses([address]);
-    }
-
-    return { subscribed: newAddresses.length > 0 };
-};
-
-const unsubscribeAddresses = ({ state }: Context, addresses?: string[]) => {
-    if (!addresses) {
-        // remove all addresses
-        addresses = state.getAddresses();
-    }
-
-    for (const address of addresses) {
-        const es = state.getSubscription(`address:${address}`) as (() => void) | undefined;
-        if (es) {
-            es();
-            state.removeSubscription(`address:${address}`);
-        }
-        state.removeAddresses([address]);
-    }
+    return { subscribed: false };
 };
 
 const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
@@ -294,10 +206,9 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
             response = await subscribeBlock(request);
             break;
         case 'accounts':
-            response = await subscribeAccounts(request, request.payload.accounts);
-            break;
         case 'addresses':
-            response = await subscribeAddresses(request, request.payload.addresses);
+            // https://github.com/trezor/trezor-suite/pull/16483#issuecomment-2869536172
+            response = { subscribed: false };
             break;
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
@@ -310,15 +221,14 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
 };
 
 const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
+    let response: { subscribed: boolean };
     switch (request.payload.type) {
         case 'block':
-            unsubscribeBlock(request);
+            response = unsubscribeBlock(request);
             break;
         case 'accounts':
-            unsubscribeAccounts(request, request.payload.accounts);
-            break;
         case 'addresses':
-            unsubscribeAddresses(request, request.payload.addresses);
+            response = { subscribed: false };
             break;
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
@@ -326,7 +236,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
 
     return {
         type: RESPONSES.UNSUBSCRIBE,
-        payload: { subscribed: request.state.getAccounts().length > 0 },
+        payload: response,
     } as const;
 };
 
@@ -398,9 +308,6 @@ class StellarWorker extends BaseWorker<Horizon.Server> {
             return;
         }
 
-        // unsubscribe from all subscriptions
-        unsubscribeAccounts(this, undefined);
-        unsubscribeAddresses(this, undefined);
         unsubscribeBlock(this);
 
         this.api = undefined;
