@@ -1,6 +1,21 @@
 [
     {
         "required": false,
+        "version": [2, 8, 10],
+        "min_bootloader_version": [2, 1, 6],
+        "min_firmware_version": [2, 7, 2],
+        "bootloader_version": [2, 1, 10],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR", "tr-TR"],
+        "url": "firmware/t3t1/trezor-t3t1-2.8.10.bin",
+        "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.10-bitcoinonly.bin",
+        "fingerprint": "f6f50b4a419b041a59620ef681047c27af0902798e0227397c532dd70736694a",
+        "fingerprint_bitcoinonly": "11d3f68d08f3f95c04dd526826f81eb7918df85928cfcef73beeae3132342bf0",
+        "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+        "changelog": "* Add Nostr support (in debug mode only!).\n* Visual cues to distinguish unlocked state on Homescreen.\n* Solana: rent fee calculation\n* Solana: loadable token definitions\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Updated EIP-1559 fee-related labels.\n* Allow firmware upgrade even if language change failed.\n* Solana: fees calculation is now exact",
+        "changelog_bitcoinonly": "* Visual cues to distinguish unlocked state on Homescreen.\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
+    },
+    {
+        "required": false,
         "version": [2, 8, 9],
         "min_bootloader_version": [2, 1, 6],
         "min_firmware_version": [2, 7, 2],

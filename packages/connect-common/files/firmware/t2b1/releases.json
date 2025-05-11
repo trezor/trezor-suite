@@ -1,6 +1,21 @@
 [
     {
         "required": false,
+        "version": [2, 8, 10],
+        "min_bootloader_version": [2, 1, 1],
+        "min_firmware_version": [2, 6, 1],
+        "bootloader_version": [2, 1, 8],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
+        "url": "firmware/t2b1/trezor-t2b1-2.8.10.bin",
+        "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.8.10-bitcoinonly.bin",
+        "fingerprint": "db555520689b1af7c18cb20fc2631fbf07ce4f7dd735c7e64ab279e1ad03a33a",
+        "fingerprint_bitcoinonly": "5bd50bbcf6435f97b6dc46f96ad11235965cd8a78619c573c3c0aca6822e9ed2",
+        "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+        "changelog": "* Solana: rent fee calculation\n* Solana: loadable token definitions\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Fixed Solana staking dialog title.\n* Updated EIP-1559 fee-related labels.\n* Allow firmware upgrade even if language change failed.\n* Solana: fees calculation is now exact",
+        "changelog_bitcoinonly": "* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
+    },
+    {
+        "required": false,
         "version": [2, 8, 9],
         "min_bootloader_version": [2, 1, 1],
         "min_firmware_version": [2, 6, 1],
