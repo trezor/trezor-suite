@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [1, 13, 1],
+        "bootloader_version": [1, 12, 1],
+        "min_firmware_version": [1, 12, 0],
+        "min_bootloader_version": [1, 12, 0],
+        "url": "firmware/t1b1/trezor-t1b1-1.13.1.bin",
+        "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.13.1-bitcoinonly.bin",
+        "fingerprint": "f588657818ccf99b0046ede3f87eeaf17a0e6e6f1b7853344e18b846ca835328",
+        "fingerprint_bitcoinonly": "f27095f2e08278a209567e254b9921f6e34b28a9c0fc702a268f210e23057c27",
+        "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+        "changelog": "* Clear sign ETH staking transactions on Everstake pools\n* Use GWei when formatting large ETH amounts."
+    },
+    {
+        "required": false,
         "version": [1, 13, 0],
         "bootloader_version": [1, 12, 1],
         "min_firmware_version": [1, 12, 0],
