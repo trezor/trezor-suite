@@ -100,8 +100,9 @@ export const FirmwareInstallationScreenContent = ({
         return () => {
             dispatch(setTemporaryRememberedDeviceThunk({ temporaryRemember: false }));
             resetReducer();
+            setIsFirmwareInstallationRunning(false);
         };
-    }, [dispatch, resetReducer, isTemporaryRememeberAllowed]);
+    }, [dispatch, isTemporaryRememeberAllowed, resetReducer, setIsFirmwareInstallationRunning]);
 
     const handleFirmwareUpdateFinished = useCallback(async () => {
         await requestPrioritizedDeviceAccess({
