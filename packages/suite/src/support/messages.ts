@@ -3869,7 +3869,7 @@ export default defineMessages({
     },
     TOAST_AUTO_UPDATER_ERROR: {
         id: 'TOAST_AUTO_UPDATER_ERROR',
-        defaultMessage: 'Auto updater error ({state})',
+        defaultMessage: 'Update error ({state})',
     },
     TOAST_AUTO_UPDATER_NO_NEW: {
         id: 'TOAST_AUTO_UPDATER_NO_NEW',
@@ -6073,19 +6073,19 @@ export default defineMessages({
     },
     SETTINGS_ADV_COIN_CONN_INFO_URL: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_URL',
-        defaultMessage: 'Currently connected to {url}',
+        defaultMessage: 'Currently connected to',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH',
-        defaultMessage: 'Block hash: {hash}',
+        defaultMessage: 'Block hash',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT',
-        defaultMessage: 'Block height: {height}',
+        defaultMessage: 'Block height',
     },
     SETTINGS_ADV_COIN_CONN_INFO_VERSION: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_VERSION',
-        defaultMessage: 'Backend version: {version}',
+        defaultMessage: 'Backend version',
     },
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
@@ -6534,7 +6534,7 @@ export default defineMessages({
     },
     TR_EXPLORER_BASE_URL: {
         id: 'TR_EXPLORER_BASE_URL',
-        defaultMessage: 'Base URL',
+        defaultMessage: 'Root URL',
     },
     TR_EXPLORER_TX: {
         id: 'TR_EXPLORER_TX',
@@ -6570,7 +6570,7 @@ export default defineMessages({
     },
     TR_EXPLORER_INVALID_SUFFIX: {
         id: 'TR_EXPLORER_INVALID_SUFFIX',
-        defaultMessage: 'Field cannot be empty',
+        defaultMessage: 'This field is required',
     },
     TR_EXPORT_FAIL: {
         id: 'TR_EXPORT_FAIL',
@@ -9829,7 +9829,7 @@ export default defineMessages({
     },
     TR_CONNECT_ERROR_GENERIC_DESCRIPTION: {
         id: 'TR_CONNECT_ERROR_GENERIC_DESCRIPTION',
-        defaultMessage: 'An error occured during the Trezor Connect request.',
+        defaultMessage: 'There was an error during the Trezor Connect request.',
     },
     TR_NO_CONNECTED_APPS_DESCRIPTION: {
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
@@ -9880,7 +9880,7 @@ export default defineMessages({
     TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
         id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
         defaultMessage:
-            'None of the supported networks are activated in Suite. Please activate them to connect to the app.',
+            'To connect to the app, activate at least one supported network in Trezor Suite.',
     },
     TR_REQUESTED_NETWORKS: {
         id: 'TR_REQUESTED_NETWORKS',
@@ -9917,12 +9917,12 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS',
-        defaultMessage: 'Trezor Connect and WalletConnect integration in Suite',
+        defaultMessage: 'Trezor Connect and WalletConnect integration in Trezor Suite',
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION',
         defaultMessage:
-            'Interact with 3rd party apps through Suite for a seamless user experience. Enabling will restart the app.',
+            'Connect with third-party apps directly from Trezor Suite for a smoother, more integrated experience. Enabling this feature will restart the app.',
     },
     TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
