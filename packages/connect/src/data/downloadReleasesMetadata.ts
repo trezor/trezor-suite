@@ -1,4 +1,5 @@
-import { FirmwareRelease } from '../types';
+import { FirmwareRelease } from '@trezor/device-utils';
+
 import { httpRequest } from '../utils/assets';
 import { isValidReleases } from '../utils/firmwareUtils';
 

@@ -1,15 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
-import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import type {
-    Features,
-    FirmwareRelease,
-    IntermediaryVersion,
-    ReleaseInfo,
-    StrictFeatures,
-} from '../types';
+import type { Features, IntermediaryVersion, ReleaseInfo, StrictFeatures } from '../types';
 import {
     filterSafeListByBootloader,
     filterSafeListByFirmware,

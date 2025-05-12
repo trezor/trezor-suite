@@ -1,9 +1,9 @@
+import type { FirmwareRelease, VersionArray } from '@trezor/device-utils';
 import { serializeError, versionUtils } from '@trezor/utils';
 
 import { PROTO } from '../constants';
-import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
-import { FirmwareRelease, VersionArray } from '../types';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
+import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 import { HttpRequestError } from '../utils/assets-browser';
 
