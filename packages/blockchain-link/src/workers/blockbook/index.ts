@@ -260,8 +260,8 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
 
 const subscribeBlock = async (ctx: Context) => {
     if (ctx.state.getSubscription('block')) return { subscribed: true };
-    const api = await ctx.connect();
     ctx.state.addSubscription('block');
+    const api = await ctx.connect();
     api.on('block', ev => onNewBlock(ctx, ev));
 
     return api.subscribeBlock();
