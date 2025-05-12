@@ -10,6 +10,19 @@ import {
     parseRevision,
 } from '../deviceFeaturesUtils';
 
+const T1B1_UPDATE_REQUIRED = {
+    amountUnit: 'update-required',
+    coinjoin: 'update-required',
+    decreaseOutput: 'update-required',
+    eip1559: 'update-required',
+    'eip712-domain-only': 'update-required',
+    entropyCheck: 'update-required',
+    getFirmwareHash: 'update-required',
+    replaceTransaction: 'update-required',
+    signMessageNoScriptType: 'update-required',
+    taproot: 'update-required',
+};
+
 describe('utils/deviceFeaturesUtils', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -156,17 +169,8 @@ describe('utils/deviceFeaturesUtils', () => {
                 xtz: 'no-support',
                 xvg: 'update-required',
                 zcr: 'update-required',
-                replaceTransaction: 'update-required',
-                amountUnit: 'update-required',
-                decreaseOutput: 'update-required',
-                eip1559: 'update-required',
-                'eip712-domain-only': 'update-required',
-                taproot: 'update-required',
-                coinjoin: 'update-required',
-                signMessageNoScriptType: 'update-required',
                 chunkify: 'no-support',
-                entropyCheck: 'no-support',
-                getFirmwareHash: 'update-required',
+                ...T1B1_UPDATE_REQUIRED,
             });
         });
 
@@ -174,30 +178,21 @@ describe('utils/deviceFeaturesUtils', () => {
             const coins2 = getAllNetworks();
 
             expect(getUnavailableCapabilities(featT2T1, coins2)).toEqual({
-                replaceTransaction: 'update-required',
-                amountUnit: 'update-required',
                 arb: 'update-required',
                 base: 'update-required',
                 bsc: 'update-required',
-                decreaseOutput: 'update-required',
-                eip1559: 'update-required',
-                'eip712-domain-only': 'update-required',
                 maid: 'no-capability',
                 pol: 'update-required',
                 omni: 'no-capability',
                 op: 'update-required',
-                taproot: 'update-required',
                 tsep: 'update-required',
                 thol: 'update-required',
                 trvn: 'update-required',
                 usdt: 'no-capability',
-                coinjoin: 'update-required',
-                signMessageNoScriptType: 'update-required',
                 sol: 'no-capability',
                 dsol: 'no-capability',
                 chunkify: 'update-required',
-                entropyCheck: 'update-required',
-                getFirmwareHash: 'update-required',
+                ...T1B1_UPDATE_REQUIRED,
             });
         });
 
@@ -304,17 +299,8 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(result).toEqual({
                 eth: 'no-support',
                 bsc: 'update-required',
-                amountUnit: 'update-required',
                 chunkify: 'update-required',
-                coinjoin: 'update-required',
-                decreaseOutput: 'update-required',
-                eip1559: 'update-required',
-                'eip712-domain-only': 'update-required',
-                replaceTransaction: 'update-required',
-                signMessageNoScriptType: 'update-required',
-                taproot: 'update-required',
-                entropyCheck: 'update-required',
-                getFirmwareHash: 'update-required',
+                ...T1B1_UPDATE_REQUIRED,
             });
         });
 
@@ -337,17 +323,8 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(result).toEqual({
                 eth: 'no-support',
                 bnb: 'no-support',
-                amountUnit: 'update-required',
                 chunkify: 'no-support',
-                coinjoin: 'update-required',
-                decreaseOutput: 'update-required',
-                eip1559: 'update-required',
-                'eip712-domain-only': 'update-required',
-                replaceTransaction: 'update-required',
-                signMessageNoScriptType: 'update-required',
-                taproot: 'update-required',
-                entropyCheck: 'no-support',
-                getFirmwareHash: 'update-required',
+                ...T1B1_UPDATE_REQUIRED,
             });
         });
 
@@ -371,17 +348,8 @@ describe('utils/deviceFeaturesUtils', () => {
                 eth: 'no-support',
                 bnb: 'no-support',
                 bsc: 'no-support',
-                amountUnit: 'update-required',
                 chunkify: 'no-support',
-                coinjoin: 'update-required',
-                decreaseOutput: 'update-required',
-                eip1559: 'update-required',
-                'eip712-domain-only': 'update-required',
-                replaceTransaction: 'update-required',
-                signMessageNoScriptType: 'update-required',
-                taproot: 'update-required',
-                entropyCheck: 'no-support',
-                getFirmwareHash: 'update-required',
+                ...T1B1_UPDATE_REQUIRED,
             });
         });
     });
