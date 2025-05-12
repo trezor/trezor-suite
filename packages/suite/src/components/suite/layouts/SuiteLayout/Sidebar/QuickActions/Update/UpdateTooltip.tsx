@@ -115,6 +115,7 @@ const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
 };
 
 type UpdateTooltipProps = {
+    displayDeviceUpdateStatus: boolean;
     updateStatusDevice: UpdateStatusDevice;
     onClickDevice?: () => void;
     updateStatusSuite: UpdateStatusSuite;
@@ -122,6 +123,7 @@ type UpdateTooltipProps = {
 };
 
 export const UpdateTooltip = ({
+    displayDeviceUpdateStatus,
     updateStatusDevice,
     onClickDevice,
     updateStatusSuite,
@@ -131,7 +133,9 @@ export const UpdateTooltip = ({
 
     return (
         <Column gap={spacings.md} padding={spacings.xxs} alignItems="start">
-            <DeviceRow updateStatus={updateStatusDevice} onClick={onClickDevice} />
+            {displayDeviceUpdateStatus && (
+                <DeviceRow updateStatus={updateStatusDevice} onClick={onClickDevice} />
+            )}
             {isDesktopSuite && <SuiteRow updateStatus={updateStatusSuite} onClick={onClickSuite} />}
         </Column>
     );

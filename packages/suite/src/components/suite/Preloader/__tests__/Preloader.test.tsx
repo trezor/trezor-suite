@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import { AnalyticsState } from '@suite-common/analytics';
 import { FirmwareUpdateState } from '@suite-common/firmware/libDev/src';
 import { MetadataState } from '@suite-common/metadata-types/libDev/src';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceReducerState } from '@suite-common/wallet-core';
 import { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
@@ -210,7 +211,9 @@ const getInitialState = ({
     wallet: {
         discovery: {},
         accountSearch: {},
-        settings: {},
+        settings: {
+            enabledNetworks: [] as NetworkSymbol[],
+        },
         blockchain: {},
     } as ReturnType<typeof WalletReducers>, // Todo: maybe one day, fix types
     desktopUpdate: desktopUpdateInitialState,

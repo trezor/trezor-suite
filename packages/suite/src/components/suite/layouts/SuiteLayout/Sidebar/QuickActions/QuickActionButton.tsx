@@ -15,7 +15,7 @@ const Container = styled.div`
 type ActionButtonProps = {
     onClick?: () => void;
     children: ReactNode;
-    tooltip: Partial<ManagedTooltipProps>;
+    tooltip?: Partial<ManagedTooltipProps>;
     'data-testid'?: string;
     isOpen?: boolean;
 };
@@ -26,10 +26,15 @@ export const QuickActionButton = ({
     tooltip,
     'data-testid': dataTest,
     isOpen,
-}: ActionButtonProps) => (
-    <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip} isOpen={isOpen}>
+}: ActionButtonProps) =>
+    tooltip ? (
+        <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip} isOpen={isOpen}>
+            <Container data-testid={dataTest} onClick={onClick}>
+                {children}
+            </Container>
+        </Tooltip>
+    ) : (
         <Container data-testid={dataTest} onClick={onClick}>
             {children}
         </Container>
-    </Tooltip>
-);
+    );

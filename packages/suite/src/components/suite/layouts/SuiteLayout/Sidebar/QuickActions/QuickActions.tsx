@@ -24,22 +24,21 @@ const ActionsContainer = styled.div<{ $isSidebarCollapsed: boolean }>`
 `;
 
 type QuickActionsProps = {
-    hideUpdateStatusBar?: boolean;
+    hideDeviceUpdateStatusBar?: boolean;
     isSidebarCollapsed: boolean;
     showUpdateBannerNotification?: boolean;
 };
 
 export const QuickActions = ({
-    hideUpdateStatusBar,
+    hideDeviceUpdateStatusBar,
     isSidebarCollapsed,
     showUpdateBannerNotification,
 }: QuickActionsProps) => (
     <ActionsContainer $isSidebarCollapsed={isSidebarCollapsed}>
-        {!hideUpdateStatusBar && (
-            <UpdateStatusActionBarIcon
-                showUpdateBannerNotification={Boolean(showUpdateBannerNotification)}
-            />
-        )}
+        <UpdateStatusActionBarIcon
+            hideDeviceUpdateStatusBar={Boolean(hideDeviceUpdateStatusBar)}
+            showUpdateBannerNotification={Boolean(showUpdateBannerNotification)}
+        />
         <DebugAndExperimental />
         <CustomBackend />
         <Tor />

@@ -7,6 +7,7 @@ import {
     Icon,
     IconSize,
     ManagedTooltipProps,
+    Tooltip,
     getIconSize,
     iconSizes,
 } from '@trezor/components';
@@ -29,7 +30,6 @@ import {
     mapUpdateStatusToVariant,
 } from './updateQuickActionTypes';
 import { useUpdateStatus } from './useUpdateStatus';
-import { Translation } from '../../../../../Translation';
 
 type MapArgs = {
     $variant: UpdateVariant;
@@ -147,7 +147,7 @@ const SuiteUpdateIcon = ({ iconSize, updateStatus, variant }: SuiteUpdateIconPro
         >
             <Highlighted $isHighlighted={updateStatus !== 'up-to-date'}>
                 <Icon
-                    name="trezorDevices"
+                    name="trezorLogo"
                     size={iconSizes.small}
                     color={theme['iconDefaultInverted']}
                 />
@@ -158,10 +158,12 @@ const SuiteUpdateIcon = ({ iconSize, updateStatus, variant }: SuiteUpdateIconPro
 
 type UpdateStatusActionBarIconProps = {
     showUpdateBannerNotification: boolean;
+    hideDeviceUpdateStatusBar?: boolean;
 };
 
 export const UpdateStatusActionBarIcon = ({
     showUpdateBannerNotification,
+    hideDeviceUpdateStatusBar,
 }: UpdateStatusActionBarIconProps) => {
     const theme = useTheme();
 
@@ -178,10 +180,6 @@ export const UpdateStatusActionBarIcon = ({
 
     const isDesktopSuite = isDesktop();
 
-    if (device?.features === undefined) {
-        return null;
-    }
-
     const suiteOnClick = mapSuiteUpdateToClick[updateStatusSuite];
     const deviceOnClick = mapDeviceUpdateToClick[updateStatusDevice];
 
@@ -196,33 +194,32 @@ export const UpdateStatusActionBarIcon = ({
         }
     };
 
-    const getTooltip = (): Partial<ManagedTooltipProps> => {
-        if (discoveryInProgress) {
-            return {
-                cursor: 'not-allowed',
-                content: <Translation id="TR_UNAVAILABLE_WHILE_LOADING" />,
-            };
-        }
+    const displayDeviceUpdateStatusBar = !hideDeviceUpdateStatusBar && !discoveryInProgress;
 
-        return {
-            isActive: !showUpdateBannerNotification,
-            content: (
-                <UpdateTooltip
-                    updateStatusDevice={updateStatusDevice}
-                    onClickSuite={suiteOnClickHandler}
-                    updateStatusSuite={updateStatusSuite}
-                    onClickDevice={deviceOnClickHandler}
-                />
-            ),
-        };
-    };
+    const anyUpdateInfoAvailable = isDesktopSuite || displayDeviceUpdateStatusBar;
+
+    const getTooltip = (): Partial<ManagedTooltipProps> => ({
+        isActive: !showUpdateBannerNotification,
+        content: (
+            <UpdateTooltip
+                displayDeviceUpdateStatus={displayDeviceUpdateStatusBar}
+                updateStatusDevice={updateStatusDevice}
+                onClickSuite={suiteOnClickHandler}
+                updateStatusSuite={updateStatusSuite}
+                onClickDevice={deviceOnClickHandler}
+            />
+        ),
+    });
+
+    const tooltip = getTooltip();
+
+    if (!anyUpdateInfoAvailable) {
+        return null;
+    }
 
     return (
         <div>
-            <QuickActionButton
-                tooltip={getTooltip()}
-                onClick={discoveryInProgress ? undefined : handleClick}
-            >
+            <QuickActionButton onClick={handleClick}>
                 <ComponentWithSubIcon
                     variant={variant}
                     subIconProps={{
@@ -231,20 +228,24 @@ export const UpdateStatusActionBarIcon = ({
                         size: iconSizes.extraSmall,
                     }}
                 >
-                    <UpdateIconGroup $variant={variant}>
-                        <DeviceUpdateIcon
-                            iconSize={iconSize}
-                            updateStatus={updateStatusDevice}
-                            variant={variant}
-                        />
-                        {isDesktopSuite && (
-                            <SuiteUpdateIcon
-                                iconSize={iconSize}
-                                updateStatus={updateStatusDevice}
-                                variant={variant}
-                            />
-                        )}
-                    </UpdateIconGroup>
+                    <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip}>
+                        <UpdateIconGroup $variant={variant}>
+                            {device?.features !== undefined && (
+                                <DeviceUpdateIcon
+                                    iconSize={iconSize}
+                                    updateStatus={updateStatusDevice}
+                                    variant={variant}
+                                />
+                            )}
+                            {isDesktopSuite && (
+                                <SuiteUpdateIcon
+                                    iconSize={iconSize}
+                                    updateStatus={updateStatusSuite}
+                                    variant={variant}
+                                />
+                            )}
+                        </UpdateIconGroup>
+                    </Tooltip>
                 </ComponentWithSubIcon>
             </QuickActionButton>
         </div>
