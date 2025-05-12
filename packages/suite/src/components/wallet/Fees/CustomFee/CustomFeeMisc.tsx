@@ -35,7 +35,7 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
     const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feePerUnitError = errors.feePerUnit;
 
-    const isDustPreventionRelevant = feePerUnitError !== undefined && networkType === 'bitcoin';
+    const isDustPreventionRelevant = feePerUnitError === undefined && networkType === 'bitcoin';
 
     const feeRules = {
         ...sharedRules,
