@@ -118,6 +118,7 @@ describe('suite middleware', () => {
                         app: 'onboarding',
                         isForegroundApp: true,
                         isFullscreenApp: true,
+                        clearUrl: undefined,
                         isNestedRoute: undefined,
                         params: undefined,
                         exact: undefined,

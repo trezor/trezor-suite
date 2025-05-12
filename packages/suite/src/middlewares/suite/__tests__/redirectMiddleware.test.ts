@@ -140,6 +140,7 @@ describe('redirectMiddleware', () => {
                             isForegroundApp: undefined,
                             isFullscreenApp: undefined,
                             isNestedRoute: undefined,
+                            clearUrl: undefined,
                             exact: true,
                         },
                     },

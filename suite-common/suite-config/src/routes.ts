@@ -14,6 +14,7 @@ export const routes = [
         app: 'start',
         isFullscreenApp: true,
         isForegroundApp: true,
+        clearUrl: true,
     },
     {
         name: 'suite-index',

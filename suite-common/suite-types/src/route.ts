@@ -7,7 +7,8 @@ type RouteKeys =
     | 'exact'
     | 'isForegroundApp'
     | 'isNestedRoute'
-    | 'isFullscreenApp';
+    | 'isFullscreenApp'
+    | 'clearUrl';
 
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
 

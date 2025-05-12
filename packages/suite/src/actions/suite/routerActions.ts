@@ -137,6 +137,13 @@ export const goto =
         if (route?.isForegroundApp) {
             dispatch(suiteActions.lockRouter(true));
 
+            // NOTE: this is useful eg. on welcome screen / logged out screen
+            // where we want to have suite-start router clearing the URL to ensure
+            // that there isn't a state stuck
+            if (route?.clearUrl) {
+                history.push(urlBase);
+            }
+
             return;
         }
 
