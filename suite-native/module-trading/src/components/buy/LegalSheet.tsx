@@ -1,10 +1,16 @@
-import { ReactNode, memo, useCallback, useEffect, useRef } from 'react';
+import { ReactNode, memo, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type BottomSheetModal as BottomSheetModalType } from '@gorhom/bottom-sheet';
-
 import { selectTradingBuyProviders } from '@suite-common/trading';
-import { BottomSheetModal, Box, BulletListItem, Button, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    Box,
+    BulletListItem,
+    Button,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 export type LegalSheetProps = {
@@ -28,25 +34,25 @@ const Info = ({ children }: { children: ReactNode }) => (
 
 export const LegalSheet = memo(
     ({ isVisible, onConsent, onDismiss, tradeProvider }: LegalSheetProps) => {
-        const bottomSheetModalRef = useRef<BottomSheetModalType>(null);
+        const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
         const providers = useSelector(selectTradingBuyProviders);
         const { companyName } = providers?.[tradeProvider] ?? {};
         const { translate } = useTranslate();
 
         useEffect(() => {
             if (isVisible) {
-                bottomSheetModalRef.current?.present();
+                openModal();
             }
-        }, [isVisible]);
+        }, [isVisible, openModal]);
 
         const closeWithConsent = useCallback(() => {
             onConsent();
-            bottomSheetModalRef.current?.close();
-        }, [onConsent]);
+            closeModal();
+        }, [onConsent, closeModal]);
 
         return (
             <BottomSheetModal
-                ref={bottomSheetModalRef}
+                ref={bottomSheetRef}
                 title={translate('moduleTrading.legalSheet.title', { companyName })}
                 onDismiss={onDismiss}
                 isCloseDisplayed
