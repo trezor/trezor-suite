@@ -29,7 +29,9 @@ export const useTradingSellFormDefaultValues = (
     sellInfo: TradingSellInfoSelector | undefined,
 ): TradingSellFormDefaultValuesProps => {
     const cryptoGroups = useTradingBuildAccountGroups('sell');
-    const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
+    const prefilledFromCryptoId = useSelector(
+        state => state.wallet.trading.prefilledFromAccount.cryptoId,
+    );
     const { isTorEnabled } = useSelector(selectTorState);
 
     const cryptoOptions = useMemo(

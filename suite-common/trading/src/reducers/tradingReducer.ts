@@ -36,6 +36,11 @@ export interface TradingInfo {
     paymentMethods: TradingPaymentMethodListProps[];
 }
 
+export interface TradingPreffiledFromAccount {
+    cryptoId: CryptoId | undefined;
+    descriptor: string | undefined;
+}
+
 export interface TradingState {
     info: TradingInfo;
     buy: TradingBuyState;
@@ -48,7 +53,7 @@ export interface TradingState {
     isLoading: boolean;
     lastLoadedTimestamp: number;
     activeSection?: TradingType;
-    prefilledFromCryptoId: CryptoId | undefined;
+    prefilledFromAccount: TradingPreffiledFromAccount;
 }
 
 export const initialState: TradingState = {
@@ -67,7 +72,10 @@ export const initialState: TradingState = {
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
     activeSection: 'buy',
-    prefilledFromCryptoId: undefined,
+    prefilledFromAccount: {
+        cryptoId: undefined,
+        descriptor: undefined,
+    },
 };
 
 type StorageActionPayload = {
@@ -112,8 +120,15 @@ export const tradingSlice = createSliceWithExtraDeps({
         setTradingActiveSection(state, action: PayloadAction<TradingType>) {
             state.activeSection = action.payload;
         },
-        setTradingFromPrefilledCryptoId(state, action: PayloadAction<CryptoId | undefined>) {
-            state.prefilledFromCryptoId = action.payload;
+        setTradingFromPrefilledAccount(
+            state,
+            action: PayloadAction<{
+                cryptoId: CryptoId | undefined;
+                descriptor: string | undefined;
+            }>,
+        ) {
+            state.prefilledFromAccount.cryptoId = action.payload.cryptoId;
+            state.prefilledFromAccount.descriptor = action.payload.descriptor;
         },
     },
     extraReducers: (builder, extra) => {

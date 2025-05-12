@@ -10,6 +10,7 @@ import type {
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TradingPaymentMethodListProps,
+    TradingPreffiledFromAccount,
     type TradingTransaction,
     type TradingType,
     selectTradingBuyInfo,
@@ -69,7 +70,7 @@ export interface State {
     isLoading: boolean;
     lastLoadedTimestamp: number;
     activeSection?: TradingType;
-    prefilledFromCryptoId: CryptoId | undefined;
+    prefilledFromAccount: TradingPreffiledFromAccount;
 }
 
 export const initialState: State = {
@@ -94,7 +95,10 @@ export const initialState: State = {
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
     activeSection: 'sell',
-    prefilledFromCryptoId: undefined,
+    prefilledFromAccount: {
+        cryptoId: undefined,
+        descriptor: undefined,
+    },
 };
 
 export const tradingReducer = (state: State = initialState, action: Action): State =>
@@ -110,8 +114,9 @@ export const tradingReducer = (state: State = initialState, action: Action): Sta
             case TRADING_INFO.SAVE_PAYMENT_METHODS:
                 draft.info.paymentMethods = action.paymentMethods;
                 break;
-            case TRADING_COMMON.SET_TRADING_FROM_PREFILLED_CRYPTO_ID:
-                draft.prefilledFromCryptoId = action.prefilledFromCryptoId;
+            case TRADING_COMMON.SET_TRADING_FROM_PREFILLED_ACCOUNT:
+                draft.prefilledFromAccount.cryptoId = action.preffiledFromAccount.cryptoId;
+                draft.prefilledFromAccount.descriptor = action.preffiledFromAccount.descriptor;
                 break;
             case TRADING_COMMON.SAVE_TRADE:
                 if (action.key) {

@@ -1,6 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import { type TradingType } from '@suite-common/trading';
+import { TradingPreffiledFromAccount, type TradingType } from '@suite-common/trading';
 import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
 import { AccountKey, Output } from '@suite-common/wallet-types/src';
 import {
@@ -45,8 +45,8 @@ export type TradingCommonAction =
           activeSection: TradingType;
       }
     | {
-          type: typeof TRADING_COMMON.SET_TRADING_FROM_PREFILLED_CRYPTO_ID;
-          prefilledFromCryptoId: CryptoId | undefined;
+          type: typeof TRADING_COMMON.SET_TRADING_FROM_PREFILLED_ACCOUNT;
+          preffiledFromAccount: TradingPreffiledFromAccount;
       };
 
 type FormState = {
@@ -149,9 +149,10 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const setTradingPrefilledFromCryptoId = (
-    prefilledFromCryptoId: CryptoId | undefined,
+export const setTradingPrefilledFromAccount = (
+    descriptor: string | undefined,
+    cryptoId: CryptoId | undefined,
 ): TradingCommonAction => ({
-    type: TRADING_COMMON.SET_TRADING_FROM_PREFILLED_CRYPTO_ID,
-    prefilledFromCryptoId,
+    type: TRADING_COMMON.SET_TRADING_FROM_PREFILLED_ACCOUNT,
+    preffiledFromAccount: { descriptor, cryptoId },
 });

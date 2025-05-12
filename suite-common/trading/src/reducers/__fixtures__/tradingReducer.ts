@@ -230,17 +230,23 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'should set prefilled crypto id',
+        description: 'should set prefilled account',
         initialState,
         actions: [
             {
-                type: tradingActions.setTradingFromPrefilledCryptoId.type,
-                payload: 'ankr' as CryptoId,
+                type: tradingActions.setTradingFromPrefilledAccount.type,
+                payload: {
+                    cryptoId: 'ankr' as CryptoId,
+                    descriptor: 'abc',
+                },
             },
         ],
         result: {
             ...initialState,
-            prefilledFromCryptoId: 'ankr',
+            prefilledFromAccount: {
+                cryptoId: 'ankr',
+                descriptor: 'abc',
+            },
         },
     },
     {

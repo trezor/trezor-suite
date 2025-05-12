@@ -27,7 +27,9 @@ export const useTradingBuyFormDefaultValues = (
 ): TradingBuyFormDefaultValuesProps => {
     const { buildDefaultCryptoOption } = useTradingInfo('buy');
     const { isTorEnabled } = useSelector(selectTorState);
-    const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
+    const prefilledFromCryptoId = useSelector(
+        state => state.wallet.trading.prefilledFromAccount.cryptoId,
+    );
     const cryptoId = prefilledFromCryptoId || networks[accountSymbol]?.tradeCryptoId;
 
     const country = !isTorEnabled ? buyInfo?.buyInfo?.country : regional.UNKNOWN_COUNTRY;

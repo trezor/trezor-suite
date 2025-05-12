@@ -35,24 +35,32 @@ export const useTradingExchangeFormDefaultValues = (
 ): TradingExchangeFormDefaultValuesProps => {
     const { buildDefaultCryptoOption } = useTradingInfo('exchange');
     const localCurrency = useSelector(selectLocalCurrency);
-    const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
+    const prefilledFromCryptoId = useSelector(
+        state => state.wallet.trading.prefilledFromAccount.cryptoId,
+    );
+    const descriptor = useSelector(state => state.wallet.trading.prefilledFromAccount.descriptor);
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
     const cryptoGroups = useTradingBuildAccountGroups('exchange');
     const cryptoOptions = useMemo(
         () => cryptoGroups.flatMap(group => group.options),
         [cryptoGroups],
     );
+
     const defaultSendCryptoSelect = useMemo(
         () =>
             (prefilledFromCryptoId &&
-                cryptoOptions.find(option => option.value === prefilledFromCryptoId)) ||
+                cryptoOptions.find(
+                    option =>
+                        option.value === prefilledFromCryptoId && option.descriptor === descriptor,
+                )) ||
             cryptoOptions.find(
                 option =>
                     option.descriptor === account.descriptor &&
                     cryptoIdToSymbol(option.value) === account.symbol,
             ),
-        [account.descriptor, account.symbol, prefilledFromCryptoId, cryptoOptions],
+        [account.descriptor, account.symbol, prefilledFromCryptoId, descriptor, cryptoOptions],
     );
+
     const { address, token } =
         getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);
 

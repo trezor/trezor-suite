@@ -154,12 +154,19 @@ export const tradingMiddleware =
             const isSellToBuy = wasSell && isBuy;
 
             const cleanupPrefilledFromCryptoId =
-                !!newState.wallet.trading.prefilledFromCryptoId &&
+                !!newState.wallet.trading.prefilledFromAccount.cryptoId &&
                 ((!isSell && !isExchange && !isBuy) || isBuyToSell || isSellToBuy);
 
             if (cleanupPrefilledFromCryptoId) {
-                api.dispatch(tradingCommonActions.setTradingPrefilledFromCryptoId(undefined));
-                api.dispatch(tradingActions.setTradingFromPrefilledCryptoId(undefined));
+                api.dispatch(
+                    tradingCommonActions.setTradingPrefilledFromAccount(undefined, undefined),
+                );
+                api.dispatch(
+                    tradingActions.setTradingFromPrefilledAccount({
+                        descriptor: undefined,
+                        cryptoId: undefined,
+                    }),
+                );
             }
         }
 

@@ -36,7 +36,7 @@ import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { setTradingPrefilledFromCryptoId } from 'src/actions/wallet/trading/tradingCommonActions';
+import { setTradingPrefilledFromAccount } from 'src/actions/wallet/trading/tradingCommonActions';
 import {
     FiatValue,
     FormattedCryptoAmount,
@@ -148,7 +148,7 @@ export const TokenRow = ({
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
 
     const onTradeButtonClick = (type: TradingType, ...[routeName]: Parameters<typeof goto>) => {
-        dispatch(setTradingPrefilledFromCryptoId(tokenCryptoId));
+        dispatch(setTradingPrefilledFromAccount(account.descriptor, tokenCryptoId));
 
         goToWithAnalytics(routeName, {
             params: {
