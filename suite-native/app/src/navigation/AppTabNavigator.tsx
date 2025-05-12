@@ -2,21 +2,49 @@ import { useSelector } from 'react-redux';
 
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import { EventType, analytics } from '@suite-native/analytics';
 import { useHandleDeviceRequestsPassphrase } from '@suite-native/device-authorization';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
-import { TradingStackNavigator, selectIsTradingEnabled } from '@suite-native/module-trading';
+import {
+    TradingStackNavigator,
+    selectIsTradingBuyEnabled,
+    selectIsTradingEnabled,
+    selectIsTradingSellEnabled,
+    selectIsTradingSwapEnabled,
+} from '@suite-native/module-trading';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 
 import { rootTabsOptions } from './routes';
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
+const getTradingAnalyticsType = (
+    isTradingBuyEnabled: boolean,
+    isTradingSwapEnabled: boolean,
+    isTradingSellEnabled: boolean,
+) => {
+    if (isTradingBuyEnabled) {
+        return 'buy';
+    }
+    if (isTradingSwapEnabled) {
+        return 'exchange';
+    }
+    if (isTradingSellEnabled) {
+        return 'sell';
+    }
+
+    return null;
+};
+
 export const AppTabNavigator = () => {
     useHandleDeviceRequestsPassphrase();
 
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
+    const isTradingBuyEnabled = useSelector(selectIsTradingBuyEnabled);
+    const isTradingSwapEnabled = useSelector(selectIsTradingSwapEnabled);
+    const isTradingSellEnabled = useSelector(selectIsTradingSellEnabled);
 
     return (
         <Tab.Navigator
@@ -32,7 +60,29 @@ export const AppTabNavigator = () => {
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.AccountsStack} component={AccountsStackNavigator} />
             {isTradingEnabled && (
-                <Tab.Screen name={AppTabsRoutes.TradeStack} component={TradingStackNavigator} />
+                <Tab.Screen
+                    name={AppTabsRoutes.TradeStack}
+                    component={TradingStackNavigator}
+                    listeners={{
+                        tabPress: () => {
+                            const tradingType = getTradingAnalyticsType(
+                                isTradingBuyEnabled,
+                                isTradingSwapEnabled,
+                                isTradingSellEnabled,
+                            );
+                            if (!tradingType) return;
+
+                            analytics.report({
+                                type: EventType.TradingNavigate,
+                                payload: {
+                                    action: 'navigate',
+                                    type: tradingType,
+                                    from: 'trade',
+                                },
+                            });
+                        },
+                    }}
+                />
             )}
             <Tab.Screen name={AppTabsRoutes.Settings} component={SettingsScreen} />
         </Tab.Navigator>

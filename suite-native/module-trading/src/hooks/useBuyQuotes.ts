@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { isFulfilled } from '@reduxjs/toolkit';
+import { BuyTrade } from 'invity-api';
+
 import { invariant } from '@suite-common/suite-utils';
 import {
     HandleRequestThunkProps,
@@ -11,6 +14,7 @@ import {
     selectTradingBuyQuotes,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { useDebounce } from '@trezor/react-utils';
 
@@ -24,7 +28,7 @@ type PromiseType = {
     abort: (message?: string) => void;
 };
 
-type ShouldFetchQuotesRef = {
+type ShouldFetchBuyQuotesRef = {
     cryptoId: string | undefined;
     fiatCurrency: string | undefined;
     amount: string | undefined;
@@ -33,13 +37,13 @@ type ShouldFetchQuotesRef = {
     accountDescriptor: string | undefined;
 };
 
-type ShouldFetchQuotes = {
+type ShouldFetchBuyQuotes = {
     isFetchAllowed: boolean;
     shouldFetchQuotes: boolean;
 };
 
-const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
-    const prevState = useRef<ShouldFetchQuotesRef>({
+const useShouldFetchBuyQuotes = (form: TradingBuyForm): ShouldFetchBuyQuotes => {
+    const prevState = useRef<ShouldFetchBuyQuotesRef>({
         cryptoId: undefined,
         fiatCurrency: undefined,
         amount: undefined,
@@ -91,7 +95,7 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
     };
 };
 
-const useQuotesInvalidator = (
+const useBuyQuotesInvalidator = (
     isFormValid: boolean,
     quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
     debounce: ReturnType<typeof useDebounce>,
@@ -140,7 +144,7 @@ const useQuotesInvalidator = (
     );
 };
 
-const useQuotesThunk = (
+const useBuyQuotesThunk = (
     form: TradingBuyForm,
     timer: ReturnType<typeof useReloadTimer>['timer'],
     shouldRefetchQuotes: boolean,
@@ -176,7 +180,19 @@ const useQuotesThunk = (
                     shouldSendInSats,
                     timer,
                 };
-                quotesPromiseRef.current = dispatch(buyThunks.handleRequestThunk(payload));
+                const requestPromise = dispatch(buyThunks.handleRequestThunk(payload));
+                requestPromise.then(action => {
+                    if (isFulfilled(action) && (action.payload as BuyTrade[]).length > 0) {
+                        analytics.report({
+                            type: EventType.TradingQuoteReceived,
+                            payload: {
+                                type: 'buy',
+                            },
+                        });
+                    }
+                });
+
+                quotesPromiseRef.current = requestPromise;
             });
         }
     }, [
@@ -191,15 +207,15 @@ const useQuotesThunk = (
     ]);
 };
 
-export const useQuotes = (form: TradingBuyForm) => {
+export const useBuyQuotes = (form: TradingBuyForm) => {
     const debounce = useDebounce();
     const promiseRef = useRef<PromiseType | undefined>(undefined);
 
-    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchQuotes(form);
+    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchBuyQuotes(form);
     const { timer, shouldReload } = useReloadTimer({ isEnabled: isFetchAllowed });
 
-    useQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
-    useQuotesThunk(
+    useBuyQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
+    useBuyQuotesThunk(
         form,
         timer,
         isFetchAllowed && (shouldFetchQuotes || shouldReload),

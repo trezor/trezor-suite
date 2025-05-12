@@ -36,11 +36,11 @@ export const TradeDetailHeader = ({ orderId, onOpenedWebview }: TradeDetailHeade
 
     const statusStep = getTradeStatusStep(trade);
 
-    if (statusStep === 'status-error') {
+    if (statusStep === 'error') {
         return <TradeDetailErrorAlert provider={trade.data.exchange} tradeType={trade.tradeType} />;
     }
 
-    if (statusStep === 'status-waiting') {
+    if (statusStep === 'waiting') {
         return <TradeDetailWaitingAlert orderId={orderId} onOpenedWebview={onOpenedWebview} />;
     }
 

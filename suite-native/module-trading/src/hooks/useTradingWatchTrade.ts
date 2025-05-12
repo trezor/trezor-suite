@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -10,9 +10,10 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { useReloadTimer } from './useReloadTimer';
-import { tradeFinalStatuses } from '../utils/tradeUtils';
+import { getTradeStatusStep, tradeFinalStatuses } from '../utils/tradeUtils';
 
 export type TradingTradeMapProps = {
     buy: TradingTransactionBuy;
@@ -23,8 +24,10 @@ export type TradingTradeMapProps = {
 export interface TradingUseWatchTradeProps<T extends TradingType> {
     account: Account | undefined;
     trade: TradingTradeMapProps[T] | undefined;
+    isInProgress: boolean;
 }
-const REFRESH_SECONDS = 30;
+const REFRESH_SECONDS_BASE = 30;
+const REFRESH_SECONDS_IN_PROGRESS = 10;
 
 export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
     trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
@@ -32,15 +35,31 @@ export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
 export const useTradingWatchTrade = <T extends TradingType>({
     account,
     trade,
+    isInProgress,
 }: TradingUseWatchTradeProps<T>) => {
     const dispatch = useDispatch();
     const shouldRefresh = useMemo(() => shouldRefreshTrade(trade), [trade]);
     const { timer, shouldReload, resetCount } = useReloadTimer({
         isEnabled: shouldRefresh,
-        refreshLimitSeconds: REFRESH_SECONDS,
+        refreshLimitSeconds: isInProgress ? REFRESH_SECONDS_IN_PROGRESS : REFRESH_SECONDS_BASE,
     });
     const [hasRefreshed, setHasRefreshed] = useState(false);
+    const previousStatus = useRef<ReturnType<typeof getTradeStatusStep>>(undefined);
     const { reset } = timer;
+
+    useEffect(() => {
+        const currentStatus = getTradeStatusStep(trade);
+        if (currentStatus !== previousStatus.current) {
+            previousStatus.current = currentStatus;
+
+            if (trade && currentStatus) {
+                analytics.report({
+                    type: EventType.TradingStatus,
+                    payload: { type: trade.tradeType, status: currentStatus },
+                });
+            }
+        }
+    }, [trade, account, previousStatus]);
 
     useEffect(() => {
         if (trade && account && (!hasRefreshed || shouldReload) && shouldRefresh) {

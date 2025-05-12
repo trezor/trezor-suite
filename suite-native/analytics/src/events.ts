@@ -1,5 +1,6 @@
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
+import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DeviceMode, VersionArray } from '@trezor/connect';
@@ -351,9 +352,114 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
+          type: EventType.TradingQuoteReceived;
+          payload: {
+              type: TradingType;
+          };
+      }
+    | {
+          type: EventType.TradingCompareOffers;
+          payload: {
+              type: TradingType;
+          };
+      }
+    | {
+          type: EventType.TradingNavigate;
+          payload: {
+              action: 'navigate' | 'cancel';
+              type: TradingType;
+              from: 'trade' | 'account' | 'dashboard';
+
+              networkSymbol?: string;
+              contractAddress?: string;
+          };
+      }
+    | {
+          type: EventType.TradingBuy;
+          payload: {
+              action: 'continue' | 'cancel';
+              step: 'buy-form' | 'account-selection' | 'buy-terms-modal';
+
+              cryptoLabel?: string;
+              cryptoNetworkSymbol?: string;
+              cryptoContractAddress?: string;
+
+              paymentMethod?: string;
+              countryOfResidence?: string;
+
+              exchangeName?: string;
+          };
+      }
+    | {
+          type: EventType.TradingExchange;
+          payload: {
+              action: 'continue' | 'cancel';
+              step:
+                  | 'exchange-form'
+                  | 'exchange-terms-modal'
+                  | 'receive-address'
+                  | 'create-approval'
+                  | 'already-approved'
+                  | 'confirm-and-send';
+
+              sendCryptoLabel?: string;
+              sendCryptoNetworkSymbol?: string;
+              sendCryptoContractAddress?: string;
+
+              receiveCryptoLabel?: string;
+              receiveCryptoNetworkSymbol?: string;
+              receiveCryptoContractAddress?: string;
+
+              exchangeName?: string;
+              exchangeType?: string;
+
+              accountType?: string;
+              approvalType?: string;
+              slippage?: string;
+              rateType?: string;
+          };
+      }
+    | {
+          type: EventType.TradingSell;
+          payload: {
+              action: 'continue' | 'cancel';
+              step: 'sell-form' | 'sell-terms-modal' | 'confirm-and-send-transaction';
+
+              cryptoLabel?: string;
+              cryptoNetworkSymbol?: string;
+              cryptoContractAddress?: string;
+
+              receiveMethod?: string;
+              countryOfResidence?: string;
+
+              exchangeName?: string;
+          };
+      }
+    | {
+          type: EventType.TradingStatus;
+          payload: {
+              type: TradingType;
+              status:
+                  | 'waiting'
+                  | 'processing'
+                  | 'pending'
+                  | 'converting'
+                  | 'sending'
+                  | 'kyc'
+                  | 'success'
+                  | 'error';
+          };
+      }
+    | {
+          type: EventType.TradingSuccess;
+          payload: {
+              type: TradingType;
+          };
+      }
+    | {
           type: EventType.TradingConfirmTrade;
           payload: {
-              type: 'buy' | 'sell' | 'exchange';
+              type: TradingType;
           };
       }
     | {

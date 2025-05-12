@@ -4,7 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
 
-import { buyThunks, selectTradingBuyIsLoading, tradingBuyActions } from '@suite-common/trading';
+import {
+    TradingRootState,
+    buyThunks,
+    selectTradingBuyIsLoading,
+    selectTradingCoinInfoByCryptoId,
+    tradingBuyActions,
+} from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
     RootStackParamList,
@@ -18,7 +24,11 @@ import { useTimer } from '@trezor/react-utils';
 
 import { TradingBuyForm } from '../types';
 import { clearTradingBuyFormQuoteData } from './useTradingBuyForm';
-import { buildTradingUrl, getSourceForForm } from '../utils/tradeFormUtils';
+import {
+    buildTradingUrl,
+    getAnalyticsTradingBuyPayload,
+    getSourceForForm,
+} from '../utils/tradeFormUtils';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -56,11 +66,20 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
     const navigation = useNavigation<NavigationProps>();
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+
     const [isConsentRequested, setIsConsentRequested] = useState(false);
 
     const [candidateQuote, receiveAccount] = form.watch(['quote', 'receiveAccount']);
+    const coinInfo = useSelector((state: TradingRootState) =>
+        selectTradingCoinInfoByCryptoId(state, candidateQuote?.receiveCurrency),
+    );
 
     const canProceed = !isLoading && !!candidateQuote;
+
+    const quoteAnalyticsData = getAnalyticsTradingBuyPayload({
+        quote: candidateQuote,
+        coinInfo,
+    });
 
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSelectedSymbolFromBuyForm(form);
@@ -76,10 +95,28 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
             give: () => {
                 resolveConsent(true);
                 setIsConsentRequested(false);
+
+                analytics.report({
+                    type: EventType.TradingBuy,
+                    payload: {
+                        step: 'buy-terms-modal',
+                        action: 'continue',
+                        ...quoteAnalyticsData,
+                    },
+                });
             },
             cancel: () => {
                 resolveConsent(false);
                 setIsConsentRequested(false);
+
+                analytics.report({
+                    type: EventType.TradingBuy,
+                    payload: {
+                        step: 'buy-terms-modal',
+                        action: 'cancel',
+                        ...quoteAnalyticsData,
+                    },
+                });
             },
             request: async (_provider: string, _cryptoCurrency: string) => {
                 setIsConsentRequested(true);
@@ -87,7 +124,7 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
                 return await waitForConsent();
             },
         }),
-        [],
+        [quoteAnalyticsData],
     );
 
     const handleWebview = (formData: FormResponse['form'], returnUrl: string) => {
@@ -99,6 +136,7 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
         rootNavigation.navigate(RootStackRoutes.TradingWebView, {
             closeCallbackUrl: returnUrl,
             source,
+            orderId: candidateQuote?.orderId,
         });
     };
 
@@ -141,8 +179,26 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
             return;
         }
 
+        analytics.report({
+            type: EventType.TradingBuy,
+            payload: {
+                step: 'buy-form',
+                action: 'continue',
+                ...quoteAnalyticsData,
+            },
+        });
+
         if (!receiveAccount || (!!receiveAccount.account.addresses && !receiveAccount.address)) {
             selectReceiveAccount();
+
+            analytics.report({
+                type: EventType.TradingBuy,
+                payload: {
+                    step: 'account-selection',
+                    action: 'continue',
+                    ...quoteAnalyticsData,
+                },
+            });
 
             return;
         }

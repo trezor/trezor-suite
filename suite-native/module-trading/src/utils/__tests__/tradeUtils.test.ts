@@ -89,12 +89,12 @@ describe('tradeUtils', () => {
 
     describe('getTradeStatusStep', () => {
         it.each([
-            ['SUBMITTED', 'status-waiting'],
-            ['WAITING_FOR_USER', 'status-waiting'],
-            ['APPROVAL_PENDING', 'status-processing'],
-            ['SUCCESS', 'status-success'],
-            ['ERROR', 'status-error'],
-            ['BLOCKED', 'status-error'],
+            ['SUBMITTED', 'waiting'],
+            ['WAITING_FOR_USER', 'waiting'],
+            ['APPROVAL_PENDING', 'processing'],
+            ['SUCCESS', 'success'],
+            ['ERROR', 'error'],
+            ['BLOCKED', 'error'],
             [undefined, undefined],
         ])('should return correct step for buy trade with %s status', (status, expectedStep) => {
             const trade = getBuyTrade({ status: status as BuyTradeStatus });
@@ -102,11 +102,11 @@ describe('tradeUtils', () => {
         });
 
         it.each([
-            ['CONVERTING', 'status-converting'],
-            ['KYC', 'status-kyc'],
-            ['ERROR', 'status-error'],
-            ['SUCCESS', 'status-success'],
-            ['APPROVAL_PENDING', 'status-sending'],
+            ['CONVERTING', 'converting'],
+            ['KYC', 'kyc'],
+            ['ERROR', 'error'],
+            ['SUCCESS', 'success'],
+            ['APPROVAL_PENDING', 'sending'],
             [undefined, undefined],
         ])(
             'should return correct step for exchange trade with %s status',
@@ -117,12 +117,12 @@ describe('tradeUtils', () => {
         );
 
         it.each([
-            ['SEND_CRYPTO', 'status-pending'],
-            ['SUCCESS', 'status-success'],
-            ['ERROR', 'status-error'],
-            ['BLOCKED', 'status-error'],
-            ['CANCELLED', 'status-error'],
-            ['REFUNDED', 'status-error'],
+            ['SEND_CRYPTO', 'pending'],
+            ['SUCCESS', 'success'],
+            ['ERROR', 'error'],
+            ['BLOCKED', 'error'],
+            ['CANCELLED', 'error'],
+            ['REFUNDED', 'error'],
             [undefined, undefined],
         ])('should return correct step for sell trade with %s status', (status, expectedStep) => {
             const trade = getSellTrade({ status: status as SellTradeStatus });

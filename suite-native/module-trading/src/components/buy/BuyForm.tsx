@@ -8,8 +8,8 @@ import { BuyCard } from './BuyCard';
 import { BuyHeader } from './BuyHeader';
 import { Confirmation } from './Confirmation';
 import { PaymentCard } from './PaymentCard';
+import { useBuyQuotes } from '../../hooks/useBuyQuotes';
 import { useMountedRecentlyFlag } from '../../hooks/useMountedRecentlyFlag';
-import { useQuotes } from '../../hooks/useQuotes';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { TradeHistoryButton } from '../general/TradeHistory/TradeHistoryButton';
 import { TradingAlert } from '../general/TradingAlert';
@@ -44,7 +44,7 @@ const BuyFormMemoized = memo(({ isAmountInputActive }: { isAmountInputActive: bo
 
 export const BuyForm = () => {
     const buyForm = useTradingBuyFormContext();
-    useQuotes(buyForm);
+    useBuyQuotes(buyForm);
 
     const isAmountInputActive = !!buyForm.watch('focusedValue');
     const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive);

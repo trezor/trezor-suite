@@ -7,6 +7,7 @@ import {
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
 } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -31,6 +32,16 @@ export const TradingProviderPicker = () => {
             selectBuyQuotesByPaymentMethod(state, paymentMethod),
         ) ?? [];
 
+    const handleProviderPress = () => {
+        analytics.report({
+            type: EventType.TradingCompareOffers,
+            payload: {
+                type: 'buy',
+            },
+        });
+        showSheet();
+    };
+
     if (isLoading) {
         return (
             <TradingOverviewRow
@@ -54,7 +65,7 @@ export const TradingProviderPicker = () => {
             <TradingOverviewRow
                 title={translate('moduleTrading.tradingScreen.provider')}
                 noBottomBorder
-                onPress={showSheet}
+                onPress={handleProviderPress}
             >
                 <HStack>
                     <TradingProviderLogo logo={logo} />

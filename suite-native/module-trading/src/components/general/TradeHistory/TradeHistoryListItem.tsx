@@ -37,7 +37,11 @@ export const TradeHistoryListItem = ({ transaction, onPress }: TradeHistoryListI
             transaction.account.symbol,
         ),
     );
-    useTradingWatchTrade({ account: account ?? undefined, trade: transaction });
+    useTradingWatchTrade({
+        account: account ?? undefined,
+        trade: transaction,
+        isInProgress: false,
+    });
     const providerInfo = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(
             state,

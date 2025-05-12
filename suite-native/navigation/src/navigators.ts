@@ -255,6 +255,7 @@ export type RootStackParamList = {
     [RootStackRoutes.TradingWebView]: {
         closeCallbackUrl: string;
         source?: { uri?: string; html?: string };
+        orderId?: string;
     };
 };
 

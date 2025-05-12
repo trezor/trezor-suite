@@ -5,6 +5,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { useNavigation } from '@react-navigation/native';
 
 import { Context } from '@suite-common/message-system';
+import { EventType, analytics } from '@suite-native/analytics';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
@@ -27,6 +28,10 @@ const TradingScreenContent = () => {
 
     useEffect(() => {
         if (tradeToBeOpened) {
+            analytics.report({
+                type: EventType.TradingSuccess,
+                payload: { type: tradeToBeOpened.tradeType },
+            });
             navigation.navigate(TradingStackRoutes.TradeHistory, {
                 tradeType: tradeToBeOpened.tradeType,
             });

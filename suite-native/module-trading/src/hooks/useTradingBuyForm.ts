@@ -102,7 +102,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
     }, [dispatch, setValue, watch]);
 };
 
-const useQuotesChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
+const useBuyQuotesChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
     const quotes = useSelector(selectValidTradingBuyQuotes);
 
     useEffect(() => {
@@ -142,7 +142,7 @@ const useQuotesChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
     }, [quotes, getValues, setValue]);
 };
 
-const useQuoteChangeEffect = (form: TradingBuyForm) => {
+const useBuyQuoteChangeEffect = (form: TradingBuyForm) => {
     const { getValues, setValue, watch } = form;
     const quote = watch('quote');
     const symbol = getSelectedSymbolFromBuyForm(form);
@@ -214,8 +214,8 @@ export const useTradingBuyForm = (): TradingBuyForm => {
 
     useAmountAndCurrencyFieldsChangeEffect(form);
     useReceiveAccountChangeEffect(form);
-    useQuotesChangeEffect(form);
-    useQuoteChangeEffect(form);
+    useBuyQuotesChangeEffect(form);
+    useBuyQuoteChangeEffect(form);
     useValidations(form, limits);
 
     return form;
