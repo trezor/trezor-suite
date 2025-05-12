@@ -1,13 +1,6 @@
-/**
- * spojitost čáry?
- * co když je hodně dat?
- *
- *
- * */
+import { useEffect, useState } from 'react';
 
-import { useMemo } from 'react';
-
-import { format } from 'date-fns';
+import { differenceInDays, format, subMonths } from 'date-fns';
 import {
     Area,
     CartesianGrid,
@@ -27,10 +20,6 @@ import { Column, Icon, Paragraph, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-import { useSelector } from '../../../../hooks/suite';
-import { selectLocalCurrency } from '../../../../reducers/wallet/settingsReducer';
-
-
 const TooltipContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -40,70 +29,37 @@ const TooltipContainer = styled.div`
     backdrop-filter: blur(10px);
 `;
 
-const raw2 = [
-    { date: '2025-01-01T12:00:00.000Z', value: 1000 },
-    { date: '2025-01-02T12:00:00.000Z', value: 1398 },
-    { date: '2025-01-03T12:00:00.000Z', value: 9800 },
-    { date: '2025-01-03T12:00:00.000Z', value: 3908 },
-    { date: '2025-01-04T12:00:00.000Z', value: 4800 },
-    { date: '2025-01-05T12:00:00.000Z', value: 3800 },
-    { date: '2025-01-06T12:00:00.000Z', value: 8300 },
-    { date: '2025-01-06T12:00:00.000Z', value: 4300 },
-    { date: '2025-01-07T12:00:00.000Z', value: 5300 },
-    { date: '2025-01-08T12:00:00.000Z', value: 8700 },
-    { date: '2025-01-09T12:00:00.000Z', value: 7100 },
-    { date: '2025-01-10T12:00:00.000Z', value: 13600 },
-    { date: '2025-01-11T12:00:00.000Z', value: 18800 },
-    { date: '2025-01-11T12:00:00.000Z', value: 1000 },
-    { date: '2025-01-12T12:00:00.000Z', value: 5900 },
-    { date: '2025-01-13T12:00:00.000Z', value: 8000 },
-    { date: '2025-01-14T12:00:00.000Z', value: 11000 },
-    { date: '2025-01-14T12:00:00.000Z', value: 13000 },
-    { date: '2025-01-15T12:00:00.000Z', value: 12000 },
-    { date: '2025-01-15T12:00:00.000Z', value: 21000 },
-    { date: '2025-01-16T12:00:00.000Z', value: 26000 },
-    { date: '2025-01-17T12:00:00.000Z', value: 29000 },
-    { date: '2025-01-18T12:00:00.000Z', value: 30100 },
-    { date: '2025-01-19T12:00:00.000Z', value: 20000 },
-    { date: '2025-01-20T12:00:00.000Z', value: 17200 },
-    { date: '2025-01-21T12:00:00.000Z', value: 9000 },
-    { date: '2025-01-22T12:00:00.000Z', value: 13000 },
-    { date: '2025-01-22T12:00:00.000Z', value: 16000 },
-    { date: '2025-01-23T12:00:00.000Z', value: 18000 },
-    { date: '2025-01-24T12:00:00.000Z', value: 23000 },
-    { date: '2025-01-25T12:00:00.000Z', value: 27000 },
-    { date: '2025-01-26T12:00:00.000Z', value: 35000 },
-    { date: '2025-01-27T12:00:00.000Z', value: 33000 },
-    { date: '2025-01-27T12:00:00.000Z', value: 13000 },
-    { date: '2025-01-28T12:00:00.000Z', value: 10000 },
-    { date: '2025-01-29T12:00:00.000Z', value: 12000 },
-];
+export const generateData = (startDate: Date, endDate: Date) => {
+    const getNewValue = (previousValue: number) => {
+        const howClose = 0.52 - Math.random();
+        const value = Math.floor(previousValue + Math.random() + 1000 * howClose);
+        return value > 0 ? value : 0;
+    };
 
-// generate raw data with some configuration: interval, min, max, count.
-// every 5-20th day add data with the same date but different value to simulate vertical jump. Trend should be up
-// There should be extremes only sometimes. Date should be in iso format.
-function generateData(start: number, min: number, max: number, count: number) {
+    const endDateValue = endDate ?? new Date();
+    const startDateValue = startDate ?? subMonths(new Date(), 24);
+
+    const daysCount = differenceInDays(endDateValue, startDateValue);
+
     const result = [];
-    let current = start;
-    for (let i = 0; i < count; i++) {
-        // create small variance but multiply it with index
-        // to simulate trends
+    let current = startDateValue.getTime();
+    let previousValue = 0;
+    for (let i = 0; i < daysCount; i++) {
+        const newValue = getNewValue(previousValue);
+        previousValue = newValue;
 
-        const variance = Math.floor(Math.random() * 0.1);
-        const value = Math.floor(Math.random() * (max - min) * i) + min;
-
-        result.push({ date: new Date(current).toISOString(), value });
+        result.push({ date: new Date(current).toISOString(), value: newValue });
         current += 1000 * 60 * 60 * 24 * 3;
         if (Math.random() > 0.85) {
-            result.push({ date: new Date(current).toISOString(), value });
+            result.push({
+                date: new Date(current).toISOString(),
+                value: getNewValue(previousValue),
+            });
         }
     }
 
     return result;
-}
-
-const raw = generateData(new Date().getTime(), 80000, 120000, 120);
-console.log('___', raw);
+};
 
 const dateFormatter = (date: string) => format(new Date(date), 'd MMM');
 const dateFormatterWithYear = (date: string) => format(new Date(date), 'd MMMM yyyy');
@@ -127,7 +83,7 @@ const CustomizedDot = props => {
                 width={16}
                 height={16}
             >
-                <circle cx="32" cy="32" r="32" fill={theme.backgroundSurfaceElevation1} />
+                <circle cx="16" cy="16" r="16" fill={theme.backgroundSurfaceElevation1} />
 
                 <path
                     fill={theme.backgroundAlertRedBold}
@@ -204,54 +160,51 @@ const CustomTooltip = props => {
     return null;
 };
 
-export const TransactionsGraph = () => {
+export const TransactionsGraph = ({ selectedRange }) => {
     const theme = useTheme();
-    const { segments, verticalSegments, marks } = useMemo(() => {
-        const segments = []; // úseky hlavní křivky
+    const [segments, setSegments] = useState([]);
+    const [raw, setRaw] = useState([]);
+    const [verticalSegments, setVerticalSegments] = useState([]);
+    const [ticks, setTicks] = useState([]);
+
+    const removeData = () => {
+        setVerticalSegments([]);
+        setTicks([]);
+        setRaw([]);
+        setSegments([]);
+    };
+
+    useEffect(() => {
+        removeData();
+        const data = generateData(selectedRange.startDate, selectedRange.endDate, 80000, 120000);
+        setRaw(data);
+
+        const newSegments = [];
+        const newVerticalSegments = [];
+        const newTicks = [];
+
         let seg = [];
-
-        const verticalSegments = []; // každá položka = [cur, next]
-        const marks = []; // + / − značky
-
-        for (let i = 0; i < raw.length; i++) {
-            const cur = raw[i];
-            const next = raw[i + 1];
+        for (let i = 0; i < data.length; i++) {
+            const cur = data[i];
+            const next = data[i + 1];
 
             seg.push(cur);
 
             if (next && next.date === cur.date) {
-                // vertikální skok
-                verticalSegments.push([cur, next]);
+                // Vertical jump
+                newVerticalSegments.push([cur, next]);
 
-                marks.push({
-                    date: cur.date, // 1. bod skoku
-                    value: cur.value,
-                    symbol: next.value > cur.value ? '+' : '−',
-                });
-
-                segments.push(seg); // ukonči úsek
-                seg = [next]; // nový úsek
-                i++; // přeskoč použitý bod
+                newSegments.push(seg); // End current segment
+                seg = [next]; // Start new segment
+                i++; // Skip used point
             }
         }
-        segments.push(seg);
+        newSegments.push(seg);
 
-        return { segments, verticalSegments, marks };
-    }, []);
-
-    const ticks = raw // raw = tvoje pole dat
-        .map(d => d.date) // => [1,2,3,3,5,6,6,7]
-        .filter((_, i, arr) => i !== 0 && i !== arr.length - 1);
-
-    const findDateWithMaxValue = (data: any) => {
-        const maxValue = Math.max(...data.map(d => d.value));
-        const index = data.findIndex(d => d.value === maxValue);
-
-        return data[index];
-    };
-
-    const maxValue = findDateWithMaxValue(raw);
-    const minValue = findDateWithMaxValue(raw2);
+        setSegments(newSegments);
+        setVerticalSegments(newVerticalSegments);
+        setTicks(data.map(d => d.date).filter((_, i, arr) => i !== 0 && i !== arr.length - 1));
+    }, [selectedRange]);
 
     return (
         <>
@@ -267,9 +220,10 @@ export const TransactionsGraph = () => {
                         axisLine={false}
                         padding={{ left: 0, right: 0 }}
                         interval="preserveStartEnd"
-                        ticks={ticks}
+                        ticks={[...new Set(ticks)]}
                     />
                     <ReferenceLine x="Page C" stroke="green" label="Min PAGE" />
+                    {/*<CartesianGrid strokeDasharray="1 10" />*/}
                     <Tooltip
                         animationDuration={100}
                         cursor={{
@@ -310,20 +264,20 @@ export const TransactionsGraph = () => {
                     {/* hlavní křivka */}
                     );
                     {segments.map((segment, index) => (
-                            <Area
-                                key={`main-${index}`}
-                                data={segment}
-                                type="monotone"
-                                dataKey="value"
-                                stroke={theme.backgroundPrimaryDefault}
-                                strokeWidth={1.5}
-                                dot={false}
-                                isAnimationActive={false}
-                                legendType={index ? 'none' : undefined}
-                                fill="url(#gradient-area)"
-                                name={`main-line-${index}`}
-                            />
-                        ))}
+                        <Area
+                            key={`main-${index}`}
+                            data={segment}
+                            type="linear"
+                            dataKey="value"
+                            stroke={theme.backgroundPrimaryDefault}
+                            strokeWidth={1.5}
+                            dot={false}
+                            isAnimationActive={false}
+                            legendType={index ? 'none' : undefined}
+                            fill="url(#gradient-area)"
+                            name={`main-line-${index}`}
+                        />
+                    ))}
                     {/* samostatná čárkovaná vertikála pro každý skok */}
                     {verticalSegments.map((pair, index) => {
                         const firstPoint = pair[0];

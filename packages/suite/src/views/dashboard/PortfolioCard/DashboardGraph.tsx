@@ -136,7 +136,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         </Button>
                     </ErrorMessage>
                 ) : (
-                    <TransactionsGraph />
+                    <TransactionsGraph selectedRange={graph.selectedRange} />
                 )}
             </GraphWrapper>
         </Wrapper>
