@@ -20,10 +20,6 @@ export const useConnectPopupDesktop = () => {
     const initialized = useRef(false);
 
     useEffect(() => {
-        // Prevent multiple initializations
-        if (initialized.current) return;
-        initialized.current = true;
-
         const init = async () => {
             if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
                 desktopApi.on('connect-popup/call', async params => {
@@ -51,17 +47,26 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.on('app/auto-start/popup-request', () => {
                     dispatch(openModal({ type: 'auto-start-before-quit' }));
                 });
-                desktopApi.connectPopupReady();
 
-                // Update experimental features value
-                // TODO: remove this when out of experimental
-                if (!experimentalFeatures?.includes('trezor-connect-ws')) {
-                    dispatch({
-                        type: SUITE.SET_EXPERIMENTAL_FEATURES,
-                        payload: {
-                            enabledFeatures: [...(experimentalFeatures ?? []), 'trezor-connect-ws'],
-                        },
-                    });
+                // Prevent multiple initializations
+                if (!initialized.current) {
+                    initialized.current = true;
+
+                    desktopApi.connectPopupReady();
+
+                    // Update experimental features value
+                    // TODO: remove this when out of experimental
+                    if (!experimentalFeatures?.includes('trezor-connect-ws')) {
+                        dispatch({
+                            type: SUITE.SET_EXPERIMENTAL_FEATURES,
+                            payload: {
+                                enabledFeatures: [
+                                    ...(experimentalFeatures ?? []),
+                                    'trezor-connect-ws',
+                                ],
+                            },
+                        });
+                    }
                 }
             }
         };
@@ -71,6 +76,7 @@ export const useConnectPopupDesktop = () => {
             if (desktopApi.available) {
                 desktopApi.removeAllListeners('connect-popup/call');
                 desktopApi.removeAllListeners('connect-popup/cancel');
+                desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
     }, [dispatch, experimentalFeatures]);
