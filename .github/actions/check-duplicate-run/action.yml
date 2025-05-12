@@ -17,6 +17,9 @@ inputs:
   current_run_id:
     description: "ID of the current workflow run (to exclude from results)"
     required: true
+  run_attempt:
+    description: "The run attempt number"
+    required: true
 
 outputs:
   skip_run:
@@ -35,8 +38,15 @@ runs:
         REPO: "${{ inputs.repo }}"
         WORKFLOW_NAME: "${{ inputs.workflow_name }}"
         CURRENT_RUN_ID: "${{ inputs.current_run_id }}"
+        RUN_ATTEMPT: "${{ inputs.run_attempt }}"
       shell: bash
       run: |
+        if [ "${RUN_ATTEMPT}" -gt 1 ]; then
+          echo "Manually triggered re-run."
+          echo "skip_run=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
         # Fetch workflow ID
         WORKFLOW_ID=$(gh workflow list \
           --repo "$REPO" \
@@ -49,7 +59,7 @@ runs:
         RESPONSE=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" "${API_URL}")
 
         PREVIOUS_RUNS=$(echo "$RESPONSE" | jq --arg current_id "${CURRENT_RUN_ID}" '[.workflow_runs[] | select(.id != ($current_id | tonumber))] | length')
-  
+
         if [ "${PREVIOUS_RUNS}" -gt 0 ]; then
           echo "Found ${PREVIOUS_RUNS} previous runs for commit ${COMMIT_SHA}"
           echo "skip_run=true" >> $GITHUB_OUTPUT

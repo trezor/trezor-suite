@@ -38,6 +38,7 @@ jobs:
           repo: ${{ github.repository }}
           workflow_name: ${{ github.workflow }}
           current_run_id: ${{ github.run_id }}
+          run_attempt: ${{ github.run_attempt }}
 
   run-e2e-suite-manual-tests:
     needs: check-duplicate-run

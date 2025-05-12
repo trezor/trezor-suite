@@ -22,8 +22,36 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
+  check-duplicate-run:
+    if: github.repository == 'trezor/trezor-suite' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      skip_run: ${{ steps.check-duplicate-run.outputs.skip_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Check duplicate run
+        id: check-duplicate-run
+        uses: "./.github/actions/check-duplicate-run"
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          commit_sha: ${{ github.sha }}
+          repo: ${{ github.repository }}
+          workflow_name: ${{ github.workflow }}
+          current_run_id: ${{ github.run_id }}
+          run_attempt: ${{ github.run_attempt }}
+
   build-web:
-    if: github.repository == 'trezor/trezor-suite'
+    needs: check-duplicate-run
+    if: github.repository == 'trezor/trezor-suite' && needs.check-duplicate-run.outputs.skip_run != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,10 +61,11 @@ jobs:
         uses: ./.github/actions/build-web
 
   run-e2e-suite-web-tests:
-    if: github.repository == 'trezor/trezor-suite'
+    if: github.repository == 'trezor/trezor-suite' && needs.check-duplicate-run.outputs.skip_run != 'true'
     runs-on: ubuntu-latest
     needs:
       - build-web
+      - check-duplicate-run
     strategy:
       fail-fast: false
       matrix:
