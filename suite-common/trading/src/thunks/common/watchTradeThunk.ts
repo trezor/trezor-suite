@@ -54,7 +54,6 @@ export const watchTradeThunk = createThunk(
         invityAPI.createInvityAPIKey(account.descriptor);
 
         const { tradeType } = trade;
-        const date = new Date().toISOString();
 
         switch (tradeType) {
             case 'buy': {
@@ -68,7 +67,7 @@ export const watchTradeThunk = createThunk(
                 dispatch(
                     tradingActions.saveTrade({
                         tradeType,
-                        date,
+                        date: trade.date,
                         key: data.tradeData.paymentId,
                         data: data.tradeData,
                         receiveAccountKey: trade.receiveAccountKey,
@@ -99,7 +98,7 @@ export const watchTradeThunk = createThunk(
                 dispatch(
                     tradingActions.saveTrade({
                         tradeType,
-                        date,
+                        date: trade.date,
                         key: data.tradeData.orderId,
                         data: data.tradeData,
                         sendAccountKey: trade.sendAccountKey,
@@ -124,7 +123,7 @@ export const watchTradeThunk = createThunk(
                 dispatch(
                     tradingActions.saveTrade({
                         tradeType,
-                        date,
+                        date: trade.date,
                         key: data.tradeData.orderId,
                         data: data.tradeData,
                         sendAccountKey: trade.sendAccountKey,
