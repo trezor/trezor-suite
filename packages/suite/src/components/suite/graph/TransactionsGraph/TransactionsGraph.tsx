@@ -1,301 +1,361 @@
-import { memo, useState } from 'react';
+/**
+ * spojitost čáry?
+ * co když je hodně dat?
+ *
+ *
+ * */
 
-import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts';
+import { useMemo } from 'react';
+
+import { format } from 'date-fns';
+import {
+    Area,
+    CartesianGrid,
+    ComposedChart,
+    Legend,
+    Line,
+    ReferenceLine,
+    ResponsiveContainer,
+    Scatter,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
-import { Icon, variables } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
+import { Column, Icon, Paragraph, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { hexToRgba } from '@trezor/utils';
 
-import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
-import { useGraph } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
-import {
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-    GraphRange,
-} from 'src/types/wallet/graph';
-import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
+import { useSelector } from '../../../../hooks/suite';
+import { selectLocalCurrency } from '../../../../reducers/wallet/settingsReducer';
 
-import { GraphBar } from './GraphBar';
-import { GraphResponsiveContainer } from './GraphResponsiveContainer';
-import { GraphTooltipAccount } from './GraphTooltipAccount';
-import { GraphTooltipDashboard } from './GraphTooltipDashboard';
-import { GraphXAxisTick } from './GraphXAxisTick';
-import { GraphYAxisTick } from './GraphYAxisTick';
 
-const Wrapper = styled.div`
+const TooltipContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
-    font-size: ${variables.FONT_SIZE.TINY};
-    white-space: nowrap;
+    padding: 8px;
+    background-color: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.6)};
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+`;
 
-    /* little hack to remove first and last horizontal line from cartesian grid (lines that wrap the area of the chart) */
-    .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
-    .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
-        stroke-opacity: 0;
+const raw2 = [
+    { date: '2025-01-01T12:00:00.000Z', value: 1000 },
+    { date: '2025-01-02T12:00:00.000Z', value: 1398 },
+    { date: '2025-01-03T12:00:00.000Z', value: 9800 },
+    { date: '2025-01-03T12:00:00.000Z', value: 3908 },
+    { date: '2025-01-04T12:00:00.000Z', value: 4800 },
+    { date: '2025-01-05T12:00:00.000Z', value: 3800 },
+    { date: '2025-01-06T12:00:00.000Z', value: 8300 },
+    { date: '2025-01-06T12:00:00.000Z', value: 4300 },
+    { date: '2025-01-07T12:00:00.000Z', value: 5300 },
+    { date: '2025-01-08T12:00:00.000Z', value: 8700 },
+    { date: '2025-01-09T12:00:00.000Z', value: 7100 },
+    { date: '2025-01-10T12:00:00.000Z', value: 13600 },
+    { date: '2025-01-11T12:00:00.000Z', value: 18800 },
+    { date: '2025-01-11T12:00:00.000Z', value: 1000 },
+    { date: '2025-01-12T12:00:00.000Z', value: 5900 },
+    { date: '2025-01-13T12:00:00.000Z', value: 8000 },
+    { date: '2025-01-14T12:00:00.000Z', value: 11000 },
+    { date: '2025-01-14T12:00:00.000Z', value: 13000 },
+    { date: '2025-01-15T12:00:00.000Z', value: 12000 },
+    { date: '2025-01-15T12:00:00.000Z', value: 21000 },
+    { date: '2025-01-16T12:00:00.000Z', value: 26000 },
+    { date: '2025-01-17T12:00:00.000Z', value: 29000 },
+    { date: '2025-01-18T12:00:00.000Z', value: 30100 },
+    { date: '2025-01-19T12:00:00.000Z', value: 20000 },
+    { date: '2025-01-20T12:00:00.000Z', value: 17200 },
+    { date: '2025-01-21T12:00:00.000Z', value: 9000 },
+    { date: '2025-01-22T12:00:00.000Z', value: 13000 },
+    { date: '2025-01-22T12:00:00.000Z', value: 16000 },
+    { date: '2025-01-23T12:00:00.000Z', value: 18000 },
+    { date: '2025-01-24T12:00:00.000Z', value: 23000 },
+    { date: '2025-01-25T12:00:00.000Z', value: 27000 },
+    { date: '2025-01-26T12:00:00.000Z', value: 35000 },
+    { date: '2025-01-27T12:00:00.000Z', value: 33000 },
+    { date: '2025-01-27T12:00:00.000Z', value: 13000 },
+    { date: '2025-01-28T12:00:00.000Z', value: 10000 },
+    { date: '2025-01-29T12:00:00.000Z', value: 12000 },
+];
+
+// generate raw data with some configuration: interval, min, max, count.
+// every 5-20th day add data with the same date but different value to simulate vertical jump. Trend should be up
+// There should be extremes only sometimes. Date should be in iso format.
+function generateData(start: number, min: number, max: number, count: number) {
+    const result = [];
+    let current = start;
+    for (let i = 0; i < count; i++) {
+        // create small variance but multiply it with index
+        // to simulate trends
+
+        const variance = Math.floor(Math.random() * 0.1);
+        const value = Math.floor(Math.random() * (max - min) * i) + min;
+
+        result.push({ date: new Date(current).toISOString(), value });
+        current += 1000 * 60 * 60 * 24 * 3;
+        if (Math.random() > 0.85) {
+            result.push({ date: new Date(current).toISOString(), value });
+        }
     }
 
-    /* hides circle dot in case only one month is displayed */
-    .recharts-dot.recharts-line-dot {
-        display: none;
-    }
-`;
-
-const Toolbar = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const Description = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: ${({ theme }) => theme.textSubdued};
-    flex: 1;
-`;
-
-interface CommonProps {
-    isLoading?: boolean;
-    selectedRange: GraphRange;
-    xTicks: number[];
-    localCurrency: string;
-    minMaxValues: [number, number];
-    hideToolbar?: boolean;
-    onRefresh?: () => void;
+    return result;
 }
 
-export interface CryptoGraphProps extends CommonProps {
-    variant: 'one-asset';
-    account: Account;
-    data: AggregatedAccountHistory[];
-    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedAccountHistory) => string | undefined;
-}
+const raw = generateData(new Date().getTime(), 80000, 120000, 120);
+console.log('___', raw);
 
-export interface FiatGraphProps extends CommonProps {
-    variant: 'all-assets';
-    data: AggregatedDashboardHistory[];
-    receivedValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    sentValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    account?: never;
-}
+const dateFormatter = (date: string) => format(new Date(date), 'd MMM');
+const dateFormatterWithYear = (date: string) => format(new Date(date), 'd MMMM yyyy');
 
-export type TransactionsGraphProps = CryptoGraphProps | FiatGraphProps;
+const CustomizedDot = props => {
+    const theme = useTheme();
+    const { cx, cy, points, index } = props;
+    const nextIndex = points.length >= index + 1 ? index + 1 : null;
+    const currentPoint = points[index];
+    const nextPoint = points[nextIndex];
+    if (nextIndex == null || currentPoint?.x !== nextPoint?.x) return null;
 
-export const TransactionsGraph = memo(
-    ({
-        account,
-        balanceValueFn,
-        data,
-        hideToolbar,
-        isLoading,
-        localCurrency,
-        minMaxValues,
-        onRefresh,
-        receivedValueFn,
-        selectedRange,
-        sentValueFn,
-        variant,
-        xTicks,
-    }: TransactionsGraphProps) => {
-        const [maxYTickWidth, setMaxYTickWidth] = useState(20);
+    if (currentPoint?.y < nextPoint?.y) {
+        return (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 32 32"
+                x={cx - 8}
+                y={cy - 8}
+                width={16}
+                height={16}
+            >
+                <circle cx="32" cy="32" r="32" fill={theme.backgroundSurfaceElevation1} />
 
-        const theme = useTheme();
-        const { selectedView } = useGraph();
-        const yDomain = calcYDomain(
-            variant === 'all-assets' ? 'fiat' : 'crypto',
-            selectedView,
-            minMaxValues,
-            account?.formattedBalance,
+                <path
+                    fill={theme.backgroundAlertRedBold}
+                    d="M22 16a1 1 0 0 1-1 1H11a1 1 0 0 1 0-2h10a1 1 0 0 1 1 1m7 0A13 13 0 1 1 16 3a13.014 13.014 0 0 1 13 13m-2 0a11 11 0 1 0-11 11 11.01 11.01 0 0 0 11-11"
+                />
+            </svg>
         );
+    }
 
-        const setWidth = (n: number) => {
-            setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
-        };
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 32 32"
+            x={cx - 8}
+            y={cy - 8}
+            width={16}
+            height={16}
+        >
+            <circle cx="16" cy="16" r="16" fill={theme.backgroundSurfaceElevation1} />
+            <path
+                fill={theme.backgroundSecondaryDefault}
+                d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3m0 24a11 11 0 1 1 11-11 11.01 11.01 0 0 1-11 11m6-11a1 1 0 0 1-1 1h-4v4a1 1 0 0 1-2 0v-4h-4a1 1 0 0 1 0-2h4v-4a1 1 0 0 1 2 0v4h4a1 1 0 0 1 1 1"
+            />
+        </svg>
+    );
+};
 
-        const rightMargin = Math.max(0, maxYTickWidth - 50) + 10; // 50 is the default spacing
+const CustomTooltip = props => {
+    const { active, payload, label } = props;
 
-        // calculate fake data for full interval (eg. 1 year) even for ticks/timestamps without txs
-        const extendedDataForInterval =
-            variant === 'one-asset'
-                ? calcFakeGraphDataForTimestamps(xTicks, data, account.formattedBalance)
-                : calcFakeGraphDataForTimestamps(xTicks, data);
-
-        const hoveredIndex = -1;
-        const [hovered, setHovered] = useState(hoveredIndex);
-        const isBarColored = (index: number) => [-1, index].includes(hovered);
-
-        const tooltipContentProps = {
-            selectedRange,
-            localCurrency,
-            extendedDataForInterval,
-            onShow: (index: number) => setHovered(index),
-        };
+    if (active && payload && payload.length) {
+        const interval = props.payload.filter(({ name }) => name.startsWith('main-line'));
+        const from = interval[0].payload;
+        const to = interval.length > 1 ? interval[1].payload : null;
 
         return (
-            <Wrapper>
-                {!hideToolbar && (
-                    <Toolbar>
-                        <GraphRangeSelector
-                            placement={{
-                                position: 'bottom',
-                                alignment: 'start',
-                            }}
-                        />
-                        {onRefresh && <Icon size={14} name="repeat" onClick={onRefresh} />}
-                    </Toolbar>
-                )}
-                <Description>
-                    {isLoading && <GraphSkeleton animate />}
-
-                    {!isLoading && data && (
-                        <GraphResponsiveContainer height="100%" width="100%">
-                            <ComposedChart
-                                data={extendedDataForInterval}
-                                barGap={0}
-                                // stackOffset="sign"
-                                margin={{
-                                    top: 10,
-                                    bottom: 30,
-                                    right: rightMargin,
-                                    left: 20,
-                                }}
-                                onMouseLeave={() => setHovered(-1)}
-                            >
-                                <CartesianGrid
-                                    vertical={false}
-                                    stroke={theme.legacy.STROKE_LIGHT_GREY}
-                                />
-
-                                <XAxis
-                                    // xAxisId="primary"
-                                    dataKey="time"
-                                    type="number"
-                                    domain={calcXDomain(xTicks, data, selectedRange)}
-                                    // width={10}
-                                    stroke={theme.legacy.STROKE_LIGHT_GREY}
-                                    interval="preserveEnd"
-                                    tick={<GraphXAxisTick selectedRange={selectedRange} />}
-                                    ticks={xTicks}
-                                    tickLine={false}
-                                    onMouseEnter={() => setHovered(-1)}
-                                />
-
-                                <YAxis
-                                    type="number"
-                                    orientation="right"
-                                    scale={selectedView}
-                                    domain={yDomain}
-                                    allowDataOverflow={selectedView === 'log'}
-                                    stroke="transparent"
-                                    tick={
-                                        variant === 'one-asset' ? (
-                                            <GraphYAxisTick
-                                                symbol={account.symbol}
-                                                setWidth={setWidth}
-                                            />
-                                        ) : (
-                                            <GraphYAxisTick
-                                                localCurrency={localCurrency}
-                                                setWidth={setWidth}
-                                            />
-                                        )
-                                    }
-                                    onMouseEnter={() => setHovered(-1)}
-                                />
-                                <Tooltip
-                                    position={{ y: 0, x: 0 }}
-                                    wrapperStyle={{ zIndex: zIndices.tooltip }}
-                                    cursor={{ stroke: theme.legacy.BG_TOOLTIP, strokeWidth: 1 }}
-                                    content={
-                                        variant === 'one-asset' ? (
-                                            <GraphTooltipAccount
-                                                symbol={account.symbol}
-                                                sentValueFn={sentValueFn}
-                                                receivedValueFn={receivedValueFn}
-                                                balanceValueFn={balanceValueFn}
-                                                {...tooltipContentProps}
-                                            />
-                                        ) : (
-                                            <GraphTooltipDashboard
-                                                sentValueFn={sentValueFn}
-                                                receivedValueFn={receivedValueFn}
-                                                {...tooltipContentProps}
-                                            />
-                                        )
-                                    }
-                                />
-
-                                {variant === 'one-asset' && (
-                                    <Line
-                                        type="linear"
-                                        dataKey={(data: any) =>
-                                            selectedView === 'log'
-                                                ? Number(balanceValueFn(data)) || yDomain[0]
-                                                : Number(balanceValueFn(data))
-                                        }
-                                        stroke={theme.baseBorderWarning}
-                                        dot={false}
-                                        activeDot={false}
-                                    />
-                                )}
-
-                                <defs>
-                                    <filter id="shadow" x="-2" y="-10" width="50" height="50">
-                                        <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
-                                        <feOffset dx="0" dy="-5" result="offsetblur" />
-                                        <feFlood floodColor="rgb(0,0,0)" floodOpacity="0.1" />
-                                        <feComposite in2="offsetblur" operator="in" />
-                                        <feMerge>
-                                            <feMergeNode in="offsetBlur" />
-                                            <feMergeNode in="SourceGraphic" />
-                                        </feMerge>
-                                    </filter>
-                                </defs>
-                                <Bar
-                                    dataKey={(data: any) => Number(receivedValueFn(data) ?? 0)}
-                                    barSize={selectedRange.label === 'all' ? 8 : 16}
-                                    shape={<GraphBar variant="received" />}
-                                >
-                                    {extendedDataForInterval.map((entry, index) => (
-                                        <Cell
-                                            key={`cell-${entry}`}
-                                            filter={isBarColored(index) ? 'url(#shadow)' : ''}
-                                            fill={
-                                                isBarColored(index)
-                                                    ? theme.baseBorderBrand
-                                                    : '#aeaeae'
-                                            }
-                                        />
-                                    ))}
-                                </Bar>
-                                <Bar
-                                    dataKey={(data: any) => Number(sentValueFn(data) ?? 0)}
-                                    barSize={selectedRange.label === 'all' ? 8 : 16}
-                                    shape={<GraphBar variant="sent" />}
-                                >
-                                    {extendedDataForInterval.map((entry, index) => (
-                                        <Cell
-                                            key={`cell-${entry}`}
-                                            filter={isBarColored(index) ? 'url(#shadow)' : ''}
-                                            fill={
-                                                isBarColored(index)
-                                                    ? theme.baseBorderNegative
-                                                    : '#dfdfdf'
-                                            }
-                                        />
-                                    ))}
-                                </Bar>
-                            </ComposedChart>
-                        </GraphResponsiveContainer>
+            <TooltipContainer>
+                <Column>
+                    {to ? (
+                        <>
+                            {from.value < to?.value && (
+                                <Paragraph variant="primary" typographyStyle="highlight">
+                                    příjem
+                                </Paragraph>
+                            )}
+                            {from.value > to?.value && (
+                                <Paragraph variant="destructive" typographyStyle="highlight">
+                                    výdaj
+                                </Paragraph>
+                            )}
+                            <Row gap={spacings.xs} alignItems="center">
+                                <Text typographyStyle="hint">{from.value} CZK</Text>{' '}
+                                <Icon name="arrowRight" variant="tertiary" size="small" />{' '}
+                                <Text typographyStyle="hint">{to.value} CZK</Text>
+                            </Row>
+                        </>
+                    ) : (
+                        <Paragraph>{from.value} CZK</Paragraph>
                     )}
-                </Description>
-            </Wrapper>
+
+                    <Paragraph
+                        variant="tertiary"
+                        typographyStyle="label"
+                        margin={{ top: spacings.xs }}
+                    >
+                        {dateFormatterWithYear(from.date)}
+                    </Paragraph>
+                </Column>
+            </TooltipContainer>
         );
-    },
-);
+    }
+
+    return null;
+};
+
+export const TransactionsGraph = () => {
+    const theme = useTheme();
+    const { segments, verticalSegments, marks } = useMemo(() => {
+        const segments = []; // úseky hlavní křivky
+        let seg = [];
+
+        const verticalSegments = []; // každá položka = [cur, next]
+        const marks = []; // + / − značky
+
+        for (let i = 0; i < raw.length; i++) {
+            const cur = raw[i];
+            const next = raw[i + 1];
+
+            seg.push(cur);
+
+            if (next && next.date === cur.date) {
+                // vertikální skok
+                verticalSegments.push([cur, next]);
+
+                marks.push({
+                    date: cur.date, // 1. bod skoku
+                    value: cur.value,
+                    symbol: next.value > cur.value ? '+' : '−',
+                });
+
+                segments.push(seg); // ukonči úsek
+                seg = [next]; // nový úsek
+                i++; // přeskoč použitý bod
+            }
+        }
+        segments.push(seg);
+
+        return { segments, verticalSegments, marks };
+    }, []);
+
+    const ticks = raw // raw = tvoje pole dat
+        .map(d => d.date) // => [1,2,3,3,5,6,6,7]
+        .filter((_, i, arr) => i !== 0 && i !== arr.length - 1);
+
+    const findDateWithMaxValue = (data: any) => {
+        const maxValue = Math.max(...data.map(d => d.value));
+        const index = data.findIndex(d => d.value === maxValue);
+
+        return data[index];
+    };
+
+    const maxValue = findDateWithMaxValue(raw);
+    const minValue = findDateWithMaxValue(raw2);
+
+    return (
+        <>
+            <ResponsiveContainer width="100%" height={300}>
+                <ComposedChart data={raw} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+                    <XAxis
+                        tick={{ fontSize: 12 }}
+                        dataKey="date"
+                        allowDuplicatedCategory={false}
+                        tickFormatter={dateFormatter}
+                        minTickGap={100}
+                        tickLine={false}
+                        axisLine={false}
+                        padding={{ left: 0, right: 0 }}
+                        interval="preserveStartEnd"
+                        ticks={ticks}
+                    />
+                    <ReferenceLine x="Page C" stroke="green" label="Min PAGE" />
+                    <Tooltip
+                        animationDuration={100}
+                        cursor={{
+                            stroke: theme.backgroundNeutralBold,
+                            strokeWidth: 2,
+                            strokeDasharray: '3 6',
+
+                            strokeLinejoin: 'round',
+                            strokeLinecap: 'round',
+                        }}
+                        content={<CustomTooltip />}
+                    />
+                    <defs>
+                        {/* vektor jde od (0,0) do (0,200) v uživatelských jednotkách (px) */}
+                        <linearGradient
+                            id="gradient-area"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="300"
+                            gradientUnits="userSpaceOnUse" /* ↔ absolutní souřadnice */
+                        >
+                            {/* 0   = horní bod vektoru = 200 px NAD spodkem tvaru → plná zelená */}
+                            <stop
+                                offset="0"
+                                stopColor={theme.backgroundSecondaryDefault}
+                                stopOpacity="0.2"
+                            />
+
+                            {/* 1   = dolní bod vektoru = skutečné dno tvaru    → úplně průhledná */}
+                            <stop
+                                offset="1"
+                                stopColor={theme.backgroundSecondaryDefault}
+                                stopOpacity="0"
+                            />
+                        </linearGradient>
+                    </defs>
+                    {/* hlavní křivka */}
+                    );
+                    {segments.map((segment, index) => (
+                            <Area
+                                key={`main-${index}`}
+                                data={segment}
+                                type="monotone"
+                                dataKey="value"
+                                stroke={theme.backgroundPrimaryDefault}
+                                strokeWidth={1.5}
+                                dot={false}
+                                isAnimationActive={false}
+                                legendType={index ? 'none' : undefined}
+                                fill="url(#gradient-area)"
+                                name={`main-line-${index}`}
+                            />
+                        ))}
+                    {/* samostatná čárkovaná vertikála pro každý skok */}
+                    {verticalSegments.map((pair, index) => {
+                        const firstPoint = pair[0];
+                        const lastPoint = pair[pair.length - 1];
+                        // if (nextIndex == null || nextPoint === null) return null;
+                        const isPositive = firstPoint.value <= lastPoint.value;
+
+                        return (
+                            <Line
+                                key={`v-${index}`}
+                                data={pair}
+                                type="linear"
+                                dataKey="value"
+                                stroke={
+                                    isPositive
+                                        ? theme.backgroundSecondaryDefault
+                                        : theme.backgroundAlertRedBold
+                                }
+                                strokeWidth={1.5}
+                                strokeDasharray="3 6"
+                                strokeLinejoin="round"
+                                strokeLinecap="round"
+                                // dot={false}
+                                isAnimationActive={false}
+                                legendType="none"
+                                dot={<CustomizedDot />}
+                                name={`jump-${index}`}
+                            />
+                        );
+                    })}
+                </ComposedChart>
+            </ResponsiveContainer>
+        </>
+    );
+};

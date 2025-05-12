@@ -1,8 +1,9 @@
 import { memo, useMemo } from 'react';
 
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Card, Column, Dropdown, Tooltip } from '@trezor/components';
+import { Box, Card, Column, Dropdown, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -71,16 +72,18 @@ export const PortfolioCard = memo(() => {
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
     const header =
         discoveryStatus && discoveryStatus.status === 'exception' ? null : (
-            <PortfolioCardHeader
-                showGraphControls={showGraphControls}
-                fiatAmount={walletBalance}
-                localCurrency={localCurrency}
-                isWalletEmpty={isWalletEmpty}
-                isWalletLoading={isWalletLoading}
-                isWalletError={isWalletError}
-                isDiscoveryRunning={isDiscoveryRunning}
-                receiveClickHandler={goToReceive}
-            />
+            <Box margin={{ horizontal: spacings.xl, vertical: spacings.xs }}>
+                <PortfolioCardHeader
+                    showGraphControls={showGraphControls}
+                    fiatAmount={walletBalance}
+                    localCurrency={localCurrency}
+                    isWalletEmpty={isWalletEmpty}
+                    isWalletLoading={isWalletLoading}
+                    isWalletError={isWalletError}
+                    isDiscoveryRunning={isDiscoveryRunning}
+                    receiveClickHandler={goToReceive}
+                />
+            </Box>
         );
 
     return (
@@ -130,7 +133,7 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card heading={body ? header : null} paddingType="large">
+            <Card heading={body ? header : null} paddingType="none">
                 {body ? (
                     <Column justifyContent="center" minHeight={329}>
                         {body}

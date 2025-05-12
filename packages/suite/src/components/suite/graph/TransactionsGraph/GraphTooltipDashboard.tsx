@@ -5,7 +5,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 import { GraphTooltipBase } from './GraphTooltipBase';
-import type { FiatGraphProps } from './TransactionsGraph';
+import type { FiatGraphProps } from './LegacyTransactionsGraph';
 
 interface GraphTooltipDashboardProps extends TooltipProps<number, any> {
     selectedRange: GraphRange;
