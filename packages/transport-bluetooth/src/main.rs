@@ -1,4 +1,3 @@
-use pretty_env_logger;
 use structopt::StructOpt;
 
 mod server;
