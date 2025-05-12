@@ -11,6 +11,12 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.5.5-beta.2
+
+## Fixes
+
+- Add `@trezor/type-utils` to dependency to connect.
+
 # 9.5.5-beta.1
 
 This release is mostly about refactoring and preparatory work for the new way of using TrezorConnect together with Trezor Suite as its UI.
