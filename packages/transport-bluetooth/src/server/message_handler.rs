@@ -1,11 +1,17 @@
+use crate::server::{
+    adapter_manager::AdapterManager,
+    connection_broadcast::ConnectionBroadcast,
+    methods,
+    types::{WsError, WsRequest, WsRequestMethod, WsResponse},
+};
 use hyper_tungstenite::tungstenite::Message;
 use log::info;
-use tokio::sync::broadcast::Sender;
 
-use crate::server::methods;
-use crate::server::types::{ChannelMessage, WsError, WsRequest, WsRequestMethod, WsResponse};
-
-pub async fn handle_message(message: Message, sender: Sender<ChannelMessage>) -> Option<Message> {
+pub async fn handle_message(
+    message: Message,
+    broadcast: ConnectionBroadcast,
+    manager: AdapterManager,
+) -> Option<Message> {
     let msg: String = match message {
         Message::Text(msg) => Some(msg.to_string()),
         Message::Binary(msg) => {
@@ -30,7 +36,7 @@ pub async fn handle_message(message: Message, sender: Sender<ChannelMessage>) ->
         }
     }?;
 
-    if msg.to_string() == "PING" {
+    if msg == "PING" {
         return Some(Message::text("PONG"));
     }
 
@@ -48,8 +54,10 @@ pub async fn handle_message(message: Message, sender: Sender<ChannelMessage>) ->
     info!("Method: {request:?}");
 
     let payload = match request.method.clone() {
-        WsRequestMethod::GetInfo => methods::get_info().await,
-        _ => methods::noop().await, // TODO: implement methods
+        WsRequestMethod::GetInfo => methods::get_info(manager).await,
+        WsRequestMethod::Enumerate => methods::enumerate(manager).await,
+        WsRequestMethod::StartScan => methods::start_scan(manager, broadcast).await,
+        WsRequestMethod::StopScan => methods::stop_scan(manager, broadcast).await,
     };
 
     match payload {
