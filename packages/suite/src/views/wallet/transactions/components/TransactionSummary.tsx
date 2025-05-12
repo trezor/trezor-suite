@@ -10,7 +10,7 @@ import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/gra
 import {
     GraphRangeSelector,
     HiddenPlaceholder,
-    TransactionsGraph,
+    LegacyTransactionsGraph,
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -116,7 +116,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                             <HiddenPlaceholder enforceIntensity={8}>
                                 <Card overflow="visible">
                                     <Row height={320} overflow="visible" alignItems="stretch">
-                                        <TransactionsGraph
+                                        <LegacyTransactionsGraph
                                             hideToolbar
                                             variant="one-asset"
                                             xTicks={xTicks}
