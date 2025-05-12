@@ -3,12 +3,17 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-import { FirmwareType } from '@trezor/device-utils';
+import { FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 
 import { MESSAGE_RELEASE_PATH } from '../src/constants';
-import { ConditionalRelease, ReleaseInfo, ReleaseOriginal } from '../src/types';
+import { ConditionalRelease, ReleaseInfo } from '../src/types';
 
-function createFirmwareInfo(input: ReleaseOriginal): ReleaseInfo {
+type FirmwareReleaseFromJson = Omit<FirmwareRelease, 'changelog' | 'changelog_bitcoinonly'> & {
+    changelog: string;
+    changelog_bitcoinonly?: string;
+};
+
+function createFirmwareInfo(input: FirmwareReleaseFromJson): ReleaseInfo {
     return {
         required: input.required ?? false,
         version: input.version,
@@ -20,7 +25,9 @@ function createFirmwareInfo(input: ReleaseOriginal): ReleaseInfo {
         fingerprint: input.fingerprint_bitcoinonly
             ? input.fingerprint_bitcoinonly
             : input.fingerprint,
-        changelog: input.changelog_bitcoinonly ? input.changelog_bitcoinonly : input.changelog,
+        changelog: input.changelog_bitcoinonly
+            ? input.changelog_bitcoinonly
+            : input.changelog || '',
     };
 }
 
@@ -61,7 +68,7 @@ const generateReleases = async () => {
 
         try {
             const data = await fs.readFile(filePath, 'utf-8');
-            const releases: ReleaseOriginal[] = JSON.parse(data);
+            const releases: FirmwareReleaseFromJson[] = JSON.parse(data);
 
             if (releases.length === 0) {
                 console.warn(`No releases found for ${firmwareType}`);

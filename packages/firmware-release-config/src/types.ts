@@ -1,31 +1,15 @@
 import { DeviceModelInternal, FirmwareType, VersionArray } from '@trezor/device-utils';
 
-export interface ReleaseOriginal {
-    required: boolean;
-    version: VersionArray;
-    min_firmware_version: VersionArray;
-    min_bootloader_version: VersionArray;
-    bootloader_version: VersionArray;
-    translations: string[];
-    url: string;
-    url_bitcoinonly: string;
-    fingerprint: string;
-    fingerprint_bitcoinonly: string;
-    firmware_revision: string;
-    changelog: string;
-    changelog_bitcoinonly: string;
-}
-
 export interface ReleaseInfo {
     required: boolean;
     version: VersionArray;
-    bootloader_version: VersionArray;
+    bootloader_version?: VersionArray;
     min_firmware_version: VersionArray;
     min_bootloader_version: VersionArray;
     translations: string[];
-    firmware_revision: string;
+    firmware_revision?: string;
     fingerprint: string;
-    changelog: string;
+    changelog?: string;
 }
 
 export interface ConditionalRelease {
