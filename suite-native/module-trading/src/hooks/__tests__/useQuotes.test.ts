@@ -170,6 +170,7 @@ describe('useQuotes', () => {
     it.each([
         ['fiatValue', '1000'],
         ['country', 'CZ'],
+        ['receiveAccount', { account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account }],
     ] as [keyof TradingBuyFormValues, TradingBuyFormValues[keyof TradingBuyFormValues]][])(
         'should re-fetch quotes on %s value change',
         async (field, value) => {

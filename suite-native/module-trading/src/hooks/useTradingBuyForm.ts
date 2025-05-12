@@ -7,6 +7,7 @@ import { useFormatters } from '@suite-common/formatters';
 import {
     TradingAmountLimitProps,
     getBestRatedQuote,
+    invityAPI,
     selectTradingBuyQuotesRequest,
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
@@ -28,12 +29,20 @@ import { truncateDecimals } from '../utils/amountUtils';
 import { buyFormValidationSchema } from '../utils/buyFormValidationSchema';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
-const useReceiveAccountChangeEffect = ({ setValue }: TradingBuyForm) => {
+const useReceiveAccountChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
     useEffect(() => {
+        const prevReceiveAccount = getValues('receiveAccount');
+
         setValue('receiveAccount', selectedReceiveAccount);
-    }, [selectedReceiveAccount, setValue]);
+
+        if (
+            prevReceiveAccount?.account?.descriptor !== selectedReceiveAccount?.account?.descriptor
+        ) {
+            invityAPI.createInvityAPIKey(selectedReceiveAccount?.account?.descriptor || '');
+        }
+    }, [selectedReceiveAccount, getValues, setValue]);
 };
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: TradingBuyForm) => {

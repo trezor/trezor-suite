@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { tradingBuyActions } from '@suite-common/trading';
+import { invityAPI, tradingBuyActions } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
 import {
@@ -12,6 +12,7 @@ import {
     renderHook,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { Address } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
 import quotes from '../../__fixtures__/quotes.json';
@@ -50,6 +51,10 @@ describe('useTradingBuyForm', () => {
         });
     };
 
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
     it('should update form value when account in redux store is changed', async () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
@@ -63,6 +68,53 @@ describe('useTradingBuyForm', () => {
         });
 
         expect(result.current.getValues('receiveAccount')).toEqual({ account: { key: 'btc2' } });
+    });
+
+    it('should update invityAPIKey when account is changed', async () => {
+        const store = await getInitializedStore();
+        await renderUseTradingBuyForm(store);
+        const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+
+        act(() => {
+            store.dispatch(
+                setBuySelectedReceiveAccount({
+                    selectedReceiveAccount: {
+                        account: { key: 'btc2', descriptor: 'descriptor_btc2' } as Account,
+                    },
+                }),
+            );
+        });
+
+        expect(invityAPISpy).toHaveBeenCalledWith('descriptor_btc2');
+    });
+
+    it('should not call createInvityAPIKey when descriptor is not changed', async () => {
+        const store = await getInitializedStore();
+        const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+        await renderUseTradingBuyForm(store);
+
+        act(() => {
+            store.dispatch(
+                setBuySelectedReceiveAccount({
+                    selectedReceiveAccount: {
+                        account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
+                    },
+                }),
+            );
+        });
+
+        act(() => {
+            store.dispatch(
+                setBuySelectedReceiveAccount({
+                    selectedReceiveAccount: {
+                        account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
+                        address: { address: 'TEST_BTC_ADDRESS' } as Address,
+                    },
+                }),
+            );
+        });
+
+        expect(invityAPISpy).toHaveBeenCalledTimes(1);
     });
 
     it('should clear selected account on asset network change', async () => {

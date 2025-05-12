@@ -30,6 +30,7 @@ type ShouldFetchQuotesRef = {
     amount: string | undefined;
     amountInCrypto: boolean | undefined;
     country: string | undefined;
+    accountDescriptor: string | undefined;
 };
 
 type ShouldFetchQuotes = {
@@ -44,15 +45,19 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
         amount: undefined,
         amountInCrypto: false,
         country: undefined,
+        accountDescriptor: undefined,
     });
-    const [asset, fiatCurrency, fiatValue, cryptoValue, amountInCrypto, country] = form.watch([
-        'asset',
-        'fiatCurrency',
-        'fiatValue',
-        'cryptoValue',
-        'amountInCrypto',
-        'country',
-    ]);
+
+    const [asset, fiatCurrency, fiatValue, cryptoValue, amountInCrypto, country, receiveAccount] =
+        form.watch([
+            'asset',
+            'fiatCurrency',
+            'fiatValue',
+            'cryptoValue',
+            'amountInCrypto',
+            'country',
+            'receiveAccount',
+        ]);
 
     const amount = amountInCrypto ? cryptoValue : fiatValue;
     const isFetchAllowed = !!(asset && fiatCurrency && amount && parseFloat(amount) > 0);
@@ -62,7 +67,8 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
         fiatCurrency === prevState.current.fiatCurrency &&
         amount === prevState.current.amount &&
         amountInCrypto === prevState.current.amountInCrypto &&
-        country?.value === prevState.current.country
+        country?.value === prevState.current.country &&
+        receiveAccount?.account?.descriptor === prevState.current.accountDescriptor
     ) {
         return {
             isFetchAllowed,
@@ -76,6 +82,7 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
         amount,
         amountInCrypto,
         country: country?.value,
+        accountDescriptor: receiveAccount?.account?.descriptor,
     };
 
     return {
