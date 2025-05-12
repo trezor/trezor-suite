@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - release/2*
-      - fix-e2e-workflow-duplicate-check
   workflow_dispatch:
 
 concurrency:
