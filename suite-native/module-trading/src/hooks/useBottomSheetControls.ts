@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 import { Keyboard } from 'react-native';
 
+import { useBottomSheetBackButtonSubscription } from './useBottomSheetBackButtonSubscription';
+
 export const useBottomSheetControls = () => {
     const [isSheetVisible, setIsSheetVisible] = useState(false);
 
@@ -12,6 +14,8 @@ export const useBottomSheetControls = () => {
     const hideSheet = useCallback(() => {
         setIsSheetVisible(false);
     }, []);
+
+    useBottomSheetBackButtonSubscription(isSheetVisible, hideSheet);
 
     return {
         isSheetVisible,

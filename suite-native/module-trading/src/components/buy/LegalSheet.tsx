@@ -7,6 +7,8 @@ import { selectTradingBuyProviders } from '@suite-common/trading';
 import { BottomSheetModal, Box, BulletListItem, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
+import { useBottomSheetBackButtonSubscription } from '../../hooks/useBottomSheetBackButtonSubscription';
+
 export type LegalSheetProps = {
     isVisible: boolean;
     onConsent: () => void;
@@ -38,6 +40,13 @@ export const LegalSheet = memo(
                 bottomSheetModalRef.current?.present();
             }
         }, [isVisible]);
+
+        const dismissSheet = useCallback(() => {
+            onDismiss();
+            bottomSheetModalRef.current?.close();
+        }, [onDismiss]);
+
+        useBottomSheetBackButtonSubscription(isVisible, dismissSheet);
 
         const closeWithConsent = useCallback(() => {
             onConsent();

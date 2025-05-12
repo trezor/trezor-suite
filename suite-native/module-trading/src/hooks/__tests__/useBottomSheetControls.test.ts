@@ -1,6 +1,6 @@
 import { Keyboard } from 'react-native';
 
-import { act, renderHook } from '@suite-native/test-utils';
+import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { useBottomSheetControls } from '../useBottomSheetControls';
 
@@ -11,13 +11,13 @@ describe('useBottomSheetControls', () => {
 
     describe('isSheetVisible', () => {
         it('should be false by default', () => {
-            const { result } = renderHook(() => useBottomSheetControls());
+            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
 
             expect(result.current.isSheetVisible).toBe(false);
         });
 
         it('should be true after showTradeableAssetsSheet call and Keyboard.dismiss should be called one time', () => {
-            const { result } = renderHook(() => useBottomSheetControls());
+            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
             act(() => {
@@ -29,7 +29,7 @@ describe('useBottomSheetControls', () => {
         });
 
         it('should be false after hideTradeableAssetsSheet call and Keyboard.dismiss should be called one time', () => {
-            const { result } = renderHook(() => useBottomSheetControls());
+            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
             act(() => {
