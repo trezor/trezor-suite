@@ -1,15 +1,30 @@
 {
     "name": "@trezor/type-utils",
     "version": "1.1.6-beta.1",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/type-utils",
+    "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
     "sideEffects": false,
     "main": "src/index",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
     "files": [
-        "src/"
+        "lib/",
+        "!**/*.map"
     ],
     "scripts": {
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     }
 }
