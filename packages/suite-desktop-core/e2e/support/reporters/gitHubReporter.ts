@@ -30,8 +30,8 @@ class GitHubReporter implements Reporter, LoggingFunctions {
     private _octokit: Octokit | null = null;
     private _issueRequests: IssueRequests | null = null;
     private _gitHubProject: GitHubProject | null = null;
+    private _fieldsInGitHub: ProjectField[] | null = null;
     private pendingOperations: Promise<any>[] = [];
-    private cachedFields: ProjectField[] | null = null;
     private initState: InitializationState = InitializationState.NOT_STARTED;
     private createdIssuesMap: Map<string, string> = new Map();
 
@@ -80,6 +80,16 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         return this._gitHubProject;
     }
 
+    private get fieldsInGitHub(): ProjectField[] {
+        if (!this._fieldsInGitHub) {
+            throw new Error(
+                'Project fields are not initialized. Ensure onBegin() is called first.',
+            );
+        }
+
+        return this._fieldsInGitHub;
+    }
+
     // Tracks asynchronous operations and logs their completion
     // Otherwise, playwright would not wait for them to finish
     private trackOperation<T>(operation: Promise<T>): Promise<T> {
@@ -113,6 +123,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
 
             try {
                 await this.gitHubProject.init();
+                await scheduleAction(() => this.getProjectFields(), RETRY_CONF);
                 this.initState = InitializationState.COMPLETED;
             } catch (error) {
                 this.initState = InitializationState.FAILED;
@@ -185,11 +196,9 @@ class GitHubReporter implements Reporter, LoggingFunctions {
             `[${issueNodeId}] Updating GitHub draft issue with a retry of test "${test.title}"...`,
         );
 
-        const fields = await scheduleAction(() => this.getProjectFields(), RETRY_CONF);
-
         this.log(`[${issueNodeId}] Updating field Status:"${report.status}"...`);
         const { fieldId: statusFieldId, valueOrOptionId: statusOptionId } =
-            this.resolveFieldAndValue(fields, statusAnnotation.name, report.status);
+            this.resolveFieldAndValue(statusAnnotation.name, report.status);
         await scheduleAction(
             () =>
                 this.issueRequests.setItemValue(
@@ -205,8 +214,6 @@ class GitHubReporter implements Reporter, LoggingFunctions {
     }
 
     private async createIssuePerOs(test: TestCase, report: TestReportProvider): Promise<void> {
-        const fields = await scheduleAction(() => this.getProjectFields(), RETRY_CONF);
-
         for (const operationSystem of report.osMatrix) {
             const issueNodeId = await scheduleAction(() => {
                 this.log(
@@ -231,7 +238,6 @@ class GitHubReporter implements Reporter, LoggingFunctions {
 
             for (const { name, value } of report.projectValues) {
                 const { fieldId, valueOrOptionId } = this.resolveFieldAndValue(
-                    fields,
                     name,
                     value,
                     operationSystem,
@@ -255,30 +261,22 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         }
     }
 
-    private async getProjectFields(): Promise<ProjectField[]> {
-        if (this.cachedFields) {
-            return this.cachedFields;
-        }
-
+    private async getProjectFields() {
         this.log(`Fetching fields for project ${this.gitHubProject.id}...`);
-        const fields = await this.issueRequests.getProjectFields(this.gitHubProject.id);
+        this._fieldsInGitHub = await this.issueRequests.getProjectFields(this.gitHubProject.id);
         this.log(`Successfully retrieved fields for project ${this.gitHubProject.id}`);
-        this.cachedFields = fields;
-
-        return fields;
     }
 
     private resolveFieldAndValue(
-        fieldsInGitHub: ProjectField[],
         fieldNameToResolve: string,
         fieldValueToResolve: string,
         operationSystem?: string,
     ): { fieldId: string; valueOrOptionId: string } {
-        const resolvedField = fieldsInGitHub.find(f => f.name === fieldNameToResolve);
+        const resolvedField = this.fieldsInGitHub.find(f => f.name === fieldNameToResolve);
 
         if (!resolvedField) {
             throw new Error(
-                `Field "${fieldNameToResolve}" not found in project fields: \n ${JSON.stringify(fieldsInGitHub, null, 2)}`,
+                `Field "${fieldNameToResolve}" not found in project fields: \n ${JSON.stringify(this.fieldsInGitHub, null, 2)}`,
             );
         }
 
