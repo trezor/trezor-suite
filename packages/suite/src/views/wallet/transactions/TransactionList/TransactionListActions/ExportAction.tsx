@@ -120,7 +120,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                 'data-testid': `${dataTest}/${type}`,
                 iconRight: 'caretRight',
             }))}
-            icon="fileArrowDown"
+            iconName="fileArrowDown"
             isLoading={isExportRunning}
             data-testid={`${dataTest}/dropdown`}
         />
