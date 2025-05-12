@@ -9,6 +9,7 @@
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/device-utils" }
     ]
 }

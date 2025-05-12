@@ -1,4 +1,4 @@
-import { FirmwareRelease } from '@trezor/connect';
+import { FirmwareRelease } from '@trezor/device-utils';
 
 export type ParseFirmwareChangelogParams = {
     release?: FirmwareRelease;
