@@ -47,6 +47,7 @@ import { getCoinInfo } from './getCoinInfo';
 import { getDeviceState } from './getDeviceState';
 import { getFeatures } from './getFeatures';
 import { getFirmwareHash } from './getFirmwareHash';
+import { getNonce } from './getNonce';
 import { getOwnershipId } from './getOwnershipId';
 import { getOwnershipProof } from './getOwnershipProof';
 import { getPublicKey } from './getPublicKey';
@@ -244,6 +245,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/bitcoin/getPublicKey/
     getPublicKey: typeof getPublicKey;
+
+    // todo: link docs
+    getNonce: typeof getNonce;
 
     // todo: link docs
     getSettings: typeof getSettings;

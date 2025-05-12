@@ -155,6 +155,8 @@ export const factory = <
 
     getPublicKey: params => call({ ...params, method: 'getPublicKey' }),
 
+    getNonce: params => call({ ...params, method: 'getNonce' }),
+
     nemGetAddress: params =>
         call({
             ...params,
