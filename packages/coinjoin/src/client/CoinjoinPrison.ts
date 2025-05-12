@@ -1,4 +1,4 @@
-import { ImmediateId, TimerId } from '@trezor/type-utils';
+import type { ImmediateId, TimerId } from '@trezor/type-utils';
 import { TypedEmitter } from '@trezor/utils';
 
 import { WabiSabiProtocolErrorCode } from '../enums';

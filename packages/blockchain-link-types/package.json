@@ -19,10 +19,10 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@trezor/type-utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*"
     },
     "devDependencies": {
+        "@trezor/type-utils": "workspace:*",
         "tsx": "^4.19.3"
     },
     "peerDependencies": {

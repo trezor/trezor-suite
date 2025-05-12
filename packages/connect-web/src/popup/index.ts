@@ -18,7 +18,7 @@ import {
     AbstractMessageChannel,
     Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
-import { IntervalId, TimerId } from '@trezor/type-utils';
+import type { IntervalId, TimerId } from '@trezor/type-utils';
 import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
 
 import { showPopupRequest } from './showPopupRequest';

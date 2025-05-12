@@ -1,4 +1,4 @@
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 
 import { ERRORS } from '../constants';
 import { Blockchain, BlockchainOptions } from './Blockchain';

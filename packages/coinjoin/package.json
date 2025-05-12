@@ -34,5 +34,8 @@
         "cross-fetch": "^4.0.0",
         "golomb": "1.2.0",
         "n64": "^0.2.10"
+    },
+    "devDependencies": {
+        "@trezor/type-utils": "workspace:*"
     }
 }

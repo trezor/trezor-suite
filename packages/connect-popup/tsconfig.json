@@ -19,6 +19,7 @@
         { "path": "../utils" },
         { "path": "../eslint" },
         { "path": "../node-utils" },
-        { "path": "../trezor-user-env-link" }
+        { "path": "../trezor-user-env-link" },
+        { "path": "../type-utils" }
     ]
 }

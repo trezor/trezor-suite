@@ -9,7 +9,7 @@ import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
 import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';
 import { GlobalStyle } from '@trezor/connect-ui/src/support/GlobalStyle';
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 
 interface ReactWrapperProps {
     children: React.ReactNode;

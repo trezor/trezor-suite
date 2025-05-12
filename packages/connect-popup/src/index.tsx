@@ -29,7 +29,7 @@ import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings
 import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLoggerUtils';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 
 import { isPhishingDomain } from './utils/isPhishingDomain';
 import * as view from './view';

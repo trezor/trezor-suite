@@ -1,4 +1,4 @@
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 import { TypedEmitter } from '@trezor/utils';
 
 import * as coordinator from './coordinator';

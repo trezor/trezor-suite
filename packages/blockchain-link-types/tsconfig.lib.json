@@ -6,10 +6,10 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../type-utils"
+            "path": "../utxo-lib"
         },
         {
-            "path": "../utxo-lib"
+            "path": "../type-utils"
         }
     ]
 }

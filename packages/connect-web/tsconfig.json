@@ -25,6 +25,7 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../utils" },
-        { "path": "../eslint" }
+        { "path": "../eslint" },
+        { "path": "../type-utils" }
     ]
 }

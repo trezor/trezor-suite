@@ -17,6 +17,9 @@
         },
         {
             "path": "../eslint"
+        },
+        {
+            "path": "../type-utils"
         }
     ]
 }

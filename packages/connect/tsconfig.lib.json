@@ -37,6 +37,9 @@
             "path": "../transport"
         },
         {
+            "path": "../type-utils"
+        },
+        {
             "path": "../utils"
         },
         {

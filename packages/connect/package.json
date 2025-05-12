@@ -90,6 +90,7 @@
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/transport": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "blakejs": "^1.2.1",

@@ -13,6 +13,7 @@
         { "path": "../protocol" },
         { "path": "../schema-utils" },
         { "path": "../transport" },
+        { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
         { "path": "../eslint" },
