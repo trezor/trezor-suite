@@ -64,30 +64,56 @@ const RANGES = [
         startDate: startOfToday(),
         endDate: END_OF_TODAY,
         groupBy: 'day',
+        visible: false,
     },
     {
         label: 'week',
         startDate: startOfDay(subDays(END_OF_TODAY, 7)),
         endDate: END_OF_TODAY,
         groupBy: 'day',
+        visible: true,
     },
     {
         label: 'month',
         startDate: startOfDay(subMonths(END_OF_TODAY, 1)),
         endDate: END_OF_TODAY,
         groupBy: 'day',
+        visible: true,
+    },
+    {
+        label: 'six-months',
+        startDate: startOfDay(subMonths(END_OF_TODAY, 6)),
+        endDate: END_OF_TODAY,
+        groupBy: 'day',
+        visible: true,
     },
     {
         label: 'year',
         startDate: startOfDay(subYears(END_OF_TODAY, 1)),
         endDate: END_OF_TODAY,
         groupBy: 'month',
+        visible: true,
+    },
+    {
+        label: 'two-years',
+        startDate: startOfDay(subYears(END_OF_TODAY, 2)),
+        endDate: END_OF_TODAY,
+        groupBy: 'month',
+        visible: true,
+    },
+    {
+        label: 'four-years',
+        startDate: startOfDay(subYears(END_OF_TODAY, 4)),
+        endDate: END_OF_TODAY,
+        groupBy: 'month',
+        visible: true,
     },
     {
         label: 'all',
         startDate: null,
         endDate: null,
         groupBy: 'month',
+        visible: true,
     },
 ] as const;
 
@@ -97,8 +123,14 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
             return <Translation id="TR_RANGE" />;
         case 'all':
             return <Translation id="TR_ALL" />;
+        case 'four-years':
+            return '4Y';
+        case 'two-years':
+            return '2Y';
         case 'year':
             return <Translation id="TR_DATE_YEAR_SHORT" />;
+        case 'six-months':
+            return '6M';
         case 'month':
             return <Translation id="TR_DATE_MONTH_SHORT" />;
         case 'week':
@@ -154,7 +186,7 @@ export const GraphRangeSelector = ({
 
     return (
         <Wrapper className={className}>
-            {RANGES.map(range => (
+            {RANGES.filter(item => item.visible).map(range => (
                 <RangeItem
                     key={range.label}
                     $selected={range.label === selectedRange.label}

@@ -1,6 +1,6 @@
 import { JSX, useEffect } from 'react';
 
-import { TooltipProps } from 'recharts';
+import { DefaultTooltipContentProps } from 'recharts';
 import styled from 'styled-components';
 
 import { Row, variables } from '@trezor/components';
@@ -9,32 +9,20 @@ import { spacings } from '@trezor/theme';
 import { FormattedDate, Translation } from 'src/components/suite';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
-// Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;
 
-// When the Tooltip gets triggered near to the horizontal boundaries, it might overflow outside of the screen
-// These positioning functions are used to align it properly from each side
 const calculateXPosition = (x: number, offset = 0) => `calc(${x}px - ${x / 2}px + ${offset}px)`;
 const calculateXPositionRight = (x: number, offset = 0) => `calc(${x}px + 25% + ${offset}px)`;
 
-// Tooltip should be centered and above the chart bars but should not overflow horizontally thanks to the positioning functions
 const getTooltipXPosition = (x: number, width: number): string => {
-    if (x <= OFFSET_LIMIT_HORIZONTAL) {
-        return calculateXPosition(x, -30);
-    }
-
-    if (x >= width - OFFSET_LIMIT_HORIZONTAL) {
-        return calculateXPositionRight(x);
-    }
+    if (x <= OFFSET_LIMIT_HORIZONTAL) return calculateXPosition(x, -30);
+    if (x >= width - OFFSET_LIMIT_HORIZONTAL) return calculateXPositionRight(x);
 
     return `calc(${x}px - 50%)`;
 };
 
-// Align the triangle arrow in a similar manner
 const getTooltipArrowXPosition = (x: number, width: number): string => {
-    if (x <= OFFSET_LIMIT_HORIZONTAL) {
-        return `left: ${calculateXPosition(x, -30)};`;
-    }
+    if (x <= OFFSET_LIMIT_HORIZONTAL) return `left: ${calculateXPosition(x, -30)};`;
 
     return x >= width - OFFSET_LIMIT_HORIZONTAL ? `left: calc(75% + 1px);` : `left: 50%;`;
 };
@@ -107,15 +95,19 @@ const HighlightedAreaRight = styled(HighlightedArea)`
     border-bottom-right-radius: 5px;
 `;
 
-const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
-    if (dateFormat === 'day') {
-        return <FormattedDate value={date} date month="long" />;
-    }
+const formatDate = (date: Date, dateFormat: 'day' | 'month') =>
+    dateFormat === 'day' ? (
+        <FormattedDate value={date} date month="long" />
+    ) : (
+        <FormattedDate value={date} date day={undefined} />
+    );
 
-    return <FormattedDate value={date} date day={undefined} />;
-};
-
-interface GraphTooltipBaseProps extends TooltipProps<number, any> {
+interface GraphTooltipBaseProps {
+    active?: boolean;
+    payload?: DefaultTooltipContentProps<number, string>['payload'];
+    label?: string | number;
+    coordinate?: { x?: number; y?: number };
+    chartWidth: number; // nový prop místo `viewBox.width`
     selectedRange: GraphRange;
     receivedAmount: JSX.Element;
     sentAmount: JSX.Element;
@@ -126,18 +118,16 @@ interface GraphTooltipBaseProps extends TooltipProps<number, any> {
 
 export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
     useEffect(() => {
-        if (!props.onShow || !props.extendedDataForInterval) {
-            return;
-        }
+        if (!props.onShow || !props.extendedDataForInterval || !props.payload?.[0]) return;
 
-        props.onShow(
-            props.extendedDataForInterval.findIndex(
-                item => item.time === props.payload?.[0].payload.time,
-            ),
+        const matchIndex = props.extendedDataForInterval.findIndex(
+            item => item.time === props.payload?.[0].payload.time,
         );
+
+        props.onShow(matchIndex);
     }, [props]);
 
-    if (!props.active || !props.payload) {
+    if (!props.active || !props.payload?.[0] || !props.coordinate?.x) {
         return null;
     }
 
@@ -149,12 +139,12 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
 
     return (
         <CustomTooltipWrapper
-            $positionX={props.coordinate!.x!}
-            $boxWidth={props.viewBox!.width!}
+            $positionX={props.coordinate.x}
+            $boxWidth={props.chartWidth}
             data-testid="@dashboard/customtooltip"
         >
             <Row margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}>
-                <Title>{date && formatDate(date, dateFormat)}</Title>
+                <Title>{formatDate(date, dateFormat)}</Title>
             </Row>
 
             <ColsWrapper>

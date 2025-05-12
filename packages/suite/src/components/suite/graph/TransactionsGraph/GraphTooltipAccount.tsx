@@ -10,7 +10,7 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 import { GraphTooltipBase } from './GraphTooltipBase';
-import type { CryptoGraphProps } from './TransactionsGraph';
+import type { CryptoGraphProps } from './LegacyTransactionsGraph';
 
 const formatAmount = (
     amount: string | undefined,
@@ -86,6 +86,7 @@ export const GraphTooltipAccount = ({
             {...props}
             active={active}
             payload={payload}
+            chartWidth={1000} // TODO
             sentAmount={formatAmount(
                 sentAmountString,
                 symbol,

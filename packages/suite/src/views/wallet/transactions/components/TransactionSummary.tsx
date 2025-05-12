@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
-import { Button, Card, Column, Row, variables } from '@trezor/components';
+import { Button, Card, Column, Row } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
 import {
     GraphRangeSelector,
     HiddenPlaceholder,
-    TransactionsGraph,
+    LegacyTransactionsGraph,
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -19,6 +20,8 @@ import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/walle
 
 import { SummaryCards } from './SummaryCards';
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
+import { TransactionsGraphWithData } from '../../../../components/suite/graph/TransactionsGraph/newGraph/TransactionsGraphWithData';
+import { selectHasExperimentalFeature } from '../../../../reducers/suite/suiteReducer';
 
 const ErrorMessage = styled.div`
     display: flex;
@@ -28,8 +31,8 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint};
     text-align: center;
 `;
 
@@ -40,11 +43,14 @@ interface TransactionSummaryProps {
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
     const graph = useSelector(state => state.wallet.graph);
+    const isNewTransactionChartEnabled = useSelector(
+        selectHasExperimentalFeature('new-transaction-chart'),
+    );
 
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
-
     const intervalGraphData = getGraphDataForInterval({ account, graph });
+
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -116,21 +122,28 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                             <HiddenPlaceholder enforceIntensity={8}>
                                 <Card overflow="visible">
                                     <Row height={320} overflow="visible" alignItems="stretch">
-                                        <TransactionsGraph
-                                            hideToolbar
-                                            variant="one-asset"
-                                            xTicks={xTicks}
-                                            account={account}
-                                            isLoading={isLoading}
-                                            data={data}
-                                            minMaxValues={minMaxValues}
-                                            localCurrency={localCurrency}
-                                            onRefresh={onRefresh}
-                                            selectedRange={selectedRange}
-                                            receivedValueFn={data => data.received}
-                                            sentValueFn={data => data.sent}
-                                            balanceValueFn={data => data.balance}
-                                        />
+                                        {isNewTransactionChartEnabled ? (
+                                            <TransactionsGraphWithData
+                                                account={account}
+                                                selectedRange={selectedRange}
+                                            />
+                                        ) : (
+                                            <LegacyTransactionsGraph
+                                                hideToolbar
+                                                variant="one-asset"
+                                                xTicks={xTicks}
+                                                account={account}
+                                                isLoading={isLoading}
+                                                data={data}
+                                                minMaxValues={minMaxValues}
+                                                localCurrency={localCurrency}
+                                                onRefresh={onRefresh}
+                                                selectedRange={selectedRange}
+                                                receivedValueFn={data => data.received}
+                                                sentValueFn={data => data.sent}
+                                                balanceValueFn={data => data.balance}
+                                            />
+                                        )}
                                     </Row>
                                 </Card>
                             </HiddenPlaceholder>

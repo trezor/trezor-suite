@@ -176,16 +176,18 @@ export const updateGraphData =
         });
     };
 
+type GetGraphDataForIntervalProps = {
+    account?: Account;
+    deviceState?: StaticSessionId;
+    graph: State;
+};
+
 // TODO: should be in graphUtils
 export const getGraphDataForInterval = ({
     account,
     deviceState,
     graph,
-}: {
-    account?: Account;
-    deviceState?: StaticSessionId;
-    graph: State;
-}) => {
+}: GetGraphDataForIntervalProps) => {
     const { selectedRange } = graph;
 
     const data: GraphData[] = [];

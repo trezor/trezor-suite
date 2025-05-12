@@ -17,7 +17,8 @@ export type ExperimentalFeature =
     | 'nft-section'
     | 'trezor-connect-ws'
     | 'walletconnect'
-    | 'stellar-support';
+    | 'stellar-support'
+    | 'new-transaction-chart';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -71,5 +72,9 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         title: 'TR_EXPERIMENTAL_STELLAR_SUPPORT',
         description: 'TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION',
         knowledgeBaseUrl: HELP_CENTER_XLM_URL,
+    },
+    'new-transaction-chart': {
+        title: 'TR_NEW_TRANSACTION_CHART',
+        description: 'TR_NEW_TRANSACTION_CHART_DESCRIPTION',
     },
 };

@@ -8,7 +8,7 @@ import { selectLocalCurrency, selectSelectedDevice } from '@suite-common/wallet-
 import { Button, variables } from '@trezor/components';
 
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
-import { HiddenPlaceholder, TransactionsGraph, Translation } from 'src/components/suite';
+import { HiddenPlaceholder, LegacyTransactionsGraph, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import graphWorkerFactory from 'src/support/workers/graph';
 import { Account } from 'src/types/wallet';
@@ -133,7 +133,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         </Button>
                     </ErrorMessage>
                 ) : (
-                    <TransactionsGraph
+                    <LegacyTransactionsGraph
                         hideToolbar
                         variant="all-assets"
                         onRefresh={onRefresh}
