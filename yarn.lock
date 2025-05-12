@@ -12694,6 +12694,8 @@ __metadata:
 "@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:packages/type-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
+  dependencies:
+    tsx: "npm:^4.19.3"
   languageName: unknown
   linkType: soft
 

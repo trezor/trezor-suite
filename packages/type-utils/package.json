@@ -26,5 +26,8 @@
         "type-check": "yarn g:tsc --build",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
+    },
+    "devDependencies": {
+        "tsx": "^4.19.3"
     }
 }
