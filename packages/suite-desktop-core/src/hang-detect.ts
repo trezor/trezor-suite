@@ -58,7 +58,7 @@ export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string
         mainWindow.loadURL(APP_SRC);
     });
     const cleanup = () => {
-        ipcMain.removeHandler('handshake/client', handshakeHandler);
+        ipcMain.removeHandler('handshake/client');
     };
 
     return { handshake, cleanup };

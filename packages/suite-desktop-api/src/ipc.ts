@@ -18,7 +18,7 @@ type StrictIpcModule<Module, Channel extends StrictChannel, Evt> = Omit<
 export type StrictIpcMain<Module, Evt> = StrictIpcModule<Module, MainChannels, Evt> & {
     handle: HandleMethod<InvokeChannels, Evt>;
     handleOnce: HandleMethod<InvokeChannels, Evt>;
-    removeHandler: HandleMethod<InvokeChannels, Evt>;
+    removeHandler: (channel: keyof InvokeChannels) => void;
 };
 
 // Module = Omit<Electron.IpcRenderer, 'invoke' | 'send'>
