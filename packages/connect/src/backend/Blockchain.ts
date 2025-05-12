@@ -90,6 +90,7 @@ export class Blockchain {
             debug: options.debug,
             proxy: options.proxy,
             ...(blockchainLink.type === 'ripple' ? { throttleBlockEvent: 60 * 1000 } : {}),
+            ...(this.coinInfo.type === 'ethereum' ? { throttleBlockEvent: 10 * 1000 } : {}), // register EVM block once per 10+ seconds
         });
     }
 
