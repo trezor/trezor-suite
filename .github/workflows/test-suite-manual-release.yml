@@ -18,6 +18,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -47,7 +54,7 @@ jobs:
         shell: bash
         env:
           GITHUB_ACTION: true
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
         run: |
