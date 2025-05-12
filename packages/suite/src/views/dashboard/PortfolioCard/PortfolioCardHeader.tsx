@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { Button, LoadingContent, Row } from '@trezor/components';
+import { Button, LoadingContent, Row, SkeletonRectangle } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, Translation } from 'src/components/suite';
@@ -62,15 +62,21 @@ export const PortfolioCardHeader = ({
         }
     }
 
+    const valueLoading = isDiscoveryRunning || isMissingFiatRate;
+
     return (
         <Row justifyContent="space-between">
-            <LoadingContent size={24} isLoading={isDiscoveryRunning || isMissingFiatRate}>
-                <FiatHeader
-                    data-testid="@dashboard/portfolio/fiat-amount"
-                    size="large"
-                    amount={fiatAmount}
-                    localCurrency={localCurrency}
-                />
+            <LoadingContent size={24} isLoading={valueLoading}>
+                {valueLoading ? (
+                    <SkeletonRectangle width={140} height={53} />
+                ) : (
+                    <FiatHeader
+                        data-testid="@dashboard/portfolio/fiat-amount"
+                        size="large"
+                        amount={fiatAmount}
+                        localCurrency={localCurrency}
+                    />
+                )}
             </LoadingContent>
             {actions}
         </Row>
