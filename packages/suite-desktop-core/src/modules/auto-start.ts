@@ -100,6 +100,7 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
     const deferred = createDeferred<
         'background-always' | 'background-now' | 'quit-always' | 'quit-now'
     >();
+    ipcMain.removeHandler('app/auto-start/popup-response');
     ipcMain.handleOnce('app/auto-start/popup-response', (ipcEvent, response) => {
         validateIpcMessage(ipcEvent);
         deferred.resolve(response);
