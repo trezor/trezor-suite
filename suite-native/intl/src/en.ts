@@ -759,25 +759,26 @@ export const en = {
         },
         advanced: {
             title: 'Advanced',
+            goodAdvice: 'We strongly recommend leaving these checks turned on.',
             firmwareAuthenticityCheck: {
-                title: 'Turn off firmware authenticity check',
+                title: 'Firmware authenticity check',
                 subtitle:
-                    'Firmware authenticity check is a crucial security feature. We strongly recommend keeping it turned on.',
+                    'This check ensures that your firmware is legitimate. Compromised firmware won’t be able to communicate with Suite.',
                 buttonTurnOff: 'Turn off',
                 buttonTurnOn: 'Turn on',
                 buttonLearnMore: 'Learn more',
 
                 turnOffModal: {
                     title: 'Turn off firmware authenticity check',
-                    content:
-                        'Trezor Support will never ask you to turn off the firmware revision check. This feature is designed to protect your security.',
-                    item1: 'Only if the device has passed the check before',
+                    content: 'This feature is designed to protect your security.',
+                    item1: 'Only continue if the device has passed this check before',
                     item1Explanation:
-                        'Using an unverified device could result in the loss of funds.',
-                    item2: 'Only for testing and development',
+                        'Using an unverified device could compromise the security of your funds.',
+                    item2: 'Only use for testing and development',
                     item2Explanation:
-                        'These security checks should only be disabled for testing and development purposes.',
+                        'This security check should only be disabled for testing and development purposes.',
                     acknowledgement: 'I’ve read and understood the above',
+                    acknowledgementNote: 'Trezor Support will never ask you to turn this off.',
                     buttonTurnOff: 'Turn off',
                 },
             },

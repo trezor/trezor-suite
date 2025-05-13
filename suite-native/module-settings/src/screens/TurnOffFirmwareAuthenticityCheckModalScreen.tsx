@@ -94,12 +94,22 @@ export const TurnOffFirmwareAuthenticityCheckModalScreen = () => {
                 />
                 <InformativeList />
                 <Pressable onPress={handleCheckboxPress}>
-                    <Card>
-                        <HStack spacing="sp16">
-                            <CheckBox isChecked={isChecked} onChange={handleCheckboxPress} />
-                            <Text variant="highlight">
+                    <Card
+                        alertProps={{
+                            variant: 'warning',
+                            title: (
+                                <Text variant="callout">
+                                    <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.acknowledgementNote" />
+                                </Text>
+                            ),
+                        }}
+                        alertPosition="bottom"
+                    >
+                        <HStack spacing="sp16" justifyContent="space-between">
+                            <Text>
                                 <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.acknowledgement" />
                             </Text>
+                            <CheckBox isChecked={isChecked} onChange={handleCheckboxPress} />
                         </HStack>
                     </Card>
                 </Pressable>

@@ -9,12 +9,15 @@ import { Color } from '@trezor/theme';
 
 import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 
+type AlertPosition = 'top' | 'bottom';
+
 export type CardProps = {
     children: ReactNode;
     style?: NativeStyleObject;
     noPadding?: boolean;
     borderColor?: Color;
     alertProps?: InlineAlertBoxProps;
+    alertPosition?: AlertPosition;
 };
 
 const cardOuterContainerStyle = prepareNativeStyle<{
@@ -24,10 +27,10 @@ const cardOuterContainerStyle = prepareNativeStyle<{
 }));
 
 const cardInnerContainerStyle = prepareNativeStyle<{
-    isAlertDisplayed: boolean;
+    alertPosition?: AlertPosition;
     noPadding: boolean;
     borderColor?: Color;
-}>((utils, { isAlertDisplayed, noPadding, borderColor }) => ({
+}>((utils, { alertPosition, noPadding, borderColor }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.r16,
     padding: noPadding ? 0 : utils.spacings.sp16,
@@ -35,10 +38,17 @@ const cardInnerContainerStyle = prepareNativeStyle<{
 
     extend: [
         {
-            condition: isAlertDisplayed,
+            condition: alertPosition === 'top',
             style: {
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
+            },
+        },
+        {
+            condition: alertPosition === 'bottom',
+            style: {
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
             },
         },
         {
@@ -51,32 +61,50 @@ const cardInnerContainerStyle = prepareNativeStyle<{
     ],
 }));
 
-const alertBoxWrapperStyle = prepareNativeStyle(utils => ({
+const alertBoxWrapperStyle = prepareNativeStyle<{
+    alertPosition?: AlertPosition;
+}>((utils, { alertPosition = 'top' }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderTopLeftRadius: utils.borders.radii.r16,
-    borderTopRightRadius: utils.borders.radii.r16,
     paddingHorizontal: utils.spacings.sp4,
-    paddingTop: utils.spacings.sp4,
+    extend: [
+        {
+            condition: alertPosition === 'top',
+            style: {
+                borderTopLeftRadius: utils.borders.radii.r16,
+                borderTopRightRadius: utils.borders.radii.r16,
+                paddingTop: utils.spacings.sp4,
+            },
+        },
+        {
+            condition: alertPosition === 'bottom',
+            style: {
+                borderBottomLeftRadius: utils.borders.radii.r16,
+                borderBottomRightRadius: utils.borders.radii.r16,
+                paddingBottom: utils.spacings.sp4,
+            },
+        },
+    ],
 }));
 
 export const Card = React.forwardRef<View, CardProps>(
-    ({ children, style, alertProps, borderColor, noPadding = false }: CardProps, ref) => {
+    (
+        { children, style, alertProps, alertPosition, borderColor, noPadding = false }: CardProps,
+        ref,
+    ) => {
         const { applyStyle } = useNativeStyles();
-
-        const isAlertDisplayed = !!alertProps;
 
         return (
             <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}>
-                {isAlertDisplayed && (
-                    <View style={applyStyle(alertBoxWrapperStyle)}>
+                {!!alertProps && alertPosition !== 'bottom' && (
+                    <View style={applyStyle(alertBoxWrapperStyle, { alertPosition })}>
                         <InlineAlertBox {...alertProps} />
                     </View>
                 )}
-                {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}
                 <View
                     style={[
+                        /* CAUTION: in case that alert is displayed, it is not possible to change styles of the borders by the `style` prop. */
                         applyStyle(cardInnerContainerStyle, {
-                            isAlertDisplayed,
+                            alertPosition,
                             noPadding,
                             borderColor,
                         }),
@@ -87,6 +115,11 @@ export const Card = React.forwardRef<View, CardProps>(
                 >
                     {children}
                 </View>
+                {!!alertProps && alertPosition === 'bottom' && (
+                    <View style={applyStyle(alertBoxWrapperStyle, { alertPosition })}>
+                        <InlineAlertBox {...alertProps} />
+                    </View>
+                )}
             </View>
         );
     },
