@@ -33,7 +33,7 @@
         "@electron/fuses": "^1.8.0",
         "@electron/notarize": "3.0.1",
         "electron": "36.2.0",
-        "electron-builder": "26.0.15",
+        "electron-builder": "26.0.3",
         "glob": "^11.0.2"
     }
 }
