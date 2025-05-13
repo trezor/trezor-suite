@@ -81,6 +81,9 @@ module.exports = {
         oneClick: false,
     },
     mac: {
+        // identity: undefined means default behavior (autodetect the ENV variables necessary for signing and perform it)
+        // identity: null means disable any signing – necessary for dev builds (default behavior is to adhoc sign ARM builds, which would fail in CI)
+        identity: isCodesignBuild ? undefined : null,
         files: ['entitlements.mac.inherit.plist'],
         extraResources: [
             {
