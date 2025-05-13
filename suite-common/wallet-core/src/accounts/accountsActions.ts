@@ -10,7 +10,8 @@ import {
     getAccountKey,
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
-import { AccountInfo, StaticSessionId } from '@trezor/connect';
+import { AccountInfo, DeviceState, StaticSessionId } from '@trezor/connect';
+import { networks } from '@suite-common/wallet-config';
 
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 
@@ -52,54 +53,66 @@ const composeCreateAccountActionPayload = ({
     accountLabel,
     visible,
 }: CreateAccountActionProps): Account => {
-    const { chainId } = getNetwork(discoveryItem.coin);
-    const isNonEthEvm = discoveryItem.networkType === 'ethereum' && discoveryItem.coin !== 'eth';
+    try {
+        const { chainId } = getNetwork(discoveryItem.coin);
+        const networkType = networks[discoveryItem.coin].networkType;
+        const isNonEthEvm = networkType === 'ethereum' && discoveryItem.coin !== 'eth';
 
-    const metadataKey = isNonEthEvm
-        ? `${accountInfo.descriptor}-${chainId}`
-        : accountInfo.legacyXpub || accountInfo.descriptor;
+        const metadataKey = isNonEthEvm
+            ? `${accountInfo.descriptor}-${chainId}`
+            : accountInfo.legacyXpub || accountInfo.descriptor;
 
-    return {
-        deviceState,
-        accountLabel,
-        imported,
-        index: discoveryItem.index,
-        path: discoveryItem.path,
-        unlockPath: discoveryItem.unlockPath,
-        descriptor: accountInfo.descriptor,
-        descriptorChecksum: accountInfo.descriptorChecksum,
-        key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
-        accountType: discoveryItem.accountType,
-        symbol: discoveryItem.coin,
-        empty: accountInfo.empty,
-        ...(discoveryItem.backendType === 'coinjoin'
-            ? {
-                  backendType: 'coinjoin',
-                  status: discoveryItem.status,
-              }
-            : {
-                  backendType: discoveryItem.backendType,
-              }),
-        visible,
-        balance: accountInfo.balance,
-        availableBalance: accountInfo.availableBalance,
-        formattedBalance: formatNetworkAmount(
-            // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
-            discoveryItem.networkType === 'ripple' || discoveryItem.networkType === 'stellar'
-                ? accountInfo.balance
-                : accountInfo.availableBalance,
-            discoveryItem.coin,
-        ),
-        tokens: enhanceTokens(accountInfo.tokens),
-        addresses: enhanceAddresses(accountInfo, discoveryItem),
-        utxo: enhanceUtxo(accountInfo.utxo, discoveryItem.networkType, discoveryItem.index),
-        history: accountInfo.history,
-        metadata: {
-            key: metadataKey,
-        },
-        ts: Date.now(),
-        ...getAccountSpecific(accountInfo, discoveryItem.networkType),
-    };
+        const result: Account = {
+            deviceState,
+            accountLabel,
+            imported,
+            index: discoveryItem.index,
+            path: discoveryItem.path,
+            unlockPath: discoveryItem.unlockPath,
+            descriptor: accountInfo.descriptor,
+            descriptorChecksum: accountInfo.descriptorChecksum,
+            key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
+            accountType: discoveryItem.accountType,
+            symbol: discoveryItem.coin,
+            empty: accountInfo.empty,
+            ...(discoveryItem.backendType === 'coinjoin'
+                ? {
+                      backendType: 'coinjoin',
+                      status: discoveryItem.status,
+                  }
+                : {
+                      backendType: discoveryItem.backendType,
+                  }),
+            visible,
+            balance: accountInfo.balance,
+            availableBalance: accountInfo.availableBalance,
+            formattedBalance: formatNetworkAmount(
+                // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
+                discoveryItem.networkType === 'ripple' || discoveryItem.networkType === 'stellar'
+                    ? accountInfo.balance
+                    : accountInfo.availableBalance,
+                discoveryItem.coin,
+            ),
+            tokens: enhanceTokens(accountInfo.tokens),
+            addresses: enhanceAddresses(accountInfo, {
+                networkType,
+                index: discoveryItem.index,
+                addresses: accountInfo.addresses,
+            }),
+            utxo: enhanceUtxo(accountInfo.utxo, networkType, discoveryItem.index),
+            history: accountInfo.history,
+            metadata: {
+                key: metadataKey,
+            },
+            ts: Date.now(),
+            ...getAccountSpecific(accountInfo, networkType),
+        };
+
+        return result;
+    } catch (error) {
+        console.error('Error creating account payload:', error);
+        throw new Error('Failed to create account payload');
+    }
 };
 
 const createIndexLabeledAccount = createAction(
@@ -138,6 +151,21 @@ const createAccount = createAction(
             visible,
         }),
     }),
+);
+
+const createAccountFromAccountInfo = createAction(
+    `${ACCOUNTS_MODULE_PREFIX}/createAccountFromAccountInfo`,
+    (accountInfo: AccountInfo, deviceState: StaticSessionId): { payload: Account } => {
+        return {
+            payload: {
+                ...accountInfo,
+                deviceState: deviceState,
+                accountLabel: 'label',
+                imported: false,
+                index: 0,
+            },
+        };
+    },
 );
 
 const updateAccount = createAction(
@@ -226,6 +254,7 @@ export const accountsActions = {
     disposeAccount,
     removeAccount,
     createAccount,
+    createAccountFromAccountInfo,
     createIndexLabeledAccount,
     updateAccount,
     updateAccountRefreshTimestamp,

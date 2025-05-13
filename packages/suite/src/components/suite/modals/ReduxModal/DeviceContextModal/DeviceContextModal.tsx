@@ -1,6 +1,9 @@
 import { useIntl } from 'react-intl';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectIsDiscoveryAuthConfirmationRequired,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -9,7 +12,6 @@ import {
     ConfirmAddressModal,
     ConfirmFingerprintModal,
     ConfirmXpubModal,
-    PassphraseModal,
     PassphraseOnDeviceModal,
     PinInvalidModal,
     PinModal,
@@ -30,8 +32,14 @@ export const DeviceContextModal = ({
     const intl = useIntl();
 
     if (!device) return null;
-
+    const confirmEmptyPassphrase = useSelector(state =>
+        selectIsDiscoveryAuthConfirmationRequired(state, device?.state?.staticSessionId),
+    );
     const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+
+    if (confirmEmptyPassphrase) {
+        return <PassphraseModal device={device} />;
+    }
 
     switch (windowType) {
         // T1B1 firmware
@@ -40,9 +48,6 @@ export const DeviceContextModal = ({
         // T1B1 firmware
         case UI.INVALID_PIN:
             return <PinInvalidModal device={device} />;
-        // Passphrase on host
-        case UI.REQUEST_PASSPHRASE:
-            return <PassphraseModal device={device} />;
         // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':

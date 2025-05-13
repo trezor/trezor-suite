@@ -1,38 +1,43 @@
-import { passwordMismatchResetThunk } from '@suite-common/wallet-core';
-import { WalletType } from '@suite-common/wallet-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import {
-    addWalletThunk,
-    redirectAfterWalletSelectedThunk,
-} from 'src/actions/wallet/addWalletThunk';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { Translation } from '../../../Translation';
 
-export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) => {
-    const { isLocked, device: selectDevice } = useDevice();
-    const dispatch = useDispatch();
+export const PassphraseMismatchModal = ({
+    device,
+    discovery,
+}: {
+    device: TrezorDevice;
+    discovery: DiscoveryStatus;
+}) => {
+    const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();
 
-    if (selectDevice === undefined) {
-        return null;
-    }
+    const dispatch = useDispatch();
 
     const onStartOver = () => {
-        dispatch(passwordMismatchResetThunk({ device: selectDevice }));
-        dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE, device: selectDevice }));
-        dispatch(redirectAfterWalletSelectedThunk());
-        onCancel();
+        dispatch(cancelDiscoveryThunk(device));
+
+        dispatch(
+            startDiscoveryThunk({
+                device,
+                isAddingHiddenWallet: discovery.isAddingHiddenWallet,
+                isAddingExistingWallet: discovery.isAddingExistingWallet,
+            }),
+        );
     };
 
     return (
         <SwitchDeviceModal data-testid="@passphrase-mismatch">
-            <CardWithDevice device={selectDevice} isFullHeaderVisible={false}>
+            <CardWithDevice device={device} isFullHeaderVisible={false}>
                 <Column gap={spacings.xs} margin={{ top: spacings.xxs, bottom: spacings.lg }}>
                     <H3>
                         <Translation id="TR_PASSPHRASE_MISMATCH" />

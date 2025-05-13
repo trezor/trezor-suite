@@ -7,7 +7,7 @@ import {
     deviceActions,
     selectDeviceThunk,
     selectDevices,
-    selectDiscoveryByDeviceState,
+    selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 
@@ -44,55 +44,6 @@ export const redirectAfterWalletSelectedThunk = createThunk<
     if (isWalletSubpath) {
         await dispatch(goto('wallet-index'));
     }
-});
-
-export const addWalletThunk = createThunk<
-    void,
-    { walletType: WalletType; device: TrezorDevice },
-    void
->(`${DEVICE_MODULE_PREFIX}/addWalletThunk`, ({ walletType, device }, { dispatch, getState }) => {
-    const discovery = selectDiscoveryByDeviceState(getState(), device?.state);
-    const discoveryStatus = getDiscoveryStatus({ device, discovery });
-
-    if (
-        discoveryStatus !== undefined &&
-        discoveryStatus.status === 'loading' &&
-        // There are situations where we are in the "state" of discovery, but we want to allow for adding a wallet.
-        // See: https://github.com/trezor/trezor-suite/issues/17114 for example
-        discoveryStatus.type === 'discovery'
-    ) {
-        return;
-    }
-
-    const addDeviceInstance = async () => {
-        await dispatch(
-            createDeviceInstanceThunk({
-                device,
-                useEmptyPassphrase: walletType === WalletType.STANDARD,
-            }),
-        );
-    };
-
-    const selectDeviceInstance = ({ device }: { device: TrezorDevice }) => {
-        dispatch(
-            deviceActions.updatePassphraseMode({
-                device,
-                hidden: walletType === WalletType.PASSPHRASE,
-            }),
-        );
-        dispatch(selectDeviceThunk({ device }));
-    };
-
-    const devices = selectDevices(getState());
-    const instances = getDeviceInstances(device, devices);
-    const hasAtLeastOneWallet = instances.find(d => d.state) !== undefined;
-
-    if (hasAtLeastOneWallet) {
-        addDeviceInstance();
-    } else {
-        selectDeviceInstance({ device: instances[0] });
-    }
-    dispatch(redirectAfterWalletSelectedThunk());
 });
 
 export const openSwitchDeviceDialog = createThunk<void, void, void>(

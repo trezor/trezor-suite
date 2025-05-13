@@ -1,21 +1,28 @@
-import { useEffect, useState } from 'react';
+import { selectAccountsByDeviceState, selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { selectDeviceDiscovery } from '@suite-common/wallet-core';
-
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useRediscoveryNeeded = () => {
-    const [isRediscoveryNeeded, setIsRediscoveryNeeded] = useState(false);
+    const device = useSelector(selectSelectedDevice);
 
-    const discovery = useSelector(selectDeviceDiscovery);
-    const { isDiscoveryRunning } = useDiscovery();
-    useEffect(() => {
-        if (discovery && !isDiscoveryRunning && discovery.loaded < discovery.total) {
-            setIsRediscoveryNeeded(true);
-        } else {
-            setIsRediscoveryNeeded(false);
-        }
-    }, [discovery, isDiscoveryRunning, discovery?.loaded, discovery?.total]);
+    if (!device?.state?.staticSessionId) return false;
 
-    return isRediscoveryNeeded;
+    // todo: duplicated with discoveryThunk
+
+    const discoveredNetworks = [
+        ...new Set(
+            useSelector(state =>
+                selectAccountsByDeviceState(state, device!.state!.staticSessionId!).map(
+                    account => account.symbol,
+                ),
+            ),
+        ),
+    ];
+    const suiteEnabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+
+    const networksToDiscover = suiteEnabledNetworks.filter(
+        network => !discoveredNetworks.includes(network),
+    );
+
+    return networksToDiscover.length > 0;
 };

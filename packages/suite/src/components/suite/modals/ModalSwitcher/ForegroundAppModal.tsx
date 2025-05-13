@@ -7,7 +7,6 @@ import { Backup } from 'src/views/backup/Backup';
 import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
 import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
 import { Recovery } from 'src/views/recovery';
-import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import { BridgeUnavailable } from 'src/views/suite/bridge';
 import { BridgeDeprecated } from 'src/views/suite/bridge-deprecated';
 import { BridgeRequested } from 'src/views/suite/bridge-requested';
@@ -20,7 +19,7 @@ import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShare
 const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
 
 const getForegroundApp = (app: ForegroundAppRoute['app']) => {
-    const map: Record<ForegroundAppRoute['app'], FunctionComponent<any>> = {
+    const map: Record<ForegroundAppRoute['app'], FunctionComponent<any> | null> = {
         firmware: FirmwareUpdate,
         'firmware-type': FirmwareType,
         'firmware-custom': FirmwareCustom,
@@ -29,7 +28,7 @@ const getForegroundApp = (app: ForegroundAppRoute['app']) => {
         'bridge-requested': BridgeRequested,
         'bridge-deprecated': BridgeDeprecated,
         udev: UdevRules,
-        'switch-device': SwitchDevice,
+        'switch-device': null,
         recovery: Recovery,
         backup: Backup,
         'create-multi-share-backup': MultiShareBackupModal,

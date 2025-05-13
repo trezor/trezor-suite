@@ -80,21 +80,13 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const accountLabels = useSelector(selectAccountLabels);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isSidebarCollapsed = useIsSidebarCollapsed();
-    const { discovery, getDiscoveryStatus } = useDiscovery();
     const { coinFilter, searchString } = useAccountSearch();
-    const discoveryStatus = getDiscoveryStatus();
 
-    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
-
-    if (!device || !discovery) {
+    if (!device) {
         return null;
     }
 
-    const failed = getFailedAccounts(discovery);
-
-    const list = sortByCoin(
-        accounts.filter(a => a.deviceState === device.state?.staticSessionId).concat(failed),
-    );
+    const list = sortByCoin(accounts.filter(a => a.deviceState === device.state?.staticSessionId));
     const filteredAccounts =
         searchString || coinFilter
             ? list.filter(account => {
@@ -147,7 +139,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
             accounts,
             onItemClick,
             coinjoinIsPreloading,
-            discoveryInProgress,
+            discoveryInProgress: false,
             type,
         };
 
@@ -184,9 +176,9 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         );
     }
 
-    if (discoveryInProgress) {
-        return <AccountItemSkeleton />;
-    }
+    // if (discoveryInProgress) {
+    //     return <AccountItemSkeleton />;
+    // }
 
     if (isSidebarCollapsed) return <AccountsMenuNotice />;
 

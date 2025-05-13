@@ -14,7 +14,7 @@ import {
     selectDeviceUpdateFirmwareVersion,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
-    selectIsDiscoveryActiveByDeviceState,
+    selectIsDiscoveryActiveByDevicePath,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -61,7 +61,7 @@ export const FirmwareUpdateAlert = () => {
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
     const deviceState = useSelector(selectDeviceState);
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
-        selectIsDiscoveryActiveByDeviceState(state, deviceState),
+        selectIsDiscoveryActiveByDevicePath(state, deviceState),
     );
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();

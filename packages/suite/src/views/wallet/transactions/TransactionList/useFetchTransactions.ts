@@ -5,7 +5,6 @@ import {
     getIsPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
@@ -160,7 +159,7 @@ export const useVisibleTransactions = ({
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );
-    const { discovery } = useDiscovery();
+    const { isDiscoveryRunning } = useDiscovery();
 
     const {
         fetchedAll,
@@ -225,13 +224,11 @@ export const useVisibleTransactions = ({
         visibleTransactions.length,
     ]);
 
-    const isLoading = discovery && discovery?.status !== DiscoveryStatus.COMPLETED; // NOTE: loading indicates that the state of the data is unknown and we are "loading for the first time"
-
     return {
         allTransactions,
         visibleTransactions,
         visibleTotal: totalPossiblyVisible,
-        isFetching: isLoading || isFetching || transactionsIsLoading,
-        isLoading,
+        isFetching: isDiscoveryRunning || isFetching || transactionsIsLoading,
+        isLoading: isDiscoveryRunning,
     };
 };

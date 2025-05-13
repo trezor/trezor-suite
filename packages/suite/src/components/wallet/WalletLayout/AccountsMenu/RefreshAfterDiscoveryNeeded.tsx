@@ -41,7 +41,10 @@ const animationConfig: MotionProps = {
 
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
-    const isDiscoveryButtonVisible = useRediscoveryNeeded();
+    // const isDiscoveryButtonVisible = useRediscoveryNeeded();
+    // todo;
+    const isDiscoveryButtonVisible = false;
+
     const selectedDevice = useSelector(selectSelectedDevice);
     const isSidebarCollapsed = useIsSidebarCollapsed();
     if (!selectedDevice?.connected) {
@@ -49,7 +52,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
     }
 
     const startDiscovery = () => {
-        dispatch(startDiscoveryThunk());
+        dispatch(startDiscoveryThunk(selectedDevice));
     };
 
     return (

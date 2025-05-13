@@ -57,7 +57,6 @@ const breadcrumbActions = [
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,
     accountsActions.updateAccount.type,
-    discoveryActions.completeDiscovery.type,
     deviceActions.updateSelectedDevice.type,
     deviceActions.rememberDevice.type,
     METADATA.ADD_PROVIDER,

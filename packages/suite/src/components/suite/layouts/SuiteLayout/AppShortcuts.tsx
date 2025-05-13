@@ -4,10 +4,9 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
-import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 
-export const useAppShortcuts = () => {
+export const AppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
@@ -19,15 +18,14 @@ export const useAppShortcuts = () => {
     useEvent('keydown', e => {
         const { altKey, metaKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
-
         // press ALT + P to show PassphraseModal
         if (
             selectedDevice?.connected &&
-            altKey &&
+            (altKey || metaKey) &&
             e.code === KEYBOARD_CODE.KEY_P &&
             isDeviceSelected
         ) {
-            dispatch(addWalletThunk({ walletType: 'passphrase', device: selectedDevice }));
+            passphraseFlowManager.startFlow(selectedDevice, { isExisting: true });
             dispatch(closeModalApp());
             e.preventDefault();
         }
@@ -49,4 +47,6 @@ export const useAppShortcuts = () => {
             e.preventDefault();
         }
     });
+
+    return null;
 };

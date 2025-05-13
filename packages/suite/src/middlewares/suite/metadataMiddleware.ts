@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 
-import { accountsActions, deviceActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
-import { METADATA_LABELING, ROUTER } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
@@ -18,16 +18,6 @@ const metadata =
 
         // pass action
         next(action);
-
-        if (deviceActions.receiveAuthConfirm.match(action)) {
-            if (
-                action.payload.success &&
-                api.getState().metadata.enabled &&
-                !action.payload.device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
-            ) {
-                api.dispatch(metadataLabelingActions.init(false));
-            }
-        }
 
         switch (action.type) {
             case ROUTER.LOCATION_CHANGE:

@@ -19,7 +19,7 @@ import {
     selectAccountByKey,
     selectDeviceByStaticSessionId,
     selectDevices,
-    selectDiscoveryByDeviceState,
+    selectDiscoveryByDevicePath,
     selectHistoricFiatRates,
     selectSelectedDevice,
     sendFormActions,
@@ -129,29 +129,45 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveBackend(action.payload.symbol));
             }
 
-            if (explorerActions.setExplorer.match(action)) {
-                storageActions.saveExplorer(action.payload);
-            }
+            // if (explorerActions.setExplorer.match(action)) {
+            //     storageActions.saveExplorer(action.payload);
+            // }
 
-            if (
-                isAnyOf(
-                    discoveryActions.updateDiscovery,
-                    discoveryActions.interruptDiscovery,
-                    discoveryActions.completeDiscovery,
-                    discoveryActions.stopDiscovery,
-                )(action)
-            ) {
-                const { deviceState } = action.payload;
-                const devices = selectDevices(api.getState());
-                const device = devices.find(d => d.state?.staticSessionId === deviceState);
-                // update discovery for remembered device
-                if (isDeviceRemembered(device)) {
-                    const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
-                    if (discovery) {
-                        storageActions.saveDiscovery([discovery]);
-                    }
-                }
-            }
+            // if (
+            //     isAnyOf(
+            //         discoveryActions.updateDiscovery,
+            //         discoveryActions.interruptDiscovery,
+            //         discoveryActions.completeDiscovery,
+            //         discoveryActions.stopDiscovery,
+            //     )(action)
+            // ) {
+            //     const { deviceState } = action.payload;
+            //     const devices = selectDevices(api.getState());
+            //     const device = devices.find(d => d.state?.staticSessionId === deviceState);
+            //     // update discovery for remembered device
+            //     if (isDeviceRemembered(device)) {
+            //         const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
+            //         if (discovery) {
+            //             storageActions.saveDiscovery([discovery]);
+            //         }
+            //     }
+            // }
+            // if (
+            //     isAnyOf(
+            //         discoveryActions.updateDiscovery,
+            //     )(action)
+            // ) {
+            //     const { deviceState } = action.payload;
+            //     const devices = selectDevices(api.getState());
+            //     const device = devices.find(d => d.state?.staticSessionId === deviceState);
+            //     // update discovery for remembered device
+            //     if (isDeviceRemembered(device)) {
+            //         const discovery = selectDiscoveryByDevicePath(api.getState(), deviceState);
+            //         if (discovery) {
+            //             storageActions.saveDiscovery([discovery]);
+            //         }
+            //     }
+            // }
 
             if (
                 isAnyOf(

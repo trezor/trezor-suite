@@ -1,4 +1,5 @@
 import { Route } from '@suite-common/suite-types';
+import { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
@@ -43,19 +44,50 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
     }) as const;
 
 export const usePreferredModal = () => {
-    const { getDiscoveryStatus } = useDiscovery();
+    const { getDiscoveryStatus, discovery: discoveryForSelectedDevice } = useDiscovery();
     const route = useSelector(state => state.router.route);
     const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
     const modal = useSelector(state => state.modal);
+    const passphraseFlow =
+        Boolean(discoveryForSelectedDevice?.isAddingHiddenWallet) &&
+        discoveryForSelectedDevice?.status !== 'cancelled' &&
+        discoveryForSelectedDevice?.status !== 'complete' &&
+        discoveryForSelectedDevice?.status !== 'failed';
 
     if (route && isForegroundApp(route) && hasPriority(route)) {
         return getForegroundAppAction(route, params);
     }
 
     if (modal.context !== MODAL.CONTEXT_NONE) {
+        // NOTE: in case when passphrase flow is active, we handle the device passphrase request
+        // within the passphrase flow
+        if (
+            'windowType' in modal &&
+            modal.windowType === UI.REQUEST_PASSPHRASE &&
+            passphraseFlow &&
+            discoveryForSelectedDevice
+        ) {
+            return {
+                type: 'passphrase-flow',
+            } as const;
+        }
+
+        if ('windowType' in modal && modal.windowType === UI.REQUEST_PASSPHRASE) {
+            return {
+                type: 'device-request-passphrase',
+                payload: modal,
+            } as const;
+        }
+
         return {
             type: 'redux-modal',
             payload: modal,
+        } as const;
+    }
+
+    if (passphraseFlow && discoveryForSelectedDevice) {
+        return {
+            type: 'passphrase-flow',
         } as const;
     }
 

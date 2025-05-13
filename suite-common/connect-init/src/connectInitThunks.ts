@@ -65,6 +65,13 @@ export const connectInitThunk = createThunk<
                 'Hey, it looks like you called a TrezorConnect method without providing device property.',
             );
         }
+
+        if (
+            action.type === 'ui-close_window'
+            // && getState().wallet.discovery[getState().device?.selectedDevice?.path]?.status ==='progress'
+        ) {
+            // return;
+        }
         // dispatch event as action
         dispatch(action);
     });
@@ -172,7 +179,7 @@ export const connectInitThunk = createThunk<
             pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             transports,
             _sessionsBackgroundUrl,
-            debug: showConnectLogs,
+            debug: false,
         });
     } catch (error) {
         let formattedError: string;

@@ -3,7 +3,11 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
+import {
+    selectSelectedDevice,
+    startDiscoveryThunk,
+    toggleRememberDevice,
+} from '@suite-common/wallet-core';
 import {
     Button,
     Card,
@@ -194,6 +198,7 @@ const Buttons = () => {
                     wasAccepted: true,
                 },
             });
+            dispatch(startDiscoveryThunk({ device }));
         }
     };
 

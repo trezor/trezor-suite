@@ -16,7 +16,6 @@ import {
 import {
     AccountsRootState,
     DeviceRootState,
-    LIMIT,
     accountsActions,
     selectDeviceAccounts,
     selectIsDeviceInViewOnlyMode,
@@ -80,6 +79,8 @@ export const accountTypeTranslationKeys: Record<
         descKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.legacy.desc',
     },
 };
+
+const LIMIT = 10; // or maybe find another place to put it if needed
 
 export const useAddCoinAccount = () => {
     const dispatch = useDispatch();

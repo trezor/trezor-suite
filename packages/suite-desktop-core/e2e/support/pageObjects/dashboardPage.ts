@@ -104,6 +104,8 @@ export class DashboardPage {
     @step()
     async addHiddenWallet(passphrase: string, options?: { skipDiscovery?: boolean }) {
         await this.addHiddenWalletButton.click();
+        await this.page.getByTestId('@switch-device/add-existing-hidden-wallet-button').click();
+
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
         await expect(this.passphraseInput).not.toBeVisible();
@@ -127,13 +129,19 @@ export class DashboardPage {
 
     @step()
     async addUnusedHiddenWallet(passphrase: string) {
-        await this.addHiddenWallet(passphrase);
-        await expect(
-            this.openUnusedWalletButton1,
-            'Expected "Yes, open" button to be enabled. Unused wallet might not finished Discovery.',
-        ).toBeEnabled({ timeout: 30_000 });
-        await this.openUnusedWalletButton1.click();
-        await this.openUnusedWalletButton2.click();
+        await this.addHiddenWalletButton.click();
+        await this.page.getByTestId('@switch-device/add-new-hidden-wallet-button').click();
+        await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
+        await this.passphraseInput.fill(passphrase);
+        await this.passphraseSubmitButton.click();
+        await expect(this.passphraseInput).not.toBeVisible();
+
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
 

@@ -9,7 +9,7 @@ import {
     sortByTimestamp,
 } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { AccountKey, WalletType } from '@suite-common/wallet-types';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     getAddressType,
     getDerivationType,
@@ -424,12 +424,6 @@ export const authConfirm = createThunk(
                 // forget previous empty wallet
                 dispatch(deviceActions.forgetDevice({ device, settings }));
 
-                if (response.payload.error === 'auth-confirm-retry' && device.type === 'acquired') {
-                    dispatch(
-                        extra.thunks.addWalletThunk({ walletType: WalletType.PASSPHRASE, device }),
-                    );
-                }
-
                 return;
             }
             dispatch(
@@ -613,7 +607,9 @@ export const onPassphraseSubmit = createThunk(
         { value, passphraseOnDevice }: { value: string; passphraseOnDevice: boolean },
         { dispatch, getState },
     ) => {
+        console.log('onPassphraseSubmit', value, passphraseOnDevice);
         const device = selectSelectedDevice(getState());
+        console.log('device', device);
         if (!device) return;
 
         if (!device.state) {

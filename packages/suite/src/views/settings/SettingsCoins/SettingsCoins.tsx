@@ -2,9 +2,9 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import {
+    runAdditionalDiscoveryThunk,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
-    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -107,8 +107,10 @@ export const SettingsCoins = () => {
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     const startDiscovery = () => {
-        dispatch(startDiscoveryThunk());
+        dispatch(runAdditionalDiscoveryThunk(device));
     };
+
+    // todo: make sure that we run additional discovery also when navigating away from this screen. use effect is not suitable to achieve that.
 
     const animation = getDiscoveryButtonAnimationConfig(!!isDiscoveryRunning);
 
