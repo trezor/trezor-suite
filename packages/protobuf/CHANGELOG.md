@@ -1,3 +1,13 @@
+# 1.3.5
+
+- npm-prerelease: @trezor/protobuf 1.3.5-beta.1 (884f7764d8)
+- chore: apply latest prettier (eb758acea9)
+- fix(protobuf): order of EthereumDefinitions (1cfc6a3e25)
+- chore(protobuf): minor changes in build scripts (7951ed9c76)
+- fix(protobuf): use Failure enum as a string key (15336dbbe6)
+- chore(protobuf): update protobuf definitions (926ffa355c)
+- fix(protobuf): remove manual changes in generated code (9beef38d7c)
+
 # 1.3.4
 
 - npm-prerelease: @trezor/protobuf 1.3.4-beta.1 (4664dfed22)
