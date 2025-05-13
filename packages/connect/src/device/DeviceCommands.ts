@@ -8,13 +8,19 @@ import type { TypedCallProvider } from '../device/DeviceCurrentSession';
 import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
 import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
-import { getAccountAddressN } from '../utils/accountUtils';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 
 type TypedCall = Messages.TypedCall;
 
 export type { TypedCall };
+
+export type AccountDescriptor = {
+    descriptor: string;
+    legacyXpub?: string;
+    address_n: number[];
+    descriptorChecksum?: string;
+};
 
 export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
     const typedCall = deviceTypedCall.typedCall.bind(deviceTypedCall);
@@ -181,18 +187,9 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
 
     const getAccountDescriptor = async (
         coinInfo: CoinInfo,
-        indexOrPath: number | number[],
+        address_n: number[],
         derivationType: Messages.CardanoDerivationType = PROTO.CardanoDerivationType.ICARUS_TREZOR,
-    ): Promise<{
-        descriptor: string;
-        legacyXpub?: string;
-        address_n: number[];
-        descriptorChecksum?: string;
-    }> => {
-        const address_n = Array.isArray(indexOrPath)
-            ? indexOrPath
-            : getAccountAddressN(coinInfo, indexOrPath);
-
+    ): Promise<AccountDescriptor> => {
         if (coinInfo.type === 'bitcoin') {
             const resp = await getHDNode({ address_n }, { coinInfo, validation: false });
 
