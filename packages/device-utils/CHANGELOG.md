@@ -1,3 +1,10 @@
+# 1.0.3
+
+- npm-prerelease: @trezor/device-utils 1.0.3-beta.1 (698a6f0191)
+- chore: apply latest prettier (eb758acea9)
+- fix(suite): change isOfficialFw to firmwareSource (a888040dbb)
+- feat(suite): add customFw to event device-update-firmware and device-connect (91970a2e8e)
+
 # 1.0.2
 
 - npm-prerelease: @trezor/device-utils 1.0.2-beta.1 (608436928d)
