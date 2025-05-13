@@ -1,3 +1,9 @@
+# 1.3.5
+
+- npm-prerelease: @trezor/blockchain-link-utils 1.3.5-beta.1 (c55a427303)
+- chore: apply latest prettier (eb758acea9)
+- chore(blockchain-link): update xrpl.js to 4.2.5 due to security issues in previous compromised versions (f49497d046)
+
 # 1.3.4
 
 - npm-prerelease: @trezor/blockchain-link-utils 1.3.4-beta.1 (94c6c8d06c)
