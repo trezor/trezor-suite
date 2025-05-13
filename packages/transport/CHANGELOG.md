@@ -1,3 +1,15 @@
+# 1.4.5
+
+- npm-prerelease: @trezor/transport 1.4.5-beta.1 (079ee83fc4)
+- feat(transport-bluetooth): add BluetoothApi and BluetoothTransport (4b55856619)
+- fix(transport): assign logger to AbstractApiTransport super class (f8e40602c4)
+- chore: apply latest prettier (eb758acea9)
+- fix(transport): in webusb and node-bridge handle session null correctly (6221972b02)
+- refactor(connect): better device run aborting (062e6843dc)
+- chore(transport): unify device/descriptor not found errors (65b464f05c)
+- feat(transport): add `getMessages` method (b003dc69a9)
+- fix(transport): readMessageBuffer.cancelRead (243d4cf677)
+
 # 1.4.4
 
 - npm-prerelease: @trezor/transport 1.4.4-beta.1 (4088a73073)
