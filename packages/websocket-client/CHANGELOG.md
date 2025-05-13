@@ -1,3 +1,9 @@
+# 1.1.5
+
+- npm-prerelease: @trezor/websocket-client 1.1.5-beta.1 (dd1d949795)
+- chore: apply latest prettier (eb758acea9)
+- feat(websocket-client): autospoof Origin header in node.js (b8c2f2ffcc)
+
 # 1.1.4
 
 - npm-prerelease: @trezor/websocket-client 1.1.4-beta.1 (9679ef8a27)
