@@ -1,3 +1,8 @@
+# 0.3.5
+
+- npm-prerelease: @trezor/connect-common 0.3.5-beta.1 (518cb2a22d)
+- chore: apply latest prettier (eb758acea9)
+
 # 0.3.3
 
 - npm-prerelease: @trezor/connect-common 0.3.3-beta.1 (3fe6d1fdb7)
