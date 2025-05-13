@@ -1,31 +1,16 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { firmwareActions } from '@suite-common/firmware';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { selectDeviceModel } from '@suite-common/wallet-core';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
+import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
 
-export const FirmwareInstallationScreen = ({
-    navigation,
-}: StackProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.FirmwareInstallation
->) => {
+export const FirmwareInstallationScreen = () => {
     const dispatch = useDispatch();
-    const deviceModel = useSelector(selectDeviceModel);
-
-    const supportsDeviceAuthentication = deviceModel
-        ? SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel]
-        : true;
+    const { navigateToNextScreenAfterFirmwareInstallation } =
+        useNavigateToNextScreenAfterFirmwareInstallation();
 
     useEffect(() => {
         // On first render, set the firmware installation status to 'initial'. Some previous failed firmware updates might
@@ -33,23 +18,10 @@ export const FirmwareInstallationScreen = ({
         dispatch(firmwareActions.setStatus('initial'));
     }, [dispatch]);
 
-    const handleFirmwareInstallationSuccess = () => {
-        if (deviceModel === DeviceModelInternal.T2T1) {
-            // T2T1 does not support device tutorial and device authenticity check so those screens are skipped.
-            navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
-        } else {
-            navigation.navigate(
-                supportsDeviceAuthentication // TODO: check not only if supported, but also if allowed.
-                    ? DeviceOnboardingStackRoutes.DeviceAuthenticity
-                    : DeviceOnboardingStackRoutes.DeviceTutorial,
-            );
-        }
-    };
-
     return (
         <DeviceOnboardingScreenWithExitButton>
             <FirmwareInstallationScreenContent
-                onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
+                onFirmwareInstallationSuccess={navigateToNextScreenAfterFirmwareInstallation}
                 isCancellationAllowed={false}
                 isRetryAllowed={false}
                 isTemporaryRememeberAllowed={false}

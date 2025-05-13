@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     selectDeviceModel,
     selectHasDeviceFirmwareInstalled,
@@ -26,7 +25,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
-
+import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
 const trezorImageStyle = prepareNativeStyle<{ hasDeviceFirmwareInstalled: boolean }>(
     (_, { hasDeviceFirmwareInstalled }) => ({
         width: '100%',
@@ -94,11 +93,8 @@ export const UninitializedDeviceLandingScreen = ({
     const deviceModel = useSelector(selectDeviceModel);
     const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
-
-    const supportsDeviceAuthentication = deviceModel
-        ? SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel]
-        : true;
-
+    const { navigateToNextScreenAfterFirmwareInstallation } =
+        useNavigateToNextScreenAfterFirmwareInstallation();
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
             if (isLatestFirmwareInstalled) {
@@ -107,16 +103,7 @@ export const UninitializedDeviceLandingScreen = ({
                     firmware: 'up-to-date',
                 });
 
-                if (deviceModel === DeviceModelInternal.T2T1) {
-                    // T2T1 does not support device tutorial and device authenticity check so those screens are skipped.
-                    navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
-                } else {
-                    navigation.navigate(
-                        supportsDeviceAuthentication // TODO: check not only if supported, but also if allowed.
-                            ? DeviceOnboardingStackRoutes.DeviceAuthenticity
-                            : DeviceOnboardingStackRoutes.DeviceTutorial,
-                    );
-                }
+                navigateToNextScreenAfterFirmwareInstallation();
             } else {
                 navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
             }
