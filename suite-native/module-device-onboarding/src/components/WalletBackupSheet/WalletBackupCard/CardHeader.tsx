@@ -22,7 +22,7 @@ export const CardHeader = ({ type, isSelected }: CardHeaderProps) => (
         <Box flex={1}>
             <TitleHeader title={<Translation id={walletBackupSheetCopyByType[type].title} />} />
             <Text color={descriptionColor[type]} variant="hint">
-                <Translation id={walletBackupSheetCopyByType[type].title} />
+                <Translation id={walletBackupSheetCopyByType[type].description} />
             </Text>
         </Box>
         <Radio disabled isChecked={isSelected} value="single" onPress={() => undefined} />

@@ -20,7 +20,7 @@ interface WalletTypeCardProps {
 }
 
 const containerStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({
-    borderColor: isSelected ? utils.colors.borderSecondary : 'transparent',
+    borderColor: isSelected ? utils.colors.borderSecondary : utils.colors.borderOnElevation1,
     borderWidth: utils.borders.widths.large,
 }));
 

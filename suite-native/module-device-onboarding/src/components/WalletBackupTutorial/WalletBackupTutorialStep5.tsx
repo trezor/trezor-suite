@@ -21,6 +21,8 @@ const cardStyle = prepareNativeStyle<{ isCalloutButtonShown: boolean }>(
     (utils, { isCalloutButtonShown }) => ({
         padding: utils.spacings.sp16,
         paddingBottom: isCalloutButtonShown ? utils.spacings.sp16 : 0,
+        borderWidth: utils.borders.widths.small,
+        borderColor: utils.colors.borderOnElevation1,
     }),
 );
 

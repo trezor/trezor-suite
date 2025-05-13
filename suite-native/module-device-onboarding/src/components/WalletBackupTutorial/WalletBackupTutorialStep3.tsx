@@ -17,8 +17,11 @@ const imageContainerStyle = prepareNativeStyle(() => ({
     alignItems: 'flex-start',
 }));
 
-const cardStyle = prepareNativeStyle(() => ({
+const cardStyle = prepareNativeStyle(utils => ({
     paddingTop: 12,
+    borderColor: utils.colors.borderOnElevation1,
+    borderWidth: utils.borders.widths.small,
+    ...utils.boxShadows.none,
 }));
 
 const stepContainerStyle = prepareNativeStyle(() => ({

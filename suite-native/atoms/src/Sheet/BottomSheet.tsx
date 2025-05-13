@@ -35,8 +35,6 @@ type WrapperStyleProps = {
     maxHeight: `${number}%`;
 };
 
-const DEFAULT_INSET_BOTTOM = Platform.OS === 'android' ? 48 : 0;
-
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>(
     (utils, { insetBottom, maxHeight }) => ({
         backgroundColor: utils.colors.backgroundSurfaceElevation0,
@@ -106,8 +104,7 @@ export const BottomSheet = forwardRef<BottomSheetHandle, BottomSheetProps>(
         const handlePressOutside = (event: GestureResponderEvent) => {
             if (event.target === event.currentTarget) closeSheetAnimated();
         };
-
-        const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
+        const insetBottom = Platform.OS === 'ios' ? insets.bottom : 0;
         const { scrollDivider, handleScroll: handleScrollDivider } = useScrollDivider();
 
         const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {

@@ -13,8 +13,10 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 
-const cardStyle = prepareNativeStyle(_ => ({
+const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors.borderOnElevation1,
 }));
 
 export const CreateOrRecoverCrossroadsScreen = ({

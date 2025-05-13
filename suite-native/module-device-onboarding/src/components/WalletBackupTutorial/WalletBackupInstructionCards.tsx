@@ -4,6 +4,7 @@ import { SharedValue, useAnimatedStyle, withDelay, withTiming } from 'react-nati
 import { AnimatedCard, Text, VStack } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type InstructionCardProps = {
     index: number;
@@ -48,12 +49,19 @@ const getCardProps = (isMultishareSelected: boolean) =>
         },
     ] as const satisfies Omit<InstructionCardProps, 'index'>[];
 
+const cardStyle = prepareNativeStyle(utils => ({
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors.borderOnElevation1,
+    ...utils.boxShadows.none,
+}));
+
 const WalletBackupInstructionCard = ({
     iconName,
     title,
     index,
     isStepFocused,
 }: InstructionCardProps & { isStepFocused: SharedValue<boolean> }) => {
+    const { applyStyle } = useNativeStyles();
     const animatedCardStyle = useAnimatedStyle(() => {
         const indexDelay = ANIMATION_DURATION + ANIMATION_DELAY * index;
 
@@ -89,7 +97,7 @@ const WalletBackupInstructionCard = ({
     });
 
     return (
-        <AnimatedCard style={animatedCardStyle}>
+        <AnimatedCard style={[animatedCardStyle, applyStyle(cardStyle)]}>
             <VStack spacing="sp8" alignItems="center">
                 <Icon name={iconName} size={28} />
                 <Text variant="highlight">{title}</Text>
