@@ -27,14 +27,6 @@ export interface ProjectQueryResponse {
     };
 }
 
-export interface AddIssueToProjectResponse {
-    addProjectV2ItemById: {
-        item: {
-            id: string;
-        };
-    };
-}
-
 export interface FieldOption {
     id: string;
     name: string;

@@ -217,7 +217,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         for (const operationSystem of report.osMatrix) {
             const issueNodeId = await scheduleAction(() => {
                 this.log(
-                    `Creating GitHub draft issue for test "(${operationSystem}) ${test.title}"...`,
+                    `Creating GitHub draft issue for test "(OS ${operationSystem}) ${test.title}"...`,
                 );
 
                 const titleWithOptionalEmoticons = report.useOsEmoticons
@@ -233,30 +233,30 @@ class GitHubReporter implements Reporter, LoggingFunctions {
 
             this.createdIssuesMap.set(test.id, issueNodeId);
             this.log(
-                `[${issueNodeId}] Successfully created issue "(${operationSystem}) ${test.title}"`,
+                `[${issueNodeId}] Successfully created issue "(OS ${operationSystem}) ${test.title}"`,
             );
 
-            for (const { name, value } of report.projectValues) {
-                const { fieldId, valueOrOptionId } = this.resolveFieldAndValue(
-                    name,
-                    value,
-                    operationSystem,
+            const resolvedFieldsAndValues = report.projectValues.map(({ name, value }) =>
+                this.resolveFieldAndValue(name, value, operationSystem),
+            );
+            await scheduleAction(() => {
+                this.log(
+                    `[${issueNodeId}] Updating values of issue "(OS ${operationSystem}) ${test.title}"...`,
                 );
-                await scheduleAction(() => {
-                    this.log(`[${issueNodeId}] Updating field ${name}:"${value}"...`);
 
-                    return this.issueRequests.setItemValue(
-                        this.gitHubProject.id,
-                        issueNodeId,
-                        fieldId,
-                        valueOrOptionId,
-                    );
-                }, RETRY_CONF);
-                this.log(`[${issueNodeId}] Successfully updated field ${name}:"${value}"`);
-            }
+                return this.issueRequests.setMultipleValues(
+                    this.gitHubProject.id,
+                    issueNodeId,
+                    resolvedFieldsAndValues,
+                );
+            }, RETRY_CONF);
 
             this.log(
-                `[${issueNodeId}] Successfully recorded test result for "(${operationSystem}) ${test.title}"`,
+                `[${issueNodeId}] Successfully updated values of issue "(OS ${operationSystem}) ${test.title}"`,
+            );
+
+            this.log(
+                `[${issueNodeId}] Successfully recorded test result for "(OS ${operationSystem}) ${test.title}"`,
             );
         }
     }
@@ -267,6 +267,8 @@ class GitHubReporter implements Reporter, LoggingFunctions {
         this.log(`Successfully retrieved fields for project ${this.gitHubProject.id}`);
     }
 
+    // Looks in project for filedId and OptionId for a specific values the test have.
+    // These Ids are used to update the issue with values like status, stream, etc.
     private resolveFieldAndValue(
         fieldNameToResolve: string,
         fieldValueToResolve: string,

@@ -3,7 +3,6 @@ import type { Octokit } from '@octokit/rest';
 import { getProjectFields } from './projectRequests';
 import {
     AddDraftIssueResponse,
-    AddIssueToProjectResponse,
     ProjectField,
     UpdateProjectItemFieldResponse,
     ValueOrOptionId,
@@ -11,26 +10,6 @@ import {
 
 export class IssueRequests {
     constructor(private readonly octokit: Octokit) {}
-
-    async addIssueToProject(projectId: string, issueNodeId: string): Promise<string> {
-        const mutation = `
-            mutation {
-              addProjectV2ItemById(
-              input: {
-                projectId: "${projectId}"
-                contentId: "${issueNodeId}"
-              }) {
-                item {
-                  id
-                }
-              }
-            }
-        `;
-
-        const response = await this.octokit.graphql<AddIssueToProjectResponse>(mutation);
-
-        return response.addProjectV2ItemById.item.id;
-    }
 
     getProjectFields(projectId: string): Promise<ProjectField[]> {
         return getProjectFields(this.octokit, projectId);
@@ -93,5 +72,40 @@ export class IssueRequests {
         const issueId = response.addProjectV2DraftIssue.projectItem.id;
 
         return issueId;
+    }
+
+    async setMultipleValues(
+        projectId: string,
+        itemId: string,
+        resolvedFieldsAndValues: { fieldId: string; valueOrOptionId: ValueOrOptionId }[],
+    ): Promise<void> {
+        // Start building the mutation
+        let mutation = `
+        mutation UpdateMultipleFields($projectId: ID!, $itemId: ID!) {
+      `;
+
+        // Add each field update as an aliased operation
+        resolvedFieldsAndValues.forEach(({ fieldId, valueOrOptionId }, index) => {
+            mutation += `
+          update${index}: updateProjectV2ItemFieldValue(
+            input: {
+              projectId: $projectId
+              itemId: $itemId
+              fieldId: "${fieldId}"
+              value: ${valueOrOptionId}
+            }
+          ) {
+            projectV2Item {
+              id
+            }
+          }
+        `;
+        });
+
+        // Close the mutation
+        mutation += `}`;
+
+        // Execute the combined mutation
+        await this.octokit.graphql(mutation, { projectId, itemId });
     }
 }
