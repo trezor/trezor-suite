@@ -1,3 +1,10 @@
+# 1.3.5
+
+- npm-prerelease: @trezor/blockchain-link-types 1.3.5-beta.2 (003b282c48)
+- fix(connect): add @trezor/type-utils to dependencies (4dbd53281b)
+- npm-prerelease: @trezor/blockchain-link-types 1.3.5-beta.1 (9f72b0f8e7)
+- chore: apply latest prettier (eb758acea9)
+
 # 1.3.4
 
 - npm-prerelease: @trezor/blockchain-link-types 1.3.4-beta.1 (fa0a4d511d)
