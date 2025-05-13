@@ -51,7 +51,8 @@ type NativeDeviceRootState = DeviceRootState &
     DiscoveryRootState &
     SettingsSliceRootState &
     FiatRatesRootState &
-    FeatureFlagsRootState;
+    FeatureFlagsRootState &
+    MessageSystemRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
@@ -203,7 +204,7 @@ export const selectHasFirmwareAuthenticityCheckHardFailed = (state: FwAuthentici
 };
 
 export const selectIsEntropyCheckEnabledAndFailed = (state: FwAuthenticityCheckState) =>
-    selectIsFeatureEnabled(state, Feature.entropyCheckMobile, true) &&
+    selectIsFeatureEnabled(state, Feature.firmwareRevisionCheckMobile, true) &&
     selectIsEntropyCheckFailed(state);
 
 export const selectIsDeviceAuthenticityCheckFailed = (state: DeviceRootState) => {
@@ -215,10 +216,10 @@ export const selectIsDeviceAuthenticityCheckFailed = (state: DeviceRootState) =>
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [
         selectDeviceModel,
+        (state: MessageSystemRootState) =>
+            selectIsFeatureEnabled(state, Feature.deviceOnboardingMobile, true),
         (state: NativeDeviceRootState) =>
-            selectIsFeatureFlagEnabled(state, FeatureFlag.IsDeviceOnboardingEnabled),
-        (state: NativeDeviceRootState) =>
-            selectIsFeatureFlagEnabled(state, FeatureFlag.IsModelTDeviceOnboardingEnabled),
+            selectIsFeatureEnabled(state, Feature.deviceOnboardingMobileT2T1, true),
     ],
     (model, isDeviceOnboardingFeatureFlagEnabled, isModelTDeviceOnboardingFeatureFlagEnabled) =>
         isDeviceOnboardingFeatureFlagEnabled &&

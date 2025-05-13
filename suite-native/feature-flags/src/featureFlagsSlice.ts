@@ -7,8 +7,6 @@ export const FeatureFlag = {
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
-    IsDeviceOnboardingEnabled: 'isDeviceOnboardingEnabled',
-    IsModelTDeviceOnboardingEnabled: 'isModelTDeviceOnboardingEnabled',
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
     IsWalletConnectEnabled: 'isWalletConnectEnabled',
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
@@ -33,10 +31,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsRegtestEnabled]: process.env.EXPO_PUBLIC_FF_IS_REGTEST_ENABLED === 'true',
     [FeatureFlag.IsConnectPopupEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true',
-    [FeatureFlag.IsDeviceOnboardingEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_DEVICE_ONBOARDING_ENABLED === 'true',
-    [FeatureFlag.IsModelTDeviceOnboardingEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_MODEL_T_DEVICE_ONBOARDING_ENABLED === 'true',
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
     [FeatureFlag.IsWalletConnectEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true',
@@ -52,8 +46,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsCardanoSendEnabled,
     FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsConnectPopupEnabled,
-    FeatureFlag.IsDeviceOnboardingEnabled,
-    FeatureFlag.IsModelTDeviceOnboardingEnabled,
     FeatureFlag.IsWalletConnectEnabled,
     FeatureFlag.IsTradingBuyEnabled,
     FeatureFlag.IsTradingSwapEnabled,

@@ -48,6 +48,10 @@ export const Feature = {
         sell: 'trading.sell',
         swap: 'trading.swap',
     },
+
+    // device onboarding (MOBILE ONLY!!!).
+    deviceOnboardingMobile: 'device.onboarding.mobile', // for all device models (including T2T1)
+    deviceOnboardingMobileT2T1: 'device.onboarding.T2T1.mobile', // specifically for T2T1 devices
 } as const;
 
 type ExtractFeatureValues<T> =
