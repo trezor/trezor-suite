@@ -1,3 +1,14 @@
+# 1.1.6
+
+- fix(type-utils): add tsx as dev dependency (76bfc4ae30)
+- npm-prerelease: @trezor/type-utils 1.1.6-beta.2 (c3e1508100)
+- chore(type-utils): prepare for publishing (79b8797dc9)
+- npm-prerelease: @trezor/type-utils 1.1.6-beta.1 (79009c9dd1)
+- chore: use exhausetive util for switches instead of manual :never typing (0cec08c6da)
+- chore: add exhaustive util (b1a81fd630)
+- chore: apply latest prettier (eb758acea9)
+- chore(type-utils): only allow known properties in Without (19b10f8c16)
+
 # 1.1.5
 
 - npm-prerelease: @trezor/type-utils 1.1.5-beta.1 (a8b9793a64)
