@@ -44,7 +44,7 @@ export const SettingsSectionItem = ({
                     {isLoading ? (
                         <ActivityIndicator size="small" color={utils.colors.iconSubdued} />
                     ) : (
-                        <Icon name="caretCircleRight" color="iconPrimaryDefault" />
+                        <Icon name="caretRight" color="iconSubdued" />
                     )}
                 </View>
             </Box>
