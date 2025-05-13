@@ -1,3 +1,10 @@
+# 2.3.5
+
+- npm-prerelease: @trezor/utxo-lib 2.3.5-beta.1 (d68cce61ea)
+- chore: apply latest prettier (eb758acea9)
+- chore: remove unnecessary @types libs (2b92d08706)
+- chore(utxo-lib): move TxWeightCalculator to src (d349a5d05b)
+
 # 2.3.3
 
 - npm-prerelease: @trezor/utxo-lib 2.3.3-beta.1 (c31bf677a4)
