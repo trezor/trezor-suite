@@ -68,7 +68,7 @@ const TurnOffButton = () => {
     const navigateTo = useSettingsNavigateTo();
 
     const handleButtonPress = () => {
-        navigateTo(SettingsStackRoutes.TurnOffFirmwareAuthenticityCheckModal);
+        navigateTo(SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck);
     };
 
     return (

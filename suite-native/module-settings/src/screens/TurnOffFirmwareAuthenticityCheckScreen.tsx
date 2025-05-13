@@ -58,7 +58,7 @@ type NavigationProp = StackNavigationProps<
     SettingsStackRoutes.SettingsDeviceChecks
 >;
 
-export const TurnOffFirmwareAuthenticityCheckModalScreen = () => {
+export const TurnOffFirmwareAuthenticityCheckScreen = () => {
     const [isChecked, setIsChecked] = useState(false);
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
