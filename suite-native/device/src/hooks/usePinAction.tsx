@@ -110,15 +110,21 @@ export const usePinAction = ({ type, onSuccess }: PinActionProps) => {
             onSuccess();
         } else {
             const errorCode = payload.code;
-            if (errorCode === 'Failure_ActionCancelled' || errorCode === 'Failure_PinCancelled') {
+            if (
+                errorCode === 'Failure_ActionCancelled' ||
+                errorCode === 'Failure_PinCancelled' ||
+                errorCode === 'Method_Interrupted'
+            ) {
                 showError(canceledMessageKey, handlePinAction);
             } else if (errorCode === 'Failure_PinInvalid') {
                 showError('moduleDeviceSettings.pinProtection.errors.pinInvalid', handlePinAction);
             } else if (errorCode === 'Failure_PinMismatch') {
                 showError('moduleDeviceSettings.pinProtection.errors.pinMismatch', handlePinAction);
+            } else {
+                navigation.goBack();
             }
         }
-    }, [device, dispatch, onSuccess, showError, showSuccess, type]);
+    }, [device, dispatch, navigation, onSuccess, showError, showSuccess, type]);
 
     useEffect(() => {
         if (isDeviceConnected) handlePinAction();

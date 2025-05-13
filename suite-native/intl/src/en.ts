@@ -457,15 +457,15 @@ export const en = {
             actions: {
                 enable: {
                     success: 'Device PIN has been enabled.',
-                    canceled: 'Enable PIN has been canceled on your Trezor.',
+                    canceled: 'Enable PIN has been canceled.',
                 },
                 change: {
                     success: 'Device PIN has been changed.',
-                    canceled: 'Change PIN has been canceled on your Trezor.',
+                    canceled: 'Change PIN has been canceled.',
                 },
                 disable: {
                     success: 'Device PIN has been disabled.',
-                    canceled: 'Disable PIN has been canceled on your Trezor.',
+                    canceled: 'Disable PIN has been canceled.',
                 },
             },
             errors: {
