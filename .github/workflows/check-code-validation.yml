@@ -147,11 +147,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: "Checkout branches for Nx"
-        uses: ./.github/actions/nx-checkout
-      - name: "Minimal yarn install"
-        uses: ./.github/actions/minimal-yarn-install
-
       - name: Check releases.json files changes
         uses: dorny/paths-filter@v3
         id: changes
@@ -160,6 +155,13 @@ jobs:
             releases-json:
               - 'packages/connect-common/files/firmware/t1b1/releases.json'
               - 'packages/connect-common/files/firmware/t2t1/releases.json'
+      - name: "Checkout branches for Nx"
         if: steps.changes.outputs.releases-json == 'true'
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        if: steps.changes.outputs.releases-json == 'true'
+        uses: ./.github/actions/minimal-yarn-install
+
       - name: Check releases.json revisions
+        if: steps.changes.outputs.releases-json == 'true'
         run: yarn workspace @trezor/connect-common validate-releases.json
