@@ -107,7 +107,8 @@
         "reselect": "5.1.1",
         "### We need promise to be same version in mobile unless it produces undefined behavior, check PR #15815": "1.0.0",
         "promise": "8.3.0",
-        "elliptic": "6.6.1"
+        "elliptic": "6.6.1",
+        "webpack": "5.98.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.27.0",

@@ -75,7 +75,7 @@
         "lodash": "^4.17.21",
         "terser-webpack-plugin": "^5.3.14",
         "tsx": "^4.19.3",
-        "webpack": "^5.97.1",
+        "webpack": "^5.99.8",
         "xvfb-maybe": "^0.2.1"
     }
 }
