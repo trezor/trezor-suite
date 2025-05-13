@@ -36,17 +36,21 @@ git fetch origin
 git checkout "$BRANCH"
 git reset "origin/$BRANCH" --hard
 
+# add private repository if it does not exist, or suppress error output (idempotent)
+git remote add private git@github.com:trezor/trezor-firmware-private.git >/dev/null 2>&1 || true
+git fetch --tags private
+
 DATA=$(jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$RELEASES_FOLDER/$DEVICE"/releases.json)
 
 for ROW in $DATA;
-do 
+do
     FW_REVISION=$(echo "$ROW" | cut -d"%" -f1)
     EXPECTED_TAG=$([[ "$DEVICE" == "t1b1" ]] && echo "legacy" || echo "core")/v$(echo "$ROW" | cut -d"%" -f2)
-    
+
     RESULT_TAGS=$(git tag --points-at "$FW_REVISION")
 
     for RESULT_TAG in $RESULT_TAGS;
-    do  
+    do
         if [[ "$RESULT_TAG" == "$EXPECTED_TAG" ]]; then
             echo "[$DEVICE] Version $EXPECTED_TAG ... OK"
             continue 2
