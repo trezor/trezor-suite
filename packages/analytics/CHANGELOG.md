@@ -1,3 +1,8 @@
+# 1.3.5
+
+- npm-prerelease: @trezor/analytics 1.3.5-beta.1 (abd73629f0)
+- chore: apply latest prettier (eb758acea9)
+
 # 1.3.3
 
 - npm-prerelease: @trezor/analytics 1.3.3-beta.1 (2fd7c7afd9)
