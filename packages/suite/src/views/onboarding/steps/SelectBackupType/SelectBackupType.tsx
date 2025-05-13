@@ -15,9 +15,9 @@ import {
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { BackupType } from '@suite-common/suite-types';
+import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
 import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import {
     Elevation,
     borders,
@@ -31,7 +31,6 @@ import { OptionText, SelectedOption } from './OptionWithContent';
 import { typesToLabelMap } from './typesToLabelMap';
 import { Translation } from '../../../../components/suite';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 
 const SELECT_ELEMENT_HEIGHT = 84;
 const SELECT_ELEMENT_HEIGHT_MOBILE = 62;
@@ -39,30 +38,6 @@ const SELECT_ELEMENT_HEIGHT_MOBILE = 62;
 const SHAMIR_TYPES: BackupType[] = ['shamir-single', 'shamir-advanced'];
 
 export const isShamirBackupType = (type: BackupType) => SHAMIR_TYPES.includes(type);
-
-export const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
-    [DeviceModelInternal.UNKNOWN]: '12-words', // just to have something
-    [DeviceModelInternal.T1B1]: '24-words',
-    [DeviceModelInternal.T2T1]: '12-words',
-    [DeviceModelInternal.T2B1]: 'shamir-single',
-    [DeviceModelInternal.T3B1]: 'shamir-single',
-    [DeviceModelInternal.T3T1]: 'shamir-single',
-    [DeviceModelInternal.T3W1]: 'shamir-single',
-};
-
-type GetDefaultBackupTypeParams = { model: DeviceModelInternal; packaging: number };
-
-export const getDefaultBackupType = ({
-    model,
-    packaging,
-}: GetDefaultBackupTypeParams): BackupType => {
-    // Original package of Trezor Safe 3 has a card with just 12 words.
-    if (model === DeviceModelInternal.T2B1 && packaging === 0) {
-        return '12-words';
-    }
-
-    return defaultBackupTypeMap[model];
-};
 
 const Wrapper = styled.div`
     width: 100%;
@@ -102,18 +77,11 @@ export const SelectBackupType = ({
 }: SelectBackupTypeProps) => {
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(false);
-    const device = useSelector(selectSelectedDevice);
+    const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
     const { isMobileLayout } = useLayoutSize();
 
-    const defaultBackupType: BackupType = device?.features?.internal_model
-        ? getDefaultBackupType({
-              model: device.features.internal_model,
-              packaging: device.features.unit_packaging ?? 0,
-          })
-        : 'shamir-single';
-
-    const isDefault = defaultBackupType === selected;
-    const isShamirDefault = isShamirBackupType(defaultBackupType);
+    const isDefault = deviceDefaultBackupType === selected;
+    const isShamirDefault = isShamirBackupType(deviceDefaultBackupType);
     const isShamirSelected = isShamirBackupType(selected);
 
     const { refs, floatingStyles, context } = useFloating({
@@ -170,7 +138,7 @@ export const SelectBackupType = ({
                         <FloatingPortal>
                             <FloatingFocusManager context={context} modal={false}>
                                 <FloatingSelections
-                                    defaultType={defaultBackupType}
+                                    defaultType={deviceDefaultBackupType}
                                     ref={refs.setFloating}
                                     style={floatingStyles}
                                     {...getFloatingProps()}

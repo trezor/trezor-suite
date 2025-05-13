@@ -2,6 +2,7 @@ import { ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { BackupType } from '@suite-common/suite-types';
 import { Icon, Radio, Row, Text, Tooltip, useElevation, variables } from '@trezor/components';
 import {
     Elevation,
@@ -15,7 +16,6 @@ import { Translation } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite';
 
 import { typesToLabelMap } from './typesToLabelMap';
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 
 export const OptionText = styled.div`
     display: flex;

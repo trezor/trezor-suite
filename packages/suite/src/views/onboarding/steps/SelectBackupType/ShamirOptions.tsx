@@ -1,5 +1,6 @@
 import { satisfies } from 'semver';
 
+import { BackupType } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Badge, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -9,7 +10,6 @@ import { DefaultTag } from './DefaultTag';
 import { OptionWithContent } from './OptionWithContent';
 import { Translation } from '../../../../components/suite';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 
 const UpgradableToMultiTag = () => {
     const { isMobileLayout } = useLayoutSize();

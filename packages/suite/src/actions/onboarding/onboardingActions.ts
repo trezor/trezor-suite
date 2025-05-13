@@ -1,3 +1,4 @@
+import { BackupType } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
@@ -5,7 +6,7 @@ import { OnboardingAnalytics } from '@trezor/suite-analytics';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { BackupType, DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
+import { DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 import { Dispatch, GetState } from 'src/types/suite';
 import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';

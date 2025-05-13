@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import { BackupType } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
@@ -13,15 +14,6 @@ export interface OnboardingRootState {
 }
 
 export type DeviceTutorialStatus = 'active' | 'completed' | 'cancelled' | null;
-
-export const selectBackupTypes = [
-    'shamir-single',
-    'shamir-advanced',
-    '12-words',
-    '24-words',
-] as const;
-
-export type BackupType = (typeof selectBackupTypes)[number];
 
 export interface OnboardingState {
     backupType: BackupType;

@@ -1,6 +1,5 @@
 import { TranslationKey } from '@suite-common/intl-types';
-
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
+import { BackupType } from '@suite-common/suite-types';
 
 export const typesToLabelMap: Record<BackupType, TranslationKey> = {
     'shamir-single': 'TR_ONBOARDING_SEED_TYPE_SINGLE_SEED',

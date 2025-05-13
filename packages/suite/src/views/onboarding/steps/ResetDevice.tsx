@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { BackupType } from '@suite-common/suite-types';
+import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Divider, Text, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -13,12 +14,7 @@ import * as STEP from 'src/constants/onboarding/steps';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
-import {
-    SelectBackupType,
-    getDefaultBackupType,
-    isShamirBackupType,
-} from './SelectBackupType/SelectBackupType';
-import { BackupType } from '../../../reducers/onboarding/onboardingReducer';
+import { SelectBackupType, isShamirBackupType } from './SelectBackupType/SelectBackupType';
 
 const SelectWrapper = styled.div`
     width: 100%;
@@ -37,18 +33,11 @@ const canChooseBackupType = (device: DeviceModelInternal) => device !== DeviceMo
 export const ResetDeviceStep = () => {
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
+    const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const deviceModel = device?.features?.internal_model;
     const unitPackaging = device?.features?.unit_packaging ?? 0;
-
-    const deviceDefaultBackupType: BackupType =
-        deviceModel !== undefined
-            ? getDefaultBackupType({
-                  model: deviceModel,
-                  packaging: unitPackaging,
-              })
-            : 'shamir-single';
 
     const [submitted, setSubmitted] = useState(false);
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
@@ -103,9 +92,9 @@ export const ResetDeviceStep = () => {
 
     useEffect(() => {
         if (deviceModel !== undefined && !canChooseBackupType(deviceModel)) {
-            handleSubmit(getDefaultBackupType({ model: deviceModel, packaging: unitPackaging }));
+            handleSubmit(deviceDefaultBackupType);
         }
-    }, [deviceModel, handleSubmit, unitPackaging]);
+    }, [deviceModel, handleSubmit, unitPackaging, deviceDefaultBackupType]);
 
     // this step expects device
     if (!device || !device.features) {

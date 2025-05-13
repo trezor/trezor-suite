@@ -8,6 +8,7 @@ export * from './modal';
 export * from './github';
 export * from './messageSystem';
 export * from './route';
+export * from './walletBackupType';
 
 export type Selector<TReturnValue> = (state: any) => TReturnValue;
 export type SuiteCompatibleAction<TPayload> = (

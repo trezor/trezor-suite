@@ -10,7 +10,7 @@ import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
+import { AcquiredDevice, BackupType, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
     getDeviceInstances,
@@ -21,6 +21,7 @@ import {
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { Device, DeviceState, Features, KnownDevice, StaticSessionId, UI } from '@trezor/connect';
 import {
+    DeviceModelInternal,
     getFirmwareVersion,
     getFirmwareVersionArray,
     hasBitcoinOnlyFirmware,
@@ -1153,3 +1154,30 @@ export const selectFirmwareChangelog = (state: DeviceRootState) => {
 
     return device?.firmwareRelease?.changelog?.[0]?.changelog;
 };
+
+export const selectDeviceUnitPackaging = createMemoizedSelector(
+    [selectDeviceFeatures],
+    features => features?.unit_packaging ?? 0,
+);
+
+const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
+    [DeviceModelInternal.UNKNOWN]: '12-words', // just to have something
+    [DeviceModelInternal.T1B1]: '24-words',
+    [DeviceModelInternal.T2T1]: '12-words',
+    [DeviceModelInternal.T2B1]: 'shamir-single',
+    [DeviceModelInternal.T3B1]: 'shamir-single',
+    [DeviceModelInternal.T3T1]: 'shamir-single',
+    [DeviceModelInternal.T3W1]: 'shamir-single',
+};
+
+export const selectDeviceDefaultBackupType = createMemoizedSelector(
+    [selectDeviceModel, selectDeviceUnitPackaging],
+    (deviceModel, deviceUnitPackaging) => {
+        // Original package of Trezor Safe 3 has a card with just 12 words.
+        if (deviceModel === DeviceModelInternal.T2B1 && deviceUnitPackaging === 0) {
+            return '12-words';
+        }
+
+        return deviceModel ? defaultBackupTypeMap[deviceModel] : 'shamir-single';
+    },
+);

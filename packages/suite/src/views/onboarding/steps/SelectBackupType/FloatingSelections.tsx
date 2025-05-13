@@ -2,6 +2,7 @@ import { CSSProperties, forwardRef, useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { BackupType } from '@suite-common/suite-types';
 import {
     Banner,
     CollapsibleBox,
@@ -26,7 +27,6 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { LegacyOptions } from './LegacyOptions';
 import { isShamirBackupType } from './SelectBackupType';
 import { ShamirOptions } from './ShamirOptions';
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 
 const OptionGroupHeading = styled.div`
     display: flex;
