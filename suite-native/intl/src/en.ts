@@ -583,9 +583,9 @@ export const en = {
                     title: 'Enabled coins',
                     subtitle: 'Manage coins that you use',
                 },
-                deviceChecks: {
-                    title: 'Device checks',
-                    subtitle: 'Authenticity and security checks',
+                advanced: {
+                    title: 'Advanced',
+                    subtitle: 'Expert features for power users ',
                 },
                 walletConnect: {
                     title: 'WalletConnect',
@@ -757,8 +757,8 @@ export const en = {
                 defaultPassphrase: 'Passphrase wallet #{index}',
             },
         },
-        deviceChecks: {
-            title: 'Device checks',
+        advanced: {
+            title: 'Advanced',
             firmwareAuthenticityCheck: {
                 title: 'Turn off firmware authenticity check',
                 subtitle:

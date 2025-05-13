@@ -33,20 +33,20 @@ const InformativeList = () => (
         <IconListItem icon="warning" variant="yellow" iconSize="large" verticalAlign="flex-start">
             <VStack spacing="sp4">
                 <Text variant="highlight">
-                    <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.item1" />
+                    <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.item1" />
                 </Text>
                 <Text variant="hint" color="textSubdued">
-                    <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.item1Explanation" />
+                    <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.item1Explanation" />
                 </Text>
             </VStack>
         </IconListItem>
         <IconListItem icon="code" variant="yellow" iconSize="large" verticalAlign="flex-start">
             <VStack spacing="sp4">
                 <Text variant="highlight">
-                    <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.item2" />
+                    <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.item2" />
                 </Text>
                 <Text variant="hint" color="textSubdued">
-                    <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.item2Explanation" />
+                    <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.item2Explanation" />
                 </Text>
             </VStack>
         </IconListItem>
@@ -86,10 +86,10 @@ export const TurnOffFirmwareAuthenticityCheckModalScreen = () => {
                 <TitleHeader
                     titleVariant="titleMedium"
                     title={
-                        <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.title" />
+                        <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.title" />
                     }
                     subtitle={
-                        <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.content" />
+                        <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.content" />
                     }
                 />
                 <InformativeList />
@@ -98,7 +98,7 @@ export const TurnOffFirmwareAuthenticityCheckModalScreen = () => {
                         <HStack spacing="sp16">
                             <CheckBox isChecked={isChecked} onChange={handleCheckboxPress} />
                             <Text variant="highlight">
-                                <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.acknowledgement" />
+                                <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.acknowledgement" />
                             </Text>
                         </HStack>
                     </Card>
@@ -110,7 +110,7 @@ export const TurnOffFirmwareAuthenticityCheckModalScreen = () => {
                     exiting={FadeOut.duration(CHECKBOX_ANIMATION_DURATION)}
                 >
                     <Button colorScheme="yellowBold" onPress={handleButtonPress}>
-                        <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.turnOffModal.buttonTurnOff" />
+                        <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.turnOffModal.buttonTurnOff" />
                     </Button>
                 </Animated.View>
             )}

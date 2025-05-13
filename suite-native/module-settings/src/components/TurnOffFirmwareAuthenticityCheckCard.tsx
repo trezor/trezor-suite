@@ -33,7 +33,7 @@ const LearnMoreButton = ({ fullWidth }: { fullWidth?: boolean }) => {
             colorScheme="tertiaryElevation0"
             style={applyStyle(fullWidth ? fullWidthButtonStyle : shrinkedButtonStyle)}
         >
-            <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.buttonLearnMore" />
+            <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.buttonLearnMore" />
         </Button>
     );
 };
@@ -58,7 +58,7 @@ const TurnOnButton = () => {
             colorScheme="primary"
             style={applyStyle(fullWidthButtonStyle)}
         >
-            <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.buttonTurnOn" />
+            <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.buttonTurnOn" />
         </Button>
     );
 };
@@ -78,7 +78,7 @@ const TurnOffButton = () => {
             colorScheme="redElevation0"
             style={applyStyle(shrinkedButtonStyle)}
         >
-            <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.buttonTurnOff" />
+            <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.buttonTurnOff" />
         </Button>
     );
 };
@@ -89,11 +89,11 @@ export const TurnOffFirmwareAuthenticityCheckCard = () => {
     return (
         <SettingsCardWithIconLayout
             icon="shieldCheck"
-            title={<Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.title" />}
+            title={<Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.title" />}
         >
             <VStack spacing="sp16">
                 <Text variant="hint" color="textSubdued">
-                    <Translation id="moduleSettings.deviceChecks.firmwareAuthenticityCheck.subtitle" />
+                    <Translation id="moduleSettings.advanced.firmwareAuthenticityCheck.subtitle" />
                 </Text>
                 <HStack spacing="sp8">
                     {isFwAuthenticityCheckEnabled ? (

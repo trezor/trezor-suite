@@ -7,7 +7,7 @@ export const SettingsDeviceChecksScreen = () => {
     const { translate } = useTranslate();
 
     return (
-        <Screen header={<ScreenHeader content={translate('moduleSettings.deviceChecks.title')} />}>
+        <Screen header={<ScreenHeader content={translate('moduleSettings.advanced.title')} />}>
             <TurnOffFirmwareAuthenticityCheckCard />
         </Screen>
     );

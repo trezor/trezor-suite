@@ -72,12 +72,10 @@ export const FeaturesSettings = () => {
                         testID="@settings/coin-enabling"
                     />
                     <SettingsSectionItem
-                        iconName="trezorDevices"
-                        title={
-                            <Translation id="moduleSettings.items.features.deviceChecks.title" />
-                        }
+                        iconName="shieldWarning"
+                        title={<Translation id="moduleSettings.items.features.advanced.title" />}
                         subtitle={
-                            <Translation id="moduleSettings.items.features.deviceChecks.subtitle" />
+                            <Translation id="moduleSettings.items.features.advanced.subtitle" />
                         }
                         onPress={() => navigateTo(SettingsStackRoutes.SettingsDeviceChecks)}
                     />
