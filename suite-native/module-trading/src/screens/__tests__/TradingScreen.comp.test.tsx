@@ -40,7 +40,29 @@ const stateWithDisabledBuy = {
         ...featureFlagsInitialState,
         [FeatureFlag.IsTradingBuyEnabled]: false,
     },
-};
+    messageSystem: {
+        validMessages: {
+            feature: ['actionId'],
+        },
+        dismissedMessages: [],
+        config: {
+            actions: [
+                {
+                    message: {
+                        id: 'actionId',
+                        category: ['feature'],
+                        feature: [
+                            {
+                                domain: 'trading.buy',
+                                flag: false,
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    },
+} as unknown as PreloadedState;
 
 describe('TradingScreen', () => {
     beforeEach(() => {

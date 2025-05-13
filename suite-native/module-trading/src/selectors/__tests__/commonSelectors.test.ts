@@ -15,31 +15,31 @@ const actionId = 'ActionId_1';
 const contentText = 'Content Text';
 
 const getPreloadedState = ({
-    buy = false,
-    sell = false,
-    swap = false,
+    buy,
+    sell,
+    swap,
 }: {
     buy?: boolean;
     sell?: boolean;
     swap?: boolean;
 }) => {
     const features: Feature[] = [];
-    if (buy) {
+    if (buy !== undefined) {
         features.push({
             domain: 'trading.buy',
-            flag: true,
+            flag: buy,
         });
     }
-    if (sell) {
+    if (sell !== undefined) {
         features.push({
             domain: 'trading.sell',
-            flag: true,
+            flag: sell,
         });
     }
-    if (swap) {
+    if (swap !== undefined) {
         features.push({
             domain: 'trading.swap',
-            flag: true,
+            flag: swap,
         });
     }
 
@@ -110,8 +110,12 @@ describe('commonSelectors', () => {
             expect(selectIsTradingBuyEnabled(getPreloadedState({ buy: true }))).toBe(true);
         });
 
-        it('should correctly select that buy is not enabled if remote feature is not enabled', () => {
-            expect(selectIsTradingBuyEnabled(getPreloadedState({}))).toBe(false);
+        it('should correctly select that buy is disabled if remote feature is disabled', () => {
+            expect(selectIsTradingBuyEnabled(getPreloadedState({ buy: false }))).toBe(false);
+        });
+
+        it('should correctly select that buy is enabled if remote feature is not set', () => {
+            expect(selectIsTradingBuyEnabled(getPreloadedState({}))).toBe(true);
         });
     });
 
@@ -140,8 +144,12 @@ describe('commonSelectors', () => {
             expect(selectIsTradingEnabled(getPreloadedState({ sell: true }))).toBe(true);
         });
 
-        it('should correctly select that trading is not enabled if no remote feature is enabled', () => {
-            expect(selectIsTradingEnabled(getPreloadedState({}))).toBe(false);
+        it('should correctly select that trading is enabled if no remote feature is set', () => {
+            expect(selectIsTradingEnabled(getPreloadedState({}))).toBe(true);
+        });
+
+        it('should correctly select that trading is not enabled when buy is disabled (and other flags are not set)', () => {
+            expect(selectIsTradingEnabled(getPreloadedState({ buy: false }))).toBe(false);
         });
     });
 });

@@ -1,5 +1,10 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    PreloadedState,
+    act,
+    fireEvent,
+    renderWithStoreProviderAsync,
+} from '@suite-native/test-utils';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
@@ -30,7 +35,40 @@ describe('AppTabNavigator', () => {
                 [FeatureFlag.IsTradingSwapEnabled]: false,
                 [FeatureFlag.IsTradingSellEnabled]: false,
             },
-        });
+            messageSystem: {
+                validMessages: {
+                    banner: [],
+                    context: [],
+                    modal: [],
+                    feature: ['actionId'],
+                },
+                dismissedMessages: [],
+                config: {
+                    actions: [
+                        {
+                            message: {
+                                id: 'actionId',
+                                category: ['feature'],
+                                feature: [
+                                    {
+                                        domain: 'trading.buy',
+                                        flag: false,
+                                    },
+                                    {
+                                        domain: 'trading.swap',
+                                        flag: false,
+                                    },
+                                    {
+                                        domain: 'trading.sell',
+                                        flag: false,
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        } as unknown as PreloadedState);
 
         expect(queryByText('Trade')).toBe(null);
     });
@@ -44,7 +82,10 @@ describe('AppTabNavigator', () => {
         });
 
         const tradeTab = getByText('Trade');
-        fireEvent.press(tradeTab);
+        await act(async () => {
+            fireEvent.press(tradeTab);
+            await Promise.resolve();
+        });
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
