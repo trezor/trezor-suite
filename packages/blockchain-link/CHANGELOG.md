@@ -1,3 +1,14 @@
+# 2.4.5
+
+- npm-prerelease: @trezor/blockchain-link 2.4.5-beta.1 (ce9a8c061f)
+- chore: apply latest prettier (eb758acea9)
+- chore: bump build-related deps (66d16eb013)
+- chore(blockchain-link): update xrpl.js to 4.2.5 due to security issues in previous compromised versions (f49497d046)
+- feat(websocket-client): autospoof Origin header in node.js (b8c2f2ffcc)
+- fix(blockchain-link): do not fetch sol staking for tokens detail (fe6b5ed34a)
+- fix(blockchain-link): missing staking data with empty sol acc (7422136a1e)
+- fix(blockchain-link): blockhash commitment change (9b91862fcc)
+
 # 2.4.4
 
 - npm-prerelease: @trezor/blockchain-link 2.4.4-beta.1 (a19dc530b6)
