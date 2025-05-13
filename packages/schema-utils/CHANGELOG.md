@@ -1,3 +1,8 @@
+# 1.3.3
+
+- npm-prerelease: @trezor/schema-utils 1.3.3-beta.1 (446091065a)
+- chore: apply latest prettier (eb758acea9)
+
 # 1.3.2
 
 - npm-prerelease: @trezor/schema-utils 1.3.2-beta.1 (ba0d60c261)
