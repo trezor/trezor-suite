@@ -1,3 +1,9 @@
+# 1.2.6
+
+- npm-prerelease: @trezor/protocol 1.2.6-beta.1 (14db93b8d9)
+- chore: apply latest prettier (eb758acea9)
+- feat(protocol): add `THP` protobuf types and state (5838888e83)
+
 # 1.2.5
 
 - npm-prerelease: @trezor/protocol 1.2.5-beta.1 (fe8f4dc278)
