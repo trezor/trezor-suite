@@ -22,6 +22,11 @@ import { setBuySelectedReceiveAccount } from '../../tradingSlice';
 import { TradeableAsset, TradingBuyForm } from '../../types';
 import { clearTradingBuyFormQuoteData, useTradingBuyForm } from '../useTradingBuyForm';
 
+jest.mock('../../utils/tradeUtils', () => ({
+    ...jest.requireActual('../../utils/tradeUtils'),
+    getRandomAccountDescriptor: () => 'random_string',
+}));
+
 describe('useTradingBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
         renderHookWithStoreProviderAsync(() => useTradingBuyForm(), { store });
@@ -70,51 +75,120 @@ describe('useTradingBuyForm', () => {
         expect(result.current.getValues('receiveAccount')).toEqual({ account: { key: 'btc2' } });
     });
 
-    it('should update invityAPIKey when account is changed', async () => {
-        const store = await getInitializedStore();
-        await renderUseTradingBuyForm(store);
-        const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+    describe('createInvityAPIKey', () => {
+        it('should set random value to invityAPIKey on mount', async () => {
+            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+            const store = await getInitializedStore();
 
-        act(() => {
-            store.dispatch(
-                setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: {
-                        account: { key: 'btc2', descriptor: 'descriptor_btc2' } as Account,
-                    },
-                }),
-            );
+            await renderUseTradingBuyForm(store);
+
+            expect(invityAPISpy).toHaveBeenCalledWith('random_string');
         });
 
-        expect(invityAPISpy).toHaveBeenCalledWith('descriptor_btc2');
-    });
+        it('should update invityAPIKey when account is changed', async () => {
+            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+            const store = await getInitializedStore();
+            await renderUseTradingBuyForm(store);
+            invityAPISpy.mockClear();
 
-    it('should not call createInvityAPIKey when descriptor is not changed', async () => {
-        const store = await getInitializedStore();
-        const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
-        await renderUseTradingBuyForm(store);
+            act(() => {
+                store.dispatch(
+                    setBuySelectedReceiveAccount({
+                        selectedReceiveAccount: {
+                            account: { key: 'btc2', descriptor: 'descriptor_btc2' } as Account,
+                        },
+                    }),
+                );
+            });
 
-        act(() => {
-            store.dispatch(
-                setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: {
-                        account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
-                    },
-                }),
-            );
+            expect(invityAPISpy).toHaveBeenCalledWith('descriptor_btc2');
         });
 
-        act(() => {
-            store.dispatch(
-                setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: {
-                        account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
-                        address: { address: 'TEST_BTC_ADDRESS' } as Address,
-                    },
-                }),
-            );
+        it('should not call createInvityAPIKey when descriptor is not changed', async () => {
+            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+            const store = await getInitializedStore();
+            await renderUseTradingBuyForm(store);
+            invityAPISpy.mockClear();
+
+            act(() => {
+                store.dispatch(
+                    setBuySelectedReceiveAccount({
+                        selectedReceiveAccount: {
+                            account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
+                        },
+                    }),
+                );
+            });
+
+            act(() => {
+                store.dispatch(
+                    setBuySelectedReceiveAccount({
+                        selectedReceiveAccount: {
+                            account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
+                            address: { address: 'TEST_BTC_ADDRESS' } as Address,
+                        },
+                    }),
+                );
+            });
+
+            expect(invityAPISpy).toHaveBeenCalledTimes(1);
         });
 
-        expect(invityAPISpy).toHaveBeenCalledTimes(1);
+        it('should not call createInvityAPIKey when descriptor is empty string', async () => {
+            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+            const store = await getInitializedStore();
+            await renderUseTradingBuyForm(store);
+            invityAPISpy.mockClear();
+
+            act(() => {
+                store.dispatch(
+                    setBuySelectedReceiveAccount({
+                        selectedReceiveAccount: {
+                            account: { key: 'btc1', descriptor: '' } as Account,
+                        },
+                    }),
+                );
+            });
+
+            expect(invityAPISpy).toHaveBeenCalledTimes(0);
+        });
+
+        it('should not call createInvityAPIKey when descriptor is undefined ', async () => {
+            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+            const store = await getInitializedStore();
+            await renderUseTradingBuyForm(store);
+            invityAPISpy.mockClear();
+
+            act(() => {
+                store.dispatch(
+                    setBuySelectedReceiveAccount({
+                        selectedReceiveAccount: {
+                            account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
+                        },
+                    }),
+                );
+            });
+
+            act(() => {
+                store.dispatch(
+                    setBuySelectedReceiveAccount({
+                        selectedReceiveAccount: {
+                            account: { key: 'btc1' } as Account,
+                        },
+                    }),
+                );
+            });
+
+            act(() => {
+                store.dispatch(
+                    setBuySelectedReceiveAccount({
+                        selectedReceiveAccount: undefined,
+                    }),
+                );
+            });
+
+            expect(invityAPISpy).toHaveBeenCalledTimes(1);
+        });
     });
 
     it('should clear selected account on asset network change', async () => {

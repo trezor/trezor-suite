@@ -10,6 +10,7 @@ import {
 
 import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { TradingTradeStatusType, TradingTransaction, TradingType } from '@suite-common/trading';
+import { getWeakRandomId } from '@trezor/utils';
 
 import { TRADING_URL_DEFAULT_BACK } from './tradeFormUtils';
 
@@ -154,3 +155,5 @@ export const getTradeStatusStep = (trade: TradingTransaction) => {
 
 export const doesUrlContainCloseCallbackUrl = (url: string, closeCallbackUrl: string) =>
     url.includes(closeCallbackUrl) || url.includes(TRADING_URL_DEFAULT_BACK);
+
+export const getRandomAccountDescriptor = () => getWeakRandomId(20);

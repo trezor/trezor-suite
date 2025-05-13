@@ -4,6 +4,7 @@ import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../__fixtures__/
 import { TRADING_URL_DEFAULT_BACK } from '../tradeFormUtils';
 import {
     doesUrlContainCloseCallbackUrl,
+    getRandomAccountDescriptor,
     getTradeOperationData,
     getTradeStatusStep,
     isFinalStatus,
@@ -156,6 +157,16 @@ describe('tradeUtils', () => {
             const url =
                 'trezorsuitelite://trading?action=trade&tradeType=buy&orderId=dd070b73-fe29-4769-8be1-4075d6b43265&transactionId=8c9476a7-958b-412b-a378-3a3f59b6105a&baseCurrencyCode=czk&baseCurrencyAmount=384.78&transactionStatus=completed';
             expect(doesUrlContainCloseCallbackUrl(url, closeCallbackUrl)).toBe(true);
+        });
+    });
+
+    describe('getRandomAccountDescriptor', () => {
+        it('should return 20 characters', () => {
+            expect(getRandomAccountDescriptor().length).toBe(20);
+        });
+
+        it('should return different string on every call', () => {
+            expect(getRandomAccountDescriptor()).not.toBe(getRandomAccountDescriptor());
         });
     });
 });

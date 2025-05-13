@@ -27,20 +27,26 @@ import { setBuySelectedReceiveAccount } from '../tradingSlice';
 import { TradingBuyForm, TradingBuyFormValues } from '../types';
 import { truncateDecimals } from '../utils/amountUtils';
 import { buyFormValidationSchema } from '../utils/buyFormValidationSchema';
+import { getRandomAccountDescriptor } from '../utils/tradeUtils';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
 const useReceiveAccountChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
+    // make sure invityAPIKey is initialized with some unique string on form mount
+    useEffect(() => {
+        invityAPI.createInvityAPIKey(getRandomAccountDescriptor());
+    }, []);
+
     useEffect(() => {
         const prevReceiveAccount = getValues('receiveAccount');
+        const descriptor = selectedReceiveAccount?.account?.descriptor;
 
         setValue('receiveAccount', selectedReceiveAccount);
 
-        if (
-            prevReceiveAccount?.account?.descriptor !== selectedReceiveAccount?.account?.descriptor
-        ) {
-            invityAPI.createInvityAPIKey(selectedReceiveAccount?.account?.descriptor || '');
+        // when user selects receive account set invityAPIKey accordingly
+        if (descriptor && descriptor !== prevReceiveAccount?.account?.descriptor) {
+            invityAPI.createInvityAPIKey(descriptor);
         }
     }, [selectedReceiveAccount, getValues, setValue]);
 };
