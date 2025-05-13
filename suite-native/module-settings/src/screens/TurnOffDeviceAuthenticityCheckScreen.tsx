@@ -1,21 +1,21 @@
 import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite-native/intl';
-import { setCheckFirmwareAuthenticityEnabled } from '@suite-native/settings';
+import { setDeviceAuthenticityCheckEnabled } from '@suite-native/settings';
 
 import { TurnOffCheckScreenContent } from '../components/TurnOffCheckScreenContent';
 
-export const TurnOffFirmwareAuthenticityCheckScreen = () => {
+export const TurnOffDeviceAuthenticityCheckScreen = () => {
     const dispatch = useDispatch();
 
     const handleConfirm = () => {
-        dispatch(setCheckFirmwareAuthenticityEnabled(false));
+        dispatch(setDeviceAuthenticityCheckEnabled(false));
     };
 
     return (
         <TurnOffCheckScreenContent
             title={
-                <Translation id="moduleSettings.advanced.authenticityChecks.firmware.turnOffTitle" />
+                <Translation id="moduleSettings.advanced.authenticityChecks.device.turnOffTitle" />
             }
             onConfirm={handleConfirm}
         />

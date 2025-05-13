@@ -760,16 +760,13 @@ export const en = {
         advanced: {
             title: 'Advanced',
             goodAdvice: 'We strongly recommend leaving these checks turned on.',
-            firmwareAuthenticityCheck: {
-                title: 'Firmware authenticity check',
-                subtitle:
-                    'This check ensures that your firmware is legitimate. Compromised firmware won’t be able to communicate with Suite.',
+            authenticityChecks: {
                 buttonTurnOff: 'Turn off',
                 buttonTurnOn: 'Turn on',
                 buttonLearnMore: 'Learn more',
-
-                turnOffModal: {
-                    title: 'Turn off firmware authenticity check',
+                toastOn: 'Check turned on',
+                toastOff: 'Check turned off',
+                turnOff: {
                     content: 'This feature is designed to protect your security.',
                     item1: 'Only continue if the device has passed this check before',
                     item1Explanation:
@@ -780,6 +777,18 @@ export const en = {
                     acknowledgement: 'I’ve read and understood the above',
                     acknowledgementNote: 'Trezor Support will never ask you to turn this off.',
                     buttonTurnOff: 'Turn off',
+                },
+                firmware: {
+                    title: 'Firmware authenticity check',
+                    subtitle:
+                        'This check ensures that your firmware is legitimate. Compromised firmware won’t be able to communicate with Suite.',
+                    turnOffTitle: 'Turn off firmware authenticity check',
+                },
+                device: {
+                    title: 'Device authenticity check',
+                    subtitle:
+                        'This check verifies that your Trezor device is genuine. It helps ensure you never use a compromised or fake device. ',
+                    turnOffTitle: 'Turn off device authenticity check',
                 },
             },
         },

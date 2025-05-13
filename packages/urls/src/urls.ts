@@ -102,6 +102,8 @@ export const HELP_CENTER_ZERO_VALUE_ATTACKS: Url =
 export const HELP_CENTER_LABELING: Url = 'https://trezor.io/learn/a/labels-in-trezor-suite-app';
 export const HELP_CENTER_DEVICE_AUTHENTICATION: Url =
     'https://trezor.io/learn/a/trezor-safe-device-authentication-check';
+export const HELP_CENTER_DEVICE_AUTHENTICATION_MOBILE: Url =
+    'https://trezor.io/learn/a/trezor-safe-device-authentication-check'; // FIXME: mobile specific
 export const HELP_CENTER_ETH_STAKING: Url =
     'https://trezor.io/learn/a/stake-ethereum-eth-in-trezor-suite';
 export const HELP_CENTER_SOL_STAKING: Url =

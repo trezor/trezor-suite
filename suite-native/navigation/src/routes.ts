@@ -143,6 +143,7 @@ export enum SettingsStackRoutes {
     SettingsFAQ = 'SettingsFAQ',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
     SettingsDeviceChecks = 'SettingsDeviceChecks',
+    TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
 }
 

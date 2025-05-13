@@ -9,6 +9,7 @@ export interface AppSettingsState {
     fiatCurrencyCode: FiatCurrencyCode;
     bitcoinUnits: PROTO.AmountUnit;
     viewOnlyCancelationTimestamp?: number;
+    isDeviceAuthenticityCheckEnabled: boolean;
     isFirmwareRevisionCheckEnabled: boolean;
     isFirmwareHashCheckEnabled: boolean;
 }
@@ -22,6 +23,7 @@ export const appSettingsInitialState: AppSettingsState = {
     bitcoinUnits: PROTO.AmountUnit.BITCOIN,
     isOnboardingFinished: false,
     viewOnlyCancelationTimestamp: undefined,
+    isDeviceAuthenticityCheckEnabled: true,
     isFirmwareRevisionCheckEnabled: true,
     isFirmwareHashCheckEnabled: true,
 };
@@ -31,6 +33,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'fiatCurrencyCode',
     'bitcoinUnits',
     'viewOnlyCancelationTimestamp',
+    'isDeviceAuthenticityCheckEnabled',
     'isFirmwareRevisionCheckEnabled',
     'isFirmwareHashCheckEnabled',
 ];
@@ -58,6 +61,9 @@ export const appSettingsSlice = createSlice({
             state.isFirmwareRevisionCheckEnabled = payload;
             state.isFirmwareHashCheckEnabled = payload;
         },
+        setDeviceAuthenticityCheckEnabled: (state, { payload }: PayloadAction<boolean>) => {
+            state.isDeviceAuthenticityCheckEnabled = payload;
+        },
     },
 });
 
@@ -70,6 +76,8 @@ export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
 export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState) =>
     state.appSettings.viewOnlyCancelationTimestamp;
+export const selectIsDeviceAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
+    state.appSettings.isDeviceAuthenticityCheckEnabled;
 
 /**
  * Determine if either FW revision or FW hash check is disabled
@@ -98,6 +106,7 @@ export const {
     setFiatCurrency,
     setBitcoinUnits,
     setViewOnlyCancelationTimestamp,
+    setDeviceAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticityEnabled,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

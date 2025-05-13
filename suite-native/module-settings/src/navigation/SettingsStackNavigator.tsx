@@ -14,6 +14,7 @@ import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
 import { SettingsLocalizationScreen } from '../screens/SettingsLocalizationScreen';
 import { SettingsPrivacyAndSecurityScreen } from '../screens/SettingsPrivacyAndSecurityScreen';
 import { SettingsViewOnlyScreen } from '../screens/SettingsViewOnlyScreen';
+import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
 import { TurnOffFirmwareAuthenticityCheckScreen } from '../screens/TurnOffFirmwareAuthenticityCheckScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
@@ -62,6 +63,10 @@ export const SettingsStackNavigator = () => (
         <SettingsStack.Screen
             name={SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck}
             component={TurnOffFirmwareAuthenticityCheckScreen}
+        />
+        <SettingsStack.Screen
+            name={SettingsStackRoutes.TurnOffDeviceAuthenticityCheck}
+            component={TurnOffDeviceAuthenticityCheckScreen}
         />
     </SettingsStack.Navigator>
 );
