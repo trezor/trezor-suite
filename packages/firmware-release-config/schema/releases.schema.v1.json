@@ -125,11 +125,17 @@
                         "min_firmware_version": {
                             "type": "string"
                         },
+                        "min_bootloader_version": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
                         "version": {
                             "type": "integer"
                         }
                     },
-                    "required": ["min_firmware_version", "version"]
+                    "required": ["min_firmware_version", "min_bootloader_version", "version"]
                 }
             }
         }

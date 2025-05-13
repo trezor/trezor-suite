@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-04-25T13:42:57.723Z",
-    "sequence": 1,
+    "timestamp": "2025-05-20T10:30:40.922Z",
+    "sequence": 2,
     "releases": {
         "T1B1": [
             {
@@ -14,14 +14,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [1, 13, 0],
+                    "version": [1, 13, 1],
                     "min_bootloader_version": [1, 12, 0],
                     "min_firmware_version": [1, 12, 0],
                     "bootloader_version": [1, 12, 1],
                     "translations": [],
-                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
-                    "fingerprint": "253042fb209c78e02482c645b16cc9894c19124e9c9c0c1051b3c68b6e7c700b",
-                    "changelog": "* Multisig-related changes.\n* Reworked PIN processing.\n* Fixed the ability to display the XPUB using a QR code."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "f27095f2e08278a209567e254b9921f6e34b28a9c0fc702a268f210e23057c27",
+                    "changelog": "* Clear sign ETH staking transactions on Everstake pools\n* Use GWei when formatting large ETH amounts."
                 }
             },
             {
@@ -34,14 +34,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [1, 13, 0],
+                    "version": [1, 13, 1],
                     "min_bootloader_version": [1, 12, 0],
                     "min_firmware_version": [1, 12, 0],
                     "bootloader_version": [1, 12, 1],
                     "translations": [],
-                    "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
-                    "fingerprint": "253042fb209c78e02482c645b16cc9894c19124e9c9c0c1051b3c68b6e7c700b",
-                    "changelog": "* Multisig-related changes.\n* Reworked PIN processing.\n* Fixed the ability to display the XPUB using a QR code."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "f27095f2e08278a209567e254b9921f6e34b28a9c0fc702a268f210e23057c27",
+                    "changelog": "* Clear sign ETH staking transactions on Everstake pools\n* Use GWei when formatting large ETH amounts."
                 }
             }
         ],
@@ -56,14 +56,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 1, 1],
                     "min_firmware_version": [2, 6, 1],
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "bde9c5ef485548746150e07a9c5081c25f2bdf127707a41f3c487ca83a6c0667",
-                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "5bd50bbcf6435f97b6dc46f96ad11235965cd8a78619c573c3c0aca6822e9ed2",
+                    "changelog": "* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
                 }
             },
             {
@@ -76,14 +76,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 1, 1],
                     "min_firmware_version": [2, 6, 1],
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "bde9c5ef485548746150e07a9c5081c25f2bdf127707a41f3c487ca83a6c0667",
-                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "5bd50bbcf6435f97b6dc46f96ad11235965cd8a78619c573c3c0aca6822e9ed2",
+                    "changelog": "* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
                 }
             }
         ],
@@ -98,14 +98,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 0, 0],
                     "min_firmware_version": [2, 0, 8],
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "e5878fa067df9d1256cdcd86f10869930d85e090c39f807c23f8845472e8d995",
-                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "c280cfbe83b261ef30c64eb58f55538b3cceee01ba7d8f57d6e8cbf92527066b",
+                    "changelog": "* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Fixed upgrade confirmation text overflow.\n* Allow firmware upgrade even if language change failed."
                 }
             },
             {
@@ -118,14 +118,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 0, 0],
                     "min_firmware_version": [2, 0, 8],
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "e5878fa067df9d1256cdcd86f10869930d85e090c39f807c23f8845472e8d995",
-                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "c280cfbe83b261ef30c64eb58f55538b3cceee01ba7d8f57d6e8cbf92527066b",
+                    "changelog": "* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Fixed upgrade confirmation text overflow.\n* Allow firmware upgrade even if language change failed."
                 }
             }
         ],
@@ -140,14 +140,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 1, 7],
                     "min_firmware_version": [2, 8, 3],
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "d3905f15221f7b2733e5496986ceb1a3b39f390c4439e2d3cc89d5f3b7423278",
-                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "5a0aa661b61d056f72b83bf0d5c7eb4ddc84d6370fb977be794b145e49e8ff3f",
+                    "changelog": "* Upgrade bundled bootloader to 2.1.10.\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
                 }
             },
             {
@@ -160,14 +160,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 1, 7],
                     "min_firmware_version": [2, 8, 3],
                     "bootloader_version": [2, 1, 8],
                     "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "d3905f15221f7b2733e5496986ceb1a3b39f390c4439e2d3cc89d5f3b7423278",
-                    "changelog": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "5a0aa661b61d056f72b83bf0d5c7eb4ddc84d6370fb977be794b145e49e8ff3f",
+                    "changelog": "* Upgrade bundled bootloader to 2.1.10.\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
                 }
             }
         ],
@@ -182,14 +182,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 1, 6],
                     "min_firmware_version": [2, 7, 2],
                     "bootloader_version": [2, 1, 10],
-                    "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "ac995c394f7a7b3ea4cbd9c04977621d6d2fbef30bba856f707f585f34866ac4",
-                    "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
+                    "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR", "tr-TR"],
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "11d3f68d08f3f95c04dd526826f81eb7918df85928cfcef73beeae3132342bf0",
+                    "changelog": "* Visual cues to distinguish unlocked state on Homescreen.\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
                 }
             },
             {
@@ -202,14 +202,14 @@
                 },
                 "release": {
                     "required": false,
-                    "version": [2, 8, 9],
+                    "version": [2, 8, 10],
                     "min_bootloader_version": [2, 1, 6],
                     "min_firmware_version": [2, 7, 2],
                     "bootloader_version": [2, 1, 10],
-                    "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-                    "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
-                    "fingerprint": "ac995c394f7a7b3ea4cbd9c04977621d6d2fbef30bba856f707f585f34866ac4",
-                    "changelog": "* Ability to cancel recovery flow on word count selection screen.\n* New UI for confirming long messages.\n* Changed \"swipe to continue\" to \"tap to continue\". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen."
+                    "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR", "tr-TR"],
+                    "firmware_revision": "2a65d18200580005dc419b9569ed97fae440806a",
+                    "fingerprint": "11d3f68d08f3f95c04dd526826f81eb7918df85928cfcef73beeae3132342bf0",
+                    "changelog": "* Visual cues to distinguish unlocked state on Homescreen.\n* Replaced \"next page\" icon with \"...\" ellipsis when confirming long message.\n* Allow firmware upgrade even if language change failed."
                 }
             }
         ]
@@ -217,16 +217,19 @@
     "intermediaries": {
         "T1B1": [
             {
-                "min_firmware_version": "1.6.2",
+                "min_firmware_version": [1, 6, 2],
+                "min_bootloader_version": [1, 8, 0],
                 "version": 1
             },
             {
-                "min_firmware_version": "1.12.0",
+                "min_firmware_version": [1, 12, 0],
+                "min_bootloader_version": [1, 12, 0],
                 "version": 2
             },
             {
-                "min_firmware_version": "1.12.1",
-                "version": 2
+                "min_firmware_version": [1, 12, 1],
+                "min_bootloader_version": [1, 12, 1],
+                "version": 3
             }
         ]
     }

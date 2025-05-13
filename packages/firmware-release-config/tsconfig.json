@@ -1,6 +1,10 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "skipLibCheck": true
+    },
+    "include": [".", "**/*.json"],
     "references": [
         { "path": "../device-utils" },
         { "path": "../env-utils" }

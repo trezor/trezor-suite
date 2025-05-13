@@ -9,8 +9,7 @@ import {
     FirmwareReleaseConfigInfo,
     FirmwareType,
 } from '@trezor/device-utils';
-
-import { MESSAGE_RELEASE_PATH } from '../src/constants';
+import { MESSAGE_RELEASE_PATH } from './constants';
 
 type FirmwareReleaseFromJson = Omit<FirmwareRelease, 'changelog' | 'changelog_bitcoinonly'> & {
     changelog: string;

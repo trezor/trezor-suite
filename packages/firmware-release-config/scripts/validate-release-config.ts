@@ -3,7 +3,7 @@ import fs from 'fs';
 
 import { validateJsonSchema } from '@trezor/node-utils';
 
-import { MESSAGE_RELEASE_PATH, MESSAGE_RELEASE_SCHEMA_PATH } from '../src/constants';
+import { MESSAGE_RELEASE_PATH, MESSAGE_RELEASE_SCHEMA_PATH } from './constants';
 
 console.log('Validating release message against schema...');
 try {

@@ -1,4 +1,3 @@
-import { createPublicKey } from 'crypto';
 import { decode, verify } from 'jws';
 
 import { FirmwareReleaseConfig } from '@trezor/device-utils';
@@ -12,7 +11,7 @@ import { jws as releasesJwsLocal } from '../files/releases.v1';
 // TODO: WIP: for now we are foring local since it was not deployed yet.
 const FORCE_LOCAL_JWS = true;
 
-export const getFirmwareReleaseConfig = async () => {
+const getReleaseJWS = async () => {
     if (FORCE_LOCAL_JWS) {
         return {
             releasesJws: releasesJwsLocal,
@@ -26,7 +25,7 @@ export const getFirmwareReleaseConfig = async () => {
 
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 5_000);
 
         const response = await fetch(remoteReleasesUrl, {
             signal: controller.signal,
@@ -54,8 +53,8 @@ export const getFirmwareReleaseConfig = async () => {
     }
 };
 
-export const getReleasesMessage = async () => {
-    const { releasesJws } = await getFirmwareReleaseConfig();
+export const getFirmwareReleaseConfig = async () => {
+    const { releasesJws, isRemote } = await getReleaseJWS();
 
     const decodedJws = decode(releasesJws);
 
@@ -63,20 +62,28 @@ export const getReleasesMessage = async () => {
         throw new Error('Decoding of releases failed.');
     }
 
+    if (isRemote) {
+        const decodedJwsLocal = decode(releasesJwsLocal);
+
+        if (decodedJwsLocal && decodedJwsLocal.payload.sequence > decodedJws.payload.sequence) {
+            throw new Error(
+                'Local firmware release config cannot have greater sequence than remote.',
+            );
+        }
+    }
+
     const algorithmInHeader = decodedJws?.header.alg;
     if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
         throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
     }
 
-    const JWSPublicKey = getJWSPublicKey('message-system');
+    const JWSPublicKey = getJWSPublicKey('firmware-release');
     if (!JWSPublicKey) {
         throw new Error('JWS public key is not defined!');
     }
 
     try {
-        const publicKey = createPublicKey(JWSPublicKey);
-        const publicKeyString = publicKey.export({ type: 'spki', format: 'pem' });
-        const isAuthenticityValid = verify(releasesJws, JWS_SIGN_ALGORITHM, publicKeyString);
+        const isAuthenticityValid = verify(releasesJws, JWS_SIGN_ALGORITHM, JWSPublicKey);
 
         if (!isAuthenticityValid) {
             throw new Error('Config authenticity is invalid');

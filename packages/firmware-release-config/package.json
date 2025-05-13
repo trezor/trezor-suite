@@ -5,26 +5,36 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
     "scripts": {
-        "build:lib": "yarn validate-release-config && yarn sign-release-config",
+        "build:lib": "yarn sign-release-config",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "generate-release-config": "yarn tsx ./scripts/generate-release-config.ts",
+        "generate-release-config": "yarn tsx ./scripts/generate-release-config.ts && yarn validate-release-config",
         "sign-release-config": "yarn tsx ./scripts/sign-release-config.ts",
-        "validate-release-config": "yarn tsx ./scripts/validate-release-config.ts"
+        "validate-release-config": "yarn tsx ./scripts/validate-release-config.ts",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@trezor/device-utils": "workspace:^",
-        "@trezor/env-utils": "workspace:^",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "fs-extra": "^11.3.0",
         "jws": "^4.0.0",
         "tsx": "^4.20.3"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",
-        "@types/jws": "^3.2.10"
+        "@types/jws": "^3.2.10",
+        "rimraf": "^6.0.1"
     },
     "nx": {
         "targets": {

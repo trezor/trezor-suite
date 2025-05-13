@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "skipLibCheck": true
+    },
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../device-utils"
+        },
+        {
+            "path": "../env-utils"
+        }
+    ]
+}
