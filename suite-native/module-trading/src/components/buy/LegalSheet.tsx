@@ -49,8 +49,8 @@ export const LegalSheet = memo(
 
         const dismissSheet = useCallback(() => {
             onDismiss();
-            bottomSheetModalRef.current?.close();
-        }, [onDismiss]);
+            closeModal();
+        }, [onDismiss, closeModal]);
 
         useBottomSheetBackButtonSubscription(isVisible, dismissSheet);
 
