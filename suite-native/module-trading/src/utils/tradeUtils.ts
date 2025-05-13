@@ -10,6 +10,7 @@ import {
 
 import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { TradingTradeStatusType, TradingTransaction, TradingType } from '@suite-common/trading';
+import { useTranslate } from '@suite-native/intl';
 import { getWeakRandomId } from '@trezor/utils';
 
 import { TRADING_URL_DEFAULT_BACK } from './tradeFormUtils';
@@ -157,3 +158,21 @@ export const doesUrlContainCloseCallbackUrl = (url: string, closeCallbackUrl: st
     url.includes(closeCallbackUrl) || url.includes(TRADING_URL_DEFAULT_BACK);
 
 export const getRandomAccountDescriptor = () => getWeakRandomId(20);
+
+export const getTradeTitle = (
+    trade: TradingTransaction,
+    translate: ReturnType<typeof useTranslate>['translate'],
+) => {
+    const { tradeType } = trade;
+    switch (tradeType) {
+        case 'buy':
+            return translate('moduleTrading.tradeHistory.detail.buy');
+        case 'exchange':
+            return translate('moduleTrading.tradeHistory.detail.exchange');
+        case 'sell':
+            return translate('moduleTrading.tradeHistory.detail.sell');
+
+        default:
+            throw new UnreachableCaseError(tradeType);
+    }
+};

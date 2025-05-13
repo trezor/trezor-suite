@@ -1702,6 +1702,9 @@ export const en = {
                     description: 'Click to complete your details on the provider’s site.',
                     button: 'Proceed to pay',
                 },
+                buy: 'Buy',
+                exchange: 'Swap',
+                sell: 'Sell',
             },
         },
         error: {

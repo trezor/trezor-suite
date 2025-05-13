@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TradeDetailFooter } from './TradeDetailFooter';
 import { TradeDetailHeader } from './TradeDetailHeader';
 import { TradeDetailInfo } from './TradeDetailInfo';
 import { TradeDetailTransactionInfo } from './TradeDetailTransactionInfo';
+import { getTradeTitle } from '../../../utils/tradeUtils';
 
 type TradeDetailSheetProps = {
     orderId?: string;
@@ -23,6 +25,7 @@ const bottomSheetStyle = prepareNativeStyle(({ spacings }) => ({
 
 export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDetailSheetProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
@@ -42,11 +45,14 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
         closeModal();
     };
 
+    const tradeTitle = getTradeTitle(trade, translate);
+
     return (
         <BottomSheetModal
             ref={bottomSheetRef}
             onDismiss={onDismiss}
             style={applyStyle(bottomSheetStyle)}
+            title={tradeTitle}
             isCloseDisplayed
         >
             <TradeDetailHeader orderId={orderId} onOpenedWebview={onOpenedWebview} />

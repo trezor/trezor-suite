@@ -1,5 +1,9 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
+import { TradingTransaction, TradingType } from '@suite-common/trading';
+import { useTranslate } from '@suite-native/intl';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../__fixtures__/trades';
 import { TRADING_URL_DEFAULT_BACK } from '../tradeFormUtils';
 import {
@@ -7,6 +11,7 @@ import {
     getRandomAccountDescriptor,
     getTradeOperationData,
     getTradeStatusStep,
+    getTradeTitle,
     isFinalStatus,
 } from '../tradeUtils';
 
@@ -167,6 +172,19 @@ describe('tradeUtils', () => {
 
         it('should return different string on every call', () => {
             expect(getRandomAccountDescriptor()).not.toBe(getRandomAccountDescriptor());
+        });
+    });
+
+    describe('getTradeTitle', () => {
+        it.each<[string, TradingType]>([
+            ['Buy', 'buy'],
+            ['Sell', 'sell'],
+            ['Swap', 'exchange'],
+        ])('should return "%s" for [%s] tradeType', (expectedTitle, tradeType) => {
+            const trade = { tradeType } as TradingTransaction;
+            const { result } = renderHookWithBasicProvider(() => useTranslate());
+
+            expect(getTradeTitle(trade, result.current.translate)).toBe(expectedTitle);
         });
     });
 });
