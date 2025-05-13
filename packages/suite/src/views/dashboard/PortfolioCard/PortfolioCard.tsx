@@ -70,8 +70,9 @@ export const PortfolioCard = memo(() => {
     const goToReceive = () => dispatch(goto('wallet-receive'));
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
     const header =
-        discoveryStatus && discoveryStatus.status === 'exception' ? null : (
+        discovery && discoveryStatus?.status === 'exception' ? null : (
             <PortfolioCardHeader
+                discovery={discovery}
                 showGraphControls={showGraphControls}
                 fiatAmount={walletBalance}
                 localCurrency={localCurrency}

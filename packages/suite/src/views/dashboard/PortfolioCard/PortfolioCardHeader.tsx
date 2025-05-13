@@ -1,14 +1,16 @@
 import { useCallback } from 'react';
 
-import { Button, LoadingContent, Row, SkeletonRectangle } from '@trezor/components';
+import { Button, Row, SkeletonRectangle } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useFastAccounts } from 'src/hooks/wallet';
+import { Discovery } from 'src/types/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
 
 export type PortfolioCardHeaderProps = {
+    discovery?: Discovery;
     fiatAmount: string;
     localCurrency: string;
     isWalletEmpty: boolean;
@@ -21,6 +23,7 @@ export type PortfolioCardHeaderProps = {
 };
 
 export const PortfolioCardHeader = ({
+    discovery,
     fiatAmount,
     localCurrency,
     isWalletEmpty,
@@ -62,22 +65,21 @@ export const PortfolioCardHeader = ({
         }
     }
 
-    const valueLoading = isDiscoveryRunning || isMissingFiatRate;
+    const valueLoading =
+        isDiscoveryRunning || isMissingFiatRate || (!discovery && !Number(fiatAmount));
 
     return (
         <Row justifyContent="space-between">
-            <LoadingContent size={24} isLoading={valueLoading}>
-                {valueLoading ? (
-                    <SkeletonRectangle width={140} height={53} />
-                ) : (
-                    <FiatHeader
-                        data-testid="@dashboard/portfolio/fiat-amount"
-                        size="large"
-                        amount={fiatAmount}
-                        localCurrency={localCurrency}
-                    />
-                )}
-            </LoadingContent>
+            {valueLoading ? (
+                <SkeletonRectangle width={140} height={53} />
+            ) : (
+                <FiatHeader
+                    data-testid="@dashboard/portfolio/fiat-amount"
+                    size="large"
+                    amount={fiatAmount}
+                    localCurrency={localCurrency}
+                />
+            )}
             {actions}
         </Row>
     );
