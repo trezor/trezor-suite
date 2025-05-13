@@ -108,7 +108,6 @@ const log =
                 break;
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
-            case discoveryActions.completeDiscovery.type:
             case deviceActions.updateSelectedDevice.type:
             case deviceActions.rememberDevice.type:
                 api.dispatch(

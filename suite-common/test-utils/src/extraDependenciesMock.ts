@@ -64,7 +64,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         addAccountMetadata: mockThunk('addAccountMetadata'),
         findLabelsToBeMovedOrDeleted: mockThunk('findLabelsToBeMovedOrDeleted'),
         moveLabelsForRbfAction: mockThunk('moveLabelsForRbfAction'),
-        addWalletThunk: mockThunk('addWalletThunk'),
         openSwitchDeviceDialog: mockThunk('openSwitchDeviceDialog'),
     },
     selectors: {
@@ -87,7 +86,10 @@ export const extraDependenciesMock: ExtraDependencies = {
             ...testMocks.getSuiteDevice(),
         }),
         selectLanguage: mockSelector('selectLanguage', 'en'),
-        selectDeviceDiscovery: mockSelector('selectDeviceDiscovery', undefined),
+        selectDiscoveryForSelectedDevice: mockSelector(
+            'selectDiscoveryForSelectedDevice',
+            undefined,
+        ),
         selectAddressDisplayType: mockSelector(
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,

@@ -2,12 +2,12 @@ import { A, pipe } from '@mobily/ts-belt';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol, type Network, getNetworkType, networksCollection } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
     WalletSettingsRootState,
-    filterUnavailableNetworks,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
@@ -28,6 +28,9 @@ import {
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
 } from '@suite-native/tokens';
 
+import { versionUtils } from '@trezor/utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
+
 type DiscoveryInfo = {
     startTimestamp: number;
     networkSymbols: NetworkSymbol[];
@@ -47,6 +50,37 @@ export type DiscoveryConfigSliceRootState = {
 const discoveryConfigInitialState: DiscoveryConfigState = {
     discoveryInfo: null,
 };
+
+/**
+ * Filter collection of activated networks to only include those supported by device & suite
+ */
+const filterUnavailableNetworks = (
+    enabledNetworks: NetworkSymbol[],
+    device?: TrezorDevice,
+): Network[] =>
+    networksCollection.filter(n => {
+        const firmwareVersion = getFirmwareVersion(device);
+        const internalModel = device?.features?.internal_model;
+
+        const isSupportedInSuite =
+            !n.support || // support is not defined => is supported
+            !internalModel || // typescript. device undefined. => supported
+            (n.support[internalModel] && // support is defined for current device
+                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel] as string)); // device version is newer or equal to support field in networks => supported
+
+        return (
+            enabledNetworks.includes(n.symbol) &&
+            !n.isHidden &&
+            !device?.unavailableCapabilities?.[n.symbol] && // exclude by network symbol (ex: xrp on T1B1)
+            isSupportedInSuite
+        );
+    });
+
+export const discoveryConfigPersistWhitelist: Array<keyof DiscoveryConfigState> = [
+    'areTestnetsEnabled',
+    'isCoinEnablingInitFinished',
+    'enabledDiscoveryNetworkSymbols',
+];
 
 export const discoveryConfigSlice = createSlice({
     name: 'discoveryConfig',

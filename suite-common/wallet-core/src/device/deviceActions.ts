@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { ButtonRequest, ThpSuiteCredentials, TrezorDevice } from '@suite-common/suite-types';
 import { WalletType } from '@suite-common/wallet-types';
-import { DEVICE, Device } from '@trezor/connect';
+import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -24,6 +24,24 @@ const connectUnacquiredDevice = createAction(
 const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device | TrezorDevice) => ({
     payload,
 }));
+
+const setDeviceState = createAction(
+    `${DEVICE_MODULE_PREFIX}/set-device-state`,
+    (payload: {
+        device: TrezorDevice;
+        state: DeviceState & { staticSessionId: StaticSessionId };
+        useEmptyPassphrase: boolean;
+    }) => ({
+        payload,
+    }),
+);
+
+const addAuthorizedDevice = createAction(
+    `${DEVICE_MODULE_PREFIX}/addAuthorizedDevice`,
+    (payload: { device: TrezorDevice }) => ({
+        payload,
+    }),
+);
 
 const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice) => ({
     payload,
@@ -108,6 +126,8 @@ export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
     deviceChanged,
+    setDeviceState,
+    addAuthorizedDevice,
     deviceDisconnect,
     dismissFirmwareAuthenticityCheck,
     updatePassphraseMode,

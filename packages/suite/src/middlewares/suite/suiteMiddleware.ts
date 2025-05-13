@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
 import { AnyAction } from '@suite-common/redux-utils';
-import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
+import { isAnyDeviceEventAction, isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     authConfirm,
@@ -15,6 +15,9 @@ import {
     observeSelectedDevice,
     restartDiscoveryThunk,
     selectDeviceThunk,
+    selectSelectedDevice,
+    startDiscovery,
+    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -23,6 +26,7 @@ import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged, setFlag } from 'src/actions/suite/suiteActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
+import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -36,6 +40,8 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.removeButtonRequests,
             deviceActions.rememberDevice,
             deviceActions.forgetDevice,
+            // ?
+            deviceActions.setDeviceState,
         )(action)
     ) {
         return true;
@@ -52,6 +58,7 @@ const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
+        const prevState = api.getState();
         const prevApp = api.getState().router.app;
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
             api.dispatch(appChanged(action.payload.app));
@@ -119,7 +126,6 @@ const suite =
             default:
                 break;
         }
-
         if (isActionDeviceRelated(action)) {
             // keep suite reducer synchronized with other reducers (selected device)
             api.dispatch(observeSelectedDevice());

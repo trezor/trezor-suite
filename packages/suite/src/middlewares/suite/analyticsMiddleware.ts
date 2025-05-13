@@ -149,69 +149,85 @@ const analyticsMiddleware =
             case DEVICE.DISCONNECT:
                 analytics.report({ type: EventType.DeviceDisconnect });
                 break;
-            case discoveryActions.completeDiscovery.type: {
-                const accumulateAccountCountBySymbolAndType = (
-                    acc: { [key: string]: number },
-                    { symbol, accountType }: Account,
-                ) => {
-                    // change coinjoin accounts to taproot for analytics
-                    const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
+            // case discoveryActions.completeDiscovery.type: {
+            //     const accumulateAccountCountBySymbolAndType = (
+            //         acc: { [key: string]: number },
+            //         { symbol, accountType }: Account,
+            //     ) => {
+            //         // change coinjoin accounts to taproot for analytics
+            //         const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
 
-                    const id = `${symbol}_${accType}`;
-                    acc[id] = (acc[id] || 0) + 1;
+            //         const id = `${symbol}_${accType}`;
+            //         acc[id] = (acc[id] || 0) + 1;
 
-                    return acc;
-                };
+            //         return acc;
+            //     };
 
-                const accountsWithTransactions = state.wallet.accounts
-                    .filter(account => account.history.total + (account.history.unconfirmed || 0))
-                    .reduce(accumulateAccountCountBySymbolAndType, {});
+            //     const accountsWithTransactions = state.wallet.accounts
+            //         .filter(account => account.history.total + (account.history.unconfirmed || 0))
+            //         .reduce(accumulateAccountCountBySymbolAndType, {});
 
-                const accountsWithNonZeroBalance = state.wallet.accounts
-                    .filter(
-                        account =>
-                            new BigNumber(account.balance).gt(0) ||
-                            new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
-                            hasVisibleTokens(
-                                account.symbol,
-                                account.tokens ?? [],
-                                state.tokenDefinitions,
-                            ),
-                    )
-                    .reduce(accumulateAccountCountBySymbolAndType, {});
+            // const accountsWithNonZeroBalance = state.wallet.accounts
+            //     .filter(
+            //         account =>
+            //             new BigNumber(account.balance).gt(0) ||
+            //             new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
+            //             hasVisibleTokens(
+            //                 account.symbol,
+            //                 account.tokens ?? [],
+            //                 state.tokenDefinitions,
+            //             ),
+            //     )
+            //     .reduce(accumulateAccountCountBySymbolAndType, {});
 
-                const accountsWithTokens = state.wallet.accounts
-                    .filter(account => new BigNumber((account.tokens || []).length).gt(0))
-                    .reduce((acc: { [key: string]: number }, { symbol, tokens }) => {
-                        if (
-                            tokens &&
-                            tokens.length > 0 &&
-                            !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
-                        ) {
-                            return acc;
-                        }
+            // const accountsWithTokens = state.wallet.accounts
+            //     .filter(account => new BigNumber((account.tokens || []).length).gt(0))
+            //     .reduce((acc: { [key: string]: number }, { symbol, tokens }) => {
+            //         if (
+            //             tokens &&
+            //             tokens.length > 0 &&
+            //             !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
+            //         ) {
+            //             return acc;
+            //         }
 
-                        acc[symbol] = (acc[symbol] || 0) + 1;
+            // accs[symbol] = (acc[symbol] || 0) + 1;
+            //     const accountsWithNonZeroBalance = state.wallet.accounts
+            //         .filter(
+            //             account =>
+            //                 new BigNumber(account.balance).gt(0) ||
+            //                 new BigNumber(
+            //                     (account.tokens || []).filter(token =>
+            //                         new BigNumber(token.balance || 0).gt(0),
+            //                     ).length,
+            //                 ).gt(0),
+            //         )
+            //         .reduce(accumulateAccountCountBySymbolAndType, {});
 
-                        return acc;
-                    }, {});
+            //     const accountsWithTokens = state.wallet.accounts
+            //         .filter(account => new BigNumber((account.tokens || []).length).gt(0))
+            //         .reduce((acc: { [key: string]: number }, { symbol }: Account) => {
+            //             acc[symbol] = (acc[symbol] || 0) + 1;
 
-                analytics.report({
-                    type: EventType.AccountsStatus,
-                    payload: { ...accountsWithTransactions },
-                });
+            //             return acc;
+            //         }, {});
 
-                analytics.report({
-                    type: EventType.AccountsNonZeroBalance,
-                    payload: { ...accountsWithNonZeroBalance },
-                });
+            //     analytics.report({
+            //         type: EventType.AccountsStatus,
+            //         payload: { ...accountsWithTransactions },
+            //     });
 
-                analytics.report({
-                    type: EventType.AccountsTokensStatus,
-                    payload: { ...accountsWithTokens },
-                });
-                break;
-            }
+            //     analytics.report({
+            //         type: EventType.AccountsNonZeroBalance,
+            //         payload: { ...accountsWithNonZeroBalance },
+            //     });
+
+            //     analytics.report({
+            //         type: EventType.AccountsTokensStatus,
+            //         payload: { ...accountsWithTokens },
+            //     });
+            //     break;
+            // }
             case ROUTER.LOCATION_CHANGE:
                 if (
                     state.suite.lifecycle.status !== 'initial' &&

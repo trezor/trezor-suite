@@ -26,6 +26,8 @@ const findFieldsNested = (
     field: Field<any>,
     currentDepth = 0,
 ): Field<any> | undefined => {
+    if (!schema) return undefined;
+
     const remainingPath = field.path?.slice(currentDepth);
     if (!remainingPath || remainingPath.length === 0) {
         return schema.find(f => f.name === field.name);

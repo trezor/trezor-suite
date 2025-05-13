@@ -6,10 +6,11 @@ test.describe('Passphrase input', { tag: ['@group=passphrase'] }, () => {
         await onboardingPage.completeOnboarding();
     });
 
-    test('just test passphrase input', async ({ dashboardPage }) => {
+    test('just test passphrase input', async ({ dashboardPage, page }) => {
         // start adding hidden wallet
         dashboardPage.openDeviceSwitcher();
         dashboardPage.addHiddenWalletButton.click();
+        await page.getByTestId('@switch-device/add-existing-hidden-wallet-button').click();
 
         // select whole text and delete it
         await dashboardPage.passphraseInput.pressSequentially('123456');

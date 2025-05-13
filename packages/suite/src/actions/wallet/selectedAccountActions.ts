@@ -6,7 +6,7 @@ import {
     deviceActions,
     discoveryActions,
     feesActions,
-    selectDeviceDiscovery,
+    selectDiscoveryForSelectedDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -19,6 +19,7 @@ import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
+    const accounts = state.wallet.accounts;
 
     // waiting for device
     if (!device) {
@@ -36,7 +37,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     }
 
     // waiting for discovery
-    const discovery = selectDeviceDiscovery(state);
+    const discovery = selectDiscoveryForSelectedDevice(state);
     if (!device.state || !discovery) {
         return {
             status: 'loading',
@@ -45,12 +46,12 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     }
 
     // account cannot exists since there are no selected networks in settings/wallet
-    if (discovery.networks.length === 0) {
-        return {
-            status: 'exception',
-            loader: 'discovery-empty',
-        };
-    }
+    // if (discovery.networks.length === 0) {
+    //     return {
+    //         status: 'exception',
+    //         loader: 'discovery-empty',
+    //     };
+    // }
 
     // get params from router
     // or set first default account from discovery list
@@ -59,39 +60,40 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             ? state.router.params
             : {
                   accountIndex: 0,
-                  accountType: 'normal' as const,
-                  symbol: discovery.networks[0],
+                  accountType: accounts[0]?.accountType || ('normal' as const),
+                  symbol: accounts[0]?.symbol || 'btc',
+                  //   symbol: discovery.networks[0],
               };
 
     const network = networks[params.symbol];
 
     // account cannot exists since requested network is not selected in settings/wallet
-    if (!discovery.networks.find(n => n === network.symbol)) {
-        return {
-            status: 'exception',
-            loader: 'account-not-enabled',
-            network,
-            discovery,
-            params,
-        };
-    }
+    // if (!discovery.networks.find(n => n === network.symbol)) {
+    //     return {
+    //         status: 'exception',
+    //         loader: 'account-not-enabled',
+    //         network,
+    //         discovery,
+    //         params,
+    //     };
+    // }
 
-    const failed = discovery.failed.find(
-        f =>
-            f.symbol === network.symbol &&
-            f.index === params.accountIndex &&
-            f.accountType === params.accountType,
-    );
-    // discovery for requested network failed
-    if (failed) {
-        return {
-            status: 'exception',
-            loader: 'account-not-loaded',
-            network,
-            discovery,
-            params,
-        };
-    }
+    // const failed = discovery.failed.find(
+    //     f =>
+    //         f.symbol === network.symbol &&
+    //         f.index === params.accountIndex &&
+    //         f.accountType === params.accountType,
+    // );
+    // // discovery for requested network failed
+    // if (failed) {
+    //     return {
+    //         status: 'exception',
+    //         loader: 'account-not-loaded',
+    //         network,
+    //         discovery,
+    //         params,
+    //     };
+    // }
 
     // get selected account
     const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
@@ -130,17 +132,17 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // account doesn't exist (yet?) checking why...
     // discovery is still running
-    if (discovery.error) {
-        return {
-            status: 'exception',
-            loader: 'discovery-error',
-            network,
-            discovery,
-            params,
-        };
-    }
+    // if (discovery.error) {
+    //     return {
+    //         status: 'exception',
+    //         loader: 'discovery-error',
+    //         network,
+    //         discovery,
+    //         params,
+    //     };
+    // }
 
-    if (discovery.status !== DiscoveryStatus.COMPLETED) {
+    if (discovery.status === 'progress') {
         return {
             status: 'loading',
             loader: 'account-loading',
@@ -173,13 +175,8 @@ const actions = [
     blockchainActions.setBackend.type,
     blockchainActions.synced.type,
     blockchainActions.connected.type,
-    discoveryActions.stopDiscovery.type,
-    discoveryActions.interruptDiscovery.type,
-    discoveryActions.createDiscovery.type,
-    discoveryActions.startDiscovery.type,
+    // ???
     discoveryActions.updateDiscovery.type,
-    discoveryActions.removeDiscovery.type,
-    discoveryActions.completeDiscovery.type,
     feesActions.updateFee.type,
     feesActions.removeFee.type,
 ];

@@ -60,6 +60,12 @@ export type UnreadableDevice = UnreadableDeviceBase & ExtendedDevice;
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice | UnreadableDevice;
 
+export type AuthorizedDevice = AcquiredDevice & {
+    state: DeviceState;
+    instance: number;
+    walletNumber: number;
+};
+
 /**
  * used when saving device to storage
  */

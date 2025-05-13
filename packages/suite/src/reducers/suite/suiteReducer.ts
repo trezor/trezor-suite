@@ -408,15 +408,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
 
-            case discoveryActions.startDiscovery.type:
-                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, true);
-                break;
-
-            case discoveryActions.completeDiscovery.type:
-            case discoveryActions.stopDiscovery.type:
-                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
-                break;
-
             // no default
         }
     });

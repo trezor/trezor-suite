@@ -54,7 +54,6 @@ export type ExtraDependencies = {
             >;
         }>;
         openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
-        addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType; device: AcquiredDevice }>;
     };
     selectors: {
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
@@ -70,7 +69,7 @@ export type ExtraDependencies = {
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
-        selectDeviceDiscovery: SuiteCompatibleSelector<Discovery | undefined>;
+        selectDiscoveryForSelectedDevice: SuiteCompatibleSelector<Discovery | undefined>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;

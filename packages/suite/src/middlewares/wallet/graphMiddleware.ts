@@ -4,7 +4,7 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     accountsActions,
     discoveryActions,
-    selectDeviceDiscovery,
+    selectDiscoveryForSelectedDevice,
     transactionsActions,
 } from '@suite-common/wallet-core';
 
@@ -29,33 +29,33 @@ const graphMiddleware =
             }
         }
 
-        // don't run while fetching txs pages in transactions tab
-        if (transactionsActions.addTransaction.match(action) && !action.payload.page) {
-            const { account, transactions } = action.payload;
+        // // don't run while fetching txs pages in transactions tab
+        // if (transactionsActions.addTransaction.match(action) && !action.payload.page) {
+        //     const { account, transactions } = action.payload;
 
-            // don't run during discovery and on unconfirmed txs
-            const discovery = selectDeviceDiscovery(api.getState());
-            if (
-                discovery?.status === DiscoveryStatus.COMPLETED &&
-                transactions.some(t => (t.blockHeight ?? 0) > 0)
-            ) {
-                api.dispatch(
-                    graphActions.updateGraphData([account], {
-                        newAccountsOnly: false,
-                    }),
-                );
-            }
-        }
+        //     // don't run during discovery and on unconfirmed txs
+        //     const discovery = selectDiscoveryForSelectedDevice(api.getState());
+        //     if (
+        //         discovery?.status === DiscoveryStatus.COMPLETED &&
+        //         transactions.some(t => (t.blockHeight ?? 0) > 0)
+        //     ) {
+        //         api.dispatch(
+        //             graphActions.updateGraphData([account], {
+        //                 newAccountsOnly: false,
+        //             }),
+        //         );
+        //     }
+        // }
 
-        switch (action.type) {
-            case discoveryActions.completeDiscovery.type:
-                api.dispatch(
-                    graphActions.updateGraphData(currentAccounts, { newAccountsOnly: true }),
-                );
-                break;
-            default:
-                break;
-        }
+        // switch (action.type) {
+        //     case discoveryActions.completeDiscovery.type:
+        //         api.dispatch(
+        //             graphActions.updateGraphData(currentAccounts, { newAccountsOnly: true }),
+        //         );
+        //         break;
+        //     default:
+        //         break;
+        // }
 
         return action;
     };

@@ -54,6 +54,8 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             // add 2nd hidden wallet
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addUnusedHiddenWallet('def');
+            const element = page.getByTestId(/^@account-menu\/btc\//);
+            await element.first().click();
 
             const selectWalletEvent = analytics.findAnalyticsEventByType<
                 ExtractByEventType<EventType.SelectWalletType>

@@ -1,32 +1,39 @@
-import { Dispatch } from 'react';
-
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { onCancel as onCancelModal } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { onCancel as onCancelModal } from '../../../../../actions/suite/modalActions';
+import { goto } from '../../../../../actions/suite/routerActions';
+import { useNetworkSupport } from '../../../../../hooks/settings/useNetworkSupport';
+import { useDispatch, useSelector } from '../../../../../hooks/suite';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
+import { Translation } from '../../../Translation';
 
-import { ContentType } from './types';
+type PassphraseWalletIsEmptyProps = {
+    onRetry: () => void;
+    onCancel: () => void;
+    device: TrezorDevice;
+    onNext: () => void;
+    onBack: () => void;
+};
 
-type PassphraseWalletConfirmationStep1Props = {
-    setContentType: Dispatch<React.SetStateAction<ContentType>>;
+type PassphraseWalletIsEmptyContentProps = {
+    onNext: () => void;
     onRetry: () => void;
     onCancel: () => void;
     'data-testid'?: string;
 };
 
-export const PassphraseWalletConfirmationStep1 = ({
-    setContentType,
+const PassphraseWalletIsEmptyContent = ({
+    onNext,
     onRetry,
     onCancel,
     'data-testid': dataTest,
-}: PassphraseWalletConfirmationStep1Props) => {
+}: PassphraseWalletIsEmptyContentProps) => {
     const { supportedMainnets } = useNetworkSupport();
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
@@ -68,9 +75,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                     <Button
                         isFullWidth
                         variant="primary"
-                        onClick={() => {
-                            setContentType('step2');
-                        }}
+                        onClick={onNext}
                         data-testid="@passphrase-confirmation/step1-open-unused-wallet-button"
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON" />
@@ -120,3 +125,22 @@ export const PassphraseWalletConfirmationStep1 = ({
         </Column>
     );
 };
+
+export const PassphraseWalletIsEmpty = ({
+    onCancel,
+    device,
+    onBack,
+    onRetry,
+    onNext,
+}: PassphraseWalletIsEmptyProps) => (
+    <SwitchDeviceModal onCancel={onCancel}>
+        <CardWithDevice
+            onCancel={onCancel}
+            device={device}
+            onBackButtonClick={onBack}
+            isFullHeaderVisible
+        >
+            <PassphraseWalletIsEmptyContent onNext={onNext} onRetry={onRetry} onCancel={onCancel} />
+        </CardWithDevice>
+    </SwitchDeviceModal>
+);

@@ -139,14 +139,18 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
             const value = getDeepValue(parsed, [...(field.path ?? []), ...field.name.split('.')]);
             dispatch(onFieldChange(field, value));
 
+            console.log('field', field);
             if (field.type === 'array') {
                 // ensure the array has the correct number of items
-                for (let i = field.items.length; i < value.length; i++) {
-                    dispatch(onBatchAdd(field, field.batch[0].fields));
+                if (value) {
+                    for (let i = field.items.length; i < value.length; i++) {
+                        dispatch(onBatchAdd(field, field.batch[0].fields));
+                    }
+                    for (let i = field.items.length; i > value.length; i--) {
+                        dispatch(onBatchRemove(field, field.items[i - 1]));
+                    }
                 }
-                for (let i = field.items.length; i > value.length; i--) {
-                    dispatch(onBatchRemove(field, field.items[i - 1]));
-                }
+
                 field.items.forEach(batch => {
                     batch.forEach(processField);
                 });

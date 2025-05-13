@@ -13,7 +13,6 @@ import {
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     DISCOVERY_MODULE_PREFIX,
-    LIMIT,
     accountsActions,
     createDiscovery,
     disableAccountsThunk,
@@ -23,7 +22,7 @@ import {
     selectDeviceAccountByDescriptorAndNetworkSymbol,
     selectDeviceAccountsForNetworkSymbolAndAccountType,
     selectDeviceByStaticSessionId,
-    selectDeviceDiscovery,
+    selectDiscoveryForSelectedDevice,
     selectDeviceStaticSessionId,
     selectFirstNormalAccountForNetworkSymbol,
     selectHasDeviceDiscovery,
@@ -54,6 +53,7 @@ import {
     selectShouldRunDiscoveryForDevice,
 } from './discoverySelectors';
 
+const LIMIT = 10; // will be removed
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
 const DISCOVERY_BATCH_SIZE_PER_SYMBOL: Partial<Record<NetworkSymbol, number>> = {
@@ -116,7 +116,7 @@ const fetchBundleDescriptorsThunk = createThunk<
 const finishNetworkTypeDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/finishNetworkTypeDiscoveryThunk`,
     (_, { dispatch, getState }) => {
-        const discovery = selectDeviceDiscovery(getState());
+        const discovery = selectDiscoveryForSelectedDevice(getState());
 
         if (!discovery) {
             return;
@@ -440,7 +440,7 @@ const discoverNetworkBatchThunk = createThunk(
         },
         { dispatch, getState },
     ) => {
-        const discovery = selectDeviceDiscovery(getState());
+        const discovery = selectDiscoveryForSelectedDevice(getState());
         const batchSize = getBatchSizeByNetworkSymbol(network.symbol);
         // expected to be found, because this thunk is called with accountType taken from the network
         const normalizedNetworkAccount = normalizeNetworkAccounts(network).find(

@@ -53,6 +53,17 @@ const initialState: State = {
 };
 
 const modalReducer = (state: State = initialState, action: Action): State => {
+    // if (
+    //     action.type === '@common/wallet-core/discovery/update' &&
+    //     action.payload?.status.status === 'confirm-empty-passphrase'
+    // ) {
+    //     return {
+    //         context: MODAL.CONTEXT_DEVICE,
+    //         device: undefined,
+    //         windowType: action.type,
+    //         preserve: state.preserve,
+    //     };
+    // }
     switch (action.type) {
         // device with context assigned to modal was disconnected
         case DEVICE.DISCONNECT:
