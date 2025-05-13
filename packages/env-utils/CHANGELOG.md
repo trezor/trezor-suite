@@ -1,3 +1,8 @@
+# 1.3.4
+
+- npm-prerelease: @trezor/env-utils 1.3.4-beta.1 (94d44ddcf9)
+- chore: apply latest prettier (eb758acea9)
+
 # 1.3.3
 
 - npm-prerelease: @trezor/env-utils 1.3.3-beta.1 (ffd8f0ab80)
