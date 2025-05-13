@@ -1,3 +1,9 @@
+# 1.3.3
+
+- npm-prerelease: @trezor/connect-analytics 1.3.3-beta.1 (94e0b18cd5)
+- chore: apply latest prettier (eb758acea9)
+- feat(connect): add appName and appIcon to manifest (024d5ff473)
+
 # 1.3.2
 
 - npm-prerelease: @trezor/connect-analytics 1.3.2-beta.1 (c39a3f83f9)
