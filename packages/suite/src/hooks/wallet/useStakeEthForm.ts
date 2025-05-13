@@ -297,10 +297,20 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             setIsLessAmountForWithdrawalWarningShown(true);
         }
 
-        setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
+        setValue(OUTPUT_AMOUNT, new BigNumber(amount).minus(MIN_FOR_WITHDRAWALS).toString() || '', {
+            shouldDirty: true,
+        });
+
         await composeRequest(CRYPTO_INPUT);
         setIsAmountForWithdrawalWarningShown(true);
-    }, [account.formattedBalance, clearErrors, composeRequest, setValue, MIN_BALANCE_FOR_STAKING]);
+    }, [
+        account.formattedBalance,
+        clearErrors,
+        composeRequest,
+        setValue,
+        MIN_BALANCE_FOR_STAKING,
+        MIN_FOR_WITHDRAWALS,
+    ]);
 
     useEffect(() => {
         if (formState.errors[CRYPTO_INPUT]) {
