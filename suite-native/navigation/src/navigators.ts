@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
 
+import { BackupType } from '@suite-common/suite-types';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountKey,
@@ -137,7 +138,7 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.CreateWalletLoading]: undefined;
     [DeviceOnboardingStackRoutes.WalletBackupTutorial]: undefined;
     [DeviceOnboardingStackRoutes.WalletCreation]: {
-        walletBackupType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
+        walletBackupType: BackupType;
     };
     [DeviceOnboardingStackRoutes.Recovery]: undefined;
     [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: undefined;

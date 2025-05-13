@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
 import { WalletBackupType } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
@@ -13,7 +13,6 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { SwipeableWalkthrough } from '../components/SwipeableWalkthrough/SwipeableWalkthrough';
 import { SwipeableWalkthroughScreenHeader } from '../components/SwipeableWalkthrough/SwipeableWalkthroughScreenHeader';
@@ -33,10 +32,9 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const WalletBackupTutorialScreen = () => {
     const currentStepIndex = useSharedValue(0);
-    const deviceModel = useSelector(selectDeviceModel);
-    const [selectedBackupType, setSelectedBackupType] = useState<WalletBackupType>(
-        deviceModel === DeviceModelInternal.T2T1 ? '12-words' : 'shamir-single',
-    );
+    const defaultBackupType = useSelector(selectDeviceDefaultBackupType);
+    const [selectedBackupType, setSelectedBackupType] =
+        useState<WalletBackupType>(defaultBackupType);
 
     const navigation = useNavigation<NavigationProps>();
 
