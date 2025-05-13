@@ -1,3 +1,11 @@
+# 9.3.5
+
+- npm-prerelease: @trezor/utils 9.3.5-beta.1 (a43b771a13)
+- fix(suite): accept query parameters of custom backend URL (6d4d440e50)
+- chore: apply latest prettier (eb758acea9)
+- fix(suite): make the explorer build passing (3422038376)
+- fix(suite): properly handled deadline and timeout error in getConnectFiatRatesForTimestamp call (#18405) (b62f339e69)
+
 # 9.3.4
 
 - npm-prerelease: @trezor/utils 9.3.4-beta.1 (c81ed9b806)
