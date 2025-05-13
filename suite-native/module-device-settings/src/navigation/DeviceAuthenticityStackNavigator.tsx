@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -25,6 +25,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const DeviceAuthenticityStackNavigator = () => {
+    const [isAuthenticityCheckStarted, setIsAuthenticityCheckStarted] = useState(false);
     const navigation = useNavigation<NavigationProp>();
     const handleSuccess = useCallback(() => {
         navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySuccess);
@@ -34,11 +35,11 @@ export const DeviceAuthenticityStackNavigator = () => {
     const { isDeviceConnected } = useDeviceConnectionGuard();
 
     useEffect(() => {
-        if (isDeviceConnected) checkDeviceAuthenticity(handleSuccess);
-
-        // checkDeviceAuthenticity is excluded as it depends on device object that could unintentionally trigger the useEffect
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isDeviceConnected, handleSuccess]);
+        if (isDeviceConnected && !isAuthenticityCheckStarted) {
+            setIsAuthenticityCheckStarted(true);
+            checkDeviceAuthenticity(handleSuccess);
+        }
+    }, [checkDeviceAuthenticity, handleSuccess, isAuthenticityCheckStarted, isDeviceConnected]);
 
     if (!isDeviceConnected) return;
 
