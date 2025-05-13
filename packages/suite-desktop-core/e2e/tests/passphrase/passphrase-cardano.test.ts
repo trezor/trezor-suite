@@ -28,6 +28,7 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
         }
 
         await settingsPage.changeNetworks({ enableNetworks: ['ada'] });
+        // starting discovery triggers passphrase dialogue
         await dashboardPage.openDeviceSwitcher();
         await dashboardPage.addUnusedHiddenWallet(passphrase);
 
@@ -43,7 +44,6 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
         await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
         await walletPage.receiveButton.click();
         await walletPage.revealAddressButton.click();
-
         // device after reset asks for passphrase again, enter correct passphrase associated with this account
         await dashboardPage.passphraseInput.fill(passphrase);
         await dashboardPage.passphraseSubmitButton.click();

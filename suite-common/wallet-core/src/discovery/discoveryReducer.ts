@@ -1,120 +1,81 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
-import { createDeferred } from '@trezor/utils';
+import { Discovery, DiscoveryStatus } from '@suite-common/wallet-types';
+import { DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
-import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
 import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
-
-export type DiscoveryState = Discovery[];
 
 export type DiscoveryRootState = {
     wallet: {
-        discovery: DiscoveryState;
+        discovery: Discovery;
     };
 };
 
-const initialState: DiscoveryState = [];
+const initialState: Discovery = {};
 
-const update = (draft: DiscoveryState, payload: PartialDiscovery, resolve?: boolean) => {
-    const index = draft.findIndex(f => f.deviceState === payload.deviceState);
-    if (index >= 0) {
-        const dfd = discoveryRunningStateLocks[draft[index].deviceState];
-        draft[index] = {
-            ...draft[index],
-            ...payload,
-        };
-        if (resolve && dfd) {
-            dfd.resolve();
-            delete discoveryRunningStateLocks[draft[index].deviceState];
-        }
-        if (!payload.error) {
-            delete draft[index].error;
-        }
+const update = (
+    draft: Discovery,
+    payload: { status: Omit<DiscoveryStatus, 'path'>; path: DeviceUniquePath },
+) => {
+    if (!draft[payload.path]) {
+        return;
     }
+    // todo: resolve expect error
+    // @ts-expect-error
+    draft[payload.path] = {
+        ...draft[payload.path],
+        ...payload.status,
+    };
 };
 
 export const prepareDiscoveryReducer = createReducerWithExtraDeps(
     initialState,
-    (builder, extra) => {
-        builder
-            .addCase(discoveryActions.createDiscovery, (state, { payload }) => {
-                const index = state.findIndex(d => d.deviceState === payload.deviceState);
-                if (index < 0) {
-                    state.push(payload);
-                }
-            })
-            .addCase(discoveryActions.startDiscovery, (state, { payload }) => {
-                update(state, payload);
-                const index = state.findIndex(f => f.deviceState === payload.deviceState);
-                if (index >= 0) {
-                    discoveryRunningStateLocks[state[index].deviceState] = createDeferred();
-                }
-            })
-            .addCase(discoveryActions.removeDiscovery, (state, { payload }) => {
-                const index = state.findIndex(f => f.deviceState === payload);
-                state.splice(index, 1);
-            })
-            .addCase(discoveryActions.updateDiscovery, (state, { payload }) => {
-                update(state, payload);
-            })
-            .addCase(discoveryActions.interruptDiscovery, (state, { payload }) => {
-                update(state, payload);
-            })
-            .addCase(discoveryActions.completeDiscovery, (state, { payload }) => {
-                update(state, payload, true);
-            })
-            .addCase(discoveryActions.stopDiscovery, (state, { payload }) => {
-                update(state, payload, true);
-            })
-            .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                extra.reducers.storageLoadDiscovery,
-            );
+    (builder, _extra) => {
+        builder.addCase(discoveryActions.startDiscovery, (state, { payload }) => {
+            state[payload.path] = {
+                status: 'starting',
+                isAddingHiddenWallet: payload.isAddingHiddenWallet,
+                isAddingExistingWallet: payload.isAddingExistingWallet,
+            };
+        });
+        builder.addCase(discoveryActions.updateDiscovery, (state, { payload }) => {
+            update(state, payload);
+        });
+
+        builder.addCase(discoveryActions.deleteDiscovery, (state, { payload }) => {
+            delete state[payload.path];
+        });
     },
 );
 
 export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.discovery;
 
 // Get discovery process for deviceState.
-export const selectDiscoveryByDeviceState = (
-    state: DiscoveryRootState,
-    deviceState: DeviceState | StaticSessionId | undefined | null,
-) =>
-    deviceState
-        ? state.wallet.discovery.find(d =>
-              typeof deviceState === 'string'
-                  ? d.deviceState === deviceState
-                  : d.deviceState === deviceState.staticSessionId,
-          )
-        : undefined;
+export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>
+    path ? state.wallet.discovery[path] : undefined;
 
 export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
     const selectedDevice = selectSelectedDevice(state);
 
-    return selectDiscoveryByDeviceState(state, selectedDevice?.state?.staticSessionId);
+    return selectDiscoveryByDevicePath(state, selectedDevice?.path);
 };
 
-export const selectIsDiscoveryActiveByDeviceState = (
+export const selectIsDiscoveryActiveByDevicePath = (
     state: DiscoveryRootState & DeviceRootState,
-    deviceState: DeviceState | StaticSessionId | undefined | null,
+    path?: DeviceUniquePath,
 ) => {
-    const discovery = selectDiscoveryByDeviceState(state, deviceState);
+    const discovery = selectDiscoveryByDevicePath(state, path);
 
     if (!discovery) return false;
 
-    return (
-        discovery.status === DiscoveryStatus.RUNNING ||
-        discovery.status === DiscoveryStatus.STOPPING
-    );
+    return discovery.status === 'progress';
 };
 
+// todo: who knows if this is correct?
 export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDeviceDiscovery(state);
+    const selectedDevice = selectSelectedDevice(state);
 
-    return selectIsDiscoveryActiveByDeviceState(state, discovery?.deviceState);
+    return selectIsDiscoveryActiveByDevicePath(state, selectedDevice?.path);
 };
 
 /**
@@ -123,16 +84,24 @@ export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & Device
  */
 export const selectIsDiscoveryAuthConfirmationRequired = (
     state: DiscoveryRootState & DeviceRootState,
-) => {
-    const discovery = selectDeviceDiscovery(state);
-
-    return (
-        discovery &&
-        discovery.authConfirm &&
-        (discovery.status < DiscoveryStatus.STOPPING ||
-            discovery.status === DiscoveryStatus.COMPLETED)
-    );
-};
+    path?: DeviceUniquePath,
+) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
 
 export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
     !!selectDeviceDiscovery(state);
+
+export function isDiscoveryInProgress(
+    discovery?: DiscoveryStatus,
+): discovery is Exclude<
+    DiscoveryStatus,
+    { status: 'complete' } | { status: 'failed' } | { status: 'cancelled' }
+> {
+    if (!discovery) {
+        return false;
+    }
+    return (
+        discovery.status !== 'complete' &&
+        discovery.status !== 'failed' &&
+        discovery.status !== 'cancelled'
+    );
+}

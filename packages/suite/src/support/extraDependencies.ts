@@ -15,7 +15,7 @@ import {
     FiatRatesState,
     TransactionsState,
     deviceActions,
-    selectDiscoveryByDeviceState,
+    selectDiscoveryByDevicePath,
     selectIsPendingTransportEvent,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
@@ -26,7 +26,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
-import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
+import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import {
     findLabelsToBeMovedOrDeleted,
@@ -69,7 +69,6 @@ export const extraDependencies: ExtraDependencies = {
         findLabelsToBeMovedOrDeleted,
         moveLabelsForRbfAction,
         openSwitchDeviceDialog,
-        addWalletThunk,
     },
     selectors: {
         selectDevices: (state: AppState) => state.device.devices,
@@ -83,7 +82,7 @@ export const extraDependencies: ExtraDependencies = {
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
         selectDeviceDiscovery: (state: DiscoveryRootState & DeviceRootState) =>
-            selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
+            selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path),
         selectRouterApp: (state: AppState) => state.router.app,
         selectRoute: (state: AppState) => state.router.route,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,

@@ -59,12 +59,10 @@ const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
 export const DeviceSelector = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
-    const { getDiscoveryStatus } = useDiscovery();
-    const discoveryStatus = getDiscoveryStatus();
-    const discoveryInProgress = Boolean(discoveryStatus && discoveryStatus.status === 'loading');
+    const { isDiscoveryRunning } = useDiscovery();
 
     const handleSwitchDeviceClick = () => {
-        if (!discoveryInProgress) {
+        if (!isDiscoveryRunning) {
             dispatch(
                 goto('suite-switch-device', {
                     params: {
@@ -81,15 +79,15 @@ export const DeviceSelector = () => {
         <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
             <ViewOnlyTooltip>
                 <Tooltip
-                    isActive={discoveryInProgress}
+                    isActive={isDiscoveryRunning}
                     isFullWidth
                     placement="bottom"
-                    cursor={discoveryInProgress ? 'not-allowed' : undefined}
+                    cursor={isDiscoveryRunning ? 'not-allowed' : undefined}
                     content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
                 >
                     <InnerContainer
                         onClick={handleSwitchDeviceClick}
-                        $isDisabled={discoveryInProgress}
+                        $isDisabled={isDiscoveryRunning}
                         tabIndex={0}
                         data-testid="@menu/switch-device"
                     >

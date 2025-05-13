@@ -54,7 +54,6 @@ export type ExtraDependencies = {
             >;
         }>;
         openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
-        addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType; device: AcquiredDevice }>;
     };
     selectors: {
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;

@@ -4,6 +4,7 @@ import { FormProvider } from 'react-hook-form';
 import useMeasure from 'react-use/lib/useMeasure';
 import styled, { css } from 'styled-components';
 
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import {
     Button,
     DeviceAnimation,
@@ -19,7 +20,7 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { HomescreenGallery, Translation } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
@@ -100,6 +101,7 @@ const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();
     const popoverRef = useRef<PopoverRef>();
+    const dispatch = useDispatch();
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
@@ -155,6 +157,7 @@ export const FinalStep = () => {
         reportAnalytics();
         await handleSubmit();
         goToSuite();
+        dispatch(startDiscoveryThunk({ device }));
     };
 
     return (

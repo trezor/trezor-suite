@@ -1,5 +1,4 @@
-import { testMocks } from '@suite-common/test-utils';
-import { isUnlocked, prepareDeviceReducer } from '@suite-common/wallet-core';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -8,22 +7,6 @@ import fixtures from '../__fixtures__/deviceReducer';
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type State = ReturnType<typeof deviceReducer>;
-
-const { getDeviceFeatures } = testMocks;
-
-describe('isUnlocked', () => {
-    it('when unlocked is present it is used', () => {
-        expect(isUnlocked(getDeviceFeatures({ unlocked: true, pin_protection: true }))).toBe(true);
-        expect(isUnlocked(getDeviceFeatures({ unlocked: false, pin_protection: true }))).toBe(
-            false,
-        );
-    });
-    it('missing unlocked signifies unlocked device', () => {
-        expect(isUnlocked(getDeviceFeatures({ unlocked: undefined, pin_protection: true }))).toBe(
-            true,
-        );
-    });
-});
 
 describe('DEVICE.CONNECT', () => {
     fixtures.connect.forEach(f => {

@@ -1,18 +1,25 @@
 import { useCallback } from 'react';
 
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { selectDiscoveryByDeviceState, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    isDiscoveryInProgress,
+    selectDiscoveryByDevicePath,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 
 import { useSelector } from './useSelector';
 import { getDiscoveryStatus } from '../../utils/wallet/getDiscoveryStatus';
 
 export const useDiscovery = () => {
     const device = useSelector(selectSelectedDevice);
-    const discovery = useSelector(state => selectDiscoveryByDeviceState(state, device?.state));
+    const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
 
     const calculateProgress = useCallback(() => {
-        if (discovery && discovery.loaded && discovery.total) {
-            return Math.round((discovery.loaded / discovery.total) * 100);
+        if (discovery && discovery.status === 'starting') {
+            return 1;
+        }
+
+        if (discovery && discovery.status === 'progress') {
+            return discovery.progress;
         }
 
         return 0;
@@ -26,7 +33,7 @@ export const useDiscovery = () => {
     return {
         device,
         discovery,
-        isDiscoveryRunning: discovery ? discovery.status < DiscoveryStatus.STOPPING : false,
+        isDiscoveryRunning: isDiscoveryInProgress(discovery),
         getDiscoveryStatus: getStatus,
         calculateProgress,
     };

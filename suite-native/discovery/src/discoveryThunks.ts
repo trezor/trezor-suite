@@ -13,7 +13,6 @@ import {
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     DISCOVERY_MODULE_PREFIX,
-    LIMIT,
     accountsActions,
     createDiscovery,
     disableAccountsThunk,
@@ -54,6 +53,7 @@ import {
     selectShouldRunDiscoveryForDevice,
 } from './discoverySelectors';
 
+const LIMIT = 10; // will be removed
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
 const DISCOVERY_BATCH_SIZE_PER_SYMBOL: Partial<Record<NetworkSymbol, number>> = {

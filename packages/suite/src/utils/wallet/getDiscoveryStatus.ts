@@ -1,11 +1,11 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { Discovery, DiscoveryStatusType } from '../../types/wallet';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
-    discovery: Discovery | undefined;
+    discovery: DiscoveryStatus | undefined;
 };
 
 export const getDiscoveryStatus = ({
@@ -27,42 +27,45 @@ export const getDiscoveryStatus = ({
             status: 'exception',
             type: 'auth-confirm-failed',
         };
-    if (!device.state)
+    if (!device.state) {
         return {
             status: 'loading',
             type: 'auth',
         };
+    }
 
     if (discovery) {
-        if (discovery.status < DiscoveryStatus.STOPPING)
+        if (discovery.status === 'progress' && discovery.isAddingHiddenWallet)
             return {
                 status: 'loading',
-                type: discovery.authConfirm ? 'auth-confirm' : 'discovery',
+                // type: discovery.authConfirm ? 'auth-confirm' : 'discovery',
+                // type: 'discovery',
+                type: 'auth-confirm',
             };
 
-        if (discovery.status === DiscoveryStatus.COMPLETED && discovery.authConfirm)
+        if (discovery.status === 'confirm-empty-passphrase')
             return {
                 status: 'loading',
                 type: 'auth-confirm',
             };
 
-        if (discovery.networks.length === 0)
-            return {
-                status: 'exception',
-                type: 'discovery-empty',
-            };
+        // if (discovery.networks.length === 0)
+        //     return {
+        //         status: 'exception',
+        //         type: 'discovery-empty',
+        //     };
 
-        if (discovery.errorCode === 'Device_InvalidState' && !device.available)
-            return {
-                status: 'exception',
-                type: 'device-unavailable',
-            };
+        // if (discovery.errorCode === 'Device_InvalidState' && !device.available)
+        //     return {
+        //         status: 'exception',
+        //         type: 'device-unavailable',
+        //     };
 
-        if (discovery.error || discovery.failed.length > 0)
-            return {
-                status: 'exception',
-                type: 'discovery-failed',
-            };
+        // if (discovery.error || discovery.failed.length > 0)
+        //     return {
+        //         status: 'exception',
+        //         type: 'discovery-failed',
+        //     };
     }
 
     return undefined;

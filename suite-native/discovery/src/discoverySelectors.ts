@@ -6,7 +6,6 @@ import {
 } from '@suite-common/token-definitions';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    LIMIT as ACCOUNTS_LIMIT,
     AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
@@ -130,7 +129,7 @@ export const selectNetworksWithUnfinishedDiscovery = (
     return getNetworksWithUnfinishedDiscovery({
         enabledNetworks,
         accounts,
-        accountsLimit: ACCOUNTS_LIMIT,
+        accountsLimit: 10, // will be skipped anyway
         availableCardanoDerivations,
     });
 };

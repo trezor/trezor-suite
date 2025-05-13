@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
 import {
-    createDiscoveryThunk,
     getAccountsByDeviceState,
     selectCurrentFiatRates,
     selectDeviceThunk,
-    selectDiscoveryByDeviceState,
     selectLocalCurrency,
+    selectDiscoveryByDevicePath,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
@@ -51,17 +50,14 @@ export const WalletInstance = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
-    const discoveryProcess = useSelector(state =>
-        selectDiscoveryByDeviceState(state, instance.state),
-    );
-    const device = useSelector(selectSelectedDevice);
+
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
 
     const walletBalance = useTotalFiatBalance(deviceAccounts, localCurrency, currentFiatRates);
 
-    const isSelected = enabled && selected && !!discoveryProcess;
+    const isSelected = enabled && selected;
     const { walletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),
     );
@@ -77,43 +73,29 @@ export const WalletInstance = ({
         e.stopPropagation();
     };
 
-    const handleClick = discoveryProcess
-        ? () => {
-              if (!editing) {
-                  const nextDeviceAccounts = instance.state
-                      ? getAccountsByDeviceState(accounts, instance.state)
-                      : [];
+    const handleClick = () => {
+        if (!editing) {
+            const nextDeviceAccounts = instance.state
+                ? getAccountsByDeviceState(accounts, instance.state)
+                : [];
 
-                  // NOTE: attempt to determine, if the currently selected account
-                  // has a corresponding account in the next device accounts
-                  // if not, enforce switching URL to dashboard
-                  const nextAccount = nextDeviceAccounts.find(
-                      account =>
-                          account.symbol === selectedAccount.params?.symbol &&
-                          account.index === selectedAccount.params?.accountIndex &&
-                          account.accountType === selectedAccount.params?.accountType,
-                  );
+            // NOTE: attempt to determine, if the currently selected account
+            // has a corresponding account in the next device accounts
+            // if not, enforce switching URL to dashboard
+            const nextAccount = nextDeviceAccounts.find(
+                account =>
+                    account.symbol === selectedAccount.params?.symbol &&
+                    account.index === selectedAccount.params?.accountIndex &&
+                    account.accountType === selectedAccount.params?.accountType,
+            );
 
-                  dispatch(selectDeviceThunk({ device: instance }));
-                  dispatch(
-                      redirectAfterWalletSelectedThunk({ forceDeviceDashboard: !nextAccount }),
-                  );
-                  onCancel(false);
-              }
-          }
-        : () => {
-              if (device && device.state?.staticSessionId) {
-                  dispatch(
-                      createDiscoveryThunk({
-                          deviceState: device?.state?.staticSessionId,
-                          device,
-                      }),
-                  );
-              }
-              onCancel(false);
-          };
+            dispatch(selectDeviceThunk({ device: instance }));
+            dispatch(redirectAfterWalletSelectedThunk({ forceDeviceDashboard: !nextAccount }));
+            onCancel(false);
+        }
+    };
 
-    const isViewOnlyRendered = contentType === 'default' && enabled && discoveryProcess;
+    const isViewOnlyRendered = contentType === 'default' && enabled;
     const isEjectConfirmationRendered = contentType === 'eject-confirmation';
     const isDisablingViewOnlyEjectsWalletRendered =
         contentType === 'disabling-view-only-ejects-wallet';
@@ -137,44 +119,41 @@ export const WalletInstance = ({
                         ellipsisLineCount={1}
                     >
                         <Row justifyContent="space-between">
-                            {discoveryProcess ? (
-                                <Row gap={spacings.xxs}>
-                                    {!instance.useEmptyPassphrase && (
-                                        <Tooltip
-                                            content={
-                                                <Translation id="TR_WALLET_PASSPHRASE_WALLET" />
-                                            }
-                                        >
-                                            <Icon name="asterisk" size={12} />
-                                        </Tooltip>
-                                    )}
-                                    {instance.state?.staticSessionId ? (
-                                        <MetadataLabeling
-                                            defaultVisibleValue={
-                                                walletLabel === undefined ||
-                                                walletLabel.trim() === ''
-                                                    ? defaultWalletLabel
-                                                    : walletLabel
-                                            }
-                                            payload={{
-                                                type: 'walletLabel',
-                                                entityKey: instance.state.staticSessionId,
-                                                defaultValue: instance.state.staticSessionId,
-                                                value: instance?.metadata[
-                                                    METADATA_LABELING.ENCRYPTION_VERSION
-                                                ]
-                                                    ? walletLabel
-                                                    : '',
-                                            }}
-                                            defaultEditableValue={defaultWalletLabel}
-                                        />
-                                    ) : (
-                                        <WalletLabeling device={instance} />
-                                    )}
-                                </Row>
-                            ) : (
+                            {/* {discoveryProcess ? ( */}
+                            <Row gap={spacings.xxs}>
+                                {!instance.useEmptyPassphrase && (
+                                    <Tooltip
+                                        content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}
+                                    >
+                                        <Icon name="asterisk" size={12} />
+                                    </Tooltip>
+                                )}
+                                {instance.state?.staticSessionId ? (
+                                    <MetadataLabeling
+                                        defaultVisibleValue={
+                                            walletLabel === undefined || walletLabel.trim() === ''
+                                                ? defaultWalletLabel
+                                                : walletLabel
+                                        }
+                                        payload={{
+                                            type: 'walletLabel',
+                                            entityKey: instance.state.staticSessionId,
+                                            defaultValue: instance.state.staticSessionId,
+                                            value: instance?.metadata[
+                                                METADATA_LABELING.ENCRYPTION_VERSION
+                                            ]
+                                                ? walletLabel
+                                                : '',
+                                        }}
+                                        defaultEditableValue={defaultWalletLabel}
+                                    />
+                                ) : (
+                                    <WalletLabeling device={instance} />
+                                )}
+                            </Row>
+                            {/* ) : (
                                 <Translation id="TR_UNDISCOVERED_WALLET" />
-                            )}
+                            )} */}
                             <Box
                                 position={{
                                     type: 'absolute',
