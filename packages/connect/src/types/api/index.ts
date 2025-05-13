@@ -29,6 +29,7 @@ import { changePin } from './changePin';
 import { changeWipeCode } from './changeWipeCode';
 import { cipherKeyValue } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
+import { discoverAccounts } from './discoverAccounts';
 import { dispose } from './dispose';
 import { eosGetPublicKey } from './eosGetPublicKey';
 import { eosSignTransaction } from './eosSignTransaction';
@@ -217,6 +218,8 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/bitcoin/getAccountInfo/
     getAccountInfo: typeof getAccountInfo;
+
+    discoverAccounts: typeof discoverAccounts;
 
     // https://connect.trezor.io/9/methods/bitcoin/getAddress/
     getAddress: typeof getAddress;

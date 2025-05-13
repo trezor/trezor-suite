@@ -112,6 +112,8 @@ export const factory = <
 
     composeTransaction: params => call({ ...params, method: 'composeTransaction' }),
 
+    discoverAccounts: params => call({ ...params, method: 'discoverAccounts' }),
+
     ethereumGetAddress: params =>
         call({
             ...params,
