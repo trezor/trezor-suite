@@ -1,3 +1,8 @@
+# 1.1.3
+
+- npm-prerelease: @trezor/crypto-utils 1.1.3-beta.1 (7ff3c48359)
+- chore: apply latest prettier (eb758acea9)
+
 # 1.1.2
 
 - npm-prerelease: @trezor/crypto-utils 1.1.2-beta.1 (009f05e6b3)
