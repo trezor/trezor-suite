@@ -41,7 +41,6 @@ export const useFees = <TFieldValues extends FormState>({
     const feeLimitRef = useRef<string | undefined>('');
     const maxPriorityFeePerGasRef = useRef<string | undefined>('');
     const maxFeePerGasRef = useRef<string | undefined>('');
-    const estimatedFeeLimitRef = useRef<string | undefined>('');
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { clearErrors, getValues, register, setValue, watch } =
@@ -71,6 +70,7 @@ export const useFees = <TFieldValues extends FormState>({
     const baseFee = watch('baseFee');
     const maxPriorityFeePerGas = watch('maxPriorityFeePerGas');
     const maxFeePerGas = watch('maxFeePerGas');
+    const estimatedFeeLimit = watch('estimatedFeeLimit');
 
     useEffect(() => {
         if (selectedFeeRef.current !== 'custom') return;
@@ -102,6 +102,7 @@ export const useFees = <TFieldValues extends FormState>({
         }
     }, [
         dispatch,
+        estimatedFeeLimit,
         feePerUnit,
         feeLimit,
         maxPriorityFeePerGas,
@@ -111,20 +112,6 @@ export const useFees = <TFieldValues extends FormState>({
         composeRequest,
         setValue,
     ]);
-
-    // watch estimatedFee change
-    const estimatedFeeLimit = watch('estimatedFeeLimit');
-    useEffect(() => {
-        if (estimatedFeeLimitRef.current !== estimatedFeeLimit) {
-            estimatedFeeLimitRef.current = estimatedFeeLimit;
-            if (selectedFeeRef.current !== 'custom') return;
-            if (estimatedFeeLimit) {
-                // NOTE: do not update it here, so it can be properly processed by watch
-                // feeLimitRef.current = estimatedFeeLimit;
-                setValue('feeLimit', estimatedFeeLimit, { shouldValidate: true });
-            }
-        }
-    }, [estimatedFeeLimit, setValue]);
 
     // called from UI on click
     const changeFeeLevel = (level: FeeLevel['label']) => {
