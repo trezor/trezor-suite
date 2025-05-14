@@ -125,7 +125,7 @@ const loadBridge = async (store: Dependencies['store']) => {
     try {
         logger.info(
             SERVICE_NAME,
-            `Starting (Legacy: ${b2t(bridgeLegacy)}, Test: ${b2t(bridgeTest)}, Dev: ${b2t(bridgeDev)})`,
+            `Starting (Legacy: ${b2t(shouldUseLegacyBridge(store))}, Test: ${b2t(bridgeTest)}, Dev: ${b2t(bridgeDev)})`,
         );
         await start(bridge);
     } catch (err) {
