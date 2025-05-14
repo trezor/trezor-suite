@@ -70,7 +70,7 @@ export const ConnectPermissions = () => {
                         />
 
                         <Column flex="1">
-                            <Row gap={spacings.sm}>
+                            <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">
                                 {app.manifest?.appName ? (
                                     <>
                                         <Text>{app.manifest.appName}</Text>
