@@ -196,7 +196,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private readonly uniquePath;
 
-    private readonly emitLifecycle;
+    private emitLifecycle;
 
     private sessionDfd?: Deferred<Session | null>;
 
@@ -331,6 +331,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     if (
                         error.code === 'Device_NotFound' ||
+                        error.code === 'Device_Disconnected' ||
                         error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                         error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
                         error.message === TRANSPORT_ERROR.HTTP_ERROR // bridge died during device initialization
@@ -1052,6 +1053,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.lastAcquiredHere = false; // set to null to prevent transport.release and cancelableAction
 
         this.emitLifecycle(DEVICE.DISCONNECT);
+        this.emitLifecycle = () => {};
 
         return this.interrupt(ERRORS.TypedError('Device_Disconnected'));
     }
