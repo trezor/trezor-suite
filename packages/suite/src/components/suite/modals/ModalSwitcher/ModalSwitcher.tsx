@@ -8,14 +8,23 @@ import { ReduxModal } from '../ReduxModal/ReduxModal';
 export const ModalSwitcher = () => {
     const modal = usePreferredModal();
 
-    switch (modal.type) {
-        case 'foreground-app':
-            return <ForegroundAppModal {...modal.payload} />;
-        case 'redux-modal':
-            return <ReduxModal {...modal.payload} />;
-        case 'discovery-loading':
-            return <DiscoveryLoader />;
-        default:
-            return null;
+    // For foreground apps, we have to NOT render the other modals.
+    // There may be conflicts: for example, Firmware Install / Upgrade flow
+    // handles the THP separately.
+    if (modal.type === 'foreground-app') {
+        return <ForegroundAppModal {...modal.payload} />;
     }
+
+    const Inner = () => {
+        switch (modal.type) {
+            case 'redux-modal':
+                return <ReduxModal {...modal.payload} />;
+            case 'discovery-loading':
+                return <DiscoveryLoader />;
+            default:
+                return null;
+        }
+    };
+
+    return <Inner />;
 };
