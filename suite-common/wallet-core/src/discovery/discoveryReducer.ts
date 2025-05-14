@@ -56,11 +56,10 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
 
 export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.discovery;
 
-// Get discovery process for deviceState.
 export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>
     path ? state.wallet.discovery[path] : undefined;
 
-export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
+export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & DeviceRootState) => {
     const selectedDevice = selectSelectedDevice(state);
 
     return selectDiscoveryByDevicePath(state, selectedDevice?.path);
@@ -94,7 +93,7 @@ export const selectIsDiscoveryAuthConfirmationRequired = (
 ) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
 
 export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
-    !!selectDeviceDiscovery(state);
+    !!selectDiscoveryForSelectedDevice(state);
 
 export function isDiscoveryInProgress(
     discovery?: DiscoveryStatus,

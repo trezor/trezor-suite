@@ -81,7 +81,7 @@ export const extraDependencies: ExtraDependencies = {
         selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
-        selectDeviceDiscovery: (state: DiscoveryRootState & DeviceRootState) =>
+        selectDiscoveryForSelectedDevice: (state: DiscoveryRootState & DeviceRootState) =>
             selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path),
         selectRouterApp: (state: AppState) => state.router.app,
         selectRoute: (state: AppState) => state.router.route,

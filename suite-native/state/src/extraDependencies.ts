@@ -5,7 +5,7 @@ import * as Device from 'expo-device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import {
-    selectDeviceDiscovery,
+    selectDiscoveryForSelectedDevice,
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -31,7 +31,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectDevices,
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
-        selectDeviceDiscovery,
+        selectDiscoveryForSelectedDevice,
         selectDebugSettings: () => ({
             transports,
         }),

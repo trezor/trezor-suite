@@ -86,7 +86,10 @@ export const extraDependenciesMock: ExtraDependencies = {
             ...testMocks.getSuiteDevice(),
         }),
         selectLanguage: mockSelector('selectLanguage', 'en'),
-        selectDeviceDiscovery: mockSelector('selectDeviceDiscovery', undefined),
+        selectDiscoveryForSelectedDevice: mockSelector(
+            'selectDiscoveryForSelectedDevice',
+            undefined,
+        ),
         selectAddressDisplayType: mockSelector(
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,

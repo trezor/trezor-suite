@@ -6,7 +6,7 @@ import {
     deviceActions,
     discoveryActions,
     feesActions,
-    selectDeviceDiscovery,
+    selectDiscoveryForSelectedDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -37,7 +37,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     }
 
     // waiting for discovery
-    const discovery = selectDeviceDiscovery(state);
+    const discovery = selectDiscoveryForSelectedDevice(state);
     if (!device.state || !discovery) {
         return {
             status: 'loading',
