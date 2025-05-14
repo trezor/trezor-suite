@@ -494,6 +494,7 @@ export const en = {
         },
         wipeDevice: {
             title: 'Wipe device',
+            subTitle: 'This will reset all of your device’s data. Proceed with caution.',
             content: 'This will reset all stored data on your Trezor. Proceed with caution.',
             buttonTitle: 'Wipe device',
         },
