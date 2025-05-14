@@ -58,8 +58,13 @@ export const WalletConnectList = () => {
     return (
         <Card paddingType="none">
             <Column hasDivider>
-                {sessions.map(session => (
-                    <Row key={session.topic} gap={spacings.md} padding={spacings.md}>
+                {sessions.map((session, index) => (
+                    <Row
+                        key={session.topic}
+                        gap={spacings.md}
+                        padding={spacings.md}
+                        data-testid={`@settings/walletconnect-apps/${index}`}
+                    >
                         {fallbackIcon ? (
                             <IconCircle
                                 name="walletConnect"
@@ -75,7 +80,7 @@ export const WalletConnectList = () => {
                             />
                         )}
                         <Column flex="1">
-                            <Row gap={spacings.sm}>
+                            <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">
                                 <Text>{session.peer.metadata.name}</Text>
                                 <Text variant="tertiary">{session.peer.metadata.url}</Text>
                                 {session.validation === 'VALID' && (

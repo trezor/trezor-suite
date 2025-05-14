@@ -42,7 +42,7 @@ export const SettingsConnectedApps = () => {
 
     return (
         <Column gap={spacings.md} margin={{ top: spacings.md }} flex="1">
-            <Row justifyContent="space-between">
+            <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.sm}>
                 <SubTabs size="large" activeItemId={activeItemdId}>
                     {tabs.map(tab => (
                         <SubTabs.Item
