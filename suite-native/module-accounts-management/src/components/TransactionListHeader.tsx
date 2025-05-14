@@ -11,6 +11,7 @@ import {
     selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
@@ -22,7 +23,7 @@ import {
     SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokensRootState } from '@suite-native/tokens';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -103,10 +104,22 @@ export const TransactionListHeader = memo(
         const hasFirmwareAuthenticityCheckHardFailed = useSelector(
             selectHasFirmwareAuthenticityCheckHardFailed,
         );
+        const token = useSelector((state: TokensRootState) =>
+            selectAccountTokenInfo(state, accountKey, tokenContract),
+        );
 
         if (!account) return null;
 
         const handleReceive = () => {
+            analytics.report({
+                type: EventType.ReceiveFlowEntered,
+                payload: {
+                    location: 'accountDetail',
+                    assetSymbol: account.symbol,
+                    tokenSymbol: token?.symbol,
+                    tokenContract,
+                },
+            });
             navigation.navigate(RootStackRoutes.ReceiveStack, {
                 screen: ReceiveStackRoutes.ReceiveAccount,
                 params: {
@@ -118,6 +131,15 @@ export const TransactionListHeader = memo(
         };
 
         const handleSend = () => {
+            analytics.report({
+                type: EventType.SendFlowEntered,
+                payload: {
+                    location: 'accountDetail',
+                    assetSymbol: account.symbol,
+                    tokenSymbol: token?.symbol,
+                    tokenContract,
+                },
+            });
             navigation.navigate(RootStackRoutes.SendStack, {
                 screen: SendStackRoutes.SendOutputs,
                 params: {

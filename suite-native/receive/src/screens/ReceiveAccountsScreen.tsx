@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountsList, AddAccountButton, OnSelectAccount } from '@suite-native/accounts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -28,12 +29,23 @@ export const ReceiveAccountsScreen = () => {
     );
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
-    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress }) =>
+    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
+        analytics.report({
+            type: EventType.ReceiveFlowEntered,
+            payload: {
+                location: 'dashboard',
+                assetSymbol: account.symbol,
+                tokenContract: tokenAddress,
+                tokenSymbol,
+            },
+        });
+
         navigation.navigate(ReceiveStackRoutes.ReceiveAccount, {
             accountKey: account.key,
             tokenContract: tokenAddress,
             closeActionType: 'back',
         });
+    };
 
     return (
         <Screen

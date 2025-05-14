@@ -1,4 +1,4 @@
-import { Account, TokenAddress, TokenInfoBranded } from '@suite-common/wallet-types';
+import { Account, TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 
 export type GroupedByTypeAccounts = Record<string, [Account, ...Account[]]>;
 
@@ -9,6 +9,7 @@ export type OnSelectAccount = (params: {
     // if account has staking
     hasStaking?: boolean;
     tokenAddress?: TokenAddress;
+    tokenSymbol?: TokenSymbol;
     hasAnyKnownTokens: boolean;
 }) => void;
 

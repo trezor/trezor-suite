@@ -48,6 +48,8 @@ export enum EventType {
     SendFeeLevelChanged = 'send/fee_level_changed',
     SendTransactionDispatched = 'send/transaction_dispatched',
     SendFlowExited = 'send/flow_exited',
+    SendFlowEntered = 'send/flow_entered',
+    ReceiveFlowEntered = 'receive/flow_entered',
     DeviceSettingsPinProtectionChange = 'device_settings/pin_protection_change',
     DeviceSettingsAuthenticityCheck = 'device_settings/authenticity_check',
     FirmwareUpdateStarted = 'firmware/firmware_update_started',

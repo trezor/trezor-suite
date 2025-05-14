@@ -77,6 +77,7 @@ export const AccountSelectBottomSheet = React.memo(
                                     onSelectAccount({
                                         account,
                                         tokenAddress: token.contract,
+                                        tokenSymbol: token.symbol,
                                         hasAnyKnownTokens: true,
                                     })
                                 }

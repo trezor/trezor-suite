@@ -316,6 +316,24 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SendFlowEntered;
+          payload: {
+              location: 'dashboard' | 'accountDetail';
+              assetSymbol: NetworkSymbol;
+              tokenSymbol?: TokenSymbol;
+              tokenContract?: TokenAddress;
+          };
+      }
+    | {
+          type: EventType.ReceiveFlowEntered;
+          payload: {
+              location: 'dashboard' | 'accountDetail';
+              assetSymbol: NetworkSymbol;
+              tokenSymbol?: TokenSymbol;
+              tokenContract?: TokenAddress;
+          };
+      }
+    | {
           type: EventType.DeviceSettingsPinProtectionChange;
           payload: {
               action: 'enable' | 'change' | 'disable';
