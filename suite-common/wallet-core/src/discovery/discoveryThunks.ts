@@ -484,10 +484,7 @@ export const runDiscovery = createThunk(
 
             TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-            const discoveryAccountsPayload = selectNetworksToDiscover(
-                getState(),
-                device?.state?.staticSessionId,
-            ).map(n => ({
+            const discoveryAccountsPayload = getState().wallet.settings.enabledNetworks.map(n => ({
                 symbol: n,
             }));
             console.log('discoveryAccountsPayload', discoveryAccountsPayload);
