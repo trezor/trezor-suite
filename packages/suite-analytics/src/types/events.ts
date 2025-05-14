@@ -651,4 +651,44 @@ export type SuiteAnalyticsEvent =
           payload: {
               wasAccepted: boolean;
           };
+      }
+    | {
+          type: EventType.WalletConnectInit;
+      }
+    | {
+          type: EventType.WalletConnectPaired;
+      }
+    | {
+          type: EventType.WalletConnectSessionRequest;
+          payload: {
+              origin: string;
+              chainId: string;
+              method: string;
+          };
+      }
+    | {
+          type: EventType.WalletConnectProposal;
+          payload: {
+              origin: string;
+              validation: 'UNKNOWN' | 'VALID' | 'INVALID';
+              networks: string[];
+          };
+      }
+    | {
+          type: EventType.WalletConnectProposalApproved;
+          payload: {
+              origin?: string;
+          };
+      }
+    | {
+          type: EventType.WalletConnectProposalRejected;
+          payload: {
+              origin?: string;
+          };
+      }
+    | {
+          type: EventType.WalletConnectError;
+          payload: {
+              error: string;
+          };
       };
