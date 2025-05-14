@@ -65,22 +65,12 @@ export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & Dev
     return selectDiscoveryByDevicePath(state, selectedDevice?.path);
 };
 
-export const selectIsDiscoveryActiveByDevicePath = (
-    state: DiscoveryRootState & DeviceRootState,
-    path?: DeviceUniquePath,
-) => {
-    const discovery = selectDiscoveryByDevicePath(state, path);
-
-    if (!discovery) return false;
-
-    return discovery.status === 'progress';
-};
+export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
+    !!selectDiscoveryForSelectedDevice(state);
 
 // todo: who knows if this is correct?
 export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
-    const selectedDevice = selectSelectedDevice(state);
-
-    return selectIsDiscoveryActiveByDevicePath(state, selectedDevice?.path);
+    return selectDiscoveryForSelectedDevice(state)?.status === 'progress';
 };
 
 /**
@@ -91,9 +81,6 @@ export const selectIsDiscoveryAuthConfirmationRequired = (
     state: DiscoveryRootState & DeviceRootState,
     path?: DeviceUniquePath,
 ) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
-
-export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
-    !!selectDiscoveryForSelectedDevice(state);
 
 export function isDiscoveryInProgress(
     discovery?: DiscoveryStatus,
