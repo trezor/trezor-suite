@@ -14,6 +14,7 @@ import {
     Text,
 } from '@trezor/components';
 import { ERRORS } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -28,7 +29,7 @@ export const ConnectPermissionsModal = () => {
     const popupCall = useSelector(selectConnectPopupCall);
     if (!popupCall || popupCall?.state !== 'permission-request') return null;
 
-    const { methodInfo, source } = popupCall;
+    const { method, methodInfo, source } = popupCall;
     const { confirmLabel, permissionTypes } = methodInfo;
 
     const rememberPayload = {
@@ -40,9 +41,27 @@ export const ConnectPermissionsModal = () => {
             dispatch(connectPopupActions.rememberAppPermissions(rememberPayload));
         }
         dispatch(connectPopupActions.approvePermissions());
+        analytics.report({
+            type: EventType.ConnectPopupPermissions,
+            payload: {
+                method,
+                origin: source.origin,
+                approved: true,
+            },
+        });
     };
-    const onCancel = () =>
+    const onCancel = () => {
         dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
+
+        analytics.report({
+            type: EventType.ConnectPopupPermissions,
+            payload: {
+                method,
+                origin: source.origin,
+                approved: false,
+            },
+        });
+    };
 
     return (
         <Modal

@@ -691,4 +691,30 @@ export type SuiteAnalyticsEvent =
           payload: {
               error: string;
           };
+      }
+    | {
+          type: EventType.ConnectPopupInit;
+      }
+    | {
+          type: EventType.ConnectPopupPermissions;
+          payload: {
+              origin: string;
+              method: string;
+              approved: boolean;
+          };
+      }
+    | {
+          type: EventType.ConnectPopupCall;
+          payload: {
+              origin: string;
+              method: string;
+          };
+      }
+    | {
+          type: EventType.ConnectPopupError;
+          payload: {
+              origin: string;
+              method: string;
+              error: string;
+          };
       };
