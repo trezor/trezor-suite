@@ -1,6 +1,6 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { TradingWebViewScreen } from '../TradingWebviewScreen';
+import { TradingWebViewScreen } from '../TradingWebViewScreen';
 
 let mockRouteParams: {
     closeCallbackUrl: string;
