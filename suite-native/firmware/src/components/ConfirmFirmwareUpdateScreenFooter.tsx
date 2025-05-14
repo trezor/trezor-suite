@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     DeviceRootState,
     DiscoveryRootState,
-    selectDeviceState,
+    selectDevicePath,
     selectIsDiscoveryActiveByDevicePath,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -28,10 +28,10 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
 
-    const deviceState = useSelector(selectDeviceState);
+    const devicePath = useSelector(selectDevicePath);
 
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
-        selectIsDiscoveryActiveByDevicePath(state, deviceState),
+        selectIsDiscoveryActiveByDevicePath(state, devicePath),
     );
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 

@@ -9,6 +9,7 @@ import {
     DeviceRootState,
     DiscoveryRootState,
     selectDeviceId,
+    selectDevicePath,
     selectDeviceReleaseInfo,
     selectDeviceState,
     selectDeviceUpdateFirmwareVersion,
@@ -59,9 +60,9 @@ export const FirmwareUpdateAlert = () => {
     const deviceId = useSelector(selectDeviceId);
     const isConnected = useSelector(selectIsDeviceConnected);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
-    const deviceState = useSelector(selectDeviceState);
+    const devicePath = useSelector(selectDevicePath);
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
-        selectIsDiscoveryActiveByDevicePath(state, deviceState),
+        selectIsDiscoveryActiveByDevicePath(state, devicePath),
     );
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
