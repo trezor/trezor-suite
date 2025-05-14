@@ -447,6 +447,7 @@ export const en = {
     },
     moduleDeviceSettings: {
         title: 'Device settings',
+        dangerZoneDivider: 'DANGER ZONE',
         pinProtection: {
             title: 'PIN protection',
             content: 'PIN protects your device against physical attack.',

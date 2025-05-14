@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { selectDeviceModel, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Text, VStack } from '@suite-native/atoms';
+import { Text, TextDivider, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -41,7 +41,7 @@ export const DeviceSettingsModalScreen = () => {
                 <DeviceFirmwareCard />
                 <DevicePinProtectionCard />
                 {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
-                <Text>Danger Zone</Text>
+                <TextDivider title="moduleDeviceSettings.dangerZoneDivider" />
                 <WipeDeviceCard />
             </VStack>
         </Screen>
