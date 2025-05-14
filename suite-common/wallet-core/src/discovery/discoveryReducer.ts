@@ -1,15 +1,16 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { networksCollection } from '@suite-common/wallet-config';
 import { Discovery, DiscoveryStatus } from '@suite-common/wallet-types';
 import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
-import { networksCollection } from '@suite-common/wallet-config';
+
 import { discoveryActions } from './discoveryActions';
-import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
 import {
     AccountsRootState,
     selectAccounts,
     selectAccountsByDeviceState,
 } from '../accounts/accountsReducer';
-import { selectEnabledNetworks, WalletSettingsRootState } from '../settings/walletSettingsReducer';
+import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
+import { WalletSettingsRootState, selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 export type DiscoveryRootState = {
     wallet: {
@@ -69,9 +70,8 @@ export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootS
     !!selectDiscoveryForSelectedDevice(state);
 
 // todo: who knows if this is correct?
-export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
-    return selectDiscoveryForSelectedDevice(state)?.status === 'progress';
-};
+export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) =>
+    selectDiscoveryForSelectedDevice(state)?.status === 'progress';
 
 /**
  * Helper selector called from components
@@ -91,6 +91,7 @@ export function isDiscoveryInProgress(
     if (!discovery) {
         return false;
     }
+
     return (
         discovery.status !== 'complete' &&
         discovery.status !== 'failed' &&
@@ -128,6 +129,7 @@ export const selectNetworksToDiscover = (
 
     if (!staticSessionId) {
         console.log('staticSessionId is not defined, returning full');
+
         return enabledNetworks;
     }
 
@@ -159,4 +161,10 @@ export const selectAccountsToBeForgotten = (
     );
 
     return accountsToRemove;
+};
+
+export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDeviceDiscovery(state);
+
+    return isDiscoveryInProgress(discovery);
 };

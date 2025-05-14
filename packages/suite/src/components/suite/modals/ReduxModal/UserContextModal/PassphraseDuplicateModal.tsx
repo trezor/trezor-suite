@@ -1,6 +1,6 @@
 import {
     cancelDiscoveryThunk,
-    runDiscovery,
+    runDiscoveryThunk,
     selectDeviceThunk,
     selectDevices,
     selectDiscovery,
@@ -70,7 +70,7 @@ export const PassphraseDuplicateModal = ({
         const nextDiscovery = discoveries?.[device.path];
         if (!nextDiscovery) return;
 
-        dispatch(runDiscovery(device));
+        dispatch(runDiscoveryThunk(device));
     };
 
     return (

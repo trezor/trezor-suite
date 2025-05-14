@@ -1,5 +1,5 @@
 import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceUniquePath } from '@trezor/connect';
+import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
@@ -18,7 +18,7 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
           }
         | {
               status: 'passphrase-duplicate';
-              duplicateDeviceStaticSessionId: string;
+              duplicateDeviceStaticSessionId: StaticSessionId;
           }
         | {
               status: 'passphrase-mismatch';

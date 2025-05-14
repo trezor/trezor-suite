@@ -1,6 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 import TrezorConnect, {
     AccountInfo,
     BundleProgress,
@@ -9,6 +10,7 @@ import TrezorConnect, {
     StaticSessionId,
     UI,
 } from '@trezor/connect';
+import { DiscoveryAccountInfo } from '@trezor/connect/src/types/api/discoverAccounts';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import {
@@ -20,6 +22,7 @@ import {
     selectNetworksToDiscover,
 } from './discoveryReducer';
 import { accountsActions } from '../accounts/accountsActions';
+import { disableAccountsThunk } from '../accounts/accountsThunks';
 import { deviceActions } from '../device/deviceActions';
 import {
     selectDeviceByStaticSessionId,
@@ -28,11 +31,8 @@ import {
     selectSelectedDevice,
 } from '../device/deviceReducer';
 import { selectDeviceThunk } from '../device/deviceThunks';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { disableAccountsThunk } from '../accounts/accountsThunks';
 
 // todo:
-import { DiscoveryAccountInfo } from '@trezor/connect/src/types/api/discoverAccounts';
 
 type ProgressEvent = BundleProgress<DiscoveryAccountInfo>['payload'];
 
@@ -192,7 +192,7 @@ export const startDiscoveryThunk = createThunk(
         // - or adding an existing hidden wallet,
         // -
         if (!isAddingHiddenWallet || (isAddingHiddenWallet && isAddingExistingWallet)) {
-            dispatch(runDiscovery(device));
+            dispatch(runDiscoveryThunk(device));
         }
     },
 );
@@ -305,6 +305,7 @@ const createOnBundleProgressHandler = (
         const discovery = selectDiscoveryByDevicePath(getState(), devicePath);
         if (!discovery) {
             console.warn('bundle progress handler: no discovery found');
+
             return;
         }
 
@@ -326,11 +327,13 @@ const createOnBundleProgressHandler = (
                         accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
                     );
                 });
+
                 return;
             }
 
             if (encounteredNonEmptyAccount) {
                 dispatch(accountsActions.createAccount(progressEventToCreateAccountPayload(event)));
+
                 return;
             } else {
                 accountProgressEvents.push(event);
@@ -351,7 +354,7 @@ const createOnBundleProgressHandler = (
     return fn;
 };
 
-export const runDiscovery = createThunk(
+export const runDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (passedDevice: TrezorDevice, { dispatch, getState }): Promise<void> => {
         try {

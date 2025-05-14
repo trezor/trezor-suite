@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import { switchDuplicatedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -17,8 +16,9 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { StaticSessionId } from '@trezor/connect';
 
-import { selectPassphraseDuplicateError } from '../deviceAuthorizationSlice';
+import { selectPassphraseDuplicateStaticSessionId } from '../deviceAuthorizationSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -29,7 +29,9 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const useHandleDuplicatePassphrase = () => {
     const dispatch = useDispatch();
 
-    const passphraseDuplicateError = useSelector(selectPassphraseDuplicateError);
+    const passphraseDuplicateStaticSessionId = useSelector(
+        selectPassphraseDuplicateStaticSessionId,
+    );
 
     const { translate } = useTranslate();
 
@@ -38,11 +40,11 @@ export const useHandleDuplicatePassphrase = () => {
     const { showAlert } = useAlert();
 
     const handleDuplicateDevicePassphrase = useCallback(
-        ({ device, duplicate }: { device?: TrezorDevice; duplicate?: TrezorDevice }) => {
+        ({ duplicateStaticSessionId }: { duplicateStaticSessionId: StaticSessionId }) => {
             // Not all passphrase errors have device property, but we know this one does
             // based on condition in `./passphraseSlice`. This if is just to keep TS happy.
-            if (duplicate && device) {
-                dispatch(switchDuplicatedDevice({ device, duplicate }));
+            if (duplicateStaticSessionId) {
+                dispatch(switchDuplicatedDevice(duplicateStaticSessionId));
                 navigation.navigate(RootStackRoutes.AppTabs, {
                     screen: AppTabsRoutes.HomeStack,
                     params: {
@@ -55,7 +57,7 @@ export const useHandleDuplicatePassphrase = () => {
     );
 
     useEffect(() => {
-        if (passphraseDuplicateError) {
+        if (passphraseDuplicateStaticSessionId) {
             analytics.report({ type: EventType.PassphraseDuplicate });
             showAlert({
                 title: translate('modulePassphrase.passphraseMismatch.title'),
@@ -63,10 +65,9 @@ export const useHandleDuplicatePassphrase = () => {
                 primaryButtonTitle: translate('modulePassphrase.passphraseMismatch.button'),
                 onPressPrimaryButton: () =>
                     handleDuplicateDevicePassphrase({
-                        device: passphraseDuplicateError.device,
-                        duplicate: passphraseDuplicateError.duplicate,
+                        duplicateStaticSessionId: passphraseDuplicateStaticSessionId,
                     }),
             });
         }
-    }, [handleDuplicateDevicePassphrase, passphraseDuplicateError, showAlert, translate]);
+    }, [handleDuplicateDevicePassphrase, passphraseDuplicateStaticSessionId, showAlert, translate]);
 };

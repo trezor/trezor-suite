@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
-    runDiscovery,
+    runDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectIsDiscoveryAuthConfirmationRequired,
     submitPassphrase,
@@ -202,7 +202,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                     device={device}
                     onBack={cancel}
                     onCancel={cancel}
-                    onNext={() => dispatch(runDiscovery(device))}
+                    onNext={() => dispatch(runDiscoveryThunk(device))}
                 />
             );
     }
