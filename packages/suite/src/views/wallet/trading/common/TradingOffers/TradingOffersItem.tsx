@@ -150,6 +150,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                     <AmountOfferColumn>
                         <Row alignItems="flex-end" data-testid="@trading/offer/amount">
                             <TradingUtilsPrice {...cryptoAmountProps} />
+
                             {isTradingExchangeContext(context) && (
                                 <TradingUtilsKyc
                                     exchange={exchange}

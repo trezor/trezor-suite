@@ -1,5 +1,7 @@
+import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
+import { Tooltip } from '@trezor/components';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -46,14 +48,43 @@ export const TradingUtilsPrice = ({
     return (
         <PriceWrap>
             <PriceTitle>
-                <Translation
-                    id={
-                        tradingGetAmountLabels({
-                            type,
-                            amountInCrypto: !!amountInCrypto,
-                        }).labelComparatorOffer
-                    }
-                />
+                {type === 'sell' ? (
+                    <Tooltip
+                        hasIcon
+                        placement="right"
+                        content={
+                            <Translation
+                                id="TR_SELL_PROVIDER_ADJUSTED_AMOUNT"
+                                values={{
+                                    roundedAmountWithSymbol: (
+                                        <TradingCryptoAmount
+                                            amount={receiveAmount}
+                                            cryptoId={receiveCurrency as CryptoId}
+                                        />
+                                    ),
+                                }}
+                            />
+                        }
+                    >
+                        <Translation
+                            id={
+                                tradingGetAmountLabels({
+                                    type,
+                                    amountInCrypto: !!amountInCrypto,
+                                }).labelComparatorOffer
+                            }
+                        />
+                    </Tooltip>
+                ) : (
+                    <Translation
+                        id={
+                            tradingGetAmountLabels({
+                                type,
+                                amountInCrypto: !!amountInCrypto,
+                            }).labelComparatorOffer
+                        }
+                    />
+                )}
             </PriceTitle>
             <PriceValueWrap data-testid="@trading/offers/quote/amount">
                 <PriceValue>

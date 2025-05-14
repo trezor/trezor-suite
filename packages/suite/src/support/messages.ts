@@ -799,6 +799,10 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_SELL_STATUS_PENDING',
     },
+    TR_SELL_PROVIDER_ADJUSTED_AMOUNT: {
+        defaultMessage: 'Provider adjusted your amount to {roundedAmountWithSymbol}',
+        id: 'TR_SELL_PROVIDER_ADJUSTED_AMOUNT',
+    },
     TR_REQUIRED_FIELD: {
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',

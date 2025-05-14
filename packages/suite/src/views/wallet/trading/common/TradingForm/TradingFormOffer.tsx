@@ -10,7 +10,7 @@ import {
     parseCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
-import { Button, Column, Paragraph, Row, TextButton } from '@trezor/components';
+import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -23,12 +23,14 @@ import {
     getSelectQuoteTyped,
     getSelectedCrypto,
     isTradingExchangeContext,
+    isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
     tradingGetSectionActionLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferCryptoAmount';
 import { TradingFormOfferFiatAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferFiatAmount';
 import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferItem';
@@ -80,6 +82,9 @@ export const TradingFormOffer = () => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
+    const showProviderAdjustedAmountTooltip =
+        isTradingSellContext(context) && bestScoredQuoteAmounts && !state.isFormLoading;
+
     const onSelectQuote = () => {
         if (!quote) {
             return;
@@ -126,7 +131,31 @@ export const TradingFormOffer = () => {
             </Column>
             <Column gap={spacings.xxs} margin={{ vertical: spacings.md }}>
                 <Row justifyContent="space-between">
-                    <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
+                    {showProviderAdjustedAmountTooltip ? (
+                        <Tooltip
+                            hasIcon
+                            placement="right"
+                            content={
+                                <Translation
+                                    id="TR_SELL_PROVIDER_ADJUSTED_AMOUNT"
+                                    values={{
+                                        roundedAmountWithSymbol: (
+                                            <TradingCryptoAmount
+                                                amount={bestScoredQuoteAmounts.receiveAmount}
+                                                cryptoId={
+                                                    bestScoredQuoteAmounts.receiveCurrency as CryptoId
+                                                }
+                                            />
+                                        ),
+                                    }}
+                                />
+                            }
+                        >
+                            <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
+                        </Tooltip>
+                    ) : (
+                        <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
+                    )}
                     <TextButton
                         onClick={onCompareAllOffersClick}
                         size="small"
