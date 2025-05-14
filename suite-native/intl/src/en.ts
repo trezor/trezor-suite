@@ -491,6 +491,11 @@ export const en = {
                 failed: 'Device authenticity check failed: {error}',
             },
         },
+        wipeDevice: {
+            title: 'Wipe device',
+            content: 'This will reset all stored data on your Trezor. Proceed with caution.',
+            buttonTitle: 'Wipe device',
+        },
     },
     moduleReceive: {
         receiveTitle: 'Receive',

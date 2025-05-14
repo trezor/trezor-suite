@@ -10,6 +10,7 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
+import { WipeDeviceCard } from '../components/WipeDeviceCard';
 import { useDeviceChangedCheck } from '../hooks/useDeviceChangedCheck';
 
 export const DeviceSettingsModalScreen = () => {
@@ -40,6 +41,8 @@ export const DeviceSettingsModalScreen = () => {
                 <DeviceFirmwareCard />
                 <DevicePinProtectionCard />
                 {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
+                <Text>Danger Zone</Text>
+                <WipeDeviceCard />
             </VStack>
         </Screen>
     );
