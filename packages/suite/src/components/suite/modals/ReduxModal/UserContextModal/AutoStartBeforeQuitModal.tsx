@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
@@ -13,13 +14,23 @@ export const AutoStartBeforeQuitModal = () => {
     const [dontAskAgain, setDontAskAgain] = useState(false);
     if (!desktopApi.available) return null;
 
-    const handleBackground = () => {
-        desktopApi.appAutoStartPopupResponse(dontAskAgain ? 'background-always' : 'background-now');
+    const handleResponse = (
+        action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now',
+    ) => {
+        desktopApi.appAutoStartPopupResponse(action);
         dispatch(modalActions.onCancel());
+        analytics.report({
+            type: EventType.AutostartModal,
+            payload: {
+                action,
+            },
+        });
+    };
+    const handleBackground = () => {
+        handleResponse(dontAskAgain ? 'background-always' : 'background-now');
     };
     const handleQuit = () => {
-        desktopApi.appAutoStartPopupResponse(dontAskAgain ? 'quit-always' : 'quit-now');
-        dispatch(modalActions.onCancel());
+        handleResponse(dontAskAgain ? 'quit-always' : 'quit-now');
     };
 
     return (
