@@ -852,7 +852,7 @@ export const en = {
                     title: 'Multi-share Backup',
                     description: 'Designed for experienced users',
                     time: '~10 minutes <bold>per share</bold>',
-                    format: '2-16 shares (20 words per share) Select the minimum number of shares required to recover your assets.',
+                    format: '2-16 shares (20 words per share). Select the minimum number of shares required to recover your assets.',
                     storage:
                         'Store your shares separately in secure, private locations, or distribute them to trusted individuals. Never keep all shares together or store them digitally.',
                     callout: 'Requires increased attention',
@@ -862,7 +862,7 @@ export const en = {
                 '12-words': {
                     title: '12-word backup',
                     description: 'Legacy backup type',
-                    format: 'Generates a <bold>single set of 12 words</bold> to recover access to your funds. ',
+                    format: 'Generates a <bold>single set of 12 words</bold> to recover access to your funds.',
                     storage:
                         'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
                     callout: 'Not easily upgradeable to\nMulti-share Backup',
@@ -871,7 +871,7 @@ export const en = {
                 '24-words': {
                     title: '24-word backup',
                     description: 'Legacy backup type',
-                    format: 'Generates a <bold>single set of 24 words</bold> to recover access to your funds. ',
+                    format: 'Generates a <bold>single set of 24 words</bold> to recover access to your funds.',
                     storage:
                         'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
                     callout: 'Not easily upgradeable to\nMulti-share Backup',
