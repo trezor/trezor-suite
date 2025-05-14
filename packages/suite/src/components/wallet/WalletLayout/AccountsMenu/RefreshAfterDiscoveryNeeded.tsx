@@ -58,7 +58,8 @@ export const RefreshAfterDiscoveryNeeded = () => {
     }
 
     const startDiscovery = () => {
-        dispatch(runAdditionalDiscoveryThunk(selectedDevice));
+        if (!selectedDevice?.state?.staticSessionId) return;
+        dispatch(runAdditionalDiscoveryThunk(selectedDevice.state.staticSessionId));
     };
 
     return (

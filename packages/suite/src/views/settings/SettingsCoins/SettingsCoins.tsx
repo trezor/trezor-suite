@@ -81,9 +81,9 @@ export const SettingsCoins = () => {
     const isDeviceLocked = !!device && isLocked();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
-    const isDiscoveryButtonVisible = useSelector(state =>
-        selectIsRediscoverNeeded(state, device?.state?.staticSessionId),
-    );
+    const isDiscoveryButtonVisible =
+        useSelector(state => selectIsRediscoverNeeded(state, device?.state?.staticSessionId)) &&
+        device?.state?.staticSessionId;
 
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
         deviceSupportedNetworkSymbols.includes(enabledNetwork),
@@ -104,10 +104,9 @@ export const SettingsCoins = () => {
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     const startDiscovery = () => {
-        dispatch(runAdditionalDiscoveryThunk(device));
+        if (!device?.state?.staticSessionId) return;
+        dispatch(runAdditionalDiscoveryThunk(device?.state?.staticSessionId));
     };
-
-    // todo: make sure that we run additional discovery also when navigating away from this screen. use effect is not suitable to achieve that.
 
     const animation = getDiscoveryButtonAnimationConfig(!!isDiscoveryRunning);
 
