@@ -5,6 +5,7 @@ import {
     runAdditionalDiscoveryThunk,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
+    selectIsRediscoverNeeded,
 } from '@suite-common/wallet-core';
 import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -19,13 +20,7 @@ import {
 import { CoinGroup, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import {
-    useDevice,
-    useDiscovery,
-    useDispatch,
-    useRediscoveryNeeded,
-    useSelector,
-} from 'src/hooks/suite';
+import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
@@ -79,7 +74,6 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const isDiscoveryButtonVisible = useRediscoveryNeeded();
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
         useNetworkSupport();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
@@ -87,6 +81,9 @@ export const SettingsCoins = () => {
     const isDeviceLocked = !!device && isLocked();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
+    const isDiscoveryButtonVisible = useSelector(state =>
+        selectIsRediscoverNeeded(state, device?.state?.staticSessionId),
+    );
 
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
         deviceSupportedNetworkSymbols.includes(enabledNetwork),

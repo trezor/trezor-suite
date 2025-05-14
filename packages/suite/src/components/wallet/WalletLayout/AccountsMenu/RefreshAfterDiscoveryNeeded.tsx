@@ -3,12 +3,18 @@ import React from 'react';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    runAdditionalDiscoveryThunk,
+    selectIsDeviceDiscoveryActive,
+    selectIsRediscoverNeeded,
+    selectSelectedDevice,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch, useRediscoveryNeeded, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
@@ -41,18 +47,18 @@ const animationConfig: MotionProps = {
 
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
-    // const isDiscoveryButtonVisible = useRediscoveryNeeded();
-    // todo;
-    const isDiscoveryButtonVisible = false;
-
     const selectedDevice = useSelector(selectSelectedDevice);
+    const isDiscoveryButtonVisible = useSelector(state =>
+        selectIsRediscoverNeeded(state, selectedDevice?.state?.staticSessionId),
+    );
     const isSidebarCollapsed = useIsSidebarCollapsed();
+    const isDiscoveryInProgress = useSelector(selectIsDeviceDiscoveryActive);
     if (!selectedDevice?.connected) {
         return null;
     }
 
     const startDiscovery = () => {
-        dispatch(startDiscoveryThunk(selectedDevice));
+        dispatch(runAdditionalDiscoveryThunk(selectedDevice));
     };
 
     return (
@@ -66,6 +72,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
                         >
                             <Tooltip content={<Translation id="REFRESH" />}>
                                 <IconButton
+                                    isDisabled={isDiscoveryInProgress}
                                     variant="tertiary"
                                     size="tiny"
                                     icon="repeat"
@@ -80,6 +87,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
                             </AccountsMenuNotice>
 
                             <Button
+                                isDisabled={isDiscoveryInProgress}
                                 variant="tertiary"
                                 size="tiny"
                                 icon="repeat"

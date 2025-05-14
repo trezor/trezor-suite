@@ -15,6 +15,7 @@ import {
     isDiscoveryInProgress,
     selectDiscovery,
     selectDiscoveryByDevicePath,
+    selectIsRediscoverNeeded,
 } from './discoveryReducer';
 import { accountsActions } from '../accounts/accountsActions';
 import { deviceActions } from '../device/deviceActions';
@@ -25,7 +26,6 @@ import {
 } from '../device/deviceReducer';
 import { selectDeviceThunk } from '../device/deviceThunks';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { selectAccountsByDeviceState } from '../accounts/accountsReducer';
 import { disableAccountsThunk } from '../accounts/accountsThunks';
 
 // todo:
@@ -202,19 +202,16 @@ export const runAdditionalDiscoveryThunk = createThunk(
             return;
         }
 
-        const discoveredNetworks = [
-            ...new Set(
-                selectAccountsByDeviceState(getState(), passedDevice.state).map(
-                    account => account.symbol,
-                ),
-            ),
-        ];
-        const suiteEnabledNetworks = getState().wallet.settings.enabledNetworks;
-
-        const networksToDiscover = suiteEnabledNetworks.filter(
-            network => !discoveredNetworks.includes(network),
+        const isRediscoverNeeded = selectIsRediscoverNeeded(
+            getState(),
+            passedDevice.state.staticSessionId,
         );
 
+        if (!isRediscoverNeeded) {
+            console.warn('no rediscovery needed');
+
+            return;
+        }
         // todo: if networks to forget -
 
         dispatch(disableAccountsThunk());
