@@ -9,6 +9,7 @@ import {
     DeviceSettingsStackParamList,
     DeviceStackRoutes,
     Screen,
+    ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
 
@@ -31,6 +32,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
 
     return (
         <Screen
+            header={<ScreenHeader closeActionType="close" />}
             footer={
                 <ConfirmFirmwareUpdateScreenFooter
                     onUpdateConfirmation={handleUpdateConfirmation}
