@@ -24,6 +24,7 @@ import TrezorConnect, {
     DEVICE,
     Device,
     DeviceState,
+    StaticSessionId,
     UI,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
@@ -32,7 +33,12 @@ import { isChanged } from '@trezor/utils';
 
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
-import { selectDeviceById, selectDevices, selectSelectedDevice } from './deviceReducer';
+import {
+    selectDeviceById,
+    selectDeviceByStaticSessionId,
+    selectDevices,
+    selectSelectedDevice,
+} from './deviceReducer';
 import { selectAccountByKey } from '../accounts/accountsReducer';
 
 type SelectDeviceThunkParams = {
@@ -451,15 +457,24 @@ export const authConfirm = createThunk(
 
 export const switchDuplicatedDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/switchDuplicatedDevice`,
-    async (
-        { device, duplicate }: { device: TrezorDevice; duplicate: TrezorDevice },
-        { dispatch, getState, extra },
-    ) => {
+    async (passphraseDuplicateStaticSessionId: StaticSessionId, { dispatch, getState, extra }) => {
         const {
             actions: { onModalCancel },
         } = extra;
         // close modal
         dispatch(onModalCancel());
+
+        const device = selectDeviceByStaticSessionId(
+            getState(),
+            passphraseDuplicateStaticSessionId,
+        );
+
+        if (!device) {
+            console.error('switchDuplicatedDevice: Device not found');
+
+            return;
+        }
+
         // release session from authorizeDevice
         await TrezorConnect.getFeatures({
             device,
@@ -469,7 +484,7 @@ export const switchDuplicatedDevice = createThunk(
         // switch to existing wallet
         // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
         // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
-        await dispatch(selectDeviceThunk({ device: duplicate }));
+        await dispatch(selectDeviceThunk({ device }));
 
         // remove stateless instance
         const settings = extra.selectors.selectSuiteSettings(getState());

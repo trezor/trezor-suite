@@ -8,8 +8,6 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { finishPassphraseFlow } from './deviceAuthorizationSlice';
-
 const PASSPHRASE_MODULE_PREFIX = '@suite-native/device';
 
 export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
@@ -26,8 +24,6 @@ export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
         );
 
         TrezorConnect.cancel();
-        // This will trigger useRedirectOnPassphraseCompletion hook which will redirect to previous stack
-        dispatch(finishPassphraseFlow());
 
         if (device === devices[standardWalletDeviceIndex]) return;
 
@@ -76,8 +72,6 @@ export const verifyPassphraseOnEmptyWalletThunk = createThunk<
         if (!response.success) {
             return rejectWithValue({ error: 'action-cancelled' });
         }
-
-        dispatch(finishPassphraseFlow());
 
         return fulfillWithValue(true);
     },

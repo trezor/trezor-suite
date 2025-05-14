@@ -5,10 +5,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { InlineAlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
-import {
-    finishPassphraseFlow,
-    verifyPassphraseOnEmptyWalletThunk,
-} from '@suite-native/device-authorization';
+import { verifyPassphraseOnEmptyWalletThunk } from '@suite-native/device-authorization';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 
@@ -28,7 +25,6 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     type: EventType.PassphraseFlowFinished,
                     payload: { isEmptyWallet: true },
                 });
-                dispatch(finishPassphraseFlow());
             }
         };
         verifyEmptyWallet();
