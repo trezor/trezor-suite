@@ -5,7 +5,7 @@ import {
     DeviceRootState,
     DiscoveryRootState,
     selectDevicePath,
-    selectIsDiscoveryActiveByDevicePath,
+    selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Button, VStack } from '@suite-native/atoms';
@@ -30,8 +30,9 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
 
     const devicePath = useSelector(selectDevicePath);
 
-    const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
-        selectIsDiscoveryActiveByDevicePath(state, devicePath),
+    const isDiscoveryRunning = useSelector(
+        (state: DiscoveryRootState & DeviceRootState) =>
+            selectDiscoveryByDevicePath(state, devicePath)?.status === 'progress',
     );
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
