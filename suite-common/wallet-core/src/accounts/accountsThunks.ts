@@ -28,6 +28,7 @@ import { selectTransactions } from '../transactions/transactionsReducer';
 export const disableAccountsThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,
     (_, { dispatch, getState }) => {
+        // todo: this logic is now duplicated in selectAccountsToBeForgotten (discoveryReducer)
         const accounts = selectAccounts(getState());
         const enabledNetworks = selectEnabledNetworks(getState());
         // find disabled networks

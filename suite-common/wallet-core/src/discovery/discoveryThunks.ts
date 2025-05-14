@@ -13,15 +13,18 @@ import TrezorConnect, {
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import {
     isDiscoveryInProgress,
+    selectAccountsToBeForgotten,
     selectDiscovery,
     selectDiscoveryByDevicePath,
     selectIsRediscoverNeeded,
+    selectNetworksToDiscover,
 } from './discoveryReducer';
 import { accountsActions } from '../accounts/accountsActions';
 import { deviceActions } from '../device/deviceActions';
 import {
     selectDeviceByStaticSessionId,
     selectDevices,
+    selectPhysicalDevices,
     selectSelectedDevice,
 } from '../device/deviceReducer';
 import { selectDeviceThunk } from '../device/deviceThunks';
@@ -34,7 +37,7 @@ import { DiscoveryAccountInfo } from '@trezor/connect/src/types/api/discoverAcco
 type ProgressEvent = BundleProgress<DiscoveryAccountInfo>['payload'];
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
-    if (!device || !device.state) {
+    if (!device || !device.state?.staticSessionId) {
         throw new Error('assertion error: device is not authorized');
     }
 }
@@ -49,21 +52,39 @@ const applyDeviceStatesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/complete`,
     async (
         {
-            newDeviceState,
             isAddingHiddenWallet,
-        }: { isAddingHiddenWallet?: boolean; newDeviceState: DeviceState },
+            newDeviceState,
+            devicePath,
+        }: {
+            isAddingHiddenWallet?: boolean;
+            newDeviceState: DeviceState;
+            devicePath: DeviceUniquePath;
+        },
         { dispatch, getState, extra },
     ) => {
         try {
-            // todo: device check duplicated with completedDiscoveryThunk
-            const device = selectSelectedDevice(getState());
+            const devices = selectDevices(getState());
+            const devicesByPath = devices.filter(d => d.path === devicePath);
+
+            // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
+            // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
+            if (devicesByPath.length !== 1) {
+                throw new Error('exactly one device should be found by path');
+            }
+            const device = devicesByPath[0];
+
             assertDeviceIsAcquired(device);
 
             if (!newDeviceState.staticSessionId) {
                 console.error('no staticSessionId. this is required at this point');
                 return;
             }
-            if (getState().device.devices.filter(d => !d.state).length === 1) {
+
+            const physicalDevices = selectPhysicalDevices(getState());
+            const devicesWithoutState = physicalDevices.filter(d => !d.state?.staticSessionId);
+
+            // now we expect that there is exactly one device without state - meaning that we want to update its state
+            if (devicesWithoutState.length === 1) {
                 dispatch({
                     type: '@suite/device/set-device-state',
                     payload: {
@@ -146,7 +167,6 @@ export const startDiscoveryThunk = createThunk(
         { dispatch, getState },
     ): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
-        console.log('currentDiscovery', currentDiscovery);
         if (isDiscoveryInProgress(currentDiscovery)) {
             console.warn(
                 'startDiscoveryThunk: discovery already in progress, cancelling start call',
@@ -196,10 +216,14 @@ const EXPECTED_CANCELLATION_CODES = [USER_UI_CANCEL_CODE, ...DEVICE_CANCELLATION
 export const runAdditionalDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (passedDevice: TrezorDevice, { dispatch, getState }): Promise<void> => {
-        if (!passedDevice?.state) {
+        if (!passedDevice?.state?.staticSessionId) {
             console.warn('no device state');
 
             return;
+        }
+
+        if (selectAccountsToBeForgotten(getState()).length) {
+            dispatch(disableAccountsThunk());
         }
 
         const isRediscoverNeeded = selectIsRediscoverNeeded(
@@ -212,9 +236,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
             return;
         }
-        // todo: if networks to forget -
-
-        dispatch(disableAccountsThunk());
 
         const accountProgressEvents: any[] = [];
         const onBundleProgress = createOnBundleProgressHandler(
@@ -225,9 +246,9 @@ export const runAdditionalDiscoveryThunk = createThunk(
             getState,
         );
 
-        console.log(
-            'runAdditionalDiscovery: TrezorConnect.getAccountInfo, payload: ',
-            networksToDiscover,
+        const networksToDiscover = selectNetworksToDiscover(
+            getState(),
+            passedDevice.state.staticSessionId,
         );
 
         if (networksToDiscover.length === 0) {
@@ -447,6 +468,7 @@ export const runDiscovery = createThunk(
                     applyDeviceStatesThunk({
                         newDeviceState: deviceStateResponse.payload._state,
                         isAddingHiddenWallet,
+                        devicePath: passedDevice.path,
                     }),
                 );
             }
@@ -462,9 +484,13 @@ export const runDiscovery = createThunk(
 
             TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-            const discoveryAccountsPayload = getState().wallet.settings.enabledNetworks.map(n => ({
+            const discoveryAccountsPayload = selectNetworksToDiscover(
+                getState(),
+                device?.state?.staticSessionId,
+            ).map(n => ({
                 symbol: n,
             }));
+            console.log('discoveryAccountsPayload', discoveryAccountsPayload);
 
             if (!discoveryAccountsPayload.length) {
                 console.warn('no networks to discover, todo: stop discovery');
@@ -567,6 +593,7 @@ export const runDiscovery = createThunk(
                     applyDeviceStatesThunk({
                         newDeviceState: deviceStateResponse.payload._state,
                         isAddingHiddenWallet,
+                        devicePath: device.path,
                     }),
                 );
 
@@ -701,6 +728,7 @@ export const runDiscovery = createThunk(
                 applyDeviceStatesThunk({
                     newDeviceState: deviceStateResponse.payload._state,
                     isAddingHiddenWallet,
+                    devicePath: passedDevice.path,
                 }),
             );
 

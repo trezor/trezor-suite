@@ -1,14 +1,14 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Discovery, DiscoveryStatus } from '@suite-common/wallet-types';
 import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
-
+import { networksCollection } from '@suite-common/wallet-config';
 import { discoveryActions } from './discoveryActions';
+import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
 import {
-    DeviceRootState,
-    selectDeviceByStaticSessionId,
-    selectSelectedDevice,
-} from '../device/deviceReducer';
-import { AccountsRootState, selectAccountsByDeviceState } from '../accounts/accountsReducer';
+    AccountsRootState,
+    selectAccounts,
+    selectAccountsByDeviceState,
+} from '../accounts/accountsReducer';
 import { selectEnabledNetworks, WalletSettingsRootState } from '../settings/walletSettingsReducer';
 
 export type DiscoveryRootState = {
@@ -118,4 +118,45 @@ export const selectIsRediscoverNeeded = (
     );
 
     return networksToDiscover.length > 0;
+};
+
+export const selectNetworksToDiscover = (
+    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
+    staticSessionId?: StaticSessionId,
+) => {
+    const enabledNetworks = selectEnabledNetworks(state);
+
+    if (!staticSessionId) {
+        console.log('staticSessionId is not defined, returning full');
+        return enabledNetworks;
+    }
+
+    const discoveredNetworks = [
+        ...new Set(
+            selectAccountsByDeviceState(state, staticSessionId).map(account => account.symbol),
+        ),
+    ];
+
+    const networksToDiscover = enabledNetworks.filter(
+        network => !discoveredNetworks.includes(network),
+    );
+
+    return networksToDiscover;
+};
+
+export const selectAccountsToBeForgotten = (
+    state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,
+) => {
+    const accounts = selectAccounts(state);
+    const enabledNetworks = selectEnabledNetworks(state);
+    // find disabled networks
+    const disabledNetworks = networksCollection
+        .filter(n => !enabledNetworks.includes(n.symbol) || n.isHidden)
+        .map(n => n.symbol);
+    // find accounts for disabled networks
+    const accountsToRemove = accounts.filter(
+        a => disabledNetworks.includes(a.symbol) && !a.imported,
+    );
+
+    return accountsToRemove;
 };
