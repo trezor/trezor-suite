@@ -208,20 +208,11 @@ export const selectAccountListSections = createMemoizedSelector(
     },
 );
 
-export const selectFreshAccountAddress = (
-    state: NativeAccountsRootState & TransactionsRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account) return null;
-
-    const pendingAddresses = selectPendingAccountAddresses(state, accountKey);
-
-    const isAccountUtxoBased = selectIsAccountUtxoBased(state, accountKey);
-
-    return getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased);
-};
+export const selectFreshAccountAddress = createMemoizedSelector(
+    [selectAccountByKey, selectPendingAccountAddresses, selectIsAccountUtxoBased],
+    (account, pendingAddresses, isAccountUtxoBased) =>
+        account ? getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased) : null,
+);
 
 export const selectHasDeviceAnySendAvailableAccount = createMemoizedSelector(
     [selectIsPortfolioTrackerDevice, selectVisibleDeviceAccounts],
