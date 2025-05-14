@@ -112,4 +112,12 @@ export enum EventType {
     GetMobileApp = 'promo/mobile',
 
     T3T1DashboardPromo = 'promo/t3t1-dashboard',
+
+    WalletConnectInit = 'wallet-connect/init',
+    WalletConnectPaired = 'wallet-connect/paired',
+    WalletConnectProposal = 'wallet-connect/proposal',
+    WalletConnectProposalApproved = 'wallet-connect/proposal-approved',
+    WalletConnectProposalRejected = 'wallet-connect/proposal-rejected',
+    WalletConnectSessionRequest = 'wallet-connect/session-request',
+    WalletConnectError = 'wallet-connect/error',
 }
