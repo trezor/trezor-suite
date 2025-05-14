@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceNotEmpty } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
-import { finishPassphraseFlow } from '@suite-native/device-authorization';
+import { selectPassphraseDeviceNotEmpty } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -28,9 +27,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const PassphraseLoadingScreen = () => {
     const navigation = useNavigation<NavigationProp>();
 
-    const dispatch = useDispatch();
-
-    const isDeviceNotEmpty = useSelector(selectIsDeviceNotEmpty);
+    const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);
 
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
@@ -46,7 +43,6 @@ export const PassphraseLoadingScreen = () => {
                 type: EventType.PassphraseFlowFinished,
                 payload: { isEmptyWallet: false },
             });
-            dispatch(finishPassphraseFlow());
         } else {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseEmptyWallet,

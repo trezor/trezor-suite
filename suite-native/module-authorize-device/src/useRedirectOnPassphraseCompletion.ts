@@ -7,7 +7,6 @@ import { EventType, analytics } from '@suite-native/analytics';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectDeviceRequestedAuthorization,
-    selectHasAuthFailed,
     selectHasVerificationCancelledError,
     selectPassphraseError,
 } from '@suite-native/device-authorization';
@@ -16,7 +15,6 @@ import { useNavigateToInitialScreen } from '@suite-native/navigation';
 export const useRedirectOnPassphraseCompletion = () => {
     const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);
     const hasPassphraseError = useSelector(selectPassphraseError);
-    const hasAuthorizationFailed = useSelector(selectHasAuthFailed);
     const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
 
     const dispatch = useDispatch();
@@ -34,12 +32,12 @@ export const useRedirectOnPassphraseCompletion = () => {
 
     useEffect(() => {
         // User has canceled the authorization process on device (authorizeDeviceThunk rejects with auth-failed error)
-        if (hasAuthorizationFailed || hasVerificationCancelledError) {
+        if (hasVerificationCancelledError) {
             analytics.report({
                 type: EventType.PassphraseExit,
                 payload: { screen: route.name },
             });
             dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
         }
-    }, [dispatch, hasAuthorizationFailed, hasVerificationCancelledError, route.name]);
+    }, [dispatch, hasVerificationCancelledError, route.name]);
 };

@@ -349,6 +349,7 @@ const setDeviceState = (
 
     if (affectedDevice.length > 1) {
         console.error('there must be only one device with the same id and without state');
+
         return;
     }
 

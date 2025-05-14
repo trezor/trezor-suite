@@ -502,17 +502,6 @@ export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
     (isDiscoveredAccountless, hasOnlyPortfolio) => isDiscoveredAccountless && hasOnlyPortfolio,
 );
 
-export const selectIsDeviceNotEmpty = createMemoizedSelector(
-    [selectNonEmptyDeviceAccounts, selectHasDeviceDiscovery, selectDeviceState],
-    (nonEmptyAccounts, hasDiscovery, deviceState) => {
-        const isNotEmpty = nonEmptyAccounts.length > 0;
-        if (isNotEmpty) return true;
-        if (hasDiscovery || !deviceState) return null;
-
-        return isNotEmpty;
-    },
-);
-
 export const selectSolStakingAccounts = createMemoizedSelector([selectAccountByKey], account => {
     if (!account?.misc || account.networkType !== 'solana') return null;
 

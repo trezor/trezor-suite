@@ -3,15 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    deviceActions,
-    selectHasDeviceDiscovery,
-    selectIsDeviceConnectedAndAuthorized,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
-import { useHandlePassphraseMismatch } from '@suite-native/device-authorization';
+import { isPassphraseDeviceAuthorized } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -22,7 +17,6 @@ import {
 } from '@suite-native/navigation';
 
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
-import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -35,18 +29,17 @@ export const PassphraseConfirmOnTrezorScreen = () => {
 
     const navigation = useNavigation<NavigationProp>();
 
-    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const isDeviceAuthorizationDone = useSelector(isPassphraseDeviceAuthorized);
     const device = useSelector(selectSelectedDevice);
 
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back
-    useRedirectOnPassphraseCompletion();
+    // useRedirectOnPassphraseCompletion();
 
-    useHandlePassphraseMismatch();
+    // useHandlePassphraseMismatch();
 
     useEffect(() => {
-        if (isDeviceConnectedAndAuthorized && hasDiscovery) {
+        if (isDeviceAuthorizationDone) {
             navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseLoading);
             dispatch(
                 deviceActions.removeButtonRequests({
@@ -55,7 +48,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
                 }),
             );
         }
-    }, [device, dispatch, isDeviceConnectedAndAuthorized, hasDiscovery, navigation]);
+    }, [device, dispatch, isDeviceAuthorizationDone, navigation]);
 
     return (
         <Screen header={<PassphraseScreenHeader />}>

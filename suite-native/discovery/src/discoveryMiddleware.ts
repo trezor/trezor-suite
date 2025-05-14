@@ -9,6 +9,7 @@ import {
     discoveryActions,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
+    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 import {
@@ -26,7 +27,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             deviceActions.forgetDevice.match(action) &&
             action.payload.device.state?.staticSessionId
         ) {
-            dispatch(discoveryActions.removeDiscovery(action.payload.device.state.staticSessionId));
+            dispatch(discoveryActions.deleteDiscovery(action.payload.device.path));
         }
 
         const deviceModel = selectDeviceModel(getState());
@@ -64,8 +65,9 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             isCoinEnablingInitFinished
         ) {
             dispatch(
-                startDescriptorPreloadedDiscoveryThunk({
-                    forcedDeviceState: action.payload.state?.staticSessionId,
+                startDiscoveryThunk({
+                    device: action.payload.device,
+                    isAddingHiddenWallet: !action.payload.device.useEmptyPassphrase,
                 }),
             );
         }
