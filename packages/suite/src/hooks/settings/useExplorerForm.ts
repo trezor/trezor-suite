@@ -57,9 +57,7 @@ const useExplorerInput = (currentValues: Explorer) => {
         validate: validateSuffix,
     });
 
-    const { ref: queryStringInputRef, ...queryStringInputField } = register('queryString', {
-        validate: validateSuffix,
-    });
+    const { ref: queryStringInputRef, ...queryStringInputField } = register('queryString');
 
     return {
         validateBaseUrl,
@@ -143,7 +141,7 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
 
         (Object.keys(explorer) as (keyof Explorer)[]).forEach(key => {
             if (!explorer[key]) return;
-            explorer[key] = stripSlashes(explorer[key]);
+            explorer[key] = stripSlashes(explorer[key]).trim();
         });
 
         return explorer;
