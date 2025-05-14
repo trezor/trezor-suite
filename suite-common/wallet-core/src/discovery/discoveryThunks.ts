@@ -48,6 +48,14 @@ function assertDeviceIsAcquired(device?: TrezorDevice): asserts device is Acquir
     }
 }
 
+function assertStaticSessionId(
+    deviceState: DeviceState,
+): asserts deviceState is DeviceState & { staticSessionId: StaticSessionId } {
+    if (!deviceState.staticSessionId) {
+        throw new Error('assertion error: device state does not contain static session id');
+    }
+}
+
 const applyDeviceStatesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/complete`,
     async (
@@ -68,31 +76,27 @@ const applyDeviceStatesThunk = createThunk(
 
             // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
+            // todo: this sanity check could be moved somewhere higher.
             if (devicesByPath.length !== 1) {
                 throw new Error('exactly one device should be found by path');
             }
             const device = devicesByPath[0];
 
             assertDeviceIsAcquired(device);
-
-            if (!newDeviceState.staticSessionId) {
-                console.error('no staticSessionId. this is required at this point');
-                return;
-            }
+            assertStaticSessionId(newDeviceState);
 
             const physicalDevices = selectPhysicalDevices(getState());
             const devicesWithoutState = physicalDevices.filter(d => !d.state?.staticSessionId);
 
             // now we expect that there is exactly one device without state - meaning that we want to update its state
             if (devicesWithoutState.length === 1) {
-                dispatch({
-                    type: '@suite/device/set-device-state',
-                    payload: {
+                dispatch(
+                    deviceActions.setDeviceState({
                         device,
                         state: newDeviceState,
                         useEmptyPassphrase: !isAddingHiddenWallet,
-                    },
-                });
+                    }),
+                );
             } else {
                 dispatch(
                     deviceActions.addAuthorizedDevice({
@@ -215,12 +219,13 @@ const EXPECTED_CANCELLATION_CODES = [USER_UI_CANCEL_CODE, ...DEVICE_CANCELLATION
 
 export const runAdditionalDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
-    async (passedDevice: TrezorDevice, { dispatch, getState }): Promise<void> => {
-        if (!passedDevice?.state?.staticSessionId) {
-            console.warn('no device state');
+    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
+        // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
+        // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
-            return;
-        }
+        const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
+
+        assertDeviceIsAuthorized(device);
 
         if (selectAccountsToBeForgotten(getState()).length) {
             dispatch(disableAccountsThunk());
@@ -228,7 +233,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const isRediscoverNeeded = selectIsRediscoverNeeded(
             getState(),
-            passedDevice.state.staticSessionId,
+            device.state.staticSessionId,
         );
 
         if (!isRediscoverNeeded) {
@@ -237,10 +242,10 @@ export const runAdditionalDiscoveryThunk = createThunk(
             return;
         }
 
-        const accountProgressEvents: any[] = [];
+        const accountProgressEvents: ProgressEvent[] = [];
         const onBundleProgress = createOnBundleProgressHandler(
-            passedDevice.path,
-            passedDevice.state.staticSessionId,
+            device.path,
+            device.state.staticSessionId,
             accountProgressEvents,
             dispatch,
             getState,
@@ -248,7 +253,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const networksToDiscover = selectNetworksToDiscover(
             getState(),
-            passedDevice.state.staticSessionId,
+            device.state.staticSessionId,
         );
 
         if (networksToDiscover.length === 0) {
@@ -260,8 +265,8 @@ export const runAdditionalDiscoveryThunk = createThunk(
         TrezorConnect.on<DiscoveryAccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
         const result = await TrezorConnect.discoverAccounts({
-            device: passedDevice,
-            useEmptyPassphrase: passedDevice.useEmptyPassphrase,
+            device,
+            useEmptyPassphrase: device.useEmptyPassphrase,
             coins: networksToDiscover.map(n => ({
                 symbol: n,
             })),
@@ -271,7 +276,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, passedDevice.path));
+        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
     },
 );
 
@@ -354,7 +359,7 @@ export const runDiscovery = createThunk(
             let device = passedDevice;
 
             // todo: this variable could be defined locally in bundle progress handler after marek delivers return value for TrezorConnect.discoverAccounts
-            const accountProgressEvents: any[] = [];
+            const accountProgressEvents: ProgressEvent[] = [];
 
             const discovery = selectDiscoveryByDevicePath(getState(), device.path);
 
@@ -581,7 +586,8 @@ export const runDiscovery = createThunk(
 
             device = selectSelectedDevice(getState());
 
-            const allAccountsEmpty = accountProgressEvents.every(account => account?.empty);
+            console.log('aacountProgressEvents', accountProgressEvents);
+            const allAccountsEmpty = accountProgressEvents.every(event => event.response?.empty);
             // there is at least one account with balance - passphrase is not empty
             console.log('allAccountsEmpty', allAccountsEmpty);
 

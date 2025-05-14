@@ -58,8 +58,10 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             if (device && device.connected && isDeviceAcquired(device) && !isDeviceLocked) {
                 if (!device?.state) {
                     dispatch(discoveryActions.startDiscoveryThunk({ device }));
-                } else {
-                    dispatch(discoveryActions.runAdditionalDiscoveryThunk(device));
+                } else if (device.state.staticSessionId) {
+                    dispatch(
+                        discoveryActions.runAdditionalDiscoveryThunk(device.state.staticSessionId),
+                    );
                 }
             }
         }

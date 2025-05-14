@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import { WalletType } from '@suite-common/wallet-types';
-import { DEVICE, Device, DeviceState } from '@trezor/connect';
+import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -27,7 +27,11 @@ const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device | TrezorDevi
 
 const setDeviceState = createAction(
     `${DEVICE_MODULE_PREFIX}/set-device-state`,
-    (payload: { device: TrezorDevice; state: DeviceState; useEmptyPassphrase: boolean }) => ({
+    (payload: {
+        device: TrezorDevice;
+        state: DeviceState & { staticSessionId: StaticSessionId };
+        useEmptyPassphrase: boolean;
+    }) => ({
         payload,
     }),
 );
