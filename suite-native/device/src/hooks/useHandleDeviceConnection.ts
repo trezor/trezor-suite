@@ -117,7 +117,7 @@ export const useHandleDeviceConnection = () => {
             !shouldNavigateToDeviceCompromisedModal
         ) {
             navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                screen: DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads,
+                screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
             });
         }
     }, [
