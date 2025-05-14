@@ -7,6 +7,7 @@ import {
 } from '@suite-common/connect-popup';
 import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectPopupTypes';
 import TrezorConnect from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -53,6 +54,10 @@ export const useConnectPopupDesktop = () => {
                     initialized.current = true;
 
                     desktopApi.connectPopupReady();
+
+                    analytics.report({
+                        type: EventType.ConnectPopupInit,
+                    });
 
                     // Update experimental features value
                     // TODO: remove this when out of experimental
