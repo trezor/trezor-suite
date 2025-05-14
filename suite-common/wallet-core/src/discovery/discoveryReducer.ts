@@ -1,9 +1,15 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Discovery, DiscoveryStatus } from '@suite-common/wallet-types';
-import { DeviceUniquePath } from '@trezor/connect';
+import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
-import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
+import {
+    DeviceRootState,
+    selectDeviceByStaticSessionId,
+    selectSelectedDevice,
+} from '../device/deviceReducer';
+import { AccountsRootState, selectAccountsByDeviceState } from '../accounts/accountsReducer';
+import { selectEnabledNetworks, WalletSettingsRootState } from '../settings/walletSettingsReducer';
 
 export type DiscoveryRootState = {
     wallet: {
@@ -105,3 +111,25 @@ export function isDiscoveryInProgress(
         discovery.status !== 'cancelled'
     );
 }
+
+export const selectIsRediscoverNeeded = (
+    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
+    staticSessionId?: StaticSessionId,
+) => {
+    if (!staticSessionId) {
+        return false;
+    }
+    const discoveredNetworks = [
+        ...new Set(
+            selectAccountsByDeviceState(state, staticSessionId).map(account => account.symbol),
+        ),
+    ];
+
+    const enabledNetworks = selectEnabledNetworks(state);
+
+    const networksToDiscover = enabledNetworks.filter(
+        network => !discoveredNetworks.includes(network),
+    );
+
+    return networksToDiscover.length > 0;
+};
