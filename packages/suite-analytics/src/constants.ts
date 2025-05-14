@@ -125,4 +125,6 @@ export enum EventType {
     ConnectPopupPermissions = 'connect-popup/permissions',
     ConnectPopupCall = 'connect-popup/call',
     ConnectPopupError = 'connect-popup/error',
+
+    AutostartModal = 'autostart-modal',
 }

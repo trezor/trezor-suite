@@ -717,4 +717,10 @@ export type SuiteAnalyticsEvent =
               method: string;
               error: string;
           };
+      }
+    | {
+          type: EventType.AutostartModal;
+          payload: {
+              action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now';
+          };
       };
