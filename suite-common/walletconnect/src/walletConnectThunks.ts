@@ -421,7 +421,7 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
 export const walletConnectDisconnectThunk = createThunk<void, { topic: string }>(
     `${WALLETCONNECT_MODULE}/walletConnectDisconnectThunk`,
     async ({ topic }, { dispatch }) => {
-        await walletKit.disconnectSession({ topic, reason: getSdkError('USER_DISCONNECTED') });
         await dispatch(walletConnectActions.removeSession({ topic }));
+        await walletKit.disconnectSession({ topic, reason: getSdkError('USER_DISCONNECTED') });
     },
 );
