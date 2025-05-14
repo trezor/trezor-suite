@@ -1,250 +1,5 @@
 {
     "nested": {
-        "BinanceGetAddress": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "show_display": {
-                    "type": "bool",
-                    "id": 2
-                },
-                "chunkify": {
-                    "type": "bool",
-                    "id": 3
-                }
-            }
-        },
-        "BinanceAddress": {
-            "fields": {
-                "address": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 1
-                }
-            }
-        },
-        "BinanceGetPublicKey": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "show_display": {
-                    "type": "bool",
-                    "id": 2
-                }
-            }
-        },
-        "BinancePublicKey": {
-            "fields": {
-                "public_key": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                }
-            }
-        },
-        "BinanceSignTx": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "msg_count": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 2
-                },
-                "account_number": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 3
-                },
-                "chain_id": {
-                    "type": "string",
-                    "id": 4
-                },
-                "memo": {
-                    "type": "string",
-                    "id": 5
-                },
-                "sequence": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 6
-                },
-                "source": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 7
-                },
-                "chunkify": {
-                    "type": "bool",
-                    "id": 8
-                }
-            }
-        },
-        "BinanceTxRequest": {
-            "fields": {}
-        },
-        "BinanceTransferMsg": {
-            "fields": {
-                "inputs": {
-                    "rule": "repeated",
-                    "type": "BinanceInputOutput",
-                    "id": 1
-                },
-                "outputs": {
-                    "rule": "repeated",
-                    "type": "BinanceInputOutput",
-                    "id": 2
-                },
-                "chunkify": {
-                    "type": "bool",
-                    "id": 3
-                }
-            },
-            "nested": {
-                "BinanceInputOutput": {
-                    "fields": {
-                        "address": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 1
-                        },
-                        "coins": {
-                            "rule": "repeated",
-                            "type": "BinanceCoin",
-                            "id": 2
-                        }
-                    }
-                },
-                "BinanceCoin": {
-                    "fields": {
-                        "amount": {
-                            "rule": "required",
-                            "type": "sint64",
-                            "id": 1
-                        },
-                        "denom": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 2
-                        }
-                    }
-                }
-            }
-        },
-        "BinanceOrderMsg": {
-            "fields": {
-                "id": {
-                    "type": "string",
-                    "id": 1
-                },
-                "ordertype": {
-                    "rule": "required",
-                    "type": "BinanceOrderType",
-                    "id": 2
-                },
-                "price": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 3
-                },
-                "quantity": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 4
-                },
-                "sender": {
-                    "type": "string",
-                    "id": 5
-                },
-                "side": {
-                    "rule": "required",
-                    "type": "BinanceOrderSide",
-                    "id": 6
-                },
-                "symbol": {
-                    "type": "string",
-                    "id": 7
-                },
-                "timeinforce": {
-                    "rule": "required",
-                    "type": "BinanceTimeInForce",
-                    "id": 8
-                }
-            },
-            "nested": {
-                "BinanceOrderType": {
-                    "values": {
-                        "OT_UNKNOWN": 0,
-                        "MARKET": 1,
-                        "LIMIT": 2,
-                        "OT_RESERVED": 3
-                    }
-                },
-                "BinanceOrderSide": {
-                    "values": {
-                        "SIDE_UNKNOWN": 0,
-                        "BUY": 1,
-                        "SELL": 2
-                    }
-                },
-                "BinanceTimeInForce": {
-                    "values": {
-                        "TIF_UNKNOWN": 0,
-                        "GTE": 1,
-                        "TIF_RESERVED": 2,
-                        "IOC": 3
-                    }
-                }
-            }
-        },
-        "BinanceCancelMsg": {
-            "fields": {
-                "refid": {
-                    "type": "string",
-                    "id": 1
-                },
-                "sender": {
-                    "type": "string",
-                    "id": 2
-                },
-                "symbol": {
-                    "type": "string",
-                    "id": 3
-                }
-            }
-        },
-        "BinanceSignedTx": {
-            "fields": {
-                "signature": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                },
-                "public_key": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 2
-                }
-            }
-        },
         "InputScriptType": {
             "values": {
                 "SPENDADDRESS": 0,
@@ -2561,6 +2316,7 @@
                         "Failure_PinMismatch": 12,
                         "Failure_WipeCodeMismatch": 13,
                         "Failure_InvalidSession": 14,
+                        "Failure_Busy": 15,
                         "Failure_FirmwareError": 99
                     }
                 }
@@ -3129,6 +2885,85 @@
         },
         "DebugLinkOptigaSetSecMax": {
             "fields": {}
+        },
+        "DefinitionType": {
+            "values": {
+                "ETHEREUM_NETWORK": 0,
+                "ETHEREUM_TOKEN": 1,
+                "SOLANA_TOKEN": 2
+            }
+        },
+        "EthereumNetworkInfo": {
+            "fields": {
+                "chain_id": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 1
+                },
+                "symbol": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "slip44": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 3
+                },
+                "name": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 4
+                }
+            }
+        },
+        "EthereumTokenInfo": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "chain_id": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                },
+                "symbol": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 3
+                },
+                "decimals": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 4
+                },
+                "name": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 5
+                }
+            }
+        },
+        "SolanaTokenInfo": {
+            "fields": {
+                "mint": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "symbol": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "name": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 3
+                }
+            }
         },
         "EosGetPublicKey": {
             "fields": {
@@ -3719,77 +3554,6 @@
                 }
             }
         },
-        "EthereumDefinitionType": {
-            "values": {
-                "NETWORK": 0,
-                "TOKEN": 1
-            }
-        },
-        "EthereumNetworkInfo": {
-            "fields": {
-                "chain_id": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 1
-                },
-                "symbol": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 2
-                },
-                "slip44": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 3
-                },
-                "name": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 4
-                }
-            }
-        },
-        "EthereumTokenInfo": {
-            "fields": {
-                "address": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                },
-                "chain_id": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 2
-                },
-                "symbol": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 3
-                },
-                "decimals": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 4
-                },
-                "name": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 5
-                }
-            }
-        },
-        "EthereumDefinitions": {
-            "fields": {
-                "encoded_network": {
-                    "type": "bytes",
-                    "id": 1
-                },
-                "encoded_token": {
-                    "type": "bytes",
-                    "id": 2
-                }
-            }
-        },
         "EthereumSignTypedData": {
             "fields": {
                 "address_n": {
@@ -4266,6 +4030,18 @@
                 }
             }
         },
+        "EthereumDefinitions": {
+            "fields": {
+                "encoded_network": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "encoded_token": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
         "BackupType": {
             "values": {
                 "Bip39": 0,
@@ -4575,7 +4351,9 @@
                         "Capability_Solana": 18,
                         "Capability_Translations": 19,
                         "Capability_Brightness": 20,
-                        "Capability_Haptic": 21
+                        "Capability_Haptic": 21,
+                        "Capability_BLE": 22,
+                        "Capability_NFC": 23
                     }
                 }
             }
@@ -5774,6 +5552,10 @@
                     "rule": "repeated",
                     "type": "SolanaTxTokenAccountInfo",
                     "id": 1
+                },
+                "encoded_token": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -6932,16 +6714,6 @@
                 "EosTxActionRequest": 603,
                 "EosTxActionAck": 604,
                 "EosSignedTx": 605,
-                "BinanceGetAddress": 700,
-                "BinanceAddress": 701,
-                "BinanceGetPublicKey": 702,
-                "BinancePublicKey": 703,
-                "BinanceSignTx": 704,
-                "BinanceTxRequest": 705,
-                "BinanceTransferMsg": 706,
-                "BinanceOrderMsg": 707,
-                "BinanceCancelMsg": 708,
-                "BinanceSignedTx": 709,
                 "SolanaGetPublicKey": 900,
                 "SolanaPublicKey": 901,
                 "SolanaGetAddress": 902,

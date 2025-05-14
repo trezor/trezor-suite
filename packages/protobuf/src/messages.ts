@@ -16,96 +16,6 @@ export enum DeviceModelInternal {
     UNKNOWN = 'UNKNOWN',
 }
 
-export type BinanceGetAddress = {
-    address_n: number[];
-    show_display?: boolean;
-    chunkify?: boolean;
-};
-
-export type BinanceAddress = {
-    address: string;
-};
-
-export type BinanceGetPublicKey = {
-    address_n: number[];
-    show_display?: boolean;
-};
-
-export type BinancePublicKey = {
-    public_key: string;
-};
-
-export type BinanceSignTx = {
-    address_n: number[];
-    msg_count: number;
-    account_number: number;
-    chain_id?: string;
-    memo?: string;
-    sequence: number;
-    source: number;
-    chunkify?: boolean;
-};
-
-export type BinanceTxRequest = {};
-
-export type BinanceCoin = {
-    amount: UintType;
-    denom: string;
-};
-
-export type BinanceInputOutput = {
-    address: string;
-    coins: BinanceCoin[];
-};
-
-export type BinanceTransferMsg = {
-    inputs: BinanceInputOutput[];
-    outputs: BinanceInputOutput[];
-    chunkify?: boolean;
-};
-
-export enum BinanceOrderType {
-    OT_UNKNOWN = 0,
-    MARKET = 1,
-    LIMIT = 2,
-    OT_RESERVED = 3,
-}
-
-export enum BinanceOrderSide {
-    SIDE_UNKNOWN = 0,
-    BUY = 1,
-    SELL = 2,
-}
-
-export enum BinanceTimeInForce {
-    TIF_UNKNOWN = 0,
-    GTE = 1,
-    TIF_RESERVED = 2,
-    IOC = 3,
-}
-
-export type BinanceOrderMsg = {
-    id?: string;
-    ordertype: BinanceOrderType;
-    price: number;
-    quantity: number;
-    sender?: string;
-    side: BinanceOrderSide;
-    symbol?: string;
-    timeinforce: BinanceTimeInForce;
-};
-
-export type BinanceCancelMsg = {
-    refid?: string;
-    sender?: string;
-    symbol?: string;
-};
-
-export type BinanceSignedTx = {
-    signature: string;
-    public_key: string;
-};
-
 export enum Enum_InputScriptType {
     SPENDADDRESS = 0,
     SPENDMULTISIG = 1,
@@ -921,6 +831,7 @@ export enum Enum_FailureType {
     Failure_PinMismatch = 12,
     Failure_WipeCodeMismatch = 13,
     Failure_InvalidSession = 14,
+    Failure_Busy = 15,
     Failure_FirmwareError = 99,
 }
 
@@ -1066,6 +977,33 @@ export enum DebugWaitType {
 export type DebugLinkResetDebugEvents = {};
 
 export type DebugLinkOptigaSetSecMax = {};
+
+export enum DefinitionType {
+    ETHEREUM_NETWORK = 0,
+    ETHEREUM_TOKEN = 1,
+    SOLANA_TOKEN = 2,
+}
+
+export type EthereumNetworkInfo = {
+    chain_id: number;
+    symbol: string;
+    slip44: number;
+    name: string;
+};
+
+export type EthereumTokenInfo = {
+    address: string;
+    chain_id: number;
+    symbol: string;
+    decimals: number;
+    name: string;
+};
+
+export type SolanaTokenInfo = {
+    mint: string;
+    symbol: string;
+    name: string;
+};
 
 export type EosGetPublicKey = {
     address_n: number[];
@@ -1245,26 +1183,6 @@ export type EosTxActionAck = {
 
 export type EosSignedTx = {
     signature: string;
-};
-
-export enum EthereumDefinitionType {
-    NETWORK = 0,
-    TOKEN = 1,
-}
-
-export type EthereumNetworkInfo = {
-    chain_id: number;
-    symbol: string;
-    slip44: number;
-    name: string;
-};
-
-export type EthereumTokenInfo = {
-    address: string;
-    chain_id: number;
-    symbol: string;
-    decimals: number;
-    name: string;
 };
 
 export type EthereumDefinitions = {
@@ -1500,6 +1418,8 @@ export enum Enum_Capability {
     Capability_Translations = 19,
     Capability_Brightness = 20,
     Capability_Haptic = 21,
+    Capability_BLE = 22,
+    Capability_NFC = 23,
 }
 
 export type Capability = keyof typeof Enum_Capability;
@@ -1988,6 +1908,7 @@ export type SolanaTxTokenAccountInfo = {
 
 export type SolanaTxAdditionalInfo = {
     token_accounts_infos: SolanaTxTokenAccountInfo[];
+    encoded_token?: string;
 };
 
 export type SolanaSignTx = {
@@ -2294,18 +2215,6 @@ export type TezosSignedTx = {
 
 // custom connect definitions
 export type MessageType = {
-    BinanceGetAddress: BinanceGetAddress;
-    BinanceAddress: BinanceAddress;
-    BinanceGetPublicKey: BinanceGetPublicKey;
-    BinancePublicKey: BinancePublicKey;
-    BinanceSignTx: BinanceSignTx;
-    BinanceTxRequest: BinanceTxRequest;
-    BinanceCoin: BinanceCoin;
-    BinanceInputOutput: BinanceInputOutput;
-    BinanceTransferMsg: BinanceTransferMsg;
-    BinanceOrderMsg: BinanceOrderMsg;
-    BinanceCancelMsg: BinanceCancelMsg;
-    BinanceSignedTx: BinanceSignedTx;
     HDNodeType: HDNodeType;
     HDNodePathType: HDNodePathType;
     MultisigRedeemScriptType: MultisigRedeemScriptType;
@@ -2410,6 +2319,9 @@ export type MessageType = {
     ECDHSessionKey: ECDHSessionKey;
     DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
     DebugLinkOptigaSetSecMax: DebugLinkOptigaSetSecMax;
+    EthereumNetworkInfo: EthereumNetworkInfo;
+    EthereumTokenInfo: EthereumTokenInfo;
+    SolanaTokenInfo: SolanaTokenInfo;
     EosGetPublicKey: EosGetPublicKey;
     EosPublicKey: EosPublicKey;
     EosTxHeader: EosTxHeader;
@@ -2438,8 +2350,6 @@ export type MessageType = {
     EosActionUnknown: EosActionUnknown;
     EosTxActionAck: EosTxActionAck;
     EosSignedTx: EosSignedTx;
-    EthereumNetworkInfo: EthereumNetworkInfo;
-    EthereumTokenInfo: EthereumTokenInfo;
     EthereumDefinitions: EthereumDefinitions;
     EthereumSignTypedData: EthereumSignTypedData;
     EthereumTypedDataStructRequest: EthereumTypedDataStructRequest;

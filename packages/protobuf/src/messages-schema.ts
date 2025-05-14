@@ -13,150 +13,6 @@ export enum DeviceModelInternal {
 export type EnumDeviceModelInternal = Static<typeof EnumDeviceModelInternal>;
 export const EnumDeviceModelInternal = Type.Enum(DeviceModelInternal);
 
-export type BinanceGetAddress = Static<typeof BinanceGetAddress>;
-export const BinanceGetAddress = Type.Object(
-    {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
-    },
-    { $id: 'BinanceGetAddress' },
-);
-
-export type BinanceAddress = Static<typeof BinanceAddress>;
-export const BinanceAddress = Type.Object(
-    {
-        address: Type.String(),
-    },
-    { $id: 'BinanceAddress' },
-);
-
-export type BinanceGetPublicKey = Static<typeof BinanceGetPublicKey>;
-export const BinanceGetPublicKey = Type.Object(
-    {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-    },
-    { $id: 'BinanceGetPublicKey' },
-);
-
-export type BinancePublicKey = Static<typeof BinancePublicKey>;
-export const BinancePublicKey = Type.Object(
-    {
-        public_key: Type.String(),
-    },
-    { $id: 'BinancePublicKey' },
-);
-
-export type BinanceSignTx = Static<typeof BinanceSignTx>;
-export const BinanceSignTx = Type.Object(
-    {
-        address_n: Type.Array(Type.Number()),
-        msg_count: Type.Number(),
-        account_number: Type.Number(),
-        chain_id: Type.Optional(Type.String()),
-        memo: Type.Optional(Type.String()),
-        sequence: Type.Number(),
-        source: Type.Number(),
-        chunkify: Type.Optional(Type.Boolean()),
-    },
-    { $id: 'BinanceSignTx' },
-);
-
-export type BinanceTxRequest = Static<typeof BinanceTxRequest>;
-export const BinanceTxRequest = Type.Object({}, { $id: 'BinanceTxRequest' });
-
-export type BinanceCoin = Static<typeof BinanceCoin>;
-export const BinanceCoin = Type.Object(
-    {
-        amount: Type.Uint(),
-        denom: Type.String(),
-    },
-    { $id: 'BinanceCoin' },
-);
-
-export type BinanceInputOutput = Static<typeof BinanceInputOutput>;
-export const BinanceInputOutput = Type.Object(
-    {
-        address: Type.String(),
-        coins: Type.Array(BinanceCoin),
-    },
-    { $id: 'BinanceInputOutput' },
-);
-
-export type BinanceTransferMsg = Static<typeof BinanceTransferMsg>;
-export const BinanceTransferMsg = Type.Object(
-    {
-        inputs: Type.Array(BinanceInputOutput),
-        outputs: Type.Array(BinanceInputOutput),
-        chunkify: Type.Optional(Type.Boolean()),
-    },
-    { $id: 'BinanceTransferMsg' },
-);
-
-export enum BinanceOrderType {
-    OT_UNKNOWN = 0,
-    MARKET = 1,
-    LIMIT = 2,
-    OT_RESERVED = 3,
-}
-
-export type EnumBinanceOrderType = Static<typeof EnumBinanceOrderType>;
-export const EnumBinanceOrderType = Type.Enum(BinanceOrderType);
-
-export enum BinanceOrderSide {
-    SIDE_UNKNOWN = 0,
-    BUY = 1,
-    SELL = 2,
-}
-
-export type EnumBinanceOrderSide = Static<typeof EnumBinanceOrderSide>;
-export const EnumBinanceOrderSide = Type.Enum(BinanceOrderSide);
-
-export enum BinanceTimeInForce {
-    TIF_UNKNOWN = 0,
-    GTE = 1,
-    TIF_RESERVED = 2,
-    IOC = 3,
-}
-
-export type EnumBinanceTimeInForce = Static<typeof EnumBinanceTimeInForce>;
-export const EnumBinanceTimeInForce = Type.Enum(BinanceTimeInForce);
-
-export type BinanceOrderMsg = Static<typeof BinanceOrderMsg>;
-export const BinanceOrderMsg = Type.Object(
-    {
-        id: Type.Optional(Type.String()),
-        ordertype: EnumBinanceOrderType,
-        price: Type.Number(),
-        quantity: Type.Number(),
-        sender: Type.Optional(Type.String()),
-        side: EnumBinanceOrderSide,
-        symbol: Type.Optional(Type.String()),
-        timeinforce: EnumBinanceTimeInForce,
-    },
-    { $id: 'BinanceOrderMsg' },
-);
-
-export type BinanceCancelMsg = Static<typeof BinanceCancelMsg>;
-export const BinanceCancelMsg = Type.Object(
-    {
-        refid: Type.Optional(Type.String()),
-        sender: Type.Optional(Type.String()),
-        symbol: Type.Optional(Type.String()),
-    },
-    { $id: 'BinanceCancelMsg' },
-);
-
-export type BinanceSignedTx = Static<typeof BinanceSignedTx>;
-export const BinanceSignedTx = Type.Object(
-    {
-        signature: Type.String(),
-        public_key: Type.String(),
-    },
-    { $id: 'BinanceSignedTx' },
-);
-
 export enum Enum_InputScriptType {
     SPENDADDRESS = 0,
     SPENDMULTISIG = 1,
@@ -1384,6 +1240,7 @@ export enum Enum_FailureType {
     Failure_PinMismatch = 12,
     Failure_WipeCodeMismatch = 13,
     Failure_InvalidSession = 14,
+    Failure_Busy = 15,
     Failure_FirmwareError = 99,
 }
 
@@ -1617,6 +1474,48 @@ export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetD
 
 export type DebugLinkOptigaSetSecMax = Static<typeof DebugLinkOptigaSetSecMax>;
 export const DebugLinkOptigaSetSecMax = Type.Object({}, { $id: 'DebugLinkOptigaSetSecMax' });
+
+export enum DefinitionType {
+    ETHEREUM_NETWORK = 0,
+    ETHEREUM_TOKEN = 1,
+    SOLANA_TOKEN = 2,
+}
+
+export type EnumDefinitionType = Static<typeof EnumDefinitionType>;
+export const EnumDefinitionType = Type.Enum(DefinitionType);
+
+export type EthereumNetworkInfo = Static<typeof EthereumNetworkInfo>;
+export const EthereumNetworkInfo = Type.Object(
+    {
+        chain_id: Type.Number(),
+        symbol: Type.String(),
+        slip44: Type.Number(),
+        name: Type.String(),
+    },
+    { $id: 'EthereumNetworkInfo' },
+);
+
+export type EthereumTokenInfo = Static<typeof EthereumTokenInfo>;
+export const EthereumTokenInfo = Type.Object(
+    {
+        address: Type.String(),
+        chain_id: Type.Number(),
+        symbol: Type.String(),
+        decimals: Type.Number(),
+        name: Type.String(),
+    },
+    { $id: 'EthereumTokenInfo' },
+);
+
+export type SolanaTokenInfo = Static<typeof SolanaTokenInfo>;
+export const SolanaTokenInfo = Type.Object(
+    {
+        mint: Type.String(),
+        symbol: Type.String(),
+        name: Type.String(),
+    },
+    { $id: 'SolanaTokenInfo' },
+);
 
 export type EosGetPublicKey = Static<typeof EosGetPublicKey>;
 export const EosGetPublicKey = Type.Object(
@@ -1908,37 +1807,6 @@ export const EosSignedTx = Type.Object(
         signature: Type.String(),
     },
     { $id: 'EosSignedTx' },
-);
-
-export enum EthereumDefinitionType {
-    NETWORK = 0,
-    TOKEN = 1,
-}
-
-export type EnumEthereumDefinitionType = Static<typeof EnumEthereumDefinitionType>;
-export const EnumEthereumDefinitionType = Type.Enum(EthereumDefinitionType);
-
-export type EthereumNetworkInfo = Static<typeof EthereumNetworkInfo>;
-export const EthereumNetworkInfo = Type.Object(
-    {
-        chain_id: Type.Number(),
-        symbol: Type.String(),
-        slip44: Type.Number(),
-        name: Type.String(),
-    },
-    { $id: 'EthereumNetworkInfo' },
-);
-
-export type EthereumTokenInfo = Static<typeof EthereumTokenInfo>;
-export const EthereumTokenInfo = Type.Object(
-    {
-        address: Type.String(),
-        chain_id: Type.Number(),
-        symbol: Type.String(),
-        decimals: Type.Number(),
-        name: Type.String(),
-    },
-    { $id: 'EthereumTokenInfo' },
 );
 
 export type EthereumDefinitions = Static<typeof EthereumDefinitions>;
@@ -2297,6 +2165,8 @@ export enum Enum_Capability {
     Capability_Translations = 19,
     Capability_Brightness = 20,
     Capability_Haptic = 21,
+    Capability_BLE = 22,
+    Capability_NFC = 23,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -3072,6 +2942,7 @@ export type SolanaTxAdditionalInfo = Static<typeof SolanaTxAdditionalInfo>;
 export const SolanaTxAdditionalInfo = Type.Object(
     {
         token_accounts_infos: Type.Array(SolanaTxTokenAccountInfo),
+        encoded_token: Type.Optional(Type.String()),
     },
     { $id: 'SolanaTxAdditionalInfo' },
 );
@@ -3548,18 +3419,6 @@ export const TezosSignedTx = Type.Object(
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
-        BinanceGetAddress,
-        BinanceAddress,
-        BinanceGetPublicKey,
-        BinancePublicKey,
-        BinanceSignTx,
-        BinanceTxRequest,
-        BinanceCoin,
-        BinanceInputOutput,
-        BinanceTransferMsg,
-        BinanceOrderMsg,
-        BinanceCancelMsg,
-        BinanceSignedTx,
         HDNodeType,
         HDNodePathType,
         MultisigRedeemScriptType,
@@ -3664,6 +3523,9 @@ export const MessageType = Type.Object(
         ECDHSessionKey,
         DebugLinkResetDebugEvents,
         DebugLinkOptigaSetSecMax,
+        EthereumNetworkInfo,
+        EthereumTokenInfo,
+        SolanaTokenInfo,
         EosGetPublicKey,
         EosPublicKey,
         EosTxHeader,
@@ -3692,8 +3554,6 @@ export const MessageType = Type.Object(
         EosActionUnknown,
         EosTxActionAck,
         EosSignedTx,
-        EthereumNetworkInfo,
-        EthereumTokenInfo,
         EthereumDefinitions,
         EthereumSignTypedData,
         EthereumTypedDataStructRequest,
