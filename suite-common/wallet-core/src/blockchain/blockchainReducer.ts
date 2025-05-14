@@ -124,6 +124,13 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
                     ? info.url + getBlockExplorerUrlSuffix(network.explorer.address)
                     : network.explorer.address
             }`,
+            token: network.explorer.token
+                ? `${
+                      isHttp
+                          ? info.url + getBlockExplorerUrlSuffix(network.explorer.token)
+                          : network.explorer.token
+                  }`
+                : undefined,
         },
         connected: true,
         blockHash: info.blockHash,
