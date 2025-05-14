@@ -29,6 +29,7 @@ import {
     SendStackRoutes,
     SettingsStackRoutes,
     TradingStackRoutes,
+    WipeDeviceStackRoutes,
 } from './routes';
 import { NavigateParameters } from './types';
 
@@ -194,6 +195,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceStackRoutes.FirmwareInstallation]: undefined;
     [DeviceStackRoutes.ContinueOnTrezor]: undefined;
+    [DeviceStackRoutes.WipeDevice]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {
@@ -201,6 +203,10 @@ export type DevicePinProtectionStackParamList = {
     [DevicePinProtectionStackRoutes.EnterCurrentPin]: undefined;
     [DevicePinProtectionStackRoutes.EnterNewPin]: undefined;
     [DevicePinProtectionStackRoutes.ConfirmNewPin]: undefined;
+};
+
+export type WipeDeviceStackParamList = {
+    [WipeDeviceStackRoutes.WipeDevice]: undefined;
 };
 
 export type DeviceAuthenticityStackParamList = {

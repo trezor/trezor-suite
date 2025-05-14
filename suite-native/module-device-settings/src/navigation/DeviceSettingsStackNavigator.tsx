@@ -8,6 +8,7 @@ import {
 
 import { DeviceAuthenticityStackNavigator } from './DeviceAuthenticityStackNavigator';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
+import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
@@ -30,6 +31,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceStackRoutes.DeviceAuthenticity}
             component={DeviceAuthenticityStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceStackRoutes.WipeDevice}
+            component={WipeDeviceStackNavigator}
         />
         <DeviceSettingsStack.Screen
             name={DeviceStackRoutes.ConfirmFirmwareUpdate}

@@ -1,0 +1,23 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import {
+    WipeDeviceStackParamList,
+    WipeDeviceStackRoutes,
+    stackNavigationOptionsConfig,
+} from '@suite-native/navigation';
+
+import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
+
+const WipeDeviceStack = createNativeStackNavigator<WipeDeviceStackParamList>();
+
+export const WipeDeviceStackNavigator = () => (
+    <WipeDeviceStack.Navigator
+        initialRouteName={WipeDeviceStackRoutes.WipeDevice}
+        screenOptions={stackNavigationOptionsConfig}
+    >
+        <WipeDeviceStack.Screen
+            name={WipeDeviceStackRoutes.WipeDevice}
+            component={WipeDeviceScreen}
+        />
+    </WipeDeviceStack.Navigator>
+);

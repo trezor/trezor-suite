@@ -71,6 +71,7 @@ export enum DeviceStackRoutes {
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
     ContinueOnTrezor = 'ContinueOnTrezor',
+    WipeDevice = 'WipeDevice',
 }
 
 export enum DevicePinProtectionStackRoutes {
@@ -83,6 +84,10 @@ export enum DevicePinProtectionStackRoutes {
 export enum DeviceAuthenticityStackRoutes {
     AuthenticityCheck = 'AuthenticityCheck',
     AuthenticitySuccess = 'AuthenticitySuccess',
+}
+
+export enum WipeDeviceStackRoutes {
+    WipeDevice = 'WipeDevice',
 }
 
 export enum AuthorizeDeviceStackRoutes {
