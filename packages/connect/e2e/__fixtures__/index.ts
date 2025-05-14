@@ -1,8 +1,5 @@
 export { default as applyFlags } from './applyFlags';
 export { default as applySettings } from './applySettings';
-export { default as binanceSignTransaction } from './binanceSignTransaction';
-export { default as binanceGetPublicKey } from './binanceGetPublicKey';
-export { default as binanceGetAddress } from './binanceGetAddress';
 export { default as cardanoGetAddress } from './cardanoGetAddress';
 export { default as cardanoGetAddressDerivations } from './cardanoGetAddressDerivations';
 export { default as cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';

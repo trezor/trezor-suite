@@ -211,17 +211,6 @@ export const factory = <
 
     eosSignTransaction: params => call({ ...params, method: 'eosSignTransaction' }),
 
-    binanceGetAddress: params =>
-        call({
-            ...params,
-            method: 'binanceGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    binanceGetPublicKey: params => call({ ...params, method: 'binanceGetPublicKey' }),
-
-    binanceSignTransaction: params => call({ ...params, method: 'binanceSignTransaction' }),
-
     verifyMessage: params => call({ ...params, method: 'verifyMessage' }),
 
     resetDevice: params => call({ ...params, method: 'resetDevice' }),

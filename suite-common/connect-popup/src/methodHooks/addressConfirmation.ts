@@ -8,7 +8,6 @@ import { PostCallHookParams, PreCallHookParams } from './index';
 const methodsAddress = [
     'getAddress',
     'ethereumGetAddress',
-    'binanceGetAddress',
     'cardanoGetAddress',
     'rippleGetAddress',
     'solanaGetAddress',
@@ -19,7 +18,6 @@ const methodsAddress = [
 const methodsPublicKey = [
     'getPublicKey',
     'ethereumGetPublicKey',
-    'binanceGetPublicKey',
     'cardanoGetPublicKey',
     'solanaGetPublicKey',
     'tezosGetPublicKey',

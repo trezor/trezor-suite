@@ -489,36 +489,6 @@ const eosSignTransaction = [
     },
 ];
 
-const binanceGetPublicKey = [
-    {
-        ...getPublicKey[0],
-        dir: 'binance',
-        url: 'binanceGetPublicKey',
-        views: [confirmExportAddressScreen, followDevice],
-    },
-];
-
-const binanceGetAddress = [
-    {
-        ...getAddress[0],
-        dir: 'binance',
-        url: 'binanceGetAddress',
-        views: [
-            confirmExportAddressScreen,
-            getConfirmAddressOnDeviceScreen('bnb1afwh46v6nn30nkmugw5swdmsyjmlxslgjfugre'),
-        ],
-    },
-];
-
-const binanceSignTransaction = [
-    {
-        device: initializedDevice,
-        dir: 'binance',
-        url: 'binanceSignTransaction-transfer',
-        views: [confirmOutput, confirmOutput, confirmOutput, confirmOutput],
-    },
-];
-
 const stellarGetAddress = [
     {
         ...getAddress[0],
@@ -607,9 +577,6 @@ export const fixtures = [
     ...tezosSignTransaction,
     ...eosGetPublicKey,
     ...eosSignTransaction,
-    ...binanceGetPublicKey,
-    ...binanceGetAddress,
-    ...binanceSignTransaction,
     ...stellarGetAddress,
     // todo: error in params. probably we should implement @trezor/connect-stellar-plugin
     // ...stellarSignTransaction,

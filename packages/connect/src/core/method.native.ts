@@ -4,7 +4,6 @@ import { MODULES, ModuleName } from '../constants/network';
 import type { IFrameCallMessage } from '../events';
 
 const moduleMethods = {
-    binance: require('../api/binance/api'),
     cardano: require('../api/cardano/api'),
     eos: require('../api/eos/api'),
     ethereum: require('../api/ethereum/api'),

@@ -1,4 +1,3 @@
-import binance from './binance';
 import bitcoin from './bitcoin';
 import blockchain from './blockchain';
 import cardano from './cardano/index';
@@ -21,7 +20,6 @@ export default [
     ...cardano,
     ...tezos,
     ...eos,
-    ...binance,
     ...solana,
     ...other,
     ...management,

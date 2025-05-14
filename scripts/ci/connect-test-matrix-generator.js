@@ -74,11 +74,6 @@ const groups = {
         pattern: 'methods',
         includeFilter: 'tezosGetAddress,tezosGetPublicKey,tezosSignTransaction',
     },
-    binance: {
-        name: 'binance',
-        pattern: 'methods',
-        includeFilter: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
-    },
     solana: {
         name: 'solana',
         pattern: 'methods',

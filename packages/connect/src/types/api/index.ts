@@ -3,9 +3,6 @@ import { applySettings } from './applySettings';
 import { authenticateDevice } from './authenticateDevice';
 import { authorizeCoinjoin } from './authorizeCoinjoin';
 import { backupDevice } from './backupDevice';
-import { binanceGetAddress } from './binanceGetAddress';
-import { binanceGetPublicKey } from './binanceGetPublicKey';
-import { binanceSignTransaction } from './binanceSignTransaction';
 import { bleUnpair } from './bleUnpair';
 import { blockchainDisconnect } from './blockchainDisconnect';
 import { blockchainEstimateFee } from './blockchainEstimateFee';
@@ -109,15 +106,6 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/device/backupDevice/
     backupDevice: typeof backupDevice;
-
-    // https://connect.trezor.io/9/methods/binance/binanceGetAddress/
-    binanceGetAddress: typeof binanceGetAddress;
-
-    // https://connect.trezor.io/9/methods/binance/binanceGetPublicKey/
-    binanceGetPublicKey: typeof binanceGetPublicKey;
-
-    // https://connect.trezor.io/9/methods/binance/binanceSignTransaction/
-    binanceSignTransaction: typeof binanceSignTransaction;
 
     // https://connect.trezor.io/9/methods/device/bleUnpair/
     bleUnpair: typeof bleUnpair;
