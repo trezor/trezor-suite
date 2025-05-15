@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Image, Row } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
@@ -25,11 +25,14 @@ type SmallDeviceItemProps = {
 
 export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItemProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const selectedDeviceModelInternal =
-        selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const deviceLabel = useSelector(state =>
         selectDeviceLabelOrNameById(state, selectedDevice?.id),
     );
+
+    const isConnected = selectedDevice !== undefined;
+
+    const selectedDeviceModelInternal =
+        selectedDevice?.features?.internal_model || DeviceModelInternal.UNKNOWN;
 
     return (
         <Row
@@ -39,9 +42,12 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
         >
             <SmallDeviceImage alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />
 
-            <DeviceDetail label={forceAlternativeDeviceLabel ?? deviceLabel}>
-                <DeviceConnectionText icon="link" variant="primary">
-                    <Translation id="TR_CONNECTED" />
+            <DeviceDetail label={forceAlternativeDeviceLabel || deviceLabel || 'Trezor'}>
+                <DeviceConnectionText
+                    icon={isConnected ? 'link' : 'linkBreak'}
+                    variant={isConnected ? 'primary' : 'destructive'}
+                >
+                    <Translation id={isConnected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
                 </DeviceConnectionText>
             </DeviceDetail>
         </Row>
