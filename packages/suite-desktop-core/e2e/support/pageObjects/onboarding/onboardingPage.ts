@@ -38,7 +38,7 @@ export class OnboardingPage {
     readonly selectSeedConfirmButton: Locator;
     readonly continueAtYourOwnRiskButton: Locator;
 
-    isModelWithSecureElement = () => ['T2B1', 'T3T1'].includes(this.model);
+    isModelWithSecureElement = () => ['T3B1', 'T3T1'].includes(this.model);
 
     constructor(
         public page: Page,

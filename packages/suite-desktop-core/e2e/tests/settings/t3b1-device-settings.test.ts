@@ -1,15 +1,15 @@
 // TODOS:
 // - focus this test on testing what is different from T2T1: (background image, display rotation)
-// - implement these differences in suite in the first place. both suite and T2B1 will happily accept
+// - implement these differences in suite in the first place. both suite and T3B1 will happily accept
 //   request to change display rotation but it has no effect. It should be at least hidden on client.
 // https://github.com/trezor/trezor-suite/issues/6567
 import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () => {
+test.describe.serial('T3B1 - Device settings', { tag: ['@group=settings'] }, () => {
     test.use({
-        emulatorStartConf: { model: 'T2B1', wipe: true },
+        emulatorStartConf: { model: 'T3B1', wipe: true },
     });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
