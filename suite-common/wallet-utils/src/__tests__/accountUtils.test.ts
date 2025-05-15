@@ -100,10 +100,10 @@ describe('account utils', () => {
         expect(formatNetworkAmount('1', 'xrp', true)).toEqual('0.000001 XRP');
         expect(formatNetworkAmount('1', 'eth')).toEqual('0.000000000000000001');
         expect(formatNetworkAmount('1', 'btc', true)).toEqual('0.00000001 BTC');
-        expect(formatNetworkAmount('1', 'btc', true, true)).toEqual('1 sat');
+        expect(formatNetworkAmount('1', 'btc', true, true)).toEqual('1 sat BTC');
         expect(formatNetworkAmount('', 'btc')).toEqual('0');
         expect(formatNetworkAmount('', 'btc', true)).toEqual('0 BTC');
-        expect(formatNetworkAmount('', 'btc', true, true)).toEqual('0 sat');
+        expect(formatNetworkAmount('', 'btc', true, true)).toEqual('0 sat BTC');
         expect(() => formatNetworkAmount('aaa', 'eth')).toThrow();
     });
 
