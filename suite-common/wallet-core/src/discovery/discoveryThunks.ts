@@ -267,7 +267,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
         const result = await TrezorConnect.discoverAccounts({
             device,
             useEmptyPassphrase: device.useEmptyPassphrase,
-            coins: networksToDiscover.map(n => ({
+            accounts: networksToDiscover.map(n => ({
                 symbol: n,
             })),
         });
@@ -508,7 +508,7 @@ export const runDiscoveryThunk = createThunk(
                     },
                 },
                 useEmptyPassphrase: !isAddingHiddenWallet,
-                coins: discoveryAccountsPayload,
+                accounts: discoveryAccountsPayload,
             });
             console.log('startDiscoveryThunk: TrezorConnect.getAccountInfo, result: ', result);
 
