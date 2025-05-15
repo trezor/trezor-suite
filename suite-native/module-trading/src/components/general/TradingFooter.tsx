@@ -1,23 +1,24 @@
 import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { FadeIn, FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { AnimatedProps } from 'react-native-reanimated';
 
 import { AnimatedBox, Button, HStack, Image, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
 export type TradingFooterProps = {
-    isFormMountedRecently?: boolean;
+    enteringAnimation?: AnimatedProps<any>['entering'];
+    exitingAnimation?: AnimatedProps<any>['exiting'];
 };
 
-export const TradingFooter = ({ isFormMountedRecently }: TradingFooterProps) => {
+export const TradingFooter = ({ enteringAnimation, exitingAnimation }: TradingFooterProps) => {
     const openLink = useOpenLink();
 
     const imageSource = useMemo(() => require('../../../assets/InvityLogo.png'), []);
     const openLinkToInvity = () => openLink('https://invity.io');
 
     return (
-        <AnimatedBox entering={isFormMountedRecently ? FadeIn : FadeInDown} exiting={FadeOutDown}>
+        <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
             <HStack justifyContent="space-between" alignItems="center">
                 <HStack alignItems="center" spacing="sp4">
                     <Text variant="label" color="textSubdued">
