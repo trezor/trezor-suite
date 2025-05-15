@@ -1,5 +1,5 @@
 import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
+import { DeviceUniquePath, StaticSessionId, BundleProgress } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
@@ -28,9 +28,8 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
           }
         | {
               status: 'progress';
-              // todo: this typed could be probably taken from @trezor/connect
-              total: number;
-              progress: number;
+              total: BundleProgress<any>['payload']['total'];
+              progress: BundleProgress<any>['payload']['progress'];
           }
         | {
               status: 'confirm-empty-passphrase';

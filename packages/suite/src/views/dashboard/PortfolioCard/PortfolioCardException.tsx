@@ -4,6 +4,7 @@ import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     authConfirm,
     authorizeDeviceThunk,
+    // todo: restarDiscovery now does nothing.
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
 import { Discovery } from '@suite-common/wallet-types';
