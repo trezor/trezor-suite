@@ -50,7 +50,7 @@ const BuyFormMemoized = memo(
         );
 
         return (
-            <VStack spacing="sp16" testID={BUY_FORM_TEST_ID}>
+            <VStack spacing="sp16" paddingTop="sp16" testID={BUY_FORM_TEST_ID}>
                 {!isAmountInputActive && (
                     <BuyHeader isFormMountedRecently={isFormMountedRecently} />
                 )}
