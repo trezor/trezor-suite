@@ -1,6 +1,7 @@
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
+    selectDeviceByStaticSessionId,
     selectDeviceThunk,
     selectDevices,
     selectDiscovery,
@@ -24,27 +25,28 @@ type PassphraseDuplicateModalProps = {
 
 export const PassphraseDuplicateModal = ({
     discovery,
-    device,
+    device, // <- currently selected device
     isExistingWallet,
 }: PassphraseDuplicateModalProps) => {
     const { isLocked } = useDevice();
     const dispatch = useDispatch();
-    const devices = useSelector(selectDevices);
     const discoveries = useSelector(selectDiscovery);
 
     const isDeviceLocked = isLocked();
+    const devices = useSelector(selectDevices);
 
+    const duplicateDevice = devices
+        .filter(d => d.state?.staticSessionId)
+        .find(
+            d =>
+                d.state!.staticSessionId?.split(':')[0] ===
+                discovery.duplicateDeviceStaticSessionId.split(':')[0],
+        );
     const switchToDuplicateWallet = () => {
+        if (duplicateDevice) {
+            dispatch(selectDeviceThunk({ device: duplicateDevice }));
+        }
         dispatch(cancelDiscoveryThunk(device));
-
-        devices
-            .filter(
-                candidate =>
-                    candidate.state?.staticSessionId === discovery.duplicateDeviceStaticSessionId,
-            )
-            .forEach(device => {
-                dispatch(selectDeviceThunk({ device }));
-            });
     };
 
     const onTryDifferentPassphrase = () => {
