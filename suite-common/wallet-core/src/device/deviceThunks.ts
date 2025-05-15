@@ -646,12 +646,23 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     ({ type, device }, { dispatch, getState, extra }) => {
         const settings = extra.selectors.selectSuiteSettings(getState());
 
+        const isDuringFirmwareInstallation =
+            extra.selectors.selectFirmwareInstallation(getState()).status !== 'initial';
+
         switch (type) {
             case DEVICE.CONNECT:
-                dispatch(deviceActions.connectDevice({ device, settings }));
+                dispatch(
+                    deviceActions.connectDevice({ device, settings, isDuringFirmwareInstallation }),
+                );
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
-                dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
+                dispatch(
+                    deviceActions.connectUnacquiredDevice({
+                        device,
+                        settings,
+                        isDuringFirmwareInstallation,
+                    }),
+                );
                 break;
             default:
                 exhaustive(type);

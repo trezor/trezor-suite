@@ -10,7 +10,11 @@ export type ConnectDeviceSettings = {
     defaultWalletLoading: WalletType;
 };
 
-export type DeviceConnectActionPayload = { device: Device; settings: ConnectDeviceSettings };
+export type DeviceConnectActionPayload = {
+    device: Device;
+    settings: ConnectDeviceSettings;
+    isDuringFirmwareInstallation: boolean;
+};
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
     payload,

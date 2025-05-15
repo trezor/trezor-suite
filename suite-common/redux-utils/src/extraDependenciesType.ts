@@ -4,6 +4,7 @@ import {
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
+import { FirmwareUpdateState } from '@suite-common/firmware';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
@@ -88,6 +89,7 @@ export type ExtraDependencies = {
         selectSuiteSettings: SuiteCompatibleSelector<{
             defaultWalletLoading: WalletType;
         }>;
+        selectFirmwareInstallation: SuiteCompatibleSelector<FirmwareUpdateState>;
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;

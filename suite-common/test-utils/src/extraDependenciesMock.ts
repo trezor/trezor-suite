@@ -106,6 +106,11 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectSuiteSettings: mockSelector('selectSuiteSettings', {
             defaultWalletLoading: 'standard',
         }),
+        selectFirmwareInstallation: mockSelector('selectFirmwareInstallation', {
+            status: 'initial',
+            error: undefined,
+            useDevkit: false,
+        }),
         selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: mockSelector('selectTradingEnvironment', 'localhost'),
     },
