@@ -31,6 +31,7 @@ type Request = AdditionalParams & {
     account: AccountTypeItem;
     derivation?: CardanoDerivation;
     coinInfo: CoinInfo;
+    offset: number;
 };
 
 type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' | 'tada' }>;
@@ -42,6 +43,9 @@ const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
 
 const isCardanoRequest = (request: Request): request is CardanoRequest =>
     isCardano(request.account);
+
+const isEvmLedger = (account: AccountTypeItem, coinInfo: CoinInfo) =>
+    coinInfo.type === 'ethereum' && account.type === 'ledger';
 
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
 
@@ -87,6 +91,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                     coinInfo,
                     account,
                     ...rest,
+                    offset: isEvmLedger(account, coinInfo) ? 1 : 0,
                     derivation: isCardano(account) ? CARDANO_DERIVATIONS[account.type] : undefined,
                 }),
             );
@@ -183,17 +188,17 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     }
 
     private async discoverAccount(request: Request) {
-        const { details, identity, pageSize, coinInfo, derivation } = request;
+        const { details, identity, pageSize, coinInfo, derivation, offset } = request;
         const { path, ...accountKey } = request.account;
         const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
 
         let index = 0;
-        let descPromise = this.getDescriptor(coinInfo, path, derivation, index);
+        let descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index);
 
         while (true) {
             const { descriptor, ...descRest } = await descPromise;
-            descPromise = this.getDescriptor(coinInfo, path, derivation, index + 1);
+            descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index + 1);
 
             const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
 
