@@ -4,6 +4,7 @@ name: "[Test] Release Suite Regression test publisher"
 
 on:
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}

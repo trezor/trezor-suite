@@ -1,6 +1,6 @@
 # GitHub Test Reporter
 
-The GitHub Test Reporter is a unified test documentation and reporting framework designed to create a single source of truth for both automated and manual tests in our repository. This framework uses structured test annotations to document tests directly in the codebase and automatically generates GitHub project items during release builds for efficient QA workflows.
+The GitHub Test Reporter is a unified test documentation and reporting framework designed to create a single source of truth for both automated and manual tests in our repository. This framework uses structured test annotations to document tests directly in the codebase and automatically generates GitHub project items during release for efficient QA regression testing and single overview of both manual and automated results of release testing.
 
 ## Purpose
 
@@ -8,8 +8,14 @@ The primary goals of this reporter are to:
 
 1. **Unify Test Documentation** - Keep all test cases (both automated and manual) in one place within the repository
 2. **Streamline QA Regression** - Populate a GitHub project with all tests as draft issues for release regression testing
+3. **One overview of Release testing** - Github project contains results of both manual and regression release testing
 
 When executed during release builds, the reporter adds new draft issues to a GitHub project. These issues contain all relevant test metadata and results, providing QA teams with a comprehensive dashboard for regression testing and quality assurance.
+
+## How to run
+
+Reporter no longer has automatic trigger. It needs to be triggered manually by running its orchestration workflow **[Test] Release Suite Report orchestration** which will run 3 relevant workflows (Web, Desktop and Manual). All automated tests will be run on the release again, their results reported to GitHub project and issues for manual regression will be generated as well.
+You can also run the specific workflow one by one.
 
 ## Overview
 
@@ -18,8 +24,6 @@ The framework consists of three main components:
 1. **Test Annotations** - Define metadata about tests
 2. **TestReportProvider** - Extracts and formats test metadata
 3. **GitHub Reporter** - Populates GitHub project with test results as draft issues
-
-The reporter automatically creates draft issues in a GitHub project board when tests run, complete with test metadata, status, and other customizable fields.
 
 ## Annotation Types
 
@@ -104,7 +108,7 @@ The reporter can be run from a local environment for troubleshooting and develop
 
 - `yarn test:e2e:web --reporter=./e2e/support/reporters/gitHubReporter.ts`
 - `yarn test:e2e:desktop --reporter=./e2e/support/reporters/gitHubReporter.ts`
-- `yarn test:e2e:manual`
+- `yarn github:report:manual`
 
 ## Implementation Notes
 
@@ -155,5 +159,8 @@ The reporter is integrated into release branch CI workflows:
 - `test-suite-web-e2e-release.yml` for Suite Web tests
 - `test-suite-desktop-e2e-release.yml` for Suite Desktop tests
 - `test-suite-manual-release.yml` for manual tests
+- `test-suite-release-e2e-report-orchestration` servers to run all relevant workflows
 
 Each workflow passes the `RELEASE_BUILD` and `GITHUB_TOKEN` environment variables to enable test reporting.
+On the Web and Desktop workflows, reporter is enabled only when workflow is run manually. Otherwise only test are run. That way we have full control on the generation of issues in GitHub. We had a problem of duplicate and unwanted triggers when it was based on push to release branch.
+Implemented by this condition: `run-reporter: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' }}`

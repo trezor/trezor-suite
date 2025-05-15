@@ -24,19 +24,19 @@ function getTimeout(): number {
 }
 
 function getReporter(): PlaywrightTestConfig['reporter'] {
+    // Release - Manual regression: Generate manual suite in GitHub, without currents involvement
+    if (process.env.RUN_REPORTER === 'manual') {
+        return [['./support/reporters/gitHubReporter.ts']];
+    }
+
     // Local run
     if (!process.env.GITHUB_ACTION) {
         return [['list'], ['html', { open: 'never' }]];
     }
 
-    // Release - Manual regression: Generate manual suite in GitHub, without currents involvement
-    if (process.env.RUN_REPORTER === 'manual') {
-        return [['./e2e/support/reporters/gitHubReporter.ts']];
-    }
-
     // Release - Automated CI run: Report results both in Currents and GitHub
     if (process.env.RUN_REPORTER === 'true') {
-        return [['@currents/playwright'], ['./e2e/support/reporters/gitHubReporter.ts']];
+        return [['@currents/playwright'], ['./support/reporters/gitHubReporter.ts']];
     }
 
     // Default run on CI: Report results only in Currents

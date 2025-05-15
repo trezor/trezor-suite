@@ -1,0 +1,16 @@
+name: "[Test] Release Suite Report orchestration"
+# Orchestration workflow that triggers relevant release workflows to create full report in GitHub
+# Desktop, Web and Manual regression suites are run in parallel with reporter enabled
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-test-suite-manual-release:
+    uses: ./.github/workflows/test-suite-manual-release.yml
+
+  call-test-suite-desktop-e2e-release:
+    uses: ./.github/workflows/test-suite-desktop-e2e-release.yml
+
+  call-test-suite-web-e2e-release:
+    uses: ./.github/workflows/test-suite-web-e2e-release.yml

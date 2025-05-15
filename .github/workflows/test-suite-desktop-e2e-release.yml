@@ -12,6 +12,7 @@ on:
     branches:
       - release/2*
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -83,4 +84,4 @@ jobs:
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
           github-token: ${{ steps.trezor-bot-token.outputs.token }}
           release-build: ${{ env.release_build }}
-          run-reporter: ${{ github.event_name == 'workflow_dispatch' }}
+          run-reporter: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' }}
