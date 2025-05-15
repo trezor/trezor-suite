@@ -9,6 +9,7 @@ import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import type { CoinInfo } from '../types';
 import { validateParams } from './common/paramsValidator';
+import type { AccountDescriptor } from '../device/DeviceCommands';
 import {
     ACCOUNT_TYPES,
     AccountTypeItem,
@@ -122,7 +123,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     }
 
     private readonly descriptorLock = getSynchronize();
-
+    private readonly descriptorCache: Record<string, AccountDescriptor | undefined> = {};
     private async getDescriptor(
         coinInfo: CoinInfo,
         bip43PathTemplate: string,
@@ -131,12 +132,19 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     ) {
         const path = bip43PathTemplate.replace('i', String(index)); // TODO use substituteBip43Path from wallet-utils somehow
 
-        const { address_n: _, ...descriptorRest } = await this.descriptorLock(() => {
-            const address_n = validatePath(path, 3);
+        const { address_n: _, ...descriptorRest } = await this.descriptorLock(async () => {
+            const key = `${path}-${derivationType}`;
+            if (!this.descriptorCache[key]) {
+                // This works because descriptors returned from getAccountDescriptor depend only
+                // on derivation path (plus type in case of Cardano). When there's a case where
+                // we expect two different descriptors from the same path, this must be reworked.
+                const address_n = validatePath(path, 3);
+                this.descriptorCache[key] = await this.device
+                    .getCommands()
+                    .getAccountDescriptor(coinInfo, address_n, derivationType);
+            }
 
-            return this.device
-                .getCommands()
-                .getAccountDescriptor(coinInfo, address_n, derivationType);
+            return this.descriptorCache[key];
         });
 
         return { path, ...descriptorRest };
