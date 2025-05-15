@@ -164,7 +164,7 @@ export const selectAccountsToBeForgotten = (
 };
 
 export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDeviceDiscovery(state);
+    const discovery = selectDiscoveryForSelectedDevice(state);
 
     return isDiscoveryInProgress(discovery);
 };

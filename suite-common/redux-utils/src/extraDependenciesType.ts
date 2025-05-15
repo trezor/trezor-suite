@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,

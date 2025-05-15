@@ -37,7 +37,7 @@ import { selectDeviceThunk } from '../device/deviceThunks';
 type ProgressEvent = BundleProgress<DiscoveryAccountInfo>['payload'];
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
-    if (!device || !device.state?.staticSessionId) {
+    if (!device?.state?.staticSessionId) {
         throw new Error('assertion error: device is not authorized');
     }
 }
