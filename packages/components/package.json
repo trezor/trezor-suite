@@ -44,7 +44,7 @@
         "react-markdown": "^10.1.0",
         "react-select": "^5.10.1",
         "react-svg": "16.3.0",
-        "react-use": "^17.5.0",
+        "react-use": "^17.6.0",
         "styled-components": "^6.1.17"
     },
     "devDependencies": {

@@ -55,7 +55,7 @@
         "@types/webpack-bundle-analyzer": "^4.7.0",
         "@types/webpack-plugin-serve": "^1.4.6",
         "@vitejs/plugin-react": "^4.2.1",
-        "react-refresh": "^0.14.0",
+        "react-refresh": "^0.17.0",
         "vite": "^6.3.3",
         "vite-plugin-wasm": "^3.4.1"
     }

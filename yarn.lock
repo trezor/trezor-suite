@@ -11565,7 +11565,7 @@ __metadata:
     react-markdown: "npm:^10.1.0"
     react-select: "npm:^5.10.1"
     react-svg: "npm:16.3.0"
-    react-use: "npm:^17.5.0"
+    react-use: "npm:^17.6.0"
     storybook: "npm:^8.6.12"
     styled-components: "npm:^6.1.17"
     stylelint: "npm:^16.14.1"
@@ -12237,7 +12237,7 @@ __metadata:
     css-minimizer-webpack-plugin: "npm:^7.0.2"
     html-webpack-plugin: "npm:^5.6.3"
     raw-loader: "npm:^4.0.2"
-    react-refresh: "npm:^0.14.0"
+    react-refresh: "npm:^0.17.0"
     stream-browserify: "npm:^3.0.0"
     style-loader: "npm:^4.0.0"
     terser-webpack-plugin: "npm:^5.3.14"
@@ -12571,7 +12571,7 @@ __metadata:
     react-select: "npm:^5.10.1"
     react-svg: "npm:16.3.0"
     react-toastify: "npm:^10.0.4"
-    react-use: "npm:^17.5.0"
+    react-use: "npm:^17.6.0"
     recharts: "npm:^2.15.3"
     redux: "npm:^5.0.1"
     redux-devtools-extension: "npm:^2.13.9"
@@ -23111,7 +23111,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-loops@npm:^1.0.0, fast-loops@npm:^1.0.1, fast-loops@npm:^1.1.3":
+"fast-loops@npm:^1.0.0, fast-loops@npm:^1.0.1":
   version: 1.1.4
   resolution: "fast-loops@npm:1.1.4"
   checksum: 10/52516fc8bb95a60e512271e731c4dc7b7672af90c5e54681004ee2f509d6ccc8e62d5222e731377dafd48a31218f915fd6d0d02efe602b1b822e1ff93994d2a6
@@ -25821,13 +25821,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inline-style-prefixer@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "inline-style-prefixer@npm:7.0.0"
+"inline-style-prefixer@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "inline-style-prefixer@npm:7.0.1"
   dependencies:
     css-in-js-utils: "npm:^3.1.0"
-    fast-loops: "npm:^1.1.3"
-  checksum: 10/38486ce52ffa81649d845ffc4dda421ac24ea02709b8608d61f82cf186bc57749a73e562c2b7236c3946705a0c6e9d5e3872c59280972df73b0a1161fbf51eba
+  checksum: 10/a430c962693f32a36bcec0124c9798bcf3725bb90468d493108c0242446a9cc92ff1967bdf99b6ce5331e7a9b75e6836bc9ba1b3d4756876b8ef48036acb2509
   languageName: node
   linkType: hard
 
@@ -31538,22 +31537,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nano-css@npm:^5.6.1":
-  version: 5.6.1
-  resolution: "nano-css@npm:5.6.1"
+"nano-css@npm:^5.6.2":
+  version: 5.6.2
+  resolution: "nano-css@npm:5.6.2"
   dependencies:
     "@jridgewell/sourcemap-codec": "npm:^1.4.15"
     css-tree: "npm:^1.1.2"
     csstype: "npm:^3.1.2"
     fastest-stable-stringify: "npm:^2.0.2"
-    inline-style-prefixer: "npm:^7.0.0"
+    inline-style-prefixer: "npm:^7.0.1"
     rtl-css-js: "npm:^1.16.1"
     stacktrace-js: "npm:^2.0.2"
     stylis: "npm:^4.3.0"
   peerDependencies:
     react: "*"
     react-dom: "*"
-  checksum: 10/d4e5e3c9fdfc09f494852c75ae5320373dfa84e24f82b7d6ff45928205763ec7780446e3e10af98398409bd4bf1acebc1f987570592b2bc68b9c0997ad089f73
+  checksum: 10/6ed9f36957b19fc2dcf1644a853030cce70775bec3fed596cab9156063d522d5cb52cb1479117e4390acbe45b69321c9eb33915d96414aabaf09bff40497bb4a
   languageName: node
   linkType: hard
 
@@ -35393,6 +35392,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-refresh@npm:^0.17.0":
+  version: 0.17.0
+  resolution: "react-refresh@npm:0.17.0"
+  checksum: 10/5e94f07d43bb1cfdc9b0c6e0c8c73e754005489950dcff1edb53aa8451d1d69a47b740b195c7c80fb4eb511c56a3585dc55eddd83f0097fb5e015116a1460467
+  languageName: node
+  linkType: hard
+
 "react-router-dom@npm:^5.2.0":
   version: 5.3.4
   resolution: "react-router-dom@npm:5.3.4"
@@ -35554,9 +35560,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use@npm:^17.5.0":
-  version: 17.5.0
-  resolution: "react-use@npm:17.5.0"
+"react-use@npm:^17.6.0":
+  version: 17.6.0
+  resolution: "react-use@npm:17.6.0"
   dependencies:
     "@types/js-cookie": "npm:^2.2.6"
     "@xobotyi/scrollbar-width": "npm:^1.9.5"
@@ -35564,7 +35570,7 @@ __metadata:
     fast-deep-equal: "npm:^3.1.3"
     fast-shallow-equal: "npm:^1.0.0"
     js-cookie: "npm:^2.2.1"
-    nano-css: "npm:^5.6.1"
+    nano-css: "npm:^5.6.2"
     react-universal-interface: "npm:^0.6.2"
     resize-observer-polyfill: "npm:^1.5.1"
     screenfull: "npm:^5.1.0"
@@ -35575,7 +35581,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-dom: "*"
-  checksum: 10/5d81fe0902303d3ed7810cdd56c6cae12b08124a3d4fcbfa3924327105b81447b039ea9d6aff20aac3c13999f949000870a7a2fa29fe20ed844ac26606462fa0
+  checksum: 10/a817b74e82b481a39d3539bfe8d3b535c08d59d44a75ea91f65e56a7ccaedb0de185159e50b44ea4a635dda0c1c7159f07530e81a1d64b57130e0a715a107795
   languageName: node
   linkType: hard
 
