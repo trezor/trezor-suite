@@ -48,7 +48,7 @@
         "styled-components": "^6.1.17"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.26.3",
+        "@babel/preset-react": "^7.27.1",
         "@storybook/addon-actions": "^8.6.12",
         "@storybook/addon-controls": "^8.6.12",
         "@storybook/addon-links": "^8.6.12",

@@ -1,7 +1,6 @@
 @babel/cli
 @babel/core
 @babel/node
-@babel/plugin-proposal-class-properties
 @babel/plugin-proposal-decorators
 @babel/plugin-transform-runtime
 @babel/preset-env

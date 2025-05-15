@@ -134,7 +134,7 @@
         "redux-persist": "6.0.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.26.10",
+        "@babel/core": "^7.27.1",
         "@babel/plugin-transform-export-namespace-from": "^7.25.9",
         "@config-plugins/detox": "^8.0.0",
         "@currents/cmd": "^1.6.9",

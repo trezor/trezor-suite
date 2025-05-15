@@ -43,7 +43,7 @@
         "@trezor/connect-web": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.27.0",
+        "@babel/preset-typescript": "^7.27.1",
         "@trezor/eslint": "workspace:*",
         "@types/chrome": "^0.0.299",
         "babel-loader": "^10.0.0",
