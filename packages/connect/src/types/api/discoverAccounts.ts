@@ -71,11 +71,15 @@ export type AdditionalParams = Pick<
     identity?: string;
 };
 
-type TypedAccountParam = AccountTypeKey & AdditionalParams;
+type TypedAccountParam = AccountTypeKey &
+    AdditionalParams & {
+        skip?: number;
+    };
 
 type UntypedAccountParam = AdditionalParams & {
     symbol: AccountTypeItem['symbol'];
     type?: undefined;
+    skip?: undefined;
 };
 
 type DiscoverAccountsParams = {

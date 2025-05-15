@@ -32,6 +32,7 @@ type Request = AdditionalParams & {
     derivation?: CardanoDerivation;
     coinInfo: CoinInfo;
     offset: number;
+    skip: number;
 };
 
 type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' | 'tada' }>;
@@ -71,6 +72,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 { name: 'identity', type: 'string' },
                 { name: 'details', type: 'string' },
                 { name: 'pageSize', type: 'number' },
+                { name: 'skip', type: 'number' },
             ]);
 
             const { symbol, type, ...rest } = item;
@@ -89,6 +91,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                     pageSize: TXS_PER_PAGE,
                     details: DETAILS,
                     coinInfo,
+                    skip: 0,
                     account,
                     ...rest,
                     offset: isEvmLedger(account, coinInfo) ? 1 : 0,
@@ -125,7 +128,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(cardanoAccounts);
         const accounts = [...otherAccounts, ...filteredCardanoAccounts];
 
-        accounts.forEach(({ account }) => this.updateProgress(account, 0));
+        accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
 
         const counts = await Promise.all(accounts.map(account => this.discoverAccount(account)));
         const nonempty = counts.reduce((sum, n) => sum + n, 0);
@@ -188,12 +191,12 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     }
 
     private async discoverAccount(request: Request) {
-        const { details, identity, pageSize, coinInfo, derivation, offset } = request;
+        const { details, identity, pageSize, coinInfo, derivation, offset, skip } = request;
         const { path, ...accountKey } = request.account;
         const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
 
-        let index = 0;
+        let index = skip;
         let descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index);
 
         while (true) {

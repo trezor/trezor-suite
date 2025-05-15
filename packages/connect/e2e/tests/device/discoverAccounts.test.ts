@@ -69,7 +69,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
                 { symbol: 'btc', type: 'segwit' },
                 { symbol: 'btc', type: 'taproot' },
                 { symbol: 'eth' },
-                { symbol: 'etc', type: 'normal' },
+                { symbol: 'etc', type: 'normal', skip: 4 },
                 { symbol: 'ltc' },
                 { symbol: 'ada' },
             ],
