@@ -1,12 +1,15 @@
 import { useEffect, useMemo } from 'react';
 
+import {
+    hashCheckErrorScenarios,
+    revisionCheckErrorScenarios,
+} from '@suite-common/firmware-authenticity';
 import { FirmwareCheckType } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/constants/suite/firmware';
 import { useDevice } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 

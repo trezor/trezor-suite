@@ -9567,7 +9567,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity":
+"@suite-common/firmware-authenticity@workspace:*, @suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity":
   version: 0.0.0-use.local
   resolution: "@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity"
   dependencies:
@@ -12887,6 +12887,7 @@ __metadata:
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
+    "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/icons": "workspace:*"

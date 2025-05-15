@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
+import {
+    RevisionCheckErrorWithNotification,
+    isRevisionCheckErrorWithNotification,
+} from '@suite-common/firmware-authenticity';
 import { TranslationKey } from '@suite-common/intl-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import {
-    RevisionCheckErrorWithNotification,
-    isRevisionCheckErrorWithNotification,
-} from 'src/constants/suite/firmware';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
