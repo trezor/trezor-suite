@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { getSynchronize } from '@trezor/utils';
+import { arrayPartition, getSynchronize } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
@@ -35,8 +35,13 @@ type Request = AdditionalParams & {
 
 type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' | 'tada' }>;
 
+type CardanoRequest = Request & { account: CardanoTypeItem };
+
 const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
     account.symbol === 'ada' || account.symbol === 'tada';
+
+const isCardanoRequest = (request: Request): request is CardanoRequest =>
+    isCardano(request.account);
 
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
 
@@ -111,7 +116,9 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     }
 
     async run() {
-        const accounts = this.params;
+        const [cardanoAccounts, otherAccounts] = arrayPartition(this.params, isCardanoRequest);
+        const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(cardanoAccounts);
+        const accounts = [...otherAccounts, ...filteredCardanoAccounts];
 
         accounts.forEach(({ account }) => this.updateProgress(account, 0));
 
@@ -120,6 +127,31 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         const empty = counts.length;
 
         return { empty, nonempty };
+    }
+
+    /** This should have zero overhead thanks to descriptor caching */
+    private async filterCardanoDerivations(accounts: CardanoRequest[]) {
+        const tryGetDescriptor = (coin?: CardanoRequest) =>
+            coin && this.getDescriptor(coin.coinInfo, coin.account.path, coin.derivation, 0);
+
+        const normal = await tryGetDescriptor(accounts.find(a => a.account.type === 'normal'));
+        const ledger = await tryGetDescriptor(accounts.find(a => a.account.type === 'ledger'));
+        const legacy = await tryGetDescriptor(accounts.find(a => a.account.type === 'legacy'));
+
+        // legacy omitted if normal or ledger is present and has the same descriptor
+        const omitLegacy = legacy && legacy.descriptor === (normal ?? ledger)?.descriptor;
+        // ledger omitted if normal is present and has the same descriptor
+        const omitLedger = ledger && ledger.descriptor === normal?.descriptor;
+
+        return arrayPartition(
+            accounts.map(item =>
+                (item.account.type === 'legacy' && omitLegacy) ||
+                (item.account.type === 'ledger' && omitLedger)
+                    ? { ...item, error: 'ignored cardano derivation' as const }
+                    : item,
+            ),
+            item => 'error' in item,
+        );
     }
 
     private readonly descriptorLock = getSynchronize();
