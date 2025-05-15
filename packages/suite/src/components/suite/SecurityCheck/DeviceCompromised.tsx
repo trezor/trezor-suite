@@ -1,3 +1,4 @@
+import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
 import { TranslationKey } from '@suite-common/intl-types';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
@@ -17,7 +18,6 @@ import {
     EntropyCheckSupportButton,
     FwAuthencityChecksCtas,
 } from './deviceCompromisedCtas';
-import { SkippedHashCheckError } from '../../../constants/suite/firmware';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const hashCheckSubtitleMap: Record<

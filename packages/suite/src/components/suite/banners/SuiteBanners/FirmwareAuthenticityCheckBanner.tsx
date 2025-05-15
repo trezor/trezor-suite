@@ -1,3 +1,7 @@
+import {
+    SkippedHashCheckError,
+    SkippedRevisionCheckError,
+} from '@suite-common/firmware-authenticity';
 import { TranslationKey } from '@suite-common/intl-types';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Banner, Row } from '@trezor/components';
@@ -6,7 +10,6 @@ import { spacings } from '@trezor/theme';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
-import { SkippedHashCheckError, SkippedRevisionCheckError } from 'src/constants/suite/firmware';
 import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,

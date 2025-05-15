@@ -1,6 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
+import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
@@ -28,7 +29,6 @@ import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import * as suiteActions from '../actions/suite/suiteActions';
-import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '../constants/suite/firmware';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 import { AppState, TrezorDevice } from '../types/suite';

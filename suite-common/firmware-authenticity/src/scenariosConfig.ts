@@ -4,12 +4,10 @@ import {
     FirmwareRevisionCheckError,
 } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { FilterPropertiesByType } from '@trezor/type-utils';
+import type { FilterPropertiesByType } from '@trezor/type-utils';
 
 /*
- * Various scenarios how firmware authenticity check errors are handled in Suite
- * see suite-native/device/src/config/firmware.ts for Suite Lite
- * TODO deduplicate them by creating a new suite-common package
+ * Various scenarios how firmware authenticity check errors are handled in Suite and Suite Lite
  */
 
 type BehaviorBaseType = {
@@ -44,6 +42,7 @@ export const revisionCheckErrorScenarios = {
         shouldNotify: false,
         isConclusive: true,
     },
+    // Note that in native, a banner is displayed, but with special handling, see useIsOfflineBannerVisible
     'cannot-perform-check-offline': {
         type: 'softWarning',
         shouldReport: false,

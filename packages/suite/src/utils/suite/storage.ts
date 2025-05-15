@@ -1,7 +1,10 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import {
+    hashCheckErrorScenarios,
+    revisionCheckErrorScenarios,
+} from '@suite-common/firmware-authenticity';
 import { DeviceWithEmptyPath } from '@suite-common/suite-types';
 
-import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/constants/suite/firmware';
 import { AcquiredDevice } from 'src/types/suite';
 import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
 

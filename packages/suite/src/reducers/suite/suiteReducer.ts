@@ -1,5 +1,11 @@
 import { produce } from 'immer';
 
+import {
+    hashCheckErrorScenarios,
+    isSkippedHashCheckError,
+    isSkippedRevisionCheckError,
+    revisionCheckErrorScenarios,
+} from '@suite-common/firmware-authenticity';
 import type { CountryCode } from '@suite-common/geolocation';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { Locale } from '@suite-common/suite-types';
@@ -19,12 +25,6 @@ import { versionUtils } from '@trezor/utils';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import {
-    hashCheckErrorScenarios,
-    isSkippedHashCheckError,
-    isSkippedRevisionCheckError,
-    revisionCheckErrorScenarios,
-} from 'src/constants/suite/firmware';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Action, AppState, TorBootstrap, TorStatus } from 'src/types/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
