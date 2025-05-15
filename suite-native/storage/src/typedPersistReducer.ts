@@ -11,6 +11,7 @@ export const preparePersistReducer = async <TReducerInitialState>({
     key,
     version,
     migrations,
+    initialMigration,
     transforms,
     mergeLevel = 1,
 }: {
@@ -19,14 +20,23 @@ export const preparePersistReducer = async <TReducerInitialState>({
     key: string;
     version: number;
     migrations?: { [key: string]: (state: any) => any };
+    initialMigration?: () => any;
     transforms?: Array<Transform<any, any>>;
     mergeLevel?: 1 | 2;
 }) => {
-    const migrate = createMigrate(migrations ?? {}, { debug: false });
+    const storage = await initMmkvStorage();
+    const defaultMigrate = createMigrate(migrations ?? {}, { debug: false });
+    const migrate = (state: any, currentVersion: number) => {
+        if (!state && initialMigration) {
+            return initialMigration();
+        }
+
+        return defaultMigrate(state, currentVersion);
+    };
 
     const persistConfig = {
         key,
-        storage: await initMmkvStorage(),
+        storage,
         whitelist: persistedKeys as string[],
         version,
         migrate,

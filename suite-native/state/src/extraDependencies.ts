@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import {
     selectDeviceDiscovery,
     selectDevices,

@@ -17,6 +17,20 @@ export const walletStopPersistTransform = createTransform<any, undefined>(
     },
 );
 
+export const discoveryPersistWhitelist = [
+    'areTestnetsEnabled',
+    'isCoinEnablingInitFinished',
+    'enabledDiscoveryNetworkSymbols',
+];
+
+export const discoveryStopPersistTransform = createTransform<any, undefined>(
+    () => undefined,
+    undefined,
+    {
+        whitelist: discoveryPersistWhitelist,
+    },
+);
+
 type OutboundState = {
     accounts: Readonly<AccountsState>;
     transactions: TransactionsState;

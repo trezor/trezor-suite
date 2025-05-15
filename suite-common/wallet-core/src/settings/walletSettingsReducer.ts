@@ -1,7 +1,8 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { createReducerWithExtraDeps, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbol, getNetwork, networkSymbolCollection } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
+import { isNative } from '@trezor/env-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
@@ -17,7 +18,8 @@ export type WalletSettingsRootState = {
 const initialState: State = {
     localCurrency: 'usd',
     discreetMode: false,
-    enabledNetworks: ['btc'],
+    // Suite Lite did not have BTC enabled by default
+    enabledNetworks: isNative() ? [] : ['btc'],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
 };
@@ -70,9 +72,7 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
 );
 
 export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
-    state.wallet.settings.enabledNetworks;
-export const selectTokenDefinitionsEnabledNetworks = (state: WalletSettingsRootState) =>
-    state.wallet.settings.enabledNetworks;
+    returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
 export const selectLocalCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
 export const selectIsDiscreteModeActive = (state: WalletSettingsRootState) =>

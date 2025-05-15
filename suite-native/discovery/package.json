@@ -25,7 +25,6 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
-        "@suite-native/tokens": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",

@@ -3,7 +3,6 @@ import { decode, verify } from 'jws';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { selectTokenDefinitionsEnabledNetworks } from '@suite-common/wallet-core';
 import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 import { TimerId } from '@trezor/type-utils';
 
@@ -83,8 +82,8 @@ export const getTokenDefinitionThunk = createThunk(
 
 export const initTokenDefinitionsThunk = createThunk(
     `${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`,
-    (_, { getState, dispatch }) => {
-        const enabledNetworks = selectTokenDefinitionsEnabledNetworks(getState());
+    (_, { getState, dispatch, extra }) => {
+        const enabledNetworks = extra.selectors.selectTokenDefinitionsEnabledNetworks(getState());
 
         const promises = enabledNetworks
             .map(symbol => {

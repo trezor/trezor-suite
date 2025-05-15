@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { getStoredState } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
@@ -19,16 +20,14 @@ import {
     prepareFiatRatesReducer,
     prepareStakeReducer,
     prepareTransactionsReducer,
+    prepareWalletSettingsReducer,
+    walletSettingsPersistedWhitelist,
 } from '@suite-common/wallet-core';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
-import {
-    DiscoveryConfigState,
-    discoveryConfigPersistWhitelist,
-    discoveryConfigReducer,
-} from '@suite-native/discovery';
+import { discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
@@ -38,6 +37,8 @@ import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/s
 import {
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
+    discoveryStopPersistTransform,
+    initMmkvStorage,
     migrateAccountBnbToBsc,
     migrateAccountLabel,
     migrateAccountsDeprecateNetworks,
@@ -69,15 +70,30 @@ const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
         key: 'appSettings',
-        version: 2,
+        version: 3,
         migrations: {
             2: (oldState: any) => ({ ...oldState, fiatCurrencyCode: oldState.fiatCurrency.label }),
+            3: async (oldState: any) => {
+                const discoveryConfig = (await getStoredState({
+                    key: 'discoveryConfig',
+                    storage: await initMmkvStorage(),
+                })) as any;
+                if (discoveryConfig)
+                    return {
+                        ...oldState,
+                        areTestnetsEnabled: discoveryConfig.areTestnetsEnabled,
+                        isCoinEnablingInitFinished: discoveryConfig.isCoinEnablingInitFinished,
+                    };
+
+                return oldState;
+            },
         },
     });
 
@@ -86,6 +102,29 @@ export const prepareRootReducers = async () => {
         persistedKeys: ['favouriteAssets', 'trades'],
         key: 'trading',
         version: 1,
+    });
+
+    const walletSettingsPersistedReducer = await preparePersistReducer({
+        reducer: walletSettingsReducer,
+        persistedKeys: walletSettingsPersistedWhitelist,
+        key: 'walletSettings',
+        version: 1,
+        initialMigration: async () => {
+            const appSettings = (await getStoredState({
+                key: 'appSettings',
+                storage: await initMmkvStorage(),
+            })) as any;
+            const discoveryConfig = (await getStoredState({
+                key: 'discoveryConfig',
+                storage: await initMmkvStorage(),
+            })) as any;
+            if (appSettings && discoveryConfig)
+                return {
+                    localCurrency: appSettings.fiatCurrencyCode,
+                    enabledNetworks: discoveryConfig.enabledDiscoveryNetworkSymbols,
+                    bitcoinAmountUnit: appSettings.bitcoinUnits,
+                };
+        },
     });
 
     const walletReducers = combineReducers({
@@ -98,6 +137,7 @@ export const prepareRootReducers = async () => {
         fees: feesReducer,
         stake: stakeReducer,
         tradingNew: tradingPersistedReducer,
+        settings: walletSettingsPersistedReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({
@@ -161,11 +201,11 @@ export const prepareRootReducers = async () => {
 
     const discoveryConfigPersistedReducer = await preparePersistReducer({
         reducer: discoveryConfigReducer,
-        persistedKeys: discoveryConfigPersistWhitelist,
+        persistedKeys: [],
         key: 'discoveryConfig',
         version: 3,
         migrations: {
-            2: (oldState: DiscoveryConfigState) => {
+            2: (oldState: any) => {
                 if (!oldState.enabledDiscoveryNetworkSymbols) return oldState;
 
                 const { enabledDiscoveryNetworkSymbols } = oldState;
@@ -179,7 +219,7 @@ export const prepareRootReducers = async () => {
 
                 return migratedState;
             },
-            3: (oldState: DiscoveryConfigState) => {
+            3: (oldState: any) => {
                 if (!oldState.enabledDiscoveryNetworkSymbols) return oldState;
 
                 const { enabledDiscoveryNetworkSymbols } = oldState;
@@ -194,6 +234,8 @@ export const prepareRootReducers = async () => {
                 return migratedState;
             },
         },
+        transforms: [discoveryStopPersistTransform],
+        // kept for backward compatibility, but not persisted anymore
     });
 
     const featureFlagsPersistedReducer = await preparePersistReducer({

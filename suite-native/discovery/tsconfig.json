@@ -29,7 +29,6 @@
         { "path": "../device" },
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },
-        { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
     ]

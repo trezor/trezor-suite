@@ -24,7 +24,6 @@ import {
 } from '@suite-native/feature-flags';
 import { SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 import {
-    TokensRootState,
     isCoinWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
 } from '@suite-native/tokens';
@@ -42,7 +41,6 @@ export type DiscoveryConfigSliceRootState = {
     discoveryConfig: DiscoveryConfigState;
 } & AccountsRootState &
     DeviceRootState &
-    TokensRootState &
     WalletSettingsRootState &
     SettingsSliceRootState;
 
