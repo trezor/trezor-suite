@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react';
 import { IconName } from '@suite-native/icons';
 
 import { VStack } from '../Stack';
-import { CardStepperItem } from './CardStepperItem';
+import { CardStepperButtonsActionType, CardStepperItem } from './CardStepperItem';
 
 export type CardStepperMap<ContentIdType = undefined> = Record<
     number,
@@ -18,6 +18,7 @@ export type CardStepperMap<ContentIdType = undefined> = Record<
 type CardStepperProps<ContentIdType = undefined> = {
     onFinish: () => void;
     onPressSecondaryButton: (id?: ContentIdType) => void;
+    buttonsActionType?: CardStepperButtonsActionType;
     stepToContentMap: CardStepperMap<ContentIdType>;
 };
 
@@ -26,6 +27,7 @@ export const CardStepper = <ContentIdType = undefined>({
     stepToContentMap,
     onFinish,
     onPressSecondaryButton,
+    buttonsActionType,
 }: CardStepperProps<ContentIdType>) => {
     const [currentStep, setCurrentStep] = useState<number>(1);
 
@@ -58,6 +60,7 @@ export const CardStepper = <ContentIdType = undefined>({
                     icon={content.icon}
                     header={content.header}
                     description={content.description}
+                    buttonsActionType={buttonsActionType}
                     onPressSecondaryButton={() => handlePressSecondaryButton(content.secondaryButtonParameter)}
                 />
             ))}

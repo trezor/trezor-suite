@@ -115,6 +115,7 @@ const usedIcons = [
     'textAa',
     'tiktokLogo',
     'timer',
+    'trash',
     'trashSimple',
     'treeStructure',
     'trezorBackup',

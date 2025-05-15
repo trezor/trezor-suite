@@ -5,6 +5,7 @@ import {
     AnimatedCard,
     AnimatedVStack,
     Button,
+    ButtonColorScheme,
     Divider,
     HStack,
     Text,
@@ -15,6 +16,8 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
+export type CardStepperButtonsActionType = 'destructive' | 'normal';
+
 type CardStepperItemProps = {
     header: ReactNode;
     description: ReactNode;
@@ -23,7 +26,19 @@ type CardStepperItemProps = {
     icon: IconName;
     onPressConfirmButton: () => void;
     onPressSecondaryButton: () => void;
+    buttonsActionType?: CardStepperButtonsActionType;
 };
+
+const buttonsColorSchemeMap = {
+    normal: {
+        primary: 'primary',
+        secondary: 'tertiaryElevation0',
+    },
+    destructive: {
+        primary: 'redBold',
+        secondary: 'redElevation0',
+    },
+} as const satisfies Record<CardStepperButtonsActionType, Record<string, ButtonColorScheme>>;
 
 const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabled }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -63,6 +78,7 @@ export const CardStepperItem = ({
     isOpened,
     onPressConfirmButton,
     onPressSecondaryButton,
+    buttonsActionType = 'normal',
 }: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
     const iconName = isChecked ? 'check' : icon;
@@ -100,7 +116,7 @@ export const CardStepperItem = ({
                             <Button
                                 size="small"
                                 style={applyStyle(buttonStyle)}
-                                colorScheme="tertiaryElevation0"
+                                colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
                                 onPress={onPressSecondaryButton}
                             >
                                 <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
@@ -108,6 +124,7 @@ export const CardStepperItem = ({
                             <Button
                                 size="small"
                                 style={applyStyle(buttonStyle)}
+                                colorScheme={buttonsColorSchemeMap[buttonsActionType].primary}
                                 onPress={onPressConfirmButton}
                             >
                                 <Translation id="generic.buttons.yes" />
