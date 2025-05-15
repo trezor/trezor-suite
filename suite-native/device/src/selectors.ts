@@ -196,25 +196,32 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: FwAuthenticityC
 /**
  * Determine if either of firmware authenticity checks is considered as hard failure (in order to restrict interaction with device).
  */
-export const selectHasFirmwareAuthenticityCheckHardFailed = (state: FwAuthenticityCheckState) => {
-    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
-    const isRevisionHardError =
-        revisionError !== null && revisionCheckErrorScenarios[revisionError].type === 'hardModal';
+export const selectHasFirmwareAuthenticityCheckHardFailed = createMemoizedSelector(
+    [selectFirmwareRevisionCheckErrorIfEnabled],
+    revisionError => {
+        const isRevisionHardError =
+            revisionError !== null &&
+            revisionCheckErrorScenarios[revisionError].type === 'hardModal';
 
-    // FW hash check to be implemented
+        // FW hash check to be implemented
 
-    return isRevisionHardError;
-};
+        return isRevisionHardError;
+    },
+);
 
-export const selectIsEntropyCheckEnabledAndFailed = (state: FwAuthenticityCheckState) =>
-    selectIsFeatureEnabled(state, Feature.firmwareRevisionCheckMobile, true) &&
-    selectIsEntropyCheckFailed(state);
+export const selectIsEntropyCheckEnabledAndFailed = createMemoizedSelector(
+    [
+        (state: FwAuthenticityCheckState) =>
+            selectIsFeatureEnabled(state, Feature.firmwareRevisionCheckMobile, true),
+        selectIsEntropyCheckFailed,
+    ],
+    (isFeatureEnabled, isEntropyCheckFailed) => isFeatureEnabled && isEntropyCheckFailed,
+);
 
-export const selectIsDeviceAuthenticityCheckFailed = (state: DeviceRootState) => {
-    const selectedDeviceAuthenticity = selectSelectedDeviceAuthenticity(state);
-
-    return selectedDeviceAuthenticity?.valid === false;
-};
+export const selectIsDeviceAuthenticityCheckFailed = createMemoizedSelector(
+    [selectSelectedDeviceAuthenticity],
+    selectedDeviceAuthenticity => selectedDeviceAuthenticity?.valid === false,
+);
 
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [
