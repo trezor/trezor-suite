@@ -3,9 +3,6 @@ name: "[Test] Release Suite Regression test publisher"
 # Runs Playwright reporter, creating manual regressions release suite in GitHub"
 
 on:
-  push:
-    branches:
-      - release/2*
   workflow_dispatch:
 
 concurrency:
@@ -59,4 +56,4 @@ jobs:
           RELEASE_BUILD: ${{ env.release_build }}
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
-          yarn workspace @trezor/suite-desktop-core test:e2e:manual
+          yarn workspace @trezor/suite-desktop-core github:report:manual

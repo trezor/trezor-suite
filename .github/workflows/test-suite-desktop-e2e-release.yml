@@ -83,3 +83,4 @@ jobs:
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
           github-token: ${{ steps.trezor-bot-token.outputs.token }}
           release-build: ${{ env.release_build }}
+          run-reporter: ${{ github.event_name == 'workflow_dispatch' }}

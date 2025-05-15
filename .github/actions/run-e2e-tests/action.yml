@@ -2,7 +2,7 @@ name: "Run Playwright E2E Tests"
 description: "Runs Playwright E2E tests with Docker and uploads logs"
 inputs:
   project:
-    description: "Playwright project name. (web|web:release|desktop|desktop:release)"
+    description: "Playwright project name. (web|desktop)"
     required: true
   base-url:
     description: "Base URL for E2E tests. Default: https://dev.suite.sldev.cz/suite-web/BRANCH_NAME/web/"
@@ -44,6 +44,9 @@ inputs:
   release-build:
     description: "Information for GitHub Reporter, only on Release workflows"
     required: false
+  run-reporter:
+    description: "Flag to run GitHub Reporter, only on Release workflows"
+    required: false
 
 runs:
   using: "composite"
@@ -59,7 +62,7 @@ runs:
     # without requiring elevated privileges, which is essential for running the application.
     # This is workaround until electron builder solves this issue in future release.
     - name: Disable security rule 'Restricted unprivileged user namespaces'
-      if: ${{ inputs.project == 'desktop' || inputs.project == 'desktop:release' }}
+      if: ${{ inputs.project == 'desktop' }}
       shell: bash
       run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
@@ -75,7 +78,7 @@ runs:
         echo "::group::Install PW Dependencies"
         echo "Silently installing Playwright dependencies"
         yarn workspaces focus @trezor/suite-desktop-core ${{ inputs.workspace-dependencies }} > /dev/null
-        if [[ "${{ inputs.project }}" == "web" || "${{ inputs.project }}" == "web:release" ]]; then
+        if [[ "${{ inputs.project }}" == "web" ]]; then
           npx playwright install --with-deps > /dev/null
         fi
         echo "::endgroup::"
@@ -102,6 +105,7 @@ runs:
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         RELEASE_BUILD: ${{ inputs.release-build }}
+        RUN_REPORTER: ${{ inputs.run-reporter }}
       run: |
         if [[ -z "${{ inputs.base-url }}" ]]; then
           BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"

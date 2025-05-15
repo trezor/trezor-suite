@@ -13,13 +13,11 @@
         "test:unit": "yarn g:jest",
         "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=desktop",
         "test:e2e:web": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=web",
-        "test:e2e:manual": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=manual --reporter=./e2e/support/reporters/gitHubReporter.ts",
         "test:e2e:update-snapshots": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --grep @snapshot --update-snapshots",
         "test:orchestrated:e2e:desktop": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop",
-        "test:orchestrated:e2e:desktop:release": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop --reporter=@currents/playwright,./e2e/support/reporters/gitHubReporter.ts",
         "test:orchestrated:e2e:web": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web",
-        "test:orchestrated:e2e:web:release": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web --reporter=@currents/playwright,./e2e/support/reporters/gitHubReporter.ts",
-        "github:create-project": "tsx ./e2e/support/reporters/scriptCreateProject.ts"
+        "github:report:manual": "RUN_REPORTER=manual yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=manual",
+        "github:create:project": "tsx ./e2e/support/reporters/scriptCreateProject.ts"
     },
     "dependencies": {
         "@sentry/electron": "^5.12.0",

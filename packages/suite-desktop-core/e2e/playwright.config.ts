@@ -23,6 +23,26 @@ function getTimeout(): number {
     return process.env.GITHUB_ACTION ? CI_TIMEOUT : LOCAL_TIMEOUT;
 }
 
+function getReporter(): PlaywrightTestConfig['reporter'] {
+    // Local run
+    if (!process.env.GITHUB_ACTION) {
+        return [['list'], ['html', { open: 'never' }]];
+    }
+
+    // Release - Manual regression: Generate manual suite in GitHub, without currents involvement
+    if (process.env.RUN_REPORTER === 'manual') {
+        return [['./e2e/support/reporters/gitHubReporter.ts']];
+    }
+
+    // Release - Automated CI run: Report results both in Currents and GitHub
+    if (process.env.RUN_REPORTER === 'true') {
+        return [['@currents/playwright'], ['./e2e/support/reporters/gitHubReporter.ts']];
+    }
+
+    // Default run on CI: Report results only in Currents
+    return [['@currents/playwright']];
+}
+
 const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWorkerFixtures>({
     projects: [
         {
@@ -58,9 +78,7 @@ const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWork
         currentsFixturesEnabled: !!process.env.GITHUB_ACTION,
     },
     reportSlowTests: null,
-    reporter: process.env.GITHUB_ACTION
-        ? [['@currents/playwright']]
-        : [['list'], ['html', { open: 'never' }]],
+    reporter: getReporter(),
     timeout: getTimeout(),
     outputDir: path.join(__dirname, 'test-results'),
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
