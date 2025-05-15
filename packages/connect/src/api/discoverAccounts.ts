@@ -1,14 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { arrayPartition, getSynchronize } from '@trezor/utils';
+import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
-import type { CoinInfo } from '../types';
-import { validateParams } from './common/paramsValidator';
+import type { CoinInfo, FirmwareRange } from '../types';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import type { AccountDescriptor } from '../device/DeviceCommands';
 import {
     ACCOUNT_TYPES,
@@ -30,6 +30,7 @@ type CardanoDerivation = (typeof CARDANO_DERIVATIONS)[keyof typeof CARDANO_DERIV
 type Request = AdditionalParams & {
     account: AccountTypeItem;
     derivation?: CardanoDerivation;
+    firmwareRange: FirmwareRange;
     coinInfo: CoinInfo;
     offset: number;
     skip: number;
@@ -86,11 +87,14 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
             // validate backend
             isBackendSupported(coinInfo);
 
+            const firmwareRange = getFirmwareRange(this.name, coinInfo, DEFAULT_FIRMWARE_RANGE);
+
             return ACCOUNT_TYPES.filter(a => a.symbol === symbol && (!type || a.type === type)).map(
                 account => ({
                     pageSize: TXS_PER_PAGE,
                     details: DETAILS,
                     coinInfo,
+                    firmwareRange,
                     skip: 0,
                     account,
                     ...rest,
@@ -124,7 +128,13 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     }
 
     async run() {
-        const [cardanoAccounts, otherAccounts] = arrayPartition(this.params, isCardanoRequest);
+        const [unsupported, supported] = this.filterUnsupportedAccounts(this.params);
+
+        unsupported.forEach(({ account: { path, ...rest }, error }) =>
+            this.sendProgress({ ...rest, index: 0, error }),
+        );
+
+        const [cardanoAccounts, otherAccounts] = arrayPartition(supported, isCardanoRequest);
         const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(cardanoAccounts);
         const accounts = [...otherAccounts, ...filteredCardanoAccounts];
 
@@ -135,6 +145,31 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         const empty = counts.length;
 
         return { empty, nonempty };
+    }
+
+    private filterUnsupportedAccounts(accounts: Request[]) {
+        const version = this.device.getVersion();
+        const model = this.device.features?.internal_model;
+
+        if (!version || !model) return [[], accounts] as const;
+
+        return arrayPartition(
+            accounts.map(item => {
+                const { min, max } = item.firmwareRange[model];
+
+                let error;
+                if (min === '0') {
+                    error = UI.FIRMWARE_NOT_SUPPORTED;
+                } else if (!versionUtils.isNewerOrEqual(version, min)) {
+                    error = UI.FIRMWARE_OLD;
+                } else if (max !== '0' && versionUtils.isNewer(version, max)) {
+                    error = UI.FIRMWARE_NOT_COMPATIBLE;
+                }
+
+                return error ? { ...item, error } : item;
+            }),
+            item => 'error' in item,
+        );
     }
 
     /** This should have zero overhead thanks to descriptor caching */

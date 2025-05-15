@@ -47,17 +47,21 @@ describe(`TrezorConnect.discoverAccounts`, () => {
         const onBundleProgress = (_event: BundleProgress<DiscoverAccountsProgress>['payload']) => {
             /*
             const { response, ...rest } = event;
-            console.log('PROGRESS', {
-                ...rest,
-                account: {
-                    descriptor: response.descriptor,
-                    txs: response.history.total,
-                    symbol: response.symbol,
-                    path: response.path,
-                    type: response.type,
-                    index: response.index,
-                },
-            });
+            if ('error' in response) {
+                console.log('PROGRESS ERROR', { ...rest, response });
+            } else {
+                console.log('PROGRESS', {
+                    ...rest,
+                    account: {
+                        descriptor: response.descriptor,
+                        txs: response.history.total,
+                        symbol: response.symbol,
+                        path: response.path,
+                        type: response.type,
+                        index: response.index,
+                    },
+                });
+            }
             */
         };
 
@@ -72,6 +76,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
                 { symbol: 'etc', type: 'normal', skip: 4 },
                 { symbol: 'ltc' },
                 { symbol: 'ada' },
+                { symbol: 'xrp' },
             ],
             useCardanoDerivation: true,
         });

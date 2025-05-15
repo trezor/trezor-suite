@@ -87,7 +87,7 @@ type DiscoverAccountsParams = {
 };
 
 export type DiscoverAccountsProgress = AccountTypeKey &
-    (AccountInfo & { path: string }) & {
+    ((AccountInfo & { path: string }) | { error: string }) & {
         index: number;
     };
 
