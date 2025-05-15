@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import useMeasure from 'react-use/lib/useMeasure';
 import styled, { css } from 'styled-components';
@@ -118,6 +118,18 @@ export const FinalStep = () => {
     };
 
     const [wrapperRef, { width }] = useMeasure<HTMLDivElement>();
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setState(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     if (!device?.features) return null;
 
