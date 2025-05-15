@@ -149,7 +149,8 @@ export const useHandleDeviceConnection = () => {
             !isPortfolioTrackerDevice &&
             !isDeviceConnectedAndAuthorized &&
             !isBiometricsOverlayVisible &&
-            !shouldNavigateToDeviceCompromisedModal
+            !shouldNavigateToDeviceCompromisedModal &&
+            !isDeviceOnboardingStackFocused
         ) {
             requestPrioritizedDeviceAccess({
                 deviceCallback: () => dispatch(authorizeDeviceThunk()),
@@ -170,6 +171,7 @@ export const useHandleDeviceConnection = () => {
         dispatch,
         failedCheck,
         isDeviceConnected,
+        isDeviceOnboardingStackFocused,
         isOnboardingFinished,
         isPortfolioTrackerDevice,
         isDeviceConnectedAndAuthorized,
