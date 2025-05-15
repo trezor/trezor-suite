@@ -89,7 +89,7 @@ export const firmwareUpdate = createThunk<
 
         const targetFirmwareType = getTargetFirmwareType();
         const toBitcoinOnlyFirmware = targetFirmwareType === FirmwareType.BitcoinOnly;
-        const targetTranslationLanguage = device.firmwareRelease?.release.translations?.find(
+        const targetTranslationLanguage = device.firmwareReleaseConfig?.release.translations?.find(
             language => language.startsWith(suiteLanguage),
         );
 
@@ -105,7 +105,7 @@ export const firmwareUpdate = createThunk<
         const targetProperties = binary
             ? {}
             : {
-                  toFwVersion: device?.firmwareRelease?.release.version.join('.'),
+                  toFwVersion: device?.firmwareReleaseConfig?.release.version.join('.'),
                   toBtcOnly: toBitcoinOnlyFirmware,
               };
 
