@@ -12,7 +12,7 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.0.5",
         "@react-navigation/native": "6.1.18",
-        "@reduxjs/toolkit": "2.6.0",
+        "@reduxjs/toolkit": "2.8.2",
         "@suite-common/formatters": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@testing-library/react-native": "13.0.0",

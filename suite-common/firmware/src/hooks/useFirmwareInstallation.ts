@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+    FirmwareUpdateProps,
     firmwareActions,
     firmwareUpdate as firmwareUpdateThunk,
     selectFirmware,
@@ -164,8 +165,7 @@ export const useFirmwareInstallation = (
     }, [originalDevice, shouldSwitchFirmwareType]);
 
     const firmwareUpdate = useCallback(
-        (...params: Parameters<typeof firmwareUpdateThunk>) =>
-            dispatch(firmwareUpdateThunk(...params)),
+        (arg: FirmwareUpdateProps) => dispatch(firmwareUpdateThunk(arg)),
         [dispatch],
     );
 

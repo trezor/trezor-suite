@@ -10,7 +10,7 @@ import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
 export const INVALID_HASH_ERROR = 'Invalid hash';
 
-type FirmwareUpdateProps = {
+export type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
     binary?: ArrayBuffer;
     // used on mobile, we don't have any FWs locally

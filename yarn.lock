@@ -7134,10 +7134,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:2.6.0":
-  version: 2.6.0
-  resolution: "@reduxjs/toolkit@npm:2.6.0"
+"@reduxjs/toolkit@npm:2.8.2":
+  version: 2.8.2
+  resolution: "@reduxjs/toolkit@npm:2.8.2"
   dependencies:
+    "@standard-schema/spec": "npm:^1.0.0"
+    "@standard-schema/utils": "npm:^0.3.0"
     immer: "npm:^10.0.3"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
@@ -7150,7 +7152,7 @@ __metadata:
       optional: true
     react-redux:
       optional: true
-  checksum: 10/216604c26d856f947580b43b217e7ce19c289c9cb75593f619d31b64286c18a810c1c3a8afebbb6b4c2e9159f42f0bb8dfccbe98ad4743d7015ca40023ac6d30
+  checksum: 10/7834b7b91a364f98f5ffa932b1027179d9a0a27a145206a7b5256304acafe5516c6622540656435e310e4a08e579eecaee5c2582442c4ef6a4dbe6f417b7d395
   languageName: node
   linkType: hard
 
@@ -8609,6 +8611,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@standard-schema/spec@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@standard-schema/spec@npm:1.0.0"
+  checksum: 10/aee780cc1431888ca4b9aba9b24ffc8f3073fc083acc105e3951481478a2f4dc957796931b2da9e2d8329584cf211e4542275f188296c1cdff3ed44fd93a8bc8
+  languageName: node
+  linkType: hard
+
 "@standard-schema/utils@npm:^0.3.0":
   version: 0.3.0
   resolution: "@standard-schema/utils@npm:0.3.0"
@@ -9160,7 +9169,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/analytics@workspace:suite-common/analytics"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     react: "npm:18.2.0"
   languageName: unknown
@@ -9176,7 +9185,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/bluetooth@workspace:suite-common/bluetooth"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
@@ -9186,7 +9195,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -9195,7 +9204,7 @@ __metadata:
     "@trezor/env-utils": "workspace:^"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    redux-mock-store: "npm:^1.5.4"
+    redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
   languageName: unknown
   linkType: soft
@@ -9204,7 +9213,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-popup@workspace:suite-common/connect-popup"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -9213,7 +9222,7 @@ __metadata:
     "@trezor/env-utils": "workspace:^"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    redux-mock-store: "npm:^1.5.4"
+    redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
   peerDependencies:
     "@trezor/suite-desktop-api": "workspace:*"
@@ -9227,7 +9236,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/device-authenticity@workspace:suite-common/device-authenticity"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -9254,7 +9263,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/firmware@workspace:suite-common/firmware"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -9290,7 +9299,7 @@ __metadata:
   resolution: "@suite-common/graph@workspace:suite-common/graph"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -9332,7 +9341,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/logger@workspace:suite-common/logger"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -9343,7 +9352,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/message-system@workspace:suite-common/message-system"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -9374,7 +9383,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -9436,7 +9445,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-types@workspace:suite-common/suite-types"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -9469,7 +9478,7 @@ __metadata:
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -9488,7 +9497,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/toast-notifications@workspace:suite-common/toast-notifications"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/intl-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -9504,7 +9513,7 @@ __metadata:
   resolution: "@suite-common/token-definitions@workspace:suite-common/token-definitions"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -9525,7 +9534,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/trading@workspace:suite-common/trading"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -9577,7 +9586,7 @@ __metadata:
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -9651,7 +9660,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/walletconnect@workspace:suite-common/walletconnect"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@reown/walletkit": "npm:^1.2.1"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -9670,7 +9679,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -9757,7 +9766,7 @@ __metadata:
     "@react-navigation/bottom-tabs": "npm:6.6.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@sentry/react-native": "npm:6.10.0"
     "@shopify/flash-list": "npm:1.7.3"
     "@shopify/react-native-skia": "npm:^1.11.6"
@@ -9910,7 +9919,7 @@ __metadata:
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.0.5"
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/flash-list": "npm:^1.7.2"
     "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-common/wallet-config": "workspace:*"
@@ -9973,7 +9982,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -10027,7 +10036,7 @@ __metadata:
   resolution: "@suite-native/device-authorization@workspace:suite-native/device-authorization"
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10047,7 +10056,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10085,7 +10094,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -10126,7 +10135,7 @@ __metadata:
   resolution: "@suite-native/discovery@workspace:suite-native/discovery"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10152,7 +10161,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@trezor/env-utils": "workspace:*"
     react-native: "npm:0.76.9"
     react-redux: "npm:9.2.0"
@@ -10164,7 +10173,7 @@ __metadata:
   resolution: "@suite-native/firmware@workspace:suite-native/firmware"
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/icons": "workspace:*"
@@ -10225,7 +10234,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@sentry/react-native": "npm:6.10.0"
     "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-common/formatters": "workspace:*"
@@ -10278,7 +10287,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/icons@workspace:suite-native/icons"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10323,7 +10332,7 @@ __metadata:
   resolution: "@suite-native/message-system@workspace:suite-native/message-system"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -10350,7 +10359,7 @@ __metadata:
     "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/flash-list": "npm:^1.7.2"
     "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-common/redux-utils": "workspace:*"
@@ -10395,7 +10404,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/graph": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10435,7 +10444,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -10479,7 +10488,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -10511,7 +10520,7 @@ __metadata:
   resolution: "@suite-native/module-connect-popup@workspace:suite-native/module-connect-popup"
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
@@ -10537,7 +10546,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10570,7 +10579,7 @@ __metadata:
     "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
@@ -10605,7 +10614,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -10631,7 +10640,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/graph": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -10666,7 +10675,7 @@ __metadata:
     "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -10689,7 +10698,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
@@ -10741,7 +10750,7 @@ __metadata:
     "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -10783,7 +10792,7 @@ __metadata:
   resolution: "@suite-native/module-staking-management@workspace:suite-native/module-staking-management"
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
@@ -10807,7 +10816,7 @@ __metadata:
     "@react-native-community/netinfo": "npm:^11.4.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/flash-list": "npm:^1.7.2"
     "@suite-common/trading": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -10927,7 +10936,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10973,7 +10982,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/settings@workspace:suite-native/settings"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -11000,7 +11009,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/logger": "workspace:*"
@@ -11042,7 +11051,7 @@ __metadata:
   resolution: "@suite-native/storage@workspace:suite-native/storage"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@sentry/react-native": "npm:6.10.0"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -11065,7 +11074,7 @@ __metadata:
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.0.5"
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@testing-library/react-native": "npm:13.0.0"
@@ -11131,7 +11140,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/flash-list": "npm:^1.7.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -12465,7 +12474,7 @@ __metadata:
     "@formatjs/intl": "npm:3.1.6"
     "@hookform/resolvers": "npm:^5.0.1"
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:2.6.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
     "@sentry/core": "npm:8.55.0"
     "@solana/buffer-layout": "npm:^4.0.1"
     "@solana/kit": "npm:^2.0.0"
@@ -12576,7 +12585,7 @@ __metadata:
     redux: "npm:^5.0.1"
     redux-devtools-extension: "npm:^2.13.9"
     redux-logger: "npm:^3.0.6"
-    redux-mock-store: "npm:^1.5.4"
+    redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
     semver: "npm:^7.7.1"
     styled-components: "npm:^6.1.17"
@@ -35845,12 +35854,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-mock-store@npm:^1.5.4":
-  version: 1.5.4
-  resolution: "redux-mock-store@npm:1.5.4"
+"redux-mock-store@npm:^1.5.5":
+  version: 1.5.5
+  resolution: "redux-mock-store@npm:1.5.5"
   dependencies:
     lodash.isplainobject: "npm:^4.0.6"
-  checksum: 10/7790554114c81db4eecfaf1596233374f57919b8a925dba9f2cdbaa27b5200c4969ee476fd0d5fe806748d06378a38a9c9e79f37a363c7ba64e11f71cae27c2c
+  peerDependencies:
+    redux: "*"
+  checksum: 10/fac3adf49e9c2d9cdb278e5e49f686e4a00eb568ed3885b7958fa5681049b4fe0df5bd7fd2f7b4450dabb14cede82cb02857f5ff055c990ca99dfe93bf61183c
   languageName: node
   linkType: hard
 

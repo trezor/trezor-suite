@@ -13,7 +13,7 @@
         "@react-navigation/core": "^6.4.10",
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
-        "@reduxjs/toolkit": "2.6.0",
+        "@reduxjs/toolkit": "2.8.2",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
