@@ -26,15 +26,10 @@ import { formattedAccountTypeMap } from './accountsConstants';
 import { deviceActions } from '../device/deviceActions';
 import {
     DeviceRootState,
-    selectDeviceState,
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
 } from '../device/deviceReducer';
-import {
-    DiscoveryRootState,
-    selectHasDeviceDiscovery,
-    selectIsDeviceDiscoveryActive,
-} from '../discovery/discoveryReducer';
+import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
 export type AccountsState = Account[];
 

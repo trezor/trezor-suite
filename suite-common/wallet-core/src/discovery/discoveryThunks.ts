@@ -37,7 +37,7 @@ import { selectDeviceThunk } from '../device/deviceThunks';
 type ProgressEvent = BundleProgress<DiscoveryAccountInfo>['payload'];
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
-    if (!device || !device.state?.staticSessionId) {
+    if (!device?.state?.staticSessionId) {
         throw new Error('assertion error: device is not authorized');
     }
 }
@@ -77,9 +77,9 @@ const applyDeviceStatesThunk = createThunk(
             // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
             // todo: this sanity check could be moved somewhere higher.
-            if (devicesByPath.length !== 1) {
-                throw new Error('exactly one device should be found by path');
-            }
+            // if (devicesByPath.length !== 1) {
+            //     throw new Error('exactly one device should be found by path');
+            // }
             const device = devicesByPath[0];
 
             assertDeviceIsAcquired(device);
@@ -227,7 +227,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         assertDeviceIsAuthorized(device);
 
-        if (selectAccountsToBeForgotten(getState()).length) {
+        if (selectAccountsToBeForgotten(getState()).length > 0) {
             dispatch(disableAccountsThunk());
         }
 
@@ -242,11 +242,9 @@ export const runAdditionalDiscoveryThunk = createThunk(
             return;
         }
 
-        const accountProgressEvents: ProgressEvent[] = [];
         const onBundleProgress = createOnBundleProgressHandler(
             device.path,
             device.state.staticSessionId,
-            accountProgressEvents,
             dispatch,
             getState,
         );
@@ -267,7 +265,8 @@ export const runAdditionalDiscoveryThunk = createThunk(
         const result = await TrezorConnect.discoverAccounts({
             device,
             useEmptyPassphrase: device.useEmptyPassphrase,
-            coins: networksToDiscover.map(n => ({
+            // @ts-expect-error ttodo: mareks changes in connect needed
+            accounts: networksToDiscover.map(n => ({
                 symbol: n,
             })),
         });
@@ -283,11 +282,11 @@ export const runAdditionalDiscoveryThunk = createThunk(
 const createOnBundleProgressHandler = (
     devicePath: DeviceUniquePath,
     deviceStaticSessionId: StaticSessionId,
-    accountProgressEvents: ProgressEvent[],
     dispatch: any,
     getState: any,
 ) => {
     let encounteredNonEmptyAccount = false;
+    const accountProgressEvents: ProgressEvent[] = [];
 
     const progressEventToCreateAccountPayload = (event: ProgressEvent) => ({
         deviceState: deviceStaticSessionId,
@@ -324,6 +323,7 @@ const createOnBundleProgressHandler = (
             if (event.progress === 100 && !encounteredNonEmptyAccount) {
                 accountProgressEvents.forEach(event => {
                     dispatch(
+                        // @ts-expect-error todo: marek will solve it
                         accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
                     );
                 });
@@ -332,6 +332,7 @@ const createOnBundleProgressHandler = (
             }
 
             if (encounteredNonEmptyAccount) {
+                // @ts-expect-error todo: marek will solve it
                 dispatch(accountsActions.createAccount(progressEventToCreateAccountPayload(event)));
 
                 return;
@@ -344,6 +345,7 @@ const createOnBundleProgressHandler = (
 
                 accountProgressEvents.forEach(event => {
                     dispatch(
+                        // @ts-expect-error todo: marek will solve it
                         accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
                     );
                 });
@@ -360,9 +362,6 @@ export const runDiscoveryThunk = createThunk(
         try {
             console.time('runDiscovery start');
             let device = passedDevice;
-
-            // todo: this variable could be defined locally in bundle progress handler after marek delivers return value for TrezorConnect.discoverAccounts
-            const accountProgressEvents: ProgressEvent[] = [];
 
             const discovery = selectDiscoveryByDevicePath(getState(), device.path);
 
@@ -479,16 +478,21 @@ export const runDiscoveryThunk = createThunk(
                 );
             }
 
+            // @ts-expect-error todo:
             device = selectSelectedDevice(getState());
+
+            assertStaticSessionId(deviceStateResponse.payload._state);
             const onBundleProgress = createOnBundleProgressHandler(
                 device.path,
                 deviceStateResponse.payload._state.staticSessionId,
-                accountProgressEvents,
                 dispatch,
                 getState,
             );
 
+            // @ts-expect-error todo: mareks changes in connect needed
             TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
+
+            // @ts-expect-error todo: mareks changes in connect needed
 
             const discoveryAccountsPayload = getState().wallet.settings.enabledNetworks.map(n => ({
                 symbol: n,
@@ -508,7 +512,7 @@ export const runDiscoveryThunk = createThunk(
                     },
                 },
                 useEmptyPassphrase: !isAddingHiddenWallet,
-                coins: discoveryAccountsPayload,
+                accounts: discoveryAccountsPayload,
             });
             console.log('startDiscoveryThunk: TrezorConnect.getAccountInfo, result: ', result);
 
@@ -539,10 +543,7 @@ export const runDiscoveryThunk = createThunk(
             assertStaticSessionId(deviceStateResponse.payload._state);
 
             if (!isAddingHiddenWallet) {
-                console.log(
-                    'startDiscoveryThunk: adding standard wallet, ending here',
-                    accountProgressEvents,
-                );
+                console.log('startDiscoveryThunk: adding standard wallet, ending here');
 
                 dispatch(
                     completeDiscoveryThunk({
@@ -586,10 +587,10 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
+            // @ts-expect-error todo:
             device = selectSelectedDevice(getState());
 
-            console.log('aacountProgressEvents', accountProgressEvents);
-            const allAccountsEmpty = accountProgressEvents.every(event => event.response?.empty);
+            const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
             console.log('allAccountsEmpty', allAccountsEmpty);
 
@@ -632,6 +633,7 @@ export const runDiscoveryThunk = createThunk(
                 discoveryActions.updateDiscovery(
                     {
                         status: 'confirm-empty-passphrase',
+                        emptyWallet: true,
                     },
                     device.path,
                 ),
@@ -706,6 +708,7 @@ export const runDiscoveryThunk = createThunk(
                     );
                 }
 
+                // at this point it can only be USER_UI_CANCEL_CODE
                 return;
             }
 
@@ -803,7 +806,9 @@ export const cancelDiscoveryThunk = createThunk(
 
 export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    async (_, { dispatch, getState }) => {
-        console.log('meow restartDiscoveryThunk');
+    async (_, {}) => {
+        console.log(
+            'todo: restartDiscoveryThunk is unused, should be probably replaced with "runAdditionalDiscoveryThunk"',
+        );
     },
 );

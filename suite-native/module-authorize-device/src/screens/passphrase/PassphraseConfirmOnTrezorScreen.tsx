@@ -6,7 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
-import { isPassphraseDeviceAuthorized } from '@suite-native/device-authorization';
+import {
+    isPassphraseDeviceLoadingDone,
+    useHandlePassphraseMismatch,
+} from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -17,6 +20,7 @@ import {
 } from '@suite-native/navigation';
 
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
+import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -29,14 +33,14 @@ export const PassphraseConfirmOnTrezorScreen = () => {
 
     const navigation = useNavigation<NavigationProp>();
 
-    const isDeviceAuthorizationDone = useSelector(isPassphraseDeviceAuthorized);
+    const isDeviceAuthorizationDone = useSelector(isPassphraseDeviceLoadingDone);
     const device = useSelector(selectSelectedDevice);
 
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back
-    // useRedirectOnPassphraseCompletion();
+    useRedirectOnPassphraseCompletion();
 
-    // useHandlePassphraseMismatch();
+    useHandlePassphraseMismatch();
 
     useEffect(() => {
         if (isDeviceAuthorizationDone) {

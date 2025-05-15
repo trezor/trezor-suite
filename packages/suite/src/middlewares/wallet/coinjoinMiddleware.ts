@@ -122,23 +122,24 @@ export const coinjoinMiddleware =
             }
         }
 
-        // if (isAnyOf(discoveryActions.startDiscovery, blockchainActions.synced)(action)) {
-        //     const state = api.getState();
-        //     const symbol =
-        //         action.type === discoveryActions.startDiscovery.type
-        //             ? undefined
-        //             : action.payload.symbol;
-        //     const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
-        //     if (!isCoinjoinBlockedByTor) {
-        //         // find all coinjoin accounts (for specific network when initiating action is network-specific)
-        //         const coinjoinAccounts = state.wallet.accounts.filter(
-        //             a => a.accountType === 'coinjoin' && (!symbol || a.symbol === symbol),
-        //         );
-        //         coinjoinAccounts.forEach(a =>
-        //             api.dispatch(coinjoinAccountActions.fetchAndUpdateAccount(a)),
-        //         );
-        //     }
-        // }
+        // todo: startDiscovery is now fired under different context
+        if (isAnyOf(discoveryActions.startDiscovery, blockchainActions.synced)(action)) {
+            const state = api.getState();
+            const symbol =
+                action.type === discoveryActions.startDiscovery.type
+                    ? undefined
+                    : action.payload.symbol;
+            const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
+            if (!isCoinjoinBlockedByTor) {
+                // find all coinjoin accounts (for specific network when initiating action is network-specific)
+                const coinjoinAccounts = state.wallet.accounts.filter(
+                    a => a.accountType === 'coinjoin' && (!symbol || a.symbol === symbol),
+                );
+                coinjoinAccounts.forEach(a =>
+                    api.dispatch(coinjoinAccountActions.fetchAndUpdateAccount(a)),
+                );
+            }
+        }
 
         // Pause coinjoin session when device disconnects.
         // This is not treated a temporary interruption with automatic restore because the user probably disconnects the device willingly.

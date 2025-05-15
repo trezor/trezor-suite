@@ -45,7 +45,6 @@ describe('Account Reducer', () => {
                     index: 0,
                     path: testBip43Path,
                     accountType: 'normal',
-                    networkType: 'bitcoin',
                     coin: 'btc',
                 },
                 accountInfo: {

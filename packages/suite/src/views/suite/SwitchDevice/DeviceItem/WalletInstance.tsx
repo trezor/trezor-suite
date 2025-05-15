@@ -5,8 +5,6 @@ import {
     selectCurrentFiatRates,
     selectDeviceThunk,
     selectLocalCurrency,
-    selectDiscoveryByDevicePath,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Divider, Icon, Row, Text, Tooltip } from '@trezor/components';

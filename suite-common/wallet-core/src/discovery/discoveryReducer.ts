@@ -58,7 +58,7 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
 export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.discovery;
 
 export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>
-    path ? state.wallet.discovery[path] : undefined;
+    path !== undefined ? state.wallet.discovery[path] : undefined;
 
 export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & DeviceRootState) => {
     const selectedDevice = selectSelectedDevice(state);
@@ -99,28 +99,6 @@ export function isDiscoveryInProgress(
     );
 }
 
-export const selectIsRediscoverNeeded = (
-    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
-    staticSessionId?: StaticSessionId,
-) => {
-    if (!staticSessionId) {
-        return false;
-    }
-    const discoveredNetworks = [
-        ...new Set(
-            selectAccountsByDeviceState(state, staticSessionId).map(account => account.symbol),
-        ),
-    ];
-
-    const enabledNetworks = selectEnabledNetworks(state);
-
-    const networksToDiscover = enabledNetworks.filter(
-        network => !discoveredNetworks.includes(network),
-    );
-
-    return networksToDiscover.length > 0;
-};
-
 export const selectNetworksToDiscover = (
     state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
     staticSessionId?: StaticSessionId,
@@ -139,11 +117,18 @@ export const selectNetworksToDiscover = (
         ),
     ];
 
-    const networksToDiscover = enabledNetworks.filter(
-        network => !discoveredNetworks.includes(network),
-    );
+    return enabledNetworks.filter(network => !discoveredNetworks.includes(network));
+};
 
-    return networksToDiscover;
+export const selectIsRediscoverNeeded = (
+    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
+    staticSessionId?: StaticSessionId,
+) => {
+    if (!staticSessionId) return false;
+
+    const networksToDiscover = selectNetworksToDiscover(state, staticSessionId);
+
+    return networksToDiscover.length > 0;
 };
 
 export const selectAccountsToBeForgotten = (
@@ -164,7 +149,7 @@ export const selectAccountsToBeForgotten = (
 };
 
 export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDeviceDiscovery(state);
+    const discovery = selectDiscoveryForSelectedDevice(state);
 
     return isDiscoveryInProgress(discovery);
 };

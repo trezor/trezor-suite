@@ -1,11 +1,13 @@
 import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
+import type { DeviceUniquePath } from '@trezor/connect';
+import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
+    emptyWallet?: boolean;
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &
@@ -28,9 +30,8 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
           }
         | {
               status: 'progress';
-              // todo: this typed could be probably taken from @trezor/connect
-              total: number;
-              progress: number;
+              total: BundleProgress<any>['payload']['total'];
+              progress: BundleProgress<any>['payload']['progress'];
           }
         | {
               status: 'confirm-empty-passphrase';

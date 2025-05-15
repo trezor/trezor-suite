@@ -4,6 +4,7 @@ import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     authConfirm,
     authorizeDeviceThunk,
+    // todo: restarDiscovery now does nothing.
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
 import { Discovery } from '@suite-common/wallet-types';
@@ -83,10 +84,12 @@ const getAccountError = (accountError: string, networkType: NetworkType) => {
 
 const discoveryFailedMessage = (discovery?: Discovery) => {
     if (!discovery) return '';
-    if (discovery.error) return <div>{discovery.error}</div>;
+    if ('error' in discovery) return <div>{discovery.error}</div>;
 
     // Group all failed networks into array of errors.
     const networkError: string[] = [];
+
+    // todo: use accounts for this
     const details = discovery.failed.reduce((value, account) => {
         const network = getNetwork(account.symbol);
         if (networkError.includes(account.symbol)) return value;

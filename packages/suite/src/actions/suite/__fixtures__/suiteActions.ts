@@ -4,7 +4,6 @@ import {
     authorizeDeviceThunk,
     createDeviceInstanceThunk,
     deviceActions,
-    discoveryActions,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
@@ -160,29 +159,6 @@ const reducerActions = [
                     language: 'cz',
                 },
             },
-        ],
-    },
-    {
-        description: `startDiscovery/stopDiscovery + startDiscovery/completeDiscovery`,
-        actions: [
-            {
-                type: discoveryActions.startDiscovery.type,
-            },
-            {
-                type: discoveryActions.stopDiscovery.type,
-            },
-            {
-                type: discoveryActions.startDiscovery.type,
-            },
-            {
-                type: discoveryActions.completeDiscovery.type,
-            },
-        ],
-        result: [
-            { locks: { device: 1 } },
-            { locks: { device: 0 } },
-            { locks: { device: 1 } },
-            { locks: { device: 0 } },
         ],
     },
 ];

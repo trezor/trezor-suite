@@ -35,6 +35,9 @@ export const useHandleDeviceRequestsPassphrase = () => {
     const deviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
 
     const handleRequestPassphrase = useCallback(() => {
+        // NOTE: if the passphrase flow IS NOT in the beginning skip these calls
+        if (discovery?.status !== 'enter-passphrase') return;
+
         // If the passphrase request was while verifying empty passphrase wallet, we handle it separately in the screen
         if (discovery?.isAddingHiddenWallet) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {

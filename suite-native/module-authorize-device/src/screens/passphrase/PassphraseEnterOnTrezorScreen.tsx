@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
+    isPassphraseDeviceLoadingDone,
     selectIsCreatingNewPassphraseWallet,
     useHandlePassphraseMismatch,
 } from '@suite-native/device-authorization';
@@ -44,8 +44,9 @@ export const PassphraseEnterOnTrezorScreen = () => {
     const dispatch = useDispatch();
 
     const { applyStyle } = useNativeStyles();
+    const device = useSelector(selectSelectedDevice);
 
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const isDeviceAuthorizationDone = useSelector(isPassphraseDeviceLoadingDone);
 
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
@@ -59,14 +60,16 @@ export const PassphraseEnterOnTrezorScreen = () => {
     useHandlePassphraseMismatch();
 
     useEffect(() => {
-        if (hasDiscovery) {
+        if (isDeviceAuthorizationDone) {
             navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseLoading);
         }
-    }, [hasDiscovery, navigation]);
+    }, [isDeviceAuthorizationDone, navigation]);
 
     const handleCancel = () => {
         if (isCreatingNewWalletInstance) {
-            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+            if (device) {
+                dispatch(cancelDiscoveryThunk(device));
+            }
         } else {
             analytics.report({
                 type: EventType.PassphraseExit,

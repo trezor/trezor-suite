@@ -9,22 +9,12 @@ import {
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import {
-    VerifyPassphraseOnEmptyWalletError,
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    retryPassphraseAuthenticationThunk,
-    verifyPassphraseOnEmptyWalletThunk,
-} from './passphraseThunks';
 import { isPinButtonRequestCode } from './utils';
 
 export type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
     hasDeviceRequestedPassphrase: boolean;
-    passphraseError:
-        | AuthorizeDeviceError
-        | CreateDeviceInstanceError
-        | VerifyPassphraseOnEmptyWalletError
-        | null;
+    passphraseError: AuthorizeDeviceError | CreateDeviceInstanceError | null;
 };
 
 type DeviceAuthorizationRootState = {
@@ -65,18 +55,6 @@ export const deviceAuthorizationSlice = createSlice({
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.hasDeviceRequestedPin = false;
                 state.hasDeviceRequestedPassphrase = false;
-            })
-            .addCase(cancelPassphraseAndSelectStandardDeviceThunk.pending.type, state => {
-                state.hasDeviceRequestedPassphrase = false;
-                state.passphraseError = null;
-            })
-            .addCase(retryPassphraseAuthenticationThunk.pending, state => {
-                state.passphraseError = null;
-            })
-            .addCase(verifyPassphraseOnEmptyWalletThunk.rejected, (state, action) => {
-                if (action.payload) {
-                    state.passphraseError = action.payload;
-                }
             });
     },
 });
@@ -90,7 +68,9 @@ export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootSt
 export const selectDeviceRequestedAuthorization = (state: DeviceAuthorizationRootState) =>
     selectDeviceRequestedPassphrase(state) || selectDeviceRequestedPin(state);
 
-export const selectPassphraseError = (state: DiscoveryRootState & DeviceRootState) => {
+export const selectPassphraseError = (
+    state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationState,
+) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
     if (!discovery || !discovery.isAddingHiddenWallet) {
@@ -139,14 +119,20 @@ export const selectIsCreatingNewPassphraseWallet = (
     return discovery?.isAddingHiddenWallet;
 };
 
-export const isPassphraseDeviceAuthorized = (state: DiscoveryRootState & DeviceRootState) => {
+export const isPassphraseDeviceLoadingDone = (
+    state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationRootState,
+) => {
     if (!state.device.selectedDevice?.state) {
         return false;
     }
 
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
-    return discovery?.status === 'progress';
+    if (!discovery || !discovery.isAddingHiddenWallet) {
+        return false;
+    }
+
+    return !state.deviceAuthorization.hasDeviceRequestedPassphrase;
 };
 
 export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & DeviceRootState) => {
@@ -158,12 +144,22 @@ export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & Devic
 
     switch (discovery.status) {
         case 'confirm-empty-passphrase':
-            return true;
-        case 'complete':
             return false;
+        case 'complete':
+            return true;
         default:
             return null;
     }
+};
+
+export const selectDiscoveryCompleted = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+
+    if (!discovery || !discovery.isAddingHiddenWallet) {
+        return null;
+    }
+
+    return discovery.status === 'complete';
 };
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;

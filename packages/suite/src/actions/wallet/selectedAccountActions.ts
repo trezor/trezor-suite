@@ -1,5 +1,4 @@
 import { networks } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     accountsActions,
     blockchainActions,
@@ -17,6 +16,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
+// move to selector!!!!
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
     const accounts = state.wallet.accounts;
@@ -38,7 +38,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // waiting for discovery
     const discovery = selectDiscoveryForSelectedDevice(state);
-    if (!device.state || !discovery) {
+    if (!device.state) {
         return {
             status: 'loading',
             loader: 'auth',
@@ -114,7 +114,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
                     status: 'exception',
                     loader: 'account-not-loaded',
                     network,
-                    discovery,
                     params,
                 };
             }
@@ -125,7 +124,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             status: 'loaded',
             account,
             network,
-            discovery,
             params,
         };
     }
@@ -142,7 +140,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     //     };
     // }
 
-    if (discovery.status === 'progress') {
+    if (discovery?.status === 'progress') {
         return {
             status: 'loading',
             loader: 'account-loading',
@@ -154,7 +152,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         status: 'exception',
         loader: 'account-not-exists',
         network,
-        discovery,
         params,
     };
 };
@@ -209,15 +206,6 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
             'utxo',
             'status',
             'syncing',
-        ],
-        discovery: [
-            'status',
-            'index',
-            // 'accountIndex',
-            // 'interrupted',
-            // 'completed',
-            // 'waitingForBlockchain',
-            // 'waitingForDevice',
         ],
     });
 
