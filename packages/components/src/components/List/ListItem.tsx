@@ -22,10 +22,13 @@ const mapAlignmentToAlignItems = ({ $bulletAlignment }: MapArgs): FlexAlignItems
 type ItemProps = {
     $gap: SpacingValues;
     $bulletAlignment: BulletVerticalAlignment;
+    $hasListStyleType: boolean;
+    $hasBulletComponent: boolean;
 };
 
 const Item = styled.li<ItemProps>`
-    display: flex;
+    display: ${({ $hasListStyleType, $hasBulletComponent }) =>
+        $hasListStyleType && !$hasBulletComponent ? 'list-items' : 'flex'};
     align-items: ${({ $bulletAlignment }) => mapAlignmentToAlignItems({ $bulletAlignment })};
     gap: ${({ $gap }) => $gap}px;
 `;
@@ -50,10 +53,21 @@ export const ListItem = ({
     'data-testid': dataTestId,
     children,
 }: ListItemProps) => {
-    const { bulletGap, bulletAlignment, bulletComponent: listBulletComponent } = useList();
+    const {
+        bulletGap,
+        bulletAlignment,
+        bulletComponent: listBulletComponent,
+        listStyleType,
+    } = useList();
 
     return (
-        <Item $gap={bulletGap} $bulletAlignment={bulletAlignment} data-testid={dataTestId}>
+        <Item
+            $gap={bulletGap}
+            $bulletAlignment={bulletAlignment}
+            $hasListStyleType={!!listStyleType}
+            $hasBulletComponent={!!bulletComponent}
+            data-testid={dataTestId}
+        >
             <BulletWrapper>{bulletComponent ?? listBulletComponent}</BulletWrapper>
             <ContentWrapper>{children}</ContentWrapper>
         </Item>

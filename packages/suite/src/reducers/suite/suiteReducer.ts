@@ -2,7 +2,7 @@ import { produce } from 'immer';
 
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import type { InvityServerEnvironment } from '@suite-common/trading';
+import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
@@ -135,6 +135,7 @@ export interface SuiteState {
     locks: Record<(typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE], number>;
     flags: Flags;
     evmSettings: EvmSettings;
+    dismissedTradingTerms: Partial<Record<TradingType, boolean>>;
     prefillFields: PrefillFields;
     settings: SuiteSettings;
 }
@@ -175,6 +176,7 @@ const initialState: SuiteState = {
         confirmExplanationModalClosed: {},
         explanationBannerClosed: {},
     },
+    dismissedTradingTerms: {},
     prefillFields: {
         sendForm: '',
         transactionHistory: '',
@@ -235,6 +237,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.evmSettings,
                     ...action.payload.suiteSettings?.evmSettings,
                 };
+                draft.dismissedTradingTerms = {
+                    ...draft.dismissedTradingTerms,
+                    ...action.payload.suiteSettings?.dismissedTradingTerms,
+                };
                 draft.settings = {
                     ...draft.settings,
                     ...action.payload.suiteSettings?.settings,
@@ -293,6 +299,12 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 };
                 break;
 
+            case SUITE.DISMISSED_TRADING_TERMS:
+                draft.dismissedTradingTerms = {
+                    ...draft.dismissedTradingTerms,
+                    [action.tradingType]: true,
+                };
+                break;
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
                 break;
@@ -606,5 +618,8 @@ export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
 
     return isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
 };
+
+export const selectIsTradingTermsDismissed = (state: AppState, tradingType: TradingType): boolean =>
+    !!state.suite.dismissedTradingTerms?.[tradingType];
 
 export default suiteReducer;

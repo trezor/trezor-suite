@@ -46,6 +46,7 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { selectIsTradingTermsDismissed } from 'src/reducers/suite/suiteReducer';
 import {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,
@@ -95,6 +96,10 @@ export const useTradingSellForm = ({
         pageType,
         isLoading,
     });
+
+    const isTradingTermsDismissed = useSelector(state =>
+        selectIsTradingTermsDismissed(state, type),
+    );
 
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
     const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
@@ -344,6 +349,7 @@ export const useTradingSellForm = ({
         }
 
         const userConsent = async ({ provider, cryptoCurrency }: TradingSellUserConsentProps) =>
+            isTradingTermsDismissed ||
             Boolean(
                 await dispatch(
                     openDeferredModal({

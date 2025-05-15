@@ -48,6 +48,7 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { selectIsTradingTermsDismissed } from 'src/reducers/suite/suiteReducer';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
@@ -95,6 +96,10 @@ export const useTradingExchangeForm = ({
     });
     const accountByKey = useSelector(state => selectAccountByKey(state, accountKey));
     const account = accountByKey ?? selectedAccount.account;
+
+    const isTradingTermsDismissed = useSelector(state =>
+        selectIsTradingTermsDismissed(state, type),
+    );
 
     const { timer, device, checkQuotesTimer } = useTradingInitializer({
         selectedAccount,
@@ -290,15 +295,18 @@ export const useTradingExchangeForm = ({
                 }
             }
 
-            return Boolean(
-                await dispatch(
-                    openDeferredModal({
-                        type: isDex ? 'trading-exchange-dex-terms' : 'trading-exchange-terms',
-                        provider,
-                        fromCryptoCurrency: send,
-                        toCryptoCurrency: receive,
-                    }),
-                ),
+            return (
+                isTradingTermsDismissed ||
+                Boolean(
+                    await dispatch(
+                        openDeferredModal({
+                            type: isDex ? 'trading-exchange-dex-terms' : 'trading-exchange-terms',
+                            provider,
+                            fromCryptoCurrency: send,
+                            toCryptoCurrency: receive,
+                        }),
+                    ),
+                )
             );
         };
 

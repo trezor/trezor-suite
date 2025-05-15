@@ -1,11 +1,15 @@
+import { useState } from 'react';
+
 import { CryptoId } from 'invity-api';
 
-import { useTradingInfo } from '@suite-common/trading';
+import { TradingType, useTradingInfo } from '@suite-common/trading';
 import {
+    Banner,
+    Checkbox,
     Column,
     H4,
-    IconCircle,
-    IconCircleProps,
+    Icon,
+    IconProps,
     List,
     Modal,
     Paragraph,
@@ -14,8 +18,16 @@ import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import type { Deferred } from '@trezor/utils';
 
+import { setDismissedTradingTerms } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
-import { useDevice } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+
+const getTradingType = (modalType: TradingTermsModalProps['type']): TradingType => {
+    if (modalType === 'BUY') return 'buy';
+    if (modalType === 'SELL') return 'sell';
+
+    return 'exchange';
+};
 
 type TradingTermsModalProps = {
     decision: Deferred<boolean>;
@@ -36,15 +48,17 @@ export const TradingTermsModal = ({
     toCryptoCurrency,
     fromCryptoCurrency,
 }: TradingTermsModalProps) => {
+    const dispatch = useDispatch();
+    const [dontShowAgain, setDontShowAgain] = useState(false);
+
     const providerName = provider || 'unknown provider';
     const { device } = useDevice();
     const { cryptoIdToCoinSymbol } = useTradingInfo();
     const iconProps = {
-        variant: 'primary',
-        size: 50,
+        size: 24,
         paddingType: 'medium',
         hasBorder: false,
-    } as Partial<IconCircleProps>;
+    } as Partial<IconProps>;
 
     if (!device?.features) {
         return null;
@@ -56,6 +70,10 @@ export const TradingTermsModal = ({
     };
 
     const onConfirmClick = () => {
+        if (dontShowAgain) {
+            dispatch(setDismissedTradingTerms(getTradingType(type)));
+        }
+
         decision.resolve(true);
         onCancel();
     };
@@ -89,64 +107,94 @@ export const TradingTermsModal = ({
                 </Modal.Button>
             }
         >
-            <List
-                gap={spacings.xxl}
-                bulletGap={spacings.xl}
-                margin={{ top: spacings.xs, bottom: spacings.xs, left: spacings.xs }}
-            >
-                <List.Item
-                    bulletComponent={
-                        <IconCircle
-                            name={mapTrezorModelToIcon[device.features.internal_model]}
-                            {...iconProps}
-                        />
-                    }
+            <Column gap={spacings.md}>
+                <List
+                    gap={spacings.xxl}
+                    bulletGap={spacings.sm}
+                    margin={{ top: spacings.xs, bottom: spacings.xs, left: spacings.xs }}
+                    bulletAlignment="start"
                 >
-                    <Column gap={spacings.xxs} alignItems="flex-start">
-                        <H4>
-                            <Translation id={`TR_${type}_MODAL_SECURITY_HEADER`} />
-                        </H4>
-                        <Paragraph>
-                            <Translation
-                                id={`TR_${type}_MODAL_TERMS_1`}
-                                values={{ provider: providerName }}
+                    <List.Item
+                        bulletComponent={
+                            <Icon
+                                name={mapTrezorModelToIcon[device.features.internal_model]}
+                                {...iconProps}
                             />
-                        </Paragraph>
-                        <Paragraph>
-                            <Translation id={`TR_${type}_MODAL_TERMS_2`} />
-                        </Paragraph>
-                        <Paragraph>
-                            <Translation id={`TR_${type}_MODAL_TERMS_3`} />
-                        </Paragraph>
-                    </Column>
-                </List.Item>
-                <List.Item bulletComponent={<IconCircle name="check" {...iconProps} />}>
-                    <Column gap={spacings.xxs} alignItems="flex-start">
-                        <H4>
-                            <Translation id={`TR_${type}_MODAL_VERIFIED_PARTNERS_HEADER`} />
-                        </H4>
-                        <Paragraph>
-                            <Translation
-                                id={`TR_${type}_MODAL_TERMS_4`}
-                                values={{ provider: providerName }}
-                            />
-                        </Paragraph>
-                    </Column>
-                </List.Item>
-                <List.Item bulletComponent={<IconCircle name="pencil" {...iconProps} />}>
-                    <Column gap={spacings.xxs} alignItems="flex-start">
-                        <H4>
-                            <Translation id={`TR_${type}_MODAL_LEGAL_HEADER`} />
-                        </H4>
-                        <Paragraph>
-                            <Translation id={`TR_${type}_MODAL_TERMS_5`} />
-                        </Paragraph>
-                        <Paragraph>
-                            <Translation id={`TR_${type}_MODAL_TERMS_6`} />
-                        </Paragraph>
-                    </Column>
-                </List.Item>
-            </List>
+                        }
+                    >
+                        <Column gap={spacings.xxs} alignItems="flex-start">
+                            <H4>
+                                <Translation id={`TR_${type}_MODAL_SECURITY_HEADER`} />
+                            </H4>
+
+                            <List gap={spacings.xxs} bulletGap={spacings.sm} listStyleType="disc">
+                                <List.Item>
+                                    <Paragraph>
+                                        <Translation
+                                            id={`TR_${type}_MODAL_TERMS_1`}
+                                            values={{ provider: providerName }}
+                                        />
+                                    </Paragraph>
+                                </List.Item>
+                                <List.Item>
+                                    <Paragraph>
+                                        <Translation id={`TR_${type}_MODAL_TERMS_2`} />
+                                    </Paragraph>
+                                </List.Item>
+                                <List.Item>
+                                    <Paragraph>
+                                        <Translation id={`TR_${type}_MODAL_TERMS_3`} />
+                                    </Paragraph>
+                                </List.Item>
+                            </List>
+                        </Column>
+                    </List.Item>
+                    <List.Item bulletComponent={<Icon name="checkCircle" {...iconProps} />}>
+                        <Column gap={spacings.xxs} alignItems="flex-start">
+                            <H4>
+                                <Translation id={`TR_${type}_MODAL_VERIFIED_PARTNERS_HEADER`} />
+                            </H4>
+                            <List gap={spacings.xxs} bulletGap={spacings.sm} listStyleType="disc">
+                                <List.Item>
+                                    <Paragraph>
+                                        <Translation
+                                            id={`TR_${type}_MODAL_TERMS_4`}
+                                            values={{ provider: providerName }}
+                                        />
+                                    </Paragraph>
+                                </List.Item>
+                            </List>
+                        </Column>
+                    </List.Item>
+                    <List.Item bulletComponent={<Icon name="scroll" {...iconProps} />}>
+                        <Column gap={spacings.xxs} alignItems="flex-start">
+                            <H4>
+                                <Translation id={`TR_${type}_MODAL_LEGAL_HEADER`} />
+                            </H4>
+                            <List gap={spacings.xxs} bulletGap={spacings.sm} listStyleType="disc">
+                                <List.Item>
+                                    <Paragraph>
+                                        <Translation id={`TR_${type}_MODAL_TERMS_5`} />
+                                    </Paragraph>
+                                </List.Item>
+                                <List.Item>
+                                    <Paragraph>
+                                        <Translation id={`TR_${type}_MODAL_TERMS_6`} />
+                                    </Paragraph>
+                                </List.Item>
+                            </List>
+                        </Column>
+                    </List.Item>
+                </List>
+                <Banner variant="tertiary">
+                    <Checkbox
+                        isChecked={dontShowAgain}
+                        onClick={() => setDontShowAgain(prev => !prev)}
+                    >
+                        <Translation id="TR_TRADING_TERMS_DONT_SHOW_AGAIN" />
+                    </Checkbox>
+                </Banner>
+            </Column>
         </Modal>
     );
 };

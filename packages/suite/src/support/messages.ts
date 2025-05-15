@@ -233,6 +233,10 @@ export default defineMessages({
         defaultMessage:
             'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
     },
+    TR_TRADING_TERMS_DONT_SHOW_AGAIN: {
+        defaultMessage: 'Don’t show me this again',
+        id: 'TR_TRADING_TERMS_DONT_SHOW_AGAIN',
+    },
     TR_TRADING_SWAP_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Swap {fromCrypto} to {toCrypto} with {provider}',
         id: 'TR_TRADING_SWAP_MODAL_FOR_YOUR_SAFETY',

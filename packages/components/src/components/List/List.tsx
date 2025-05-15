@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import { SpacingValues, spacings, spacingsPx } from '@trezor/theme';
 
 import { ListItem } from './ListItem';
 import { uiAlignments } from '../../config/types';
@@ -20,6 +20,17 @@ import {
     pickAndPrepareTextProps,
     withTextProps,
 } from '../typography/utils';
+
+type ListStyleType =
+    | 'disc'
+    | 'circle'
+    | 'square'
+    | 'decimal'
+    | 'decimal-leading-zero'
+    | 'lower-roman'
+    | 'upper-roman'
+    | 'lower-alpha'
+    | 'upper-alpha';
 
 export const allowedListFrameProps = [
     'margin',
@@ -42,11 +53,13 @@ export type BulletVerticalAlignment = (typeof bulletVerticalAlignments)[number];
 
 type ContainerProps = TransientProps<AllowedFrameProps & AllowedTextProps> & {
     $gap: SpacingValues;
+    $listStyleType?: ListStyleType;
 };
 
 const Container = styled.ul<ContainerProps>`
     display: flex;
-    list-style-type: none;
+    list-style-type: ${({ $listStyleType }) => $listStyleType || 'none'};
+    padding-left: ${({ $listStyleType }) => $listStyleType && spacingsPx.md};
     flex-direction: column;
     align-items: stretch;
     gap: ${({ $gap }) => $gap}px;
@@ -63,12 +76,14 @@ export type ListProps = AllowedFrameProps &
         bulletGap?: SpacingValues;
         bulletAlignment?: BulletVerticalAlignment;
         variant?: ListVariant;
+        listStyleType?: ListStyleType;
     };
 
 type ListContextValue = {
     bulletGap: SpacingValues;
     bulletAlignment: BulletVerticalAlignment;
     bulletComponent: React.ReactNode;
+    listStyleType?: ListStyleType;
 };
 
 const ListContext = createContext<ListContextValue>({
@@ -82,6 +97,7 @@ export const List = ({
     bulletGap = spacings.md,
     bulletAlignment = 'center',
     bulletComponent,
+    listStyleType,
     variant,
     children,
     ...rest
@@ -90,9 +106,15 @@ export const List = ({
     const textProps = pickAndPrepareTextProps(rest, allowedListTextProps);
 
     return (
-        <ListContext.Provider value={{ bulletGap, bulletAlignment, bulletComponent }}>
+        <ListContext.Provider
+            value={{ bulletGap, bulletAlignment, bulletComponent, listStyleType }}
+        >
             <Text as="div" variant={variant}>
-                <Container {...makePropsTransient({ gap })} {...frameProps} {...textProps}>
+                <Container
+                    {...makePropsTransient({ gap, listStyleType })}
+                    {...frameProps}
+                    {...textProps}
+                >
                     {children}
                 </Container>
             </Text>

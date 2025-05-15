@@ -25,6 +25,7 @@ export const TOGGLE_FIRMWARE_HASH_CHECK = '@suite/toggle-firmware-hash-check';
 export const TOGGLE_ENTROPY_CHECK = '@suite/toggle-entropy-check';
 export const EVM_CONFIRM_EXPLANATION_MODAL = '@suite/evm-confirm-explanation-modal';
 export const EVM_CLOSE_EXPLANATION_BANNER = '@suite/evm-close-explanation-banner';
+export const DISMISSED_TRADING_TERMS = '@suite/dismissed-trading-terms';
 export const LOCK_UI = '@suite/lock-ui';
 export const LOCK_DEVICE = '@suite/lock-device';
 export const LOCK_ROUTER = '@suite/lock-router';

@@ -40,6 +40,7 @@ import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/u
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { selectIsTradingTermsDismissed } from 'src/reducers/suite/suiteReducer';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
@@ -69,6 +70,9 @@ export const useTradingBuyForm = ({
         isLoading,
     } = useSelector(selectTradingBuy);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
+    const isTradingTermsDismissed = useSelector(state =>
+        selectIsTradingTermsDismissed(state, type),
+    );
     const { account, timer, device, checkQuotesTimer } = useTradingInitializer({
         selectedAccount,
         pageType,
@@ -227,16 +231,19 @@ export const useTradingBuyForm = ({
             }
         }
 
-        const userConsent = async (provider: string, cryptoCurrency: string) =>
-            Boolean(
-                await dispatch(
-                    openDeferredModal({
-                        type: 'trading-buy-terms',
-                        provider,
-                        cryptoCurrency,
-                    }),
-                ),
+        const userConsent = async (provider: string, cryptoCurrency: string) => {
+            if (isTradingTermsDismissed) return true;
+
+            const confirmed = await dispatch(
+                openDeferredModal({
+                    type: 'trading-buy-terms',
+                    provider,
+                    cryptoCurrency,
+                }),
             );
+
+            return Boolean(confirmed);
+        };
 
         await dispatch(
             buyThunks.selectQuoteThunk({

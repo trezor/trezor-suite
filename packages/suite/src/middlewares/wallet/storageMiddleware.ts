@@ -256,6 +256,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
+                case SUITE.DISMISSED_TRADING_TERMS:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {
