@@ -5,44 +5,54 @@ import { BoxSkeleton, Card, HStack, VStack } from '@suite-native/atoms';
 import { BuyHeader } from './BuyHeader';
 import { TradingFooter } from '../general/TradingFooter';
 
-const SKELETON_LARGE_WIDTH = Dimensions.get('window').width * 0.3;
 const SKELETON_LARGE_HEIGHT = 60;
-const SKELETON_SMALL_WIDTH = Dimensions.get('window').width * 0.2;
 const SKELETON_SMALL_HEIGHT = 20;
 
-const SkeletonSmall = () => (
-    <BoxSkeleton width={SKELETON_SMALL_WIDTH} height={SKELETON_SMALL_HEIGHT} />
+type SkeletonProps = {
+    widthPercentage: number;
+};
+
+type SkeletonRowProps = {
+    leftWidthPercentage: number;
+    rightWidthPercentage: number;
+};
+
+const SkeletonSmall = ({ widthPercentage }: SkeletonProps) => (
+    <BoxSkeleton
+        width={Dimensions.get('window').width * widthPercentage}
+        height={SKELETON_SMALL_HEIGHT}
+    />
 );
 
-const SkeletonLarge = () => (
-    <BoxSkeleton width={SKELETON_LARGE_WIDTH} height={SKELETON_LARGE_HEIGHT} borderRadius="r16" />
+const SkeletonLarge = ({ widthPercentage }: SkeletonProps) => (
+    <BoxSkeleton
+        width={Dimensions.get('window').width * widthPercentage}
+        height={SKELETON_LARGE_HEIGHT}
+        borderRadius="r16"
+    />
+);
+
+const SkeletonLargeRow = ({ leftWidthPercentage, rightWidthPercentage }: SkeletonRowProps) => (
+    <HStack justifyContent="space-between" alignItems="center">
+        <SkeletonLarge widthPercentage={leftWidthPercentage} />
+        <SkeletonLarge widthPercentage={rightWidthPercentage} />
+    </HStack>
 );
 
 export const BuyFormSkeleton = () => (
     <VStack spacing="sp16" paddingTop="sp16">
         <BuyHeader isFormMountedRecently={true} />
-        <VStack spacing="sp16">
-            <Card>
-                <VStack>
-                    <SkeletonSmall />
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <SkeletonLarge />
-                        <SkeletonLarge />
-                    </HStack>
-                    <SkeletonSmall />
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <SkeletonLarge />
-                        <SkeletonLarge />
-                    </HStack>
-                </VStack>
-            </Card>
-            <Card>
-                <HStack justifyContent="space-between" alignItems="center">
-                    <SkeletonLarge />
-                    <SkeletonLarge />
-                </HStack>
-            </Card>
-        </VStack>
+        <Card>
+            <VStack>
+                <SkeletonSmall widthPercentage={0.2} />
+                <SkeletonLargeRow leftWidthPercentage={0.3} rightWidthPercentage={0.35} />
+                <SkeletonSmall widthPercentage={0.25} />
+                <SkeletonLargeRow leftWidthPercentage={0.4} rightWidthPercentage={0.3} />
+            </VStack>
+        </Card>
+        <Card>
+            <SkeletonLargeRow leftWidthPercentage={0.35} rightWidthPercentage={0.35} />
+        </Card>
         <TradingFooter />
     </VStack>
 );
