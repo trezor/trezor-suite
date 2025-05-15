@@ -1,6 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -8,7 +7,6 @@ import { EnterPassphrase } from './EnterPassphrase';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 
 type PassphraseWalletIsNotExistFlowProps = {
-    discovery: DiscoveryStatus;
     device: TrezorDevice;
     deviceOffer: boolean;
     passphraseState: string;
@@ -17,7 +15,6 @@ type PassphraseWalletIsNotExistFlowProps = {
 };
 
 export const PassphraseWalletIsNotExistFlow = ({
-    discovery,
     device,
     deviceOffer,
     passphraseState,

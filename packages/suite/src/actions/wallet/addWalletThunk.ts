@@ -1,19 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { getDeviceInstances } from '@suite-common/suite-utils';
-import {
-    DEVICE_MODULE_PREFIX,
-    createDeviceInstanceThunk,
-    deviceActions,
-    selectDeviceThunk,
-    selectDevices,
-    selectDiscoveryByDevicePath,
-} from '@suite-common/wallet-core';
-import { WalletType } from '@suite-common/wallet-types';
+import { DEVICE_MODULE_PREFIX } from '@suite-common/wallet-core';
 
 import { getBackgroundRoute } from 'src/utils/suite/router';
 
-import { getDiscoveryStatus } from '../../utils/wallet/getDiscoveryStatus';
 import { goto } from '../suite/routerActions';
 
 export const redirectAfterWalletSelectedThunk = createThunk<

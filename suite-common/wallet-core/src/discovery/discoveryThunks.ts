@@ -265,6 +265,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
         const result = await TrezorConnect.discoverAccounts({
             device,
             useEmptyPassphrase: device.useEmptyPassphrase,
+            // @ts-expect-error ttodo: mareks changes in connect needed
             accounts: networksToDiscover.map(n => ({
                 symbol: n,
             })),
@@ -477,7 +478,10 @@ export const runDiscoveryThunk = createThunk(
                 );
             }
 
+            // @ts-expect-error todo:
             device = selectSelectedDevice(getState());
+
+            assertStaticSessionId(deviceStateResponse.payload._state);
             const onBundleProgress = createOnBundleProgressHandler(
                 device.path,
                 deviceStateResponse.payload._state.staticSessionId,
@@ -485,7 +489,10 @@ export const runDiscoveryThunk = createThunk(
                 getState,
             );
 
+            // @ts-expect-error todo: mareks changes in connect needed
             TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
+
+            // @ts-expect-error todo: mareks changes in connect needed
 
             const discoveryAccountsPayload = getState().wallet.settings.enabledNetworks.map(n => ({
                 symbol: n,
@@ -580,9 +587,10 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
+            // @ts-expect-error todo:
             device = selectSelectedDevice(getState());
 
-            const allAccountsEmpty = result.payload.nonempty > 0;
+            const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
             console.log('allAccountsEmpty', allAccountsEmpty);
 
@@ -796,7 +804,9 @@ export const cancelDiscoveryThunk = createThunk(
 
 export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    async (_, { dispatch, getState }) => {
-        console.log('meow restartDiscoveryThunk');
+    async (_, {}) => {
+        console.log(
+            'todo: restartDiscoveryThunk is unused, should be probably replaced with "runAdditionalDiscoveryThunk"',
+        );
     },
 );

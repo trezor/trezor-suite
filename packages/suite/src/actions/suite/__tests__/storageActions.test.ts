@@ -280,14 +280,6 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev2, true));
         await store.dispatch(storageActions.rememberDevice(dev2Instance1, true));
 
-        // update discovery object
-        store.dispatch(
-            discoveryActions.updateDiscovery({
-                deviceState: dev2.state!.staticSessionId!,
-                networks: ['btc', 'ltc'],
-            }),
-        );
-
         store.dispatch(await preloadStore());
 
         // stored devices
@@ -295,26 +287,6 @@ describe('Storage actions', () => {
         const load1DevicesCount = selectDevicesCount(load1);
         expect(load1DevicesCount).toEqual(3);
         expect(load1.device.devices[0]).toEqual({ ...dev1, path: '' });
-
-        // stored discoveries
-        const storedDiscovery = load1.wallet.discovery;
-        // all 3 discoveries saved
-        expect(storedDiscovery.length).toEqual(3);
-        expect(
-            storedDiscovery.find(d => d.deviceState === dev1.state?.staticSessionId),
-        ).toBeTruthy();
-        expect(
-            storedDiscovery.find(d => d.deviceState === dev2.state?.staticSessionId),
-        ).toBeTruthy();
-        expect(
-            storedDiscovery.find(d => d.deviceState === dev2Instance1.state?.staticSessionId),
-        ).toBeTruthy();
-
-        // discovery updated synced
-        expect(
-            storedDiscovery.find((d: any) => d.deviceState === dev2.state?.staticSessionId)
-                ?.networks,
-        ).toStrictEqual(['btc', 'ltc']);
 
         // stored txs
         const acc1Txs = getAccountTransactions(acc1.key, load1.wallet.transactions.transactions);

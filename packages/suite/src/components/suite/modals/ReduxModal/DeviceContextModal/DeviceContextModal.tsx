@@ -12,6 +12,7 @@ import {
     ConfirmAddressModal,
     ConfirmFingerprintModal,
     ConfirmXpubModal,
+    PassphraseModal,
     PassphraseOnDeviceModal,
     PinInvalidModal,
     PinModal,
@@ -33,7 +34,7 @@ export const DeviceContextModal = ({
 
     if (!device) return null;
     const confirmEmptyPassphrase = useSelector(state =>
-        selectIsDiscoveryAuthConfirmationRequired(state, device?.state?.staticSessionId),
+        selectIsDiscoveryAuthConfirmationRequired(state, device.path),
     );
     const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 

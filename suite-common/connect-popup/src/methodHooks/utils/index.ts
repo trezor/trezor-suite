@@ -12,7 +12,6 @@ export const createPlaceholderAccount = (
             index: 0,
             path,
             accountType: 'placeholder',
-            networkType: network.networkType,
             coin: network.symbol,
         },
         accountInfo: {
