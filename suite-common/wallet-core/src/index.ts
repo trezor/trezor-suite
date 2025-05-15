@@ -18,7 +18,6 @@ export * from './device/deviceThunks';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoveryThunks';
-export * from './discovery/discoveryRunningStateLocks';
 export * from './fees/feesActions';
 export * from './fees/feesReducer';
 export * from './fees/feesThunks';

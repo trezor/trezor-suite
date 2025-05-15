@@ -708,6 +708,7 @@ export const runDiscoveryThunk = createThunk(
                     );
                 }
 
+                // at this point it can only be USER_UI_CANCEL_CODE
                 return;
             }
 

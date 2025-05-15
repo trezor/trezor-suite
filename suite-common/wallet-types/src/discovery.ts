@@ -1,5 +1,6 @@
 import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceUniquePath, StaticSessionId, BundleProgress } from '@trezor/connect';
+import type { DeviceUniquePath } from '@trezor/connect';
+import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
