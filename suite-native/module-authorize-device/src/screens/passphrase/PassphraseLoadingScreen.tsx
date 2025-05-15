@@ -8,8 +8,10 @@ import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms'
 import { selectPassphraseDeviceNotEmpty } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
+    AppTabsRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
+    HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -42,6 +44,12 @@ export const PassphraseLoadingScreen = () => {
             analytics.report({
                 type: EventType.PassphraseFlowFinished,
                 payload: { isEmptyWallet: false },
+            });
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
             });
         } else {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
