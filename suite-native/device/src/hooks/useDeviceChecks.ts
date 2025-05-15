@@ -1,7 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsFirmwareAuthenticityCheckDismissed } from '@suite-common/wallet-core';
-import { selectIsOnboardingFinished } from '@suite-native/settings';
+import {
+    selectIsDeviceAuthenticityCheckEnabled,
+    selectIsOnboardingFinished,
+} from '@suite-native/settings';
 
 import {
     selectHasFirmwareAuthenticityCheckHardFailed,
@@ -18,6 +21,10 @@ export const useDeviceChecks = (isDeviceCompromisedModalFocused: boolean) => {
         selectIsFirmwareAuthenticityCheckDismissed,
     );
     const isDeviceAuthenticityCheckFailed = useSelector(selectIsDeviceAuthenticityCheckFailed);
+    const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
+    const isDeviceAuthenticityEnabledAndFailed =
+        isDeviceAuthenticityCheckEnabled && isDeviceAuthenticityCheckFailed;
+
     const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
 
     const isFirmwareAuthenticityCheckHardFailedAndNotDismissed =
@@ -26,7 +33,7 @@ export const useDeviceChecks = (isDeviceCompromisedModalFocused: boolean) => {
     // any failing check should navigate to the DeviceCompromisedModal
     const shouldNavigateToDeviceCompromisedModal =
         isOnboardingFinished &&
-        (isDeviceAuthenticityCheckFailed ||
+        (isDeviceAuthenticityEnabledAndFailed ||
             isEntropyCheckEnabledAndFailed ||
             isFirmwareAuthenticityCheckHardFailedAndNotDismissed);
 
@@ -35,7 +42,7 @@ export const useDeviceChecks = (isDeviceCompromisedModalFocused: boolean) => {
         isDeviceCompromisedModalFocused && !isEntropyCheckEnabledAndFailed;
 
     const getFailedCheck = (): 'device-authenticity' | 'entropy' | 'firmware-authenticity' => {
-        if (isDeviceAuthenticityCheckFailed) {
+        if (isDeviceAuthenticityEnabledAndFailed) {
             return 'device-authenticity';
         }
         if (isEntropyCheckEnabledAndFailed) {
