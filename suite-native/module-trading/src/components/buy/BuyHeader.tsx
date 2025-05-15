@@ -8,7 +8,11 @@ export type BuyHeaderProps = {
 };
 
 export const BuyHeader = ({ isFormMountedRecently }: BuyHeaderProps) => (
-    <AnimatedBox entering={isFormMountedRecently ? undefined : FadeInUp} exiting={FadeOutUp}>
+    <AnimatedBox
+        entering={isFormMountedRecently ? undefined : FadeInUp}
+        exiting={FadeOutUp}
+        paddingHorizontal="sp16"
+    >
         <Text variant="titleSmall" color="textDefault">
             <Translation id="moduleTrading.tradingScreen.buyTitle" />
         </Text>

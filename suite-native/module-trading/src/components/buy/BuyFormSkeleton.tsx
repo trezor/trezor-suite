@@ -1,8 +1,8 @@
 import { Dimensions } from 'react-native';
 
-import { BoxSkeleton, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { BoxSkeleton, Card, HStack, VStack } from '@suite-native/atoms';
 
+import { BuyHeader } from './BuyHeader';
 import { TradingFooter } from '../general/TradingFooter';
 
 const SKELETON_LARGE_WIDTH = Dimensions.get('window').width * 0.3;
@@ -19,10 +19,8 @@ const SkeletonLarge = () => (
 );
 
 export const BuyFormSkeleton = () => (
-    <VStack spacing="sp16">
-        <Text variant="titleSmall" color="textDefault">
-            <Translation id="moduleTrading.tradingScreen.buyTitle" />
-        </Text>
+    <VStack spacing="sp16" paddingTop="sp16">
+        <BuyHeader isFormMountedRecently={true} />
         <VStack spacing="sp16">
             <Card>
                 <VStack>
