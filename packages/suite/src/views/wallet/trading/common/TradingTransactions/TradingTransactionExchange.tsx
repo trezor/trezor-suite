@@ -9,9 +9,9 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { Account } from 'src/types/wallet';
+import { TradingTransactionId } from 'src/views/wallet/trading/common';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
 import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
-import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionId';
 import { TradingTransactionInfo } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionInfo';
 import { TradingTransactionProvider } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionProvider';
 

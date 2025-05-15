@@ -1,27 +1,10 @@
-import styled from 'styled-components';
-
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Button, Row } from '@trezor/components';
+import { Button, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-
-const LabelWrapper = styled.div`
-    width: 100%;
-    flex: auto;
-    padding-right: ${spacingsPx.sm};
-    ${typography.label}
-    color: ${({ theme }) => theme.textSubdued};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
-
-const ButtonWrapper = styled.div`
-    flex: none;
-`;
 
 interface TradingTransactionIdProps {
     transactionId: string;
@@ -37,15 +20,19 @@ export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProp
     };
 
     return (
-        <Row alignItems="center" justifyContent="space-between" margin={{ top: spacings.sm }}>
-            <LabelWrapper data-testid="@trading/transaction-id">
+        <Row margin={{ top: spacings.sm }} gap={spacings.xs}>
+            <Text
+                variant="tertiary"
+                typographyStyle="label"
+                as="div"
+                data-testid="@trading/transaction-id"
+                ellipsisLineCount={1}
+            >
                 <Translation id="TR_TRADING_TRANS_ID" /> {transactionId}
-            </LabelWrapper>
-            <ButtonWrapper>
-                <Button size="tiny" variant="tertiary" onClick={copy}>
-                    <Translation id="TR_COPY_TO_CLIPBOARD" />
-                </Button>
-            </ButtonWrapper>
+            </Text>
+            <Button size="tiny" variant="tertiary" onClick={copy}>
+                <Translation id="TR_COPY_TO_CLIPBOARD" />
+            </Button>
         </Row>
     );
 };
