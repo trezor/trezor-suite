@@ -866,7 +866,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
 };
 
 // Used in wallet/Menu and Dashboard
-export const getFailedAccounts = (discovery: Discovery): Account[] => [];
+export const getFailedAccounts = (_discovery: Discovery): Account[] => [];
 // discovery.failed.map(f => {
 //     const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
 //     const network = networks[f.symbol];

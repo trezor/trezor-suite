@@ -157,6 +157,7 @@ const createAccountFromAccountInfo = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccountFromAccountInfo`,
     (accountInfo: AccountInfo, deviceState: StaticSessionId): { payload: Account } => {
         return {
+            // @ts-expect-error, bit43path type,marek
             payload: {
                 ...accountInfo,
                 deviceState: deviceState,
