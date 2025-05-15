@@ -49,7 +49,6 @@ immer
 jest
 jest-canvas-mock
 jest-watch-typeahead
-jsdom
 json-schema-to-typescript
 jws
 patch-package
