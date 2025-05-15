@@ -1,6 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
+import { selectFirmware } from '@suite-common/firmware';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
@@ -96,6 +97,7 @@ export const extraDependencies: ExtraDependencies = {
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectSuiteSettings,
+        selectFirmwareInstallation: selectFirmware,
         selectIsWindowVisible,
         selectTradingEnvironment: (state: AppState) =>
             state.suite.settings.debug.invityServerEnvironment,
