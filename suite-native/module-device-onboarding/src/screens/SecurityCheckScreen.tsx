@@ -1,8 +1,5 @@
-import { ReactNode, useState } from 'react';
-
 import { EventType, analytics } from '@suite-native/analytics';
-import { TitleHeader, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import { CardStepper, CardStepperMap, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import {
@@ -14,13 +11,12 @@ import {
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
-import { SecurityCheckStepCard } from '../components/SecurityCheckStepCard';
 import { SecuritySealDescription } from '../components/SecuritySealDescription';
 
 const stepToContentMap = {
     1: {
         header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step1.header" />,
-        suspicionCause: 'untrustedReseller',
+        secondaryButtonParameter: 'untrustedReseller',
         description: (
             <Translation
                 id="moduleDeviceOnboarding.securityCheckScreen.step1.description"
@@ -51,7 +47,7 @@ const stepToContentMap = {
         header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.header" />,
         description: <SecuritySealDescription />,
         icon: 'selectionSlash',
-        suspicionCause: 'securitySeal',
+        secondaryButtonParameter: 'securitySeal',
     },
     3: {
         header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.header" />,
@@ -59,32 +55,29 @@ const stepToContentMap = {
             <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.description" />
         ),
         icon: 'package',
-        suspicionCause: 'packaging',
+        secondaryButtonParameter: 'packaging',
     },
-} as const satisfies Record<
-    1 | 2 | 3,
-    {
-        header: ReactNode;
-        description: ReactNode;
-        icon: IconName;
-        link?: string;
-        suspicionCause: DeviceSuspicionCause;
-    }
->;
+} as const satisfies CardStepperMap<DeviceSuspicionCause>;
 
 export const SecurityCheckScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
-    const [currentStep, setCurrentStep] = useState<number>(1);
-
-    const handlePressConfirmButton = () => {
-        if (currentStep < 3) {
-            setCurrentStep(currentStep + 1);
-
-            return;
-        }
-
+    const handleFinishStepper = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInstallation);
+    };
+
+    const handlePressSecondaryButton = (id?: DeviceSuspicionCause) => {
+        if (!id) return;
+
+        navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
+            suspicionCause: id,
+        });
+        analytics.report({
+            type: EventType.DeviceSetupSecurityCheck,
+            payload: {
+                location: id,
+            },
+        });
     };
 
     return (
@@ -100,20 +93,11 @@ export const SecurityCheckScreen = ({
                             <Translation id="moduleDeviceOnboarding.securityCheckScreen.subtitle" />
                         }
                     />
-                    <VStack spacing="sp16">
-                        {Object.entries(stepToContentMap).map(([stepIndex, content]) => (
-                            <SecurityCheckStepCard
-                                key={stepIndex}
-                                isChecked={currentStep > Number(stepIndex)}
-                                isOpened={currentStep === Number(stepIndex)}
-                                onPressConfirmButton={handlePressConfirmButton}
-                                icon={content.icon}
-                                header={content.header}
-                                description={content.description}
-                                suspicionCause={content.suspicionCause}
-                            />
-                        ))}
-                    </VStack>
+                    <CardStepper<DeviceSuspicionCause>
+                        onFinish={handleFinishStepper}
+                        onPressSecondaryButton={handlePressSecondaryButton}
+                        stepToContentMap={stepToContentMap}
+                    />
                 </VStack>
             </VStack>
         </DeviceOnboardingScreenWithExitButton>

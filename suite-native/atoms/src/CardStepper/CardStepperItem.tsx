@@ -1,9 +1,6 @@
 import { ReactNode } from 'react';
 import { FadeInUp, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
-import { useNavigation } from '@react-navigation/core';
-
-import { EventType, analytics } from '@suite-native/analytics';
 import {
     AnimatedCard,
     AnimatedVStack,
@@ -15,29 +12,18 @@ import {
 } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    DeviceSuspicionCause,
-    StackNavigationProps,
-} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-type SecurityCheckStepCardProps = {
+type CardStepperItemProps = {
     header: ReactNode;
     description: ReactNode;
     isChecked: boolean;
     isOpened: boolean;
     icon: IconName;
     onPressConfirmButton: () => void;
-    suspicionCause: DeviceSuspicionCause;
+    onPressSecondaryButton: () => void;
 };
-
-type NavigationProps = StackNavigationProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.SecurityCheck
->;
 
 const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabled }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -69,31 +55,18 @@ const LAYOUT_ANIMATION = LinearTransition.springify().damping(DAMPING);
 const ENTERING_ANIMATION = FadeInUp.springify().damping(DAMPING);
 const EXITING_ANIMATION = FadeOutDown.springify().damping(DAMPING);
 
-export const SecurityCheckStepCard = ({
+export const CardStepperItem = ({
     header,
     description,
     icon,
     isChecked,
     isOpened,
     onPressConfirmButton,
-    suspicionCause,
-}: SecurityCheckStepCardProps) => {
+    onPressSecondaryButton,
+}: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const navigation = useNavigation<NavigationProps>();
     const iconName = isChecked ? 'check' : icon;
     const headerColor: Color = isChecked ? 'textPrimaryDefault' : 'textSubdued';
-
-    const navigateToSuspiciousDeviceScreen = () => {
-        navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
-            suspicionCause,
-        });
-        analytics.report({
-            type: EventType.DeviceSetupSecurityCheck,
-            payload: {
-                location: suspicionCause,
-            },
-        });
-    };
 
     return (
         <AnimatedCard
@@ -128,7 +101,7 @@ export const SecurityCheckStepCard = ({
                                 size="small"
                                 style={applyStyle(buttonStyle)}
                                 colorScheme="tertiaryElevation0"
-                                onPress={navigateToSuspiciousDeviceScreen}
+                                onPress={onPressSecondaryButton}
                             >
                                 <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
                             </Button>
