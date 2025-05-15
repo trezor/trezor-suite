@@ -2,11 +2,12 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
+import { getFirmwareReleaseConfig } from '@trezor/firmware-release-config';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmwareReleases } from './firmwareInfo';
+import { parseFirmwareReleaseConfig, parseFirmwareReleases } from './firmwareInfo';
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
@@ -19,7 +20,7 @@ export class DataManager {
     private static messages: Record<string, any> = messages;
     private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
 
-    static load(settings: ConnectSettings, withAssets = true) {
+    static async load(settings: ConnectSettings, withAssets = true) {
         this.settings = settings;
 
         if (!withAssets) return;
@@ -28,10 +29,12 @@ export class DataManager {
             coins,
             coinsEth,
             ...Object.fromEntries(
-                Object.entries(firmwareAssets).map(([key, value]) => [
-                    `firmware-${key.toLowerCase()}`,
-                    value,
-                ]),
+                Object.entries(firmwareAssets).map(([key, value]) => {
+                    // For `unknown` firmware we get `{}` so we transform it to `[]` to be type safe.
+                    const release = Array.isArray(value) ? value : [];
+
+                    return [`firmware-${key.toLowerCase()}`, release];
+                }),
             ),
         };
         Object.assign(this.assets, assetsMap);
@@ -46,11 +49,16 @@ export class DataManager {
         for (const model in DeviceModelInternal) {
             const firmwareKey = `firmware-${model.toLowerCase()}`;
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
+            const modelReleases = this.assets[firmwareKey] as FirmwareRelease[];
             // Check if the firmware data exists for this model
-            if (this.assets[firmwareKey]) {
-                parseFirmwareReleases(this.assets[firmwareKey], modelType);
+            if (modelReleases) {
+                parseFirmwareReleases(modelReleases, modelType);
             }
         }
+
+        const firmwareReleaseConfig = await getFirmwareReleaseConfig();
+
+        parseFirmwareReleaseConfig(firmwareReleaseConfig);
     }
 
     static getProtobufMessages() {

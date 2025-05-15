@@ -86,6 +86,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/firmware-release-config": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",

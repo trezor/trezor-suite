@@ -67,3 +67,8 @@ export const buildFirmwareFileName = (
 
     return `trezor-${internalModel.toLocaleLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
 };
+
+export const buildIntermediaryFirmwareFileName = (
+    internalModel: DeviceModelInternal,
+    version: number,
+) => `trezor-${internalModel}-inter-v${version}.bin`;

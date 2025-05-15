@@ -30,7 +30,12 @@ import { getThpChannel } from './thp';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
 import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
-import { getFirmwareStatus, getRelease, getReleaseInfo, getReleases } from '../data/firmwareInfo';
+import {
+    getFirmwareLocation,
+    getFirmwareReleaseConfig,
+    getFirmwareStatus,
+    getRelease,
+} from '../data/firmwareInfo';
 import { getLanguage } from '../data/getLanguage';
 import {
     DEVICE,
@@ -53,9 +58,9 @@ import {
     Features,
     FirmwareHashCheckError,
     FirmwareHashCheckResult,
+    FirmwareReleaseConfigInfo,
     FirmwareType,
     KnownDevice,
-    ReleaseInfo,
     UnavailableCapabilities,
     VersionArray,
 } from '../types';
@@ -152,9 +157,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this._firmwareStatus;
     }
 
-    private _firmwareRelease?: ReleaseInfo | null;
-    public get firmwareRelease() {
-        return this._firmwareRelease;
+    private _firmwareReleaseConfig?: FirmwareReleaseConfigInfo;
+    public get firmwareReleaseConfig() {
+        return this._firmwareReleaseConfig;
     }
 
     // @ts-expect-error: strictPropertyInitialization
@@ -720,39 +725,36 @@ export class Device extends TypedEmitter<DeviceEvents> {
             errorPayload,
         });
 
-        const baseUrl = DataManager.getSettings('binFilesBaseUrl');
-        const enabled = DataManager.getSettings('enableFirmwareHashCheck');
-        if (!enabled || baseUrl === undefined) return createFailResult('check-skipped');
-
         const firmwareVersion = this.getVersion();
         // device has no features (not yet connected) or no firmware
         if (firmwareVersion === undefined || !this.features || this.features.bootloader_mode) {
             return null;
         }
 
+        const firmwareLocation = getFirmwareLocation({
+            firmwareVersion,
+            internalModel: this.features.internal_model,
+            firmwareType: this.firmwareType ? this.firmwareType : FirmwareType.Regular,
+        });
+
+        const enabled = DataManager.getSettings('enableFirmwareHashCheck');
+        if (!enabled) return createFailResult('check-skipped');
+
         const checkSupported = !this.unavailableCapabilities.getFirmwareHash;
         if (!checkSupported) return createFailResult('check-unsupported');
 
-        const release = getReleases(this.features.internal_model).find(r =>
-            versionUtils.isEqual(r.version, firmwareVersion),
-        );
-        // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
-        if (release === undefined) return createFailResult('unknown-release');
+        const { baseUrl, firmwareName } = firmwareLocation;
+        const firmwareBinary = await getBinaryOptional({
+            baseUrl,
+            firmwareName,
+            version: firmwareVersion,
+        });
 
-        const btcOnly = this.firmwareType === FirmwareType.BitcoinOnly;
-        const binary = await getBinaryOptional({ baseUrl, btcOnly, release });
         // release was found, but not its binary - happens on desktop, where only local files are searched
-        if (binary === null) {
+        if (firmwareBinary === null) {
             return createFailResult('check-unsupported');
         }
-        // binary was found, but it's likely a git LFS pointer (can happen on dev) - see onCallFirmwareUpdate.ts
-        if (binary.byteLength < 200) {
-            _log.warn(`Firmware binary for hash check suspiciously small (< 200 b)`);
-
-            return createFailResult('check-unsupported');
-        }
-
-        const strippedBinary = stripFwHeaders(binary);
+        const strippedBinary = stripFwHeaders(firmwareBinary.binary);
         const { hash: expectedHash, challenge } = calculateFirmwareHash(
             this.features.major_version,
             strippedBinary,
@@ -925,10 +927,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 });
             }
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this._firmwareStatus = getFirmwareStatus(feat);
-            this._firmwareRelease = getReleaseInfo(feat);
+            this._firmwareStatus = getFirmwareStatus(feat, FirmwareType.Regular);
+            this._firmwareReleaseConfig = getFirmwareReleaseConfig(feat, FirmwareType.Regular);
 
-            this.availableTranslations = this.firmwareRelease?.translations ?? [];
+            this.availableTranslations = this.firmwareReleaseConfig?.translations ?? [];
         }
 
         this._features = feat;
@@ -1142,7 +1144,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             mode: this.getMode(),
             color: this.color,
             firmware: this.firmwareStatus,
-            firmwareRelease: this.firmwareRelease,
+            firmwareReleaseConfig: this.firmwareReleaseConfig,
             firmwareType: this.firmwareType,
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,
