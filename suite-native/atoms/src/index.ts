@@ -36,7 +36,6 @@ export * from './ProgressBar';
 export * from './Card/Card';
 export * from './Card/HeaderedCard';
 export * from './Card/CardDivider';
-export * from './StepsProgressBar';
 export * from './ScreenHeaderWrapper';
 export * from './ErrorMessage';
 export * from './Table';
