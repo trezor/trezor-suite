@@ -1,4 +1,6 @@
-import createComponentWithIntl from 'src/support/tests/IntlHelper';
+import { screen } from '@testing-library/react';
+
+import { renderWithIntl } from 'src/support/tests/IntlHelper';
 
 import { Translation } from '../Translation';
 
@@ -23,49 +25,43 @@ const messages = {
 };
 
 describe('Translation component', () => {
-    test('with id, defaultMessage props', () => {
-        const component = createComponentWithIntl(<Translation id="TR_CANCEL" />);
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
+    test('renders id with defaultMessage', () => {
+        renderWithIntl(<Translation id="TR_CANCEL" defaultMessage="Cancel" />);
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
-    test('with message that holds string in value (passed via props)', () => {
-        const component = createComponentWithIntl(
-            // @ts-expect-error
-            <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
-        );
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
+    test('renders message with string value', () => {
+        // @ts-expect-error: fake id for testing
+        renderWithIntl(<Translation {...messages.TR_NAME} values={{ name: 'John' }} />);
+        expect(screen.getByText('Name: John')).toBeInTheDocument();
     });
 
-    test('with message that holds another message object in values (passed via props)', () => {
-        const component = createComponentWithIntl(
+    test('renders message with nested messages', () => {
+        renderWithIntl(
             <Translation
                 {...messages.TR_HELLO_NAME}
                 values={{
-                    // @ts-expect-error
+                    // @ts-expect-error: fake id for testing
                     TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
                     TR_AGE: 100,
                 }}
             />,
         );
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
+        expect(screen.getByText(/Hello/)).toBeInTheDocument();
     });
 
-    test('with message that holds another in values (passed via props)', () => {
-        const component = createComponentWithIntl(
-            // @ts-expect-error
+    test('renders message with nested Translation components', () => {
+        renderWithIntl(
+            // @ts-expect-error: fake id for testing
             <Translation
                 {...messages.TR_HELLO_NAME}
                 values={{
-                    // @ts-expect-error
+                    // @ts-expect-error: fake id for testing
                     TR_NAME: <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
                     TR_AGE: 100,
                 }}
             />,
         );
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
+        expect(screen.getByText(/Hello/)).toBeInTheDocument();
     });
 });

@@ -12520,6 +12520,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
+    "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:14.2.1"
     "@testing-library/user-event": "npm:14.5.2"
     "@trezor/address-validator": "workspace:*"
@@ -12558,7 +12559,6 @@ __metadata:
     "@types/react": "npm:18.2.55"
     "@types/react-dom": "npm:18.2.19"
     "@types/react-qr-reader": "npm:^2.1.7"
-    "@types/react-test-renderer": "npm:^18.0.7"
     "@types/redux-logger": "npm:^3.0.13"
     "@types/redux-mock-store": "npm:^1.5.0"
     "@types/semver": "npm:^7.7.0"
@@ -12589,7 +12589,6 @@ __metadata:
     react-router-dom: "npm:^5.2.0"
     react-select: "npm:^5.10.1"
     react-svg: "npm:16.3.0"
-    react-test-renderer: "npm:^18.2.0"
     react-toastify: "npm:^10.0.4"
     react-use: "npm:^17.5.0"
     recharts: "npm:^2.15.3"
@@ -13867,15 +13866,6 @@ __metadata:
     "@types/history": "npm:^4.7.11"
     "@types/react": "npm:*"
   checksum: 10/72d78d2f4a4752ec40940066b73d7758a0824c4d0cbeb380ae24c8b1cdacc21a6fc835a99d6849b5b295517a3df5466fc28be038f1040bd870f8e39e5ded43a4
-  languageName: node
-  linkType: hard
-
-"@types/react-test-renderer@npm:^18.0.7":
-  version: 18.0.7
-  resolution: "@types/react-test-renderer@npm:18.0.7"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/701d7d815fe7b921712ebdb2c4434e99b92403d37c51b33a01ce1b62fed7d1efbf9f749971d9031a5b137c6d5e194249c378106768aa69725a01f150fef0ec7f
   languageName: node
   linkType: hard
 
@@ -35604,7 +35594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-test-renderer@npm:18.3.1, react-test-renderer@npm:^18.2.0":
+"react-test-renderer@npm:18.3.1":
   version: 18.3.1
   resolution: "react-test-renderer@npm:18.3.1"
   dependencies:
