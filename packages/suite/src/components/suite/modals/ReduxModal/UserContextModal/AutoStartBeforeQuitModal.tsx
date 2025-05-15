@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -12,6 +12,10 @@ import { useDispatch } from 'src/hooks/suite';
 export const AutoStartBeforeQuitModal = () => {
     const dispatch = useDispatch();
     const [dontAskAgain, setDontAskAgain] = useState(false);
+    useEffect(() => {
+        if (desktopApi.available) desktopApi.appAutoStartPopupAck();
+    }, []);
+
     if (!desktopApi.available) return null;
 
     const handleResponse = (

@@ -97,16 +97,29 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
     }
 
     // Display popup in renderer and wait for response
-    const deferred = createDeferred<
+    const deferredResponse = createDeferred<
         'background-always' | 'background-now' | 'quit-always' | 'quit-now'
     >();
+    let modalShown = false;
+    ipcMain.removeHandler('app/auto-start/popup-ack');
     ipcMain.removeHandler('app/auto-start/popup-response');
+    ipcMain.handleOnce('app/auto-start/popup-ack', ipcEvent => {
+        validateIpcMessage(ipcEvent);
+        modalShown = true;
+    });
     ipcMain.handleOnce('app/auto-start/popup-response', (ipcEvent, response) => {
         validateIpcMessage(ipcEvent);
-        deferred.resolve(response);
+        deferredResponse.resolve(response);
     });
     mainWindow.webContents.send('app/auto-start/popup-request');
-    const response = await deferred.promise;
+
+    // Fallback if modal not shown at the moment
+    // This can happen on some screens like onboarding, where normal modal might not be shown
+    setTimeout(() => {
+        if (!modalShown) deferredResponse.resolve('quit-now');
+    }, 1000);
+
+    const response = await deferredResponse.promise;
 
     switch (response) {
         case 'background-always': {
