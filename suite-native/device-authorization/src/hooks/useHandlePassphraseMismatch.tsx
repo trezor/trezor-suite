@@ -3,21 +3,27 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import {
+    cancelDiscoveryThunk,
+    deviceActions,
+    runDiscoveryThunk,
+    selectSelectedDevice,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
+    AppTabsRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
+    HomeStackRoutes,
     RootStackParamList,
+    RootStackRoutes,
 } from '@suite-native/navigation';
 import { StackToStackCompositeNavigationProps } from '@suite-native/navigation/src/types';
 
 import { selectHasPassphraseMismatchError } from '../deviceAuthorizationSlice';
-import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    retryPassphraseAuthenticationThunk,
-} from '../passphraseThunks';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -29,6 +35,7 @@ export const useHandlePassphraseMismatch = () => {
     const dispatch = useDispatch();
 
     const navigation = useNavigation<NavigationProp>();
+    const device = useSelector(selectSelectedDevice);
 
     const { showAlert } = useAlert();
 
@@ -49,15 +56,38 @@ export const useHandlePassphraseMismatch = () => {
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.primaryButton" />
                 ),
                 onPressPrimaryButton: () => {
-                    navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseForm);
-                    dispatch(retryPassphraseAuthenticationThunk());
+                    if (!device) return;
+
+                    dispatch(cancelDiscoveryThunk(device));
+                    dispatch(
+                        deviceActions.removeButtonRequests({
+                            device,
+                            buttonRequestCode: 'ButtonRequest_Other',
+                        }),
+                    );
+                    dispatch(
+                        startDiscoveryThunk({
+                            device,
+                            isAddingHiddenWallet: true,
+                            isAddingExistingWallet: false,
+                        }),
+                    );
+                    dispatch(runDiscoveryThunk(device));
                 },
                 primaryButtonVariant: 'redBold',
                 secondaryButtonTitle: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.secondaryButton" />
                 ),
                 onPressSecondaryButton: () => {
-                    dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+                    if (!device) return;
+                    dispatch(cancelDiscoveryThunk(device));
+                    navigation.navigate(RootStackRoutes.AppTabs, {
+                        screen: AppTabsRoutes.HomeStack,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    });
+
                     analytics.report({
                         type: EventType.PassphraseExit,
                         payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
@@ -67,5 +97,5 @@ export const useHandlePassphraseMismatch = () => {
                 pictogramVariant: 'critical',
             });
         }
-    }, [dispatch, hasPassphraseMismatchError, navigation, showAlert]);
+    }, [device, dispatch, hasPassphraseMismatchError, navigation, showAlert]);
 };

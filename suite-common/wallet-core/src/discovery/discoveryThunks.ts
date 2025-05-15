@@ -633,6 +633,7 @@ export const runDiscoveryThunk = createThunk(
                 discoveryActions.updateDiscovery(
                     {
                         status: 'confirm-empty-passphrase',
+                        emptyWallet: true,
                     },
                     device.path,
                 ),

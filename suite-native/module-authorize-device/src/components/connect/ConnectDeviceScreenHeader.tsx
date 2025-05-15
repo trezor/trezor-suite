@@ -1,16 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    selectDeviceRequestedPin,
-    selectIsCreatingNewPassphraseWallet,
-} from '@suite-native/device-authorization';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -39,12 +35,10 @@ export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
     onCancelNavigationTarget,
 }: ConnectDeviceScreenHeaderProps) => {
-    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
 
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const handleCancel = useCallback(() => {
@@ -66,11 +60,6 @@ export const ConnectDeviceScreenHeader = ({
                 });
             }
         } else {
-            // Remove unauthorized passphrase device if it was created before prompting the PIN.
-            if (isCreatingNewWalletInstance) {
-                dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-            }
-
             if (hasDeviceRequestedPin) {
                 TrezorConnect.cancel('pin-cancelled');
             }
@@ -86,14 +75,12 @@ export const ConnectDeviceScreenHeader = ({
             }
         }
     }, [
-        dispatch,
-        hideAlert,
         hasDiscovery,
-        navigation,
-        showAlert,
-        isCreatingNewWalletInstance,
         hasDeviceRequestedPin,
+        showAlert,
+        hideAlert,
         onCancelNavigationTarget,
+        navigation,
     ]);
 
     useHandleHardwareBackNavigation(handleCancel);

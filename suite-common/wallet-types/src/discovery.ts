@@ -6,6 +6,7 @@ import { Account, AccountBackendSpecific } from './account';
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
+    emptyWallet?: boolean;
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &
