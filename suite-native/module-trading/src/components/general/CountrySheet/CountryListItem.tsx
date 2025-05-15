@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Pressable } from 'react-native';
+import { Platform, Pressable } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedBox, Card, HStack, Radio, Text } from '@suite-native/atoms';
@@ -20,11 +20,14 @@ const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
 
 export const CountryListItem = ({ label, onPress, value, isSelected }: CountryListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    // on android fade animation looks ugly on view with shadows, but without animation it looks even worse
+    // do not display shadow on android and keep animating
+    const noShadow = Platform.OS === 'android';
 
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut}>
             <Pressable onPress={onPress} style={applyStyle(wrapperStyle)}>
-                <Card>
+                <Card noShadow={noShadow}>
                     <HStack alignItems="center" justifyContent="space-between">
                         <HStack>
                             <Text variant="body" color="textDefault">

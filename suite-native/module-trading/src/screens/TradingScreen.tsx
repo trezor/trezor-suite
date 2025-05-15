@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -38,11 +38,14 @@ const TradingScreenContent = () => {
         }
     }, [tradeToBeOpened, navigation]);
 
+    const isLoadingFinished = !isLoading && lastLoadedTimestamp > 0;
+
+    const wasSkeletonDisplayed = useRef(!isLoadingFinished);
+
     if (isInternetReachable === false) {
         return <DeviceOffline />;
     }
 
-    const isLoadingFinished = !isLoading && lastLoadedTimestamp > 0;
     if (isLoadingFinished && !isFullyLoaded) {
         return <ServerOffline onRetryPress={() => setReloadOrdinal(reloadOrdinal + 1)} />;
     }
@@ -52,7 +55,7 @@ const TradingScreenContent = () => {
             <ContextMessage context={Context.tradingBuy} />
             {isFullyLoaded ? (
                 <BuyFormContextProvider>
-                    <BuyForm />
+                    <BuyForm shouldAnimateEntering={wasSkeletonDisplayed.current} />
                 </BuyFormContextProvider>
             ) : (
                 <BuyFormSkeleton />

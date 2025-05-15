@@ -1,5 +1,5 @@
 import { Pressable } from 'react-native';
-import { FadeIn, FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { AnimatedProps } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -23,8 +23,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 
 type TradeHistoryButtonProps = {
     tradeType: TradingType;
-    isFormMountedRecently?: boolean;
+    enteringAnimation: AnimatedProps<Record<never, unknown>>['entering'];
+    exitingAnimation: AnimatedProps<Record<never, unknown>>['exiting'];
 };
+
+const TRADE_HISTORY_BUTTON_TEST_ID = '@trading/history/button';
 
 const buttonStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
@@ -45,7 +48,8 @@ export type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const TradeHistoryButton = ({
     tradeType,
-    isFormMountedRecently,
+    enteringAnimation,
+    exitingAnimation,
 }: TradeHistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
@@ -60,8 +64,8 @@ export const TradeHistoryButton = ({
     const handleOnPress = () => navigation.navigate(TradingStackRoutes.TradeHistory, { tradeType });
 
     return (
-        <AnimatedBox entering={isFormMountedRecently ? FadeIn : FadeInDown} exiting={FadeOutDown}>
-            <Pressable onPress={handleOnPress}>
+        <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
+            <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
                 <HStack style={applyStyle(buttonStyle)}>
                     <Text variant="body" color="textSubdued">
                         <Translation id="moduleTrading.tradeHistory.button.title" />

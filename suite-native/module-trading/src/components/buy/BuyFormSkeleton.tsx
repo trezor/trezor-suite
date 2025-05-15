@@ -45,6 +45,6 @@ export const BuyFormSkeleton = () => (
                 </HStack>
             </Card>
         </VStack>
-        <TradingFooter isFormMountedRecently={true} />
+        <TradingFooter />
     </VStack>
 );

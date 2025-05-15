@@ -1,6 +1,6 @@
+import { Platform } from 'react-native';
 import {
     FadeIn,
-    FadeOut,
     LinearTransition,
     interpolateColor,
     useAnimatedStyle,
@@ -23,6 +23,7 @@ import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;
+    shouldAnimateEntering?: boolean;
 };
 
 const buySectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
@@ -50,15 +51,18 @@ const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
     }));
 };
 
-export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
+export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardProps) => {
     const { applyStyle } = useNativeStyles();
     const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
     const { watch } = useTradingBuyFormContext();
 
     const asset = watch('asset');
 
+    // on android fade animation looks ugly on view with shadows, better to skip it
+    const enteringAnimation = shouldAnimateEntering && Platform.OS === 'ios' ? FadeIn : undefined;
+
     return (
-        <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
+        <AnimatedBox entering={enteringAnimation} layout={LinearTransition}>
             <AnimatedCard style={animatedStyle} noPadding>
                 <VStack
                     style={applyStyle(buySectionStyle, { bottomBorder: true })}

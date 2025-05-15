@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode, useMemo } from 'react';
-import { FadeIn, FadeInUp, FadeOut, FadeOutUp } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { AnimatedBox, Text } from '@suite-native/atoms';
@@ -109,7 +109,7 @@ const renderInternalItem = <T, U>(
     switch (item[0]) {
         case 'sectionHeader':
             return (
-                <AnimatedBox paddingVertical="sp12" entering={FadeInUp} exiting={FadeOutUp}>
+                <AnimatedBox paddingVertical="sp12" entering={FadeIn} exiting={FadeOut}>
                     <Text variant="hint" color="textSubdued">
                         {item[1]}
                     </Text>

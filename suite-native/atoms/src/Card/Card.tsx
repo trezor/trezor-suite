@@ -15,6 +15,7 @@ export type CardProps = {
     children: ReactNode;
     style?: NativeStyleObject;
     noPadding?: boolean;
+    noShadow?: boolean;
     borderColor?: Color;
     alertProps?: InlineAlertBoxProps;
     alertPosition?: AlertPosition;
@@ -30,11 +31,11 @@ const cardInnerContainerStyle = prepareNativeStyle<{
     alertPosition?: AlertPosition;
     noPadding: boolean;
     borderColor?: Color;
-}>((utils, { alertPosition, noPadding, borderColor }) => ({
+    noShadow?: boolean;
+}>((utils, { alertPosition, noPadding, borderColor, noShadow }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.r16,
     padding: noPadding ? 0 : utils.spacings.sp16,
-    ...utils.boxShadows.small,
 
     extend: [
         {
@@ -57,6 +58,10 @@ const cardInnerContainerStyle = prepareNativeStyle<{
                 borderColor: utils.colors[borderColor!],
                 borderWidth: utils.borders.widths.small,
             },
+        },
+        {
+            condition: !noShadow,
+            style: utils.boxShadows.small,
         },
     ],
 }));
@@ -88,7 +93,15 @@ const alertBoxWrapperStyle = prepareNativeStyle<{
 
 export const Card = React.forwardRef<View, CardProps>(
     (
-        { children, style, alertProps, alertPosition, borderColor, noPadding = false }: CardProps,
+        {
+            children,
+            style,
+            alertProps,
+            alertPosition,
+            borderColor,
+            noPadding = false,
+            noShadow = false,
+        }: CardProps,
         ref,
     ) => {
         const { applyStyle } = useNativeStyles();
@@ -107,6 +120,7 @@ export const Card = React.forwardRef<View, CardProps>(
                             alertPosition,
                             noPadding,
                             borderColor,
+                            noShadow,
                         }),
                         style,
                     ]}
