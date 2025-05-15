@@ -1,4 +1,4 @@
-import { ReactNode, memo, useCallback, useEffect } from 'react';
+import { ReactNode, memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectTradingBuyProviders } from '@suite-common/trading';
@@ -46,20 +46,12 @@ export const LegalSheet = memo(
         useEffect(() => {
             if (isVisible) {
                 openModal();
+            } else {
+                closeModal();
             }
-        }, [isVisible, openModal]);
+        }, [closeModal, isVisible, openModal]);
 
-        const dismissSheet = useCallback(() => {
-            onDismiss();
-            closeModal();
-        }, [onDismiss, closeModal]);
-
-        useBottomSheetBackButtonSubscription(isVisible, dismissSheet);
-
-        const closeWithConsent = useCallback(() => {
-            onConsent();
-            closeModal();
-        }, [onConsent, closeModal]);
+        useBottomSheetBackButtonSubscription(isVisible, onDismiss);
 
         return (
             <BottomSheetModal
@@ -115,7 +107,7 @@ export const LegalSheet = memo(
                         // and some tests need to target the "Continue" button on the form screen.
                         isVisible && (
                             <Box paddingVertical="sp20">
-                                <Button onPress={closeWithConsent} testID={CONFIRM_BUTTON_TEST_ID}>
+                                <Button onPress={onConsent} testID={CONFIRM_BUTTON_TEST_ID}>
                                     <Translation id="moduleTrading.tradingScreen.continueButton" />
                                 </Button>
                             </Box>
