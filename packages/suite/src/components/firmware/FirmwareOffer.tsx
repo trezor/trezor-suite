@@ -23,7 +23,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
     const { originalDevice } = useFirmwareInstallation();
     const { translationString } = useTranslation();
 
-    if (!originalDevice?.firmwareRelease) {
+    if (!originalDevice?.firmwareReleaseConfig) {
         return null;
     }
 
@@ -32,11 +32,9 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
         ? translationString('TR_CUSTOM_FIRMWARE_VERSION')
         : getFwUpdateVersion(originalDevice);
 
-    const isBtcOnly = targetFirmwareType === FirmwareType.BitcoinOnly;
-
     const parsedChangelog = isCustomFirmware
         ? null
-        : parseFirmwareChangelog({ release: originalDevice.firmwareRelease.release, isBtcOnly });
+        : parseFirmwareChangelog({ release: originalDevice.firmwareReleaseConfig.release });
     const changelogUrl = getChangelogUrl(originalDevice);
 
     const currentFirmwareType = getSuiteFirmwareTypeString(originalDevice.firmwareType);

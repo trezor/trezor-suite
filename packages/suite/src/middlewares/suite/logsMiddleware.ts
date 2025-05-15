@@ -100,7 +100,7 @@ const log =
                         type: action.type,
                         payload: {
                             ...action.payload,
-                            firmwareRelease: undefined,
+                            firmwareReleaseConfig: undefined,
                             unavailableCapabilities: undefined,
                         },
                     }),

@@ -52,7 +52,7 @@ const DeviceRow = ({ updateStatus, onClick }: DeviceRowProps) => {
     }
 
     const firmwareCurrentVersion = getFirmwareVersion(device);
-    const firmwareNewVersion = device.firmwareRelease?.release?.version?.join('.');
+    const firmwareNewVersion = device.firmwareReleaseConfig?.release?.version?.join('.');
 
     return (
         <TooltipRow

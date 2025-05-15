@@ -3,7 +3,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { FirmwareType, UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-const { getSuiteDevice, getFirmwareRelease } = testMocks;
+const { getSuiteDevice, getFirmwareReleaseConfig } = testMocks;
 
 const bootloaderDevice = getSuiteDevice({ mode: 'bootloader', connected: true });
 const bootloaderDeviceNeedsIntermediary = {
@@ -11,7 +11,14 @@ const bootloaderDeviceNeedsIntermediary = {
         {
             mode: 'bootloader',
             connected: true,
-            firmwareRelease: { ...getFirmwareRelease(), intermediaryVersion: 1 },
+            firmwareReleaseConfig: {
+                ...getFirmwareReleaseConfig(),
+                intermediary: {
+                    min_firmware_version: [1, 6, 2],
+                    min_bootloader_version: [1, 6, 2],
+                    version: 1,
+                },
+            },
         },
         { major_version: 1, internal_model: DeviceModelInternal.T1B1 },
     ),
@@ -21,7 +28,7 @@ const bootloaderDeviceNoIntermediaryT1 = {
         {
             mode: 'bootloader',
             connected: true,
-            firmwareRelease: { ...getFirmwareRelease(), intermediaryVersion: undefined },
+            firmwareReleaseConfig: { ...getFirmwareReleaseConfig(), intermediary: undefined },
         },
         { major_version: 1, internal_model: DeviceModelInternal.T1B1 },
     ),
