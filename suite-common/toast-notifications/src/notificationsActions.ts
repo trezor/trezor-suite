@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { createActionWithExtraDeps } from '@suite-common/redux-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
 import { NotificationEntry, NotificationEventPayload, NotificationId, ToastPayload } from './types';
@@ -25,27 +26,32 @@ const remove = createAction(
     }),
 );
 
+// Shared function to transform payload to NotificationEntry
+export const toastPayloadTransform = (payload: ToastPayload, device?: TrezorDevice) =>
+    ({
+        context: 'toast' as const,
+        id: new Date().getTime(),
+        seen: true,
+        device,
+        ...payload,
+    }) satisfies NotificationEntry;
+
 export const addToast = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addToast`,
-    (payload: ToastPayload, { getState, extra }): NotificationEntry => ({
-        context: 'toast',
-        id: new Date().getTime(),
-        device: extra.selectors.selectDevice(getState()),
-        seen: true,
-        ...payload,
-    }),
+    (payload: ToastPayload, { getState, extra }): NotificationEntry =>
+        toastPayloadTransform(payload, extra.selectors.selectDevice(getState())),
 );
 
 // Adds a Toast if there is not one of same type visible.
 export const addToastOnce = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addToastOnce`,
-    (payload: ToastPayload, { getState, dispatch }): NotificationEntry | undefined => {
+    (payload: ToastPayload, { getState, extra }): NotificationEntry | undefined => {
         const notifications = selectVisibleNotificationsByType(getState(), payload.type);
         if (notifications.length > 0) {
             return;
         }
 
-        return dispatch(addToast(payload));
+        return toastPayloadTransform(payload, extra.selectors.selectDevice(getState()));
     },
 );
 
