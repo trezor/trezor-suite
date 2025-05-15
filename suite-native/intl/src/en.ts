@@ -856,7 +856,7 @@ export const en = {
                     storage:
                         'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
                     callout: 'Upgradable to Multi-share Backup',
-                    submitButton: 'Continue with single-share',
+                    submitButton: 'Continue with Single-share Backup',
                 },
                 'shamir-advanced': {
                     title: 'Multi-share Backup',
@@ -866,7 +866,7 @@ export const en = {
                     storage:
                         'Store your shares separately in secure, private locations, or distribute them to trusted individuals. Never keep all shares together or store them digitally.',
                     callout: 'Requires increased attention',
-                    submitButton: 'Continue with multi-share',
+                    submitButton: 'Continue with Multi-share Backup',
                     alertButtonLabel: 'Learn more',
                 },
                 '12-words': {
@@ -876,7 +876,7 @@ export const en = {
                     storage:
                         'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
                     callout: 'Not easily upgradeable to\nMulti-share Backup',
-                    submitButton: 'Continue with 12 word backup',
+                    submitButton: 'Continue with 12-word backup',
                 },
                 '24-words': {
                     title: '24-word backup',
@@ -885,7 +885,7 @@ export const en = {
                     storage:
                         'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
                     callout: 'Not easily upgradeable to\nMulti-share Backup',
-                    submitButton: 'Continue with 24 word backup',
+                    submitButton: 'Continue with 24-word backup',
                 },
             },
         },
