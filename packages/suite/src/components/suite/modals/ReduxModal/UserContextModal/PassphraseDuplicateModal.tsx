@@ -43,6 +43,7 @@ export const PassphraseDuplicateModal = ({
                 discovery.duplicateDeviceStaticSessionId.split(':')[0],
         );
     const switchToDuplicateWallet = () => {
+        // if the last selected device is the same as the duplicate passphrase, do nothing, otherwise select it
         if (duplicateDevice) {
             dispatch(selectDeviceThunk({ device: duplicateDevice }));
         }

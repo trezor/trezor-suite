@@ -17,6 +17,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
+// move to selector!!!!
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
     const accounts = state.wallet.accounts;
@@ -38,7 +39,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // waiting for discovery
     const discovery = selectDiscoveryForSelectedDevice(state);
-    if (!device.state || !discovery) {
+    if (!device.state) {
         return {
             status: 'loading',
             loader: 'auth',
@@ -114,7 +115,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
                     status: 'exception',
                     loader: 'account-not-loaded',
                     network,
-                    discovery,
                     params,
                 };
             }
@@ -125,7 +125,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             status: 'loaded',
             account,
             network,
-            discovery,
             params,
         };
     }
@@ -154,7 +153,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         status: 'exception',
         loader: 'account-not-exists',
         network,
-        discovery,
         params,
     };
 };
@@ -209,15 +207,6 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
             'utxo',
             'status',
             'syncing',
-        ],
-        discovery: [
-            'status',
-            'index',
-            // 'accountIndex',
-            // 'interrupted',
-            // 'completed',
-            // 'waitingForBlockchain',
-            // 'waitingForDevice',
         ],
     });
 

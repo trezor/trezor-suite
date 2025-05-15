@@ -10,7 +10,7 @@ import {
     getAccountKey,
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
-import { AccountInfo, DeviceState, StaticSessionId } from '@trezor/connect';
+import { AccountInfo, StaticSessionId } from '@trezor/connect';
 import { networks } from '@suite-common/wallet-config';
 
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
