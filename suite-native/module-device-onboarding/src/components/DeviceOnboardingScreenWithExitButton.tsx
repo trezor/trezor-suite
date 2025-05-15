@@ -21,9 +21,15 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const DeviceOnboardingExitButtonScreenHeader = () => {
+type DeviceOnboardingExitButtonScreenHeaderProps = {
+    onAlertContinueButtonPress?: () => void;
+};
+
+const DeviceOnboardingExitButtonScreenHeader = ({
+    onAlertContinueButtonPress,
+}: DeviceOnboardingExitButtonScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProps>();
-    const { handleExitButtonPress } = useExitAlert();
+    const { handleExitButtonPress } = useExitAlert(onAlertContinueButtonPress);
 
     useEffect(() => {
         // Override default navigation GO_BACK action to align it with the exit button behavior.
@@ -40,8 +46,19 @@ const DeviceOnboardingExitButtonScreenHeader = () => {
     return <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
 };
 
-export const DeviceOnboardingScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => (
-    <Screen header={<DeviceOnboardingExitButtonScreenHeader />} {...screenProps}>
+export const DeviceOnboardingScreenWithExitButton = ({
+    children,
+    onAlertContinueButtonPress,
+    ...screenProps
+}: ScreenProps & DeviceOnboardingExitButtonScreenHeaderProps) => (
+    <Screen
+        header={
+            <DeviceOnboardingExitButtonScreenHeader
+                onAlertContinueButtonPress={onAlertContinueButtonPress}
+            />
+        }
+        {...screenProps}
+    >
         <Box flex={1} marginTop="sp16">
             {children}
         </Box>

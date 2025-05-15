@@ -24,7 +24,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackRoutes,
     RootStackParamList
 >;
-export const useExitAlert = () => {
+export const useExitAlert = (handleContinueButtonPress?: () => void) => {
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
@@ -57,8 +57,14 @@ export const useExitAlert = () => {
                     TrezorConnect.cancel();
                 }
             },
+            onPressSecondaryButton: () => {
+                if (handleContinueButtonPress) {
+                    handleContinueButtonPress();
+                }
+            },
         });
     }, [
+        handleContinueButtonPress,
         selectedDevice,
         setWasDeviceOnboardingCancelled,
         setIsFirmwareInstallationRunning,
