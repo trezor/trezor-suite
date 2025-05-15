@@ -380,8 +380,6 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            const initialStaticSessionId = device.state?.staticSessionId;
-
             if (isAddingHiddenWallet) {
                 dispatch(
                     discoveryActions.updateDiscovery(
@@ -538,11 +536,14 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
+            assertStaticSessionId(deviceStateResponse.payload._state);
+
             if (!isAddingHiddenWallet) {
                 console.log(
                     'startDiscoveryThunk: adding standard wallet, ending here',
                     accountProgressEvents,
                 );
+
                 dispatch(
                     completeDiscoveryThunk({
                         staticSessionId: deviceStateResponse.payload._state.staticSessionId,
@@ -560,25 +561,23 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            // todo: this should happen before discovery or not?
-            const duplicate =
-                initialStaticSessionId?.split(':')[0] ===
-                deviceStateResponse.payload._state.staticSessionId.split(':')[0];
-
-            console.log('duplicate', duplicate);
+            const duplicate = selectDevices(getState())
+                .filter(d => d.state?.staticSessionId)
+                .find(
+                    d =>
+                        d.state!.staticSessionId!.split(':')[0] ===
+                        deviceStateResponse.payload._state.staticSessionId!.split(':')[0],
+                );
 
             if (duplicate) {
-                console.warn(
-                    'duplicate passphrase detected',
-                    initialStaticSessionId,
-                    deviceStateResponse,
-                );
+                console.warn('duplicate passphrase detected', deviceStateResponse);
 
                 dispatch(
                     discoveryActions.updateDiscovery(
                         {
                             status: 'passphrase-duplicate',
-                            duplicateDeviceStaticSessionId: duplicate.state?.staticSessionId,
+                            duplicateDeviceStaticSessionId:
+                                deviceStateResponse.payload._state.staticSessionId,
                         },
                         device.path,
                     ),
@@ -745,6 +744,7 @@ export const runDiscoveryThunk = createThunk(
                 }),
             );
         } catch (error) {
+            // todo: cleanup, probably set discovery to failed
             console.warn('runDiscovery error', error);
         } finally {
             console.timeEnd('runDiscovery start');
@@ -764,12 +764,14 @@ export const submitPassphrase = createThunk(
             passphrase: string;
             passphraseOnDevice?: boolean;
         },
-        { dispatch, getState },
+        { dispatch },
     ) => {
         dispatch(
             discoveryActions.updateDiscovery(
                 {
                     status: 'progress',
+                    progress: 0, // dummy value, otherwise it comes in progress event from trezor-connect
+                    total: 100,
                 },
                 device.path,
             ),
