@@ -62,7 +62,7 @@ export const ProvidersSheet = ({
                         companyName={companyName ?? ''}
                         logo={logo ?? ''}
                         onPress={() => onQuoteSelectCallback(item)}
-                        isSelected={item.orderId === selectedQuote?.orderId}
+                        isSelected={item.exchange === selectedQuote?.exchange}
                     />
                 );
             }}
