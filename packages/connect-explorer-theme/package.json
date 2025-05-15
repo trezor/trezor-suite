@@ -43,7 +43,8 @@
     },
     "devDependencies": {
         "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
-        "@testing-library/react": "^14.0.0",
+        "@testing-library/dom": "^10.4.0",
+        "@testing-library/react": "^16.3.0",
         "@types/flexsearch": "^0.7.3",
         "@types/git-url-parse": "^9.0.3",
         "@types/react": "18.2.55",

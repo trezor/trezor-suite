@@ -125,8 +125,9 @@
     "devDependencies": {
         "@crowdin/cli": "4.7.0",
         "@formatjs/cli": "6.6.4",
-        "@testing-library/react": "14.2.1",
-        "@testing-library/user-event": "14.5.2",
+        "@testing-library/dom": "^10.4.0",
+        "@testing-library/react": "^16.3.0",
+        "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",
         "@types/file-saver": "^2.0.6",
         "@types/invity-api": "^1.1.6",

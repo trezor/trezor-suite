@@ -27,6 +27,7 @@
 @solana/rpc-api
 @solana/rpc-types
 @stellar/stellar-sdk
+@testing-library/dom
 @testing-library/jest-dom
 @testing-library/react
 @testing-library/user-event
