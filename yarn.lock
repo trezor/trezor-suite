@@ -9567,6 +9567,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity"
+  dependencies:
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/firmware@workspace:*, @suite-common/firmware@workspace:suite-common/firmware":
   version: 0.0.0-use.local
   resolution: "@suite-common/firmware@workspace:suite-common/firmware"
