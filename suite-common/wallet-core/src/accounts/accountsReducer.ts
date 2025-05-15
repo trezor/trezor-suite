@@ -221,6 +221,16 @@ export const selectVisibleDeviceAccounts = createMemoizedSelector(
         ),
 );
 
+export const selectVisibleSortedDeviceAccounts = createMemoizedSelector(
+    [selectVisibleDeviceAccounts],
+    accounts =>
+        pipe(
+            accounts,
+            A.sortBy(a => a.index),
+            returnStableArrayIfEmpty,
+        ),
+);
+
 export const selectDeviceAccountsForNetworkSymbolAndAccountType = createMemoizedSelector(
     [
         selectDeviceAccounts,

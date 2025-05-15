@@ -36,7 +36,10 @@ export const getNamespaces = (accounts: Account[]) => {
         if (!eip155.chains.includes(walletConnectChainId)) {
             eip155.chains.push(walletConnectChainId);
         }
-        eip155.accounts.push(`${walletConnectChainId}:${account.descriptor}`);
+        const accountId = `${walletConnectChainId}:${account.descriptor}`;
+        if (!eip155.accounts.includes(accountId)) {
+            eip155.accounts.push(accountId);
+        }
     });
 
     return { eip155 };
