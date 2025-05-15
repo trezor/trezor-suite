@@ -7,7 +7,6 @@ import TrezorConnect, { CallMethodParams, CallMethodResponse } from '@trezor/con
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -135,13 +134,13 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch(connectPopupActions.finishCall());
             }
 
-            analytics.report({
+            /*analytics.report({
                 type: EventType.ConnectPopupCall,
                 payload: {
                     method,
                     origin: source.origin,
                 },
-            });
+            });*/
 
             return response;
         } catch (error) {
@@ -152,14 +151,14 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch(connectPopupActions.setError(serializeError(error)));
             }
 
-            analytics.report({
+            /*analytics.report({
                 type: EventType.ConnectPopupError,
                 payload: {
                     method,
                     origin: source.origin,
                     error: error?.code,
                 },
-            });
+            });*/
 
             return {
                 success: false,

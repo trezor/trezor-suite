@@ -15,7 +15,6 @@ import { getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { getAdapterByMethod, getNamespaces } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
@@ -135,14 +134,14 @@ export const sessionProposalThunk = createThunk<
             ...event.verifyContext.verified,
         }),
     );
-    analytics.report({
+    /*analytics.report({
         type: EventType.WalletConnectProposal,
         payload: {
             origin: event.verifyContext.verified.origin,
             validation: event.verifyContext.verified.validation,
             networks: networks.map(network => network.namespaceId),
         },
-    });
+    });*/
 });
 
 export const sessionRequestThunk = createThunk<
@@ -170,14 +169,14 @@ export const sessionRequestThunk = createThunk<
                 result: result.payload,
             },
         });
-        analytics.report({
+        /*analytics.report({
             type: EventType.WalletConnectSessionRequest,
             payload: {
                 origin: event.verifyContext.verified.origin,
                 chainId: event.params.chainId,
                 method: event.params.request.method,
             },
-        });
+        });*/
     } catch (error) {
         await walletKit.respondSessionRequest({
             topic: event.topic,
@@ -190,10 +189,10 @@ export const sessionRequestThunk = createThunk<
                 },
             },
         });
-        analytics.report({
+        /*analytics.report({
             type: EventType.WalletConnectError,
             payload: { error: error.message },
-        });
+        });*/
     }
 });
 
@@ -244,12 +243,12 @@ export const sessionProposalApproveThunk = createThunk<
                     validation: pendingProposal.validation,
                 }),
             );
-            analytics.report({
+            /*analytics.report({
                 type: EventType.WalletConnectProposalApproved,
                 payload: {
                     origin: pendingProposal.origin,
                 },
-            });
+            });*/
         } catch (error) {
             console.error(error);
 
@@ -257,10 +256,10 @@ export const sessionProposalApproveThunk = createThunk<
                 id: eventId,
                 reason: getSdkError('USER_REJECTED'),
             });
-            analytics.report({
+            /*analytics.report({
                 type: EventType.WalletConnectError,
                 payload: { error: error.message },
-            });
+            });*/
         }
     },
 );
@@ -270,18 +269,18 @@ export const sessionProposalRejectThunk = createThunk<
     {
         eventId: number;
     }
->(`${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`, async ({ eventId }, { getState }) => {
-    const pendingProposal = selectPendingProposal(getState());
+>(`${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`, async ({ eventId }) => {
     await walletKit.rejectSession({
         id: eventId,
         reason: getSdkError('USER_REJECTED'),
     });
+    /* const pendingProposal = selectPendingProposal(getState());
     analytics.report({
         type: EventType.WalletConnectProposalRejected,
         payload: {
             origin: pendingProposal?.origin,
         },
-    });
+    });*/
 });
 
 // Selected Account was switched in Suite
@@ -386,9 +385,9 @@ export const walletConnectInitThunk = createThunk(
         for (const proposal of Object.values(proposals)) {
             dispatch(sessionProposalRejectThunk({ eventId: proposal.id }));
         }
-        analytics.report({
+        /*analytics.report({
             type: EventType.WalletConnectInit,
-        });
+        });*/
     },
 );
 
@@ -397,9 +396,9 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
     async ({ uri }, { dispatch }) => {
         try {
             await walletKit.pair({ uri });
-            analytics.report({
+            /*analytics.report({
                 type: EventType.WalletConnectPaired,
-            });
+            });*/
         } catch (error) {
             console.error('WalletKit.pair:', error);
             // TODO: make this a friendly localized message
@@ -410,10 +409,10 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
                 }),
             );
 
-            analytics.report({
+            /*analytics.report({
                 type: EventType.WalletConnectError,
                 payload: { error: error.message },
-            });
+            });*/
         }
     },
 );
