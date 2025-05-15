@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import useMeasure from 'react-use/lib/useMeasure';
@@ -117,6 +117,18 @@ export const FinalStep = () => {
     const { form, handleSubmit } = useChangeDeviceLabel();
 
     const [wrapperRef, { width }] = useMeasure<HTMLDivElement>();
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setState(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     if (!device?.features) return null;
 
