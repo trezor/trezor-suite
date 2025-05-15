@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Menu as MenuComponent, MenuProps } from './Menu';
+import { Menu as MenuComponent, MenuProps, allowedMenuFrameProps } from './Menu';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
     title: 'Menu',
@@ -9,22 +10,24 @@ const meta: Meta = {
 export default meta;
 
 export const Menu: StoryObj<MenuProps> = {
-    render: () => (
-        <MenuComponent
-            items={[
-                {
-                    label: 'Light mode',
-                    icon: 'sun',
-                    onClick: () => {},
-                },
-                {
-                    label: 'Dark mode',
-                    icon: 'moon',
-                    onClick: () => {},
-                },
-            ]}
-            content={<div>Settings</div>}
-            onClose={() => {}}
-        />
-    ),
+    args: {
+        items: [
+            {
+                label: 'Light mode',
+                icon: 'sun',
+                onClick: () => {},
+            },
+            {
+                label: 'Dark mode',
+                icon: 'moon',
+                onClick: () => {},
+            },
+        ],
+        content: 'Settings',
+        onClose: () => {},
+        ...getFramePropsStory(allowedMenuFrameProps).args,
+    },
+    argTypes: {
+        ...getFramePropsStory(allowedMenuFrameProps).argTypes,
+    },
 };

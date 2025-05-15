@@ -967,7 +967,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor external port",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Use Tor daemon running in an external process instead of the one bundled with Trezor Suite.",
   "TR_EXPORT_SEARCH_FILTER_ACTIVE": "Search filter applied for export",
-  "TR_EXPORT_SEARCH_FILTER_INACTIVE": "Filter export by searching",
+  "TR_EXPORT_SEARCH_FILTER_INACTIVE": "Tip: Filter export by searching",
   "TR_EXPORT_AS": "Export as {as}",
   "TR_EXPORT_FAIL": "Export failed",
   "TR_EXPORT_TO_FILE": "Export to file",

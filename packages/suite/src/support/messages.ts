@@ -6506,7 +6506,7 @@ export default defineMessages({
     },
     TR_EXPORT_SEARCH_FILTER_INACTIVE: {
         id: 'TR_EXPORT_SEARCH_FILTER_INACTIVE',
-        defaultMessage: 'Filter export by searching',
+        defaultMessage: 'Tip: Filter export by searching',
     },
     TR_EXPORT_AS: {
         id: 'TR_EXPORT_AS',

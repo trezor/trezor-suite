@@ -7,7 +7,7 @@ import { Popover, PopoverRef } from '../Popover/Popover';
 import { PopoverPlacement } from '../Popover/utils';
 import { IconButton } from '../buttons/IconButton/IconButton';
 
-export const allowedDropdownFrameProps = ['width'] as const satisfies FramePropsKeys[];
+export const allowedDropdownFrameProps = ['width', 'minWidth'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDropdownFrameProps)[number]>;
 
 export type DropdownProps = Omit<MenuProps, 'onClose'> &
@@ -37,6 +37,8 @@ export const Dropdown = forwardRef(
             placement,
             iconName = 'dotsThree',
             'data-testid': dataTest,
+            minWidth,
+            width,
         }: DropdownProps,
         ref,
     ) => {
@@ -68,6 +70,8 @@ export const Dropdown = forwardRef(
                         items={items}
                         content={content}
                         onClose={popoverRef.current?.close}
+                        minWidth={minWidth}
+                        width={width}
                     />
                 }
             >

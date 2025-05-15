@@ -6,7 +6,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
-import { Dropdown, Note } from '@trezor/components';
+import { Dropdown, Note, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
@@ -104,22 +104,28 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
         <Dropdown
             placement={{ position: 'bottom', alignment: 'start' }}
             content={
-                <Note iconName={searchQuery ? 'checks' : 'magnifyingGlass'} minWidth={240}>
-                    <Translation
-                        id={
-                            searchQuery
-                                ? 'TR_EXPORT_SEARCH_FILTER_ACTIVE'
-                                : 'TR_EXPORT_SEARCH_FILTER_INACTIVE'
-                        }
-                    />
-                </Note>
+                searchQuery ? (
+                    <Note iconName="checks">
+                        <Translation
+                            id={
+                                searchQuery
+                                    ? 'TR_EXPORT_SEARCH_FILTER_ACTIVE'
+                                    : 'TR_EXPORT_SEARCH_FILTER_INACTIVE'
+                            }
+                        />
+                    </Note>
+                ) : (
+                    <Text variant="disabled">
+                        <Translation id="TR_EXPORT_SEARCH_FILTER_INACTIVE" />
+                    </Text>
+                )
             }
             items={exportTypes.map(type => ({
                 label: <Translation id="TR_EXPORT_AS" values={{ as: `.${type}` }} />,
                 onClick: () => runExport(type),
                 'data-testid': `${dataTest}/${type}`,
-                iconRight: 'caretRight',
             }))}
+            minWidth={240}
             iconName="fileArrowDown"
             isLoading={isExportRunning}
             data-testid={`${dataTest}/dropdown`}

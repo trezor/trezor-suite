@@ -32,6 +32,7 @@ type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[
 export const allowedTextFrameProps = [
     'margin',
     'maxWidth',
+    'minWidth',
     'flex',
     'position',
     'zIndex',

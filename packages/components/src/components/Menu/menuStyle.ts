@@ -17,7 +17,6 @@ export const DROPDOWN_MENU = keyframes`
 export const menuStyle = css`
     display: flex;
     flex-direction: column;
-    flex: 1;
     padding: ${spacingsPx.sm};
     min-width: 180px;
     border-radius: ${borders.radii.md};
