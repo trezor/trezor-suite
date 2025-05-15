@@ -12,7 +12,7 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -34,7 +34,7 @@ export const sessionAuthenticateThunk = createThunk<
     // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
     try {
         const device = selectSelectedDevice(getState());
-        const accounts = selectAccounts(getState());
+        const accounts = selectVisibleSortedDeviceAccounts(getState());
         const supportedNamespaces = getNamespaces(accounts);
         const authPayload = populateAuthPayload({
             authPayload: event.params.authPayload,
@@ -92,7 +92,7 @@ export const sessionProposalThunk = createThunk<
     }
 >(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState }) => {
     // Check supported networks
-    const accounts = selectAccounts(getState());
+    const accounts = selectVisibleSortedDeviceAccounts(getState());
     const networks: PendingConnectionProposalNetwork[] = [];
     const processNamespace =
         (required: boolean) =>
@@ -215,7 +215,7 @@ export const sessionProposalApproveThunk = createThunk<
                 throw new Error('Proposal not found');
             }
 
-            const accounts = selectAccounts(getState());
+            const accounts = selectVisibleSortedDeviceAccounts(getState());
             const supportedNamespaces = getNamespaces(accounts);
             const approvedNamespaces = buildApprovedNamespaces({
                 proposal: pendingProposal.params,
@@ -287,10 +287,12 @@ export const sessionProposalRejectThunk = createThunk<
 // Selected Account was switched in Suite
 export const switchSelectedAccountThunk = createThunk<void, { account: Account }>(
     `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
-    async ({ account }) => {
+    async ({ account }, { getState }) => {
+        const accounts = selectVisibleSortedDeviceAccounts(getState());
         const network = getNetwork(account.symbol);
         if (!network || !network.chainId) return;
         const sessions = await walletKit.getActiveSessions();
+        const updatedNamespaces = getNamespaces([account, ...accounts]);
         for (const topic in sessions) {
             walletKit.emitSessionEvent({
                 topic,
@@ -304,7 +306,7 @@ export const switchSelectedAccountThunk = createThunk<void, { account: Account }
                 topic,
                 event: {
                     name: 'accountsChanged',
-                    data: [account.descriptor],
+                    data: [...updatedNamespaces.eip155.accounts],
                 },
                 chainId: `eip155:${network.chainId}`,
             });
@@ -316,11 +318,11 @@ export const switchSelectedAccountThunk = createThunk<void, { account: Account }
 export const updateAccountsThunk = createThunk(
     `${WALLETCONNECT_MODULE}/updateAccountsThunk`,
     async (_, { getState }) => {
-        const accounts = selectAccounts(getState());
+        const accounts = selectVisibleSortedDeviceAccounts(getState());
         const sessions = await walletKit.getActiveSessions();
+        const updatedNamespaces = getNamespaces(accounts);
         for (const topic in sessions) {
             const { namespaces: oldNamespaces } = sessions[topic];
-            const updatedNamespaces = getNamespaces(accounts);
             const namespaces = {
                 ...oldNamespaces,
                 eip155: {

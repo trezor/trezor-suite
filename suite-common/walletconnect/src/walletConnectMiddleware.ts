@@ -1,5 +1,5 @@
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, deviceActions } from '@suite-common/wallet-core';
 
 import { walletConnectActions } from './walletConnectActions';
 import * as walletConnectThunks from './walletConnectThunks';
@@ -17,6 +17,7 @@ export const prepareWalletConnectMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (
+            deviceActions.selectDevice.match(action) ||
             accountsActions.createAccount.match(action) ||
             accountsActions.removeAccount.match(action)
         ) {
