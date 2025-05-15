@@ -242,11 +242,9 @@ export const runAdditionalDiscoveryThunk = createThunk(
             return;
         }
 
-        const accountProgressEvents: ProgressEvent[] = [];
         const onBundleProgress = createOnBundleProgressHandler(
             device.path,
             device.state.staticSessionId,
-            accountProgressEvents,
             dispatch,
             getState,
         );
@@ -283,11 +281,11 @@ export const runAdditionalDiscoveryThunk = createThunk(
 const createOnBundleProgressHandler = (
     devicePath: DeviceUniquePath,
     deviceStaticSessionId: StaticSessionId,
-    accountProgressEvents: ProgressEvent[],
     dispatch: any,
     getState: any,
 ) => {
     let encounteredNonEmptyAccount = false;
+    const accountProgressEvents: ProgressEvent[] = [];
 
     const progressEventToCreateAccountPayload = (event: ProgressEvent) => ({
         deviceState: deviceStaticSessionId,
@@ -324,6 +322,7 @@ const createOnBundleProgressHandler = (
             if (event.progress === 100 && !encounteredNonEmptyAccount) {
                 accountProgressEvents.forEach(event => {
                     dispatch(
+                        // @ts-expect-error todo: marek will solve it
                         accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
                     );
                 });
@@ -332,6 +331,7 @@ const createOnBundleProgressHandler = (
             }
 
             if (encounteredNonEmptyAccount) {
+                // @ts-expect-error todo: marek will solve it
                 dispatch(accountsActions.createAccount(progressEventToCreateAccountPayload(event)));
 
                 return;
@@ -344,6 +344,7 @@ const createOnBundleProgressHandler = (
 
                 accountProgressEvents.forEach(event => {
                     dispatch(
+                        // @ts-expect-error todo: marek will solve it
                         accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
                     );
                 });
@@ -360,9 +361,6 @@ export const runDiscoveryThunk = createThunk(
         try {
             console.time('runDiscovery start');
             let device = passedDevice;
-
-            // todo: this variable could be defined locally in bundle progress handler after marek delivers return value for TrezorConnect.discoverAccounts
-            const accountProgressEvents: ProgressEvent[] = [];
 
             const discovery = selectDiscoveryByDevicePath(getState(), device.path);
 
@@ -483,7 +481,6 @@ export const runDiscoveryThunk = createThunk(
             const onBundleProgress = createOnBundleProgressHandler(
                 device.path,
                 deviceStateResponse.payload._state.staticSessionId,
-                accountProgressEvents,
                 dispatch,
                 getState,
             );
@@ -539,10 +536,7 @@ export const runDiscoveryThunk = createThunk(
             assertStaticSessionId(deviceStateResponse.payload._state);
 
             if (!isAddingHiddenWallet) {
-                console.log(
-                    'startDiscoveryThunk: adding standard wallet, ending here',
-                    accountProgressEvents,
-                );
+                console.log('startDiscoveryThunk: adding standard wallet, ending here');
 
                 dispatch(
                     completeDiscoveryThunk({
@@ -588,8 +582,7 @@ export const runDiscoveryThunk = createThunk(
 
             device = selectSelectedDevice(getState());
 
-            console.log('aacountProgressEvents', accountProgressEvents);
-            const allAccountsEmpty = accountProgressEvents.every(event => event.response?.empty);
+            const allAccountsEmpty = result.payload.nonempty > 0;
             // there is at least one account with balance - passphrase is not empty
             console.log('allAccountsEmpty', allAccountsEmpty);
 
