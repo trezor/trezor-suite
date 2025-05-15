@@ -14,6 +14,7 @@ import {
     AccountTypeItem,
     AccountTypeKey,
     AdditionalParams,
+    CARDANO_DERIVATIONS,
     DiscoverAccountsProgress,
 } from '../types/api/discoverAccounts';
 import { isUtxoBased } from '../utils/accountUtils';
@@ -23,10 +24,18 @@ const ACCOUNT_LIMIT = 10;
 const TXS_PER_PAGE = 25;
 const DETAILS = 'txs';
 
+type CardanoDerivation = (typeof CARDANO_DERIVATIONS)[keyof typeof CARDANO_DERIVATIONS];
+
 type Request = AdditionalParams & {
     account: AccountTypeItem;
+    derivation?: CardanoDerivation;
     coinInfo: CoinInfo;
 };
+
+type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' | 'tada' }>;
+
+const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
+    account.symbol === 'ada' || account.symbol === 'tada';
 
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
 
@@ -72,6 +81,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                     coinInfo,
                     account,
                     ...rest,
+                    derivation: isCardano(account) ? CARDANO_DERIVATIONS[account.type] : undefined,
                 }),
             );
         });
@@ -112,30 +122,38 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     }
 
     private readonly descriptorLock = getSynchronize();
-    private async getDescriptor(coinInfo: CoinInfo, bip43PathTemplate: string, index: number) {
+
+    private async getDescriptor(
+        coinInfo: CoinInfo,
+        bip43PathTemplate: string,
+        derivationType: CardanoDerivation | undefined,
+        index: number,
+    ) {
         const path = bip43PathTemplate.replace('i', String(index)); // TODO use substituteBip43Path from wallet-utils somehow
 
         const { address_n: _, ...descriptorRest } = await this.descriptorLock(() => {
             const address_n = validatePath(path, 3);
 
-            return this.device.getCommands().getAccountDescriptor(coinInfo, address_n);
+            return this.device
+                .getCommands()
+                .getAccountDescriptor(coinInfo, address_n, derivationType);
         });
 
         return { path, ...descriptorRest };
     }
 
     private async discoverAccount(request: Request) {
-        const { details, identity, pageSize, coinInfo } = request;
+        const { details, identity, pageSize, coinInfo, derivation } = request;
         const { path, ...accountKey } = request.account;
         const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
 
         let index = 0;
-        let descPromise = this.getDescriptor(coinInfo, path, index);
+        let descPromise = this.getDescriptor(coinInfo, path, derivation, index);
 
         while (true) {
             const { descriptor, ...descRest } = await descPromise;
-            descPromise = this.getDescriptor(coinInfo, path, index + 1);
+            descPromise = this.getDescriptor(coinInfo, path, derivation, index + 1);
 
             const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
 

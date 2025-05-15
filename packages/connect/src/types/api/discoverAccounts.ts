@@ -1,5 +1,6 @@
 import type { BlockchainLinkParams } from '@trezor/blockchain-link';
 
+import { PROTO } from '../../constants';
 import type { AccountInfo } from '../account';
 import type { Params, Response } from '../params';
 
@@ -50,6 +51,12 @@ export const ACCOUNT_TYPES = [
     { symbol: 'doge', type: 'normal', path: "m/44'/3'/i'" },
     { symbol: 'zec', type: 'normal', path: "m/44'/133'/i'" },
 ] as const;
+
+export const CARDANO_DERIVATIONS = {
+    normal: PROTO.CardanoDerivationType.ICARUS,
+    legacy: PROTO.CardanoDerivationType.ICARUS_TREZOR,
+    ledger: PROTO.CardanoDerivationType.LEDGER,
+} as const;
 
 export type AccountTypeItem = (typeof ACCOUNT_TYPES)[number];
 
