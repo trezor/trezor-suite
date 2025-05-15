@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { yup } from '@suite-common/validators';
-import { selectDeviceLabel, selectDeviceName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isAscii } from '@trezor/utils';
 
@@ -24,25 +24,27 @@ const changeDeviceLabelSchema = (t: TranslationFunction) =>
                 }),
             )
             .test({
-                test: value => isAscii(value),
+                test: isAscii,
                 message: t('TR_LABEL_ERROR_CHARACTERS'),
             }),
     });
 
 export const useChangeDeviceLabel = () => {
     const { translationString } = useTranslation();
-    const deviceLabel = useSelector(selectDeviceLabel);
-    const deviceName = useSelector(selectDeviceName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
 
     const form = useForm({
         resolver: yupResolver(changeDeviceLabelSchema(translationString)),
         defaultValues: {
-            deviceLabel: deviceLabel ?? deviceName,
+            deviceLabel,
         },
         mode: 'onSubmit',
         reValidateMode: 'onChange',
     });
+
+    const { watch } = form;
+    const currentLabel = watch('deviceLabel');
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
         dispatch(applySettings({ label: deviceLabel }));
@@ -51,5 +53,20 @@ export const useChangeDeviceLabel = () => {
         });
     });
 
-    return { form, onSubmit };
+    const handleSubmit = async (onSuccess?: () => void) => {
+        if (currentLabel === deviceLabel) {
+            onSuccess?.();
+
+            return;
+        }
+
+        try {
+            await onSubmit();
+            onSuccess?.();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return { form, handleSubmit };
 };

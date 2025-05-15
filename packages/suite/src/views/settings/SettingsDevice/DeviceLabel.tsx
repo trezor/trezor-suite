@@ -12,11 +12,7 @@ type DeviceLabelProps = {
 };
 
 export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
-    const { form, onSubmit } = useChangeDeviceLabel();
-
-    const handleClick = async () => {
-        await onSubmit();
-    };
+    const { form, handleSubmit } = useChangeDeviceLabel();
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.DeviceLabel}>
@@ -31,7 +27,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                     <ChangeDeviceLabelForm
                         isVertical
                         isDeviceLocked={isDeviceLocked}
-                        onClick={handleClick}
+                        onClick={handleSubmit}
                     />
                 </FormProvider>
             </ActionColumn>

@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import useMeasure from 'react-use/lib/useMeasure';
 import styled, { css } from 'styled-components';
 
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Button,
     DeviceAnimation,
@@ -20,7 +19,7 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { HomescreenGallery, Translation } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
-import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
@@ -100,8 +99,6 @@ const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
 
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();
-    const dispatch = useDispatch();
-
     const popoverRef = useRef<PopoverRef>();
 
     const { isLocked, device } = useDevice();
@@ -117,19 +114,7 @@ export const FinalStep = () => {
 
     const isWaitingForConfirm = modalContext === '@modal/context-device';
 
-    const { form, onSubmit } = useChangeDeviceLabel();
-
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setState(null);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    const { form, handleSubmit } = useChangeDeviceLabel();
 
     const [wrapperRef, { width }] = useMeasure<HTMLDivElement>();
 
@@ -137,7 +122,7 @@ export const FinalStep = () => {
 
     const shouldOfferChangeHomescreen = isHomescreenSupportedOnDevice(device);
 
-    const handleClick = async () => {
+    const reportAnalytics = () => {
         const payload = {
             ...onboardingAnalytics,
             duration: Date.now() - onboardingAnalytics.startTime!,
@@ -150,20 +135,14 @@ export const FinalStep = () => {
             type: EventType.DeviceSetupCompleted,
             payload,
         });
+    };
 
-        try {
-            await onSubmit();
-            goToSuite();
-        } catch (error) {
-            console.error(error);
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    // TODO: replace with `translationString('TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL_ERROR')`,
-                    error: 'Error when saving name',
-                }),
-            );
-        }
+    const handleRename = async () => await handleSubmit(() => setState(null));
+
+    const handleGoToSuite = async () => {
+        reportAnalytics();
+        await handleSubmit();
+        goToSuite();
     };
 
     return (
@@ -240,7 +219,7 @@ export const FinalStep = () => {
                             <FormProvider {...form}>
                                 <ChangeDeviceLabelForm
                                     isDeviceLocked={isDeviceLocked}
-                                    onClick={handleClick}
+                                    onClick={handleRename}
                                 />
                             </FormProvider>
                         </SetupActions>
@@ -249,7 +228,7 @@ export const FinalStep = () => {
                     <EnterSuiteButton
                         variant="primary"
                         data-testid="@onboarding/exit-app-button"
-                        onClick={handleClick}
+                        onClick={handleGoToSuite}
                         icon="arrowRight"
                         iconAlignment="end"
                         isDisabled={isWaitingForConfirm}
