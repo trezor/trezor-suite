@@ -1,4 +1,12 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import {
+    ComponentProps,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import ReactSelect, {
     Props as ReactSelectProps,
     SelectInstance,
@@ -285,15 +293,11 @@ export type SelectProps = KeyPressScrollProps &
         isMenuOpen?: boolean;
         isLoading?: boolean;
         onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
-        /**
-         * @deprecated This prop will be replaced by internal logic - https://github.com/trezor/trezor-suite/issues/18749
-         */
-        scrollIndex?: number;
         'data-testid'?: string;
     };
 
-type MenuProps = any & {
-    selectRef: React.RefObject<SelectInstance<any, boolean>>;
+type MenuProps = ComponentProps<typeof reactSelectComponents.Menu> & {
+    selectRef: React.RefObject<SelectInstance<Option, boolean>>;
     scrollIndex?: number;
 };
 
@@ -308,6 +312,8 @@ const Menu = ({ selectRef, scrollIndex, ...rest }: MenuProps) => {
 
     return <reactSelectComponents.Menu {...rest} />;
 };
+
+const OPTION_INDEX_NAME = 'optionIndex';
 
 export const Select = ({
     isClean = false,
@@ -332,11 +338,34 @@ export const Select = ({
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled } = formCellProps;
     const isRenderedInModal = menuPortalTarget !== null;
+    const [scrollIndex, setScrollIndex] = useState<number>(0);
 
-    const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
+    const isGrouped =
+        Array.isArray(rest.options) && rest.options.some(opt => 'label' in opt && 'options' in opt);
+
+    const indexedOptions = useMemo(() => {
+        if (isGrouped) {
+            return rest.options?.map((group, index) => ({
+                ...group,
+                options: group.options.map((option: Option) => ({
+                    ...option,
+                    [OPTION_INDEX_NAME]: index,
+                })),
+            }));
+        }
+
+        return rest.options?.map((option, index) => ({ ...option, [OPTION_INDEX_NAME]: index }));
+    }, [rest.options, isGrouped]);
+
+    const handleOnChange = useCallback<Required<ReactSelectProps<Option>>['onChange']>(
         (value, { action }) => {
             if (value) {
-                onChange?.(value as Option, selectRef.current);
+                const optionIndex = value[OPTION_INDEX_NAME] as number;
+                const option = { ...value };
+                delete option[OPTION_INDEX_NAME];
+
+                onChange?.(option as Option, selectRef.current);
+                setScrollIndex(optionIndex);
 
                 if (!isMenuOpen && action === 'select-option') {
                     selectRef.current?.blur();
@@ -349,8 +378,8 @@ export const Select = ({
     );
 
     const MenuWithProps = useCallback(
-        (props: any) => <Menu {...props} selectRef={selectRef} scrollIndex={rest.scrollIndex} />,
-        [selectRef, rest.scrollIndex],
+        (props: any) => <Menu {...props} selectRef={selectRef} scrollIndex={scrollIndex} />,
+        [selectRef, scrollIndex],
     );
 
     /**
@@ -404,6 +433,7 @@ export const Select = ({
                     placeholder={placeholder || ''}
                     {...rest}
                     components={memoizedComponents}
+                    options={indexedOptions}
                 />
 
                 {isLoading && (
