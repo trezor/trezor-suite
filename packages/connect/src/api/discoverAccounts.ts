@@ -141,10 +141,11 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
 
         const counts = await Promise.all(accounts.map(account => this.discoverAccount(account)));
-        const nonempty = counts.reduce((sum, n) => sum + n, 0);
-        const empty = counts.length;
+        const nonempty = counts.reduce((sum, acc) => sum + acc.nonempty, 0);
+        const failed = counts.filter(acc => acc.error).length;
+        const empty = counts.length - failed;
 
-        return { empty, nonempty };
+        return { empty, nonempty, failed };
     }
 
     private filterUnsupportedAccounts(accounts: Request[]) {
@@ -225,35 +226,51 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         return { path, ...descriptorRest };
     }
 
-    private async discoverAccount(request: Request) {
+    private async discoverAccount(request: Request): Promise<{ nonempty: number; error?: string }> {
         const { details, identity, pageSize, coinInfo, derivation, offset, skip } = request;
         const { path, ...accountKey } = request.account;
-        const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
-
         let index = skip;
+
+        let blockchain;
+        try {
+            blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
+        } catch (error) {
+            this.updateProgress(accountKey, index + 1, true);
+            this.sendProgress({ ...accountKey, index, error: error.message });
+
+            return { nonempty: 0, error: error.message };
+        }
+
         let descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index);
-
         while (true) {
-            const { descriptor, ...descRest } = await descPromise;
-            descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index + 1);
+            try {
+                const { descriptor, ...descRest } = await descPromise;
+                descPromise = this.getDescriptor(coinInfo, path, derivation, offset + index + 1);
 
-            const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
+                const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
 
-            // eslint-disable-next-line no-nested-ternary
-            const utxo = !utxoRequired
-                ? undefined
-                : info.empty
-                  ? []
-                  : await blockchain.getAccountUtxo(descriptor);
+                // eslint-disable-next-line no-nested-ternary
+                const utxo = !utxoRequired
+                    ? undefined
+                    : info.empty
+                      ? []
+                      : await blockchain.getAccountUtxo(descriptor);
 
-            this.updateProgress(accountKey, index + 1, info.empty);
-            this.sendProgress({ ...info, descriptor, ...descRest, utxo, ...accountKey, index });
+                this.updateProgress(accountKey, index + 1, info.empty);
+                this.sendProgress({ ...info, descriptor, ...descRest, utxo, ...accountKey, index });
 
-            if (info.empty) {
-                await descPromise.catch(() => {});
+                if (info.empty) {
+                    await descPromise.catch(() => {});
 
-                return index;
+                    return { nonempty: index - skip };
+                }
+            } catch (error) {
+                descPromise.catch(() => {});
+                this.updateProgress(accountKey, index + 1, true);
+                this.sendProgress({ ...accountKey, index, error: error.message });
+
+                return { nonempty: index - skip, error };
             }
 
             index++;

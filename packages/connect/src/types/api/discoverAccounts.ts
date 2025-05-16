@@ -94,6 +94,7 @@ export type DiscoverAccountsProgress = AccountTypeKey &
 type DiscoverAccountsResult = {
     empty: number;
     nonempty: number;
+    failed: number;
 };
 
 export declare function discoverAccounts(
