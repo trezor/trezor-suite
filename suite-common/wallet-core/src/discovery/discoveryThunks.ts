@@ -227,7 +227,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         assertDeviceIsAuthorized(device);
 
-        if (selectAccountsToBeForgotten(getState()).length) {
+        if (selectAccountsToBeForgotten(getState()).length > 0) {
             dispatch(disableAccountsThunk());
         }
 
