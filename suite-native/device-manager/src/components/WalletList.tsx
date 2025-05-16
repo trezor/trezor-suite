@@ -45,6 +45,7 @@ export const WalletList = ({ onSelectDevice }: WalletListProps) => {
         }
     };
 
+    console.log('WalletList render devices', devices);
     return (
         <VStack spacing="sp12" paddingHorizontal="sp16">
             {showPlaceholder && (
@@ -62,7 +63,7 @@ export const WalletList = ({ onSelectDevice }: WalletListProps) => {
 
                 return (
                     <WalletItem
-                        key={device.state.staticSessionId}
+                        key={`${device.path}-${device.state.staticSessionId}`}
                         deviceState={device.state}
                         isSelectable={isSelectable}
                         onPress={() => onSelectDevice(device)}

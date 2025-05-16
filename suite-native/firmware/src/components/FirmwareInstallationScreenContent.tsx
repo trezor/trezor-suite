@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { authorizeDeviceThunk } from '@suite-common/wallet-core';
 import { Badge, Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage, setTemporaryRememberedDeviceThunk } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -105,9 +104,12 @@ export const FirmwareInstallationScreenContent = ({
     }, [dispatch, isTemporaryRememeberAllowed, resetReducer, setIsFirmwareInstallationRunning]);
 
     const handleFirmwareUpdateFinished = useCallback(async () => {
-        await requestPrioritizedDeviceAccess({
-            deviceCallback: () => dispatch(authorizeDeviceThunk()),
-        });
+        console.log(
+            'FirmwareInstallationScreenContent: handleFirmwareUpdateFinished = authorize device thunk need to be replaced here',
+        );
+        // await requestPrioritizedDeviceAccess({
+        //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
+        // });
 
         setIsFirmwareInstallationRunning(false);
         onFirmwareInstallationSuccess();

@@ -3,13 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import {
-    authorizeDeviceThunk,
-    selectIsDeviceAuthorized,
-    selectIsDeviceConnected,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceAuthorized, selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -45,10 +40,11 @@ export const ConnectAndUnlockDeviceScreen = ({
             // When selected device become connected, we need to navigate out of this screen.
             navigateBack();
         } else {
+            console.log(' == meow == authorize device thnk needs to be replaced here ');
             // If user cancelled the authorization, we need to authorize the device again.
-            requestPrioritizedDeviceAccess({
-                deviceCallback: () => dispatch(authorizeDeviceThunk()),
-            });
+            // requestPrioritizedDeviceAccess({
+            //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
+            // });
         }
     }, [isDeviceAuthorized, isDeviceConnected, dispatch, isFocused, navigateBack]);
 

@@ -6,11 +6,7 @@ import {
     deviceAuthorizationInitialState,
     deviceAuthorizationReducer,
 } from '../deviceAuthorizationSlice';
-import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    retryPassphraseAuthenticationThunk,
-    verifyPassphraseOnEmptyWalletThunk,
-} from '../passphraseThunks';
+import { cancelPassphraseAndSelectStandardDeviceThunk } from '../passphraseThunks';
 
 describe('deviceAuthorizationSlice', () => {
     const getDeviceAuthorizationState = (
@@ -296,29 +292,6 @@ describe('deviceAuthorizationSlice', () => {
             });
         });
 
-        it('should set error on rejection', () => {
-            const prevState = getDeviceAuthorizationState({
-                isCreatingNewWalletInstance: true,
-                hasDeviceRequestedPassphrase: true,
-            });
-            const action = {
-                type: createDeviceInstanceThunk.rejected.type,
-                payload: { error: 'auth-failed' },
-            };
-
-            const state = deviceAuthorizationReducer(prevState, action);
-
-            expect(state).toEqual({
-                hasDeviceRequestedPin: false,
-                hasDeviceRequestedPassphrase: false,
-                passphraseError: { error: 'auth-failed' },
-                isVerifyingPassphraseOnEmptyWallet: false,
-                isCreatingNewWalletInstance: false,
-            });
-        });
-    });
-
-    describe('authorizeDeviceThunk', () => {
         it('should set error on rejection', () => {
             const prevState = getDeviceAuthorizationState({
                 isCreatingNewWalletInstance: true,
