@@ -9,6 +9,7 @@
         { "path": "../connect-common" },
         { "path": "../crypto-utils" },
         { "path": "../device-utils" },
+        { "path": "../firmware-release-config" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },

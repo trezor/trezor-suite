@@ -28,6 +28,9 @@
             "path": "../device-utils"
         },
         {
+            "path": "../firmware-release-config"
+        },
+        {
             "path": "../protobuf"
         },
         {
