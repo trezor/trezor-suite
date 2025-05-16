@@ -221,4 +221,18 @@ export const buyTradingFixtures = [
             amountLimits,
         },
     },
+    {
+        description: 'should set trading account key',
+        initialState: buyInitialState,
+        actions: [
+            {
+                type: tradingBuyActions.setTradingAccountKey.type,
+                payload: '123456',
+            },
+        ],
+        result: {
+            ...buyInitialState,
+            tradingAccountKey: '123456',
+        },
+    },
 ];

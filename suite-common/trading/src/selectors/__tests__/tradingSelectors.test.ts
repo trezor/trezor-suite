@@ -63,6 +63,7 @@ describe('tradingSelectors', () => {
     const getBuyState = () =>
         ({
             ...initialState.buy,
+            tradingAccountKey: accountBtc.key,
             quotesRequest: {
                 wantCrypto: true,
                 fiatCurrency: 'fiatCurrency',
@@ -741,14 +742,18 @@ describe('tradingSelectors', () => {
     });
 
     describe('selectTradingAccountAccordingActiveSection', () => {
-        it('should return correct account for buy', () => {
+        it('should return correct account for buy according to tradingAccountKey', () => {
             expect(
                 selectTradingAccountAccordingActiveSection(
                     state,
                     'buy',
                     state.wallet.selectedAccount,
                 ),
-            ).toEqual(state.wallet.selectedAccount.account);
+            ).toEqual(
+                state.wallet.accounts.find(
+                    account => account.key === state.wallet.tradingNew.buy.tradingAccountKey,
+                ),
+            );
         });
 
         it('should return correct account for exchange according to tradingAccountKey', () => {

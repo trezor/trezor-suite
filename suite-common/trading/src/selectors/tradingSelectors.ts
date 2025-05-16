@@ -445,21 +445,26 @@ export const selectTradingAccountAccordingActiveSection = createMemoizedSelector
     [
         selectTradingExchange,
         selectTradingSell,
+        selectTradingBuy,
         ({ wallet }) => wallet.accounts,
         (_: TradingRootState, activeSection: TradingType) => activeSection,
         (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
             selectedAccount,
     ],
-    (tradingExchange, tradingSell, accounts, activeSection, selectedAccount) => {
-        if (activeSection === 'exchange') {
-            return accounts.find(account => account.key === tradingExchange.tradingAccountKey);
-        }
+    (tradingExchange, tradingSell, tradingBuy, accounts, activeSection, selectedAccount) => {
+        const tradingSectionMap = {
+            buy: tradingBuy.tradingAccountKey,
+            sell: tradingSell.tradingAccountKey,
+            exchange: tradingExchange.tradingAccountKey,
+        };
 
-        if (activeSection === 'sell') {
-            return accounts.find(account => account.key === tradingSell.tradingAccountKey);
-        }
+        const tradingAccountKey = tradingSectionMap[activeSection];
 
-        return selectedAccount.account;
+        const account = tradingAccountKey
+            ? accounts.find(acc => acc.key === tradingAccountKey)
+            : null;
+
+        return account ?? selectedAccount.account; // TODO: trading - delete selectedAccount and set tradingAccountKey on desktop
     },
 );
 

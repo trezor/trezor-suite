@@ -7,6 +7,8 @@ import type {
     CryptoId,
 } from 'invity-api';
 
+import { AccountKey } from '@suite-common/wallet-types';
+
 import { TRADING_BUY_PREFIX } from '../constants';
 import { TradingAmountLimitProps } from '../types';
 
@@ -24,6 +26,7 @@ export interface TradingBuyState {
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
     addressVerified: string | undefined;
+    tradingAccountKey?: AccountKey;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
 
@@ -38,6 +41,7 @@ export const buyInitialState: TradingBuyState = {
     selectedQuote: undefined,
     quotes: [],
     addressVerified: undefined,
+    tradingAccountKey: undefined,
     isLoading: false,
     amountLimits: undefined,
 };
@@ -78,6 +82,9 @@ const tradingBuySlice = createSlice({
         },
         setAmountLimits(state, action: PayloadAction<TradingAmountLimitProps | undefined>) {
             state.amountLimits = action.payload;
+        },
+        setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+            state.tradingAccountKey = action.payload;
         },
     },
 });
