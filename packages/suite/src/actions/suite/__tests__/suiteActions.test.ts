@@ -6,7 +6,6 @@ import { testMocks } from '@suite-common/test-utils';
 import {
     ConnectDeviceSettings,
     acquireDevice,
-    authConfirm,
     createDeviceInstanceThunk,
     deviceActions,
     forgetDisconnectedDevices,
