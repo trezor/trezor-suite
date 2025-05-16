@@ -1,13 +1,13 @@
-import { useAtom } from 'jotai';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { atomWithUnecryptedStorage } from '@suite-native/storage';
+import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
 
-const isDiscreetModeOn = atomWithUnecryptedStorage<boolean>('isDiscreetModeOn', false);
 export const useDiscreetMode = () => {
-    const [isDiscreetMode, setIsDiscreetMode] = useAtom(isDiscreetModeOn);
+    const isDiscreetMode = useSelector(selectIsDiscreteModeActive);
+    const dispatch = useDispatch();
 
     const handleSetIsDiscreetMode = (value: boolean) => {
-        setIsDiscreetMode(value);
+        dispatch(setDiscreetMode(value));
     };
 
     return {

@@ -2,7 +2,7 @@ import { Form } from '@suite-native/forms';
 import {
     act,
     renderHookWithStoreProviderAsync,
-    renderWithBasicProvider,
+    renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
 import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
@@ -21,8 +21,8 @@ describe('ReceiveAccountBalance', () => {
         return result.current;
     };
 
-    const renderComponent = () =>
-        renderWithBasicProvider(
+    const renderComponent = async () =>
+        await renderWithStoreProviderAsync(
             <Form form={buyForm}>
                 <ReceiveAccountCryptoBalance />
             </Form>,
@@ -32,7 +32,7 @@ describe('ReceiveAccountBalance', () => {
         buyForm = await renderBuyForm();
     });
 
-    it('should display empty box when symbol is not specified', () => {
+    it('should display empty box when symbol is not specified', async () => {
         act(() => {
             buyForm.setValue('receiveAccount', {
                 account: {
@@ -41,12 +41,12 @@ describe('ReceiveAccountBalance', () => {
                 } as any,
             });
         });
-        const { queryByTestId } = renderComponent();
+        const { queryByTestId } = await renderComponent();
 
         expect(queryByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
     });
 
-    it('should display empty box when balance is not specified', () => {
+    it('should display empty box when balance is not specified', async () => {
         act(() => {
             buyForm.setValue('receiveAccount', {
                 account: {
@@ -55,12 +55,12 @@ describe('ReceiveAccountBalance', () => {
                 } as any,
             });
         });
-        const { queryByTestId } = renderComponent();
+        const { queryByTestId } = await renderComponent();
 
         expect(queryByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
     });
 
-    it('should display balance when symbol and balance is specified', () => {
+    it('should display balance when symbol and balance is specified', async () => {
         act(() => {
             buyForm.setValue('receiveAccount', {
                 account: {
@@ -69,7 +69,7 @@ describe('ReceiveAccountBalance', () => {
                 } as any,
             });
         });
-        const { getByTestId } = renderComponent();
+        const { getByTestId } = await renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
     });

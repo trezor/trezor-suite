@@ -17,11 +17,11 @@
         "@shopify/flash-list": "^1.7.2",
         "@shopify/react-native-skia": "^1.11.6",
         "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:^",
-        "@suite-native/storage": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -34,7 +34,8 @@
         "react-native-keyboard-controller": "1.16.5",
         "react-native-reanimated": "^3.16.7",
         "react-native-safe-area-context": "^4.14.0",
-        "react-native-svg": "15.9.0"
+        "react-native-svg": "15.9.0",
+        "react-redux": "9.2.0"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"

@@ -6,12 +6,14 @@
             "path": "../../suite-common/wallet-config"
         },
         {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../config" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../storage" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
