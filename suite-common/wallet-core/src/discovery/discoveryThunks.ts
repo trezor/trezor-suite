@@ -1,16 +1,19 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
+import { Bip43Path } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
 import TrezorConnect, {
-    AccountInfo,
     BundleProgress,
     DeviceState,
     DeviceUniquePath,
     StaticSessionId,
     UI,
 } from '@trezor/connect';
-import { DiscoveryAccountInfo } from '@trezor/connect/src/types/api/discoverAccounts';
+import {
+    DiscoverAccountsProgress,
+    DiscoverAccountsProgressOk,
+} from '@trezor/connect/src/types/api/discoverAccounts';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import {
@@ -21,7 +24,7 @@ import {
     selectIsRediscoverNeeded,
     selectNetworksToDiscover,
 } from './discoveryReducer';
-import { accountsActions } from '../accounts/accountsActions';
+import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { disableAccountsThunk } from '../accounts/accountsThunks';
 import { deviceActions } from '../device/deviceActions';
 import {
@@ -34,7 +37,10 @@ import { selectDeviceThunk } from '../device/deviceThunks';
 
 // todo:
 
-type ProgressEvent = BundleProgress<DiscoveryAccountInfo>['payload'];
+type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
+type ProgressOkEvent = BundleProgress<DiscoverAccountsProgressOk>['payload'];
+const isProgressEventOk = (progressEvent: ProgressEvent): progressEvent is ProgressOkEvent =>
+    Object.prototype.hasOwnProperty.call(progressEvent.response, 'path');
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
     if (!device?.state?.staticSessionId) {
@@ -260,7 +266,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
             return;
         }
 
-        TrezorConnect.on<DiscoveryAccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
         const result = await TrezorConnect.discoverAccounts({
             device,
@@ -302,12 +308,14 @@ const createOnBundleProgressHandler = (
     getState: any,
 ) => {
     let encounteredNonEmptyAccount = false;
-    const accountProgressEvents: ProgressEvent[] = [];
+    const accountProgressEvents: ProgressOkEvent[] = [];
 
-    const progressEventToCreateAccountPayload = (event: ProgressEvent) => ({
+    const progressEventToCreateAccountPayload = (
+        event: ProgressOkEvent,
+    ): CreateAccountActionProps => ({
         deviceState: deviceStaticSessionId,
         discoveryItem: {
-            path: event.response.path,
+            path: event.response.path as Bip43Path,
             coin: event.response.symbol,
             index: event.response.index,
             accountType: event.response.type,
@@ -335,11 +343,10 @@ const createOnBundleProgressHandler = (
             ),
         );
 
-        if (event.response) {
+        if (isProgressEventOk(event)) {
             if (event.progress === 100 && !encounteredNonEmptyAccount) {
                 accountProgressEvents.forEach(event => {
                     dispatch(
-                        // @ts-expect-error todo: marek will solve it
                         accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
                     );
                 });
@@ -348,7 +355,6 @@ const createOnBundleProgressHandler = (
             }
 
             if (encounteredNonEmptyAccount) {
-                // @ts-expect-error todo: marek will solve it
                 dispatch(accountsActions.createAccount(progressEventToCreateAccountPayload(event)));
 
                 return;
@@ -361,7 +367,6 @@ const createOnBundleProgressHandler = (
 
                 accountProgressEvents.forEach(event => {
                     dispatch(
-                        // @ts-expect-error todo: marek will solve it
                         accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
                     );
                 });
@@ -505,8 +510,7 @@ export const runDiscoveryThunk = createThunk(
                 getState,
             );
 
-            // @ts-expect-error todo: mareks changes in connect needed
-            TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
             // @ts-expect-error todo: mareks changes in connect needed
 

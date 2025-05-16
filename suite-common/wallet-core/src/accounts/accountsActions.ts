@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, networks } from '@suite-common/wallet-config';
 import { Account, DiscoveryItem, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
@@ -11,7 +11,7 @@ import {
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
 import { AccountInfo, StaticSessionId } from '@trezor/connect';
-import { networks } from '@suite-common/wallet-config';
+import { isArrayMember } from '@trezor/utils';
 
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 
@@ -31,7 +31,7 @@ const removeAccount = createAction(
     }),
 );
 
-type CreateAccountActionProps = {
+export type CreateAccountActionProps = {
     deviceState: StaticSessionId;
     discoveryItem: DiscoveryItem;
     accountInfo: AccountInfo;
@@ -55,7 +55,7 @@ const composeCreateAccountActionPayload = ({
 }: CreateAccountActionProps): Account => {
     try {
         const { chainId } = getNetwork(discoveryItem.coin);
-        const networkType = networks[discoveryItem.coin].networkType;
+        const { networkType } = networks[discoveryItem.coin];
         const isNonEthEvm = networkType === 'ethereum' && discoveryItem.coin !== 'eth';
 
         const metadataKey = isNonEthEvm
@@ -88,7 +88,7 @@ const composeCreateAccountActionPayload = ({
             availableBalance: accountInfo.availableBalance,
             formattedBalance: formatNetworkAmount(
                 // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
-                discoveryItem.networkType === 'ripple' || discoveryItem.networkType === 'stellar'
+                isArrayMember(networkType, ['ripple', 'stellar'])
                     ? accountInfo.balance
                     : accountInfo.availableBalance,
                 discoveryItem.coin,
@@ -155,18 +155,16 @@ const createAccount = createAction(
 
 const createAccountFromAccountInfo = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccountFromAccountInfo`,
-    (accountInfo: AccountInfo, deviceState: StaticSessionId): { payload: Account } => {
-        return {
-            // @ts-expect-error, bit43path type,marek
-            payload: {
-                ...accountInfo,
-                deviceState: deviceState,
-                accountLabel: 'label',
-                imported: false,
-                index: 0,
-            },
-        };
-    },
+    (accountInfo: AccountInfo, deviceState: StaticSessionId): { payload: Account } => ({
+        // @ts-expect-error, bit43path type,marek
+        payload: {
+            ...accountInfo,
+            deviceState,
+            accountLabel: 'label',
+            imported: false,
+            index: 0,
+        },
+    }),
 );
 
 const updateAccount = createAction(

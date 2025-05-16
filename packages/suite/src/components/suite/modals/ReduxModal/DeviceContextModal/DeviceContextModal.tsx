@@ -34,10 +34,11 @@ export const DeviceContextModal = ({
     const intl = useIntl();
     const selectedAccount = useSelector(selectSelectedAccount);
 
-    if (!device) return null;
     const confirmEmptyPassphrase = useSelector(state =>
-        selectIsDiscoveryAuthConfirmationRequired(state, device.path),
+        selectIsDiscoveryAuthConfirmationRequired(state, device?.path),
     );
+
+    if (!device) return null;
     const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     if (confirmEmptyPassphrase) {
