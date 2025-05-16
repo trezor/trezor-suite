@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { BuyTrade } from 'invity-api';
+
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -10,6 +13,8 @@ import { selectBuyBestQuotesForAvailablePaymentMethods } from '../../selectors/b
 import { PaymentMethodsSheet } from '../general/PaymentMethodsSheet/PaymentMethodsSheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSkeleton';
+
+const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
 
 export const PaymentMethodPicker = () => {
     const { translate } = useTranslate();
@@ -34,6 +39,20 @@ export const PaymentMethodPicker = () => {
         return null;
     }
 
+    const handleQuoteSelect = (quote: BuyTrade) => {
+        setSelectedValue(quote);
+
+        if (selectedValue?.paymentMethod === quote.paymentMethod) return;
+
+        analytics.report({
+            type: EventType.TradingParameterChanged,
+            payload: {
+                type: 'buy',
+                parameter: 'paymentMethod',
+            },
+        });
+    };
+
     return (
         <>
             <TradingOverviewRow
@@ -47,6 +66,7 @@ export const PaymentMethodPicker = () => {
                         accessibilityLabel={translate(
                             'moduleTrading.tradingScreen.selectedPaymentMethod',
                         )}
+                        testID={PAYMENT_METHOD_PICKER_TEST_ID + '/value'}
                     >
                         {selectedValue.paymentMethodName}
                     </Text>
@@ -66,7 +86,7 @@ export const PaymentMethodPicker = () => {
                 quotes={quotes}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
-                onQuoteSelect={setSelectedValue}
+                onQuoteSelect={handleQuoteSelect}
                 selectedQuote={selectedValue}
             />
         </>

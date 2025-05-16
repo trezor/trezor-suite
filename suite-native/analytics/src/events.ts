@@ -481,6 +481,19 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
+          type: EventType.TradingParameterChanged;
+          payload: {
+              type: TradingType;
+              parameter:
+                  | 'fiat'
+                  | 'cryptoFrom'
+                  | 'cryptoTo'
+                  | 'paymentMethod'
+                  | 'country'
+                  | 'provider';
+          };
+      }
+    | {
           type: EventType.DeviceSetupStarted;
           payload: {
               osName: string;

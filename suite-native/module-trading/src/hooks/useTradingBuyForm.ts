@@ -13,6 +13,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
@@ -80,6 +81,13 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
                     case 'fiatCurrency':
                         if (fiatCurrency !== prevFiatCurrency.current) {
+                            analytics.report({
+                                type: EventType.TradingParameterChanged,
+                                payload: {
+                                    type: 'buy',
+                                    parameter: 'fiat',
+                                },
+                            });
                             prevFiatCurrency.current = fiatCurrency;
                             setValue('fiatValue', undefined, { shouldValidate: true });
                             setValue('cryptoValue', undefined, { shouldValidate: true });
@@ -88,6 +96,13 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
                     case 'asset': {
                         if (asset?.cryptoId !== prevCryptoId.current) {
+                            analytics.report({
+                                type: EventType.TradingParameterChanged,
+                                payload: {
+                                    type: 'buy',
+                                    parameter: 'cryptoTo',
+                                },
+                            });
                             prevCryptoId.current = asset?.cryptoId as CryptoId | undefined;
                             setValue('cryptoValue', undefined, { shouldValidate: true });
                             dispatch(

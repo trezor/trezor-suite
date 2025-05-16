@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { BuyTrade } from 'invity-api';
+
 import {
     TradingRootState,
-    TradingTradeType,
     selectBuyQuotesByPaymentMethod,
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
@@ -40,6 +41,20 @@ export const TradingProviderPicker = () => {
             },
         });
         showSheet();
+    };
+
+    const handleQuoteSelect = (quote: BuyTrade) => {
+        setSelectedValue(quote);
+
+        if (selectedValue?.exchange === quote.exchange) return;
+
+        analytics.report({
+            type: EventType.TradingParameterChanged,
+            payload: {
+                type: 'buy',
+                parameter: 'provider',
+            },
+        });
     };
 
     if (isLoading) {
@@ -86,7 +101,7 @@ export const TradingProviderPicker = () => {
                 providerInfos={providers}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
-                onQuoteSelect={setSelectedValue as (quote: TradingTradeType) => void}
+                onQuoteSelect={handleQuoteSelect}
                 selectedQuote={selectedValue}
             />
         </>
