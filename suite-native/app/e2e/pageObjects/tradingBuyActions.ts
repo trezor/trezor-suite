@@ -38,7 +38,7 @@ class TradingBuyActions {
     }
 
     async scrollScreenToBottom() {
-        await element(by.id('@screen/Trading')).swipe('up', 'fast', 0.8);
+        await element(by.id('@screen/Trading')).swipe('up');
     }
 
     async waitForQuotesToLoad() {
@@ -112,8 +112,9 @@ class TradingBuyActions {
     async setFiatAmount(amount: string) {
         await this.getFiatAmountElement().tap();
         await this.getFiatAmountElement().replaceText(amount);
-        await this.getAmountEditingDoneButton().tap();
         await this.waitForQuotesToLoad();
+        await this.scrollScreenToBottom();
+        await this.getAmountEditingDoneButton().tap({ x: 20, y: 1 });
     }
 
     async expectReceiveAccountBalance(expectedValue: string) {

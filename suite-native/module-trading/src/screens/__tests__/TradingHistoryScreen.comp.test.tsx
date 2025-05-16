@@ -36,6 +36,18 @@ jest.mock('../../hooks/general/useBottomSheetControls', () => ({
     }),
 }));
 
+jest.mock('@suite-common/trading', () => {
+    const actualImplementation = jest.requireActual('@suite-common/trading');
+
+    return {
+        ...actualImplementation,
+        tradingThunks: {
+            ...actualImplementation.tradingThunks,
+            watchTradeThunk: () => ({ type: 'mocked-action' }),
+        },
+    };
+});
+
 const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 

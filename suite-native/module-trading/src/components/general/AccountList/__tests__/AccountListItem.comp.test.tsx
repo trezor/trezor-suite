@@ -13,6 +13,18 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
+jest.mock('@suite-common/trading', () => {
+    const actualImplementation = jest.requireActual('@suite-common/trading');
+
+    return {
+        ...actualImplementation,
+        tradingThunks: {
+            ...actualImplementation.tradingThunks,
+            watchTradeThunk: () => ({ type: 'mocked-action' }),
+        },
+    };
+});
+
 describe('AccountListItem', () => {
     const onPressMock = jest.fn();
 
