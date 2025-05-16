@@ -5,6 +5,7 @@ import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notific
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 
 import { NotificationViewProps } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
@@ -68,7 +69,9 @@ export const NotificationRenderer = ({
 }: NotificationRendererProps): JSX.Element => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
-    switch (notification.type) {
+    const { type } = notification;
+
+    switch (type) {
         case 'acquire-error':
             return error(render, notification, 'TOAST_ACQUIRE_ERROR');
         case 'auth-failed':
@@ -309,6 +312,7 @@ export const NotificationRenderer = ({
         case 'could-not-parse-csv':
             return error(render, notification, 'TR_COULD_NOT_PARSE');
 
-        // intentionally no default, all cases must be handled.
+        default:
+            return exhaustive(type);
     }
 };
