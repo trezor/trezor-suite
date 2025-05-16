@@ -1,3 +1,5 @@
+import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+
 import { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -5,46 +7,46 @@ import { useTranslate } from '@suite-native/intl';
 import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader';
 import { PROVIDER_LIST_ITEM_HEIGHT, ProviderListItem } from './ProviderListItem';
 
-export type ProvidersSheetProps = {
-    quotes: TradingTradeType[];
+export type ProvidersSheetProps<T extends BuyTrade | SellFiatTrade | ExchangeTrade> = {
+    quotes: T[];
     isVisible: boolean;
     onClose: () => void;
-    onQuoteSelect: (quote: TradingTradeType) => void;
-    selectedQuote?: TradingTradeType;
+    onQuoteSelect: (quote: T) => void;
+    selectedQuote?: T;
     providerInfos: { [name: string]: TradingProviderInfo };
 };
 
 const EXTRA_LIST_PADDING = 20;
 
-const keyExtractor = (item: TradingTradeType) => item.orderId ?? '';
+const keyExtractor = <T extends TradingTradeType>(item: T) => item.orderId ?? '';
 const getEstimatedListHeight = (itemsCount: number) =>
     itemsCount * PROVIDER_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
 
 const getProviderInfo = (
     id: string | undefined,
-    providerInfos: ProvidersSheetProps['providerInfos'],
+    providerInfos: ProvidersSheetProps<TradingTradeType>['providerInfos'],
 ) =>
     providerInfos[id ?? ''] ?? {
         companyName: '',
         logo: '',
     };
 
-export const ProvidersSheet = ({
+export const ProvidersSheet = <T extends BuyTrade | SellFiatTrade | ExchangeTrade>({
     quotes,
     isVisible,
     onClose,
     onQuoteSelect,
     selectedQuote,
     providerInfos,
-}: ProvidersSheetProps) => {
+}: ProvidersSheetProps<T>) => {
     const { translate } = useTranslate();
-    const onQuoteSelectCallback = (quote: TradingTradeType) => {
+    const onQuoteSelectCallback = (quote: T) => {
         onQuoteSelect(quote);
         onClose();
     };
 
     return (
-        <BottomSheetFlashList<TradingTradeType>
+        <BottomSheetFlashList<T>
             isVisible={isVisible}
             onClose={onClose}
             renderItem={({ item }) => {

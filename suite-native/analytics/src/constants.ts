@@ -65,6 +65,7 @@ export enum EventType {
     TradingExchange = 'trading/exchange',
     TradingBuy = 'trading/buy',
     TradingSell = 'trading/sell',
+    TradingParameterChanged = 'trading/parameter_changed',
     DeviceSetupStarted = 'device_setup/started',
     DeviceSetupCompleted = 'device_setup/completed',
     DeviceSetupSecurityCheck = 'device_setup/security_check',

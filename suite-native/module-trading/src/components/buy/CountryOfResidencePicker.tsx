@@ -1,8 +1,10 @@
+import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+import { Country } from '../../types';
 import { CountrySheet } from '../general/CountrySheet/CountrySheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 
@@ -13,6 +15,20 @@ export const CountryOfResidencePicker = () => {
     const form = useTradingBuyFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useTradeSheetControls(form, 'country');
+
+    const handleCountrySelect = (country: Country) => {
+        setSelectedValue(country);
+
+        if (selectedValue === country) return;
+
+        analytics.report({
+            type: EventType.TradingParameterChanged,
+            payload: {
+                type: 'buy',
+                parameter: 'country',
+            },
+        });
+    };
 
     return (
         <>
@@ -50,7 +66,7 @@ export const CountryOfResidencePicker = () => {
             <CountrySheet
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
-                onCountrySelect={setSelectedValue}
+                onCountrySelect={handleCountrySelect}
                 selectedCountryId={selectedValue?.value}
             />
         </>
