@@ -11503,7 +11503,7 @@ __metadata:
     "@types/web": "npm:^0.0.197"
     events: "npm:^3.3.0"
     fs-extra: "npm:^11.3.0"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     socks-proxy-agent: "npm:8.0.5"
     tiny-worker: "npm:^2.3.0"
     tsx: "npm:^4.19.3"
@@ -11692,7 +11692,7 @@ __metadata:
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^12.0.2"
     eslint-plugin-mdx: "npm:^3.4.1"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     json5: "npm:^2.2.3"
     next: "npm:^15.2.4"
     next-themes: "npm:^0.3.0"
@@ -11732,7 +11732,7 @@ __metadata:
     babel-loader: "npm:^10.0.0"
     copy-webpack-plugin: "npm:^12.0.2"
     es6-promise: "npm:^4.2.8"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     rimraf: "npm:^6.0.1"
     terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:^5.99.8"
@@ -11809,7 +11809,7 @@ __metadata:
     babel-loader: "npm:^10.0.0"
     copy-webpack-plugin: "npm:^12.0.2"
     eth-phishing-detect: "npm:^1.2.0"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     react-dom: "npm:18.2.0"
     rimraf: "npm:^6.0.1"
     terser-webpack-plugin: "npm:^5.3.14"
@@ -11872,7 +11872,7 @@ __metadata:
     "@types/chrome": "npm:^0.0.299"
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^10.0.0"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     rimraf: "npm:^6.0.1"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.14"
@@ -12262,7 +12262,7 @@ __metadata:
     crypto-browserify: "npm:3.12.0"
     css-loader: "npm:^6.10.0"
     css-minimizer-webpack-plugin: "npm:^7.0.2"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     raw-loader: "npm:^4.0.2"
     react-refresh: "npm:^0.14.0"
     stream-browserify: "npm:^3.0.0"
@@ -12651,7 +12651,7 @@ __metadata:
     "@types/json-stable-stringify": "npm:^1"
     esbuild: "npm:^0.25.2"
     html-inline-script-webpack-plugin: "npm:^3.2.1"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     json-stable-stringify: "npm:^1.2.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -12794,7 +12794,7 @@ __metadata:
     "@trezor/connect-webextension": "workspace:^"
     "@trezor/eslint": "workspace:^"
     copy-webpack-plugin: "npm:^12.0.2"
-    html-webpack-plugin: "npm:^5.6.0"
+    html-webpack-plugin: "npm:^5.6.3"
     webpack: "npm:^5.99.8"
   languageName: unknown
   linkType: soft
@@ -25428,9 +25428,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-webpack-plugin@npm:^5.5.0, html-webpack-plugin@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "html-webpack-plugin@npm:5.6.0"
+"html-webpack-plugin@npm:^5.5.0, html-webpack-plugin@npm:^5.6.3":
+  version: 5.6.3
+  resolution: "html-webpack-plugin@npm:5.6.3"
   dependencies:
     "@types/html-minifier-terser": "npm:^6.0.0"
     html-minifier-terser: "npm:^6.0.2"
@@ -25445,7 +25445,7 @@ __metadata:
       optional: true
     webpack:
       optional: true
-  checksum: 10/d651f3a88a7c932c72c6a30f0fdd610b49a864a69f1ddb34562c750f1602ea471e27fd8fc32c01adadd484b38fa6b74f055d1ccce26e5f8fcf814ee0d398a121
+  checksum: 10/fd2bf1ac04823526c8b609555d027b38b9d61b4ba9f5c8116a37cc6b62d5b86cab1f478616e8c5344fee13663d2566f5c470c66265ecb1e9574dc38d0459889d
   languageName: node
   linkType: hard
 
