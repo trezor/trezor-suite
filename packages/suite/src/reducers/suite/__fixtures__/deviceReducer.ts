@@ -1,10 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import {
-    ConnectDeviceSettings,
-    authorizeDeviceThunk,
-    deviceActions,
-} from '@suite-common/wallet-core';
+import { ConnectDeviceSettings, deviceActions } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 
@@ -918,127 +914,6 @@ const changePassphraseMode: Fixture<ReturnType<typeof deviceActions.updatePassph
                 payload: {
                     hidden: false,
                     device: SUITE_DEVICE,
-                },
-            },
-        ],
-        result: [],
-    },
-];
-
-// Todo: this is not working, dunno why: Fixture<ReturnType<typeof authorizeDeviceThunk.fulfilled>>[]
-const authDevice = [
-    {
-        description: `Auth device`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: authorizeDeviceThunk.fulfilled.type,
-                payload: {
-                    device: SUITE_DEVICE,
-                    state: 'A',
-                },
-            },
-        ],
-        result: [
-            {
-                state: 'A',
-            },
-        ],
-    },
-    {
-        description: `Auth device (2 connected, 1 affected)`,
-        initialState: {
-            devices: [
-                getSuiteDevice(undefined, {
-                    device_id: 'ignored-device-id',
-                }),
-                SUITE_DEVICE,
-            ],
-        },
-        actions: [
-            {
-                type: authorizeDeviceThunk.fulfilled.type,
-                payload: {
-                    device: SUITE_DEVICE,
-                    state: 'A',
-                },
-            },
-        ],
-        result: [
-            {
-                state: undefined,
-                features: {
-                    device_id: 'ignored-device-id',
-                },
-            },
-            {
-                state: 'A',
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `Auth device (2 instances, 1 affected)`,
-        initialState: {
-            devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
-        },
-        actions: [
-            {
-                type: authorizeDeviceThunk.fulfilled.type,
-                payload: {
-                    device: getSuiteDevice({ instance: 1 }),
-                    state: 'A',
-                },
-            },
-        ],
-        result: [
-            {
-                instance: undefined,
-                state: undefined,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 1,
-                state: 'A',
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `device is unacquired`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: authorizeDeviceThunk.fulfilled.type,
-                payload: {
-                    device: getConnectDevice({
-                        type: 'unacquired',
-                    }),
-                    state: 'A',
-                },
-            },
-        ],
-        result: [
-            {
-                state: undefined,
-            },
-        ],
-    },
-    {
-        description: `device doesn't exist in reducer`,
-        initialState: { devices: [] },
-        actions: [
-            {
-                type: authorizeDeviceThunk.fulfilled.type,
-                payload: {
-                    device: SUITE_DEVICE,
-                    state: 'A',
                 },
             },
         ],
