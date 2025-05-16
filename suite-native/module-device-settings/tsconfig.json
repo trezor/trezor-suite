@@ -10,7 +10,6 @@
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../icons" },
         { "path": "../intl" },

@@ -14,9 +14,7 @@
         {
             "path": "../../suite-common/suite-constants"
         },
-        {
-            "path": "../../suite-common/trading"
-        },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-config"
         },

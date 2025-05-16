@@ -13,7 +13,6 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { HStack, InlineAlertBoxProps, Text, VStack } from '@suite-native/atoms';
-import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -53,9 +52,6 @@ type NavigationProp = StackNavigationProps<
     DeviceStackRoutes.ConfirmFirmwareUpdate
 >;
 
-// TODO: remove this once we finish debugging firmware update
-const allowReinstall = isDevelopOrDebugEnv();
-
 export const DeviceFirmwareCard = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
@@ -83,7 +79,7 @@ export const DeviceFirmwareCard = () => {
         if (G.isNotNullable(deviceReleaseInfo)) {
             const isUpgradable = deviceReleaseInfo.isNewer ?? false;
 
-            if (isUpgradable || allowReinstall) {
+            if (isUpgradable) {
                 return {
                     title: (
                         <Translation
