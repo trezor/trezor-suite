@@ -7,7 +7,7 @@ import {
     // todo: restarDiscovery now does nothing.
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
-import { Discovery } from '@suite-common/wallet-types';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -82,9 +82,9 @@ const getAccountError = (accountError: string, networkType: NetworkType) => {
     return accountError;
 };
 
-const discoveryFailedMessage = (discovery?: Discovery) => {
-    if (!discovery) return '';
-    if ('error' in discovery) return <div>{discovery.error}</div>;
+const discoveryFailedMessage = (discovery?: DiscoveryStatus) => {
+    if (!discovery || discovery.status !== 'failed') return '';
+    if (discovery.error) return <div>{discovery.error}</div>;
 
     // Group all failed networks into array of errors.
     const networkError: string[] = [];
@@ -111,7 +111,7 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
 
 type PortfolioCardExceptionProps = {
     exception: Extract<DiscoveryStatusType, { status: 'exception' }>;
-    discovery?: Discovery;
+    discovery?: DiscoveryStatus;
 };
 
 export const PortfolioCardException = ({ exception, discovery }: PortfolioCardExceptionProps) => {
