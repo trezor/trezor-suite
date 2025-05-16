@@ -275,6 +275,22 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 
+        if (!result.success) {
+            dispatch(
+                discoveryActions.updateDiscovery(
+                    {
+                        status: 'failed',
+                        failed: [], // TODO: this shouldn't be empty. we should be able to tell which accounts failed here`,
+                        error: result.payload.error,
+                        errorCode: result.payload.code,
+                    },
+                    device.path,
+                ),
+            );
+
+            return;
+        }
+
         dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
     },
 );
