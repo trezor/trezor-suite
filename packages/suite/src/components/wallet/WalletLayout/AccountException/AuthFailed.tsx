@@ -1,14 +1,16 @@
-import { authorizeDeviceThunk } from '@suite-common/wallet-core';
+// todo
+// import { authorizeDeviceThunk } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice } from 'src/hooks/suite';
 
 export const AuthFailed = () => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(authorizeDeviceThunk());
+    // const handleClick = () => dispatch(authorizeDeviceThunk());
+    const handleClick = () => {};
 
     return (
         <AccountExceptionLayout

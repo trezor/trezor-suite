@@ -25,7 +25,7 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+// import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -41,7 +41,7 @@ import {
     redactRouterUrl,
     redactTransactionIdFromAnchor,
 } from 'src/utils/suite/analytics';
-import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
+// import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -57,13 +57,6 @@ const analyticsMiddleware =
         next(action);
 
         const state = api.getState();
-
-        if (authorizeDeviceThunk.fulfilled.match(action)) {
-            analytics.report({
-                type: EventType.SelectWalletType,
-                payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
-            });
-        }
 
         if (isAnyOf(firmwareUpdate.fulfilled, firmwareUpdate.rejected)(action)) {
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};

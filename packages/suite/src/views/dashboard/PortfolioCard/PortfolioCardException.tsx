@@ -3,7 +3,7 @@ import { ComponentProps } from 'react';
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     authConfirm,
-    authorizeDeviceThunk,
+    // authorizeDeviceThunk,
     // todo: restarDiscovery now does nothing.
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
@@ -124,7 +124,9 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                     title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
                     cta={{
-                        action: () => dispatch(authorizeDeviceThunk()),
+                        action: () => {
+                            console.log('replace authorizeDeviceThunk here 1');
+                        },
                         icon: 'repeat',
                     }}
                     dataTestBase={exception.type}

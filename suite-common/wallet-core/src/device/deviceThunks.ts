@@ -23,7 +23,6 @@ import TrezorConnect, {
     Response as ConnectResponse,
     DEVICE,
     Device,
-    DeviceState,
     StaticSessionId,
     UI,
 } from '@trezor/connect';
@@ -231,6 +230,7 @@ export const forgetDisconnectedDevices = createThunk(
  */
 export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
     const devices = selectDevices(getState());
+
     const selectedDevice = selectSelectedDevice(getState());
 
     if (!selectedDevice) return false;
@@ -285,7 +285,7 @@ export type AuthorizeDeviceError = {
     device?: TrezorDevice;
     duplicate?: TrezorDevice;
 };
-type AuthorizeDeviceSuccess = { device: TrezorDevice; state: DeviceState };
+type AuthorizeDeviceSuccess = { device: TrezorDevice; state: any };
 
 export const authorizeDeviceThunk = createThunk<
     AuthorizeDeviceSuccess,
@@ -299,105 +299,7 @@ export const authorizeDeviceThunk = createThunk<
         },
         { dispatch, getState, extra, rejectWithValue },
     ) => {
-        const {
-            actions: { openModal },
-        } = extra;
-
-        const device = selectSelectedDevice(getState());
-
-        if (!device) return rejectWithValue({ error: 'no-device' });
-
-        const isDeviceReady =
-            device.connected &&
-            isDeviceAcquired(device) &&
-            // Should ignore device state serves as a variant to call "reauthorize" device. For example in passphrase mode
-            // mobile has retry button which starts passphrase flow on the same device instance to override device state.
-            (!device.state?.staticSessionId || shouldIgnoreDeviceState) &&
-            device.mode === 'normal' &&
-            device.firmware !== 'required';
-
-        if (!isDeviceReady) return rejectWithValue({ error: 'device-not-ready', device });
-
-        const deviceParams: Parameters<typeof TrezorConnect.getDeviceState>[0] = {
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: undefined,
-            },
-            keepSession: true,
-            useEmptyPassphrase: device.useEmptyPassphrase,
-        };
-
-        const response = await TrezorConnect.getDeviceState(deviceParams);
-
-        if (response.success) {
-            const { state, _state } = response.payload;
-            const s = state.split(':')[0];
-            const devices = selectDevices(getState());
-            const duplicate = devices?.find(
-                d =>
-                    d.state?.staticSessionId &&
-                    d.state.staticSessionId.split(':')[0] === s &&
-                    d.instance !== device.instance,
-            );
-            // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
-            const freshDeviceData = getSelectedDevice(device, devices);
-
-            if (duplicate) {
-                const isStandardWallet = freshDeviceData!.useEmptyPassphrase;
-
-                if (isStandardWallet) {
-                    // if currently selected device uses empty passphrase
-                    // make sure that founded duplicate will also use empty passphrase
-                    dispatch(
-                        deviceActions.updatePassphraseMode({ device: duplicate, hidden: false }),
-                    );
-                    // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
-                    dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
-                }
-
-                dispatch(openModal({ type: 'passphrase-duplicate', device, duplicate }));
-
-                return rejectWithValue({
-                    error: 'passphrase-duplicate',
-                    device,
-                    duplicate,
-                });
-            }
-
-            return { device: freshDeviceData as TrezorDevice, state: _state };
-        }
-
-        if (
-            response.payload.error === 'enter-passphrase-cancel' ||
-            response.payload.error === 'enter-passphrase-back'
-        ) {
-            const settings = extra.selectors.selectSuiteSettings(getState());
-            dispatch(deviceActions.forgetDevice({ device, settings }));
-
-            const newDevice = selectSelectedDevice(getState());
-            dispatch(deviceActions.selectDevice(newDevice));
-            if (response.payload.error === 'enter-passphrase-back') {
-                dispatch(extra.thunks.openSwitchDeviceDialog());
-            }
-
-            return rejectWithValue({
-                error: 'auth-failed',
-                device: device as TrezorDevice,
-            });
-        }
-
-        dispatch(
-            notificationsActions.addToast({
-                type: 'auth-failed',
-                error: response.payload.error,
-            }),
-        );
-
-        return rejectWithValue({
-            error: 'auth-failed',
-            device: device as TrezorDevice,
-        });
+        console.log('removed');
     },
 );
 
@@ -509,6 +411,7 @@ export const initDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
     (_, { dispatch, getState }) => {
         const devices = selectDevices(getState());
+
         const device = selectSelectedDevice(getState());
 
         if (!device && devices && devices[0]) {
@@ -679,7 +582,6 @@ export const passwordMismatchResetThunk = createThunk<void, { device: TrezorDevi
         const settings = extra.selectors.selectSuiteSettings(getState());
 
         dispatch(deviceActions.forgetDevice({ device, settings }));
-
         const newDevice = selectSelectedDevice(getState());
         dispatch(deviceActions.selectDevice(newDevice));
     },
