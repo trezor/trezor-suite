@@ -89,7 +89,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
     const arePointsEmpty = points.length <= 1;
 
     const areLabelsHidden = loading || !!error || arePointsEmpty;
-    const showBlurredGraph = !loading && !!error && !loading;
+    const showBlurredGraph = !loading && !!error;
 
     useEffect(() => {
         // We need to delay the loading a bit, because when switching between cached timeframes, it will break the

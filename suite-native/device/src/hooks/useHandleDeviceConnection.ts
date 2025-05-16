@@ -5,7 +5,6 @@ import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { useAtom, useAtomValue } from 'jotai';
 
 import {
-    authorizeDeviceThunk,
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInitialized,
@@ -13,6 +12,8 @@ import {
     selectIsDeviceUsingPassphrase,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
+    selectSelectedDevice,
+    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
@@ -95,6 +96,8 @@ export const useHandleDeviceConnection = () => {
         lastRoute as RootStackRoutes,
     );
 
+    const device = useSelector(selectSelectedDevice);
+
     const {
         failedCheck,
         shouldNavigateToDeviceCompromisedModal,
@@ -153,8 +156,17 @@ export const useHandleDeviceConnection = () => {
             !isDeviceOnboardingStackFocused
         ) {
             requestPrioritizedDeviceAccess({
-                deviceCallback: () => dispatch(authorizeDeviceThunk()),
+                deviceCallback: () => {
+                    dispatch(
+                        // todo: change it to accept devicePath only to make it less heavy weight in terms of selectors
+                        startDiscoveryThunk({
+                            device,
+                            isAddingHiddenWallet: false,
+                        }),
+                    );
+                },
             });
+            console.log('=== authorizeDeviceThunk ===== ');
 
             // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
             // post auth navigation is handled in @suite-native/module-passphrase for custom UX flow.
@@ -183,6 +195,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceInitialized,
         shouldNavigateToDeviceCompromisedModal,
         isSuspiciousDeviceScreenFocused,
+        device,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
