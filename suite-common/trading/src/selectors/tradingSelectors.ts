@@ -1,7 +1,6 @@
 import { Coins, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -12,6 +11,7 @@ import {
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
 import addressValidator from '@trezor/address-validator';
+import { exhaustive } from '@trezor/type-utils';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
@@ -254,7 +254,7 @@ export const selectTradingProviderByNameAndTradeType = (
             return selectTradingSellProviders(state)?.[name];
 
         default:
-            throw new UnreachableCaseError(type, 'Unexpected trade type');
+            return exhaustive(type);
     }
 };
 

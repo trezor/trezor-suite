@@ -1,4 +1,3 @@
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
@@ -10,6 +9,7 @@ import {
     getEthereumCryptoBalanceWithStaking,
     getSolanaCryptoBalanceWithStaking,
 } from '@suite-common/wallet-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import {
     selectEthereumAccountHasStaking,
@@ -50,7 +50,7 @@ export const selectDeviceAccountsWithStaking = (
         case 'sol':
             return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, 'sol');
         default:
-            throw new UnreachableCaseError(symbol);
+            return exhaustive(symbol);
     }
 };
 
@@ -75,7 +75,7 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
         case 'sol':
             return getSolanaCryptoBalanceWithStaking(account);
         default:
-            throw new UnreachableCaseError(account.symbol);
+            return exhaustive(account.symbol);
     }
 };
 
@@ -105,7 +105,7 @@ export const selectAccountHasStaking = (state: NativeStakingRootState, accountKe
         case 'sol':
             return selectSolAccountHasStaked(state, accountKey);
         default:
-            throw new UnreachableCaseError(symbol);
+            return exhaustive(symbol);
     }
 };
 
@@ -128,7 +128,7 @@ export const selectIsStakePendingByAccountKey = (
         case 'sol':
             return selectSolanaIsStakePendingByAccountKey(state, accountKey);
         default:
-            throw new UnreachableCaseError(symbol);
+            return exhaustive(symbol);
     }
 };
 
@@ -151,7 +151,7 @@ export const selectIsStakeConfirmingByAccountKey = (
         case 'sol':
             return false; // there are no pending txns for solana staking;
         default:
-            throw new UnreachableCaseError(symbol);
+            return exhaustive(symbol);
     }
 };
 
@@ -184,7 +184,7 @@ export const selectStakedBalanceByAccountKey = (
         case 'sol':
             return selectSolanaStakedBalanceByAccountKey(state, accountKey);
         default:
-            throw new UnreachableCaseError(symbol);
+            return exhaustive(symbol);
     }
 };
 
@@ -208,7 +208,7 @@ export const selectRewardsBalanceByAccountKey = (
             // on solana we show rewards per one epoch
             return selectExpectedRewardsForEpoch(state, accountKey);
         default:
-            throw new UnreachableCaseError(symbol);
+            return exhaustive(symbol);
     }
 };
 
@@ -231,6 +231,6 @@ export const selectTotalStakePendingByAccountKey = (
         case 'sol':
             return selectSolanaTotalStakePendingByAccountKey(state, accountKey);
         default:
-            throw new UnreachableCaseError(symbol);
+            return exhaustive(symbol);
     }
 };

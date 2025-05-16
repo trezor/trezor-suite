@@ -8,9 +8,9 @@ import {
     SellTradeStatus,
 } from 'invity-api';
 
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { TradingTradeStatusType, TradingTransaction, TradingType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
+import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
 import { TRADING_URL_DEFAULT_BACK } from './formUtils';
@@ -77,7 +77,7 @@ export const getTradeOperationData = (
         }
 
         default:
-            throw new UnreachableCaseError(tradeType);
+            return exhaustive(tradeType);
     }
 };
 
@@ -152,7 +152,7 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
             return getSellTradeStatusStep(trade.data.status);
 
         default:
-            throw new UnreachableCaseError(tradeType);
+            return exhaustive(tradeType);
     }
 };
 
@@ -175,6 +175,6 @@ export const getTradeTitle = (
             return translate('moduleTrading.tradeHistory.detail.sell');
 
         default:
-            throw new UnreachableCaseError(tradeType);
+            return exhaustive(tradeType);
     }
 };

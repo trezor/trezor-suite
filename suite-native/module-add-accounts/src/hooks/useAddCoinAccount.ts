@@ -5,7 +5,6 @@ import { A, pipe } from '@mobily/ts-belt';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
@@ -41,6 +40,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useAddCoinAccountAlerts } from './useAddCoinAccountAlerts';
 
@@ -199,7 +199,7 @@ export const useAddCoinAccount = () => {
                 break;
 
             default:
-                throw new UnreachableCaseError(flowType);
+                return exhaustive(flowType);
         }
     };
 
@@ -224,7 +224,7 @@ export const useAddCoinAccount = () => {
                 break;
 
             default:
-                throw new UnreachableCaseError(flowType);
+                return exhaustive(flowType);
         }
 
         if (errorString === 'Passphrase is incorrect') {

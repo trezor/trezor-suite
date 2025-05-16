@@ -1,6 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { Account } from '@suite-common/wallet-types';
+import { exhaustive } from '@trezor/type-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -144,7 +144,7 @@ export const watchTradeThunk = createThunk(
             }
             /* istanbul ignore next */
             default:
-                throw new UnreachableCaseError(tradeType, 'Unexpected trade type');
+                return exhaustive(tradeType);
         }
     },
 );

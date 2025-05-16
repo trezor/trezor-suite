@@ -1,9 +1,9 @@
 import { ReactElement, ReactNode, useMemo } from 'react';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { exhaustive } from '@trezor/type-utils';
 
 export type ItemRenderConfig<U> = {
     isFirst?: boolean;
@@ -97,7 +97,7 @@ const internalKeyExtractor = <T, U>(
             return itemKeyExtractor(item[1], item[2].sectionData);
 
         default:
-            throw new UnreachableCaseError(item[0]);
+            return exhaustive(item[0]);
     }
 };
 
@@ -128,7 +128,7 @@ const renderInternalItem = <T, U>(
             );
 
         default:
-            throw new UnreachableCaseError(item[0]);
+            return exhaustive(item[0]);
     }
 };
 

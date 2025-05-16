@@ -8,4 +8,3 @@ export * from './parseFirmwareChangelog';
 export * from './uppercaseType';
 export * from './protocol';
 export * from './invariant';
-export { UnreachableCaseError } from './UnreachableCaseError';

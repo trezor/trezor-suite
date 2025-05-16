@@ -2,9 +2,9 @@ import { G } from '@mobily/ts-belt';
 import * as semver from 'semver';
 
 import { AnyAction } from '@suite-common/redux-utils';
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 export const minimalSupportedFirmwareVersion = {
     UNKNOWN: [0, 0, 0] as VersionArray,
@@ -50,6 +50,6 @@ export const isDeviceSetupSupported = (model: DeviceModelInternal) => {
         case DeviceModelInternal.UNKNOWN:
             return false;
         default:
-            throw new UnreachableCaseError(model);
+            return exhaustive(model);
     }
 };

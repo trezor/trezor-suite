@@ -1,5 +1,5 @@
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
+import { exhaustive } from '@trezor/type-utils';
 
 import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';
 import { EntropyCheckFailModalContent } from '../components/EntropyCheckFailModalContent';
@@ -24,6 +24,6 @@ export const DeviceCompromisedModalScreen = ({
         case 'firmware-authenticity':
             return <FirmwareAuthenticityCheckFailModalContent />;
         default:
-            throw new UnreachableCaseError(failedCheck);
+            return exhaustive(failedCheck);
     }
 };

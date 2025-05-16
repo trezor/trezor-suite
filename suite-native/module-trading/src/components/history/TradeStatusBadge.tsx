@@ -1,8 +1,8 @@
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { Badge, BadgeVariant } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { exhaustive } from '@trezor/type-utils';
 
 export type TransactionStatusProps = {
     status: TradingTransactionStatus;
@@ -93,7 +93,7 @@ const getLabel = (status: TradingTransactionStatus) => {
             return null;
 
         default:
-            throw new UnreachableCaseError(status);
+            return exhaustive(status);
     }
 };
 
