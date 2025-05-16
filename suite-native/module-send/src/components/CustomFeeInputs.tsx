@@ -19,7 +19,7 @@ type CustomFeeInputsProps = {
 
 export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
     const { translate } = useTranslate();
-    const feeInfo = useSelector((state: FeesRootState) => selectNetworkFeeInfo(state, 'btc'));
+    const feeInfo = useSelector((state: FeesRootState) => selectNetworkFeeInfo(state, symbol));
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const debounce = useDebounce();
     const {
