@@ -12,6 +12,18 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ name: 'TradingWebViewScreen', params: { ...mockRouteParams } }),
 }));
 
+jest.mock('@suite-common/trading', () => {
+    const actualImplementation = jest.requireActual('@suite-common/trading');
+
+    return {
+        ...actualImplementation,
+        tradingThunks: {
+            ...actualImplementation.tradingThunks,
+            watchTradeThunk: () => ({ type: 'mocked-action' }),
+        },
+    };
+});
+
 describe('TradingWebViewScreen', () => {
     it('should render header', async () => {
         mockRouteParams = {
