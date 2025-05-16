@@ -31,11 +31,7 @@ import { isNative } from '@trezor/env-utils';
 
 import { ConnectDeviceSettings, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
-import {
-    authorizeDeviceThunk,
-    createDeviceInstanceThunk,
-    createImportedDeviceThunk,
-} from './deviceThunks';
+import { createDeviceInstanceThunk, createImportedDeviceThunk } from './deviceThunks';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -437,37 +433,6 @@ const changePassphraseMode = (
 };
 
 /**
- * Action handler: SUITE.AUTH_DEVICE
- * @param {DeviceReducerState} draft
- * @param {TrezorDevice} device
- * @param {DeviceState} state
- * @returns
- */
-const authDevice = (draft: DeviceReducerState, device: TrezorDevice, state: DeviceState) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    // update state
-    draft.devices[index].state = state;
-    delete draft.devices[index].authFailed;
-};
-
-/**
- * Action handler: SUITE.AUTH_FAILED
- * @param {DeviceReducerState} draft
- * @param {TrezorDevice} device
- * @returns
- */
-const authFailed = (draft: DeviceReducerState, device: TrezorDevice) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    draft.devices[index].authFailed = true;
-};
-
-/**
  * Action handler: authorizeDeviceThunk.pending
  * Reset authFailed flag
  * @param {DeviceReducerState} draft
@@ -483,28 +448,12 @@ const resetAuthFailed = (draft: DeviceReducerState) => {
 };
 
 /**
- * Action handler: SUITE.RECEIVE_AUTH_CONFIRM
- * @param {DeviceReducerState} draft
- * @param {TrezorDevice} device
- * @param {boolean} success
- * @returns
- */
-const authConfirm = (draft: DeviceReducerState, device: TrezorDevice, success: boolean) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    // update state
-    draft.devices[index].authConfirm = !success;
-    draft.devices[index].available = success;
-};
-
-/**
  * Action handler: SUITE.CREATE_DEVICE_INSTANCE
  * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @returns
  */
+// TODO: this now can only be used for imported device!
 const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
@@ -684,25 +633,8 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
             changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
-        .addCase(authorizeDeviceThunk.pending, state => {
-            resetAuthFailed(state);
-        })
-        .addCase(authorizeDeviceThunk.fulfilled, (state, { payload }) => {
-            authDevice(state, payload.device, payload.state);
-        })
-        .addCase(authorizeDeviceThunk.rejected, (state, action) => {
-            if (action.payload && action.payload.error) {
-                const { error } = action.payload;
-                if (error === 'auth-failed' && action.payload.device) {
-                    authFailed(state, action.payload.device);
-                }
-            }
-        })
         .addCase(UI.REQUEST_PIN, state => {
             resetAuthFailed(state);
-        })
-        .addCase(deviceActions.receiveAuthConfirm, (state, { payload }) => {
-            authConfirm(state, payload.device, payload.success);
         })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
             remember(state, payload.device, payload.remember, payload.forceRemember);

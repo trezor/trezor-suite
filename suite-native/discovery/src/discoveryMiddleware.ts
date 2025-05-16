@@ -70,7 +70,6 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // for further continual discovery check for various other reasons
         if (
             deviceActions.selectDevice.match(action) || // user switched device
-            deviceActions.receiveAuthConfirm.match(action) || // user confirmed device auth
             accountsActions.changeAccountVisibility.match(action) // account visibility changed - e.g. when incoming txn to hidden account
         ) {
             dispatch(discoveryCheckThunk());

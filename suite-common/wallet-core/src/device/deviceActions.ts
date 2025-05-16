@@ -52,11 +52,6 @@ const updatePassphraseMode = createAction(
     (payload: { device: TrezorDevice; hidden: boolean; alwaysOnDevice?: boolean }) => ({ payload }),
 );
 
-const receiveAuthConfirm = createAction(
-    `${DEVICE_MODULE_PREFIX}/receiveAuthConfirm`,
-    (payload: { device: TrezorDevice; success: boolean }) => ({ payload }),
-);
-
 const rememberDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/rememberDevice`,
     (payload: { device: TrezorDevice; remember: boolean; forceRemember?: true }) => ({
@@ -131,7 +126,6 @@ export const deviceActions = {
     deviceDisconnect,
     dismissFirmwareAuthenticityCheck,
     updatePassphraseMode,
-    receiveAuthConfirm,
     rememberDevice,
     setTemporaryRememberedDevice,
     forgetDevice,

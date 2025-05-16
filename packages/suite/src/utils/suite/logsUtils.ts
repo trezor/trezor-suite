@@ -4,7 +4,7 @@ import { LogEntry, selectLogs } from '@suite-common/logger';
 import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 import {
     accountsActions,
-    authorizeDeviceThunk,
+    // authorizeDeviceThunk,
     deviceActions,
     discoveryActions,
     selectDevices,
@@ -126,12 +126,12 @@ export const redactAction = (action: LogEntry) => {
         };
     }
 
-    if (authorizeDeviceThunk.fulfilled.match(action)) {
-        payload = {
-            state: REDACTED_REPLACEMENT,
-            ...redactDevice(action.payload.device),
-        };
-    }
+    // if (authorizeDeviceThunk.fulfilled.match(action)) {
+    //     payload = {
+    //         state: REDACTED_REPLACEMENT,
+    //         ...redactDevice(action.payload.device),
+    //     };
+    // }
 
     switch (action.type) {
         case accountsActions.createAccount.type:
