@@ -13,6 +13,8 @@ import { validatePath } from '../utils/pathUtils';
 type EntropyRequestData = PROTO.EntropyRequest & { host_entropy: string };
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
+    private isEntropyCheckSuccessful: boolean = false;
+
     init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useDeviceState = false;
@@ -117,17 +119,26 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
                     // GetPublicKey > ResetDeviceContinue > EntropyRequest > EntropyAck > EntropyCheckReady
                     entropyData = await this.entropyCheck(entropyData);
                 }
+
+                // if this.entropyCheck hasn't thrown up to now, we may consider it successful
+                this.isEntropyCheckSuccessful = true;
+
                 // step 7 EntropyCheckContinue > Success
                 await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
             }
         } catch (error) {
-            // error.message should be one of these https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/transports/abstract.ts#L59
+            // permissible error.message during entropy check should be one of these: see ReadWriteError in packages/transport/src/transports/abstract.ts
             if (
                 error.cause === 'transport-error' &&
                 ERRORS_WITHOUT_DEVICE_INTERACTION.includes(error.message)
             ) {
                 throw error;
             }
+
+            // wallet backup flow may follow after successful entropy check, so don't consider errors thrown there as entropy check failure
+            if (this.isEntropyCheckSuccessful === true) throw error;
+
+            // else consider it an entropy check failure
             throw ERRORS.TypedError('Failure_EntropyCheck', error.message);
         }
 
