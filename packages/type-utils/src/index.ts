@@ -3,3 +3,4 @@ export * from './overloads';
 export * from './timeout';
 export * from './utils';
 export * from './object';
+export * from './exhaustive';

@@ -132,7 +132,3 @@ export type FilterOutFromUnionByTypeProperty<
         ? never
         : { [K in KeyName]: Exclude<ActualValue, ValueToExclude> } & Omit<Union, KeyName>
     : Union;
-
-export const exhaustive = (unhandledCase: never): never => {
-    throw new Error(`Unhandled case ${unhandledCase}`);
-};
