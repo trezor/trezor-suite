@@ -620,7 +620,6 @@ export const createCoinjoinAccount =
                     path,
                     unlockPath: unlockPath.payload,
                     accountType: account.accountType,
-                    networkType: network.networkType,
                     backendType: 'coinjoin',
                     coin: network.symbol,
                     derivationType: 0,

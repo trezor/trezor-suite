@@ -1,5 +1,4 @@
 import { networks } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     accountsActions,
     blockchainActions,
@@ -141,7 +140,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     //     };
     // }
 
-    if (discovery.status === 'progress') {
+    if (discovery?.status === 'progress') {
         return {
             status: 'loading',
             loader: 'account-loading',
