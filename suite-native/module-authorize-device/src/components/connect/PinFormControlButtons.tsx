@@ -9,10 +9,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { authorizeDeviceThunk, selectDeviceAuthFailed } from '@suite-common/wallet-core';
+import { selectDeviceAuthFailed } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+// import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -77,10 +77,12 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
             ),
             onPressPrimaryButton: () => {
                 if (hasDeviceAuthFailed) {
+                    console.log(' ==== authorizeDeviceThunk needs to be replaced here  2====');
+
                     // Ask for new PIN entry after 3 wrong attempts.
-                    requestPrioritizedDeviceAccess({
-                        deviceCallback: () => dispatch(authorizeDeviceThunk()),
-                    });
+                    // requestPrioritizedDeviceAccess({
+                    //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
+                    // });
                 }
             },
             secondaryButtonTitle: (
