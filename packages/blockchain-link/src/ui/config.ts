@@ -6,8 +6,9 @@ export default [
             server: [
                 'wss://xrp1.trezor.io',
                 'wss://xrp2.trezor.io',
-                'wss://xrp3.trezor.io',
-                'wss://xrp4.trezor.io',
+                'wss://xrplcluster.com',
+                'wss://xrpl.ws',
+                'wss://s2.ripple.com',
             ],
             debug: true,
         },
