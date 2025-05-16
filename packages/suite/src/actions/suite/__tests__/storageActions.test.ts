@@ -1,7 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
 import {
-    createDiscoveryThunk,
     deviceActions,
     disableAccountsThunk,
     prepareDeviceReducer,
@@ -250,26 +249,6 @@ describe('Storage actions', () => {
             }),
         );
         updateStore(store);
-
-        // create discovery objects
-        store.dispatch(
-            createDiscoveryThunk({
-                deviceState: dev1.state!.staticSessionId!,
-                device: dev1,
-            }),
-        );
-        store.dispatch(
-            createDiscoveryThunk({
-                deviceState: dev2.state!.staticSessionId!,
-                device: dev2,
-            }),
-        );
-        store.dispatch(
-            createDiscoveryThunk({
-                deviceState: dev2Instance1.state!.staticSessionId!,
-                device: dev2Instance1,
-            }),
-        );
 
         // add txs
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
