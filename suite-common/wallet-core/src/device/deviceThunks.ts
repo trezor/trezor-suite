@@ -293,12 +293,7 @@ export const authorizeDeviceThunk = createThunk<
     { rejectValue: AuthorizeDeviceError }
 >(
     `${DEVICE_MODULE_PREFIX}/authorizeDevice`,
-    async (
-        { shouldIgnoreDeviceState } = {
-            shouldIgnoreDeviceState: false,
-        },
-        { dispatch, getState, extra, rejectWithValue },
-    ) => {
+    async (_, { dispatch, getState, extra, rejectWithValue }) => {
         console.log('removed');
     },
 );
@@ -309,51 +304,7 @@ export const authorizeDeviceThunk = createThunk<
 export const authConfirm = createThunk(
     `${DEVICE_MODULE_PREFIX}/authConfirm`,
     async (_, { dispatch, getState, extra }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return false;
-
-        const response = await TrezorConnect.getDeviceState({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: undefined,
-            },
-            keepSession: false,
-        });
-
-        if (!response.success) {
-            // handle error passed from Passphrase modal
-            if (
-                response.payload.error === 'auth-confirm-cancel' ||
-                response.payload.error === 'auth-confirm-retry'
-            ) {
-                const settings = extra.selectors.selectSuiteSettings(getState());
-
-                // forget previous empty wallet
-                dispatch(deviceActions.forgetDevice({ device, settings }));
-
-                return;
-            }
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'auth-confirm-error',
-                    error: response.payload.error,
-                }),
-            );
-
-            dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
-
-            return;
-        }
-
-        if (response.payload.state !== device.state?.staticSessionId) {
-            dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
-            dispatch(extra.actions.openModal({ type: 'passphrase-mismatch-warning' }));
-
-            return;
-        }
-
-        dispatch(deviceActions.receiveAuthConfirm({ device, success: true }));
+        console.log('auth confirm removed ');
     },
 );
 

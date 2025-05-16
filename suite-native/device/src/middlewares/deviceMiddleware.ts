@@ -30,7 +30,6 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
             deviceActions.selectDevice,
-            deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,
             deviceActions.addButtonRequest,
             deviceActions.removeButtonRequests,

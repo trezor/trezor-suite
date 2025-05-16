@@ -5,8 +5,6 @@ import { AnyAction } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    authConfirm,
-    authorizeDeviceThunk,
     createDeviceInstanceThunk,
     deviceActions,
     forgetDisconnectedDevices,
@@ -27,10 +25,7 @@ import { Action, AppState, Dispatch } from 'src/types/suite';
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
-            authorizeDeviceThunk.fulfilled,
-            authorizeDeviceThunk.rejected,
             deviceActions.selectDevice,
-            deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,
             deviceActions.addButtonRequest,
             deviceActions.removeButtonRequests,
@@ -107,9 +102,6 @@ const suite =
                 break;
             case DEVICE.DISCONNECT:
                 api.dispatch(handleDeviceDisconnect(action.payload));
-                break;
-            case SUITE.REQUEST_AUTH_CONFIRM:
-                api.dispatch(authConfirm());
                 break;
             case SUITE.ONLINE_STATUS:
                 // Restart discovery to reconnect to backends when user goes offline -> online.
