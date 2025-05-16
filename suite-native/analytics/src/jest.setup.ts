@@ -1,1 +1,1 @@
-//jest.mock('./analytics');
+jest.mock('./analytics');
