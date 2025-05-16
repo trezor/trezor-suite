@@ -30,8 +30,6 @@ const logger = initLog('DeviceCommands');
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
 const fail = (msg: string, cause?: string) => error(new Error(msg, cause ? { cause } : undefined));
-const disposed = () =>
-    error(ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed'));
 
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
@@ -45,7 +43,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private readonly protocol: TransportProtocol;
     private readonly session: Session;
 
-    private disposed: boolean;
+    private disposed?: Error;
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
 
@@ -59,11 +57,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
         this.transport = transport;
         this.protocol = protocol;
         this.session = session;
-        this.disposed = false;
     }
 
     isDisposed() {
-        return this.disposed;
+        return !!this.disposed;
     }
 
     async typedCall(
@@ -133,7 +130,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
         let pinUnlocked = false;
 
         while (true) {
-            if (this.disposed) return disposed();
+            if (this.disposed) return error(this.disposed);
 
             const callPromise = this.call({ session, name, data, protocol });
 
@@ -160,7 +157,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
             const response = await callPromise;
 
-            if (this.disposed) return disposed();
+            if (this.disposed) return error(this.disposed);
 
             if (!response.success) return response;
 
@@ -277,7 +274,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     }
 
     async cancelCall(expectResponse = true) {
-        if (this.disposed) return Promise.resolve(disposed());
+        if (this.disposed) return Promise.resolve(error(this.disposed));
 
         const { protocol, session } = this;
         const cancelArgs = { session, name: 'Cancel', data: {}, protocol };
@@ -289,17 +286,19 @@ export class DeviceCurrentSession implements TypedCallProvider {
         return response.success ? success(response.payload) : fail(response.error);
     }
 
-    async abort(reason: Error) {
+    async abort(reason: Error, dispose = false) {
         this.abortController?.abort(reason);
         await this.callPromise;
+        if (dispose) this.disposed = reason;
     }
 
     async dispose() {
         if (!this.disposed) {
-            this.disposed = true;
-            await this.abort(
-                ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed'),
+            this.disposed = ERRORS.TypedError(
+                'Runtime',
+                'typedCall: DeviceCommands already disposed',
             );
+            await this.abort(this.disposed);
         }
     }
 }

@@ -436,8 +436,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async interrupt(reason: Error) {
-        await this.currentSession?.abort(reason);
-        await this.currentSession?.dispose();
+        await this.currentSession?.abort(reason, true);
 
         // reject inner defer
         this.runAbort?.abort(reason);
