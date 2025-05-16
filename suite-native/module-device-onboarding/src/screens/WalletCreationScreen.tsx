@@ -18,7 +18,11 @@ import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboar
 import { WalletCreationHint } from '../components/WalletCreationHint';
 
 // Do not retry if user cancelled the flow via the app UI, or the Entropy check has failed
-const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = ['Method_Interrupted', 'Failure_EntropyCheck'];
+const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = [
+    'Method_Interrupted',
+    'Failure_ActionCancelled',
+    'Failure_EntropyCheck',
+];
 
 const SHOW_HINT_DELAY = 5000;
 
