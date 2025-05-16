@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Translation } from '@suite-native/intl';
 import { ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE_URL } from '@trezor/urls';
 
@@ -25,6 +26,9 @@ export const DeviceAuthenticityCheckFailModalContent = () => {
         <DeviceCompromisedModalContent
             contactSupportUrl={supportUrlWithChat}
             screenHeaderContent={screenHeaderContent}
+            subtitleContent={
+                <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.deviceAuthenticity" />
+            }
         />
     );
 };

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
+import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
 import { HELP_CENTER_ENTROPY_CHECK_URL } from '@trezor/urls';
 
@@ -27,6 +28,9 @@ export const EntropyCheckFailModalContent = () => {
         <DeviceCompromisedModalContent
             contactSupportUrl={supportUrlWithChat}
             screenHeaderContent={<ScreenHeader leftIcon={null} />}
+            subtitleContent={
+                <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.entropy" />
+            }
         />
     );
 };

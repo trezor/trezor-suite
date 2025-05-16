@@ -25,12 +25,14 @@ type DeviceCompromisedModalContentProps = {
     contactSupportUrl: string;
     screenHeaderContent: ReactNode;
     closeButtonContent?: ReactNode;
+    subtitleContent?: ReactNode;
 };
 
 export const DeviceCompromisedModalContent = ({
     contactSupportUrl,
     screenHeaderContent,
     closeButtonContent,
+    subtitleContent,
 }: DeviceCompromisedModalContentProps) => {
     const openLink = useOpenLink();
 
@@ -43,9 +45,7 @@ export const DeviceCompromisedModalContent = ({
                     titleVariant="titleMedium"
                     titleSpacing="sp12"
                     title={<Translation id="moduleAuthenticityChecks.deviceCompromised.title" />}
-                    subtitle={
-                        <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle" />
-                    }
+                    subtitle={subtitleContent}
                 />
                 <InformativeList />
             </VStack>
