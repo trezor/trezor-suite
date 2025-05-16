@@ -1521,8 +1521,11 @@ export const en = {
     moduleAuthenticityChecks: {
         deviceCompromised: {
             title: 'Your device may have been compromised',
-            subtitle:
-                'Contact our support to learn what’s going on with your device and what to do next.',
+            subtitle: {
+                fwRevision: 'Your device firmware revision check failed.',
+                deviceAuthenticity: 'Your device authentication check failed.',
+                entropy: 'Security check (entropy verification) failed.',
+            },
             steps: {
                 disconnectDevice: 'Disconnect your device from your phone.',
                 avoidUsingDevice: 'Avoid using this device or sending any funds to it.',

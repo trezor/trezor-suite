@@ -65,6 +65,9 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
             contactSupportUrl={supportUrlWithChat}
             screenHeaderContent={screenHeaderContent}
             closeButtonContent={closeButtonContent}
+            subtitleContent={
+                <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.fwRevision" />
+            }
         />
     );
 };
