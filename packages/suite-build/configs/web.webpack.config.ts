@@ -14,6 +14,7 @@ const config: webpack.Configuration = {
     target: 'browserslist',
     entry: [path.join(baseDir, 'src', 'index.ts')],
     output: {
+        publicPath: 'auto',
         path: path.join(baseDir, 'build'),
     },
     resolve: {
