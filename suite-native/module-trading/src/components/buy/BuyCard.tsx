@@ -12,14 +12,14 @@ import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/at
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { AssetNetworkInfo } from './AssetNetworkInfo';
+import { AssetNetworkInfo } from './BuyAssetNetworkInfo';
 import { BuyCardTitle } from './BuyCardTitle';
+import { FiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
-import { FiatCurrencyPicker } from './FiatCurrencyPicker';
-import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
-import { ReceiveAccountPicker } from './ReceiveAccountPicker';
-import { TradeableAssetPicker } from './TradeableAssetPicker';
-import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+import { ReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
+import { ReceiveAccountPicker } from './BuyReceiveAccountPicker';
+import { TradeableAssetPicker } from './BuyTradeableAssetPicker';
+import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;

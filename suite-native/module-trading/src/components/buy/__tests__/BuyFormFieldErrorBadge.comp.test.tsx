@@ -6,7 +6,7 @@ import {
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
 
-import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
+import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyFormFieldErrorBadge, BuyFormFieldErrorBadgeProps } from '../BuyFormFieldErrorBadge';
 

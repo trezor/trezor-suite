@@ -3,7 +3,7 @@ import { Pressable } from 'react-native';
 import { Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TradingProviderLogo } from '../TradingProviderLogo';
+import { TradingProviderLogo } from '../ProviderLogo';
 
 export type ProviderListItemProps = {
     orderId: string;

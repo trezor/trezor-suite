@@ -13,10 +13,10 @@ import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { BuyForm } from '../components/buy/BuyForm';
 import { BuyFormContextProvider } from '../components/buy/BuyFormContextProvider';
 import { BuyFormSkeleton } from '../components/buy/BuyFormSkeleton';
-import { DeviceOffline } from '../components/general/Offline/DeviceOffline';
-import { ServerOffline } from '../components/general/Offline/ServerOffline';
-import { NavigationProps } from '../components/general/TradeHistory/TradeHistoryButton';
-import { useTradingBuyData } from '../hooks/useTradingBuyData';
+import { NavigationProps } from '../components/general/HistoryButton';
+import { DeviceOffline } from '../components/general/offline/DeviceOffline';
+import { ServerOffline } from '../components/general/offline/ServerOffline';
+import { useTradingBuyData } from '../hooks/buy/useBuyData';
 import { selectIsTradingBuyEnabled, selectTradeToBeOpened } from '../selectors/commonSelectors';
 
 const TradingScreenContent = () => {

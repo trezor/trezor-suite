@@ -1,6 +1,6 @@
 import { Translation } from '@suite-native/intl';
 
-import { TradingEmptyComponent } from '../TradingEmptyComponent';
+import { TradingEmptyComponent } from '../EmptyComponent';
 
 export const CountryListEmptyComponent = () => (
     <TradingEmptyComponent

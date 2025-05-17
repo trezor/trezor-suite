@@ -9,13 +9,13 @@ import {
     selectTradingBuySupportedCryptoIds,
 } from '@suite-common/trading';
 
+import { supportedFiatCurrenciesMap } from '../consts/general/supportedFiatCurrencies';
 import { TradingRootState, createMemoizedSelector } from '../tradingSlice';
 import { Country, FiatCurrencyItem, TradingBuyFormValues } from '../types';
-import { supportedFiatCurrenciesMap } from '../utils/supportedFiatCurrencies';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
-} from '../utils/tradeableAssetUtils';
+} from '../utils/general/tradeableAssetUtils';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 

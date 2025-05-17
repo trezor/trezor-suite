@@ -8,6 +8,6 @@ jest.mock('react-native-webview', () => ({
 }));
 
 // avoid some unexpected re-renders in tests by disabling this hook logic
-jest.mock('./hooks/useMountedRecentlyFlag', () => ({
+jest.mock('./hooks/general/useMountedRecentlyFlag', () => ({
     useMountedRecentlyFlag: () => false,
 }));

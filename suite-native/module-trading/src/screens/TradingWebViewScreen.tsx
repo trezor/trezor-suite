@@ -24,9 +24,9 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useTradingWatchTrade } from '../hooks/useTradingWatchTrade';
+import { useTradingWatchTrade } from '../hooks/general/useWatchTrade';
 import { setTradeOrderIdToBeOpened } from '../tradingSlice';
-import { doesUrlContainCloseCallbackUrl } from '../utils/tradeUtils';
+import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
 
 type RouteProps = StackProps<RootStackParamList, RootStackRoutes.TradingWebView>['route'];
 

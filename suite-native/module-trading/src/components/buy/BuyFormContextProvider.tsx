@@ -1,6 +1,6 @@
 import { Form } from '@suite-native/forms';
 
-import { useTradingBuyForm } from '../../hooks/useTradingBuyForm';
+import { useTradingBuyForm } from '../../hooks/buy/useBuyForm';
 
 export type BuyFormProviderProps = {
     children: React.ReactNode | React.ReactNode[];

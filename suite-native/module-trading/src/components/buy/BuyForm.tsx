@@ -4,17 +4,17 @@ import { FadeIn, FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { VStack } from '@suite-native/atoms';
 import { useDebouncedValue } from '@trezor/react-utils';
 
-import { AmountEditingDoneButton } from './AmountEditingDoneButton';
+import { TradingAlert } from './BuyAlert';
+import { AmountEditingDoneButton } from './BuyAmountEditingDoneButton';
 import { BuyCard } from './BuyCard';
+import { Confirmation } from './BuyConfirmation';
 import { BuyHeader } from './BuyHeader';
-import { Confirmation } from './Confirmation';
-import { PaymentCard } from './PaymentCard';
-import { useBuyQuotes } from '../../hooks/useBuyQuotes';
-import { useMountedRecentlyFlag } from '../../hooks/useMountedRecentlyFlag';
-import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
-import { TradeHistoryButton } from '../general/TradeHistory/TradeHistoryButton';
-import { TradingAlert } from '../general/TradingAlert';
-import { TradingFooter } from '../general/TradingFooter';
+import { PaymentCard } from './BuyPaymentCard';
+import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
+import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
+import { TradingFooter } from '../general/Footer';
+import { TradeHistoryButton } from '../general/HistoryButton';
 
 type BuyFormProps = {
     shouldAnimateEntering?: boolean;

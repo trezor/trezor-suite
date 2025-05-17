@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-import { useCountryFilteredData } from '../../../hooks/useCountryFilteredData';
+import { useCountryFilteredData } from '../../../hooks/general/useCountryFilteredData';
 import { Country } from '../../../types';
 import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';

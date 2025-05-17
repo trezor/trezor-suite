@@ -6,8 +6,8 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { ReceiveAccountsPickerScreen } from '../screens/ReceiveAccountsPickerScreen';
-import { TradeHistoryScreen } from '../screens/TradeHistoryScreen';
+import { TradeHistoryScreen } from '../screens/TradingHistoryScreen';
+import { ReceiveAccountsPickerScreen } from '../screens/TradingReceiveAccountsPickerScreen';
 import { TradingScreen } from '../screens/TradingScreen';
 
 const TradingStack = createNativeStackNavigator<TradingStackParamList>();
