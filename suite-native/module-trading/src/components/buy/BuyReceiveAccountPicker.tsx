@@ -17,7 +17,7 @@ import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { selectBuySelectedReceiveAccount } from '../../selectors/buySelectors';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
 import { AccountAddress } from '../general/AccountAddress';
-import { TradingOverviewRow } from '../general/OverviewRow';
+import { OverviewRow } from '../general/OverviewRow';
 
 type RightTextProps = {
     children: ReactNode;
@@ -94,7 +94,7 @@ const ReceiveAccountPickerRight = ({
     );
 };
 
-export const ReceiveAccountPicker = () => {
+export const BuyReceiveAccountPicker = () => {
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
@@ -115,7 +115,7 @@ export const ReceiveAccountPicker = () => {
             : selectedReceiveAccount?.account.descriptor) ?? '';
 
     return (
-        <TradingOverviewRow
+        <OverviewRow
             title={translate('moduleTrading.tradingScreen.receiveAccount')}
             onPress={openAccountPicker}
             testID={RECEIVE_ACCOUNT_PICKER_TEST_ID}
@@ -127,6 +127,6 @@ export const ReceiveAccountPicker = () => {
                     selectedAddress={addressText}
                 />
             </VStack>
-        </TradingOverviewRow>
+        </OverviewRow>
     );
 };

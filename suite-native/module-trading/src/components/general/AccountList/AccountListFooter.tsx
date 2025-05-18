@@ -16,7 +16,7 @@ export type AccountsListFooterProps = {
     onAddAccountTap: () => void;
 };
 
-export const AccountsListFooter = ({
+export const AccountListFooter = ({
     hasTextualDivider,
     onAddAccountTap,
 }: AccountsListFooterProps) => {

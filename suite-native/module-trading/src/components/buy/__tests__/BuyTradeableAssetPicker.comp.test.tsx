@@ -13,7 +13,7 @@ import { FirmwareType } from '@trezor/connect';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
-import { TradeableAssetPicker } from '../BuyTradeableAssetPicker';
+import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
 
 describe('TradeableAssetPicker', () => {
     let store: EnhancedStore;
@@ -36,7 +36,7 @@ describe('TradeableAssetPicker', () => {
     const renderTradeableAssetPicker = () =>
         renderWithStoreProviderAsync(
             <Form form={form}>
-                <TradeableAssetPicker />
+                <BuyTradeableAssetPicker />
             </Form>,
             { store },
         );

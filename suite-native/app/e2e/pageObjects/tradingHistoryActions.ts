@@ -3,7 +3,7 @@ import { expect as detoxExpect } from 'detox';
 class TradingHistoryActions {
     async openTradeHistory() {
         await element(by.id('@trading/history/button')).tap();
-        await detoxExpect(element(by.id('@screen/TradeHistory'))).toBeVisible();
+        await detoxExpect(element(by.id('@screen/TradingHistory'))).toBeVisible();
     }
 
     async openTradeDetail(anyTradeSpecificText: string) {

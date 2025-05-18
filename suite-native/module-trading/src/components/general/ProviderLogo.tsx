@@ -13,7 +13,7 @@ const imageStyle = prepareNativeStyle(({ typography }) => ({
     height: typography.body.lineHeight,
 }));
 
-export const TradingProviderLogo = ({ logo }: TradingProviderLogoProps) => {
+export const ProviderLogo = ({ logo }: TradingProviderLogoProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 

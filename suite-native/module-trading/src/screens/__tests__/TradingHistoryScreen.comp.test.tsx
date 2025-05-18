@@ -14,7 +14,7 @@ import { StaticSessionId } from '@trezor/connect';
 import fixturesAccounts from '../../__fixtures__/accounts.json';
 import { getBuyTrade, getExchangeTrade } from '../../__fixtures__/trades';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { TradeHistoryScreen } from '../TradingHistoryScreen';
+import { TradingHistoryScreen } from '../TradingHistoryScreen';
 
 let mockRouteParams: {
     tradeType: TradingType;
@@ -27,7 +27,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: { ...mockRouteParams },
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradeHistory>,
+        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
 }));
 
 jest.mock('../../hooks/general/useBottomSheetControls', () => ({
@@ -57,11 +57,11 @@ const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
 });
 
 const renderScreen = (preloadedState: PreloadedState) =>
-    renderWithStoreProviderAsync(<TradeHistoryScreen />, {
+    renderWithStoreProviderAsync(<TradingHistoryScreen />, {
         preloadedState,
     });
 
-describe('TradeHistoryScreen', () => {
+describe('TradingHistoryScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });

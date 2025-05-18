@@ -29,7 +29,7 @@ type TradeHistoryButtonProps = {
 
 export type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
-    TradingStackRoutes.TradeHistory,
+    TradingStackRoutes.TradingHistory,
     RootStackParamList
 >;
 
@@ -47,7 +47,7 @@ const buttonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-export const TradeHistoryButton = ({
+export const HistoryButton = ({
     tradeType,
     enteringAnimation,
     exitingAnimation,
@@ -62,7 +62,8 @@ export const TradeHistoryButton = ({
         return null;
     }
 
-    const handleOnPress = () => navigation.navigate(TradingStackRoutes.TradeHistory, { tradeType });
+    const handleOnPress = () =>
+        navigation.navigate(TradingStackRoutes.TradingHistory, { tradeType });
 
     return (
         <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>

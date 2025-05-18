@@ -8,7 +8,7 @@ import {
 import { btcAsset, ethOnBaseAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
-import { AssetNetworkInfo } from '../BuyAssetNetworkInfo';
+import { BuyAssetNetworkInfo } from '../BuyAssetNetworkInfo';
 
 describe('NetworkIconForToken', () => {
     let form: TradingBuyForm;
@@ -16,7 +16,7 @@ describe('NetworkIconForToken', () => {
     const renderNetworkIconForToken = () =>
         renderWithBasicProvider(
             <Form form={form}>
-                <AssetNetworkInfo />
+                <BuyAssetNetworkInfo />
             </Form>,
         );
 

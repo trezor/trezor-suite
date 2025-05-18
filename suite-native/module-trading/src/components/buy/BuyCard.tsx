@@ -12,13 +12,13 @@ import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/at
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { AssetNetworkInfo } from './BuyAssetNetworkInfo';
+import { BuyAssetNetworkInfo } from './BuyAssetNetworkInfo';
 import { BuyCardTitle } from './BuyCardTitle';
-import { FiatCurrencyPicker } from './BuyFiatCurrencyPicker';
+import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
-import { ReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
-import { ReceiveAccountPicker } from './BuyReceiveAccountPicker';
-import { TradeableAssetPicker } from './BuyTradeableAssetPicker';
+import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
+import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
+import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 type BuyCardProps = {
@@ -78,7 +78,7 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                             <BuyFormFieldErrorBadge fieldName="fiatValue" />
                         </Box>
                     </HStack>
-                    <FiatCurrencyPicker />
+                    <BuyFiatCurrencyPicker />
                 </VStack>
                 <VStack
                     style={applyStyle(buySectionStyle, { bottomBorder: !!asset })}
@@ -90,18 +90,18 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                         </BuyCardTitle>
                         <BuyFormFieldErrorBadge fieldName="cryptoValue" />
                     </HStack>
-                    <TradeableAssetPicker />
+                    <BuyTradeableAssetPicker />
                     <HStack
                         justifyContent="space-between"
                         alignItems="center"
                         paddingVertical="sp4"
                         spacing="sp4"
                     >
-                        <AssetNetworkInfo />
-                        <ReceiveAccountCryptoBalance />
+                        <BuyAssetNetworkInfo />
+                        <BuyReceiveAccountCryptoBalance />
                     </HStack>
                 </VStack>
-                <ReceiveAccountPicker />
+                <BuyReceiveAccountPicker />
             </AnimatedCard>
         </AnimatedBox>
     );

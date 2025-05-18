@@ -7,7 +7,7 @@ import {
 
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { useListDataFilter } from '../../../hooks/general/useListDataFilter';
-import { CountryOfResidencePicker } from '../BuyCountryOfResidencePicker';
+import { BuyCountryOfResidencePicker } from '../BuyCountryOfResidencePicker';
 
 let mockUseListDataFilter: typeof useListDataFilter;
 
@@ -29,7 +29,7 @@ describe('CountryOfResidencePicker', () => {
 
         return renderWithBasicProvider(
             <Form form={result.current}>
-                <CountryOfResidencePicker />
+                <BuyCountryOfResidencePicker />
             </Form>,
         );
     };

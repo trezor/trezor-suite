@@ -1,7 +1,7 @@
 import { Network } from '@suite-common/wallet-config';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { TradeableAssetsSheetHeader } from '../TradeableAssetSheetHeader';
+import { TradeableAssetSheetHeader } from '../TradeableAssetSheetHeader';
 
 jest.mock('@suite-native/discovery', () => {
     const networks: Network[] = [];
@@ -15,7 +15,7 @@ jest.mock('@suite-native/discovery', () => {
 describe('TradeableAssetsSheetHeader', () => {
     const renderComponent = (onClose = jest.fn()) =>
         renderWithStoreProviderAsync(
-            <TradeableAssetsSheetHeader
+            <TradeableAssetSheetHeader
                 onClose={onClose}
                 onFilterChange={jest.fn()}
                 onSelectedNetworkFilter={jest.fn()}

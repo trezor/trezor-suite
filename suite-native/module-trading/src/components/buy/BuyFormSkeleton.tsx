@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native';
 import { BoxSkeleton, Card, HStack, VStack } from '@suite-native/atoms';
 
 import { BuyHeader } from './BuyHeader';
-import { TradingFooter } from '../general/Footer';
+import { Footer } from '../general/Footer';
 
 const SKELETON_LARGE_HEIGHT = 60;
 const SKELETON_SMALL_HEIGHT = 20;
@@ -53,6 +53,6 @@ export const BuyFormSkeleton = () => (
         <Card>
             <SkeletonLargeRow leftWidthPercentage={0.35} rightWidthPercentage={0.35} />
         </Card>
-        <TradingFooter />
+        <Footer />
     </VStack>
 );

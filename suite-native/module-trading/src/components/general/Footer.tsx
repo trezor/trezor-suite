@@ -11,7 +11,7 @@ export type TradingFooterProps = {
     exitingAnimation?: AnimatedProps<any>['exiting'];
 };
 
-export const TradingFooter = ({ enteringAnimation, exitingAnimation }: TradingFooterProps) => {
+export const Footer = ({ enteringAnimation, exitingAnimation }: TradingFooterProps) => {
     const openLink = useOpenLink();
 
     const imageSource = useMemo(() => require('../../../assets/InvityLogo.png'), []);

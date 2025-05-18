@@ -36,7 +36,7 @@ const Info = ({ children }: { children: ReactNode }) => (
     </BulletListItem>
 );
 
-export const LegalSheet = memo(
+export const BuyLegalSheet = memo(
     ({ isVisible, onConsent, onDismiss, tradeProvider }: LegalSheetProps) => {
         const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
         const providers = useSelector(selectTradingBuyProviders);

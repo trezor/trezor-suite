@@ -6,7 +6,7 @@ import { Translation } from '@suite-native/intl';
 
 const AMOUNT_EDITING_DONE_BUTTON_TEST_ID = '@trading/buy/amount-editing-done-button';
 
-export const AmountEditingDoneButton = () => (
+export const BuyAmountEditingDoneButton = () => (
     <AnimatedBox entering={FadeInDown} exiting={FadeOutDown}>
         <Button
             onPress={Keyboard.dismiss}

@@ -1,9 +1,9 @@
 import { Translation } from '@suite-native/intl';
 
-import { TradingEmptyComponent } from '../EmptyComponent';
+import { EmptyComponent } from '../EmptyComponent';
 
-export const TradeAssetsListEmptyComponent = () => (
-    <TradingEmptyComponent
+export const TradeableAssetListEmptyComponent = () => (
+    <EmptyComponent
         title={<Translation id="moduleTrading.tradeableAssetsSheet.emptyTitle" />}
         description={<Translation id="moduleTrading.tradeableAssetsSheet.emptyDescription" />}
     />

@@ -133,7 +133,7 @@ const useInputFormControls = (
     };
 };
 
-export const TradingAmountInput = forwardRef<TextInput, TradingAmountInputProps>(
+export const BuyAmountInput = forwardRef<TextInput, TradingAmountInputProps>(
     ({ name, inputTransformer, maxLength, maxDecimals, onPress, ...inputProps }, ref) => {
         const innerRef = useRef<TextInput>(null);
         useImperativeHandle(ref, () => innerRef.current!, []);

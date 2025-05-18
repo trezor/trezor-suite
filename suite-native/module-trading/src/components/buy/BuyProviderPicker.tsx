@@ -14,14 +14,14 @@ import { useTranslate } from '@suite-native/intl';
 
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useTradeSheetControls } from '../../hooks/general/useSheetControls';
-import { TradingOverviewRow } from '../general/OverviewRow';
-import { TradingOverviewValueSkeleton } from '../general/OverviewValueSkeleton';
-import { TradingProviderLogo } from '../general/ProviderLogo';
-import { ProvidersSheet } from '../general/ProviderSheet/ProviderSheet';
+import { OverviewRow } from '../general/OverviewRow';
+import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
+import { ProviderLogo } from '../general/ProviderLogo';
+import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 
 const PROVIDER_PICKER_TEST_ID = '@trading/buy/provider-picker';
 
-export const TradingProviderPicker = () => {
+export const BuyProviderPicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
     const providers = useSelector(selectTradingBuyProviders);
@@ -61,13 +61,13 @@ export const TradingProviderPicker = () => {
 
     if (isLoading) {
         return (
-            <TradingOverviewRow
+            <OverviewRow
                 title={translate('moduleTrading.tradingScreen.provider')}
                 noBottomBorder
                 noCaret
             >
-                <TradingOverviewValueSkeleton />
-            </TradingOverviewRow>
+                <OverviewValueSkeleton />
+            </OverviewRow>
         );
     }
 
@@ -79,14 +79,14 @@ export const TradingProviderPicker = () => {
 
     return (
         <>
-            <TradingOverviewRow
+            <OverviewRow
                 title={translate('moduleTrading.tradingScreen.provider')}
                 noBottomBorder
                 onPress={handleProviderPress}
                 testID={PROVIDER_PICKER_TEST_ID}
             >
                 <HStack>
-                    <TradingProviderLogo logo={logo} />
+                    <ProviderLogo logo={logo} />
                     <Text
                         color="textSubdued"
                         variant="body"
@@ -98,9 +98,8 @@ export const TradingProviderPicker = () => {
                         {companyName}
                     </Text>
                 </HStack>
-            </TradingOverviewRow>
-
-            <ProvidersSheet
+            </OverviewRow>
+            <ProviderSheet
                 quotes={quotes}
                 providerInfos={providers}
                 isVisible={isSheetVisible}

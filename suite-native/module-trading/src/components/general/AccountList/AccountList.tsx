@@ -16,7 +16,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
 import { ACCOUNT_LIST_ITEM_HEIGHT } from './AccountListBaseItem';
-import { AccountsListFooter } from './AccountListFooter';
+import { AccountListFooter } from './AccountListFooter';
 import { AccountListItem } from './AccountListItem';
 import { AddressListEmptyComponent } from './AddressListEmptyComponent';
 import { NoAccountsComponent } from './NoAccountsComponent';
@@ -53,7 +53,7 @@ const contentContainerStyle = prepareNativeStyle<{
 export const keyExtractor = (item: ReceiveAccount) =>
     `${item.account.key}_${item.address?.address ?? 'address_undefined'}`;
 
-export const AccountsList = ({
+export const AccountList = ({
     symbol,
     pickerMode,
     onAddAccountTap,
@@ -109,7 +109,7 @@ export const AccountsList = ({
     const shouldHaveFooter = !isDeviceInViewOnlyMode && pickerMode === 'account';
 
     const footer = shouldHaveFooter ? (
-        <AccountsListFooter hasTextualDivider={itemsCount > 0} onAddAccountTap={onAddAccountTap} />
+        <AccountListFooter hasTextualDivider={itemsCount > 0} onAddAccountTap={onAddAccountTap} />
     ) : null;
 
     const filter = '';

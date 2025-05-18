@@ -29,7 +29,7 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     noSingletonSectionHeader?: boolean;
 };
 
-export const TradingBottomSheetSectionList = <T, U = undefined>({
+export const BottomSheetSectionList = <T, U = undefined>({
     keyExtractor,
     renderItem,
     estimatedItemSize,

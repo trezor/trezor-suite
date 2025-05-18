@@ -20,7 +20,7 @@ const keyExtractor = (item: BuyTrade) => item.orderId ?? '';
 const getEstimatedListHeight = (itemsCount: number) =>
     itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
 
-export const PaymentMethodsSheet = ({
+export const PaymentMethodSheet = ({
     quotes,
     isVisible,
     onClose,

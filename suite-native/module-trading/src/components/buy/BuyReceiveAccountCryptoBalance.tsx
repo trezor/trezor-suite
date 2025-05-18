@@ -7,7 +7,7 @@ import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 export const RECEIVE_ACCOUNT_BALANCE_TEST_ID = '@trading/buy/receive-account-balance';
 
-export const ReceiveAccountCryptoBalance = () => {
+export const BuyReceiveAccountCryptoBalance = () => {
     const form = useTradingBuyFormContext();
     const receiveAccount = form.watch('receiveAccount');
 

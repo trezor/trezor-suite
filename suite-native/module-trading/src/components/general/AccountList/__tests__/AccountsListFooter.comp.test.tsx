@@ -1,11 +1,11 @@
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { AccountsListFooter, AccountsListFooterProps } from '../AccountListFooter';
+import { AccountListFooter, AccountsListFooterProps } from '../AccountListFooter';
 
 describe('AccountsListFooter', () => {
     const renderAccountsListFooter = (props: Partial<AccountsListFooterProps>) =>
         renderWithBasicProvider(
-            <AccountsListFooter hasTextualDivider onAddAccountTap={jest.fn()} {...props} />,
+            <AccountListFooter hasTextualDivider onAddAccountTap={jest.fn()} {...props} />,
         );
 
     it('should not render "OR" when hasTextualDivider props is false', () => {

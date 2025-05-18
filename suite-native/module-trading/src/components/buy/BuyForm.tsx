@@ -4,17 +4,17 @@ import { FadeIn, FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { VStack } from '@suite-native/atoms';
 import { useDebouncedValue } from '@trezor/react-utils';
 
-import { TradingAlert } from './BuyAlert';
-import { AmountEditingDoneButton } from './BuyAmountEditingDoneButton';
+import { BuyAlert } from './BuyAlert';
+import { BuyAmountEditingDoneButton } from './BuyAmountEditingDoneButton';
 import { BuyCard } from './BuyCard';
-import { Confirmation } from './BuyConfirmation';
+import { BuyConfirmation } from './BuyConfirmation';
 import { BuyHeader } from './BuyHeader';
-import { PaymentCard } from './BuyPaymentCard';
+import { BuyPaymentCard } from './BuyPaymentCard';
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
-import { TradingFooter } from '../general/Footer';
-import { TradeHistoryButton } from '../general/HistoryButton';
+import { Footer } from '../general/Footer';
+import { HistoryButton } from '../general/HistoryButton';
 
 type BuyFormProps = {
     shouldAnimateEntering?: boolean;
@@ -54,22 +54,22 @@ const BuyFormMemoized = memo(
                 {!isAmountInputActive && (
                     <BuyHeader isFormMountedRecently={isFormMountedRecently} />
                 )}
-                <TradingAlert />
+                <BuyAlert />
                 <BuyCard
                     isAmountInputActive={isAmountInputActive}
                     shouldAnimateEntering={shouldAnimateEntering}
                 />
                 {isAmountInputActive ? (
-                    <AmountEditingDoneButton />
+                    <BuyAmountEditingDoneButton />
                 ) : (
                     <>
-                        <PaymentCard
+                        <BuyPaymentCard
                             isFormMountedRecently={isFormMountedRecently}
                             shouldAnimateEntering={shouldAnimateEntering}
                         />
-                        <Confirmation enteringAnimation={enteringAnimation} />
-                        <TradingFooter enteringAnimation={enteringAnimation} />
-                        <TradeHistoryButton
+                        <BuyConfirmation enteringAnimation={enteringAnimation} />
+                        <Footer enteringAnimation={enteringAnimation} />
+                        <HistoryButton
                             tradeType="buy"
                             enteringAnimation={enteringAnimation}
                             exitingAnimation={FadeOutDown}

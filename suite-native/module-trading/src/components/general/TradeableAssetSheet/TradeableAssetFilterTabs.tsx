@@ -36,7 +36,7 @@ const FilterTab = ({ active, onPress, children }: FilterTabProps) => {
     );
 };
 
-export const TradeableAssetsFilterTabs = ({
+export const TradeableAssetFilterTabs = ({
     visible,
     animationDuration,
     onSelectedNetworkFilter,

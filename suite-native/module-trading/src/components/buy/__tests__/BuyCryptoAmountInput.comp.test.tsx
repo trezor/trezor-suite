@@ -12,7 +12,7 @@ import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
-import { CryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
+import { BuyCryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
 
 describe('CryptoAmountInput', () => {
     const renderCryptoAmountInput = (
@@ -22,7 +22,7 @@ describe('CryptoAmountInput', () => {
     ) =>
         renderWithStoreProviderAsync(
             <Form form={form}>
-                <CryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
+                <BuyCryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
             { preloadedState },
         );

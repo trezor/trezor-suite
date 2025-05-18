@@ -32,7 +32,7 @@ const TradingScreenContent = () => {
                 type: EventType.TradingSuccess,
                 payload: { type: tradeToBeOpened.tradeType },
             });
-            navigation.navigate(TradingStackRoutes.TradeHistory, {
+            navigation.navigate(TradingStackRoutes.TradingHistory, {
                 tradeType: tradeToBeOpened.tradeType,
             });
         }

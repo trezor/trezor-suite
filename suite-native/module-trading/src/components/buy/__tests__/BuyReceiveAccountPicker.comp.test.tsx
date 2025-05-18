@@ -10,7 +10,7 @@ import {
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { ReceiveAccount, TradingBuyForm } from '../../../types';
-import { ReceiveAccountPicker } from '../BuyReceiveAccountPicker';
+import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
 
 let mockNavigate: jest.Mock;
 
@@ -50,7 +50,7 @@ describe('ReceiveAccountPicker', () => {
     const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
         renderWithStoreProviderAsync(
             <Form form={buyForm}>
-                <ReceiveAccountPicker />
+                <BuyReceiveAccountPicker />
             </Form>,
             {
                 preloadedState,

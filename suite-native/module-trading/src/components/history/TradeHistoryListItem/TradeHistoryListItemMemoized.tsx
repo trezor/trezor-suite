@@ -13,7 +13,7 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
-import { TradingProviderLogo } from '../../general/ProviderLogo';
+import { ProviderLogo } from '../../general/ProviderLogo';
 import { TradeStatusBadge } from '../TradeStatusBadge';
 
 export type TradeHistoryListItemMemoizedProps = {
@@ -55,7 +55,7 @@ export const TradeHistoryListItemMemoized = memo(
                             <TradeStatusBadge status={transaction.data.status} />
                         </HStack>
                         <HStack>
-                            {providerInfo?.logo && <TradingProviderLogo logo={providerInfo.logo} />}
+                            {providerInfo?.logo && <ProviderLogo logo={providerInfo.logo} />}
                             <Text>{providerInfo?.companyName}</Text>
                         </HStack>
                         <HStack alignItems="center">

@@ -6,7 +6,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useFiatCurrencyFilteredData } from '../../../hooks/general/useFiatCurrencyFilteredData';
 import { FiatCurrencyItem } from '../../../types';
-import { TradingBottomSheetSectionList } from '../BottomSheetSectionList';
+import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { FiatCurrencyListEmptyComponent } from './FiatCurrencyListEmptyComponent';
 import { FIAT_CURRENCY_LIST_ITEM_HEIGHT, FiatCurrencyListItem } from './FiatCurrencyListItem';
@@ -48,7 +48,7 @@ export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurr
     const flashListKey = 'fiat_currencies_list-' + filterValue;
 
     return (
-        <TradingBottomSheetSectionList<FiatCurrencyItem>
+        <BottomSheetSectionList<FiatCurrencyItem>
             isVisible={isVisible}
             onClose={onClose}
             ListEmptyComponent={<FiatCurrencyListEmptyComponent />}

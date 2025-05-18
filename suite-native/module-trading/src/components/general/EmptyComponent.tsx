@@ -15,7 +15,7 @@ const emptyComponentStyle = prepareNativeStyle(({ spacings }) => ({
     gap: spacings.sp12,
 }));
 
-export const TradingEmptyComponent = ({ title, description }: TradingEmptyComponentProps) => {
+export const EmptyComponent = ({ title, description }: TradingEmptyComponentProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (

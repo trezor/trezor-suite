@@ -12,7 +12,7 @@ import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
-import { TradingProviderPicker } from '../BuyProviderPicker';
+import { BuyProviderPicker } from '../BuyProviderPicker';
 
 describe('TradingProviderPicker', () => {
     const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) =>
@@ -26,7 +26,7 @@ describe('TradingProviderPicker', () => {
     ) =>
         renderWithStoreProviderAsync(
             <Form form={form}>
-                <TradingProviderPicker />
+                <BuyProviderPicker />
             </Form>,
             { preloadedState },
         );

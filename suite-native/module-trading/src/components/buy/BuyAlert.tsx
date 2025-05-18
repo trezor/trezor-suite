@@ -4,7 +4,7 @@ import { AnimatedBox, InlineAlertBox } from '@suite-native/atoms';
 
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
-export const TradingAlert = () => {
+export const BuyAlert = () => {
     const { watch } = useTradingBuyFormContext();
     const text = watch('generalAlert');
 

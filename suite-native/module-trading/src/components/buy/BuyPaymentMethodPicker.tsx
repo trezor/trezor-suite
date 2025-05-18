@@ -10,13 +10,13 @@ import { useTranslate } from '@suite-native/intl';
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useTradeSheetControls } from '../../hooks/general/useSheetControls';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '../../selectors/buySelectors';
-import { TradingOverviewRow } from '../general/OverviewRow';
-import { TradingOverviewValueSkeleton } from '../general/OverviewValueSkeleton';
-import { PaymentMethodsSheet } from '../general/PaymentMethodSheet/PaymentMethodSheet';
+import { OverviewRow } from '../general/OverviewRow';
+import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
+import { PaymentMethodSheet } from '../general/PaymentMethodSheet/PaymentMethodSheet';
 
 const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
 
-export const PaymentMethodPicker = () => {
+export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
     const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
@@ -26,12 +26,9 @@ export const PaymentMethodPicker = () => {
 
     if (isLoading) {
         return (
-            <TradingOverviewRow
-                title={translate('moduleTrading.tradingScreen.paymentMethod')}
-                noCaret
-            >
-                <TradingOverviewValueSkeleton />
-            </TradingOverviewRow>
+            <OverviewRow title={translate('moduleTrading.tradingScreen.paymentMethod')} noCaret>
+                <OverviewValueSkeleton />
+            </OverviewRow>
         );
     }
 
@@ -55,7 +52,7 @@ export const PaymentMethodPicker = () => {
 
     return (
         <>
-            <TradingOverviewRow
+            <OverviewRow
                 title={translate('moduleTrading.tradingScreen.paymentMethod')}
                 onPress={showSheet}
                 testID={PAYMENT_METHOD_PICKER_TEST_ID}
@@ -82,8 +79,8 @@ export const PaymentMethodPicker = () => {
                         {translate('moduleTrading.notSelected')}
                     </Text>
                 )}
-            </TradingOverviewRow>
-            <PaymentMethodsSheet
+            </OverviewRow>
+            <PaymentMethodSheet
                 quotes={quotes}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}

@@ -8,7 +8,7 @@ import { StaticSessionId } from '@trezor/connect';
 
 import fixturesAccounts from '../../__fixtures__/accounts.json';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { ReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';
+import { TradingReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';
 
 const accounts = fixturesAccounts as Account[];
 
@@ -44,7 +44,7 @@ const getPreloadedState = (preloadedAccounts: Account[]): PreloadedState => ({
 });
 
 const renderScreen = (preloadedState: PreloadedState) =>
-    renderWithStoreProviderAsync(<ReceiveAccountsPickerScreen />, {
+    renderWithStoreProviderAsync(<TradingReceiveAccountsPickerScreen />, {
         preloadedState,
     });
 

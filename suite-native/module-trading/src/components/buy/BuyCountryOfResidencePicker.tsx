@@ -6,11 +6,11 @@ import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useTradeSheetControls } from '../../hooks/general/useSheetControls';
 import { Country } from '../../types';
 import { CountrySheet } from '../general/CountrySheet/CountrySheet';
-import { TradingOverviewRow } from '../general/OverviewRow';
+import { OverviewRow } from '../general/OverviewRow';
 
 const COUNTRY_PICKER_TEST_ID = '@trading/buy/country';
 
-export const CountryOfResidencePicker = () => {
+export const BuyCountryOfResidencePicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
@@ -32,7 +32,7 @@ export const CountryOfResidencePicker = () => {
 
     return (
         <>
-            <TradingOverviewRow
+            <OverviewRow
                 title={translate('moduleTrading.tradingScreen.countryOfResidence')}
                 onPress={showSheet}
                 testID={COUNTRY_PICKER_TEST_ID}
@@ -62,7 +62,7 @@ export const CountryOfResidencePicker = () => {
                         {translate('moduleTrading.notSelected')}
                     </Text>
                 )}
-            </TradingOverviewRow>
+            </OverviewRow>
             <CountrySheet
                 isVisible={isSheetVisible}
                 onClose={hideSheet}

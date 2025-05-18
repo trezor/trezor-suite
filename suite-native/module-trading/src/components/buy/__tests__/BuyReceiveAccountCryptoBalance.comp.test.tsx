@@ -8,8 +8,8 @@ import {
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import {
+    BuyReceiveAccountCryptoBalance,
     RECEIVE_ACCOUNT_BALANCE_TEST_ID,
-    ReceiveAccountCryptoBalance,
 } from '../BuyReceiveAccountCryptoBalance';
 
 describe('ReceiveAccountBalance', () => {
@@ -24,7 +24,7 @@ describe('ReceiveAccountBalance', () => {
     const renderComponent = async () =>
         await renderWithStoreProviderAsync(
             <Form form={buyForm}>
-                <ReceiveAccountCryptoBalance />
+                <BuyReceiveAccountCryptoBalance />
             </Form>,
         );
 

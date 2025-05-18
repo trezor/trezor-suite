@@ -8,7 +8,7 @@ import {
 
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
-import { PaymentMethodPicker } from '../BuyPaymentMethodPicker';
+import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
 
 describe('PaymentMethodPicker', () => {
     const renderPaymentMethodPicker = async (preloadedState: PreloadedState = {}) => {
@@ -16,7 +16,7 @@ describe('PaymentMethodPicker', () => {
 
         return renderWithStoreProviderAsync(
             <Form form={result.current}>
-                <PaymentMethodPicker />
+                <BuyPaymentMethodPicker />
             </Form>,
             { preloadedState },
         );

@@ -1,9 +1,9 @@
 import { Translation } from '@suite-native/intl';
 
-import { TradingEmptyComponent } from '../EmptyComponent';
+import { EmptyComponent } from '../EmptyComponent';
 
 export const CountryListEmptyComponent = () => (
-    <TradingEmptyComponent
+    <EmptyComponent
         title={<Translation id="moduleTrading.countrySheet.emptyTitle" />}
         description={<Translation id="moduleTrading.countrySheet.emptyDescription" />}
     />

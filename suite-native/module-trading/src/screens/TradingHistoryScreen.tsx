@@ -37,10 +37,10 @@ const contentContainerStyle = prepareNativeStyle<{
 
 const keyExtractor = (item: TradingTransaction) => `${item.key ?? ''}`;
 
-export const TradeHistoryScreen = () => {
+export const TradingHistoryScreen = () => {
     const {
         params: { tradeType },
-    } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.TradeHistory>>();
+    } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>>();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const dispatch = useDispatch();

@@ -10,7 +10,7 @@ import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
-import { TradingProviderLogo } from '../../general/ProviderLogo';
+import { ProviderLogo } from '../../general/ProviderLogo';
 
 type TradeDetailInfoProps = {
     orderId: string;
@@ -50,16 +50,13 @@ export const TradeDetailInfo = ({ orderId }: TradeDetailInfoProps) => {
                     </VStack>
                 }
             />
-
             {trade.tradeType !== 'exchange' && (
                 <>
                     <TradeDetailInfoRow
                         title={<Translation id="moduleTrading.tradeHistory.detail.provider" />}
                         content={
                             <HStack>
-                                {providerInfo?.logo && (
-                                    <TradingProviderLogo logo={providerInfo.logo} />
-                                )}
+                                {providerInfo?.logo && <ProviderLogo logo={providerInfo.logo} />}
                                 <Text>{providerInfo?.companyName}</Text>
                             </HStack>
                         }

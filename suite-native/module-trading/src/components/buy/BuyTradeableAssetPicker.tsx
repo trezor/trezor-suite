@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { HStack } from '@suite-native/atoms';
 
-import { CryptoAmountInput } from './BuyCryptoAmountInput';
+import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useTradeSheetControls } from '../../hooks/general/useSheetControls';
@@ -17,7 +17,7 @@ const ASSET_PICKER_TEST_ID = '@trading/buy/asset-button';
 
 const noop = () => {};
 
-export const TradeableAssetPicker = () => {
+export const BuyTradeableAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);
     const form = useTradingBuyFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
@@ -57,7 +57,7 @@ export const TradeableAssetPicker = () => {
         return (
             <HStack justifyContent="space-between" alignItems="center">
                 <SelectTradeableAssetButton onPress={noop} selectedAsset={btcAsset} />
-                <CryptoAmountInput showAssetsSheet={noop} />
+                <BuyCryptoAmountInput showAssetsSheet={noop} />
             </HStack>
         );
     }
@@ -71,7 +71,7 @@ export const TradeableAssetPicker = () => {
                     caret
                     testID={ASSET_PICKER_TEST_ID}
                 />
-                <CryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
+                <BuyCryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
             </HStack>
             <BuyTradeableAssetsSheet
                 isVisible={isSheetVisible}

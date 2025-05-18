@@ -1,7 +1,7 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { Confirmation } from '../BuyConfirmation';
+import { BuyConfirmation } from '../BuyConfirmation';
 
 jest.mock('../../../hooks/buy/useBuyFlow', () => ({
     useTradingBuyFlow: jest.fn(),
@@ -17,7 +17,7 @@ describe('Confirmation', () => {
     const mockUseTradingBuyFlow = require('../../../hooks/buy/useBuyFlow').useTradingBuyFlow;
 
     const renderConfirmation = () =>
-        renderWithStoreProviderAsync(<Confirmation />, {
+        renderWithStoreProviderAsync(<BuyConfirmation />, {
             preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } },
         });
 

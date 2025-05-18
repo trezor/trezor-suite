@@ -7,7 +7,7 @@ import { useTranslate } from '@suite-native/intl';
 
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
-export const AssetNetworkInfo = () => {
+export const BuyAssetNetworkInfo = () => {
     const { translate } = useTranslate();
     const { watch } = useTradingBuyFormContext();
     const asset = watch('asset');

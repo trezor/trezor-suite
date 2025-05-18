@@ -10,7 +10,7 @@ import {
     SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
     SearchableSheetHeader,
 } from '../SearchableSheetHeader';
-import { TradeableAssetsFilterTabs } from './TradeableAssetFilterTabs';
+import { TradeableAssetFilterTabs } from './TradeableAssetFilterTabs';
 
 type TradeableAssetsSheetHeaderProps = {
     onClose: () => void;
@@ -22,7 +22,7 @@ const wrapperStyle = prepareNativeStyle(() => ({
     height: SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
 }));
 
-export const TradeableAssetsSheetHeader = ({
+export const TradeableAssetSheetHeader = ({
     onClose,
     onFilterChange,
     onSelectedNetworkFilter,
@@ -44,7 +44,7 @@ export const TradeableAssetsSheetHeader = ({
             )}
         >
             <Animated.View layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
-                <TradeableAssetsFilterTabs
+                <TradeableAssetFilterTabs
                     visible={isFilterActive}
                     animationDuration={FOCUS_ANIMATION_DURATION}
                     onSelectedNetworkFilter={onSelectedNetworkFilter}

@@ -7,7 +7,7 @@ import {
 
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
-import { TradingAlert } from '../BuyAlert';
+import { BuyAlert } from '../BuyAlert';
 
 describe('TradingAlert', () => {
     let form: TradingBuyForm;
@@ -17,7 +17,7 @@ describe('TradingAlert', () => {
     const renderTradingAlert = () =>
         renderWithBasicProvider(
             <Form form={form}>
-                <TradingAlert />
+                <BuyAlert />
             </Form>,
         );
 

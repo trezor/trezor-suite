@@ -3,9 +3,9 @@ import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-na
 
 import { AnimatedBox, Card } from '@suite-native/atoms';
 
-import { CountryOfResidencePicker } from './BuyCountryOfResidencePicker';
-import { PaymentMethodPicker } from './BuyPaymentMethodPicker';
-import { TradingProviderPicker } from './BuyProviderPicker';
+import { BuyCountryOfResidencePicker } from './BuyCountryOfResidencePicker';
+import { BuyPaymentMethodPicker } from './BuyPaymentMethodPicker';
+import { BuyProviderPicker } from './BuyProviderPicker';
 
 export type PaymentCardProps = {
     isFormMountedRecently?: boolean;
@@ -29,16 +29,19 @@ const getEnteringAnimation = (isFormMountedRecently?: boolean, shouldAnimateEnte
 // on android fade animation looks ugly on view with shadows, better to use stretch one here
 const getExitingAnimation = () => (Platform.OS === 'android' ? StretchOutY : FadeOutUp);
 
-export const PaymentCard = ({ isFormMountedRecently, shouldAnimateEntering }: PaymentCardProps) => {
+export const BuyPaymentCard = ({
+    isFormMountedRecently,
+    shouldAnimateEntering,
+}: PaymentCardProps) => {
     const enteringAnimation = getEnteringAnimation(isFormMountedRecently, shouldAnimateEntering);
     const exitingAnimation = getExitingAnimation();
 
     return (
         <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
             <Card noPadding>
-                <PaymentMethodPicker />
-                <CountryOfResidencePicker />
-                <TradingProviderPicker />
+                <BuyPaymentMethodPicker />
+                <BuyCountryOfResidencePicker />
+                <BuyProviderPicker />
             </Card>
         </AnimatedBox>
     );

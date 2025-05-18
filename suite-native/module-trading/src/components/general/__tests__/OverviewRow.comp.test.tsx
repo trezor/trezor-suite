@@ -1,14 +1,14 @@
 import { Text } from '@suite-native/atoms';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { TradingOverviewRow } from '../OverviewRow';
+import { OverviewRow } from '../OverviewRow';
 
 describe('TradingOverviewRow', () => {
     it('should use title as left text as well as a11yLabel', () => {
         const { getByText, getByLabelText } = renderWithBasicProvider(
-            <TradingOverviewRow title="Title" onPress={jest.fn()}>
+            <OverviewRow title="Title" onPress={jest.fn()}>
                 <Text>Child</Text>
-            </TradingOverviewRow>,
+            </OverviewRow>,
         );
 
         expect(getByText('Title')).toBeTruthy();
@@ -18,9 +18,9 @@ describe('TradingOverviewRow', () => {
     it('should call onPress callback when clicked', () => {
         const onPress = jest.fn();
         const { getByText } = renderWithBasicProvider(
-            <TradingOverviewRow title="Title" onPress={onPress}>
+            <OverviewRow title="Title" onPress={onPress}>
                 <Text>Child</Text>
-            </TradingOverviewRow>,
+            </OverviewRow>,
         );
 
         fireEvent.press(getByText('Title'));

@@ -1,7 +1,7 @@
 import { Network } from '@suite-common/wallet-config';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { TradeableAssetsFilterTabs } from '../TradeableAssetFilterTabs';
+import { TradeableAssetFilterTabs } from '../TradeableAssetFilterTabs';
 
 jest.mock('@suite-native/discovery', () => {
     const networks: Network[] = [
@@ -24,7 +24,7 @@ jest.mock('@suite-native/discovery', () => {
 describe('TradeableAssetsFilterTabs', () => {
     const renderComponent = (onSelectedNetworkFilter = jest.fn()) =>
         renderWithStoreProviderAsync(
-            <TradeableAssetsFilterTabs
+            <TradeableAssetFilterTabs
                 visible={true}
                 animationDuration={300}
                 onSelectedNetworkFilter={onSelectedNetworkFilter}
@@ -41,7 +41,7 @@ describe('TradeableAssetsFilterTabs', () => {
 
     it('should not render anything when visible is false', async () => {
         const { queryByText } = await renderWithStoreProviderAsync(
-            <TradeableAssetsFilterTabs
+            <TradeableAssetFilterTabs
                 visible={false}
                 animationDuration={300}
                 onSelectedNetworkFilter={jest.fn()}

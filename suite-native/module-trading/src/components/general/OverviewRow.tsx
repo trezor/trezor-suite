@@ -28,7 +28,7 @@ const pressableStyle = prepareNativeStyle<{ noBottomBorder: boolean }>(
     }),
 );
 
-export const TradingOverviewRow = ({
+export const OverviewRow = ({
     title,
     children,
     onPress,

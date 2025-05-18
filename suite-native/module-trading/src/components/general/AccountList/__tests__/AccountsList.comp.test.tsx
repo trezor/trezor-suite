@@ -7,7 +7,7 @@ import { StaticSessionId } from '@trezor/connect';
 
 import fixturesAccounts from '../../../../__fixtures__/accounts.json';
 import { ReceiveAccount } from '../../../../types';
-import { AccountsList, AccountsListProps, keyExtractor } from '../AccountList';
+import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 
 const accounts = fixturesAccounts as Account[];
 const defaultPreloadedState = {
@@ -50,7 +50,7 @@ describe('AccountsList', () => {
         preloadedState = defaultPreloadedState,
     ) =>
         renderWithStoreProviderAsync(
-            <AccountsList
+            <AccountList
                 symbol="btc"
                 pickerMode="account"
                 onAddAccountTap={jest.fn()}

@@ -3,7 +3,7 @@ import { Pressable } from 'react-native';
 import { Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TradingProviderLogo } from '../ProviderLogo';
+import { ProviderLogo } from '../ProviderLogo';
 
 export type ProviderListItemProps = {
     orderId: string;
@@ -33,7 +33,7 @@ export const ProviderListItem = ({
             <Card>
                 <HStack alignItems="center" justifyContent="space-between">
                     <HStack>
-                        <TradingProviderLogo logo={logo} />
+                        <ProviderLogo logo={logo} />
                         <Text variant="body" color="textDefault">
                             {companyName}
                         </Text>

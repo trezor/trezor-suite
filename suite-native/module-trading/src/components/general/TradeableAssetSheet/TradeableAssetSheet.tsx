@@ -6,10 +6,10 @@ import {
     ListItemExtraData,
     useTradingFavouriteAssetsSectionList,
 } from '../../../hooks/general/useFavouriteAssetsSectionList';
-import { TradingBottomSheetSectionList } from '../BottomSheetSectionList';
-import { TradeAssetsListEmptyComponent } from './TradeableAssetListEmptyComponent';
+import { BottomSheetSectionList } from '../BottomSheetSectionList';
+import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
-import { TradeableAssetsSheetHeader } from './TradeableAssetSheetHeader';
+import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
 import { ItemRenderConfig } from '../../../hooks/general/useSectionList';
 import { TradeableAsset } from '../../../types';
 
@@ -31,7 +31,7 @@ const renderItem = (
     onAssetSelect: (asset: TradeableAsset) => void,
 ) => <TradeableAssetListItem asset={asset} onPress={() => onAssetSelect(asset)} />;
 
-export const TradeableAssetsSheet = ({
+export const TradeableAssetSheet = ({
     isVisible,
     onClose,
     onAssetSelect,
@@ -50,7 +50,7 @@ export const TradeableAssetsSheet = ({
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(
         () => (
-            <TradeableAssetsSheetHeader
+            <TradeableAssetSheetHeader
                 onClose={onClose}
                 onFilterChange={onFilterChange}
                 onSelectedNetworkFilter={onSelectedNetworkFilter}
@@ -60,10 +60,10 @@ export const TradeableAssetsSheet = ({
     );
 
     return (
-        <TradingBottomSheetSectionList<TradeableAsset, ListItemExtraData>
+        <BottomSheetSectionList<TradeableAsset, ListItemExtraData>
             isVisible={isVisible}
             onClose={onClose}
-            ListEmptyComponent={<TradeAssetsListEmptyComponent />}
+            ListEmptyComponent={<TradeableAssetListEmptyComponent />}
             handleComponent={renderHandle}
             data={listData}
             keyExtractor={keyExtractor}

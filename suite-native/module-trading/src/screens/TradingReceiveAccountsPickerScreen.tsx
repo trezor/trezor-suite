@@ -17,11 +17,11 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 
-import { AccountsList } from '../components/general/AccountList/AccountList';
+import { AccountList } from '../components/general/AccountList/AccountList';
 import { ReceiveAccountsListMode } from '../hooks/general/useReceiveAccountsListData';
 import { selectBuySelectedReceiveAccount } from '../selectors/buySelectors';
 
-export const ReceiveAccountsPickerScreen = () => {
+export const TradingReceiveAccountsPickerScreen = () => {
     const {
         params: { symbol },
     } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>>();
@@ -56,7 +56,7 @@ export const ReceiveAccountsPickerScreen = () => {
 
     return (
         <Screen header={<ScreenHeader content={title} closeActionType="close" />}>
-            <AccountsList
+            <AccountList
                 symbol={symbol}
                 pickerMode={pickerMode}
                 onAddAccountTap={handleAddAccount}

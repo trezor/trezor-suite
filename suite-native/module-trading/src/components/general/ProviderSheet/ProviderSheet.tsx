@@ -31,7 +31,7 @@ const getProviderInfo = (
         logo: '',
     };
 
-export const ProvidersSheet = <T extends BuyTrade | SellFiatTrade | ExchangeTrade>({
+export const ProviderSheet = <T extends BuyTrade | SellFiatTrade | ExchangeTrade>({
     quotes,
     isVisible,
     onClose,

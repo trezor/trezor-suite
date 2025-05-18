@@ -2,14 +2,14 @@ import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-util
 
 import { adaAsset, btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { TradeableAsset } from '../../../../types';
-import { TradeableAssetsSheet, TradeableAssetsSheetProps } from '../TradeableAssetSheet';
+import { TradeableAssetSheet, TradeableAssetsSheetProps } from '../TradeableAssetSheet';
 
 describe('TradeableAssetsSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
     const renderTradeableAssetsSheet = (props: Partial<TradeableAssetsSheetProps>) =>
         renderWithStoreProviderAsync(
-            <TradeableAssetsSheet
+            <TradeableAssetSheet
                 assets={defaultAssets}
                 onAssetSelect={jest.fn}
                 onClose={jest.fn}

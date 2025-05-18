@@ -5,13 +5,13 @@ import { BoxSkeleton } from '@suite-native/atoms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
-import { MAX_INPUT_HEIGHT, MIN_INPUT_WIDTH, TradingAmountInput } from './BuyAmountInput';
+import { BuyAmountInput, MAX_INPUT_HEIGHT, MIN_INPUT_WIDTH } from './BuyAmountInput';
 import { MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 const FIAT_AMOUNT_TEST_ID = '@trading/buy/fiat-amount-input';
 
-export const FiatAmountInput = () => {
+export const BuyFiatAmountInput = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
     const { fiatAmountTransformer } = useAmountInputTransformers(undefined);
@@ -30,7 +30,7 @@ export const FiatAmountInput = () => {
     }
 
     return (
-        <TradingAmountInput
+        <BuyAmountInput
             name="fiatValue"
             accessibilityLabel={translate('moduleTrading.selectFiat.amountLabel')}
             inputTransformer={fiatAmountTransformer}

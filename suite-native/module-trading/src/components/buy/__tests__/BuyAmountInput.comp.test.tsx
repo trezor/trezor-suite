@@ -10,7 +10,7 @@ import { paletteV1 } from '@trezor/theme';
 
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
-import { TradingAmountInput, TradingAmountInputProps } from '../BuyAmountInput';
+import { BuyAmountInput, TradingAmountInputProps } from '../BuyAmountInput';
 
 describe('TradingAmountInput', () => {
     const renderBuyFormHook = () => renderHookWithStoreProviderAsync(() => useTradingBuyForm());
@@ -20,7 +20,7 @@ describe('TradingAmountInput', () => {
     ) =>
         renderWithBasicProvider(
             <Form form={form}>
-                <TradingAmountInput
+                <BuyAmountInput
                     name="fiatValue"
                     inputTransformer={v => v}
                     accessibilityLabel="INPUT"

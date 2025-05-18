@@ -9,7 +9,7 @@ import {
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
 import { useListDataFilter } from '../../../hooks/general/useListDataFilter';
-import { FiatCurrencyPicker } from '../BuyFiatCurrencyPicker';
+import { BuyFiatCurrencyPicker } from '../BuyFiatCurrencyPicker';
 
 let mockUseListDataFilter: typeof useListDataFilter;
 
@@ -34,7 +34,7 @@ describe('FiatCurrencyPicker', () => {
 
         return renderWithStoreProviderAsync(
             <Form form={result.current}>
-                <FiatCurrencyPicker />
+                <BuyFiatCurrencyPicker />
             </Form>,
             {
                 preloadedState,

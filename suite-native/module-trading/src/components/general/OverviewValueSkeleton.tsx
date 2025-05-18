@@ -4,7 +4,7 @@ import { useTranslate } from '@suite-native/intl';
 const SKELETON_HEIGHT = 20;
 const SKELETON_WIDTH = 100;
 
-export const TradingOverviewValueSkeleton = () => {
+export const OverviewValueSkeleton = () => {
     const { translate } = useTranslate();
 
     return (
