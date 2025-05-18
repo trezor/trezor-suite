@@ -13,9 +13,9 @@
     },
     "dependencies": {
         "@solana-program/compute-budget": "^0.7.0",
-        "@solana-program/stake": "^0.2.0",
+        "@solana-program/stake": "^0.2.1",
         "@solana-program/system": "^0.7.0",
-        "@solana/kit": "^2.0.0",
+        "@solana/kit": "^2.1.1",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",

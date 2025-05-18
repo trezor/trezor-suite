@@ -72,10 +72,11 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
-        "@solana-program/stake": "^0.2.0",
+        "@solana-program/stake": "^0.2.1",
         "@solana-program/token": "^0.5.1",
-        "@solana-program/token-2022": "^0.4.0",
-        "@solana/kit": "^2.0.0",
+        "@solana-program/token-2022": "^0.4.1",
+        "@solana/kit": "^2.1.1",
+        "@solana/rpc-types": "^2.1.1",
         "@stellar/stellar-sdk": "^13.3.0",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",

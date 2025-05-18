@@ -1,4 +1,5 @@
 import { Rpc, RpcMainnet, SolanaRpcApiMainnet, parseBase64RpcAccount } from '@solana/kit';
+import type { Base58EncodedBytes } from '@solana/rpc-types';
 import {
     STAKE_PROGRAM_ADDRESS,
     StakeStateAccount,
@@ -62,7 +63,7 @@ export const getDelegations = async (
                     },
                     {
                         memcmp: {
-                            bytes: descriptor,
+                            bytes: descriptor as Base58EncodedBytes,
                             encoding: 'base58',
                             offset: FILTER_OFFSET,
                         },
