@@ -3,12 +3,12 @@ import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 export const RECEIVE_ACCOUNT_BALANCE_TEST_ID = '@trading/buy/receive-account-balance';
 
 export const BuyReceiveAccountCryptoBalance = () => {
-    const form = useTradingBuyFormContext();
+    const form = useBuyFormContext();
     const receiveAccount = form.watch('receiveAccount');
 
     const symbol = receiveAccount?.account?.symbol;

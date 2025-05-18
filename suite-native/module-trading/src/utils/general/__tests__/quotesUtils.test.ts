@@ -6,7 +6,7 @@ import coins from '../../../__fixtures__/coins.json';
 import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
 
@@ -14,7 +14,7 @@ describe('quotesUtils', () => {
     let form: TradingBuyForm;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProviderAsync(() => useTradingBuyForm(), {
+        renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState: { wallet: { tradingNew: getInitializedTradingState() } },
         });
 

@@ -7,12 +7,12 @@ import {
 } from '@suite-native/test-utils';
 
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
 
 describe('PaymentMethodPicker', () => {
     const renderPaymentMethodPicker = async (preloadedState: PreloadedState = {}) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
 
         return renderWithStoreProviderAsync(
             <Form form={result.current}>

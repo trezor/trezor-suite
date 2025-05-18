@@ -14,7 +14,7 @@ import quotes from '../../../__fixtures__/quotes.json';
 import { bnbAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { TradingBuyFormValues } from '../../../types';
-import { useTradingBuyForm } from '../useBuyForm';
+import { useBuyForm } from '../useBuyForm';
 import { useBuyQuotes } from '../useBuyQuotes';
 
 let mockTimeSpent: number;
@@ -57,7 +57,7 @@ describe('useBuyQuotes', () => {
     const renderUseBuyQuotes = (store: TestStore) =>
         renderHookWithStoreProviderAsync(
             () => {
-                const form = useTradingBuyForm();
+                const form = useBuyForm();
                 useBuyQuotes(form);
 
                 return form;

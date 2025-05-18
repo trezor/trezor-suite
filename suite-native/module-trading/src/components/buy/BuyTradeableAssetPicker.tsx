@@ -7,8 +7,8 @@ import { HStack } from '@suite-native/atoms';
 
 import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
-import { useTradeSheetControls } from '../../hooks/general/useSheetControls';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useSheetControls } from '../../hooks/general/useSheetControls';
 import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
 import { TradeableAsset } from '../../types';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
@@ -19,10 +19,10 @@ const noop = () => {};
 
 export const BuyTradeableAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);
-    const form = useTradingBuyFormContext();
+    const form = useBuyFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useTradeSheetControls(form, 'asset');
+        useSheetControls(form, 'asset');
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const assets = useSelector(selectBuyTradeableAssetsSorted);
 

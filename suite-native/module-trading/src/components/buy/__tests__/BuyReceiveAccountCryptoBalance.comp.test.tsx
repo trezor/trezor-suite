@@ -5,7 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import {
     BuyReceiveAccountCryptoBalance,
@@ -16,7 +16,7 @@ describe('ReceiveAccountBalance', () => {
     let buyForm: TradingBuyForm;
 
     const renderBuyForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
 
         return result.current;
     };

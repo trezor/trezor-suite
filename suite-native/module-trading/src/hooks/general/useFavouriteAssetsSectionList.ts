@@ -37,7 +37,7 @@ const getFavouriteSectionDataReducer =
 const filterOutSectionsWithEmptyData = <T, S>({ data }: SectionListData<T, S>[number]) =>
     data.length > 0;
 
-export const useTradingFavouriteAssetsSectionList = (
+export const useFavouriteAssetsSectionList = (
     assets: TradeableAsset[],
 ): SectionListData<TradeableAsset, ListItemExtraData> => {
     const favourites = useSelector(selectTradingFavouriteAssets);

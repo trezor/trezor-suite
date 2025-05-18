@@ -11,7 +11,7 @@ import {
 import { FirmwareType } from '@trezor/connect';
 
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
 
@@ -26,7 +26,7 @@ describe('TradeableAssetPicker', () => {
         });
 
     const renderFormHook = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm(), {
+        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
             store,
         });
 

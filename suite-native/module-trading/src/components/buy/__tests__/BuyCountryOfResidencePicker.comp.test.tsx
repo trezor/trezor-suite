@@ -5,7 +5,7 @@ import {
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
 
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { useListDataFilter } from '../../../hooks/general/useListDataFilter';
 import { BuyCountryOfResidencePicker } from '../BuyCountryOfResidencePicker';
 
@@ -25,7 +25,7 @@ describe('CountryOfResidencePicker', () => {
     });
 
     const renderCountryOfResidencePicker = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
 
         return renderWithBasicProvider(
             <Form form={result.current}>

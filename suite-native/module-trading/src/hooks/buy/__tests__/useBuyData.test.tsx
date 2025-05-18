@@ -1,12 +1,12 @@
 import { tradingThunks } from '@suite-common/trading';
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { useTradingBuyData } from '../useBuyData';
+import { useBuyData } from '../useBuyData';
 
 describe('useTradingBuyData', () => {
     const renderUseTradingData = (reloadRequestOrdinalInitialValue: number = 0) =>
         renderHookWithStoreProviderAsync(
-            ({ reloadRequestOrdinal }) => useTradingBuyData(reloadRequestOrdinal),
+            ({ reloadRequestOrdinal }) => useBuyData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
             },

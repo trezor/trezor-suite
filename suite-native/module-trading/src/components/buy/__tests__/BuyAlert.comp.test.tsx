@@ -5,14 +5,14 @@ import {
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
 
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyAlert } from '../BuyAlert';
 
 describe('TradingAlert', () => {
     let form: TradingBuyForm;
 
-    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
 
     const renderTradingAlert = () =>
         renderWithBasicProvider(

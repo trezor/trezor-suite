@@ -1,13 +1,13 @@
 import { Form } from '@suite-native/forms';
 
-import { useTradingBuyForm } from '../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 export type BuyFormProviderProps = {
     children: React.ReactNode | React.ReactNode[];
 };
 
 export const BuyFormContextProvider = ({ children }: BuyFormProviderProps) => {
-    const buyForm = useTradingBuyForm();
+    const buyForm = useBuyForm();
 
     return <Form form={buyForm}>{children}</Form>;
 };

@@ -16,12 +16,12 @@ import { BuyFormSkeleton } from '../components/buy/BuyFormSkeleton';
 import { NavigationProps } from '../components/general/HistoryButton';
 import { DeviceOffline } from '../components/general/offline/DeviceOffline';
 import { ServerOffline } from '../components/general/offline/ServerOffline';
-import { useTradingBuyData } from '../hooks/buy/useBuyData';
+import { useBuyData } from '../hooks/buy/useBuyData';
 import { selectIsTradingBuyEnabled, selectTradeToBeOpened } from '../selectors/commonSelectors';
 
 const TradingScreenContent = () => {
     const [reloadOrdinal, setReloadOrdinal] = useState(0);
-    const { isLoading, lastLoadedTimestamp, isFullyLoaded } = useTradingBuyData(reloadOrdinal);
+    const { isLoading, lastLoadedTimestamp, isFullyLoaded } = useBuyData(reloadOrdinal);
     const { isInternetReachable } = useNetInfo();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
     const navigation = useNavigation<NavigationProps>();

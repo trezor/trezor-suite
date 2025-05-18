@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectTradingBuyLoadingTimestampAndStatus, tradingThunks } from '@suite-common/trading';
 
-export const useTradingBuyData = (reloadRequestOrdinal: number) => {
+export const useBuyData = (reloadRequestOrdinal: number) => {
     const dispatch = useDispatch();
 
     useEffect(() => {

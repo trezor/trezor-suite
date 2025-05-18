@@ -10,7 +10,7 @@ import { BuyCard } from './BuyCard';
 import { BuyConfirmation } from './BuyConfirmation';
 import { BuyHeader } from './BuyHeader';
 import { BuyPaymentCard } from './BuyPaymentCard';
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { Footer } from '../general/Footer';
@@ -82,7 +82,7 @@ const BuyFormMemoized = memo(
 );
 
 export const BuyForm = ({ shouldAnimateEntering }: BuyFormProps) => {
-    const buyForm = useTradingBuyFormContext();
+    const buyForm = useBuyFormContext();
     useBuyQuotes(buyForm);
 
     const isAmountInputActive = !!buyForm.watch('focusedValue');

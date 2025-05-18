@@ -4,8 +4,8 @@ import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { BuyLegalSheet } from './BuyLegalSheet';
-import { useTradingBuyFlow } from '../../hooks/buy/useBuyFlow';
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFlow } from '../../hooks/buy/useBuyFlow';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 export type ConfirmationProps = {
     enteringAnimation?: AnimatedProps<any>['entering'];
@@ -14,10 +14,10 @@ export type ConfirmationProps = {
 const CONFIRMATION_TEST_ID = '@trading/buy/continue-button';
 
 export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
-    const form = useTradingBuyFormContext();
+    const form = useBuyFormContext();
 
     const { canProceed, selectQuote, isConsentRequested, giveConsent, cancelConsent } =
-        useTradingBuyFlow(form);
+        useBuyFlow(form);
 
     const quote = form.watch('quote');
 

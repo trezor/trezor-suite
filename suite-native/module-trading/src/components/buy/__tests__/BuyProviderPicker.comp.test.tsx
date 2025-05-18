@@ -10,13 +10,13 @@ import {
 
 import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
 describe('TradingProviderPicker', () => {
     const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) =>
-        renderHookWithStoreProviderAsync(() => useTradingBuyForm(), {
+        renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });
 

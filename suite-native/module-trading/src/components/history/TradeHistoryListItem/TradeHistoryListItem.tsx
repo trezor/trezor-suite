@@ -10,7 +10,7 @@ import {
     TradeHistoryListItemMemoized,
     TradeHistoryListItemMemoizedProps,
 } from './TradeHistoryListItemMemoized';
-import { useTradingWatchTrade } from '../../../hooks/general/useWatchTrade';
+import { useWatchTrade } from '../../../hooks/general/useWatchTrade';
 
 export { TRADE_HISTORY_LIST_ITEM_HEIGHT } from './TradeHistoryListItemMemoized';
 
@@ -26,7 +26,7 @@ export const TradeHistoryListItem = ({
         ),
     );
 
-    useTradingWatchTrade({
+    useWatchTrade({
         account: account ?? undefined,
         trade: transaction,
         isInProgress: false,

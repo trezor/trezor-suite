@@ -19,7 +19,7 @@ import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
 import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
 import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;
@@ -56,7 +56,7 @@ const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
 export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardProps) => {
     const { applyStyle } = useNativeStyles();
     const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
-    const { watch } = useTradingBuyFormContext();
+    const { watch } = useBuyFormContext();
 
     const asset = watch('asset');
 

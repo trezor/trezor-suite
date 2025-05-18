@@ -14,8 +14,8 @@ import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { TradingBuyFormValues } from '../../../types';
-import { useTradingBuyFlow } from '../useBuyFlow';
-import { useTradingBuyForm } from '../useBuyForm';
+import { useBuyFlow } from '../useBuyFlow';
+import { useBuyForm } from '../useBuyForm';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -49,7 +49,7 @@ describe('useTradingBuyFlow', () => {
     }: Partial<TradingBuyFormValues> & { store: TestStore }) =>
         renderHookWithStoreProviderAsync(
             () => {
-                const form = useTradingBuyForm();
+                const form = useBuyForm();
                 const { setValue } = form;
 
                 useEffect(() => {
@@ -61,7 +61,7 @@ describe('useTradingBuyFlow', () => {
                     });
                 }, [setValue]);
 
-                return useTradingBuyFlow(form);
+                return useBuyFlow(form);
             },
             { store },
         );

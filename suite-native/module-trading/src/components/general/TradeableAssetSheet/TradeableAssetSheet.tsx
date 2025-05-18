@@ -4,7 +4,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     ListItemExtraData,
-    useTradingFavouriteAssetsSectionList,
+    useFavouriteAssetsSectionList,
 } from '../../../hooks/general/useFavouriteAssetsSectionList';
 import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
@@ -45,7 +45,7 @@ export const TradeableAssetSheet = ({
         onClose();
     };
 
-    const listData = useTradingFavouriteAssetsSectionList(assets);
+    const listData = useFavouriteAssetsSectionList(assets);
 
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(

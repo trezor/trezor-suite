@@ -8,7 +8,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyFiatAmountInput } from '../BuyFiatAmountInput';
 
@@ -22,7 +22,7 @@ describe('FiatAmountInput', () => {
         );
 
     const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm(), {
+        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });
 

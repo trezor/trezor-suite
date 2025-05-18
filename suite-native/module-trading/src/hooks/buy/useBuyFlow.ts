@@ -58,7 +58,7 @@ const reportTradeConfirmation = () => {
     });
 };
 
-export const useTradingBuyFlow = (form: TradingBuyForm) => {
+export const useBuyFlow = (form: TradingBuyForm) => {
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
 

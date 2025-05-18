@@ -9,7 +9,7 @@ import {
 
 import { adaAsset, btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { TradeableAsset } from '../../../types';
-import { useTradingFavouriteAssetsSectionList } from '../../general/useFavouriteAssetsSectionList';
+import { useFavouriteAssetsSectionList } from '../useFavouriteAssetsSectionList';
 
 describe('useTradingFavouriteAssetsSectionList', () => {
     const defaultFavouriteAssets = {
@@ -29,7 +29,7 @@ describe('useTradingFavouriteAssetsSectionList', () => {
             },
         };
 
-        const ret = renderHook(({ assets }) => useTradingFavouriteAssetsSectionList(assets), {
+        const ret = renderHook(({ assets }) => useFavouriteAssetsSectionList(assets), {
             wrapper: ({ children }) => (
                 <StoreProviderForTests preloadedState={preloadedState}>
                     {children}

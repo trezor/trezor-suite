@@ -32,7 +32,7 @@ const REFRESH_SECONDS_IN_PROGRESS = 10;
 export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
     trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
-export const useTradingWatchTrade = <T extends TradingType>({
+export const useWatchTrade = <T extends TradingType>({
     account,
     trade,
     isInProgress,

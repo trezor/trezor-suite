@@ -9,7 +9,7 @@ import {
     ethOnBaseAsset,
     usdcAsset,
 } from '../../../__fixtures__/tradeableAssets';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradeableAsset } from '../../../types';
 import {
     coinInfoToTradeableAsset,
@@ -58,7 +58,7 @@ describe('tradeableAssetUtils', () => {
 
     describe('getSelectedSymbolFromBuyForm', () => {
         it('should return correct symbol', async () => {
-            const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+            const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
 
             act(() =>
                 result.current.setValue('asset', {

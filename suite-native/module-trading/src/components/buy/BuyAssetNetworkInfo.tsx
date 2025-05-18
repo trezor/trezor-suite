@@ -5,11 +5,11 @@ import { Box, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 export const BuyAssetNetworkInfo = () => {
     const { translate } = useTranslate();
-    const { watch } = useTradingBuyFormContext();
+    const { watch } = useBuyFormContext();
     const asset = watch('asset');
 
     if (!asset) {

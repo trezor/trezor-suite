@@ -8,12 +8,12 @@ import {
 } from '@suite-native/test-utils';
 import { paletteV1 } from '@trezor/theme';
 
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyAmountInput, TradingAmountInputProps } from '../BuyAmountInput';
 
 describe('TradingAmountInput', () => {
-    const renderBuyFormHook = () => renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+    const renderBuyFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
     const renderTradingAmountInput = (
         props: Partial<TradingAmountInputProps>,
         form: TradingBuyForm,

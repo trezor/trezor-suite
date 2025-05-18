@@ -20,7 +20,7 @@ import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { setBuySelectedReceiveAccount } from '../../../tradingSlice';
 import { TradeableAsset, TradingBuyForm } from '../../../types';
-import { clearTradingBuyFormQuoteData, useTradingBuyForm } from '../useBuyForm';
+import { clearTradingBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
 jest.mock('../../../utils/general/utils', () => ({
     ...jest.requireActual('../../../utils/general/utils'),
@@ -29,7 +29,7 @@ jest.mock('../../../utils/general/utils', () => ({
 
 describe('useTradingBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(() => useTradingBuyForm(), { store });
+        renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
 
     const getInitializedStore = async (amountInSats = false) => {
         const preloadedState: PreloadedState = {

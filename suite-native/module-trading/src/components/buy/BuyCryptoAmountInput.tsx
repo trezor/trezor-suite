@@ -9,7 +9,7 @@ import { useTranslate } from '@suite-native/intl';
 
 import { BuyAmountInput, MAX_INPUT_HEIGHT, MIN_INPUT_WIDTH } from './BuyAmountInput';
 import { MAX_CRYPTO_DECIMALS } from '../../consts/general/consts';
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
 
 export type CryptoAmountInputProps = {
@@ -21,7 +21,7 @@ const CRYPTO_AMOUNT_TEST_ID = '@trading/buy/crypto-amount-input';
 export const BuyCryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
-        const form = useTradingBuyFormContext();
+        const form = useBuyFormContext();
         const symbol = getSelectedSymbolFromBuyForm(form);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const isLoading = useSelector(selectTradingBuyIsLoading);

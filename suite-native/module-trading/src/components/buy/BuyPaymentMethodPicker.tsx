@@ -7,8 +7,8 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
-import { useTradeSheetControls } from '../../hooks/general/useSheetControls';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useSheetControls } from '../../hooks/general/useSheetControls';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '../../selectors/buySelectors';
 import { OverviewRow } from '../general/OverviewRow';
 import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
@@ -18,11 +18,11 @@ const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
 
 export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
-    const form = useTradingBuyFormContext();
+    const form = useBuyFormContext();
     const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useTradeSheetControls(form, 'quote');
+        useSheetControls(form, 'quote');
 
     if (isLoading) {
         return (

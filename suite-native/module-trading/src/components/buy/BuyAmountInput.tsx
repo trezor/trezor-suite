@@ -4,7 +4,7 @@ import { LayoutChangeEvent, Pressable, TextInput, TextInputProps } from 'react-n
 import { useField } from '@suite-native/forms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 
 export type TradingAmountInputProps = {
@@ -99,7 +99,7 @@ const useInputFormControls = (
     maxLength: number | undefined,
     maxDecimals: number | undefined,
 ) => {
-    const { getValues, setValue } = useTradingBuyFormContext();
+    const { getValues, setValue } = useBuyFormContext();
     // do not use `value` from `useField` here, because it does not work properly with `undefined`
     const value = getValues(name);
     const { onChange, onBlur, hasError } = useField({ name });

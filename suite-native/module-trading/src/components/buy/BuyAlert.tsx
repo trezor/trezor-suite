@@ -2,10 +2,10 @@ import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, InlineAlertBox } from '@suite-native/atoms';
 
-import { useTradingBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
 export const BuyAlert = () => {
-    const { watch } = useTradingBuyFormContext();
+    const { watch } = useBuyFormContext();
     const text = watch('generalAlert');
 
     if (!text) return null;

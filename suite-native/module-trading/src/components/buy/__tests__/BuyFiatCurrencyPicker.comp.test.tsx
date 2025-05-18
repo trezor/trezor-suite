@@ -7,7 +7,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { useListDataFilter } from '../../../hooks/general/useListDataFilter';
 import { BuyFiatCurrencyPicker } from '../BuyFiatCurrencyPicker';
 
@@ -28,7 +28,7 @@ describe('FiatCurrencyPicker', () => {
 
     const renderFiatCurrencyPicker = async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
-        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm(), {
+        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });
 

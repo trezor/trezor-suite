@@ -8,7 +8,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
-import { useTradingBuyForm } from '../../../hooks/buy/useBuyForm';
+import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { ReceiveAccount, TradingBuyForm } from '../../../types';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
 
@@ -42,7 +42,7 @@ describe('ReceiveAccountPicker', () => {
     });
 
     const renderBuyForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
 
         return result.current;
     };

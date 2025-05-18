@@ -221,7 +221,7 @@ const useValidations = (
     }, [generalAlertMsg, setValue]);
 };
 
-export const useTradingBuyForm = (): TradingBuyForm => {
+export const useBuyForm = (): TradingBuyForm => {
     const { translate } = useTranslate();
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const defaultValues = useSelector(selectBuyFormDefaultValues);

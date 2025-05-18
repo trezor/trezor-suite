@@ -24,7 +24,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useTradingWatchTrade } from '../hooks/general/useWatchTrade';
+import { useWatchTrade } from '../hooks/general/useWatchTrade';
 import { setTradeOrderIdToBeOpened } from '../tradingSlice';
 import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
 
@@ -51,7 +51,7 @@ export const TradingWebViewScreen = () => {
         ),
     );
 
-    useTradingWatchTrade({
+    useWatchTrade({
         account: account ?? undefined,
         trade,
         isInProgress: true,
