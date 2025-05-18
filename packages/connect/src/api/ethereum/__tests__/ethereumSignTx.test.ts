@@ -1,4 +1,5 @@
-import { TransactionFactory } from '@ethereumjs/tx';
+import { Mainnet, createCustomCommon } from '@ethereumjs/common';
+import { createTxFromRLP } from '@ethereumjs/tx';
 import { keccak256, toHex } from 'web3-utils';
 
 import * as fixtures from '../__fixtures__/ethereumSignTx';
@@ -18,9 +19,12 @@ describe('helpers/ethereumSignTx', () => {
                 expect(hash).toEqual(f.result);
 
                 // Verify by parsing the serialized tx
-                const tx = TransactionFactory.fromSerializedData(
-                    Buffer.from(serialized.slice(2), 'hex'),
-                );
+                const tx = createTxFromRLP(Buffer.from(serialized.slice(2), 'hex'), {
+                    common: createCustomCommon(
+                        { chainId: f.tx.chainId, defaultHardfork: f.defaultHardfork },
+                        Mainnet,
+                    ),
+                });
                 const hash2 = Buffer.from(tx.hash()).toString('hex');
                 expect(`0x${hash2}`).toEqual(f.result);
 

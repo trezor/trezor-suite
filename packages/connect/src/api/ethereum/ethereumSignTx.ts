@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTx.js
 
-import { Chain, Common, Hardfork } from '@ethereumjs/common';
-import { FeeMarketEIP1559TxData, LegacyTxData, TransactionFactory } from '@ethereumjs/tx';
+import { Common, Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common';
+import { FeeMarketEIP1559TxData, LegacyTxData, createTx } from '@ethereumjs/tx';
 
 import { MessagesSchema } from '@trezor/protobuf';
 
@@ -63,21 +63,21 @@ const processTxRequest = async (
 
 const deepHexPrefix = deepTransform(addHexPrefix);
 
-export const getCommonForChain = (chainId: number) => {
-    // @ethereumjs/tx directly supported chains
-    if (Common.isSupportedChainId(BigInt(chainId))) return new Common({ chain: chainId });
-
+export const getCommonForChain = (chainId: number): Common => {
     // @ethereumjs/tx doesn't support ETC (chain 61) by default
-    // and it needs to be declared as custom chain
-    // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
-    if (chainId === 61)
-        return Common.custom(
-            { name: 'ethereum-classic', networkId: 1, chainId: 61 },
-            { baseChain: Chain.Mainnet, hardfork: Hardfork.Petersburg },
+    // see: https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/examples/custom-chain-id-tx.ts
+    if (chainId === 61) {
+        return createCustomCommon(
+            {
+                chainId: 61,
+                // last hardfork shared with Ethereum
+                defaultHardfork: Hardfork.Petersburg,
+            },
+            Mainnet,
         );
+    }
 
-    // other chains
-    return Common.custom({ chainId });
+    return createCustomCommon({ chainId }, Mainnet);
 };
 
 export const serializeEthereumTx = (
@@ -107,7 +107,7 @@ export const serializeEthereumTx = (
         common: getCommonForChain(tx.chainId),
     };
 
-    const ethTx = TransactionFactory.fromTxData(txData, txOptions);
+    const ethTx = createTx(txData, txOptions);
 
     return `0x${Buffer.from(ethTx.serialize()).toString('hex')}`;
 };

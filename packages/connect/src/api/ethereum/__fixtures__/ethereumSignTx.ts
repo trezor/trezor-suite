@@ -1,3 +1,5 @@
+import { Hardfork } from '@ethereumjs/common';
+
 import { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../exports';
 
 interface EthereumTxFixture {
@@ -11,6 +13,7 @@ interface EthereumTxFixture {
     };
     from: string;
     result: string;
+    defaultHardfork?: Hardfork;
 }
 
 export const serializeEthereumTx: EthereumTxFixture[] = [
@@ -74,6 +77,7 @@ export const serializeEthereumTx: EthereumTxFixture[] = [
             r: '0x9d4599beedc587e0dc3d88578d79573c0138f9389810ffb036c37423ccd86375',
             s: '0x4a0eb870fbae9a11a02e3e0068830d141ee952bb4ab4d1e1b7542d75f7a24dc1',
         },
+        defaultHardfork: Hardfork.Petersburg,
         result: '0xebd7ef20c4358a6fdb09a951d6e77b8e88b37ac0f7a8d4e3b68f1666bf4c1d1a',
     },
     {
