@@ -108,6 +108,7 @@
         "### We need promise to be same version in mobile unless it produces undefined behavior, check PR #15815": "1.0.0",
         "promise": "8.3.0",
         "elliptic": "6.6.1",
+        "### Newer version breaks url for dynamic imports, missing web in asset prefix": "1.0.0",
         "webpack": "5.98.0"
     },
     "devDependencies": {

@@ -50,7 +50,7 @@
         "copy-webpack-plugin": "^13.0.0",
         "rimraf": "^6.0.1",
         "terser-webpack-plugin": "^5.3.14",
-        "webpack": "^5.99.8",
+        "webpack": "5.98.0",
         "webpack-cli": "^6.0.1",
         "webpack-merge": "^6.0.1",
         "webpack-plugin-serve": "^1.6.0",
