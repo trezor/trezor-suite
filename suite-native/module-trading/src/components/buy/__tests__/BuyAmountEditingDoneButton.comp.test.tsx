@@ -4,7 +4,7 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { BuyAmountEditingDoneButton } from '../BuyAmountEditingDoneButton';
 
-describe('AmountEditingDoneButton', () => {
+describe('BuyAmountEditingDoneButton', () => {
     it('should remove focus from active input', () => {
         const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 

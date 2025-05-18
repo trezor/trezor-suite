@@ -14,7 +14,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
-describe('TradingProviderPicker', () => {
+describe('BuyProviderPicker', () => {
     const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,

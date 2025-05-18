@@ -9,7 +9,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyAlert } from '../BuyAlert';
 
-describe('TradingAlert', () => {
+describe('BuyAlert', () => {
     let form: TradingBuyForm;
 
     const renderFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());

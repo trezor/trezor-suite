@@ -15,7 +15,7 @@ import {
     isFinalStatus,
 } from '../utils';
 
-describe('tradeUtils', () => {
+describe('utils', () => {
     describe('getTradeOperationData', () => {
         it('should return correct data for buy trade', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });

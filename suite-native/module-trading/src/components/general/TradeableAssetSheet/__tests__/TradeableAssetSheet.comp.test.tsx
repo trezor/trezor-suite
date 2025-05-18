@@ -4,7 +4,7 @@ import { adaAsset, btcAsset, usdcAsset } from '../../../../__fixtures__/tradeabl
 import { TradeableAsset } from '../../../../types';
 import { TradeableAssetSheet, TradeableAssetsSheetProps } from '../TradeableAssetSheet';
 
-describe('TradeableAssetsSheet', () => {
+describe('TradeableAssetSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
     const renderTradeableAssetsSheet = (props: Partial<TradeableAssetsSheetProps>) =>

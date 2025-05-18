@@ -19,7 +19,7 @@ jest.mock('../../../hooks/general/useListDataFilter', () => ({
         mockUseListDataFilter(rawData, filterCallback),
 }));
 
-describe('FiatCurrencyPicker', () => {
+describe('BuyFiatCurrencyPicker', () => {
     beforeEach(() => {
         mockUseListDataFilter = jest.requireActual(
             '../../../hooks/general/useListDataFilter',

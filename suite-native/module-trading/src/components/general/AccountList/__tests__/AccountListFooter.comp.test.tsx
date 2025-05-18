@@ -2,7 +2,7 @@ import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-util
 
 import { AccountListFooter, AccountsListFooterProps } from '../AccountListFooter';
 
-describe('AccountsListFooter', () => {
+describe('AccountListFooter', () => {
     const renderAccountsListFooter = (props: Partial<AccountsListFooterProps>) =>
         renderWithBasicProvider(
             <AccountListFooter hasTextualDivider onAddAccountTap={jest.fn()} {...props} />,

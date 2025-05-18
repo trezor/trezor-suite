@@ -11,7 +11,7 @@ import { adaAsset, btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAs
 import { TradeableAsset } from '../../../types';
 import { useFavouriteAssetsSectionList } from '../useFavouriteAssetsSectionList';
 
-describe('useTradingFavouriteAssetsSectionList', () => {
+describe('useFavouriteAssetsSectionList', () => {
     const defaultFavouriteAssets = {
         bitcoin: true,
         'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': true,

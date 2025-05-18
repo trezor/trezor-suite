@@ -4,17 +4,17 @@ import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/trad
 import { BuyConfirmation } from '../BuyConfirmation';
 
 jest.mock('../../../hooks/buy/useBuyFlow', () => ({
-    useTradingBuyFlow: jest.fn(),
+    useBuyFlow: jest.fn(),
 }));
 
 jest.mock('../../../hooks/buy/useBuyFormContext', () => ({
-    useTradingBuyFormContext: () => ({
+    useBuyFormContext: () => ({
         watch: () => 'test-provider',
     }),
 }));
 
-describe('Confirmation', () => {
-    const mockUseTradingBuyFlow = require('../../../hooks/buy/useBuyFlow').useTradingBuyFlow;
+describe('BuyConfirmation', () => {
+    const mockUseBuyFlow = require('../../../hooks/buy/useBuyFlow').useBuyFlow;
 
     const renderConfirmation = () =>
         renderWithStoreProviderAsync(<BuyConfirmation />, {
@@ -22,7 +22,7 @@ describe('Confirmation', () => {
         });
 
     it('should render continue button when canProceed is true', async () => {
-        mockUseTradingBuyFlow.mockReturnValue({
+        mockUseBuyFlow.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
             isConsentRequested: false,
@@ -35,7 +35,7 @@ describe('Confirmation', () => {
     });
 
     it('should not render continue button when canProceed is false', async () => {
-        mockUseTradingBuyFlow.mockReturnValue({
+        mockUseBuyFlow.mockReturnValue({
             canProceed: false,
             selectQuote: jest.fn(),
             isConsentRequested: false,

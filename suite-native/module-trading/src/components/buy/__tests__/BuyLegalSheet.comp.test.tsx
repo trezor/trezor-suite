@@ -12,7 +12,7 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-describe('LegalSheet', () => {
+describe('BuyLegalSheet', () => {
     const renderLegalSheet = (props?: Partial<LegalSheetProps>) =>
         renderWithStoreProviderAsync(
             <BuyLegalSheet

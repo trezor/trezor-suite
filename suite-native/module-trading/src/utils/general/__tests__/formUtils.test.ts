@@ -7,7 +7,7 @@ import {
     getSourceForForm,
 } from '../formUtils';
 
-describe('tradeFormUtils', () => {
+describe('formUtils', () => {
     describe('applyHtmlTemplate', () => {
         it('should have content', () => {
             expect(applyHtmlTemplate('CONTENT_TO_EMBED')).toBe(`

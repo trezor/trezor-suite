@@ -21,7 +21,7 @@ jest.mock('@suite-native/discovery', () => {
     };
 });
 
-describe('TradeableAssetsFilterTabs', () => {
+describe('TradeableAssetFilterTabs', () => {
     const renderComponent = (onSelectedNetworkFilter = jest.fn()) =>
         renderWithStoreProviderAsync(
             <TradeableAssetFilterTabs

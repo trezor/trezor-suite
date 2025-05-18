@@ -48,7 +48,7 @@ const renderScreen = (preloadedState: PreloadedState) =>
         preloadedState,
     });
 
-describe('ReceiveAccountsPickerScreen', () => {
+describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render account list with correct title', async () => {
         mockRouteParams = { symbol: 'btc' };
 

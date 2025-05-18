@@ -14,7 +14,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyCryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
 
-describe('CryptoAmountInput', () => {
+describe('BuyCryptoAmountInput', () => {
     const renderCryptoAmountInput = (
         props: Partial<CryptoAmountInputProps>,
         form: TradingBuyForm,

@@ -12,7 +12,7 @@ import {
     RECEIVE_ACCOUNT_BALANCE_TEST_ID,
 } from '../BuyReceiveAccountCryptoBalance';
 
-describe('ReceiveAccountBalance', () => {
+describe('BuyReceiveAccountCryptoBalance', () => {
     let buyForm: TradingBuyForm;
 
     const renderBuyForm = async () => {

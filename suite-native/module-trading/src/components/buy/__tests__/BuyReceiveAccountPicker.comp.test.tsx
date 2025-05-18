@@ -34,7 +34,7 @@ const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
     },
 });
 
-describe('ReceiveAccountPicker', () => {
+describe('BuyReceiveAccountPicker', () => {
     let buyForm: TradingBuyForm;
 
     beforeEach(() => {

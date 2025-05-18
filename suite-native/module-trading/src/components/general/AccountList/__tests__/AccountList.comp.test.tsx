@@ -41,7 +41,7 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: jest.fn(),
 }));
 
-describe('AccountsList', () => {
+describe('AccountList', () => {
     const onSetPickerModeMock = jest.fn();
     const popToTop = jest.fn();
 

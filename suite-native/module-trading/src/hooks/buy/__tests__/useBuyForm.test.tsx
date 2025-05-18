@@ -27,7 +27,7 @@ jest.mock('../../../utils/general/utils', () => ({
     getRandomAccountDescriptor: () => 'random_string',
 }));
 
-describe('useTradingBuyForm', () => {
+describe('useBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
 

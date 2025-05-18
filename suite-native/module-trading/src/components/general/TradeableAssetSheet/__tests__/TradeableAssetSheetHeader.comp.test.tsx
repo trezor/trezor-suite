@@ -12,7 +12,7 @@ jest.mock('@suite-native/discovery', () => {
     };
 });
 
-describe('TradeableAssetsSheetHeader', () => {
+describe('TradeableAssetSheetHeader', () => {
     const renderComponent = (onClose = jest.fn()) =>
         renderWithStoreProviderAsync(
             <TradeableAssetSheetHeader

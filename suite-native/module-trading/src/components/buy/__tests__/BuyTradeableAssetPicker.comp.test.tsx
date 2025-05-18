@@ -15,7 +15,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
 
-describe('TradeableAssetPicker', () => {
+describe('BuyTradeableAssetPicker', () => {
     let store: EnhancedStore;
     let form: TradingBuyForm;
 

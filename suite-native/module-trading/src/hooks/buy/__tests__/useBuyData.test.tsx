@@ -3,7 +3,7 @@ import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { useBuyData } from '../useBuyData';
 
-describe('useTradingBuyData', () => {
+describe('useBuyData', () => {
     const renderUseTradingData = (reloadRequestOrdinalInitialValue: number = 0) =>
         renderHookWithStoreProviderAsync(
             ({ reloadRequestOrdinal }) => useBuyData(reloadRequestOrdinal),

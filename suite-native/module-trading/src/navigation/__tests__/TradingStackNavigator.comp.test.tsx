@@ -4,7 +4,7 @@ import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { TradingStackNavigator } from '../TradingStackNavigator';
 
 jest.mock('../../hooks/buy/useBuyData', () => ({
-    useTradingBuyData: () => ({
+    useBuyData: () => ({
         isLoading: true,
         lastLoadedTimestamp: 0,
         isFullyLoaded: false,

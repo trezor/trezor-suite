@@ -12,7 +12,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyFiatAmountInput } from '../BuyFiatAmountInput';
 
-describe('FiatAmountInput', () => {
+describe('BuyFiatAmountInput', () => {
     const renderFiatAmountInput = (form: TradingBuyForm, preloadedState: PreloadedState = {}) =>
         renderWithStoreProviderAsync(
             <Form form={form}>

@@ -12,7 +12,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyAmountInput, TradingAmountInputProps } from '../BuyAmountInput';
 
-describe('TradingAmountInput', () => {
+describe('BuyAmountInput', () => {
     const renderBuyFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
     const renderTradingAmountInput = (
         props: Partial<TradingAmountInputProps>,

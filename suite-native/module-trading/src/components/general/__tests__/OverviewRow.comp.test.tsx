@@ -3,7 +3,7 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { OverviewRow } from '../OverviewRow';
 
-describe('TradingOverviewRow', () => {
+describe('OverviewRow', () => {
     it('should use title as left text as well as a11yLabel', () => {
         const { getByText, getByLabelText } = renderWithBasicProvider(
             <OverviewRow title="Title" onPress={jest.fn()}>

@@ -10,7 +10,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import { BuyAssetNetworkInfo } from '../BuyAssetNetworkInfo';
 
-describe('NetworkIconForToken', () => {
+describe('BuyAssetNetworkInfo', () => {
     let form: TradingBuyForm;
 
     const renderNetworkIconForToken = () =>
