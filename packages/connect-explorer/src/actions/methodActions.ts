@@ -139,7 +139,6 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
             const value = getDeepValue(parsed, [...(field.path ?? []), ...field.name.split('.')]);
             dispatch(onFieldChange(field, value));
 
-            console.log('field', field);
             if (field.type === 'array') {
                 // ensure the array has the correct number of items
                 if (value) {
