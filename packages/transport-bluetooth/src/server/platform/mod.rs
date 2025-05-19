@@ -10,6 +10,8 @@ pub trait PlatformDevice {
 mod linux;
 #[cfg(target_os = "linux")]
 pub type BluetoothDevice = self::linux::LinuxDevice;
+#[cfg(target_os = "linux")]
+pub use self::linux::{get_device_proxy, get_device_properties};
 
 #[cfg(target_os = "macos")]
 mod macos;
