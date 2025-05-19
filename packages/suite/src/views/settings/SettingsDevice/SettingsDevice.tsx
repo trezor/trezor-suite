@@ -5,7 +5,7 @@ import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectHasActiveTransport } from 'src/reducers/suite/suiteReducer';
+import { selectHasActiveTransport, selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import type { TrezorDevice } from 'src/types/suite';
 import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
 
@@ -13,6 +13,7 @@ import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
 import { BackupFailed } from './BackupFailed';
 import { BackupRecoverySeed } from './BackupRecoverySeed';
+import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 import { Brightness } from './Brightness';
 import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
@@ -55,6 +56,7 @@ export const SettingsDevice = () => {
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const isPassphraseProtectionOn = Boolean(device?.features?.passphrase_protection);
+    const flags = useSelector(selectSuiteFlags);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
@@ -88,6 +90,9 @@ export const SettingsDevice = () => {
     const deviceModelInternal = device.features.internal_model;
 
     const supportsDeviceAuthentication = SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModelInternal];
+
+    const isBluetoothDevice = device.features?.capabilities.includes('Capability_BLE');
+    const isBluetoothConnectedDevice = device?.bluetoothProps?.id !== undefined;
 
     return (
         <SettingsLayout>
@@ -176,6 +181,12 @@ export const SettingsDevice = () => {
                 {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
                 <FirmwareAuthenticityChecks />
             </SettingsSection>
+
+            {flags.isBluetoothEnabled && isBluetoothDevice && isBluetoothConnectedDevice && (
+                <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
+                    <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
+                </SettingsSection>
+            )}
         </SettingsLayout>
     );
 };

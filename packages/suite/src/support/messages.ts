@@ -9861,6 +9861,18 @@ export default defineMessages({
         defaultMessage:
             "To unpair completely, make sure you remove your Trezor from your computer's Bluetooth settings. If not, your Trezor won't appear in Trezor Suite when you try to pair it again.",
     },
+    TR_BLUETOOTH_ERASE_BONDS_SETTINGS: {
+        defaultMessage: 'Manage Bluetooth pairing',
+        id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS',
+    },
+    TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION: {
+        defaultMessage: '{deviceName} is paired via Bluetooth',
+        id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION',
+    },
+    TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR: {
+        defaultMessage: 'Unpair',
+        id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR',
+    },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
         defaultMessage: 'Trezor Bridge will soon no longer be supported.',
