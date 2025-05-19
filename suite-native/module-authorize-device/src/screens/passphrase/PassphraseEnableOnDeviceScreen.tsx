@@ -5,7 +5,7 @@ import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { CenteredTitleHeader, IconButton, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { Screen } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
@@ -15,12 +15,9 @@ export const PassphraseEnableOnDeviceScreen = () => {
     const { showToast } = useToast();
     const { translate } = useTranslate();
 
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-
     const handleClose = useCallback(() => {
         TrezorConnect.cancel();
-        navigateToInitialScreen();
-    }, [navigateToInitialScreen]);
+    }, []);
 
     useEffect(() => {
         if (discovery?.status === 'cancelled') {
@@ -31,7 +28,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
                 message: translate('modulePassphrase.enablePassphrase.cancelledError'),
             });
         }
-    }, [discovery?.status, handleClose, navigateToInitialScreen, showToast, translate]);
+    }, [discovery?.status, handleClose, showToast, translate]);
 
     return (
         <Screen

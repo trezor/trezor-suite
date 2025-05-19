@@ -36,16 +36,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
 
     const handleRequestPassphrase = useCallback(() => {
         // NOTE: if the passphrase flow IS NOT in the beginning skip these calls
-        if (discovery?.status !== 'enter-passphrase') return;
-
-        // If the passphrase request was while verifying empty passphrase wallet, we handle it separately in the screen
-        if (discovery?.isAddingHiddenWallet) {
-            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
-            });
-
-            return;
-        }
+        if (discovery?.isAddingHiddenWallet) return;
 
         // Feature requests passphrase
         if (
@@ -57,7 +48,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
                 screen: AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm,
             });
         }
-    }, [selectedDevice?.state?.staticSessionId, navigation, discovery]);
+    }, [discovery, selectedDevice?.state?.staticSessionId, navigation]);
 
     useEffect(() => {
         if (deviceRequestedPassphrase) {

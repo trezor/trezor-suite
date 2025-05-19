@@ -3,27 +3,21 @@ import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     PassphraseFormValues,
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';
 import {
-    onPassphraseSubmit,
     selectHasDevicePassphraseEntryCapability,
+    selectSelectedDevice,
+    submitPassphrase,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { setCheckPassphraseOnDevice } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
@@ -41,12 +35,6 @@ const cardStyle = prepareNativeStyle(_ => ({
     padding: FORM_CARD_PADDING,
 }));
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseForm,
-    RootStackParamList
->;
-
 export const PassphraseForm = ({
     inputLabel,
     onFocus,
@@ -59,8 +47,7 @@ export const PassphraseForm = ({
 
     const { applyStyle } = useNativeStyles();
 
-    const navigation = useNavigation<NavigationProp>();
-
+    const device = useSelector(selectSelectedDevice);
     const hasDevicePassphraseEntryCapability = useSelector(
         selectHasDevicePassphraseEntryCapability,
     );
@@ -80,8 +67,9 @@ export const PassphraseForm = ({
     } = form;
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
-        dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
-        navigation.push(AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor);
+        if (!device) return;
+        dispatch(submitPassphrase({ device, passphrase, passphraseOnDevice: false }));
+        dispatch(setCheckPassphraseOnDevice(true));
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
         reset();
     });

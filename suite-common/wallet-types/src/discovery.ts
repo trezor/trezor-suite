@@ -16,6 +16,7 @@ type CommonDiscoveryStatus = {
     isAddingExistingWallet?: boolean; // to control visibility of special loader
     emptyWallet?: boolean;
     failed?: FailedAccount[];
+    passphraseOnDevice?: boolean;
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &

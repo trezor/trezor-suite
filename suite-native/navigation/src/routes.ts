@@ -100,11 +100,14 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseForm = 'PassphraseForm',
     PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     PassphraseLoading = 'PassphraseLoading',
+    PassphraseRedirecting = 'PassphraseRedirecting',
+    PassphraseMismatchAlert = 'PassphraseMismatchAlert',
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
     PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
+    PassphraseStackNavigator = 'PassphraseStackNavigator',
 }
 
 export enum DevUtilsStackRoutes {

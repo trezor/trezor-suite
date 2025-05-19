@@ -1,12 +1,11 @@
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    runDiscoveryThunk,
+    createDeviceInstanceThunk,
     selectIsDeviceProtectedByPassphrase,
     selectSelectedDevice,
-    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
@@ -36,9 +35,6 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const AddHiddenWalletButton = () => {
     const dispatch = useDispatch();
-    const store = useStore();
-
-    window.store = store;
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -55,14 +51,7 @@ export const AddHiddenWalletButton = () => {
 
         analytics.report({ type: EventType.PassphraseAddHiddenWallet });
 
-        dispatch(
-            startDiscoveryThunk({
-                device,
-                isAddingHiddenWallet: true,
-                isAddingExistingWallet: false,
-            }),
-        );
-        dispatch(runDiscoveryThunk(device));
+        dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
 
         // Create device instance thunk already handles passphrase enabling, so we just redirect to this screen and wait for success / error
         if (!isPassphraseEnabledOnDevice) {

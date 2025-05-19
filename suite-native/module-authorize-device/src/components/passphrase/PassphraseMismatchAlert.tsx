@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
+import { selectHasPassphraseMismatchError } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -23,15 +24,13 @@ import {
 } from '@suite-native/navigation';
 import { StackToStackCompositeNavigationProps } from '@suite-native/navigation/src/types';
 
-import { selectHasPassphraseMismatchError } from '../deviceAuthorizationSlice';
-
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor,
     RootStackParamList
 >;
 
-export const useHandlePassphraseMismatch = () => {
+export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
     const dispatch = useDispatch();
 
     const navigation = useNavigation<NavigationProp>();
@@ -98,4 +97,6 @@ export const useHandlePassphraseMismatch = () => {
             });
         }
     }, [device, dispatch, hasPassphraseMismatchError, navigation, showAlert]);
+
+    return children ?? null;
 };
