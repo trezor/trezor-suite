@@ -120,6 +120,7 @@ export const NeedsAttentionBanner = ({
                 dispatch(acquireDevice({ requestedDevice: device }));
                 break;
             case 'unacquired-thp-required':
+                onCancel?.(false);
                 dispatch(acquireDevice({ requestedDevice: device }));
                 break;
 
