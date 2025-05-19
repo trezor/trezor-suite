@@ -7,7 +7,6 @@ import {
 } from '@suite-common/wallet-core';
 
 import { useSelector } from './useSelector';
-import { getDiscoveryStatus } from '../../utils/wallet/getDiscoveryStatus';
 
 export const useDiscovery = () => {
     const device = useSelector(selectSelectedDevice);
@@ -25,16 +24,10 @@ export const useDiscovery = () => {
         return 0;
     }, [discovery]);
 
-    const getStatus = useCallback(
-        () => getDiscoveryStatus({ device, discovery }),
-        [device, discovery],
-    );
-
     return {
         device,
         discovery,
         isDiscoveryRunning: isDiscoveryInProgress(discovery),
-        getDiscoveryStatus: getStatus,
         calculateProgress,
     };
 };

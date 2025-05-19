@@ -1,17 +1,17 @@
 import { useEvent } from 'react-use';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 export const AppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
-    const { getDiscoveryStatus } = useDiscovery();
-    const discoveryStatus = getDiscoveryStatus();
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress =
         discoveryStatus !== undefined && discoveryStatus.status === 'loading';
 
@@ -25,9 +25,15 @@ export const AppShortcuts = () => {
             e.code === KEYBOARD_CODE.KEY_P &&
             isDeviceSelected
         ) {
-            passphraseFlowManager.startFlow(selectedDevice, { isExisting: true });
             dispatch(closeModalApp());
             e.preventDefault();
+            dispatch(
+                startDiscoveryThunk({
+                    device: selectedDevice,
+                    isAddingHiddenWallet: true,
+                    isAddingExistingWallet: true,
+                }),
+            );
         }
 
         // press ALT + D to show SwitchDevice
