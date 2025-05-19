@@ -814,6 +814,7 @@ export const submitPassphrase = createThunk(
                     status: 'progress',
                     progress: 0, // dummy value, otherwise it comes in progress event from trezor-connect
                     total: 100,
+                    passphraseOnDevice,
                 },
                 device.path,
             ),
