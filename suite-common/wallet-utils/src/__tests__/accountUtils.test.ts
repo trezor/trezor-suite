@@ -150,8 +150,10 @@ describe('account utils', () => {
         expect(isTestnet('tsep')).toEqual(true);
         expect(isTestnet('thol')).toEqual(true);
         expect(isTestnet('txrp')).toEqual(true);
+        expect(isTestnet('txlm')).toEqual(true);
         expect(isTestnet('btc')).toEqual(false);
         expect(isTestnet('ltc')).toEqual(false);
+        expect(isTestnet('xlm')).toEqual(false);
     });
 
     it('getAccountIdentifier', () => {

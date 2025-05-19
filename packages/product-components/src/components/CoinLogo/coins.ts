@@ -1,16 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 // These coins are not supported in Suite, but exist in Trezor Connect
-export type LegacyNetworkSymbol =
-    | 'eos'
-    | 'nem'
-    | 'xlm'
-    | 'xtz'
-    | 'dash'
-    | 'dgb'
-    | 'nmc'
-    | 'vtc'
-    | 'btg';
+export type LegacyNetworkSymbol = 'eos' | 'nem' | 'xtz' | 'dash' | 'dgb' | 'nmc' | 'vtc' | 'btg';
 
 export const COINS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     ada: require('../../images/coins/ada.svg'),
@@ -38,6 +29,7 @@ export const COINS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     test: require('../../images/coins/btc_test.svg'),
     thol: require('../../images/coins/thol.svg'),
     tsep: require('../../images/coins/tsep.svg'),
+    txlm: require('../../images/coins/txlm.svg'),
     txrp: require('../../images/coins/txrp.svg'),
     vtc: require('../../images/coins/vtc.svg'),
     xlm: require('../../images/coins/xlm.svg'),

@@ -49,6 +49,7 @@ describe('mapTestnetCryptoCurrency', () => {
         ['tsep', 'eth'],
         ['thol', 'eth'],
         ['txrp', 'xrp'],
+        ['txlm', 'xlm'],
         ['tada', 'ada'],
     ] as [NetworkSymbol, NetworkSymbol][])(
         'should transform testnet network symbol [%s] to mainnet',

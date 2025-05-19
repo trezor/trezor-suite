@@ -22,6 +22,7 @@ export const NETWORK_ICONS: Record<NetworkSymbol | LegacyNetworkSymbol, string> 
     test: require('../../images/networks/btc_test.svg'),
     thol: require('../../images/networks/thol.svg'),
     tsep: require('../../images/networks/tsep.svg'),
+    txlm: require('../../images/networks/txlm.svg'),
     txrp: require('../../images/networks/txrp.svg'),
     xrp: require('../../images/networks/xrp.svg'),
     zec: require('../../images/networks/zec.svg'),

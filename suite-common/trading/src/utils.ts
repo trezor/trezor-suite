@@ -96,11 +96,12 @@ export const getUnusedAddressFromAccount = (account: Account) => {
 
 export const mapTestnetSymbol = (
     symbol: NetworkSymbol,
-): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thol' | 'txrp' | 'tada'> => {
+): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thol' | 'txrp' | 'txlm' | 'tada'> => {
     if (symbol === 'test') return 'btc';
     if (symbol === 'tsep') return 'eth';
     if (symbol === 'thol') return 'eth';
     if (symbol === 'txrp') return 'xrp';
+    if (symbol === 'txlm') return 'xlm';
     if (symbol === 'tada') return 'ada';
 
     return symbol;

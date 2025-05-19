@@ -28,6 +28,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                 'eth',
                 'etc',
                 'xrp',
+                'xlm',
                 'bch',
                 'doge',
                 'zec',
@@ -37,6 +38,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                 'tsep',
                 'thol',
                 'txrp',
+                'txlm',
                 'tada',
                 'dsol',
             ];

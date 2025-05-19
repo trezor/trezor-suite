@@ -23,6 +23,7 @@ export type NetworkSymbol =
     | 'tsep'
     | 'thol'
     | 'txrp'
+    | 'txlm'
     | 'tada'
     | 'dsol';
 /**

@@ -32,6 +32,7 @@ export const allowedDomains = [
     'stake-sync-api.everstake.one', // staking rewards endpoint for Solana
     'verify.walletconnect.org', // WalletConnect
     'horizon.stellar.org', // Stellar Horizon, hosted by SDF
+    'horizon-testnet.stellar.org', // Stellar Horizon (testnet), hosted by SDF
 ];
 
 export const silentlyBlockedDomains = [

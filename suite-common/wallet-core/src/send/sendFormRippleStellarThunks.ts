@@ -12,6 +12,7 @@ import {
     calculateTotal,
     formatNetworkAmount,
     getExternalComposeOutput,
+    isTestnet,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
@@ -276,6 +277,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 formState.outputs[0].address,
                 formState.outputs[0].amount,
                 formState.destinationTag,
+                isTestnet(selectedAccount.symbol),
             );
 
             // It would be better if we could use `@trezor/connect-plugin-stellar`.

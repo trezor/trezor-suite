@@ -21,6 +21,8 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'btc';
         case 'txrp':
             return 'xrp';
+        case 'txlm':
+            return 'xlm';
         case 'tada':
             return 'ada';
         case 'dsol':

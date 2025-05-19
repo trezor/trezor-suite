@@ -44,6 +44,7 @@ export type Protocol =
     | 'tsep'
     | 'thol'
     | 'txrp'
+    | 'txlm'
     | 'tada'
     | 'dsol';
 
@@ -71,4 +72,5 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     tada: ['tada'],
     dsol: ['dsol'],
     xlm: ['stellar', 'xlm'],
+    txlm: ['txlm'],
 };

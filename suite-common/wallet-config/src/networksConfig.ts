@@ -588,6 +588,22 @@ export const networks = {
         coingeckoId: undefined,
         tradeCryptoId: 'test-ripple', // fake, coingecko does not have testnets
     },
+    txlm: {
+        symbol: 'txlm',
+        displaySymbol: 'tXLM',
+        name: 'Stellar Testnet',
+        networkType: 'stellar',
+        bip43Path: "m/44'/148'/i'",
+        decimals: 7,
+        testnet: true,
+        explorer: getExplorerUrls('https://stellar.expert/explorer/testnet', 'stellar'),
+        features: [],
+        backendTypes: ['stellar'],
+        accountTypes: {},
+        coingeckoId: undefined,
+        tradeCryptoId: undefined,
+        isDebugOnlyNetwork: true,
+    },
 } as const satisfies Networks;
 
 export type NetworkDisplaySymbol = (typeof networks)[keyof typeof networks]['displaySymbol'];
