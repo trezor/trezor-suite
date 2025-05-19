@@ -98,6 +98,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [],
                 tokens: [],
@@ -198,6 +199,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -305,6 +307,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -418,6 +421,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -531,6 +535,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -638,6 +643,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -745,6 +751,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -852,6 +859,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -959,6 +967,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -1051,6 +1060,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [],
                 tokens: [],
@@ -1152,6 +1162,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: 'Hello, Trezor!',
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -1259,6 +1270,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: '9223372036854775807',
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -1366,6 +1378,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: 'ac1ab140795206098144a734dc7e0253d9afa78d75702366f93b9782ce973a63',
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -1473,6 +1486,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: '5be03c5ce51d859ade526ae9fb5642047725e2dcad62f314fada9afb04ec57cc',
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -1579,6 +1593,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [
                     {
@@ -1671,6 +1686,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [],
                 tokens: [],
@@ -1756,6 +1772,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [],
                 tokens: [],
@@ -1843,6 +1860,7 @@ export const fixtures = {
                 internalTransfers: [],
                 stellarSpecific: {
                     memo: undefined,
+                    feeSource: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 },
                 targets: [],
                 tokens: [],

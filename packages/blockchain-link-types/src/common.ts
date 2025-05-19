@@ -163,6 +163,7 @@ export interface Transaction {
     };
     stellarSpecific?: {
         memo?: string;
+        feeSource: string; // who paid the fee for the transaction
     };
 }
 

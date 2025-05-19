@@ -72,6 +72,7 @@ export const transformTransaction = (
         },
         stellarSpecific: {
             memo: convertMemo(parsedTx.memo),
+            feeSource: extractBaseAddress(rawTx.source_account),
         },
     };
 
