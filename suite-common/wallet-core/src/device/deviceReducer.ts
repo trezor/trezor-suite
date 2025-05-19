@@ -920,10 +920,7 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
-export const selectDeviceAuthenticity = createMemoizedSelector(
-    [state => state.device.deviceAuthenticity],
-    deviceAuthenticity => deviceAuthenticity,
-);
+export const selectDeviceAuthenticity = (state: DeviceRootState) => state.device.deviceAuthenticity;
 
 export const selectSelectedDeviceAuthenticity = createMemoizedSelector(
     [selectSelectedDevice, selectDeviceAuthenticity],
