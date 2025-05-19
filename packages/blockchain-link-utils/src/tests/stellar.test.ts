@@ -39,6 +39,7 @@ describe('stellar/utils', () => {
                     input.destination,
                     input.amount,
                     input.destinationTag,
+                    input.isTestnet,
                 );
                 expect(result).toEqual(expectedOutput);
             });

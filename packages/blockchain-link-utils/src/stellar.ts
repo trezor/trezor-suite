@@ -165,12 +165,13 @@ export const buildSendTransaction = (
     destination: string,
     amount: string,
     destinationTag?: string,
+    isTestnet = false,
 ) => {
     const source = new Account(descriptor, sequence);
 
     const txBuilder = new TransactionBuilder(source, {
         fee,
-        networkPassphrase: Networks.PUBLIC,
+        networkPassphrase: isTestnet ? Networks.TESTNET : Networks.PUBLIC,
     }).setTimebounds(0, 0);
 
     if (destinationTag) {

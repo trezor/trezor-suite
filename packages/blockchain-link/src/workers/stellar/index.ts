@@ -34,8 +34,8 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
     const serverInfo = {
         url: api.serverURL.toString(),
         name: 'Stellar',
-        shortcut: 'xlm',
-        network: 'xlm',
+        shortcut: isTestnet ? 'txlm' : 'xlm',
+        network: isTestnet ? 'txlm' : 'xlm',
         testnet: isTestnet,
         version: horizonServerInfo.horizon_version,
         decimals: utils.STELLAR_DECIMALS,
@@ -296,7 +296,6 @@ class StellarWorker extends BaseWorker<Horizon.Server> {
         });
 
         if ((await api.root()).network_passphrase == Networks.TESTNET) {
-            // TODO(stellar): add testnet support
             this.isTestnet = true;
         }
 

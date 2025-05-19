@@ -1862,6 +1862,7 @@ export const fixtures = {
                 destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
                 amount: '100.125',
                 destinationTag: 'Hello, World!',
+                isTestnet: false,
             },
             expectedOutput: new TransactionBuilder(
                 new Account(
@@ -1894,6 +1895,7 @@ export const fixtures = {
                 destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
                 amount: '100.125',
                 destinationTag: 'Hello, World!',
+                isTestnet: false,
             },
             expectedOutput: new TransactionBuilder(
                 new Account(
@@ -1926,6 +1928,7 @@ export const fixtures = {
                 destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
                 amount: '100.125',
                 destinationTag: undefined,
+                isTestnet: false,
             },
             expectedOutput: new TransactionBuilder(
                 new Account(
@@ -1937,6 +1940,39 @@ export const fixtures = {
                     networkPassphrase: Networks.PUBLIC,
                 },
             )
+                .setTimebounds(0, 0)
+                .addOperation(
+                    Operation.payment({
+                        destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                        amount: '100.125',
+                        asset: Asset.native(),
+                    }),
+                )
+                .build(),
+        },
+        {
+            description: 'transaction contains a payment operation, but on testnet',
+            input: {
+                descriptor: 'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                sequence: '123456789',
+                fee: '1200',
+                destinationActivated: true,
+                destination: 'GCOXEZ4WQ6AAIWW7P2H574TZBQEEGYOZNZ4SL3BG52JZHO6HEXY2D7XG',
+                amount: '100.125',
+                destinationTag: 'Hello, World!',
+                isTestnet: true,
+            },
+            expectedOutput: new TransactionBuilder(
+                new Account(
+                    'GCNLIUDTVTL25HC64AH3MTTZ7RUGOOGB5H3A2P7BWRBW2SPAZ6F3LIM2',
+                    '123456789',
+                ),
+                {
+                    fee: '1200',
+                    networkPassphrase: Networks.TESTNET,
+                },
+            )
+                .addMemo(Memo.text('Hello, World!'))
                 .setTimebounds(0, 0)
                 .addOperation(
                     Operation.payment({
