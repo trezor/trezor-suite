@@ -151,7 +151,7 @@ impl TrezorDevice {
 
         let props = TrezorDeviceProps {
             name,
-            address,
+            address: address.clone(),
             data: data.to_vec(),
             paired,
             connected: *connected,
@@ -218,6 +218,12 @@ impl TrezorDevice {
         }
     }
 
+    pub fn set_is_paired(&self, value: bool) {
+        if let Ok(mut props) = self.props.lock() {
+            props.paired = value;
+        }
+    }
+
     pub fn get_discovery_timestamp(&self) -> u128 {
         match self.props.lock() {
             Ok(p) => p.discovery_timestamp,
@@ -239,6 +245,7 @@ impl TrezorDevice {
             .ok_or(DeviceError::PropertiesMissing)?;
 
         let is_connected = peripheral.is_connected().await.unwrap_or(false);
+
         let mut props = match self.props.lock() {
             Ok(p) => p,
             Err(_) => {
@@ -271,14 +278,9 @@ impl TrezorDevice {
             props.connected = is_connected;
 
             if is_connected {
-                #[cfg(target_os = "macos")]
-                {
-                    props.paired = true;
-                }
                 #[cfg(target_os = "linux")]
                 {
-                    props.address = platform::get_device_address(peripheral);
-                    // props.address = BluetoothDevice::get_address(peripheral);
+                    props.address = BluetoothDevice::get_address(peripheral);
                 }
             } else {
                 props.connection_status = self.update_connection_status(
