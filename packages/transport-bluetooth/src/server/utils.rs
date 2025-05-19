@@ -35,9 +35,9 @@ pub async fn scan_filter(adapter: &Adapter, id: &PeripheralId) -> Option<Periphe
     None
 }
 
-pub fn get_timestamp() -> u64 {
+pub fn get_timestamp() -> u128 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards")
-        .as_secs()
+        .as_millis()
 }
