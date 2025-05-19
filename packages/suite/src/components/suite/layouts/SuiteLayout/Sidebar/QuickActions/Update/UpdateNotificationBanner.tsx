@@ -6,6 +6,9 @@ import styled from 'styled-components';
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+
 import {
     UpdateStatus,
     UpdateStatusDevice,
@@ -13,7 +16,6 @@ import {
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
 } from './updateQuickActionTypes';
-import { useDiscovery, useDispatch } from '../../../../../../../hooks/suite';
 import { Translation, TranslationKey } from '../../../../../Translation';
 
 type ContainerProps = { $elevation: Elevation };
@@ -78,8 +80,7 @@ export const UpdateNotificationBanner = ({
     onClose,
 }: UpdateNotificationBannerProps) => {
     const dispatch = useDispatch();
-    const { getDiscoveryStatus } = useDiscovery();
-    const discoveryStatus = getDiscoveryStatus();
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
     const translationHeader =
