@@ -21,6 +21,7 @@ import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
+import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 
 interface AccountListProps {
     onItemClick?: () => void;
@@ -77,16 +78,22 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const accounts = useSelector(selectAccounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
+    const { discovery } = useDiscovery();
     const accountLabels = useSelector(selectAccountLabels);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isSidebarCollapsed = useIsSidebarCollapsed();
     const { coinFilter, searchString } = useAccountSearch();
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
+    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
     if (!device) {
         return null;
     }
 
-    const list = sortByCoin(accounts.filter(a => a.deviceState === device.state?.staticSessionId));
+    const staticSessionId = device.state?.staticSessionId;
+    const failed = getFailedAccounts(staticSessionId, discovery);
+
+    const list = sortByCoin(accounts.filter(a => a.deviceState === staticSessionId)).concat(failed);
     const filteredAccounts =
         searchString || coinFilter
             ? list.filter(account => {
@@ -176,9 +183,9 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         );
     }
 
-    // if (discoveryInProgress) {
-    //     return <AccountItemSkeleton />;
-    // }
+    if (discoveryInProgress) {
+        return <AccountItemSkeleton />;
+    }
 
     if (isSidebarCollapsed) return <AccountsMenuNotice />;
 

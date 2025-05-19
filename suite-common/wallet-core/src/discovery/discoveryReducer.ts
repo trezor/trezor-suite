@@ -20,15 +20,10 @@ export type DiscoveryRootState = {
 
 const initialState: Discovery = {};
 
-const update = (
-    draft: Discovery,
-    payload: { status: Omit<DiscoveryStatus, 'path'>; path: DeviceUniquePath },
-) => {
+const update = (draft: Discovery, payload: { status: DiscoveryStatus; path: DeviceUniquePath }) => {
     if (!draft[payload.path]) {
         return;
     }
-    // todo: resolve expect error
-    // @ts-expect-error
     draft[payload.path] = {
         ...draft[payload.path],
         ...payload.status,

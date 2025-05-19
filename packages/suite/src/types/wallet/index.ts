@@ -30,6 +30,7 @@ export type { Icon } from './iconTypes';
 export type { CustomBackend } from './backend';
 export type { TickerId } from 'src/types/wallet/fiatRates';
 export type { Discovery } from '@suite-common/wallet-types';
+// TODO @Lemonexe get rid of this?
 export type DiscoveryStatusType =
     | {
           status: 'loading';

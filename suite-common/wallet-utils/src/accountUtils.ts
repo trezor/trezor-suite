@@ -15,7 +15,7 @@ import {
 } from '@suite-common/wallet-config';
 import {
     Account,
-    Discovery,
+    DiscoveryStatus,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
     RatesByKey,
@@ -866,39 +866,45 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
 };
 
 // Used in wallet/Menu and Dashboard
-export const getFailedAccounts = (_discovery: Discovery): Account[] => [];
-// discovery.failed.map(f => {
-//     const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
-//     const network = networks[f.symbol];
+export const getFailedAccounts = (
+    staticSessionId?: StaticSessionId,
+    discovery?: DiscoveryStatus,
+): Account[] => {
+    if (staticSessionId === undefined || discovery?.failed === undefined) return [];
 
-//     return {
-//         failed: true,
-//         deviceState: discovery.deviceState,
-//         index: f.index,
-//         path: substituteBip43Path(network.bip43Path), // placeholder - not relevant for failed, but required by TS to be an actual Bip43Path
-//         descriptor,
-//         key: descriptor,
-//         accountType: f.accountType,
-//         symbol: f.symbol,
-//         empty: false,
-//         visible: true,
-//         balance: '0',
-//         availableBalance: '0',
-//         formattedBalance: '0',
-//         tokens: [],
-//         addresses: undefined,
-//         utxo: undefined,
-//         history: {
-//             total: 0,
-//             unconfirmed: 0,
-//         },
-//         metadata: {
-//             key: descriptor,
-//         },
-//         ts: 0,
-//         ...getAccountSpecific({}, network.networkType),
-//     };
-// });
+    return discovery.failed.map(f => {
+        const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
+        const network = networks[f.symbol];
+
+        return {
+            failed: true,
+            deviceState: staticSessionId,
+            index: f.index,
+            path: substituteBip43Path(network.bip43Path), // placeholder - not relevant for failed, but required by TS to be an actual Bip43Path
+            descriptor,
+            key: descriptor,
+            accountType: f.accountType,
+            symbol: f.symbol,
+            empty: true,
+            visible: true,
+            balance: '0',
+            availableBalance: '0',
+            formattedBalance: '0',
+            tokens: [],
+            addresses: undefined,
+            utxo: undefined,
+            history: {
+                total: 0,
+                unconfirmed: 0,
+            },
+            metadata: {
+                key: descriptor,
+            },
+            ts: 0,
+            ...getAccountSpecific({}, network.networkType),
+        };
+    });
+};
 
 export const getAccountIdentifier = (account: Account) => ({
     descriptor: account.descriptor,

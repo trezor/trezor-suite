@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 import type { AccountAddress } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
-import type { Account, Discovery } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
-export const useAccounts = (discovery?: Discovery) => {
+export const useAccounts = (discovery?: DiscoveryStatus) => {
     const [accounts, setAccounts] = useState<Account[]>([]);
 
     const device = useSelector(selectSelectedDevice);
@@ -16,7 +17,10 @@ export const useAccounts = (discovery?: Discovery) => {
     useEffect(() => {
         if (device) {
             const deviceAccounts = accountUtils.getAllAccounts(device.state, accountsState);
-            const failedAccounts = discovery ? accountUtils.getFailedAccounts(discovery) : [];
+            const failedAccounts = accountUtils.getFailedAccounts(
+                device?.state?.staticSessionId,
+                discovery,
+            );
             const sortedAccounts = accountUtils.sortByCoin(deviceAccounts.concat(failedAccounts));
             setAccounts(sortedAccounts);
         }
