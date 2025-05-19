@@ -112,6 +112,7 @@ export type TextProps = {
     as?: string;
     onClick?: () => void;
     'data-testid'?: string;
+    role?: string;
 } & ExclusiveColorOrVariant &
     AllowedFrameProps &
     AllowedTextTextProps;
@@ -126,6 +127,7 @@ export const Text = ({
     onClick,
     isMonospaced,
     isHighlighted,
+    role,
     ...rest
 }: TextProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTextFrameProps);
@@ -140,6 +142,7 @@ export const Text = ({
             data-testid={dataTest}
             $isMonospaced={isMonospaced}
             $isHighlighted={isHighlighted}
+            role={role}
             {...textProps}
             {...frameProps}
         >

@@ -1,11 +1,9 @@
 import React from 'react';
 
-import { Without } from '@trezor/type-utils';
-
 import { Text, TextProps } from '../Text/Text';
 
-export const Paragraph = ({ children, ...rest }: Without<TextProps, 'as'>) => (
-    <Text {...rest} as="p">
+export const Paragraph = ({ children, as, role, ...rest }: TextProps) => (
+    <Text {...rest} as={as || 'div'} role={role || 'paragraph'}>
         {children}
     </Text>
 );
