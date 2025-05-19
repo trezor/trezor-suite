@@ -1,7 +1,7 @@
 import { TrezorDevice } from '@suite-common/suite-types';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { DiscoveryStatusType } from '../../types/wallet';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
 
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
