@@ -8,6 +8,18 @@ type GetDiscoveryStatusParams = {
     discovery: DiscoveryStatus | undefined;
 };
 
+import { AppState } from 'src/types/suite';
+
+import { selectDiscoveryByDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
+
+// TODO maybe I won't use this after all
+export const selectDiscoveryStatus = (state: AppState) => {
+    const device = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, device?.path);
+
+    return getDiscoveryStatus({ device, discovery });
+};
+
 export const getDiscoveryStatus = ({
     device,
     discovery,
@@ -17,16 +29,16 @@ export const getDiscoveryStatus = ({
             status: 'loading',
             type: 'waiting-for-device',
         };
-    if (device.authFailed)
-        return {
-            status: 'exception',
-            type: 'auth-failed',
-        };
-    if (device.authConfirm)
-        return {
-            status: 'exception',
-            type: 'auth-confirm-failed',
-        };
+    // if (device.authFailed)
+    //     return {
+    //         status: 'exception',
+    //         type: 'auth-failed',
+    //     };
+    // if (device.authConfirm)
+    //     return {
+    //         status: 'exception',
+    //         type: 'auth-confirm-failed',
+    //     };
     if (!device.state) {
         return {
             status: 'loading',

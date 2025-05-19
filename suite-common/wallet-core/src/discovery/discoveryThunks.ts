@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { Bip43Path } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
 import TrezorConnect, {
     BundleProgress,
     DeviceState,
@@ -12,6 +12,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import {
     DiscoverAccountsProgress,
+    DiscoverAccountsProgressError,
     DiscoverAccountsProgressOk,
 } from '@trezor/connect/src/types/api/discoverAccounts';
 
@@ -271,7 +272,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
         const result = await TrezorConnect.discoverAccounts({
             device,
             useEmptyPassphrase: device.useEmptyPassphrase,
-            // @ts-expect-error ttodo: mareks changes in connect needed
             accounts: networksToDiscover.map(n => ({
                 symbol: n,
             })),
@@ -323,7 +323,8 @@ const createOnBundleProgressHandler = (
         accountInfo: event.response,
         visible: true,
     });
-    const fn = (event: ProgressEvent) => {
+
+    return (event: ProgressEvent) => {
         console.log('bundle progress handler', event);
         const discovery = selectDiscoveryByDevicePath(getState(), devicePath);
         if (!discovery) {
@@ -371,10 +372,28 @@ const createOnBundleProgressHandler = (
                     );
                 });
             }
-        }
-    };
 
-    return fn;
+            return;
+        }
+
+        // TODO solve TS smarter
+        const response = event.response as DiscoverAccountsProgressError;
+        console.warn(response.error);
+        const currentFailedAccounts = discovery.failed ?? [];
+        const newFailedAccount: FailedAccount = {
+            symbol: response.symbol,
+            index: response.index,
+            accountType: response.type,
+            error: response.error,
+        };
+
+        dispatch(
+            discoveryActions.updateDiscovery(
+                { ...discovery, failed: [...currentFailedAccounts, newFailedAccount] },
+                devicePath,
+            ),
+        );
+    };
 };
 
 export const runDiscoveryThunk = createThunk(
