@@ -13,24 +13,24 @@ This means that if you are using Trezor Suite, you will no longer see the Connec
 ## How does it work?
 
 Connect automatically detects if Trezor Suite is running and available to handle requests.
-Under the hood, Trezor Suite exposes a WebSocket server on localhost, which allows apps to communicate with it using the Connect protocol.
+Under the hood, Trezor Suite exposes a WebSocket server on localhost, allowing apps to communicate with it using the Connect protocol.
 
-First step of the flow is a permission approval, which looks like this:
+The first step of the flow is a permission approval, which looks like this:
 
 <ZoomableIllustration
     src="/images/connect-suite-permissions-grant.png"
     alt="permission prompt for approving the connection to Trezor Suite"
 />
 
-The name, origin URL of the application, and the icon are displayed in the permission prompt, along with the process that initiated the request.
+The permission prompt displays the application's name, origin URL, and icon, along with the process that initiated the request.
 In this example, the request was initiated by Arc Browser, so the name and icon of the browser are displayed.
 This is a security feature to prevent malicious processes from impersonating the application.
 
-Unlike the Connect Popup, there is no need to select the device or the passphrase. This is based on the active device in Trezor Suite, which is should already be selected and unlocked.
+Unlike the Connect Popup, there is no need to select the device or the passphrase. This is based on the active device in Trezor Suite, which should already be selected and unlocked.
 
-After the request is approved, the application will receive a response with the result of the request.
-It may display additional context based on the request type, such as transaction details or address information.
-In this example, the request was for a `getAddress` call, which also prompts the user to confirm the address on the device.
+Once the request is approved and processed, the application receives a response with the result of the request.
+Trezor Suite may display additional context based on the request type, such as transaction details or address information.
+This example shows a `getAddress` call, which also prompts the user to confirm the address on the device.
 
 <ZoomableIllustration
     src="/images/connect-get-address.png"
@@ -42,8 +42,8 @@ In this example, the request was for a `getAddress` call, which also prompts the
 From version 9.6.0 onwards, this mode is active by default when Trezor Suite is detected.
 
 We added a new `appName` field to the `manifest` object when initializing the Trezor Connect SDK, which is required.
-There is also an optional field `appIcon` which allows you to specify a URL to an icon that will be displayed in Trezor Suite when requesting permissions.
-It should fit in a circle with a 32px diameter.
+You can also optionally provide an `appIcon` field with a URL for an icon that will appear in Trezor Suite’s permission prompt
+It should fit in a circle with a 64px diameter.
 
 ```javascript
 TrezorConnect.init({
