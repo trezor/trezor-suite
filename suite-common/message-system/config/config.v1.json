@@ -7,793 +7,6 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=25.2.1",
-                        "mobile": "!",
-                        "web": ">=25.2.1"
-                    },
-                    "settings": [
-                        {
-                            "test": true
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "50b760bc-e804-4870-b072-9f3eaaaa26be",
-                "priority": 90,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Testnet account has been updated to new Testnet 4.",
-                    "en": "Testnet account has been updated to new Testnet 4.",
-                    "es": "Testnet account has been updated to new Testnet 4.",
-                    "cs": "Testnet account has been updated to new Testnet 4.",
-                    "ru": "Testnet account has been updated to new Testnet 4.",
-                    "ja": "Testnet account has been updated to new Testnet 4.",
-                    "hu": "Testnet account has been updated to new Testnet 4.",
-                    "it": "Testnet account has been updated to new Testnet 4.",
-                    "fr": "Testnet account has been updated to new Testnet 4.",
-                    "de": "Testnet account has been updated to new Testnet 4.",
-                    "tr": "Testnet account has been updated to new Testnet 4.",
-                    "pt": "Testnet account has been updated to new Testnet 4.",
-                    "uk": "Testnet account has been updated to new Testnet 4.."
-                },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://trezor.io/learn/a/bitcoin-testnet#testnet4",
-                    "label": {
-                        "en-GB": "Learn More",
-                        "en": "Learn More",
-                        "es": "Learn More",
-                        "cs": "Learn More",
-                        "ru": "Learn More",
-                        "ja": "Learn More",
-                        "hu": "Learn More",
-                        "it": "Learn More",
-                        "fr": "Learn More",
-                        "de": "Learn More",
-                        "tr": "Learn More",
-                        "pt": "Learn More",
-                        "uk": "Learn More"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": ">=24.12.1",
-                        "web": "*"
-                    },
-                    "devices": [
-                        {
-                            "model": "T3T1",
-                            "firmware": "2.8.6",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "cdcc9424-a42a-4d85-b46d-1ac2e9e1dc8a",
-                "priority": 90,
-                "dismissible": false,
-                "variant": "critical",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "en": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "es": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "cs": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "ru": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "ja": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "hu": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "it": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "fr": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "de": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "tr": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "pt": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
-                    "uk": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances."
-                },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://trezor.io/learn/a/what-is-trezor-suite-lite#open-chat",
-                    "label": {
-                        "en-GB": "Contact support",
-                        "en": "Contact support",
-                        "es": "Contact support",
-                        "cs": "Contact support",
-                        "ru": "Contact support",
-                        "ja": "Contact support",
-                        "hu": "Contact support",
-                        "it": "Contact support",
-                        "fr": "Contact support",
-                        "de": "Contact support",
-                        "tr": "Contact support",
-                        "pt": "Contact support",
-                        "uk": "Contact support"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ">=24.5.1",
-                        "mobile": "!",
-                        "web": ">=24.5.1"
-                    }
-                }
-            ],
-            "message": {
-                "id": "dbfce56e-6b9b-4f88-8acc-38b9bc5dabeb",
-                "priority": 93,
-                "dismissible": false,
-                "variant": "warning",
-                "category": ["context"],
-                "content": {
-                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
-                    "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
-                    "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Sus fondos seguirán siendo accesibles y no es necesario realizar ninguna acción.",
-                    "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Vaše finanční prostředky zůstanou přístupné bez nutnosti dalších kroků.",
-                    "ru": "Coinjoin был прекращен в Trezor Suite 1 июня 2024 года. Ваши средства останутся доступными, и никаких действий предпринимать не нужно.",
-                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されました。お客様の資金は引き続きご利用いただけます。",
-                    "hu": "A Coinjoin 2024. június 1-jén megszűnt a Trezor Suite-ban. Az Ön pénzeszközei továbbra is elérhetőek maradnak, és nincs szükség semmilyen intézkedésre.",
-                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. I vostri fondi rimarranno accessibili e non è necessario alcun intervento.",
-                    "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Vos fonds resteront accessibles et aucune action n'est nécessaire.",
-                    "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Ihre Gelder bleiben zugänglich, und es sind keine Maßnahmen erforderlich.",
-                    "tr": "Coinjoin, 1 Haziran 2024 tarihinde Trezor Suite'de sonlandırıldı. Fonlarınız erişilebilir durumda kalacak ve herhangi bir işlem yapmanıza gerek yok.",
-                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Seus fundos permanecerão acessíveis e nenhuma ação é necessária.",
-                    "uk": "Coinjoin було припинено в Trezor Suite 1 червня 2024 року. Ваші кошти залишаться доступними, і ніяких дій не потрібно."
-                },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://blog.trezor.io/important-update-transitioning-from-coinjoin-in-trezor-suite-9dfc63d2662f",
-                    "label": {
-                        "en-GB": "Learn More",
-                        "en": "Learn More",
-                        "es": "Más Información",
-                        "cs": "Více Informací",
-                        "ru": "Подробнее",
-                        "ja": "詳細はこちら",
-                        "hu": "További Információ",
-                        "it": "Scopri di Più",
-                        "fr": "En Savoir Plus",
-                        "de": "Mehr Erfahren",
-                        "tr": "Daha Fazla Bilgi",
-                        "pt": "Saiba Mais",
-                        "uk": "Дізнатись більше"
-                    }
-                },
-                "context": { "domain": "accounts.coinjoin" }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "pol": true
-                        },
-                        {
-                            "matic": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "<=25.1.2",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "fd9a36f3-2f89-4156-8531-70c2d72d2233",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
-                    "en": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
-                    "es": "Si encuentras algún problema al sincronizar tus cuentas de Polygon PoS, por favor actualiza tu Trezor Suite a la última versión",
-                    "cs": "Pokud narazíte na problémy se synchronizací vašich účtů Polygon PoS, aktualizujte Trezor Suite na nejnovější verzi",
-                    "ru": "Если у вас возникли проблемы с синхронизацией ваших счетов Polygon PoS, обновите Trezor Suite до последней версии",
-                    "ja": "Polygon PoSアカウントの同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください",
-                    "hu": "Ha bármilyen problémába ütközik a Polygon PoS fiókjainak szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra",
-                    "it": "Se riscontri problemi di sincronizzazione dei tuoi account Polygon PoS, aggiorna la tua Trezor Suite all'ultima versione",
-                    "fr": "Si vous rencontrez des problèmes de synchronisation de vos comptes Polygon PoS, veuillez mettre à jour votre Trezor Suite vers la dernière version",
-                    "de": "Wenn Sie Probleme beim Synchronisieren Ihrer Polygon PoS-Konten haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version",
-                    "tr": "Polygon PoS hesaplarınızı senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin",
-                    "pt": "Se encontrar problemas ao sincronizar as suas contas Polygon PoS, atualize o seu Trezor Suite para a versão mais recente",
-                    "uk": "Якщо у вас виникли проблеми з синхронізацією ваших рахунків Polygon PoS, оновіть ваш Trezor Suite до останньої версії"
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "sol": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "<24.12.1",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "b487d590-3bbc-43ff-a5fc-048777512d49",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "If you encounter any issues syncing your Solana accounts, please update your Trezor Suite to the latest version.",
-                    "en": "If you encounter any issues syncing your Solana accounts, please update your Trezor Suite to the latest version.",
-                    "es": "Si encuentras algún problema al sincronizar tus cuentas de Solana, por favor actualiza tu Trezor Suite a la última versión.",
-                    "cs": "Pokud narazíte na problémy se synchronizací vašich účtů Solana, aktualizujte Trezor Suite na nejnovější verzi.",
-                    "ru": "Если у вас возникли проблемы с синхронизацией ваших счетов Solana, обновите Trezor Suite до последней версии.",
-                    "ja": "Solanaアカウントの同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください。",
-                    "hu": "Ha bármilyen problémába ütközik a Solana fiókjainak szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra.",
-                    "it": "Se riscontri problemi di sincronizzazione dei tuoi account Solana, aggiorna la tua Trezor Suite all'ultima versione.",
-                    "fr": "Si vous rencontrez des problèmes de synchronisation de vos comptes Solana, veuillez mettre à jour votre Trezor Suite vers la dernière version.",
-                    "de": "Wenn Sie Probleme beim Synchronisieren Ihrer Solana-Konten haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version.",
-                    "tr": "Solana hesaplarınızı senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin.",
-                    "pt": "Se encontrar problemas ao sincronizar as suas contas Solana, atualize o seu Trezor Suite para a versão mais recente.",
-                    "uk": "Якщо у вас виникли проблеми з синхронізацією ваших рахунків Solana, оновіть ваш Trezor Suite до останньої версії."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "sol": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": ">25.2.1",
-                        "mobile": "!",
-                        "web": ">25.2.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "T2B1",
-                            "firmware": "<2.8.9",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T3B1",
-                            "firmware": "<2.8.9",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T2T1",
-                            "firmware": "<2.8.9",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T3T1",
-                            "firmware": "<2.8.9",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "ccd7b443-1e0e-449e-b58f-affa0459a29d",
-                "priority": 93,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["context"],
-                "content": {
-                    "en-GB": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
-                    "en": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
-                    "es": "Para la mejor experiencia de staking en Solana, actualiza el firmware de tu Trezor a la última versión.",
-                    "cs": "Aby byl váš staking na Solaně co nejefektivnější, aktualizujte firmware vašeho Trezoru na nejnovější verzi.",
-                    "ru": "Для наилучшего опыта стейкинга Solana обновите прошивку вашего Trezor до последней версии.",
-                    "ja": "最高のSolanaステーキング体験を得るために、Trezorのファームウェアを最新バージョンに更新してください。",
-                    "hu": "A legjobb Solana staking élményért frissítsd a Trezor firmware-ét a legújabb verzióra.",
-                    "it": "Per la migliore esperienza di staking su Solana, aggiorna il firmware del tuo Trezor all'ultima versione.",
-                    "fr": "Pour la meilleure expérience de staking sur Solana, mettez à jour le firmware de votre Trezor vers la dernière version.",
-                    "de": "Für das beste Solana-Staking-Erlebnis, aktualisiere die Firmware deines Trezor auf die neueste Version.",
-                    "tr": "En iyi Solana staking deneyimi için Trezor cihazınızın yazılımını en son sürüme güncelleyin.",
-                    "pt": "Para a melhor experiência de staking em Solana, atualize o firmware do seu Trezor para a versão mais recente.",
-                    "uk": "Для найкращого досвіду стейкінгу Solana оновіть прошивку свого Trezor до останньої версії."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "firmware-index",
-                    "label": {
-                        "en-GB": "Update now",
-                        "en": "Update now",
-                        "es": "Actualizar ahora",
-                        "cs": "Aktualizujte nyní",
-                        "ru": "Обновить сейчас",
-                        "ja": "今すぐアップデート",
-                        "hu": "Frissítés most",
-                        "it": "Aggiorna ora",
-                        "fr": "Mettre à jour maintenant",
-                        "de": "Jetzt aktualisieren",
-                        "tr": "Şimdi güncelle",
-                        "pt": "Atualizar agora",
-                        "uk": "Оновити зараз"
-                    }
-                },
-                "context": { "domain": "accounts.sol.staking" }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "<24.5.1",
-                        "mobile": "!",
-                        "web": "<24.5.1"
-                    }
-                }
-            ],
-            "message": {
-                "id": "87371afe-181c-404e-a63d-2944313fe0e6",
-                "priority": 93,
-                "dismissible": false,
-                "variant": "warning",
-                "category": ["context"],
-                "content": {
-                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
-                    "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
-                    "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Por favor, actualice a la última versión de Trezor Suite para asegurarse de que sus fondos siguen siendo accesibles.",
-                    "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Prosíme, aktualizujte Trezor Suite na nejnovější verzi pro zachování přístupu k vašim finančním prostředkům.",
-                    "ru": "Coinjoin был прекращен в Trezor Suite 1 июня 2024 года. Пожалуйста, обновите Trezor Suite до последней версии, чтобы ваши средства оставались доступными.",
-                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されました。資金が引き続きアクセス可能であることを確認するために、最新版のTrezor Suiteにアップデートしてください。",
-                    "hu": "A Coinjoin 2024. június 1-jén megszűnt a Trezor Suite-ban. Kérjük, frissítsen a Trezor Suite legújabb verziójára, hogy pénzeszközei továbbra is elérhetőek maradjanak.",
-                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. Si prega di aggiornare alla versione più recente di Trezor Suite per garantire che i fondi rimangano accessibili.",
-                    "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Veuillez mettre à jour la dernière version de Trezor Suite pour vous assurer que vos fonds restent accessibles.",
-                    "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Bitte aktualisieren Sie auf die neueste Version der Trezor Suite, um sicherzustellen, dass Sie weiterhin Zugriff auf Ihre Kryptowährungen haben.",
-                    "tr": "Coinjoin, 1 Haziran 2024 tarihinde Trezor Suite'de sonlandırıldı. Fonlarınızın erişilebilir kalmasını sağlamak için lütfen Trezor Suite'in en son sürümüne güncelleyin.",
-                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Por favor, atualize para a versão mais recente do Trezor Suite para garantir que seus fundos permaneçam acessíveis.",
-                    "uk": "Coinjoin було припинено в Trezor Suite 1 червня 2024 року. Будь ласка, оновіть Trezor Suite до останньої версії, щоб ваші кошти залишалися доступними."
-                },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://blog.trezor.io/important-update-transitioning-from-coinjoin-in-trezor-suite-9dfc63d2662f",
-                    "label": {
-                        "en-GB": "Learn More",
-                        "en": "Learn More",
-                        "es": "Más Información",
-                        "cs": "Více Informací",
-                        "ru": "Подробнее",
-                        "ja": "詳細はこちら",
-                        "hu": "További Információ",
-                        "it": "Scopri di Più",
-                        "fr": "En Savoir Plus",
-                        "de": "Mehr Erfahren",
-                        "tr": "Daha Fazla Bilgi",
-                        "pt": "Saiba Mais",
-                        "uk": "Дізнатись більше"
-                    }
-                },
-                "context": { "domain": "accounts.coinjoin" }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "23.10.1",
-                        "mobile": "!",
-                        "web": "23.10.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "T2B1",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "8231c0f4-e778-4838-bc40-5c28d8832f06",
-                "priority": 93,
-                "dismissible": false,
-                "variant": "critical",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
-                    "en": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
-                    "es": "Es necesario que actualices Trezor Suite para tu nuevo Trezor Safe 3.",
-                    "cs": "Pro nový Trezor Safe 3 je nutná aktualizace Trezor Suite.",
-                    "ru": "Для нового Trezor Safe 3 требуется обновление Trezor Suite.",
-                    "ja": "新しいTrezor Safe 3を使用するには、Trezor Suiteの必須アップデートが必要です。",
-                    "hu": "A Trezor Suite alapvető frissítése szükséges az új Trezor Safe 3 készülékhez.",
-                    "it": "Per il nuovo Trezor Safe 3 è necessario un aggiornamento essenziale di Trezor Suite.",
-                    "fr": "Une mise à jour essentielle de Trezor Suite est nécessaire pour votre nouveau portefeuille Trezor Safe 3.",
-                    "de": "Für deinen neuen Trezor Safe 3 ist ein wichtiges Update der Trezor Suite erforderlich.",
-                    "tr": "Yeni Trezor Safe 3'ünüz için Trezor Suite'in temel güncellemesi gereklidir.",
-                    "pt": "É necessária uma atualização essencial do Trezor Suite para o seu novo Trezor Safe 3.",
-                    "uk": "Для вашого нового Trezor Safe 3 потрібне обов’язкове оновлення Trezor Suite."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ">23.10.1",
-                        "mobile": "!",
-                        "web": ">23.10.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "T2B1",
-                            "firmware": "<2.6.3",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "e11a586f-f2d7-4c7b-7dd9-d8f56d1c90ad",
-                "priority": 92,
-                "dismissible": false,
-                "variant": "critical",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
-                    "en": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
-                    "es": "Hay una actualización disponible para tu dispositivo Trezor. Asegúrate de que la semilla de recuperación está lista, ya que la necesitarás para recuperar el acceso a tus monedas.",
-                    "cs": "Pro zařízení Trezor je k dispozici aktualizace. Ujistěte se, že máte připravený recovery seed, protože jej budete potřebovat k obnovení přístupu k mincím.",
-                    "ru": "Для устройства Trezor доступно обновление. Убедитесь, что у вас наготове семена восстановления, поскольку они понадобятся для восстановления доступа к монетам.",
-                    "ja": "お使いのTrezorデバイスにアップデートが提供されています。コインへのアクセスを回復するにはリカバリーのシードが必要です。",
-                    "hu": "Frissítés érhető el a Trezor készülékéhez. Győződjön meg róla, hogy készenlétben tartja a helyreállítási magot, mivel szüksége lesz rá, hogy újra hozzáférjen az érméihez.",
-                    "it": "È disponibile un aggiornamento per il vostro dispositivo Trezor. Assicuratevi di avere pronto il seme di ripristino, che vi servirà per riavere accesso alle monete.",
-                    "fr": "Une mise à jour est disponible pour votre dispositif Trezor. Assurez-vous d’avoir votre seed de récupération à portée de main, car vous en aurez besoin pour accéder à nouveau à vos coins.",
-                    "de": "Es gibt ein Update für dein Trezor Gerät. Halte deinen Recovery Seed bereit. Du brauchst ihn, um wieder auf deine Coins zuzugreifen.",
-                    "tr": "Trezor cihazınız için bir güncelleme mevcut. Paralarınıza yeniden erişmek için kurtarma tohumunuzu hazırda bulundurduğunuzdan emin olun.",
-                    "pt": "Está disponível uma atualização para o seu dispositivo Trezor. Certifique-se de que tem a sua semente de recuperação pronta, pois vai precisar dela para recuperar o acesso às suas moedas.",
-                    "uk": "Для вашого пристрою Trezor доступне оновлення. Переконайтеся, що у вас готовий резервний ключ, оскільки вам знадобиться він для відновлення доступу до монет."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "firmware-index",
-                    "label": {
-                        "en-GB": "Update now",
-                        "en": "Update now",
-                        "es": "Actualizar ahora",
-                        "cs": "Aktualizovat teď",
-                        "ru": "Обновить сейчас",
-                        "ja": "今すぐアップデート",
-                        "hu": "Frissítés most",
-                        "it": "Aggiorna ora",
-                        "fr": "Mettre à jour maintenant",
-                        "de": "Jetzt aktualisieren",
-                        "tr": "Şimdi Güncelle",
-                        "pt": "Atualizar agora",
-                        "uk": "Оновити зараз"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ">=25.2.1",
-                        "mobile": "!",
-                        "web": ">=25.2.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "T1B1",
-                            "firmware": "1.12.1",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "1",
-                            "firmware": "1.12.1",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "8901bcbb-d9b2-4901-bfc3-3669175f04a8",
-                "priority": 94,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "New Trezor firmware is available! Please update your device.",
-                    "en": "New Trezor firmware is available! Please update your device.",
-                    "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
-                    "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
-                    "ru": "Доступна новая прошивка Trezor! Пожалуйста, обновите ваше устройство.",
-                    "ja": "新しいTrezorファームウェアが利用可能です！デバイスをアップデートしてください。",
-                    "hu": "Új Trezor firmware érhető el! Kérjük, frissítse a készülékét.",
-                    "it": "È disponibile un nuovo firmware Trezor! Si prega di aggiornare il dispositivo.",
-                    "fr": "Un nouveau firmware Trezor est disponible ! Veuillez mettre à jour votre appareil.",
-                    "de": "Neue Trezor-Firmware verfügbar! Bitte aktualisieren Sie Ihr Gerät.",
-                    "tr": "Yeni Trezor yazılımı mevcut! Lütfen cihazınızı güncelleyin.",
-                    "pt": "Está disponível um novo firmware Trezor! Por favor, atualize o seu dispositivo.",
-                    "uk": "Доступна нова прошивка Trezor! Будь ласка, оновіть ваш пристрій."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "firmware-index",
-                    "label": {
-                        "en-GB": "Update now",
-                        "en": "Update now",
-                        "es": "Actualizar ahora",
-                        "cs": "Aktualizovat teď",
-                        "ru": "Обновить сейчас",
-                        "ja": "今すぐアップデート",
-                        "hu": "Frissítés most",
-                        "it": "Aggiorna ora",
-                        "fr": "Mettre à jour maintenant",
-                        "de": "Jetzt aktualisieren",
-                        "tr": "Şimdi Güncelle",
-                        "pt": "Atualizar agora",
-                        "uk": "Оновити зараз"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "!",
-                        "mobile": "25.2.1",
-                        "web": "!"
-                    },
-                    "devices": [
-                        {
-                            "model": "T1B1",
-                            "firmware": "1.12.1",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "1",
-                            "firmware": "1.12.1",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "49e7400f-c457-4309-b0bb-a221f6b09b36",
-                "priority": 94,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "New Trezor firmware is available! Please update your device.",
-                    "en": "New Trezor firmware is available! Please update your device.",
-                    "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
-                    "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
-                    "ru": "Доступна новая прошивка Trezor! Пожалуйста, обновите ваше устройство.",
-                    "ja": "新しいTrezorファームウェアが利用可能です！デバイスをアップデートしてください。",
-                    "hu": "Új Trezor firmware érhető el! Kérjük, frissítse a készülékét.",
-                    "it": "È disponibile un nuovo firmware Trezor! Si prega di aggiornare il dispositivo.",
-                    "fr": "Un nouveau firmware Trezor est disponible ! Veuillez mettre à jour votre appareil.",
-                    "de": "Neue Trezor-Firmware verfügbar! Bitte aktualisieren Sie Ihr Gerät.",
-                    "tr": "Yeni Trezor yazılımı mevcut! Lütfen cihazınızı güncelleyin.",
-                    "pt": "Está disponível um novo firmware Trezor! Por favor, atualize o seu dispositivo.",
-                    "uk": "Доступна нова прошивка Trezor! Будь ласка, оновіть ваш пристрій."
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "<=24.5.4",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "a205467d-8913-420e-98c5-11c8fdf958a8",
-                "priority": 98,
-                "dismissible": true,
-                "variant": "critical",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
-                    "en": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
-                    "es": "Es necesaria una actualización. Instala la última versión de Trezor Suite para mejorar la seguridad y la experiencia de usuario.",
-                    "cs": "Nutná aktualizace! Nainstalujte si nejnovější verzi Trezor Suite a získejte lepší zabezpečení a komfortnější používání.",
-                    "ru": "Требуется обновление! Установите последнюю версию Trezor Suite для улучшения безопасности и удобства использования.",
-                    "ja": "アップデートが必要です！Trezor Suiteの最新バージョンをインストールして、セキュリティと使いやすさを向上させましょう。",
-                    "hu": "Frissítés szükséges! Telepítse a Trezor Suite legújabb verzióját a nagyobb biztonság és a jobb felhasználói élmény érdekében.",
-                    "it": "È necessario un aggiornamento! Installate l'ultima versione di Trezor Suite pour une maggiore sicurezza e una migliore esperienza d'uso.",
-                    "fr": "Mise à jour requise ! Installez la dernière version de Trezor Suite pour une sécurité renforcée et une expérience utilisateur améliorée.",
-                    "de": "Update erforderlich! Installiere die neueste Version von Trezor Suite, um Sicherheit und Benutzerfreundlichkeit zu verbessern.",
-                    "tr": "Güncelleme gerekiyor! Geliştirilmiş güvenlik ve kullanıcı deneyimi için en son Trezor Suite sürümünü yükleyin.",
-                    "pt": "Atualização necessária! Instale a versão mais recente do Trezor Suite para uma segurança reforçada e uma experiência de utilizador melhorada.",
-                    "uk": "Потрібне оновлення! Встановіть останню версію Trezor Suite для покращення безпеки та поліпшення користувацького досвіду."
-                },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://trezor.io/trezor-suite",
-                    "label": {
-                        "en-GB": "Go to trezor.io/trezor-suite",
-                        "en": "Go to trezor.io/trezor-suite",
-                        "es": "Visita trezor.io/trezor-suite",
-                        "cs": "Přejít na trezor.io/trezor-suite",
-                        "ru": "Перейти на trezor.io/trezor-suite",
-                        "ja": "trezor.io/trezor-suite に移動",
-                        "hu": "Tovább a trezor.io/trezor-suite oldalra",
-                        "it": "Vai a trezor.io/trezor-suite",
-                        "fr": "Accédez à trezor.io/trezor-suite",
-                        "de": "Gehe zu trezor.io/trezor-suite",
-                        "tr": "trezor.io/trezor-suite adresine git",
-                        "pt": "Ir para trezor.io/trezor-suite",
-                        "uk": "Перейти на trezor.io/trezor-suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "<=24.10.1",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "3b80a21e-8ceb-4304-a239-17492be00538",
-                "priority": 91,
-                "dismissible": true,
-                "variant": "warning",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
-                    "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
-                    "es": "Actualiza Trezor Suite para mejorar la seguridad, disfrutar de las funciones más recientes y para que todo funcione sin problemas.",
-                    "cs": "Aktualizujte Trezor Suite, abyste získali lepší zabezpečení a nejnovější funkce.",
-                    "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу.",
-                    "ja": "Trezor Suiteをアップデートすることで、セキュリティの強化、最新機能の搭載、スムーズな動作が可能になります。",
-                    "hu": "Frissítse a Trezor Suite-ot a fokozott biztonság, a legújabb funkciók és a lehető leggördülékenyebb működés érdekében.",
-                    "it": "Aggiornate Trezor Suite per ottenere una maggiore sicurezza, tutte le funzioni più recenti e per far funzionare tutto nel modo più fluido possibile.",
-                    "fr": "Mettez à jour Trezor Suite pour bénéficier d’une sécurité renforcée, de toutes les dernières fonctionnalités, et pour garantir un fonctionnement optimal.",
-                    "de": "Aktualisiere Trezor Suite für mehr Sicherheit, neue Funktionen und reibungslose Abläufe.",
-                    "tr": "Geliştirilmiş güvenlik, en yeni özellikler ve her şeyin olabildiğince sorunsuz çalışması için Trezor Suite'i güncelleyin.",
-                    "pt": "Atualize o Trezor Suite para maior segurança, todos os recursos mais recentes e para manter tudo funcionando da forma mais suave possível.",
-                    "uk": "Оновіть Trezor Suite для підвищення безпеки, використання всіх новітніх функцій та забезпечення максимально плавної роботи."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
                         "desktop": "22.4.0",
                         "mobile": "!",
                         "web": "22.4.0"
@@ -1087,76 +300,6 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=21.7.1",
-                        "mobile": "!",
-                        "web": ">=21.7.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "1",
-                            "firmware": "<1.7.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T1B1",
-                            "firmware": "<1.7.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "51a6aa24-a394-4def-a5b8-449093eaee3b",
-                "priority": 94,
-                "dismissible": true,
-                "variant": "warning",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
-                    "en": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
-                    "es": "Actualice ahora el firmware del dispositivo: Su Trezor no será reconocido ni utilizable en las nuevas versiones de Trezor Suite.",
-                    "cs": "Aktualizujte firmware zařízení: Váš Trezor nebude v nových verzích Trezor Suite rozpoznán ani použitelný.",
-                    "ru": "Пожалуйста, обновите прошивку устройства прямо сейчас: Ваш Trezor не будет распознан и его нельзя будет использовать в новых версия Trezor Suite.",
-                    "ja": "今すぐデバイスのファームウェアをアップデートしてください： お使いのTrezorは、新しいバージョンのTrezor Suiteでは認識されず、使用できません.",
-                    "hu": "Kérjük, frissítse a készülék firmware-ét: A Trezor Suite új verziói nem ismerik fel és nem használhatók.",
-                    "it": "Aggiornare subito il firmware del dispositivo: Il dispositivo Trezor non sarà riconosciuto o utilizzabile nelle nuove versioni di Trezor Suite.",
-                    "fr": "Veuillez mettre à jour le micrologiciel de l'appareil maintenant : Votre Trezor ne sera pas reconnu ou utilisable dans les nouvelles versions de Trezor Suite.",
-                    "de": "Bitte aktualisieren Sie jetzt die Firmware: Ihr Trezor wird in neuen Versionen der Trezor Suite nicht mehr erkannt und kann nicht verwendet werden.",
-                    "tr": "Lütfen cihaz yazılımını şimdi güncelleyin: Trezor'unuz, Trezor Suite'in yeni sürümlerinde tanınmayacak veya kullanılamayacaktır.",
-                    "pt": "Atualize agora o firmware do dispositivo: O seu Trezor não será reconhecido nem utilizável nas novas versões do Trezor Suite.",
-                    "uk": "Будь ласка, оновіть прошивку пристрою зараз: Ваш Trezor не буде визнаний або використаний в нових версіях Trezor Suite."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "firmware-index",
-                    "label": {
-                        "en-GB": "Update Firmware",
-                        "en": "Update Firmware",
-                        "es": "Actualizar firmware",
-                        "cs": "Aktualizovat Firmware",
-                        "ru": "Обновить прошивку",
-                        "ja": "ファームウェアのアップデート",
-                        "hu": "Firmware frissítése",
-                        "it": "Aggiorna Firmware",
-                        "fr": "Mettre à jour le micrologiciel",
-                        "de": "Firmware aktualisieren",
-                        "tr": "Firmware Güncelle",
-                        "pt": "Atualizar Firmware",
-                        "uk": "Оновити прошивку"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
                         "desktop": "<23.10.1",
                         "mobile": "!",
                         "web": "<23.10.1"
@@ -1183,7 +326,7 @@
             ],
             "message": {
                 "id": "e95a586f-f2d7-4c7b-8dd9-d8e56d9c905d",
-                "priority": 99,
+                "priority": 98,
                 "dismissible": false,
                 "variant": "critical",
                 "category": ["banner"],
@@ -1246,7 +389,7 @@
             ],
             "message": {
                 "id": "adec1327-d063-4107-860d-e08f73b6ea27",
-                "priority": 99,
+                "priority": 98,
                 "dismissible": false,
                 "variant": "critical",
                 "category": ["banner"],
@@ -1309,7 +452,7 @@
             ],
             "message": {
                 "id": "c94f5a81-5e07-4d2b-8402-a8e651467caa",
-                "priority": 99,
+                "priority": 98,
                 "dismissible": false,
                 "variant": "critical",
                 "category": ["banner"],
@@ -1346,6 +489,267 @@
                         "tr": "Suite'i Güncelle",
                         "pt": "Atualizar Suite",
                         "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=24.12.3",
+                        "mobile": "!",
+                        "web": "*"
+                    },
+                    "devices": [
+                        {
+                            "model": "1",
+                            "firmware": ">=1.5.2 <1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": ">=1.5.2 <1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "a3c3a3b7-efbe-4e39-9ffd-1836338e7811",
+                "priority": 96,
+                "dismissible": true,
+                "variant": "critical",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
+                    "en": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
+                    "es": "La actualización del firmware podría borrar su Trezor. Verifique su copia de seguridad ahora para asegurarse de que puede recuperar sus activos.",
+                    "cs": "Aktualizace firmwaru může vymazat váš Trezor. Zkontrolujte nyní svou zálohu, abyste se ujistili, že můžete obnovit své prostředky.",
+                    "ru": "Обновление прошивки может стереть ваш Trezor. Проверьте свою резервную копию сейчас, чтобы убедиться, что вы сможете восстановить свои активы.",
+                    "ja": "ファームウェアの更新により、Trezorが消去される可能性があります。資産を回復できることを確認するために、今すぐバックアップを確認してください。",
+                    "hu": "A firmware frissítése törölheti a Trezorját. Ellenőrizze most a biztonsági mentését, hogy biztosítsa, hogy vissza tudja állítani az eszközét.",
+                    "it": "L'aggiornamento del firmware potrebbe cancellare il tuo Trezor. Verifica il tuo backup ora per assicurarti di poter recuperare i tuoi asset.",
+                    "fr": "La mise à jour du micrologiciel peut effacer votre Trezor. Vérifiez votre sauvegarde maintenant pour vous assurer que vous pouvez récupérer vos actifs.",
+                    "de": "Ein Firmware-Update kann Ihren Trezor löschen. Überprüfen Sie jetzt Ihr Backup, um sicherzustellen, dass Sie Ihre Assets wiederherstellen können.",
+                    "tr": "Firmware güncellemesi Trezor'unuzu silebilir. Varlıklarınızı kurtarabileceğinizden emin olmak için yedeğinizi şimdi doğrulayın.",
+                    "pt": "A atualização do firmware pode apagar o seu Trezor. Verifique o seu backup agora para garantir que pode recuperar os seus ativos.",
+                    "uk": "Оновлення прошивки може видалити ваш Trezor. Перевірте свою резервну копію зараз, щоб переконатися, що ви зможете відновити свої активи."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "recovery-index",
+                    "label": {
+                        "en-GB": "Check wallet backup",
+                        "en": "Check wallet backup",
+                        "es": "Verificar copia de seguridad de la cartera",
+                        "cs": "Zkontrolovat zálohu peněženky",
+                        "ru": "Проверить резервную копию кошелька",
+                        "ja": "ウォレットのバックアップを確認",
+                        "hu": "Ellenőrizze a pénztárca biztonsági mentését",
+                        "it": "Verifica il backup del portafoglio",
+                        "fr": "Vérifier la sauvegarde du portefeuille",
+                        "de": "Überprüfen Sie das Wallet-Backup",
+                        "tr": "Cüzdan yedeğini kontrol et",
+                        "pt": "Verificar backup da carteira",
+                        "uk": "Перевірити резервну копію гаманця"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.2.1",
+                        "mobile": "!",
+                        "web": ">=25.2.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "8901bcbb-d9b2-4901-bfc3-3669175f04a8",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "New Trezor firmware is available! Please update your device.",
+                    "en": "New Trezor firmware is available! Please update your device.",
+                    "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
+                    "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
+                    "ru": "Доступна новая прошивка Trezor! Пожалуйста, обновите ваше устройство.",
+                    "ja": "新しいTrezorファームウェアが利用可能です！デバイスをアップデートしてください。",
+                    "hu": "Új Trezor firmware érhető el! Kérjük, frissítse a készülékét.",
+                    "it": "È disponibile un nuovo firmware Trezor! Si prega di aggiornare il dispositivo.",
+                    "fr": "Un nouveau firmware Trezor est disponible ! Veuillez mettre à jour votre appareil.",
+                    "de": "Neue Trezor-Firmware verfügbar! Bitte aktualisieren Sie Ihr Gerät.",
+                    "tr": "Yeni Trezor yazılımı mevcut! Lütfen cihazınızı güncelleyin.",
+                    "pt": "Está disponível um novo firmware Trezor! Por favor, atualize o seu dispositivo.",
+                    "uk": "Доступна нова прошивка Trezor! Будь ласка, оновіть ваш пристрій."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update now",
+                        "en": "Update now",
+                        "es": "Actualizar ahora",
+                        "cs": "Aktualizovat teď",
+                        "ru": "Обновить сейчас",
+                        "ja": "今すぐアップデート",
+                        "hu": "Frissítés most",
+                        "it": "Aggiorna ora",
+                        "fr": "Mettre à jour maintenant",
+                        "de": "Jetzt aktualisieren",
+                        "tr": "Şimdi Güncelle",
+                        "pt": "Atualizar agora",
+                        "uk": "Оновити зараз"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": "25.2.1",
+                        "web": "!"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "49e7400f-c457-4309-b0bb-a221f6b09b36",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "New Trezor firmware is available! Please update your device.",
+                    "en": "New Trezor firmware is available! Please update your device.",
+                    "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
+                    "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
+                    "ru": "Доступна новая прошивка Trezor! Пожалуйста, обновите ваше устройство.",
+                    "ja": "新しいTrezorファームウェアが利用可能です！デバイスをアップデートしてください。",
+                    "hu": "Új Trezor firmware érhető el! Kérjük, frissítse a készülékét.",
+                    "it": "È disponibile un nuovo firmware Trezor! Si prega di aggiornare il dispositivo.",
+                    "fr": "Un nouveau firmware Trezor est disponible ! Veuillez mettre à jour votre appareil.",
+                    "de": "Neue Trezor-Firmware verfügbar! Bitte aktualisieren Sie Ihr Gerät.",
+                    "tr": "Yeni Trezor yazılımı mevcut! Lütfen cihazınızı güncelleyin.",
+                    "pt": "Está disponível um novo firmware Trezor! Por favor, atualize o seu dispositivo.",
+                    "uk": "Доступна нова прошивка Trezor! Будь ласка, оновіть ваш пристрій."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=21.7.1",
+                        "mobile": "!",
+                        "web": ">=21.7.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "1",
+                            "firmware": "<1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "<1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "51a6aa24-a394-4def-a5b8-449093eaee3b",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
+                    "en": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
+                    "es": "Actualice ahora el firmware del dispositivo: Su Trezor no será reconocido ni utilizable en las nuevas versiones de Trezor Suite.",
+                    "cs": "Aktualizujte firmware zařízení: Váš Trezor nebude v nových verzích Trezor Suite rozpoznán ani použitelný.",
+                    "ru": "Пожалуйста, обновите прошивку устройства прямо сейчас: Ваш Trezor не будет распознан и его нельзя будет использовать в новых версия Trezor Suite.",
+                    "ja": "今すぐデバイスのファームウェアをアップデートしてください： お使いのTrezorは、新しいバージョンのTrezor Suiteでは認識されず、使用できません.",
+                    "hu": "Kérjük, frissítse a készülék firmware-ét: A Trezor Suite új verziói nem ismerik fel és nem használhatók.",
+                    "it": "Aggiornare subito il firmware del dispositivo: Il dispositivo Trezor non sarà riconosciuto o utilizzabile nelle nuove versioni di Trezor Suite.",
+                    "fr": "Veuillez mettre à jour le micrologiciel de l'appareil maintenant : Votre Trezor ne sera pas reconnu ou utilisable dans les nouvelles versions de Trezor Suite.",
+                    "de": "Bitte aktualisieren Sie jetzt die Firmware: Ihr Trezor wird in neuen Versionen der Trezor Suite nicht mehr erkannt und kann nicht verwendet werden.",
+                    "tr": "Lütfen cihaz yazılımını şimdi güncelleyin: Trezor'unuz, Trezor Suite'in yeni sürümlerinde tanınmayacak veya kullanılamayacaktır.",
+                    "pt": "Atualize agora o firmware do dispositivo: O seu Trezor não será reconhecido nem utilizável nas novas versões do Trezor Suite.",
+                    "uk": "Будь ласка, оновіть прошивку пристрою зараз: Ваш Trezor не буде визнаний або використаний в нових версіях Trezor Suite."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update Firmware",
+                        "en": "Update Firmware",
+                        "es": "Actualizar firmware",
+                        "cs": "Aktualizovat Firmware",
+                        "ru": "Обновить прошивку",
+                        "ja": "ファームウェアのアップデート",
+                        "hu": "Firmware frissítése",
+                        "it": "Aggiorna Firmware",
+                        "fr": "Mettre à jour le micrologiciel",
+                        "de": "Firmware aktualisieren",
+                        "tr": "Firmware Güncelle",
+                        "pt": "Atualizar Firmware",
+                        "uk": "Оновити прошивку"
                     }
                 }
             }
@@ -1422,6 +826,658 @@
         {
             "conditions": [
                 {
+                    "environment": {
+                        "desktop": ">=24.5.1",
+                        "mobile": "!",
+                        "web": ">=24.5.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "dbfce56e-6b9b-4f88-8acc-38b9bc5dabeb",
+                "priority": 93,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["context"],
+                "content": {
+                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
+                    "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
+                    "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Sus fondos seguirán siendo accesibles y no es necesario realizar ninguna acción.",
+                    "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Vaše finanční prostředky zůstanou přístupné bez nutnosti dalších kroků.",
+                    "ru": "Coinjoin был прекращен в Trezor Suite 1 июня 2024 года. Ваши средства останутся доступными, и никаких действий предпринимать не нужно.",
+                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されました。お客様の資金は引き続きご利用いただけます。",
+                    "hu": "A Coinjoin 2024. június 1-jén megszűnt a Trezor Suite-ban. Az Ön pénzeszközei továbbra is elérhetőek maradnak, és nincs szükség semmilyen intézkedésre.",
+                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. I vostri fondi rimarranno accessibili e non è necesario alcun intervento.",
+                    "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Vos fonds resteront accessibles et aucune action n'est nécessaire.",
+                    "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Ihre Gelder bleiben zugänglich, und es sind keine Maßnahmen erforderlich.",
+                    "tr": "Coinjoin, 1 Haziran 2024 tarihinde Trezor Suite'de sonlandırıldı. Fonlarınız erişilebilir durumda kalacak ve herhangi bir işlem yapmanıza gerek yok.",
+                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Seus fundos permanecerão acessíveis e nenhuma ação é necessária.",
+                    "uk": "Coinjoin було припинено в Trezor Suite 1 червня 2024 року. Ваші кошти залишаться доступними, і ніяких дій не потрібно."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://blog.trezor.io/important-update-transitioning-from-coinjoin-in-trezor-suite-9dfc63d2662f",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
+                    }
+                },
+                "context": { "domain": "accounts.coinjoin" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "sol": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": ">25.2.1",
+                        "mobile": "!",
+                        "web": ">25.2.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "ccd7b443-1e0e-449e-b58f-affa0459a29d",
+                "priority": 93,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["context"],
+                "content": {
+                    "en-GB": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
+                    "en": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
+                    "es": "Para la mejor experiencia de staking en Solana, actualiza el firmware de tu Trezor a la última versión.",
+                    "cs": "Aby byl váš staking na Solaně co nejefektivnější, aktualizujte firmware vašeho Trezoru na nejnovější verzi.",
+                    "ru": "Для наилучшего опыта стейкинга Solana обновите прошивку вашего Trezor до последней версии.",
+                    "ja": "最高のSolanaステーキング体験を得るために、Trezorのファームウェアを最新バージョンに更新してください。",
+                    "hu": "A legjobb Solana staking élményért frissítsd a Trezor firmware-ét a legújabb verzióra.",
+                    "it": "Per la migliore esperienza di staking su Solana, aggiorna il firmware del tuo Trezor all'ultima versione.",
+                    "fr": "Pour la meilleure expérience de staking sur Solana, mettez à jour le firmware de votre Trezor vers la dernière version.",
+                    "de": "Für das beste Solana-Staking-Erlebnis, aktualisiere die Firmware deines Trezor auf die neueste Version.",
+                    "tr": "En iyi Solana staking deneyimi için Trezor cihazınızın yazılımını en son sürüme güncelleyin.",
+                    "pt": "Para a melhor experiência de staking em Solana, atualize o firmware do seu Trezor para a versão mais recente.",
+                    "uk": "Для найкращого досвіду стейкінгу Solana оновіть прошивку свого Trezor до останньої версії."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update now",
+                        "en": "Update now",
+                        "es": "Actualizar ahora",
+                        "cs": "Aktualizujte nyní",
+                        "ru": "Обновить сейчас",
+                        "ja": "今すぐアップデート",
+                        "hu": "Frissítés most",
+                        "it": "Aggiorna ora",
+                        "fr": "Mettre à jour maintenant",
+                        "de": "Jetzt aktualisieren",
+                        "tr": "Şimdi güncelle",
+                        "pt": "Atualizar agora",
+                        "uk": "Оновити зараз"
+                    }
+                },
+                "context": { "domain": "accounts.sol.staking" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<24.5.1",
+                        "mobile": "!",
+                        "web": "<24.5.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "87371afe-181c-404e-a63d-2944313fe0e6",
+                "priority": 93,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["context"],
+                "content": {
+                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
+                    "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
+                    "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Por favor, actualice a la última versión de Trezor Suite para asegurarse de que sus fondos siguen siendo accesibles.",
+                    "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Prosíme, aktualizujte Trezor Suite na nejnovější verzi pro zachování přístupu k vašim finančním prostředkům.",
+                    "ru": "Coinjoin был прекращен в Trezor Suite 1 июня 2024 года. Пожалуйста, обновите Trezor Suite до последней версии, чтобы ваши средства оставались доступными.",
+                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されました。資金が引き続きアクセス可能であることを確認するために、最新版のTrezor Suiteにアップデートしてください。",
+                    "hu": "A Coinjoin 2024. június 1-jén megszűnt a Trezor Suite-ban. Kérjük, frissítsen a Trezor Suite legújabb verziójára, hogy pénzeszközei továbbra is elérhetőek maradjanak.",
+                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. Si prega di aggiornare alla versione più recente di Trezor Suite per garantire che i fondi rimangano accessibili.",
+                    "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Veuillez mettre à jour la dernière version de Trezor Suite pour vous assurer que vos fonds restent accessibles.",
+                    "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Bitte aktualisieren Sie auf die neueste Version der Trezor Suite, um sicherzustellen, dass Sie weiterhin Zugriff auf Ihre Kryptowährungen haben.",
+                    "tr": "Coinjoin, 1 Haziran 2024 tarihinde Trezor Suite'de sonlandırıldı. Fonlarınızın erişilebilir kalmasını sağlamak için lütfen Trezor Suite'in en son sürümüne güncelleyin.",
+                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Por favor, atualize para a versão mais recente do Trezor Suite para garantir que seus fundos permaneçam acessíveis.",
+                    "uk": "Coinjoin було припинено в Trezor Suite 1 червня 2024 року. Будь ласка, оновіть Trezor Suite до останньої версії, щоб ваші кошти залишалися доступними."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://blog.trezor.io/important-update-transitioning-from-coinjoin-in-trezor-suite-9dfc63d2662f",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
+                    }
+                },
+                "context": { "domain": "accounts.coinjoin" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "23.10.1",
+                        "mobile": "!",
+                        "web": "23.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "8231c0f4-e778-4838-bc40-5c28d8832f06",
+                "priority": 93,
+                "dismissible": false,
+                "variant": "critical",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
+                    "en": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
+                    "es": "Es necesario que actualices Trezor Suite para tu nuevo Trezor Safe 3.",
+                    "cs": "Pro nový Trezor Safe 3 je nutná aktualizace Trezor Suite.",
+                    "ru": "Для нового Trezor Safe 3 требуется обновление Trezor Suite.",
+                    "ja": "新しいTrezor Safe 3を使用するには、Trezor Suiteの必須アップデートが必要です。",
+                    "hu": "A Trezor Suite alapvető frissítése szükséges az új Trezor Safe 3 készülékhez.",
+                    "it": "Per il nuovo Trezor Safe 3 è necessario un aggiornamento essenziale di Trezor Suite.",
+                    "fr": "Une mise à jour essentielle de Trezor Suite est nécessaire pour votre nouveau portefeuille Trezor Safe 3.",
+                    "de": "Für deinen neuen Trezor Safe 3 ist ein wichtiges Update der Trezor Suite erforderlich.",
+                    "tr": "Yeni Trezor Safe 3'ünüz için Trezor Suite'in temel güncellemesi gereklidir.",
+                    "pt": "É necessária uma atualização essencial do Trezor Suite para o seu novo Trezor Safe 3.",
+                    "uk": "Для вашого нового Trezor Safe 3 потрібне обов’язкове оновлення Trezor Suite."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Aggiorna Suite",
+                        "fr": "Mettre à jour Suite",
+                        "de": "Suite aktualisieren",
+                        "tr": "Suite'i Güncelle",
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "pol": true
+                        },
+                        {
+                            "matic": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "24.5.4>25.1.3",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "fd9a36f3-2f89-4156-8531-70c2d72d2233",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
+                    "en": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
+                    "es": "Si encuentras algún problema al sincronizar tus cuentas de Polygon PoS, por favor actualiza tu Trezor Suite a la última versión",
+                    "cs": "Pokud narazíte na problémy se synchronizací vašich účtů Polygon PoS, aktualizujte Trezor Suite na nejnovější verzi",
+                    "ru": "Если у вас возникли проблемы с синхронизацией ваших счетов Polygon PoS, обновите Trezor Suite до последней версии",
+                    "ja": "Polygon PoSアカウントの同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください",
+                    "hu": "Ha bármilyen problémába ütközik a Polygon PoS fiókjainak szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra",
+                    "it": "Se riscontri problemi di sincronizzazione dei tuoi account Polygon PoS, aggiorna la tua Trezor Suite all'ultima versione",
+                    "fr": "Si vous rencontrez des problèmes de synchronisation de vos comptes Polygon PoS, veuillez mettre à jour votre Trezor Suite vers la dernière version",
+                    "de": "Wenn Sie Probleme beim Synchronisieren Ihrer Polygon PoS-Konten haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version",
+                    "tr": "Polygon PoS hesaplarınızı senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin",
+                    "pt": "Se encontrar problemas ao sincronizar as suas contas Polygon PoS, atualize o seu Trezor Suite para a versão mais recente",
+                    "uk": "Якщо у вас виникли проблеми з синхронізацією ваших рахунків Polygon PoS, оновіть ваш Trezor Suite до останньої версії"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Aggiorna Suite",
+                        "fr": "Mettre à jour Suite",
+                        "de": "Suite aktualisieren",
+                        "tr": "Suite'i Güncelle",
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "sol": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "24.5.4>24.12.2",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "b487d590-3bbc-43ff-a5fc-048777512d49",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "If you encounter any issues syncing your Solana accounts, please update your Trezor Suite to the latest version.",
+                    "en": "If you encounter any issues syncing your Solana accounts, please update your Trezor Suite to the latest version.",
+                    "es": "Si encuentras algún problema al sincronizar tus cuentas de Solana, por favor actualiza tu Trezor Suite a la última versión.",
+                    "cs": "Pokud narazíte na problémy se synchronizací vašich účtů Solana, aktualizujte Trezor Suite na nejnovější verzi.",
+                    "ru": "Если у вас возникли проблемы с синхронизацией ваших счетов Solana, обновите Trezor Suite до последней версии.",
+                    "ja": "Solanaアカウントの同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください。",
+                    "hu": "Ha bármilyen problémába ütközik a Solana fiókjainak szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra.",
+                    "it": "Se riscontri problemi di sincronizzazione dei tuoi account Solana, aggiorna la tua Trezor Suite all'ultima versione.",
+                    "fr": "Si vous rencontrez des problèmes de synchronisation de vos comptes Solana, veuillez mettre à jour votre Trezor Suite vers la dernière version.",
+                    "de": "Wenn Sie Probleme beim Synchronisieren Ihrer Solana-Konten haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version.",
+                    "tr": "Solana hesaplarınızı senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin.",
+                    "pt": "Se encontrar problemas ao sincronizar as suas contas Solana, atualize o seu Trezor Suite para a versão mais recente.",
+                    "uk": "Якщо у вас виникли проблеми з синхронізацією ваших рахунків Solana, оновіть ваш Trezor Suite до останньої версії."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Aggiorna Suite",
+                        "fr": "Mettre à jour Suite",
+                        "de": "Suite aktualisieren",
+                        "tr": "Suite'i Güncelle",
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">23.10.1",
+                        "mobile": "!",
+                        "web": ">23.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": "<2.6.3",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "e11a586f-f2d7-4c7b-7dd9-d8f56d1c90ad",
+                "priority": 92,
+                "dismissible": false,
+                "variant": "critical",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
+                    "en": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
+                    "es": "Hay una actualización disponible para tu dispositivo Trezor. Asegúrate de que la semilla de recuperación está lista, ya que la necesitarás para recuperar el acceso a tus monedas.",
+                    "cs": "Pro zařízení Trezor je k dispozici aktualizace. Ujistěte se, že máte připravený recovery seed, protože jej budete potřebovat k obnovení přístupu k mincím.",
+                    "ru": "Для устройства Trezor доступно обновление. Убедитесь, что у вас наготове семена восстановления, поскольку они понадобятся для восстановления доступа к монетам.",
+                    "ja": "お使いのTrezorデバイスにアップデートが提供されています。コインへのアクセスを回復するにはリカバリーのシードが必要です。",
+                    "hu": "Frissítés érhető el a Trezor készülékéhez. Győződjön meg róla, hogy készenlétben tartja a helyreállítási magot, mivel szüksége lesz rá, hogy újra hozzáférjen az érméihez.",
+                    "it": "È disponibile un aggiornamento per il vostro dispositivo Trezor. Assicuratevi di avere pronto il seme di ripristino, che vi servirà per riavere accesso alle monete.",
+                    "fr": "Une mise à jour est disponible pour votre dispositif Trezor. Assurez-vous d’avoir votre seed de récupération à portée de main, car vous en aurez besoin pour accéder à nouveau à vos coins.",
+                    "de": "Es gibt ein Update für dein Trezor Gerät. Halte deinen Recovery Seed bereit. Du brauchst ihn, um wieder auf deine Coins zuzugreifen.",
+                    "tr": "Trezor cihazınız için bir güncelleme mevcut. Paralarınıza yeniden erişmek için kurtarma tohumunuzu hazırda bulundurduğunuzdan emin olun.",
+                    "pt": "Está disponível uma atualização para o seu dispositivo Trezor. Certifique-se de que tem a sua semente de recuperação pronta, pois vai precisar dela para recuperar o acesso às suas moedas.",
+                    "uk": "Для вашого пристрою Trezor доступне оновлення. Переконайтеся, що у вас готовий резервний ключ, оскільки вам знадобиться він для відновлення доступу до монет."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update now",
+                        "en": "Update now",
+                        "es": "Actualizar ahora",
+                        "cs": "Aktualizovat teď",
+                        "ru": "Обновить сейчас",
+                        "ja": "今すぐアップデート",
+                        "hu": "Frissítés most",
+                        "it": "Aggiorna ora",
+                        "fr": "Mettre à jour maintenant",
+                        "de": "Jetzt aktualisieren",
+                        "tr": "Şimdi Güncelle",
+                        "pt": "Atualizar agora",
+                        "uk": "Оновити зараз"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "INPUT HERE": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c5b85f25-7d59-428a-9742-78df00a53577",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
+                    "en": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
+                    "es": "Estamos experimentando problemas de sincronización con la red de INPUT HERE. Esto puede resultar temporalmente en errores o tiempos de respuesta lentos en INPUT HERE. Este problema no afecta en absoluto la seguridad de sus fondos de INPUT HERE. Pedimos disculpas por las molestias.",
+                    "cs": "Potýkáme se s dočasnými potížemi se synchronizací sítě INPUT HERE, které mohou vést k chybám nebo pomalejší odezvě. Bezpečnost vašich prostředků na síti INPUT HERE tím však není nijak ohrožena. Omlouváme se za nepříjemnosti a děkujeme za pochopení.",
+                    "ru": "У нас возникли проблемы с синхронизацией сети INPUT HERE. Это может временно привести к ошибкам или медленным временам ответа на INPUT HERE. Эта проблема никоим образом не влияет на безопасность ваших средств INPUT HERE. Приносим извинения за неудобства.",
+                    "ja": "INPUT HEREネットワークの同期に問題が発生しています。これにより、INPUT HEREで一時的にエラーや応答時間が遅くなる場合があります。この問題は、INPUT HEREの資金の安全性にまったく影響しません。ご不便をおかけして申し訳ありません。",
+                    "hu": "Problémák merültek fel az INPUT HERE hálózat szinkronizálásával. Ez ideiglenesen hibákat vagy lassú válaszidőket eredményezhet az INPUT HERE-en. Ez a probléma semmilyen módon nem érinti az INPUT HERE pénzügyeinek biztonságát. Elnézést kérünk a kellemetlenségért.",
+                    "it": "Stiamo riscontrando problemi di sincronizzazione con la rete INPUT HERE. Ciò potrebbe comportare temporaneamente errori o tempi di risposta lenti su INPUT HERE. Questo problema non influisce in alcun modo sulla sicurezza dei tuoi fondi INPUT HERE. Ci scusiamo per l'inconveniente.",
+                    "fr": "Nous rencontrons des problèmes de synchronisation avec le réseau INPUT HERE. Cela peut entraîner temporairement des erreurs ou des temps de réponse lents sur INPUT HERE. Ce problème n'affecte en aucun cas la sécurité de vos fonds INPUT HERE. Nous nous excusons pour la gêne occasionnée.",
+                    "de": "Wir haben Probleme mit der Synchronisierung des INPUT HERE-Netzwerks. Dies kann vorübergehend zu Fehlern oder langsamen Antwortzeiten auf INPUT HERE führen. Dieses Problem beeinträchtigt die Sicherheit Ihrer INPUT HERE-Fonds in keiner Weise. Wir entschuldigen uns für die Unannehmlichkeiten.",
+                    "tr": "INPUT HERE ağı ile senkronizasyon sorunları yaşıyoruz. Bu, geçici olarak INPUT HERE'da hatalara veya yavaş yanıt sürelerine neden olabilir. Bu sorun, INPUT HERE fonlarınızın güvenliğini hiçbir şekilde etkilemez. Rahatsızlık için özür dileriz.",
+                    "pt": "Estamos enfrentando problemas de sincronização com a rede INPUT HERE. Isso pode resultar temporariamente em erros ou tempos de respuesta lentos na INPUT HERE. Este problema não afeta de forma alguma a segurança dos seus fundos INPUT HERE. Pedimos desculpas pelo inconveniente.",
+                    "uk": "У нас виникли проблеми з синхронізацією мережі INPUT HERE. Це може тимчасово призвести до помилок або повільних часів відповіді на INPUT HERE. Ця проблема ніяк не впливає на безпеку ваших коштів INPUT HERE. Приносимо вибачення за незручності."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "24.5.4>24.12.1",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "3b80a21e-8ceb-4304-a239-17492be00538",
+                "priority": 91,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
+                    "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
+                    "es": "Actualiza Trezor Suite para mejorar la seguridad, disfrutar de las funciones más recientes y para que todo funcione sin problemas.",
+                    "cs": "Aktualizujte Trezor Suite, abyste získali lepší zabezpečení a nejnovější funkce.",
+                    "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу.",
+                    "ja": "Trezor Suiteをアップデートすることで、セキュリティの強化、最新機能の搭載、スムーズな動作が可能になります。",
+                    "hu": "Frissítse a Trezor Suite-ot a fokozott biztonság, a legújabb funkciók és a lehető leggördülékenyebb működés érdekében.",
+                    "it": "Aggiornate Trezor Suite per ottenere una maggiore sicurezza, tutte le funzioni più recenti e per far funzionare tutto nel modo più fluido possibile.",
+                    "fr": "Mettez à jour Trezor Suite pour bénéficier d’une sécurité renforcée, de toutes les dernières fonctionnalités, et pour garantir un fonctionnement optimal.",
+                    "de": "Aktualisiere Trezor Suite für mehr Sicherheit, neue Funktionen und reibungslose Abläufe.",
+                    "tr": "Geliştirilmiş güvenlik, en yeni özellikler ve her şeyin olabildiğince sorunsuz çalışması için Trezor Suite'i güncelleyin.",
+                    "pt": "Atualize o Trezor Suite para maior segurança, todos os recursos mais recentes e para manter tudo funcionando da forma mais suave possível.",
+                    "uk": "Оновіть Trezor Suite для підвищення безпеки, використання всіх новітніх функцій та забезпечення максимально плавної роботи."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Aggiorna Suite",
+                        "fr": "Mettre à jour Suite",
+                        "de": "Suite aktualisieren",
+                        "tr": "Suite'i Güncelle",
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.2.1",
+                        "mobile": "!",
+                        "web": ">=25.2.1"
+                    },
+                    "settings": [
+                        {
+                            "test": true
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "50b760bc-e804-4870-b072-9f3eaaaa26be",
+                "priority": 90,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Testnet account has been updated to new Testnet 4.",
+                    "en": "Testnet account has been updated to new Testnet 4.",
+                    "es": "Testnet account has been updated to new Testnet 4.",
+                    "cs": "Testnet account has been updated to new Testnet 4.",
+                    "ru": "Testnet account has been updated to new Testnet 4.",
+                    "ja": "Testnet account has been updated to new Testnet 4.",
+                    "hu": "Testnet account has been updated to new Testnet 4.",
+                    "it": "Testnet account has been updated to new Testnet 4.",
+                    "fr": "Testnet account has been updated to new Testnet 4.",
+                    "de": "Testnet account has been updated to new Testnet 4.",
+                    "tr": "Testnet account has been updated to new Testnet 4.",
+                    "pt": "Testnet account has been updated to new Testnet 4.",
+                    "uk": "Testnet account has been updated to new Testnet 4.."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/bitcoin-testnet#testnet4",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Learn More",
+                        "cs": "Learn More",
+                        "ru": "Learn More",
+                        "ja": "Learn More",
+                        "hu": "Learn More",
+                        "it": "Learn More",
+                        "fr": "Learn More",
+                        "de": "Learn More",
+                        "tr": "Learn More",
+                        "pt": "Learn More",
+                        "uk": "Learn More"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": ">=24.12.1",
+                        "web": "*"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3T1",
+                            "firmware": "2.8.6",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "cdcc9424-a42a-4d85-b46d-1ac2e9e1dc8a",
+                "priority": 90,
+                "dismissible": false,
+                "variant": "critical",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "en": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "es": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "cs": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "ru": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "ja": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "hu": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "it": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "fr": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "de": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "tr": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "pt": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "uk": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/what-is-trezor-suite-lite#open-chat",
+                    "label": {
+                        "en-GB": "Contact support",
+                        "en": "Contact support",
+                        "es": "Contact support",
+                        "cs": "Contact support",
+                        "ru": "Contact support",
+                        "ja": "Contact support",
+                        "hu": "Contact support",
+                        "it": "Contact support",
+                        "fr": "Contact support",
+                        "de": "Contact support",
+                        "tr": "Contact support",
+                        "pt": "Contact support",
+                        "uk": "Contact support"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
                     "settings": [
                         {
                             "dash": true
@@ -1485,76 +1541,6 @@
                         "tr": "Daha Fazla Bilgi",
                         "pt": "Saiba Mais",
                         "uk": "Дізнатись більше"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ">=24.12.3",
-                        "mobile": "!",
-                        "web": "*"
-                    },
-                    "devices": [
-                        {
-                            "model": "1",
-                            "firmware": ">=1.5.2 <1.7.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T1B1",
-                            "firmware": ">=1.5.2 <1.7.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "a3c3a3b7-efbe-4e39-9ffd-1836338e7811",
-                "priority": 96,
-                "dismissible": true,
-                "variant": "critical",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
-                    "en": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
-                    "es": "La actualización del firmware podría borrar su Trezor. Verifique su copia de seguridad ahora para asegurarse de que puede recuperar sus activos.",
-                    "cs": "Aktualizace firmwaru může vymazat váš Trezor. Zkontrolujte nyní svou zálohu, abyste se ujistili, že můžete obnovit své prostředky.",
-                    "ru": "Обновление прошивки может стереть ваш Trezor. Проверьте свою резервную копию сейчас, чтобы убедиться, что вы сможете восстановить свои активы.",
-                    "ja": "ファームウェアの更新により、Trezorが消去される可能性があります。資産を回復できることを確認するために、今すぐバックアップを確認してください。",
-                    "hu": "A firmware frissítése törölheti a Trezorját. Ellenőrizze most a biztonsági mentését, hogy biztosítsa, hogy vissza tudja állítani az eszközét.",
-                    "it": "L'aggiornamento del firmware potrebbe cancellare il tuo Trezor. Verifica il tuo backup ora per assicurarti di poter recuperare i tuoi asset.",
-                    "fr": "La mise à jour du micrologiciel peut effacer votre Trezor. Vérifiez votre sauvegarde maintenant pour vous assurer que vous pouvez récupérer vos actifs.",
-                    "de": "Ein Firmware-Update kann Ihren Trezor löschen. Überprüfen Sie jetzt Ihr Backup, um sicherzustellen, dass Sie Ihre Assets wiederherstellen können.",
-                    "tr": "Firmware güncellemesi Trezor'unuzu silebilir. Varlıklarınızı kurtarabileceğinizden emin olmak için yedeğinizi şimdi doğrulayın.",
-                    "pt": "A atualização do firmware pode apagar o seu Trezor. Verifique o seu backup agora para garantir que pode recuperar os seus ativos.",
-                    "uk": "Оновлення прошивки може видалити ваш Trezor. Перевірте свою резервну копію зараз, щоб переконатися, що ви зможете відновити свої активи."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "recovery-index",
-                    "label": {
-                        "en-GB": "Check wallet backup",
-                        "en": "Check wallet backup",
-                        "es": "Verificar copia de seguridad de la cartera",
-                        "cs": "Zkontrolovat zálohu peněženky",
-                        "ru": "Проверить резервную копию кошелька",
-                        "ja": "ウォレットのバックアップを確認",
-                        "hu": "Ellenőrizze a pénztárca biztonsági mentését",
-                        "it": "Verifica il backup del portafoglio",
-                        "fr": "Vérifier la sauvegarde du portefeuille",
-                        "de": "Überprüfen Sie das Wallet-Backup",
-                        "tr": "Cüzdan yedeğini kontrol et",
-                        "pt": "Verificar backup da carteira",
-                        "uk": "Перевірити резервну копію гаманця"
                     }
                 }
             }
@@ -1635,82 +1621,6 @@
                         "flag": false
                     }
                 ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "sol": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": ">24.12.2",
-                        "mobile": ">25.1.1",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "843f6e02-3747-46f9-b8ef-d1ac6f104293",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "We are experiencing syncing issues with the Solana network. This may temporarily result in errors or slow response times on Solana. This issue does not affect the safety of your Solana funds in any way. We apologize for the inconvenience.",
-                    "en": "We are experiencing syncing issues with the Solana network. This may temporarily result in errors or slow response times on Solana. This issue does not affect the safety of your Solana funds in any way. We apologize for the inconvenience.",
-                    "es": "Estamos experimentando problemas de sincronización con la red de Solana. Esto puede resultar temporalmente en errores o tiempos de respuesta lentos en Solana. Este problema no afecta en absoluto la seguridad de sus fondos de Solana. Pedimos disculpas por las molestias.",
-                    "cs": "Potýkáme se s dočasnými potížemi se synchronizací sítě Solana, které mohou vést k chybám nebo pomalejší odezvě. Bezpečnost vašich prostředků na Solaně tím však není nijak ohrožena. Omlouváme se za nepříjemnosti a děkujeme za pochopení.",
-                    "ru": "У нас возникли проблемы с синхронизацией сети Solana. Это может временно привести к ошибкам или медленным временам ответа на Solana. Эта проблема никоим образом не влияет на безопасность ваших средств Solana. Приносим извинения за неудобства.",
-                    "ja": "Solanaネットワークの同期に問題が発生しています。これにより、Solanaで一時的にエラーや応答時間が遅くなる場合があります。この問題は、Solanaの資金の安全性にまったく影響しません。ご不便をおかけして申し訳ありません。",
-                    "hu": "Problémák merültek fel a Solana hálózat szinkronizálásával. Ez ideiglenesen hibákat vagy lassú válaszidőket eredményezhet a Solanán. Ez a probléma semmilyen módon nem érinti a Solana pénzügyeinek biztonságát. Elnézést kérünk a kellemetlenségért.",
-                    "it": "Stiamo riscontrando problemi di sincronizzazione con la rete Solana. Ciò potrebbe comportare temporaneamente errori o tempi di risposta lenti su Solana. Questo problema non influisce in alcun modo sulla sicurezza dei tuoi fondi Solana. Ci scusiamo per l'inconveniente.",
-                    "fr": "Nous rencontrons des problèmes de synchronisation avec le réseau Solana. Cela peut entraîner temporairement des erreurs ou des temps de réponse lents sur Solana. Ce problème n'affecte en aucun cas la sécurité de vos fonds Solana. Nous nous excusons pour la gêne occasionnée.",
-                    "de": "Wir haben Probleme mit der Synchronisierung des Solana-Netzwerks. Dies kann vorübergehend zu Fehlern oder langsamen Antwortzeiten auf Solana führen. Dieses Problem beeinträchtigt die Sicherheit Ihrer Solana-Fonds in keiner Weise. Wir entschuldigen uns für die Unannehmlichkeiten.",
-                    "tr": "Solana ağı ile senkronizasyon sorunları yaşıyoruz. Bu, geçici olarak Solana'da hatalara veya yavaş yanıt sürelerine neden olabilir. Bu sorun, Solana fonlarınızın güvenliğini hiçbir şekilde etkilemez. Rahatsızlık için özür dileriz.",
-                    "pt": "Estamos enfrentando problemas de sincronização com a rede Solana. Isso pode resultar temporariamente em erros ou tempos de resposta lentos na Solana. Este problema não afeta de forma alguma a segurança dos seus fundos Solana. Pedimos desculpas pelo inconveniente.",
-                    "uk": "У нас виникли проблеми з синхронізацією мережі Solana. Це може тимчасово призвести до помилок або повільних часів відповіді на Solana. Ця проблема ніяк не впливає на безпеку ваших коштів Solana. Приносимо вибачення за незручності."
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "INPUT HERE": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "!",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "c5b85f25-7d59-428a-9742-78df00a53577",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
-                    "en": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
-                    "es": "Estamos experimentando problemas de sincronización con la red de INPUT HERE. Esto puede resultar temporalmente en errores o tiempos de respuesta lentos en INPUT HERE. Este problema no afecta en absoluto la seguridad de sus fondos de INPUT HERE. Pedimos disculpas por las molestias.",
-                    "cs": "Potýkáme se s dočasnými potížemi se synchronizací sítě INPUT HERE, které mohou vést k chybám nebo pomalejší odezvě. Bezpečnost vašich prostředků na síti INPUT HERE tím však není nijak ohrožena. Omlouváme se za nepříjemnosti a děkujeme za pochopení.",
-                    "ru": "У нас возникли проблемы с синхронизацией сети INPUT HERE. Это может временно привести к ошибкам или медленным временам ответа на INPUT HERE. Эта проблема никоим образом не влияет на безопасность ваших средств INPUT HERE. Приносим извинения за неудобства.",
-                    "ja": "INPUT HEREネットワークの同期に問題が発生しています。これにより、INPUT HEREで一時的にエラーや応答時間が遅くなる場合があります。この問題は、INPUT HEREの資金の安全性にまったく影響しません。ご不便をおかけして申し訳ありません。",
-                    "hu": "Problémák merültek fel az INPUT HERE hálózat szinkronizálásával. Ez ideiglenesen hibákat vagy lassú válaszidőket eredményezhet az INPUT HERE-en. Ez a probléma semmilyen módon nem érinti az INPUT HERE pénzügyeinek biztonságát. Elnézést kérünk a kellemetlenségért.",
-                    "it": "Stiamo riscontrando problemi di sincronizzazione con la rete INPUT HERE. Ciò potrebbe comportare temporaneamente errori o tempi di risposta lenti su INPUT HERE. Questo problema non influisce in alcun modo sulla sicurezza dei tuoi fondi INPUT HERE. Ci scusiamo per l'inconveniente.",
-                    "fr": "Nous rencontrons des problèmes de synchronisation avec le réseau INPUT HERE. Cela peut entraîner temporairement des erreurs ou des temps de réponse lents sur INPUT HERE. Ce problème n'affecte en aucun cas la sécurité de vos fonds INPUT HERE. Nous nous excusons pour la gêne occasionnée.",
-                    "de": "Wir haben Probleme mit der Synchronisierung des INPUT HERE-Netzwerks. Dies kann vorübergehend zu Fehlern oder langsamen Antwortzeiten auf INPUT HERE führen. Dieses Problem beeinträchtigt die Sicherheit Ihrer INPUT HERE-Fonds in keiner Weise. Wir entschuldigen uns für die Unannehmlichkeiten.",
-                    "tr": "INPUT HERE ağı ile senkronizasyon sorunları yaşıyoruz. Bu, geçici olarak INPUT HERE'da hatalara veya yavaş yanıt sürelerine neden olabilir. Bu sorun, INPUT HERE fonlarınızın güvenliğini hiçbir şekilde etkilemez. Rahatsızlık için özür dileriz.",
-                    "pt": "Estamos enfrentando problemas de sincronização com a rede INPUT HERE. Isso pode resultar temporariamente em erros ou tempos de resposta lentos na INPUT HERE. Este problema não afeta de forma alguma a segurança dos seus fundos INPUT HERE. Pedimos desculpas pelo inconveniente.",
-                    "uk": "У нас виникли проблеми з синхронізацією мережі INPUT HERE. Це може тимчасово призвести до помилок або повільних часів відповіді на INPUT HERE. Ця проблема ніяк не впливає на безпеку ваших коштів INPUT HERE. Приносимо вибачення за незручності."
-                }
             }
         }
     ]
