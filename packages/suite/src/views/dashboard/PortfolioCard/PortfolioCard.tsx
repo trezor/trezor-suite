@@ -12,6 +12,7 @@ import { GraphScaleDropdownItem, GraphSkeleton, Translation } from 'src/componen
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
@@ -21,7 +22,8 @@ import { PortfolioCardHeader } from './PortfolioCardHeader';
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
-    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
+    const { discovery, isDiscoveryRunning } = useDiscovery();
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
@@ -29,8 +31,6 @@ export const PortfolioCard = memo(() => {
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const walletBalance = useTotalFiatBalance(accounts, localCurrency, currentFiatRates);
-
-    const discoveryStatus = getDiscoveryStatus();
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)
     // 1. DashboardGraph gets mounted

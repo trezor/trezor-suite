@@ -286,7 +286,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
                 discoveryActions.updateDiscovery(
                     {
                         status: 'failed',
-                        failed: [], // TODO: this shouldn't be empty. we should be able to tell which accounts failed here`,
                         error: result.payload.error,
                         errorCode: result.payload.code,
                     },
@@ -568,7 +567,6 @@ export const runDiscoveryThunk = createThunk(
                     discoveryActions.updateDiscovery(
                         {
                             status: 'failed',
-                            failed: [], // TODO: this shouldn't be empty. we should be able to tell which accounts failed here`,
                             error: result.payload.error,
                             errorCode: result.payload.code,
                         },
@@ -835,10 +833,6 @@ export const cancelDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/cancel`,
     async (device: TrezorDevice, { dispatch }) => {
         TrezorConnect.cancel(USER_UI_CANCEL_CODE);
-
-        // if (device.buttonRequests.length > 0) {
-        //     TrezorConnect.cancel(USER_UI_CANCEL_CODE);
-        // }
 
         dispatch(discoveryActions.deleteDiscovery(device.path));
     },

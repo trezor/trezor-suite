@@ -19,7 +19,7 @@ import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 // move to selector!!!!
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
-    const accounts = state.wallet.accounts;
+    const { accounts } = state.wallet;
 
     // waiting for device
     if (!device) {

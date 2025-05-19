@@ -5,6 +5,7 @@ import { MODAL } from 'src/actions/suite/constants';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { ModalAppParams } from 'src/utils/suite/router';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
     !route.isFullscreenApp && !!route.isForegroundApp;
@@ -44,7 +45,8 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
     }) as const;
 
 export const usePreferredModal = () => {
-    const { getDiscoveryStatus, discovery: discoveryForSelectedDevice } = useDiscovery();
+    const { discovery: discoveryForSelectedDevice } = useDiscovery();
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const route = useSelector(state => state.router.route);
     const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
     const modal = useSelector(state => state.modal);
@@ -94,7 +96,7 @@ export const usePreferredModal = () => {
     // account discovery in progress and didn't find any used account yet.
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity.
     // or display "Action modal" (like: pin/passphrase request)
-    if (getDiscoveryStatus()?.type === 'auth-confirm') {
+    if (discoveryStatus?.type === 'auth-confirm') {
         return {
             type: 'discovery-loading',
         } as const;

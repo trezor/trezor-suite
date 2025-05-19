@@ -1,26 +1,17 @@
 import { TrezorDevice } from '@suite-common/suite-types';
+import { selectDiscoveryByDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
+
+import { AppState } from 'src/types/suite';
 
 import { DiscoveryStatusType } from '../../types/wallet';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
 
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
     discovery: DiscoveryStatus | undefined;
 };
 
-import { AppState } from 'src/types/suite';
-
-import { selectDiscoveryByDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
-
-// TODO maybe I won't use this after all
-export const selectDiscoveryStatus = (state: AppState) => {
-    const device = selectSelectedDevice(state);
-    const discovery = selectDiscoveryByDevicePath(state, device?.path);
-
-    return getDiscoveryStatus({ device, discovery });
-};
-
-export const getDiscoveryStatus = ({
+const getDiscoveryStatus = ({
     device,
     discovery,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
@@ -29,16 +20,16 @@ export const getDiscoveryStatus = ({
             status: 'loading',
             type: 'waiting-for-device',
         };
-    // if (device.authFailed)
-    //     return {
-    //         status: 'exception',
-    //         type: 'auth-failed',
-    //     };
-    // if (device.authConfirm)
-    //     return {
-    //         status: 'exception',
-    //         type: 'auth-confirm-failed',
-    //     };
+    if (device.authFailed)
+        return {
+            status: 'exception',
+            type: 'auth-failed',
+        };
+    if (device.authConfirm)
+        return {
+            status: 'exception',
+            type: 'auth-confirm-failed',
+        };
     if (!device.state) {
         return {
             status: 'loading',
@@ -81,4 +72,12 @@ export const getDiscoveryStatus = ({
     }
 
     return undefined;
+};
+
+// TODO move this selector somewhere more sensible
+export const selectDiscoveryOverallStatus = (state: AppState) => {
+    const device = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, device?.path);
+
+    return getDiscoveryStatus({ device, discovery });
 };

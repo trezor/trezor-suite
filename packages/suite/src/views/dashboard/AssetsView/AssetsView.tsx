@@ -35,6 +35,7 @@ import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { AssetTable } from './AssetTable/AssetTable';
@@ -90,7 +91,8 @@ export const AssetsView = () => {
 
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
+    const { discovery, isDiscoveryRunning } = useDiscovery();
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const { accounts } = useAccounts(discovery);
     const { supportedMainnets } = useNetworkSupport();
     const { isMobileLayout } = useLayoutSize();
@@ -162,7 +164,6 @@ export const AssetsView = () => {
         currentFiatRates,
     );
 
-    const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
     const isError =
         discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;

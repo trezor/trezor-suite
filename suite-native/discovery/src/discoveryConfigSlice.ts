@@ -3,7 +3,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, type Network, getNetworkType, networksCollection } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol, getNetworkType, networksCollection } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -27,9 +27,8 @@ import {
     isCoinWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
 } from '@suite-native/tokens';
-
-import { versionUtils } from '@trezor/utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { versionUtils } from '@trezor/utils';
 
 type DiscoveryInfo = {
     startTimestamp: number;
