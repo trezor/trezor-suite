@@ -35,13 +35,13 @@ struct TrezorDeviceProps {
     /// linux reports paired devices even if device is not sending advertisements.
     /// used for sorting device list in AdapterManager
     #[serde(skip_serializing)]
-    discovery_timestamp: u64,
+    discovery_timestamp: u128,
     /// when it was updated.
     #[serde(rename = "lastUpdatedTimestamp")]
-    timestamp: u64,
+    timestamp: u128,
     /// when the last update event was emitted. used for event overflow throttling
     #[serde(skip_serializing)]
-    event_timestamp: u64,
+    event_timestamp: u128,
     /// signal strength, 0: weak, -100: strong
     rssi: i16,
 }
@@ -181,7 +181,7 @@ impl TrezorDevice {
         }
     }
 
-    pub fn get_discovery_timestamp(&self) -> u64 {
+    pub fn get_discovery_timestamp(&self) -> u128 {
         match self.props.lock() {
             Ok(p) => p.discovery_timestamp,
             Err(_) => 0,
