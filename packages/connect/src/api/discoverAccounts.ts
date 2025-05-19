@@ -268,7 +268,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
             } catch (error) {
                 descPromise.catch(() => {});
                 this.updateProgress(accountKey, index + 1, true);
-                this.sendProgress({ ...accountKey, index, error: error.message });
+                this.sendProgress({ ...accountKey, index, error: error.message, code: error.code });
 
                 return { nonempty: index - skip, error };
             }

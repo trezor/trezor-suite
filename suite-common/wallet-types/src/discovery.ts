@@ -4,10 +4,18 @@ import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
+export type FailedAccount = {
+    symbol: NetworkSymbol;
+    index: number;
+    accountType: NonNullable<AccountType>;
+    error: string;
+    fwException?: string;
+};
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
     emptyWallet?: boolean;
+    failed?: FailedAccount[];
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &
@@ -41,15 +49,7 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
               status: 'complete';
           }
         | {
-              // todo: failed not finished yet
               status: 'failed';
-              failed: {
-                  symbol: NetworkSymbol;
-                  index: number;
-                  accountType: NonNullable<AccountType>;
-                  error: string;
-                  fwException?: string;
-              }[];
               error?: string;
               errorCode?: string | number;
           }
