@@ -6,7 +6,6 @@ import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {
     WALLET_SETTINGS,
-    authorizeDeviceThunk,
     deviceActions,
     discoveryActions,
     selectDevices,
@@ -25,7 +24,7 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-// import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -41,7 +40,7 @@ import {
     redactRouterUrl,
     redactTransactionIdFromAnchor,
 } from 'src/utils/suite/analytics';
-// import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
+import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -142,85 +141,72 @@ const analyticsMiddleware =
             case DEVICE.DISCONNECT:
                 analytics.report({ type: EventType.DeviceDisconnect });
                 break;
-            // case discoveryActions.completeDiscovery.type: {
-            //     const accumulateAccountCountBySymbolAndType = (
-            //         acc: { [key: string]: number },
-            //         { symbol, accountType }: Account,
-            //     ) => {
-            //         // change coinjoin accounts to taproot for analytics
-            //         const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
+            // report when discovery finishes
+            case discoveryActions.updateDiscovery.type: {
+                if (action.payload.status.status !== 'complete') return;
 
-            //         const id = `${symbol}_${accType}`;
-            //         acc[id] = (acc[id] || 0) + 1;
+                const accumulateAccountCountBySymbolAndType = (
+                    acc: { [key: string]: number },
+                    { symbol, accountType }: Account,
+                ) => {
+                    // change coinjoin accounts to taproot for analytics
+                    const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
 
-            //         return acc;
-            //     };
+                    const id = `${symbol}_${accType}`;
+                    acc[id] = (acc[id] || 0) + 1;
 
-            //     const accountsWithTransactions = state.wallet.accounts
-            //         .filter(account => account.history.total + (account.history.unconfirmed || 0))
-            //         .reduce(accumulateAccountCountBySymbolAndType, {});
+                    return acc;
+                };
 
-            // const accountsWithNonZeroBalance = state.wallet.accounts
-            //     .filter(
-            //         account =>
-            //             new BigNumber(account.balance).gt(0) ||
-            //             new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
-            //             hasVisibleTokens(
-            //                 account.symbol,
-            //                 account.tokens ?? [],
-            //                 state.tokenDefinitions,
-            //             ),
-            //     )
-            //     .reduce(accumulateAccountCountBySymbolAndType, {});
+                const accountsWithTransactions = state.wallet.accounts
+                    .filter(account => account.history.total + (account.history.unconfirmed || 0))
+                    .reduce(accumulateAccountCountBySymbolAndType, {});
 
-            // const accountsWithTokens = state.wallet.accounts
-            //     .filter(account => new BigNumber((account.tokens || []).length).gt(0))
-            //     .reduce((acc: { [key: string]: number }, { symbol, tokens }) => {
-            //         if (
-            //             tokens &&
-            //             tokens.length > 0 &&
-            //             !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
-            //         ) {
-            //             return acc;
-            //         }
+                const accountsWithNonZeroBalance = state.wallet.accounts
+                    .filter(
+                        account =>
+                            new BigNumber(account.balance).gt(0) ||
+                            new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
+                            hasVisibleTokens(
+                                account.symbol,
+                                account.tokens ?? [],
+                                state.tokenDefinitions,
+                            ),
+                    )
+                    .reduce(accumulateAccountCountBySymbolAndType, {});
 
-            // accs[symbol] = (acc[symbol] || 0) + 1;
-            //     const accountsWithNonZeroBalance = state.wallet.accounts
-            //         .filter(
-            //             account =>
-            //                 new BigNumber(account.balance).gt(0) ||
-            //                 new BigNumber(
-            //                     (account.tokens || []).filter(token =>
-            //                         new BigNumber(token.balance || 0).gt(0),
-            //                     ).length,
-            //                 ).gt(0),
-            //         )
-            //         .reduce(accumulateAccountCountBySymbolAndType, {});
+                const accountsWithTokens = state.wallet.accounts
+                    .filter(account => new BigNumber((account.tokens || []).length).gt(0))
+                    .reduce((acc: { [key: string]: number }, { symbol, tokens }) => {
+                        if (
+                            tokens &&
+                            tokens.length > 0 &&
+                            !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
+                        ) {
+                            return acc;
+                        }
 
-            //     const accountsWithTokens = state.wallet.accounts
-            //         .filter(account => new BigNumber((account.tokens || []).length).gt(0))
-            //         .reduce((acc: { [key: string]: number }, { symbol }: Account) => {
-            //             acc[symbol] = (acc[symbol] || 0) + 1;
+                        acc[symbol] = (acc[symbol] || 0) + 1;
 
-            //             return acc;
-            //         }, {});
+                        return acc;
+                    }, {});
 
-            //     analytics.report({
-            //         type: EventType.AccountsStatus,
-            //         payload: { ...accountsWithTransactions },
-            //     });
+                analytics.report({
+                    type: EventType.AccountsStatus,
+                    payload: { ...accountsWithTransactions },
+                });
 
-            //     analytics.report({
-            //         type: EventType.AccountsNonZeroBalance,
-            //         payload: { ...accountsWithNonZeroBalance },
-            //     });
+                analytics.report({
+                    type: EventType.AccountsNonZeroBalance,
+                    payload: { ...accountsWithNonZeroBalance },
+                });
 
-            //     analytics.report({
-            //         type: EventType.AccountsTokensStatus,
-            //         payload: { ...accountsWithTokens },
-            //     });
-            //     break;
-            // }
+                analytics.report({
+                    type: EventType.AccountsTokensStatus,
+                    payload: { ...accountsWithTokens },
+                });
+                break;
+            }
             case ROUTER.LOCATION_CHANGE:
                 if (
                     state.suite.lifecycle.status !== 'initial' &&
