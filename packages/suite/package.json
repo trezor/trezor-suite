@@ -18,7 +18,7 @@
         "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
-        "@everstake/wallet-sdk": "1.0.15",
+        "@everstake/wallet-sdk-ethereum": "1.0.3",
         "@floating-ui/react": "^0.27.8",
         "@formatjs/intl": "3.1.6",
         "@hookform/resolvers": "^5.0.1",

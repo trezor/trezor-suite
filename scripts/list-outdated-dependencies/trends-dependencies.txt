@@ -9,7 +9,7 @@
 @babel/runtime
 @ethereumjs/common
 @ethereumjs/tx
-@everstake/wallet-sdk
+@everstake/wallet-sdk-ethereum
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @metamask/eth-sig-util

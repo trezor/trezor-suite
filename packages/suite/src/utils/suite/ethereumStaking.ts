@@ -1,4 +1,8 @@
-import { ETH_NETWORK_ADDRESSES, EthNetworkAddresses, Ethereum } from '@everstake/wallet-sdk';
+import {
+    ETH_NETWORK_ADDRESSES,
+    EthNetworkAddresses,
+    Ethereum,
+} from '@everstake/wallet-sdk-ethereum';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
