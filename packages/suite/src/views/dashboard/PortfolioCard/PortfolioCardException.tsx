@@ -90,7 +90,7 @@ const discoveryFailedMessage = (discovery?: DiscoveryStatus) => {
     const networkError: string[] = [];
 
     // todo: use accounts for this
-    const details = discovery.failed.reduce((value, account) => {
+    const details = (discovery.failed ?? []).reduce((value, account) => {
         const network = getNetwork(account.symbol);
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
