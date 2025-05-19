@@ -56,7 +56,7 @@ import {
     selectTradingNativeCoinSymbolByCryptoId,
     selectTradingPaymentMethods,
     selectTradingPlatformByCryptoId,
-    selectTradingPrefilledFromCryptoId,
+    selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
     selectTradingSellFormStep,
     selectTradingSellInfo,
@@ -268,7 +268,10 @@ describe('tradingSelectors', () => {
                         selectedFee: 'normal',
                     },
                     modalAccountKey: 'modalAccountKey',
-                    prefilledFromCryptoId: 'bitcoin' as CryptoId,
+                    prefilledFromAccount: {
+                        cryptoId: 'bitcoin' as CryptoId,
+                        descriptor: 'btc-desc',
+                    },
                     activeSection: 'sell',
                 },
                 selectedAccount: {
@@ -909,8 +912,11 @@ describe('tradingSelectors', () => {
         expect(selectTradingModalAccountKey(state)).toEqual('modalAccountKey');
     });
 
-    it('selectTradingPrefilledFromCryptoId should return stable prefilledFromCryptoId ', () => {
-        expect(selectTradingPrefilledFromCryptoId(state)).toEqual('bitcoin');
+    it('selectTradingPrefilledFromAccount should return stable prefilledFromAccount ', () => {
+        expect(selectTradingPrefilledFromAccount(state)).toEqual({
+            cryptoId: 'bitcoin',
+            descriptor: 'btc-desc',
+        });
     });
 
     describe('selectTradingActiveSection', () => {
