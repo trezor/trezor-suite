@@ -1,7 +1,9 @@
 #[cfg(target_os = "linux")]
 mod platform_linux;
 #[cfg(target_os = "linux")]
-pub use self::platform_linux::{get_device_address, is_device_paired};
+pub use self::platform_linux::{
+    get_device_address, get_device_properties, get_device_proxy, is_device_paired,
+};
 
 #[cfg(target_os = "macos")]
 mod platform_macos;

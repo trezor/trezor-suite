@@ -64,6 +64,8 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
         manager.set_scanning(true).await;
     }
 
+    // let the_task = broadcast.get_abortable_task("get_abortable_task".to_string());
+
     // listen for Abort and AdapterStateChanged messages from the other threads
     let mut receiver = broadcast.subscribe();
     let manager_ref = manager.clone();

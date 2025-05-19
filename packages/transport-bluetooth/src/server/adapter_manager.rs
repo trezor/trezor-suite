@@ -406,21 +406,42 @@ impl AdapterManager {
                         }
                     }
                     CentralEvent::DeviceUpdated(id) => {
-                        if let Some(device) = self_ref.get_device(&id).await {
-                            info!("DeviceUpdated {:?} : {:?}", id, device);
-                            let devices = self_ref.get_devices().await;
-                            self_ref
-                                .dispatch_notification(NotificationEvent::DeviceUpdated {
-                                    id: id.to_string(),
-                                    devices,
-                                })
-                                .await;
+                        if let Some(mut device) = self_ref.get_device(&id).await {
+                            let mut emit_update = false;
+                            if let Ok(peripheral) = adapter.peripheral(&id).await {
+                                if let Ok(updated) = device.update_properties(peripheral).await {
+                                    emit_update = updated;
+                                }
+                            };
+
+                            if emit_update {
+                                info!("DeviceUpdated {:?} : {:?}", id, device);
+                                let devices = self_ref.get_devices().await;
+                                self_ref
+                                    .dispatch_notification(NotificationEvent::DeviceUpdated {
+                                        id: id.to_string(),
+                                        devices,
+                                    })
+                                    .await;
+                            }
                         }
                     }
                     CentralEvent::DeviceDisconnected(id) => {
-                        if let Some(device) = self_ref.get_device(&id).await {
+                        if let Some(mut device) = self_ref.get_device(&id).await {
                             info!("DeviceDisconnected: {:?} : {:?}", id, device);
-                            // TODO: disconnect TrezorDevice
+
+                            if let Ok(peripheral) = adapter.peripheral(&id).await {
+                                if let Ok(updated) = device.update_properties(peripheral).await {
+                                    // emit_update = updated;
+                                }
+                            };
+
+                            // let peripheral = match adapter.peripheral(&id).await {
+                            //     Ok(peripheral) => Some(peripheral),
+                            //     Err(_) => None,
+                            // };
+                            // let _ = device.update_properties(peripheral).await;
+
                             let devices = self_ref.get_devices().await;
                             self_ref
                                 .dispatch_notification(NotificationEvent::DeviceDisconnected {

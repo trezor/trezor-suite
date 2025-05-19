@@ -4,6 +4,10 @@ use btleplug::api::CentralState;
 #[derive(serde::Serialize, Clone, Debug)]
 pub enum AbortProcess {
     ClientDisconnected(String), // websocket client disconnected
+    DeviceDisconnected(String), // device disconnected
+    AbortedBySignal,            // aborted by signal
+    AbortedByTimeout,           // aborted by timeout
+    Read(String),               // device closed/disconnected
     Scan,                       // stop scan
 }
 
@@ -14,12 +18,30 @@ pub enum ChannelMessage {
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct KnownDevice {
+    pub id: String,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct State {
+    pub devices: Vec<KnownDevice>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 #[serde(tag = "method", content = "params", rename_all = "snake_case")]
 pub enum WsRequestMethod {
     GetInfo,
     Enumerate,
     StartScan,
     StopScan,
+    ConnectDevice(String, u32),
+    DisconnectDevice(String),
+    OpenDevice(String),
+    CloseDevice(String),
+    Write(String, Vec<u8>),
+    Read(String),
+    ForgetDevice(String),
+    SetState(State),
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -40,6 +62,7 @@ pub enum WsResponsePayload {
     },
     Peripherals(Vec<TrezorDevice>),
     Success(bool),
+    Read(Vec<u8>),
 }
 
 #[derive(serde::Serialize, Clone, Debug)]
@@ -94,6 +117,7 @@ pub enum NotificationEvent {
         id: String,
         devices: Vec<TrezorDevice>,
     },
+    DeviceConnectionStatus(TrezorDevice),
     DeviceDisconnected {
         id: String,
         devices: Vec<TrezorDevice>,
@@ -101,6 +125,11 @@ pub enum NotificationEvent {
     DeviceRemoved {
         id: String,
     },
+    DeviceRead {
+        id: String,
+        data: Vec<u8>,
+    },
+    DeviceSettingsUi,
 }
 
 #[derive(Debug, thiserror::Error)]

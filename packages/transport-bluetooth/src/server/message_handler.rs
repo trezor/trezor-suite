@@ -58,6 +58,18 @@ pub async fn handle_message(
         WsRequestMethod::Enumerate => methods::enumerate(manager).await,
         WsRequestMethod::StartScan => methods::start_scan(manager, broadcast).await,
         WsRequestMethod::StopScan => methods::stop_scan(manager, broadcast).await,
+        WsRequestMethod::ConnectDevice(id, timeout) => {
+            methods::connect_device(manager, broadcast, id, timeout).await
+        }
+        WsRequestMethod::DisconnectDevice(id) => {
+            methods::disconnect_device(manager, broadcast, id).await
+        }
+        WsRequestMethod::ForgetDevice(id) => methods::forget_device(manager, broadcast, id).await,
+        WsRequestMethod::OpenDevice(id) => methods::open_device(id, manager, broadcast).await,
+        WsRequestMethod::CloseDevice(id) => methods::close_device(id, manager, broadcast).await,
+        WsRequestMethod::Read(id) => methods::read(id).await,
+        WsRequestMethod::Write(id, data) => methods::write(id, data, manager).await,
+        WsRequestMethod::SetState(state) => methods::set_state(state, manager).await,
     };
 
     match payload {
