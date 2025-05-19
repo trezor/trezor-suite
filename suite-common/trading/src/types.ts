@@ -82,16 +82,11 @@ export type TradingPaymentMethodListProps = {
 type TradingCommonTransaction = {
     date: string;
     key?: string;
-    account: {
-        descriptor: Account['descriptor'];
-        symbol: Account['symbol'];
-        accountType: Account['accountType'];
-        accountIndex: Account['index'];
-    };
 };
 export type TradingTransactionBuy = TradingCommonTransaction & {
     tradeType: TradingBuyType;
     data: BuyTrade;
+    selectedAccountKey: Account['key'] | undefined;
     receiveAccountKey: Account['key'] | undefined;
 };
 export type TradingTransactionSell = TradingCommonTransaction & {

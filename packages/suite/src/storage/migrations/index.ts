@@ -22,6 +22,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
 import { migrationCoinmarketToTrading } from 'src/storage/migrations/trading/migrationCoinmarketToTrading';
+import { migrateToV56 } from 'src/storage/migrations/versions/migrateToV56';
 import type { BlockbookUrl, CustomBackend } from 'src/types/wallet/backend';
 
 import { updateAll } from './utils';
@@ -1283,5 +1284,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 55) {
         await migrateToV55(db, oldVersion, newVersion, transaction);
         db.createObjectStore('explorer');
+    }
+
+    if (oldVersion < 56) {
+        await migrateToV56(db, oldVersion, newVersion, transaction);
     }
 };

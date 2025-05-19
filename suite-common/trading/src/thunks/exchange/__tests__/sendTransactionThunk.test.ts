@@ -11,6 +11,7 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { TradingTransactionExchange } from '../../../types';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
@@ -79,20 +80,17 @@ describe('sendTransactionThunk', () => {
 
         const account = accountBtc as Account;
 
-        const trade = {
+        const trade: TradingTransactionExchange = {
             tradeType: 'exchange' as const,
             date: new Date().toISOString(),
             key: getQuote().orderId,
-            account: {
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                accountType: account.accountType,
-                accountIndex: account.index,
-            },
+
             data: {
                 ...getQuote(),
                 sendAddress: '1',
             },
+            sendAccountKey: 'xxx',
+            receiveAccountKey: 'yyy',
         };
 
         return {
@@ -313,12 +311,6 @@ describe('sendTransactionThunk', () => {
                     partnerPaymentExtraId: undefined,
                 },
                 key: trade.data.orderId,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
             },
         ]);
         expect(store.getState().wallet.tradingNew.exchange.transactionId).toBe(trade.data.orderId);

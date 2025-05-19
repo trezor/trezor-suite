@@ -33,6 +33,12 @@ export const verifyAddressThunk = createThunk(
 
         dispatch(tradingActions.setModalAccountKey(account.key));
 
+        if (tradingAction === tradingBuyActions.verifyAddress.type) {
+            dispatch(tradingBuyActions.setTradingAccountKey(account.key));
+        } else {
+            dispatch(tradingExchangeActions.setReceiveAccountKey(account.key));
+        }
+
         const addressDisplayType = extra.selectors.selectAddressDisplayType(getState());
 
         const { useEmptyPassphrase, connected, available } = device;

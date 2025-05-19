@@ -126,12 +126,6 @@ export const sendSellTransactionThunk = createThunk(
                 tradeType: 'sell',
                 date: new Date().toISOString(),
                 key: response.orderId,
-                account: {
-                    descriptor: account.descriptor,
-                    symbol: account.symbol,
-                    accountType: account.accountType,
-                    accountIndex: account.index,
-                },
                 data: response,
                 sendAccountKey: account.key,
             }),

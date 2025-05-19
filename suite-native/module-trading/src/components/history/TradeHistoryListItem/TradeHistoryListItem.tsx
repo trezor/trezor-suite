@@ -1,10 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountByDescriptorAndNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
 import {
     TradeHistoryListItemMemoized,
@@ -19,10 +15,11 @@ export const TradeHistoryListItem = ({
     onPress,
 }: TradeHistoryListItemMemoizedProps) => {
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectDeviceAccountByDescriptorAndNetworkSymbol(
+        selectAccountByKey(
             state,
-            transaction.account.descriptor,
-            transaction.account.symbol,
+            'selectedAccountKey' in transaction
+                ? transaction.selectedAccountKey
+                : transaction.sendAccountKey,
         ),
     );
 

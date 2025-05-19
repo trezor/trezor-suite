@@ -11,7 +11,7 @@ import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingSellState, sellInitialState } from '../../../reducers/sellReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { TradingSellFormProps } from '../../../types';
+import { TradingSellFormProps, TradingTransactionSell } from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
@@ -74,17 +74,12 @@ describe('sendSellTransactionThunk', () => {
         });
 
         const account = accountBtc as Account;
-        const trade = {
+        const trade: TradingTransactionSell = {
             tradeType: 'sell' as const,
             date: new Date().toISOString(),
             key: getQuote().orderId,
-            account: {
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                accountType: account.accountType,
-                accountIndex: account.index,
-            },
             data: getQuote(),
+            sendAccountKey: 'xxx',
         };
         const mockNextStep = jest.fn();
         const formValues = {
@@ -276,12 +271,6 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
                 sendAccountKey: 'btc-descriptor-btc',
             },
         ]);
@@ -327,12 +316,6 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
                 sendAccountKey: 'btc-descriptor-btc',
             },
         ]);
@@ -393,12 +376,6 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
                 sendAccountKey: 'btc-descriptor-btc',
             },
         ]);
@@ -454,12 +431,6 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
                 sendAccountKey: 'btc-descriptor-btc',
             },
         ]);

@@ -254,12 +254,6 @@ describe('handleSellTradeThunk', () => {
                 data: mockResponse.trade,
                 key: mockResponse.trade.orderId,
                 date: dateISO,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
                 sendAccountKey: 'btc-descriptor-btc',
             },
         ]);
@@ -308,12 +302,6 @@ describe('handleSellTradeThunk', () => {
                 data: mockResponse.trade,
                 key: mockResponse.trade.orderId,
                 date: dateISO,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
                 sendAccountKey: 'btc-descriptor-btc',
             },
         ]);

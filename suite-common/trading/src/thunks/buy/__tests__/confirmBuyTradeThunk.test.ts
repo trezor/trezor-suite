@@ -38,6 +38,7 @@ describe('confirmBuyTradeThunk', () => {
                             ...initialState.buy,
                             selectedQuote: MIN_MAX_QUOTES_OK[1],
                             ...(initialBuyState ?? {}),
+                            receiveAccountKey: 'xxx',
                         },
                     },
                 },
@@ -253,10 +254,7 @@ describe('confirmBuyTradeThunk', () => {
                 returnUrl: 'returnUrl',
                 address: 'address',
                 account: {
-                    symbol: 'btc',
-                    accountType: 'normal',
-                    descriptor: 'desc',
-                    index: 1,
+                    key: 'yyy',
                 } as Account,
                 triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                 processResponseData: mockProcessResponseData,
@@ -273,12 +271,7 @@ describe('confirmBuyTradeThunk', () => {
             date: dateString,
             data: MIN_MAX_QUOTES_OK[1],
             key: MIN_MAX_QUOTES_OK[1].paymentId,
-            account: {
-                descriptor: 'desc',
-                symbol: 'btc',
-                accountType: 'normal',
-                accountIndex: 1,
-            },
+            selectedAccountKey: 'yyy',
         });
         expect(store.getState().wallet.tradingNew.buy.isLoading).toBeFalsy();
     });

@@ -234,12 +234,6 @@ describe('sendDexTransactionThunk', () => {
                 date: dateString,
                 data: trade,
                 key: trade.orderId,
-                account: {
-                    descriptor: 'btc-descriptor',
-                    symbol: 'btc',
-                    accountType: 'segwit',
-                    accountIndex: 1,
-                },
             },
         ]);
         expect(exchangeThunks.confirmTradeThunk).toHaveBeenCalledTimes(1);

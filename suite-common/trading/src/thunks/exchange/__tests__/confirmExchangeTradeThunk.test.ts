@@ -609,12 +609,6 @@ describe('confirmExchangeTradeThunk', () => {
             date: dateString,
             data: tradeResponse,
             key: mockResponse.orderId,
-            account: {
-                descriptor: 'btc-descriptor',
-                symbol: 'btc',
-                accountType: 'segwit',
-                accountIndex: 1,
-            },
         });
         expect(response).toBeTruthy();
     });
@@ -678,12 +672,6 @@ describe('confirmExchangeTradeThunk', () => {
             date: dateString,
             data: tradeResponse,
             key: mockResponse.orderId,
-            account: {
-                descriptor: 'btc-descriptor',
-                symbol: 'btc',
-                accountType: 'segwit',
-                accountIndex: 1,
-            },
         });
         expect(response).toBeTruthy();
     });
@@ -750,12 +738,6 @@ describe('confirmExchangeTradeThunk', () => {
             date: dateString,
             data: tradeResponse,
             key: mockResponse.orderId,
-            account: {
-                descriptor: 'btc-descriptor',
-                symbol: 'btc',
-                accountType: 'segwit',
-                accountIndex: 1,
-            },
         });
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);
         expect(response).toBeTruthy();
@@ -813,12 +795,6 @@ describe('confirmExchangeTradeThunk', () => {
             date: dateString,
             data: tradeResponse,
             key: mockResponse.orderId,
-            account: {
-                descriptor: 'btc-descriptor',
-                symbol: 'btc',
-                accountType: 'segwit',
-                accountIndex: 1,
-            },
         });
         expect(exchange.formStep).toEqual('SEND_TRANSACTION');
         expect(response).toBeTruthy();

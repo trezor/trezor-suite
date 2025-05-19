@@ -8,11 +8,7 @@ import {
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
 import { NetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountByDescriptorAndNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Card, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -53,10 +49,11 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
         selectTradingTradeByOrderId(state, orderId),
     );
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectDeviceAccountByDescriptorAndNetworkSymbol(
+        selectAccountByKey(
             state,
-            trade?.account.descriptor,
-            trade?.account.symbol,
+            trade && 'selectedAccountKey' in trade
+                ? trade.selectedAccountKey
+                : trade?.sendAccountKey,
         ),
     );
 

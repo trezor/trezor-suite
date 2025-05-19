@@ -210,55 +210,32 @@ describe('tradingSelectors', () => {
                             tradeType: 'buy',
                             data: { orderId: 'orderId1' },
                             date: '2024-03-01T10:00:00Z',
-                            account: {
-                                descriptor: accountEth.descriptor,
-                                symbol: accountEth.symbol,
-                                accountType: accountEth.accountType,
-                                accountIndex: accountEth.index,
-                            },
+                            selectedAccountKey: accountEth.key,
                         },
                         {
                             tradeType: 'buy',
                             data: { orderId: 'orderId2' },
                             date: '2024-03-02T10:00:00Z',
-                            account: {
-                                descriptor: accountEth.descriptor,
-                                symbol: accountEth.symbol,
-                                accountType: accountEth.accountType,
-                                accountIndex: accountEth.index,
-                            },
+                            selectedAccountKey: accountEth.key,
                         },
                         {
                             tradeType: 'buy',
                             data: { orderId: 'orderId3' },
                             date: '2024-03-03T10:00:00Z',
-                            account: {
-                                descriptor: accountEth.descriptor,
-                                symbol: accountEth.symbol,
-                                accountType: accountEth.accountType,
-                                accountIndex: accountEth.index,
-                            },
+                            selectedAccountKey: accountEth.key,
                         },
                         {
                             tradeType: 'exchange',
                             data: { orderId: 'orderId4' },
                             date: '2024-03-04T10:00:00Z',
-                            account: {
-                                descriptor: accountEth.descriptor,
-                                symbol: accountEth.symbol,
-                                accountType: accountEth.accountType,
-                                accountIndex: accountEth.index,
-                            },
+                            sendAccountKey: accountEth.key,
+                            receiveAccountKey: accountBtc.key,
                         },
                         {
                             tradeType: 'exchange',
                             data: { orderId: 'orderId5' },
-                            account: {
-                                descriptor: accountEth.descriptor,
-                                symbol: accountEth.symbol,
-                                accountType: accountEth.accountType,
-                                accountIndex: accountEth.index,
-                            },
+                            sendAccountKey: accountEth.key,
+                            receiveAccountKey: accountBtc.key,
                         },
                     ],
                     composedTransactionInfo: {
@@ -1133,13 +1110,13 @@ describe('tradingSelectors', () => {
                         account: { deviceState: 'device1' },
                     },
                     accounts: [
-                        { descriptor: 'account1', deviceState: 'device1' },
-                        { descriptor: 'account2', deviceState: 'device2' },
+                        { key: 'key1', deviceState: 'device1' },
+                        { key: 'key2', deviceState: 'device2' },
                     ],
                     tradingNew: {
                         trades: [
-                            { account: { descriptor: 'account1' }, tradeType: 'buy' },
-                            { account: { descriptor: 'account2' }, tradeType: 'sell' },
+                            { selectedAccountKey: 'key1', tradeType: 'buy' },
+                            { sendAccountKey: 'key2', tradeType: 'sell' },
                         ],
                     },
                 },
@@ -1147,7 +1124,7 @@ describe('tradingSelectors', () => {
 
             const result = selectTradingTradesForSelectedDevice(mockState);
 
-            expect(result).toEqual([{ account: { descriptor: 'account1' }, tradeType: 'buy' }]);
+            expect(result).toEqual([{ selectedAccountKey: 'key1', tradeType: 'buy' }]);
         });
 
         it('should return an empty array if no trades match the selected device', () => {
@@ -1157,14 +1134,11 @@ describe('tradingSelectors', () => {
                         account: { deviceState: 'device3' },
                     },
                     accounts: [
-                        { descriptor: 'account1', deviceState: 'device1' },
-                        { descriptor: 'account2', deviceState: 'device2' },
+                        { key: 'key1', deviceState: 'device1' },
+                        { key: 'key2', deviceState: 'device2' },
                     ],
                     tradingNew: {
-                        trades: [
-                            { account: { descriptor: 'account1' }, tradeType: 'buy' },
-                            { account: { descriptor: 'account2' }, tradeType: 'sell' },
-                        ],
+                        trades: [{ tradeType: 'buy' }, { tradeType: 'sell' }],
                     },
                 },
             } as unknown as TradingRootState;
@@ -1181,8 +1155,8 @@ describe('tradingSelectors', () => {
                         account: { deviceState: 'device1' },
                     },
                     accounts: [
-                        { descriptor: 'account1', deviceState: 'device1' },
-                        { descriptor: 'account2', deviceState: 'device2' },
+                        { key: 'key1', deviceState: 'device1' },
+                        { key: 'key2', deviceState: 'device2' },
                     ],
                     tradingNew: {
                         trades: [],

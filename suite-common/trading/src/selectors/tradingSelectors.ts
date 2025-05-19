@@ -288,9 +288,12 @@ export const selectTradingTradesForSelectedDevice = createMemoizedSelector(
     [selectAccounts, state => state.wallet.selectedAccount, selectTradingTrades],
     (accounts, selectedAccount, trades): TradingTransaction[] =>
         trades.filter(tx => {
-            const txDeviceId = accounts.find(
-                account => tx.account.descriptor === account.descriptor,
-            )?.deviceState;
+            const txDeviceId = accounts.find(account => {
+                const transactionAccountKey =
+                    'selectedAccountKey' in tx ? tx.selectedAccountKey : tx.sendAccountKey;
+
+                return transactionAccountKey === account.key;
+            })?.deviceState;
 
             return txDeviceId === selectedAccount.account?.deviceState;
         }),
@@ -306,14 +309,15 @@ export const selectDeviceTradingTrades: (
         (_, tradeType: TradingType) => tradeType,
     ],
     (accounts, trades, tradeType) => {
-        const accountDescriptors = new Set(accounts.map(({ descriptor }) => descriptor));
+        const accountKeys = new Set(accounts.map(({ key }) => key));
 
         return returnStableArrayIfEmpty(
-            trades.filter(
-                trade =>
-                    accountDescriptors.has(trade.account?.descriptor) &&
-                    trade.tradeType === tradeType,
-            ),
+            trades.filter(trade => {
+                const tradeKey =
+                    'selectedAccountKey' in trade ? trade.selectedAccountKey : trade.sendAccountKey;
+
+                return tradeKey && accountKeys.has(tradeKey) && trade.tradeType === tradeType;
+            }),
         );
     },
 );
@@ -536,6 +540,9 @@ export const selectValidTradingBuyQuotes = createMemoizedSelector(
         return quotes.filter(item => item.rate && item.rate !== 0);
     },
 );
+
+export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
+    state.wallet.tradingNew.buy.tradingAccountKey;
 
 export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.tradingAccountKey;

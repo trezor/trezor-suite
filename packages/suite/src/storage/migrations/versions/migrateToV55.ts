@@ -12,7 +12,6 @@ import { OnUpgradeFunc } from '@trezor/suite-storage';
 import { SuiteDBSchema } from 'src/storage/definitions';
 
 import { updateAll } from '../utils';
-
 const findAccountForTrade = (
     accounts: Account[],
     address: string | undefined,
@@ -72,6 +71,7 @@ export const migrateToV55: OnUpgradeFunc<SuiteDBSchema> = async (
             trade.sendAccountKey = findAccountForTrade(
                 accounts,
                 // account may be incorrect because it may not be current, but the default
+                // @ts-expect-error - account deprecated property
                 trade.account.descriptor,
                 trade.data.cryptoCurrency,
             )?.key;
@@ -83,7 +83,7 @@ export const migrateToV55: OnUpgradeFunc<SuiteDBSchema> = async (
             if (trade.sendAccountKey === undefined) {
                 trade.sendAccountKey = findAccountForTrade(
                     accounts,
-                    // account may be incorrect because it may not be current, but the default
+                    // @ts-expect-error - account deprecated property
                     trade.account.descriptor,
                     trade.data.send,
                 )?.key;

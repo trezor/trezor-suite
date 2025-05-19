@@ -105,12 +105,6 @@ export const signDataAndConfirmThunk = createThunk(
                 tradeType: 'exchange',
                 date: new Date().toISOString(),
                 key: trade.orderId,
-                account: {
-                    descriptor: account.descriptor,
-                    symbol: account.symbol,
-                    accountType: account.accountType,
-                    accountIndex: account.index,
-                },
                 data: trade,
                 sendAccountKey,
                 receiveAccountKey,

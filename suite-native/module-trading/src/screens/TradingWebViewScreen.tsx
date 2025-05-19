@@ -8,11 +8,7 @@ import { useURL } from 'expo-linking';
 import { WebViewSource } from 'react-native-webview/lib/WebViewTypes';
 
 import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountByDescriptorAndNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -44,10 +40,10 @@ export const TradingWebViewScreen = () => {
         selectTradingTradeByOrderId(state, orderId ?? ''),
     );
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectDeviceAccountByDescriptorAndNetworkSymbol(
+        selectAccountByKey(
             state,
-            trade?.account.descriptor,
-            trade?.account.symbol,
+            trade &&
+                ('selectedAccountKey' in trade ? trade.selectedAccountKey : trade.sendAccountKey),
         ),
     );
 
