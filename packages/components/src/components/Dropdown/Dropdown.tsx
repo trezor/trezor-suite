@@ -38,6 +38,7 @@ export const Dropdown = forwardRef(
             iconName = 'dotsThree',
             'data-testid': dataTest,
             minWidth,
+            maxWidth,
             width,
         }: DropdownProps,
         ref,
@@ -72,6 +73,7 @@ export const Dropdown = forwardRef(
                         onClose={popoverRef.current?.close}
                         minWidth={minWidth}
                         width={width}
+                        maxWidth={maxWidth}
                     />
                 }
             >

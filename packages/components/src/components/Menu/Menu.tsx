@@ -18,7 +18,11 @@ import { Column, Row } from '../Flex/Flex';
 import { Icon, IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
-export const allowedMenuFrameProps = ['width', 'minWidth'] as const satisfies FramePropsKeys[];
+export const allowedMenuFrameProps = [
+    'width',
+    'minWidth',
+    'maxWidth',
+] as const satisfies FramePropsKeys[];
 type AllowedMenuFrameProps = Pick<FrameProps, (typeof allowedMenuFrameProps)[number]>;
 
 const Container = styled.div<TransientProps<AllowedMenuFrameProps>>`

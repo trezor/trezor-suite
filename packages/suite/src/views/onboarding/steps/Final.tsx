@@ -201,6 +201,7 @@ export const FinalStep = () => {
                                     placement={{ position: 'bottom', alignment: 'end' }}
                                     content={
                                         <Menu
+                                            maxWidth={450}
                                             content={
                                                 <HomescreenGallery
                                                     onConfirm={() => {
