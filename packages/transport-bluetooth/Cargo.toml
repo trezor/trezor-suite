@@ -1,6 +1,6 @@
 [package]
 name = "trezor-bluetooth"
-version = "0.3.1"
+version = "0.3.4"
 edition = "2021"
 
 [dependencies]
@@ -17,7 +17,9 @@ structopt = "0.3.26"
 tokio = { version = "^1.44.0", features = ["sync", "rt", "macros", "rt-multi-thread", "io-util"] }
 thiserror = "^2.0.12"
 
-btleplug = "0.11.8"
+# btleplug = { path="../../../btleplug", version = "0.11.8", features = ["serde"] }
+btleplug = { git = "https://github.com/szymonlesisz/btleplug", branch = "fix/corebluetooth-write-without-response", features = ["serde"] }
+# btleplug = "0.11.8"
 dashmap = "5.5.3"
 uuid = "1.6.1"
 
@@ -27,4 +29,4 @@ dbus-tokio = "0.7.6"
 bluez-async = "0.7.2"
 
 [target.'cfg(target_os = "windows")'.dependencies]
-windows = { version = "0.57.0", features = ["Devices_Bluetooth", "Devices_Enumeration"] }
+windows = { version = "0.57.0", features = ["Devices_Bluetooth", "Devices_Enumeration", "Devices_Bluetooth_GenericAttributeProfile", "Foundation", "Storage_Streams"] }

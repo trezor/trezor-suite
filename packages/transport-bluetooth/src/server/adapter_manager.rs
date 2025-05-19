@@ -414,6 +414,7 @@ impl AdapterManager {
                     }
                     CentralEvent::DeviceDiscovered(id) => {
                         if let Some(device) = utils::scan_filter(&adapter, &id).await {
+                        // if let Ok(device) = adapter.peripheral(&id).await {
                             info!("DeviceDiscovered {:?} : {:?}", id, device);
                             if self_ref.get_device(&id).await.is_none() {
                                 if let Ok(device) = self_ref.add_device(&id).await {

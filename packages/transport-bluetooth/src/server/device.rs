@@ -152,7 +152,7 @@ impl TrezorDevice {
 
         let props = TrezorDeviceProps {
             name,
-            address,
+            address: address.clone(),
             data: data.to_vec(),
             paired,
             connected: *connected,
@@ -278,8 +278,7 @@ impl TrezorDevice {
                 }
                 #[cfg(target_os = "linux")]
                 {
-                    props.address = platform::get_device_address(peripheral);
-                    // props.address = BluetoothDevice::get_address(peripheral);
+                    props.address = BluetoothDevice::get_address(peripheral);
                 }
             } else {
                 props.connection_status = self.update_connection_status(
