@@ -5,7 +5,7 @@ import { ContinueOnTrezorScreenContent, useWipeDevice } from '@suite-native/devi
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
-const contentMap = {
+const cardStepperContentMap = {
     1: {
         header: (
             <Translation id="moduleDeviceSettings.wipeDevice.confirmationCards.eraseAllData.title" />
@@ -36,11 +36,6 @@ export const WipeDeviceScreen = () => {
         }
     };
 
-    const handleWipeDevice = () => {
-        console.warn('wipe device');
-        wipeDevice();
-    };
-
     if (isWipeInProgress) {
         return (
             <Screen header={<ScreenHeader leftIcon={null} />}>
@@ -56,15 +51,15 @@ export const WipeDeviceScreen = () => {
                     <Translation id="moduleDeviceSettings.wipeDevice.title" />
                 </Text>
                 <Text variant="body" color="textSubdued">
-                    <Translation id="moduleDeviceSettings.wipeDevice.subTitle" />
+                    <Translation id="moduleDeviceSettings.wipeDevice.subtitle" />
                 </Text>
                 <CardStepper
-                    onFinish={handleWipeDevice}
+                    onFinish={wipeDevice}
                     primaryButtonText={<Translation id="generic.buttons.goBack" />}
                     secondaryButtonText={<Translation id="generic.buttons.understand" />}
                     buttonsActionType="destructive"
                     onPressSecondaryButton={handleSecondaryButtonPress}
-                    stepToContentMap={contentMap}
+                    stepToContentMap={cardStepperContentMap}
                 />
             </VStack>
         </Screen>

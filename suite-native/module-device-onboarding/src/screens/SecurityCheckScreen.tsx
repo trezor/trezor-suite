@@ -13,7 +13,7 @@ import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { SecuritySealDescription } from '../components/SecuritySealDescription';
 
-const stepToContentMap = {
+const cardStepperContentMap = {
     1: {
         header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step1.header" />,
         secondaryButtonParameter: 'untrustedReseller',
@@ -100,7 +100,7 @@ export const SecurityCheckScreen = ({
                         }
                         primaryButtonText={<Translation id="generic.buttons.yes" />}
                         onPressSecondaryButton={handlePressSecondaryButton}
-                        stepToContentMap={stepToContentMap}
+                        stepToContentMap={cardStepperContentMap}
                     />
                 </VStack>
             </VStack>

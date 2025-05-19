@@ -15,7 +15,7 @@ import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-export type CardStepperButtonsActionType = 'destructive' | 'normal';
+export type CardStepperButtonsActionType = 'destructive' | 'primary';
 
 type CardStepperItemProps = {
     header: ReactNode;
@@ -31,7 +31,7 @@ type CardStepperItemProps = {
 };
 
 const buttonsColorSchemeMap = {
-    normal: {
+    primary: {
         primary: 'primary',
         secondary: 'tertiaryElevation0',
     },
@@ -81,7 +81,7 @@ export const CardStepperItem = ({
     onPressSecondaryButton,
     primaryButtonText,
     secondaryButtonText,
-    buttonsActionType = 'normal',
+    buttonsActionType = 'primary',
 }: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
     const iconName = isChecked ? 'check' : icon;
