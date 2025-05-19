@@ -51,16 +51,18 @@ export const ActionButton = styled(
         children,
         ...buttonProps
     }: WithTooltipProps & ButtonProps) => (
-        <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
-            <Button
-                {...buttonProps}
-                size="small"
-                margin={{ top: spacings.xxs, bottom: spacings.xxs, left: spacings.xxs }}
-                minWidth={140}
-            >
-                {children}
-            </Button>
-        </Tooltip>
+        <div>
+            <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
+                <Button
+                    {...buttonProps}
+                    size="small"
+                    margin={{ top: spacings.xxs, bottom: spacings.xxs, left: spacings.xxs }}
+                    minWidth={140}
+                >
+                    {children}
+                </Button>
+            </Tooltip>
+        </div>
     ),
 )`
     &:not(:first-child) {
