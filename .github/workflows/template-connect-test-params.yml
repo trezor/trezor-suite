@@ -78,6 +78,11 @@ jobs:
         with:
           name: build-artifact-connect-iframe
           path: packages/connect-iframe/build
+      - name: Retrieve build firmware-release-config
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact-firmware-release-config
+          path: packages/firmware-release-config/files
       - if: ${{ inputs.testEnv == 'web' }}
         run: cd packages/connect-iframe && tree .
       - if: ${{ inputs.testEnv == 'web' }}

@@ -36,7 +36,7 @@ runs:
       run: |
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-        yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
+        yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build @trezor/firmware-release-config
 
     - name: Build Suite Web
       shell: bash
@@ -45,6 +45,7 @@ runs:
         DESKTOP_APP_NAME: "Trezor-Suite"
       run: |
         yarn message-system-sign-config
+        yarn workspace @trezor/firmware-release-config build:lib
         yarn workspace @trezor/suite-data build:lib
         NODE_ENV=production yarn workspace @trezor/connect-iframe build:lib
         yarn workspace @trezor/suite-web build

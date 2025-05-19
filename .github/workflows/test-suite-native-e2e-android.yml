@@ -80,6 +80,10 @@ jobs:
         working-directory: ./suite-common/message-system
         run: yarn sign-config
 
+      - name: Sign firmware release config
+        working-directory: ./packages/firmware-release-config
+        run: yarn sign-release-config
+
       - name: get Expo app fingerprint
         id: expo-fingerprint
         working-directory: ./suite-native/app
@@ -223,6 +227,10 @@ jobs:
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn install
+
+      - name: Sign firmware release config
+        working-directory: ./packages/firmware-release-config
+        run: yarn sign-release-config
 
       - name: Get device name from detox config file
         id: device

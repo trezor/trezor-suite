@@ -59,6 +59,7 @@ runs:
       run: |
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+        yarn workspace @trezor/firmware-release-config build:lib
 
     - name: Build connect-web
       shell: bash

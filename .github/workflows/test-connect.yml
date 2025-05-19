@@ -50,7 +50,8 @@ jobs:
           cache-dependency-path: "**/yarn.lock"
       - run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-      - run: yarn workspaces focus @trezor/connect-iframe @trezor/connect-web
+      - run: yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/firmware-release-config
+      - run: yarn workspace @trezor/firmware-release-config build:lib
       - run: yarn workspace @trezor/connect-iframe build
       - run: yarn workspace @trezor/connect-web build
       # upload + download takes longer than doing yarn build:libs
@@ -64,6 +65,11 @@ jobs:
         with:
           name: build-artifact-connect-iframe
           path: packages/connect-iframe/build
+      - name: Upload build firmware-release-config
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact-firmware-release-config
+          path: packages/firmware-release-config/files
 
   set-matrix:
     runs-on: ubuntu-latest

@@ -12115,6 +12115,7 @@ __metadata:
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/firmware-release-config": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
@@ -12223,7 +12224,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/firmware-release-config@workspace:packages/firmware-release-config":
+"@trezor/firmware-release-config@workspace:*, @trezor/firmware-release-config@workspace:packages/firmware-release-config":
   version: 0.0.0-use.local
   resolution: "@trezor/firmware-release-config@workspace:packages/firmware-release-config"
   dependencies:

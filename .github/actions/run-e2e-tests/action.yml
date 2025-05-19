@@ -77,7 +77,8 @@ runs:
       run: |
         echo "::group::Install PW Dependencies"
         echo "Silently installing Playwright dependencies"
-        yarn workspaces focus @trezor/suite-desktop-core ${{ inputs.workspace-dependencies }} > /dev/null
+        yarn workspaces focus @trezor/firmware-release-config @trezor/suite-desktop-core ${{ inputs.workspace-dependencies }} > /dev/null
+        yarn workspace @trezor/firmware-release-config build:lib
         if [[ "${{ inputs.project }}" == "web" ]]; then
           npx playwright install --with-deps > /dev/null
         fi
