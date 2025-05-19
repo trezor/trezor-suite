@@ -15,6 +15,13 @@ pub async fn scan_filter(adapter: &Adapter, id: &PeripheralId) -> Option<Periphe
         }
     };
 
+    // btleplug ScanFilter works perfectly fine and it's reliable in macos
+    // it looks like properties condition below works ONLY IF there is some println inside (wtf?) TODO: investigate more
+    #[cfg(target_os = "macos")]
+    {
+        return Some(peripheral);
+    }
+
     if let Ok(Some(props)) = peripheral.properties().await {
         let service = props.services.iter().find(|c| *c == &SERVICE_UUID);
         if service.is_some() {
@@ -28,7 +35,7 @@ pub async fn scan_filter(adapter: &Adapter, id: &PeripheralId) -> Option<Periphe
         // linux / mac: props.services is empty. try by name
         let name = props.local_name.unwrap_or("".to_string());
         if name.contains("Trezor") {
-            return Some(peripheral);
+            // return Some(peripheral);
         }
     };
 
