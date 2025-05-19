@@ -31,11 +31,11 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectSelectedDevice);
     const intl = useIntl();
+    const confirmEmptyPassphrase = useSelector(state =>
+        selectIsDiscoveryAuthConfirmationRequired(state, device?.path),
+    );
 
     if (!device) return null;
-    const confirmEmptyPassphrase = useSelector(state =>
-        selectIsDiscoveryAuthConfirmationRequired(state, device.path),
-    );
     const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     if (confirmEmptyPassphrase) {

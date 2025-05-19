@@ -50,6 +50,7 @@ export const ACCOUNT_TYPES = [
     { symbol: 'bch', type: 'normal', path: "m/44'/145'/i'" },
     { symbol: 'doge', type: 'normal', path: "m/44'/3'/i'" },
     { symbol: 'zec', type: 'normal', path: "m/44'/133'/i'" },
+    { symbol: 'xlm', type: 'normal', path: "m/44'/148'/i'" },
 ] as const;
 
 export const CARDANO_DERIVATIONS = {
@@ -88,7 +89,7 @@ type DiscoverAccountsParams = {
 
 type ProgressBaseType = AccountTypeKey & { index: number };
 export type DiscoverAccountsProgressOk = ProgressBaseType & AccountInfo & { path: string };
-export type DiscoverAccountsProgressError = ProgressBaseType & { error: string };
+export type DiscoverAccountsProgressError = ProgressBaseType & { error: string; code?: string };
 export type DiscoverAccountsProgress = DiscoverAccountsProgressOk | DiscoverAccountsProgressError;
 
 type DiscoverAccountsResult = {
