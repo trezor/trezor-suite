@@ -24,6 +24,8 @@ export const en = {
             yes: 'Yes',
             learnMore: 'Learn more',
             copy: 'Copy',
+            understand: 'I understand',
+            goBack: 'Go back',
         },
         savedToClipboard: 'Saved to clipboard',
         unknownError: 'Something went wrong',
@@ -497,6 +499,17 @@ export const en = {
             subtitle: 'This will reset all of your device’s data. Proceed with caution.',
             content: 'This will reset all stored data on your Trezor. Proceed with caution.',
             buttonTitle: 'Wipe device',
+            confirmationCards: {
+                eraseAllData: {
+                    title: 'Erase all data',
+                    description: "This will erase all device data. This action can't be undone.",
+                },
+                walletBackup: {
+                    title: 'Wallet backup',
+                    description:
+                        'Make sure you have your wallet backup. You won’t be able to recover access to your assets without it.',
+                },
+            },
         },
     },
     moduleReceive: {

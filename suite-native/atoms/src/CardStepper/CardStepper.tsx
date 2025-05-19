@@ -17,16 +17,19 @@ export type CardStepperMap<ContentIdType = undefined> = Record<
 
 type CardStepperProps<ContentIdType = undefined> = {
     onFinish: () => void;
+    primaryButtonText: ReactNode;
+    secondaryButtonText: ReactNode;
     onPressSecondaryButton: (id?: ContentIdType) => void;
     buttonsActionType?: CardStepperButtonsActionType;
     stepToContentMap: CardStepperMap<ContentIdType>;
 };
 
-// prettier-ignore
 export const CardStepper = <ContentIdType = undefined>({
     stepToContentMap,
     onFinish,
     onPressSecondaryButton,
+    primaryButtonText,
+    secondaryButtonText,
     buttonsActionType,
 }: CardStepperProps<ContentIdType>) => {
     const [currentStep, setCurrentStep] = useState<number>(1);
@@ -45,7 +48,7 @@ export const CardStepper = <ContentIdType = undefined>({
         if (contentId) {
             onPressSecondaryButton(contentId);
         } else {
-            onPressSecondaryButton()
+            onPressSecondaryButton();
         }
     };
 
@@ -61,7 +64,11 @@ export const CardStepper = <ContentIdType = undefined>({
                     header={content.header}
                     description={content.description}
                     buttonsActionType={buttonsActionType}
-                    onPressSecondaryButton={() => handlePressSecondaryButton(content.secondaryButtonParameter)}
+                    primaryButtonText={primaryButtonText}
+                    secondaryButtonText={secondaryButtonText}
+                    onPressSecondaryButton={() =>
+                        handlePressSecondaryButton(content.secondaryButtonParameter)
+                    }
                 />
             ))}
         </VStack>

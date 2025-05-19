@@ -7,14 +7,21 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 const contentMap = {
     1: {
-        header: 'Erase all data',
-        description: "This will erase all device data. This action can't be undone",
+        header: (
+            <Translation id="moduleDeviceSettings.wipeDevice.confirmationCards.eraseAllData.title" />
+        ),
+        description: (
+            <Translation id="moduleDeviceSettings.wipeDevice.confirmationCards.eraseAllData.description" />
+        ),
         icon: 'trash',
     },
     2: {
-        header: 'Wallet backup',
-        description:
-            'Make sure you have your wallet backup. You won’t be able to recover access to your assets without it.',
+        header: (
+            <Translation id="moduleDeviceSettings.wipeDevice.confirmationCards.walletBackup.title" />
+        ),
+        description: (
+            <Translation id="moduleDeviceSettings.wipeDevice.confirmationCards.walletBackup.description" />
+        ),
         icon: 'newspaper',
     },
 } as const satisfies CardStepperMap;
@@ -53,6 +60,8 @@ export const WipeDeviceScreen = () => {
                 </Text>
                 <CardStepper
                     onFinish={handleWipeDevice}
+                    primaryButtonText={<Translation id="generic.buttons.goBack" />}
+                    secondaryButtonText={<Translation id="generic.buttons.understand" />}
                     buttonsActionType="destructive"
                     onPressSecondaryButton={handleSecondaryButtonPress}
                     stepToContentMap={contentMap}

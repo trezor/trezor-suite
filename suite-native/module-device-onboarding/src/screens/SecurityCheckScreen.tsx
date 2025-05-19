@@ -95,6 +95,10 @@ export const SecurityCheckScreen = ({
                     />
                     <CardStepper<DeviceSuspicionCause>
                         onFinish={handleFinishStepper}
+                        secondaryButtonText={
+                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
+                        }
+                        primaryButtonText={<Translation id="generic.buttons.yes" />}
                         onPressSecondaryButton={handlePressSecondaryButton}
                         stepToContentMap={stepToContentMap}
                     />

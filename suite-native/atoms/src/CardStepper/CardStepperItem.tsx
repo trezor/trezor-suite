@@ -12,7 +12,6 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
@@ -24,6 +23,8 @@ type CardStepperItemProps = {
     isChecked: boolean;
     isOpened: boolean;
     icon: IconName;
+    primaryButtonText: ReactNode;
+    secondaryButtonText: ReactNode;
     onPressConfirmButton: () => void;
     onPressSecondaryButton: () => void;
     buttonsActionType?: CardStepperButtonsActionType;
@@ -78,6 +79,8 @@ export const CardStepperItem = ({
     isOpened,
     onPressConfirmButton,
     onPressSecondaryButton,
+    primaryButtonText,
+    secondaryButtonText,
     buttonsActionType = 'normal',
 }: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -119,7 +122,7 @@ export const CardStepperItem = ({
                                 colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
                                 onPress={onPressSecondaryButton}
                             >
-                                <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
+                                {primaryButtonText}
                             </Button>
                             <Button
                                 size="small"
@@ -127,7 +130,7 @@ export const CardStepperItem = ({
                                 colorScheme={buttonsColorSchemeMap[buttonsActionType].primary}
                                 onPress={onPressConfirmButton}
                             >
-                                <Translation id="generic.buttons.yes" />
+                                {secondaryButtonText}
                             </Button>
                         </HStack>
                     </AnimatedVStack>
