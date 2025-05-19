@@ -23,7 +23,7 @@ if echo "$commit_msg" | grep -qE "^(Revert|fixup! )"; then
   exit 0
 fi
 
-if ! grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\([a-z, -]+\))?: " "$1" ; then
+if ! grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\([a-z0-9, -]+\))?: " "$1" ; then
   echo "Conventional Commits validation failed"
   exit 1
 fi
