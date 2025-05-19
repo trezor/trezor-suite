@@ -182,10 +182,10 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>((p
     );
 });
 
-export interface PopoverRef {
+export type PopoverRef = {
     open: () => void;
     close: () => void;
-}
+};
 
 export const Popover = forwardRef(
     (
@@ -197,10 +197,17 @@ export const Popover = forwardRef(
             popoverOffset,
             zIndex = zIndices.popover,
             children,
+            onOpenChange,
         }: PopoverProps & { children: React.ReactNode },
         ref,
     ) => {
-        const popover = usePopover({ isInitialOpen, placement, isOpen, popoverOffset });
+        const popover = usePopover({
+            isInitialOpen,
+            placement,
+            isOpen,
+            popoverOffset,
+            onOpenChange,
+        });
 
         useImperativeHandle(ref, () => ({
             open: () => popover.setOpen(true),

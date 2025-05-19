@@ -23,6 +23,7 @@ import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
 }))`
+    flex: 1;
     display: flex;
     flex-direction: row;
     align-items: center;

@@ -59,12 +59,6 @@ export const Dropdown = forwardRef(
             <Popover
                 ref={popoverRef}
                 placement={placement}
-                onOpenChange={isOpen => {
-                    // Focus the menu when it opens and there is content
-                    if (isOpen && content && menuRef.current) {
-                        menuRef.current.focus();
-                    }
-                }}
                 content={
                     <Menu
                         ref={menuRef}
