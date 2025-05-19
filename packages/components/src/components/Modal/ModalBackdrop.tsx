@@ -51,7 +51,7 @@ export const ModalBackdrop = ({
                             justifyContent={mapAlignmentToJustifyContent(alignment)}
                             gap={spacings.md}
                             height="100%"
-                            overflow="scroll"
+                            overflow="auto"
                         >
                             <InnerWrapper onClick={e => e.stopPropagation()}>
                                 {children}
