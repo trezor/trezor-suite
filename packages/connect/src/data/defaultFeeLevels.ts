@@ -150,6 +150,7 @@ const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
     sol: SOLANA_FEE_INFO,
     dsol: SOLANA_FEE_INFO,
     xlm: STELLAR_FEE_INFO,
+    txlm: STELLAR_FEE_INFO,
 };
 
 export const getMiscFeeLevels = (data: CoinsJsonData): FeeInfoWithLevels => {

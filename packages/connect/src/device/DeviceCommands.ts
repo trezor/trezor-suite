@@ -243,7 +243,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             };
         }
 
-        if (coinInfo.shortcut === 'XLM') {
+        if (coinInfo.shortcut === 'XLM' || coinInfo.shortcut === 'tXLM') {
             const { message } = await typedCall('StellarGetAddress', 'StellarAddress', {
                 address_n,
             });
