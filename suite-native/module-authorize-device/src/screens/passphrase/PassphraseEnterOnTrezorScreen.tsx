@@ -24,6 +24,7 @@ import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
+import { PassphraseMismatchAlert } from '../../components/passphrase/PassphraseMismatchAlert';
 import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
@@ -56,8 +57,6 @@ export const PassphraseEnterOnTrezorScreen = () => {
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back
     useRedirectOnPassphraseCompletion();
-
-    useHandlePassphraseMismatch();
 
     useEffect(() => {
         if (isDeviceAuthorizationDone) {
@@ -112,6 +111,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
                     </Box>
                 </VStack>
             </Card>
+            <PassphraseMismatchAlert />
         </PassphraseContentScreenWrapper>
     );
 };

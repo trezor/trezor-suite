@@ -51,10 +51,6 @@ export const PassphraseLoadingScreen = () => {
                     screen: HomeStackRoutes.Home,
                 },
             });
-        } else {
-            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.PassphraseEmptyWallet,
-            });
         }
     };
 

@@ -64,11 +64,17 @@ export const AddHiddenWalletButton = () => {
         );
         dispatch(runDiscoveryThunk(device));
 
-        // Create device instance thunk already handles passphrase enabling, so we just redirect to this screen and wait for success / error
+        // If passphrase is not enabled on the device, we need to show the enable screen first
         if (!isPassphraseEnabledOnDevice) {
             analytics.report({ type: EventType.PassphraseNotEnabled });
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice,
+            });
+        } else {
+            // Navigate to the PassphraseStackNavigator which will handle showing the appropriate screen
+            // based on the current state of the passphrase flow
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
             });
         }
     };

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
     AuthorizeDeviceError,
@@ -15,6 +15,7 @@ export type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
     hasDeviceRequestedPassphrase: boolean;
     passphraseError: AuthorizeDeviceError | CreateDeviceInstanceError | null;
+    checkPassphraseOnDevice: boolean;
 };
 
 type DeviceAuthorizationRootState = {
@@ -25,12 +26,17 @@ export const deviceAuthorizationInitialState: DeviceAuthorizationState = {
     hasDeviceRequestedPin: false,
     hasDeviceRequestedPassphrase: false,
     passphraseError: null,
+    checkPassphraseOnDevice: false,
 };
 
 export const deviceAuthorizationSlice = createSlice({
     name: 'deviceAuthorization',
     initialState: deviceAuthorizationInitialState,
-    reducers: {},
+    reducers: {
+        setCheckPassphraseOnDevice: (state, action: PayloadAction<boolean>) => {
+            state.checkPassphraseOnDevice = action.payload;
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(UI.REQUEST_PIN, state => {
@@ -50,11 +56,14 @@ export const deviceAuthorizationSlice = createSlice({
                 // @ts-expect-error Actions are not typed properly
                 if (action.payload.code !== 'ButtonRequest_Other') {
                     state.hasDeviceRequestedPassphrase = false;
+                } else {
+                    state.checkPassphraseOnDevice = true;
                 }
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.hasDeviceRequestedPin = false;
                 state.hasDeviceRequestedPassphrase = false;
+                state.checkPassphraseOnDevice = false;
             });
     },
 });
@@ -67,6 +76,9 @@ export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootSt
 
 export const selectDeviceRequestedAuthorization = (state: DeviceAuthorizationRootState) =>
     selectDeviceRequestedPassphrase(state) || selectDeviceRequestedPin(state);
+
+export const selectCheckPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.checkPassphraseOnDevice;
 
 export const selectPassphraseError = (
     state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationState,
@@ -161,5 +173,7 @@ export const selectDiscoveryCompleted = (state: DiscoveryRootState & DeviceRootS
 
     return discovery.status === 'complete';
 };
+
+export const { setCheckPassphraseOnDevice } = deviceAuthorizationSlice.actions;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;
