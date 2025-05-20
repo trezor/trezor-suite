@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { NetworkType } from '@suite-common/wallet-config';
+import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
@@ -64,7 +64,16 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                     direction="row"
                     label={
                         <>
-                            <Translation id="TR_CURRENT_FEE" /> {getFeeRate(tx, networkType)}
+                            <Translation
+                                id={
+                                    getNetwork(tx.symbol).networkType === 'ethereum'
+                                        ? 'TR_CURRENT_MAXIMUM_FEE_SPEED_UP'
+                                        : 'TR_CURRENT_FEE_SPEED_UP'
+                                }
+                                values={{
+                                    feeRate: getFeeRate(tx, networkType),
+                                }}
+                            />
                         </>
                     }
                     typographyStyle="body"

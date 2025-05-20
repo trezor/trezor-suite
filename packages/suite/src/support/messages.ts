@@ -6691,13 +6691,21 @@ export default defineMessages({
         id: 'TR_CONFIRMING_TX',
         defaultMessage: 'Confirming transaction',
     },
-    TR_CURRENT_FEE: {
-        id: 'TR_CURRENT_FEE',
-        defaultMessage: 'Current',
+    TR_CURRENT_FEE_SPEED_UP: {
+        id: 'TR_CURRENT_FEE_SPEED_UP',
+        defaultMessage: 'Current fee {feeRate}',
+    },
+    TR_CURRENT_MAXIMUM_FEE_SPEED_UP: {
+        id: 'TR_CURRENT_MAXIMUM_FEE_SPEED_UP',
+        defaultMessage: 'Current maximum fee',
     },
     TR_NEW_FEE: {
         id: 'TR_NEW_FEE',
         defaultMessage: 'New fee',
+    },
+    TR_NEW_MAXIMUM_FEE: {
+        id: 'TR_NEW_MAXIMUM_FEE',
+        defaultMessage: 'New maximum fee',
     },
     TR_INCREASE_FEE_BY: {
         id: 'TR_INCREASE_FEE_BY',

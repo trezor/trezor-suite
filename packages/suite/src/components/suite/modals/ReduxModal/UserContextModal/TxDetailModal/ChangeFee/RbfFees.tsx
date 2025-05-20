@@ -1,3 +1,5 @@
+import { getNetwork } from '@suite-common/wallet-config';
+
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
@@ -27,7 +29,11 @@ export const RbfFees = () => {
             account={account}
             composedLevels={composedLevels}
             changeFeeLevel={changeFeeLevel}
-            label="TR_NEW_FEE"
+            label={
+                getNetwork(account.symbol).networkType === 'ethereum'
+                    ? 'TR_NEW_MAXIMUM_FEE'
+                    : 'TR_NEW_FEE'
+            }
             rbfForm
         />
     );
