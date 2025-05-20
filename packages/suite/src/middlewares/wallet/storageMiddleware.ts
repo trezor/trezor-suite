@@ -2,6 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
@@ -210,6 +211,18 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
+            if (
+                isAnyOf(
+                    deviceActions.connectDevice, // Known device is stored
+                    deviceActions.connectUnacquiredDevice, // Known device is stored
+                    bluetoothActions.knownDevicesUpdateAction,
+                    bluetoothActions.removeKnownDeviceAction,
+                    bluetoothActions.deviceUpdateAction, // Known devices may be updated
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveKnownDevices());
+            }
+
             if (sendFormActions.storeDraft.match(action)) {
                 const device = selectSelectedDevice(api.getState());
                 const { formState, accountKey } = action.payload;
@@ -232,6 +245,14 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 api.dispatch(storageActions.saveConnectSettings());
+            }
+
+            if (
+                deviceActions.setThpCredentials.match(action) ||
+                deviceActions.connectDevice.match(action) || // To save the `connectionCounter`
+                action.type === 'device-thp_credentials_changed'
+            ) {
+                api.dispatch(storageActions.saveThpCredentials());
             }
 
             switch (action.type) {

@@ -11,6 +11,7 @@ import { deviceActions, selectDevices } from '@suite-common/wallet-core';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey, selectHistoricRatesByTransactions } from '@suite-common/wallet-utils';
+import { BluetoothDevice } from '@trezor/transport-bluetooth/';
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -113,6 +114,40 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
     if (!(await db.isAccessible())) return;
     const { debug } = getState().wallet.coinjoin;
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
+};
+
+export const saveThpCredentials = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { credentials } = getState().thp;
+    db.addItem('thp', { credentials }, 'value', true);
+};
+
+export const saveKnownDevices = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { knownDevices } = getState().bluetooth;
+
+    db.addItem(
+        'bluetooth',
+        {
+            knownDevices: knownDevices.map(
+                (it): BluetoothDevice => ({
+                    id: it.id,
+                    name: it.name,
+                    macAddress: it.macAddress,
+                    data: it.data,
+                    lastUpdatedTimestamp: it.lastUpdatedTimestamp,
+                    paired: it.paired,
+                    rssi: it.rssi,
+
+                    // Those fields are reset to prevent some state-inconsistency and UI flickering
+                    connected: false,
+                    connectionStatus: { type: 'disconnected' },
+                }),
+            ),
+        },
+        'value',
+        true,
+    );
 };
 
 export const saveFormDraft = async (key: string, draft: FieldValues) => {
@@ -310,7 +345,7 @@ export const rememberDevice =
                 saveAccounts(accounts),
                 saveGraph(graphData),
                 saveDiscovery(discovery),
-                // eslint-disable-next-line  @typescript-eslint/no-use-before-define
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 dispatch(saveDeviceMetadataError(device)),
                 ...accountPromises,
             ] as Promise<void | string | undefined>[]);

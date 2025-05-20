@@ -1289,4 +1289,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 56) {
         await migrateToV56(db, oldVersion, newVersion, transaction);
     }
+
+    if (oldVersion < 57) {
+        db.createObjectStore('thp');
+        db.createObjectStore('bluetooth');
+    }
 };

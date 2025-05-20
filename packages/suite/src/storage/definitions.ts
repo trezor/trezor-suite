@@ -5,7 +5,11 @@ import type { DBSchema } from 'idb';
 import { AnalyticsState } from '@suite-common/analytics';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
-import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-types';
+import type {
+    DeviceWithEmptyPath,
+    MessageSystem,
+    ThpSuiteCredentials,
+} from '@suite-common/suite-types';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
@@ -16,6 +20,7 @@ import type {
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
+import type { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { MetadataState } from 'src/types/suite/metadata';
@@ -73,6 +78,18 @@ export interface SuiteDBSchema extends DBSchema {
     devices: {
         key: string;
         value: DeviceWithEmptyPath;
+    };
+    thp: {
+        key: string;
+        value: {
+            credentials: ThpSuiteCredentials[];
+        };
+    };
+    bluetooth: {
+        key: string;
+        value: {
+            knownDevices: BluetoothDevice[];
+        };
     };
     accounts: {
         key: string[];
