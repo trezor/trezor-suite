@@ -352,77 +352,6 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<23.10.1",
-                        "mobile": "!",
-                        "web": "<23.10.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "T2B1",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "Safe 3",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "e95a586f-f2d7-4c7b-8dd9-d8e56d9c905d",
-                "priority": 98,
-                "dismissible": false,
-                "variant": "critical",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
-                    "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
-                    "es": "Es necesaria una actualización. Esta versión de Trezor Suite no es compatible con tu dispositivo. Instala la actualización para continuar.",
-                    "cs": "Nutná aktualizace! Tato verze Trezor Suite není kompatibilní s vaším zařízením. Chcete-li pokračovat, proveďte aktualizaci.",
-                    "ru": "Требуется обновление! Данная версия Trezor Suite несовместима с вашим устройством. Обновите программу, чтобы продолжить.",
-                    "ja": "アップデートが必要です！このバージョンのTrezor Suiteは、お使いのデバイスと互換性がありません。続行するには、アップデートしてください。",
-                    "hu": "Frissítés szükséges! A Trezor Suite ezen verziója nem kompatibilis az Ön készülékével. A folytatáshoz frissítsen.",
-                    "it": "È necessario un aggiornamento! Questa versione di Trezor Suite non è compatibile con il vostro dispositivo. Aggiornare per continuare.",
-                    "fr": "Mise à jour requise ! Cette version de Trezor Suite n’est pas compatible avec votre dispositif. Procédez à la mise à jour pour continuer.",
-                    "de": "Update erforderlich! Diese Version von Trezor Suite ist nicht mit deinem Gerät kompatibel. Aktualisiere, um fortzufahren.",
-                    "tr": "Güncelleme gerekiyor! Bu Trezor Suite sürümü cihazınızla uyumlu değil. Devam etmek için güncelleyin.",
-                    "pt": "Atualização necessária! Esta versão do Trezor Suite não é compatível com o seu dispositivo. Atualize para continuar.",
-                    "uk": "Потрібне оновлення! Ця версія Trezor Suite несумісна з вашим пристроєм. Оновіть програму, щоб продовжити."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
                         "desktop": "<24.6.2",
                         "mobile": "!",
                         "web": "<24.6.2"
@@ -834,7 +763,7 @@
                 }
             ],
             "message": {
-                "id": "896f97d4-7c98-4258-b69e-37e9b4e40afc",
+                "id": "1b7241ad-01ae-44c8-9e98-ab330b3136b0",
                 "priority": 94,
                 "dismissible": true,
                 "variant": "warning",
@@ -1077,188 +1006,6 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "23.10.1",
-                        "mobile": "!",
-                        "web": "23.10.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "T2B1",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "8231c0f4-e778-4838-bc40-5c28d8832f06",
-                "priority": 93,
-                "dismissible": false,
-                "variant": "critical",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
-                    "en": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
-                    "es": "Es necesario que actualices Trezor Suite para tu nuevo Trezor Safe 3.",
-                    "cs": "Pro nový Trezor Safe 3 je nutná aktualizace Trezor Suite.",
-                    "ru": "Для нового Trezor Safe 3 требуется обновление Trezor Suite.",
-                    "ja": "新しいTrezor Safe 3を使用するには、Trezor Suiteの必須アップデートが必要です。",
-                    "hu": "A Trezor Suite alapvető frissítése szükséges az új Trezor Safe 3 készülékhez.",
-                    "it": "Per il nuovo Trezor Safe 3 è necessario un aggiornamento essenziale di Trezor Suite.",
-                    "fr": "Une mise à jour essentielle de Trezor Suite est nécessaire pour votre nouveau portefeuille Trezor Safe 3.",
-                    "de": "Für deinen neuen Trezor Safe 3 ist ein wichtiges Update der Trezor Suite erforderlich.",
-                    "tr": "Yeni Trezor Safe 3'ünüz için Trezor Suite'in temel güncellemesi gereklidir.",
-                    "pt": "É necessária uma atualização essencial do Trezor Suite para o seu novo Trezor Safe 3.",
-                    "uk": "Для вашого нового Trezor Safe 3 потрібне обов’язкове оновлення Trezor Suite."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "pol": true
-                        },
-                        {
-                            "matic": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "24.5.4>25.1.3",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "fd9a36f3-2f89-4156-8531-70c2d72d2233",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
-                    "en": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
-                    "es": "Si encuentras algún problema al sincronizar tus cuentas de Polygon PoS, por favor actualiza tu Trezor Suite a la última versión",
-                    "cs": "Pokud narazíte na problémy se synchronizací vašich účtů Polygon PoS, aktualizujte Trezor Suite na nejnovější verzi",
-                    "ru": "Если у вас возникли проблемы с синхронизацией ваших счетов Polygon PoS, обновите Trezor Suite до последней версии",
-                    "ja": "Polygon PoSアカウントの同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください",
-                    "hu": "Ha bármilyen problémába ütközik a Polygon PoS fiókjainak szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra",
-                    "it": "Se riscontri problemi di sincronizzazione dei tuoi account Polygon PoS, aggiorna la tua Trezor Suite all'ultima versione",
-                    "fr": "Si vous rencontrez des problèmes de synchronisation de vos comptes Polygon PoS, veuillez mettre à jour votre Trezor Suite vers la dernière version",
-                    "de": "Wenn Sie Probleme beim Synchronisieren Ihrer Polygon PoS-Konten haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version",
-                    "tr": "Polygon PoS hesaplarınızı senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin",
-                    "pt": "Se encontrar problemas ao sincronizar as suas contas Polygon PoS, atualize o seu Trezor Suite para a versão mais recente",
-                    "uk": "Якщо у вас виникли проблеми з синхронізацією ваших рахунків Polygon PoS, оновіть ваш Trezor Suite до останньої версії"
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "sol": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "24.5.4>24.12.2",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "b487d590-3bbc-43ff-a5fc-048777512d49",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "If you encounter any issues syncing your Solana accounts, please update your Trezor Suite to the latest version.",
-                    "en": "If you encounter any issues syncing your Solana accounts, please update your Trezor Suite to the latest version.",
-                    "es": "Si encuentras algún problema al sincronizar tus cuentas de Solana, por favor actualiza tu Trezor Suite a la última versión.",
-                    "cs": "Pokud narazíte na problémy se synchronizací vašich účtů Solana, aktualizujte Trezor Suite na nejnovější verzi.",
-                    "ru": "Если у вас возникли проблемы с синхронизацией ваших счетов Solana, обновите Trezor Suite до последней версии.",
-                    "ja": "Solanaアカウントの同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください。",
-                    "hu": "Ha bármilyen problémába ütközik a Solana fiókjainak szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra.",
-                    "it": "Se riscontri problemi di sincronizzazione dei tuoi account Solana, aggiorna la tua Trezor Suite all'ultima versione.",
-                    "fr": "Si vous rencontrez des problèmes de synchronisation de vos comptes Solana, veuillez mettre à jour votre Trezor Suite vers la dernière version.",
-                    "de": "Wenn Sie Probleme beim Synchronisieren Ihrer Solana-Konten haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version.",
-                    "tr": "Solana hesaplarınızı senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin.",
-                    "pt": "Se encontrar problemas ao sincronizar as suas contas Solana, atualize o seu Trezor Suite para a versão mais recente.",
-                    "uk": "Якщо у вас виникли проблеми з синхронізацією ваших рахунків Solana, оновіть ваш Trezor Suite до останньої версії."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Aggiorna Suite",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren",
-                        "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite",
-                        "uk": "Оновити Suite"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
                         "desktop": ">23.10.1",
                         "mobile": "!",
                         "web": ">23.10.1"
@@ -1359,14 +1106,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "24.5.4>24.12.1",
+                        "desktop": ">=24.5.4 <=25.2.1",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "3b80a21e-8ceb-4304-a239-17492be00538",
+                "id": "4eb22fe7-4677-4155-82be-fdf8dee511b7",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
@@ -1523,76 +1270,6 @@
                         "tr": "Contact support",
                         "pt": "Contact support",
                         "uk": "Contact support"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "dash": true
-                        },
-                        {
-                            "btg": true
-                        },
-                        {
-                            "nmc": true
-                        },
-                        {
-                            "vtc": true
-                        },
-                        {
-                            "dgb": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "<25.2.1",
-                        "mobile": "<25.2.1",
-                        "web": "<25.2.1"
-                    }
-                }
-            ],
-            "message": {
-                "id": "af8f5613-6f85-4523-8a7e-a92ac8b6db83",
-                "priority": 60,
-                "dismissible": false,
-                "variant": "warning",
-                "category": ["banner"],
-                "content": {
-                    "en-GB": "Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be shut down in August 2025. Please move your funds beforehand.",
-                    "en": "Dash, Bitcoin Gold, Namecoin, Vertcoin, and DigiByte backends will be shut down in August 2025. Please move your funds beforehand.",
-                    "es": "Los backends de Dash, Bitcoin Gold, Namecoin, Vertcoin y DigiByte serán cerrados en agosto de 2025. Por favor, mueva sus fondos con anticipación.",
-                    "cs": "Backend služby pro Dash, Bitcoin Gold, Namecoin, Vertcoin a DigiByte budou vypnuty v srpnu 2025. Přesuňte prosím své prostředky před tímto datem.",
-                    "ru": "Бэкэнды Dash, Bitcoin Gold, Namecoin, Vertcoin и DigiByte будут отключены в августе 2025 года. Пожалуйста, заранее переведите ваши средства.",
-                    "ja": "Dash、Bitcoin Gold、Namecoin、Vertcoin、DigiByteのバックエンドは2025年8月に停止されます。事前に資金を移動してください。",
-                    "hu": "A Dash, Bitcoin Gold, Namecoin, Vertcoin és DigiByte backendjei 2025 augusztusában leállításra kerülnek. Kérjük, időben helyezze át pénzeszközeit.",
-                    "it": "I backend di Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte saranno disattivati ad agosto 2025. Si prega di spostare i fondi in anticipo.",
-                    "fr": "Les backends de Dash, Bitcoin Gold, Namecoin, Vertcoin et DigiByte seront fermés en août 2025. Veuillez déplacer vos fonds à l'avance.",
-                    "de": "Die Backends von Dash, Bitcoin Gold, Namecoin, Vertcoin und DigiByte werden im August 2025 abgeschaltet. Bitte verschieben Sie Ihre Gelder rechtzeitig.",
-                    "tr": "Dash, Bitcoin Gold, Namecoin, Vertcoin ve DigiByte altyapıları Ağustos 2025'te kapatılacaktır. Lütfen fonlarınızı önceden taşıyın.",
-                    "pt": "Os backends do Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte serão encerrados em agosto de 2025. Por favor, mova seus fundos antecipadamente.",
-                    "uk": "Бекенди Dash, Bitcoin Gold, Namecoin, Vertcoin та DigiByte будуть вимкнені у серпні 2025 року. Будь ласка, заздалегідь переведіть свої кошти."
-                },
-
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://trezor.io/learn/a/deprecated-coins",
-                    "label": {
-                        "en-GB": "Learn More",
-                        "en": "Learn More",
-                        "es": "Más Información",
-                        "cs": "Více Informací",
-                        "ru": "Подробнее",
-                        "ja": "詳細はこちら",
-                        "hu": "További Információ",
-                        "it": "Scopri di Più",
-                        "fr": "En Savoir Plus",
-                        "de": "Mehr Erfahren",
-                        "tr": "Daha Fazla Bilgi",
-                        "pt": "Saiba Mais",
-                        "uk": "Дізнатись більше"
                     }
                 }
             }
