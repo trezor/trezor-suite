@@ -10,14 +10,14 @@ const filterInconclusiveAuthenticityChecks = (checks: AuthenticityChecks): Authe
     if (checks === undefined) return undefined;
     let { firmwareRevision, firmwareHash } = checks;
     if (
-        firmwareRevision !== null &&
+        firmwareRevision &&
         !firmwareRevision.success &&
         revisionCheckErrorScenarios[firmwareRevision.error].isConclusive === false
     ) {
         firmwareRevision = null;
     }
     if (
-        firmwareHash !== null &&
+        firmwareHash &&
         !firmwareHash.success &&
         hashCheckErrorScenarios[firmwareHash.error].isConclusive === false
     ) {
