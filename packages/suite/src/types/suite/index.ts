@@ -8,6 +8,7 @@ import { firmwareActions } from '@suite-common/firmware';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';
+import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, discoveryActions, transactionsActions } from '@suite-common/wallet-core';
 import { BlockchainEvent, DEVICE, DeviceEvent, TransportEvent, UiEvent } from '@trezor/connect';
@@ -69,6 +70,7 @@ type DeviceAuthenticityAction = ReturnType<
     (typeof deviceAuthenticityActions)[keyof typeof deviceAuthenticityActions]
 >;
 type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoothActions]>;
+type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -95,7 +97,8 @@ export type Action =
     | DeviceAction
     | DeviceAuthenticityAction
     | ReturnType<typeof addLog>
-    | BluetoothAction;
+    | BluetoothAction
+    | ThpAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 

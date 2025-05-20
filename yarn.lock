@@ -9480,6 +9480,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/protocol": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -9518,6 +9519,17 @@ __metadata:
     fake-indexeddb: "npm:^6.0.0"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/thp@workspace:*, @suite-common/thp@workspace:suite-common/thp":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/thp@workspace:suite-common/thp"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/firmware": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12515,6 +12527,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/trading": "workspace:*"

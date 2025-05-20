@@ -1,4 +1,5 @@
 import { UserContextPayload } from '@suite-common/suite-types';
+import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
 import {
     DEVICE,
     Device,
@@ -8,6 +9,7 @@ import {
     UiRequestSelectAccount,
     UiRequestSelectFee,
 } from '@trezor/connect';
+import { isArrayMember } from '@trezor/utils';
 
 import { MODAL } from 'src/actions/suite/constants';
 import type { Action, TrezorDevice } from 'src/types/suite';
@@ -75,6 +77,14 @@ const modalReducer = (state: State = initialState, action: Action): State => {
                 preserve: state.preserve,
             };
         case UI.REQUEST_BUTTON:
+            // THP ButtonRequests handled separately in the `thpReducer`
+            if (
+                action.payload.name !== undefined &&
+                isArrayMember(action.payload.name, THP_BUTTON_REQUESTS_NAMES)
+            ) {
+                return state;
+            }
+
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
