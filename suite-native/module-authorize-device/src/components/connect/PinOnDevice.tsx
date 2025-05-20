@@ -1,16 +1,10 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Image, Text } from '@suite-native/atoms';
-import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    selectDeviceRequestedPin,
-    selectIsCreatingNewPassphraseWallet,
-    selectPassphraseError,
-} from '@suite-native/device-authorization';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
@@ -39,34 +33,18 @@ type PinOnDeviceProps = {
 };
 
 export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
-    const dispatch = useDispatch();
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
-    const hasPassphraseError = !!useSelector(selectPassphraseError);
-    const discovery = useSelector(selectDiscoveryForSelectedDevice);
 
     const { applyStyle } = useNativeStyles();
 
     const navigation = useNavigation();
 
     const handlePinFlowFinish = useCallback(() => {
-        const isNotPassphraseFlowActive = !discovery?.isAddingHiddenWallet && !hasPassphraseError;
-
         // If the device asks for a passphrase after unlocking the PIN, we ignore this and let the passphrase flow handle the success / failure.
-        if (navigation.canGoBack() && isNotPassphraseFlowActive) {
-            // Remove unauthorized passphrase device if it was created before prompting the PIN in case of PIN flow exit.
-            if (isCreatingNewWalletInstance)
-                dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-
+        if (navigation.canGoBack()) {
             navigation.goBack();
         }
-    }, [
-        discovery?.isAddingHiddenWallet,
-        hasPassphraseError,
-        navigation,
-        isCreatingNewWalletInstance,
-        dispatch,
-    ]);
+    }, [navigation]);
 
     useEffect(() => {
         // hasDeviceRequestedPin is false when the user unlocks the device again

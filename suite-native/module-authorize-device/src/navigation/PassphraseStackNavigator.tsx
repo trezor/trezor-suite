@@ -31,18 +31,7 @@ import { useRedirectOnPassphraseCompletion } from '../useRedirectOnPassphraseCom
 export const PassphraseStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
 
 // Define the state type for our component
-type RootState = DiscoveryRootState &
-    DeviceRootState & {
-        modal: {
-            context?: string;
-            windowType?: string;
-        };
-        deviceAuthorization: {
-            hasDeviceRequestedPin: boolean;
-            hasDeviceRequestedPassphrase: boolean;
-            passphraseError: null | string;
-        };
-    };
+type RootState = DiscoveryRootState & DeviceRootState;
 
 const determineNativePassphraseFlowState = (
     discovery: DiscoveryStatus,
@@ -56,6 +45,13 @@ const determineNativePassphraseFlowState = (
         return {
             ...passphraseState,
             screen: 'passphrase-checking-on-device',
+        };
+    }
+
+    if (discovery.status === 'failed') {
+        return {
+            ...passphraseState,
+            screen: 'passphrase-redirecting',
         };
     }
 
@@ -81,6 +77,7 @@ export const PassphraseStackNavigator = () => {
     const discovery = useSelector((state: RootState) =>
         selectDiscoveryByDevicePath(state, selectedDevice?.path),
     );
+
     const checkingOnDevice = useSelector(selectCheckPassphraseOnDevice);
 
     useRedirectOnPassphraseCompletion();
