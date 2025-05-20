@@ -126,7 +126,7 @@ jobs:
           containers: "trezor-user-env-unix bitcoin-regtest"
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
-          fail-fast: 3
+          fail-fast: 7
           currents-project-id: "4ytF0E"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

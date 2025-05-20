@@ -132,7 +132,7 @@ jobs:
           containers: "trezor-user-env-unix bitcoin-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           additional-grep: "(?=.*@webOnly)"
-          fail-fast: 3
+          fail-fast: 7
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
