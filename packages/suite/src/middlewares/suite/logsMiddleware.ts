@@ -23,7 +23,6 @@ import {
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
-
 // @ts-expect-error unused variable, I just want this reference here to keep webpack from mysteriously crashing
 const a = acquireDevice;
 
