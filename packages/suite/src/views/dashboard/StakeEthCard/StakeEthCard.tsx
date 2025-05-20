@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
 import { selectEnabledNetworks, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
@@ -72,7 +73,7 @@ export const StakeEthCard = () => {
                         id="TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC"
                         values={{
                             apyPercent: apy,
-                            symbol: bannerSymbol.toUpperCase(),
+                            symbol: getNetworkDisplaySymbol(bannerSymbol),
                             t: text => (
                                 <Tooltip
                                     dashed
@@ -110,7 +111,7 @@ export const StakeEthCard = () => {
                 heading={
                     <Translation
                         id="TR_STAKE_NETWORK"
-                        values={{ symbol: bannerSymbol.toUpperCase() }}
+                        values={{ symbol: getNetworkDisplaySymbol(bannerSymbol) }}
                     />
                 }
             >
@@ -120,7 +121,7 @@ export const StakeEthCard = () => {
                             <H3>
                                 <Translation
                                     id="TR_STAKE_ETH_CARD_TITLE"
-                                    values={{ symbol: bannerSymbol.toUpperCase() }}
+                                    values={{ symbol: getNetworkDisplaySymbol(bannerSymbol) }}
                                 />
                             </H3>
                             <Paragraph>

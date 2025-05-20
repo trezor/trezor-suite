@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountLabel,
@@ -61,7 +62,7 @@ export const ReceiveScreenHeader = ({
                         {symbol ? (
                             <Translation
                                 id="moduleReceive.screenTitle"
-                                values={{ coinSymbol: symbol.toUpperCase() }}
+                                values={{ coinSymbol: getNetworkDisplaySymbol(symbol) }}
                             />
                         ) : (
                             <Translation id="moduleReceive.receiveTitle" />

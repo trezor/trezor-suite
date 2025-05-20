@@ -1,3 +1,4 @@
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Grid, Modal, useMediaQuery, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -42,7 +43,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
                 heading={
                     <Translation
                         id="TR_STAKE_NETWORK"
-                        values={{ symbol: account.symbol.toUpperCase() }}
+                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                     />
                 }
                 onCancel={onCancelClick}

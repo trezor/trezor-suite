@@ -1,7 +1,7 @@
 import { ETH_NETWORK_ADDRESSES, EthNetworkAddresses, Ethereum } from '@everstake/wallet-sdk';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     DEFAULT_PAYMENT,
     MIN_ETH_AMOUNT_FOR_STAKING,
@@ -81,7 +81,9 @@ export const stake = async ({
     const amountWei = toWei(amount, 'ether');
 
     if (new BigNumber(amount).lt(MIN_ETH_AMOUNT_FOR_STAKING)) {
-        throw new Error(`Min Amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${symbol.toUpperCase()}`);
+        throw new Error(
+            `Min amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${getNetworkDisplaySymbol(symbol)}`,
+        );
     }
 
     try {

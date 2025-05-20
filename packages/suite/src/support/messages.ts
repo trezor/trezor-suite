@@ -9332,10 +9332,6 @@ export default defineMessages({
         id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',
         defaultMessage: 'in the next block',
     },
-    TR_STAKE_NOT_ENOUGH_FUNDS: {
-        id: 'TR_STAKE_NOT_ENOUGH_FUNDS',
-        defaultMessage: 'Not enough {symbol} to pay network fees',
-    },
     TR_STAKE_PROVIDED_BY: {
         id: 'TR_STAKE_PROVIDED_BY',
         defaultMessage: 'Powered by',

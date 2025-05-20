@@ -67,13 +67,16 @@ export const calculate = (
         (compareWithAmount && totalSpent.isGreaterThan(availableBalance)) ||
         estimatedFee?.success === false
     ) {
-        const error = 'TR_STAKE_NOT_ENOUGH_FUNDS';
+        const error = 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE';
 
         // errorMessage declared later
         return {
             type: 'error',
             error,
-            errorMessage: { id: error, values: { symbol: symbol.toUpperCase() } },
+            errorMessage: {
+                id: error,
+                values: { networkDisplaySymbol: getNetworkDisplaySymbol(symbol) },
+            },
         } as const;
     }
 

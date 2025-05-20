@@ -34,7 +34,7 @@ const getInfoRowsData = (
                 deactivatePeriodSubheading: (
                     <Translation
                         id="TR_STAKING_CONSOLIDATING_FUNDS"
-                        values={{ networkDisplaySymbol: accountSymbol.toUpperCase() }}
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(accountSymbol) }}
                     />
                 ),
             };

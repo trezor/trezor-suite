@@ -131,7 +131,7 @@ export const UnstakeEthForm = () => {
                     >
                         <ApproximateInstantEthAmount
                             value={approximatedInstantEthAmount}
-                            symbol={symbol.toUpperCase()}
+                            symbol={symbol}
                         />
                     </InfoItem>
                 )}
