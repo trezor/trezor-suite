@@ -1,35 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { EventType, analytics } from '@suite-native/analytics';
 import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { selectPassphraseDeviceNotEmpty } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList
->;
-
 export const PassphraseLoadingScreen = () => {
-    const navigation = useNavigation<NavigationProp>();
-
     const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
@@ -45,12 +27,7 @@ export const PassphraseLoadingScreen = () => {
                 type: EventType.PassphraseFlowFinished,
                 payload: { isEmptyWallet: false },
             });
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
+            navigateToInitialScreen();
         }
     };
 

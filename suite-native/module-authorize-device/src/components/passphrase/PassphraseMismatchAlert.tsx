@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     cancelDiscoveryThunk,
     deviceActions,
@@ -14,27 +12,13 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { selectHasPassphraseMismatchError } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-} from '@suite-native/navigation';
-import { StackToStackCompositeNavigationProps } from '@suite-native/navigation/src/types';
-
-type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor,
-    RootStackParamList
->;
+import { AuthorizeDeviceStackRoutes, useNavigateToInitialScreen } from '@suite-native/navigation';
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
     const dispatch = useDispatch();
 
-    const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const { showAlert } = useAlert();
 
@@ -80,12 +64,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                 onPressSecondaryButton: () => {
                     if (!device) return;
                     dispatch(cancelDiscoveryThunk(device));
-                    navigation.navigate(RootStackRoutes.AppTabs, {
-                        screen: AppTabsRoutes.HomeStack,
-                        params: {
-                            screen: HomeStackRoutes.Home,
-                        },
-                    });
+                    navigateToInitialScreen();
 
                     analytics.report({
                         type: EventType.PassphraseExit,
@@ -96,7 +75,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                 pictogramVariant: 'critical',
             });
         }
-    }, [device, dispatch, hasPassphraseMismatchError, navigation, showAlert]);
+    }, [device, dispatch, hasPassphraseMismatchError, navigateToInitialScreen, showAlert]);
 
     return children ?? null;
 };
