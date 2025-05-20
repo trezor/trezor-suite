@@ -35,6 +35,7 @@ import {
     selectSelectedDevice,
 } from '../device/deviceReducer';
 import { selectDeviceThunk } from '../device/deviceThunks';
+import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 // todo:
 
@@ -64,7 +65,7 @@ function assertStaticSessionId(
 }
 
 const applyDeviceStatesThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/complete`,
+    `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
     async (
         {
             isAddingHiddenWallet,
@@ -232,7 +233,7 @@ const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 const EXPECTED_CANCELLATION_CODES = [USER_UI_CANCEL_CODE, ...DEVICE_CANCELLATION_CODES];
 
 export const runAdditionalDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/run`,
+    `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
     async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
@@ -567,11 +568,8 @@ export const runDiscoveryThunk = createThunk(
 
             TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-            // @ts-expect-error todo: mareks changes in connect needed
-
-            const discoveryAccountsPayload = getState().wallet.settings.enabledNetworks.map(n => ({
-                symbol: n,
-            }));
+            const enabledNetworks = selectEnabledNetworks(getState());
+            const discoveryAccountsPayload = enabledNetworks.map(n => ({ symbol: n }));
             console.log('discoveryAccountsPayload', discoveryAccountsPayload);
 
             if (!discoveryAccountsPayload.length) {
@@ -875,11 +873,15 @@ export const cancelDiscoveryThunk = createThunk(
     },
 );
 
+/**
+ * Helper to restart discovery for currently selected device
+ */
 export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    async (_, {}) => {
-        console.log(
-            'todo: restartDiscoveryThunk is unused, should be probably replaced with "runAdditionalDiscoveryThunk"',
-        );
+    async (_, { dispatch, getState }) => {
+        const device = selectSelectedDevice(getState());
+        const staticSessionId = device?.state?.staticSessionId;
+        if (staticSessionId === undefined) return;
+        dispatch(runAdditionalDiscoveryThunk(staticSessionId));
     },
 );

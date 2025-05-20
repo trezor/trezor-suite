@@ -1,12 +1,7 @@
 import { ComponentProps } from 'react';
 
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
-import {
-    authConfirm,
-    // authorizeDeviceThunk,
-    // todo: restarDiscovery now does nothing.
-    restartDiscoveryThunk as restartDiscovery,
-} from '@suite-common/wallet-core';
+import { restartDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -118,31 +113,6 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
     const dispatch = useDispatch();
 
     switch (exception.type) {
-        case 'auth-failed':
-            return (
-                <Container
-                    title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
-                    description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
-                    cta={{
-                        action: () => {
-                            console.log('replace authorizeDeviceThunk here 1');
-                        },
-                        icon: 'repeat',
-                    }}
-                    dataTestBase={exception.type}
-                />
-            );
-        case 'auth-confirm-failed':
-            return (
-                <Container
-                    title="TR_AUTH_CONFIRM_FAILED_TITLE"
-                    cta={{
-                        action: () => dispatch(authConfirm()),
-                        icon: 'repeat',
-                    }}
-                    dataTestBase={exception.type}
-                />
-            );
         case 'discovery-empty':
             return (
                 <Container
@@ -168,7 +138,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                             values={{ details: discoveryFailedMessage(discovery) }}
                         />
                     }
-                    cta={{ action: () => dispatch(restartDiscovery()), icon: 'repeat' }}
+                    cta={{ action: () => dispatch(restartDiscoveryThunk()), icon: 'repeat' }}
                     dataTestBase={exception.type}
                 />
             );
@@ -188,7 +158,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                             const result = await dispatch(applySettings({ use_passphrase: true }));
                             if (!result || !result.success) return;
                             // restart discovery
-                            dispatch(restartDiscovery());
+                            dispatch(restartDiscoveryThunk());
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                     }}

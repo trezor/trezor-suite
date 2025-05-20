@@ -3,12 +3,10 @@ import { MiddlewareAPI } from 'redux';
 import { analyticsActions } from '@suite-common/analytics';
 import { addLog } from '@suite-common/logger';
 import {
-    WALLET_SETTINGS,
-    authorizeDeviceThunk,
     changeNetworks,
     deviceActions,
-    discoveryActions,
     setLocalCurrency,
+    WALLET_SETTINGS,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
@@ -51,19 +49,6 @@ const log =
                     }),
                 );
             }
-        }
-
-        if (authorizeDeviceThunk.fulfilled.match(action)) {
-            api.dispatch(
-                addLog({
-                    type: 'authorizeDeviceThunk.fulfilled',
-                    payload: {
-                        device: action.payload.device,
-                        firmwareRelease: undefined,
-                        unavailableCapabilities: undefined,
-                    },
-                }),
-            );
         }
 
         switch (action.type) {

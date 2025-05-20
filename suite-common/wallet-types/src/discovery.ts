@@ -61,8 +61,6 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
 
 export type Discovery = Record<DeviceUniquePath, DiscoveryStatus>;
 
-export type PartialDiscovery = { path: DeviceUniquePath } & Discovery;
-
 export type DiscoveryItem = {
     // @trezor/connect
     path: Bip43Path;
