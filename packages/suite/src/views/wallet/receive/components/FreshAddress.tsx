@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -24,6 +24,8 @@ import { ReadMoreLink, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
 import { AppState } from 'src/types/suite';
+
+import { FullAddressModal } from './FullAddressModal';
 
 const FreshAddressWrapper = styled.div`
     position: relative;
@@ -97,6 +99,8 @@ export const FreshAddress = ({
     );
     const dispatch = useDispatch();
 
+    const [isFullAddressModalOpen, setIsFullAddressModalOpen] = useState(false);
+
     const firstFreshAddress = useMemo(() => {
         if (account) {
             return getFirstFreshAddress(account, addresses, pendingAddresses, isAccountUtxoBased);
@@ -145,10 +149,15 @@ export const FreshAddress = ({
         isLoading: locked,
     };
 
+    const handleCloseFullAddressModal = () => {
+        setIsFullAddressModalOpen(false);
+    };
+
     return (
-        <Card>
-            <Row gap={spacings.lg} flexWrap="wrap">
-                <InfoItem
+        <>
+            <Card>
+                <Row gap={spacings.lg} flexWrap="wrap">
+                    <InfoItem
                     label={
                         <TooltipLabel
                             multipleAddresses={isAccountUtxoBased}
@@ -177,6 +186,19 @@ export const FreshAddress = ({
                     )}
                 </Tooltip>
             </Row>
+            {addressValue && (
+                <Row justifyContent="flex-end" margin={{ top: spacings.md }}>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setIsFullAddressModalOpen(true)}
+                        data-testid="@freshAddress/show-full-address-button"
+                    >
+                        <Translation id="SHOW_FULL_ADDRESS_BUTTON_LABEL">
+                            Show full address
+                        </Translation>
+                    </Button>
+                </Row>
+            )}
             {account.networkType === 'ethereum' && (
                 <Banner icon variant="info" margin={{ top: spacings.xxl }}>
                     <H4>
@@ -197,6 +219,12 @@ export const FreshAddress = ({
                     </Paragraph>
                 </Banner>
             )}
-        </Card>
+            </Card>
+            <FullAddressModal
+                isOpen={isFullAddressModalOpen}
+                onClose={handleCloseFullAddressModal}
+                fullAddress={firstFreshAddress?.address ?? ''}
+            />
+        </>
     );
 };
