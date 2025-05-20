@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { Button, IconListTextItem, Text, VStack } from '@suite-native/atoms';
+import { Button, CardWithIconLayout, IconListTextItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,
@@ -14,7 +14,6 @@ import {
     DeviceStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { SettingsCardWithIconLayout } from '@suite-native/settings';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     DeviceAuthenticityStackParamList,
@@ -57,7 +56,7 @@ export const DeviceAuthenticityCard = () => {
     }, [showAlert, navigateToDeviceAuthenticityStack]);
 
     return (
-        <SettingsCardWithIconLayout
+        <CardWithIconLayout
             icon="shieldCheck"
             title={<Translation id="moduleDeviceSettings.authenticity.title" />}
         >
@@ -76,6 +75,6 @@ export const DeviceAuthenticityCard = () => {
                     <Translation id="moduleDeviceSettings.authenticity.checkButton" />
                 </Button>
             </VStack>
-        </SettingsCardWithIconLayout>
+        </CardWithIconLayout>
     );
 };

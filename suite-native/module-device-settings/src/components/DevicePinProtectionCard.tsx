@@ -1,9 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceProtectedByPin, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { Box, CardWithIconLayout, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { SettingsCardWithIconLayout } from '@suite-native/settings';
 
 import { DevicePinActionButton } from './DevicePinActionButton';
 
@@ -16,7 +15,7 @@ export const DevicePinProtectionCard = () => {
     }
 
     return (
-        <SettingsCardWithIconLayout
+        <CardWithIconLayout
             icon="password"
             title={<Translation id="moduleDeviceSettings.pinProtection.title" />}
         >
@@ -41,6 +40,6 @@ export const DevicePinProtectionCard = () => {
                     </HStack>
                 )}
             </VStack>
-        </SettingsCardWithIconLayout>
+        </CardWithIconLayout>
     );
 };

@@ -12,7 +12,7 @@ import {
     selectIsDeviceDiscoveryActive,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { HStack, InlineAlertBoxProps, Text, VStack } from '@suite-native/atoms';
+import { CardWithIconLayout, HStack, InlineAlertBoxProps, Text, VStack } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -21,7 +21,6 @@ import {
     DeviceStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { SettingsCardWithIconLayout } from '@suite-native/settings';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -109,7 +108,7 @@ export const DeviceFirmwareCard = () => {
     })();
 
     return (
-        <SettingsCardWithIconLayout
+        <CardWithIconLayout
             icon={deviceModelToIconName(deviceModel)}
             title={<Translation id="firmware.title" />}
             alertBoxProps={firmwareUpdateProps}
@@ -124,6 +123,6 @@ export const DeviceFirmwareCard = () => {
                     value={<Translation id={firmwareTypeTranslationId} />}
                 />
             </HStack>
-        </SettingsCardWithIconLayout>
+        </CardWithIconLayout>
     );
 };
