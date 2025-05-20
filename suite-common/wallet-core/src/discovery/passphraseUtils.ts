@@ -25,6 +25,14 @@ export const determinePassphraseFlowState = (
         } as const;
     }
 
+    if (discovery.status === 'passphrase-enable-on-device') {
+        return {
+            isExisting: discovery.isAddingExistingWallet,
+            screen: 'passphrase-enable-on-device',
+            discovery,
+        } as const;
+    }
+
     if (discovery.isAddingExistingWallet) {
         if (discovery.status === 'enter-passphrase') {
             return {

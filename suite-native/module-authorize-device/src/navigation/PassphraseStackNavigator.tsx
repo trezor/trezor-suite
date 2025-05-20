@@ -135,7 +135,7 @@ export const PassphraseStackNavigator = () => {
                 />
             )}
 
-            {passphraseState.screen === 'passphrase-duplicate' && (
+            {passphraseState.screen === 'passphrase-enable-on-device' && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice}
                     component={PassphraseEnableOnDeviceScreen}
