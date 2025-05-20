@@ -135,3 +135,6 @@ packages/suite-data/files/translations/master.json
 
 # python
 .venv/
+
+#direnv
+.direnv/
