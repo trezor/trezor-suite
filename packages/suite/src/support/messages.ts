@@ -3355,6 +3355,48 @@ export default defineMessages({
         id: 'TR_THP_CONFIRM_SECURE_CONNECTION',
         defaultMessage: 'Confirm secure connection',
     },
+    TR_THP_SETTINGS_AUTO_CONNECT: {
+        id: 'TR_THP_SETTINGS_AUTO_CONNECT',
+        defaultMessage: 'Auto-connect',
+    },
+    TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION: {
+        id: 'TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION',
+        defaultMessage:
+            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it-no need confirm every time.',
+    },
+    TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
+        id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
+        defaultMessage: 'Save time with auto-connect',
+    },
+    TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION: {
+        id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION',
+        defaultMessage:
+            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it—no need to confirm every time.',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT',
+        defaultMessage: 'Turn on auto-connect',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS',
+        defaultMessage: 'No thanks',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS',
+        defaultMessage: 'Skip confirmation on trusted computers',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_1: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_1',
+        defaultMessage: 'Let Trezor Suite connect to your Trezor automatically when it’s connected',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_2: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_2',
+        defaultMessage: 'Skip repeated confirmations',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_3: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_3',
+        defaultMessage: 'Stay fully secure',
+    },
     TR_SOUTH: {
         defaultMessage: 'South',
         id: 'TR_SOUTH',
@@ -9967,10 +10009,6 @@ export default defineMessages({
         id: 'TR_BLUETOOTH_TURNED_OFF_TEXT',
         defaultMessage:
             'Bluetooth is currently turned off on this computer. Go to System Settings > Bluetooth and turn on Bluetooth.',
-    },
-    TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS: {
-        id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS',
-        defaultMessage: 'Cannot open bluetooth settings. Please enable bluetooth manually.',
     },
     TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS: {
         id: 'TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS',

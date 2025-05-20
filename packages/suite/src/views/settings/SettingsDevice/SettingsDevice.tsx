@@ -32,8 +32,9 @@ import { MultiShareBackup } from './MultiShareBackup';
 import { Passphrase } from './Passphrase';
 import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
+import { ThpAutoconnect } from './ThpAutoconnect';
 import { WipeCode } from './WipeCode';
-import { WipeDevice } from './WipeDevice';
+import { WipeDevice } from './WipeDevice/WipeDevice';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice) => {
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
@@ -93,6 +94,8 @@ export const SettingsDevice = () => {
 
     const isBluetoothDevice = device.features?.capabilities.includes('Capability_BLE');
     const isBluetoothConnectedDevice = device?.bluetoothProps?.id !== undefined;
+
+    const isThpDevice = device?.thp?.properties !== undefined;
 
     return (
         <SettingsLayout>
@@ -156,6 +159,7 @@ export const SettingsDevice = () => {
                     >
                         <PinProtection isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
+                        {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
                         <Passphrase isDeviceLocked={isDeviceLocked} />
                         {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
                         {supportsDeviceAuthentication && (
