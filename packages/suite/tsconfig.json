@@ -65,6 +65,7 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
         },

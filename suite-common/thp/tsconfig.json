@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../firmware" },
         { "path": "../redux-utils" },
         { "path": "../../packages/connect" }
     ]
