@@ -75,7 +75,7 @@ const applyDeviceStatesThunk = createThunk(
             newDeviceState: DeviceState;
             devicePath: DeviceUniquePath;
         },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         try {
             const devices = selectDevices(getState());
@@ -130,6 +130,15 @@ const applyDeviceStatesThunk = createThunk(
                     );
                 }
             }
+
+            // metadata are enabled in settings but metadata master key does not exist for this device
+            // try to generate device metadata master key if passphrase is not used
+            const metadata = extra.selectors.selectMetadata(getState());
+            const metadataEnabled = metadata.enabled && !device.metadata[1];
+
+            if (metadataEnabled) {
+                dispatch(extra.thunks.initMetadata(false));
+            }
         } catch (error) {
             console.warn('applyDeviceStatesThunk error', error);
         }
@@ -173,7 +182,7 @@ export const startDiscoveryThunk = createThunk(
             isAddingHiddenWallet?: boolean;
             isAddingExistingWallet?: boolean;
         },
-        { dispatch, getState, extra },
+        { dispatch, getState },
     ): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
         if (isDiscoveryInProgress(currentDiscovery)) {
@@ -199,15 +208,6 @@ export const startDiscoveryThunk = createThunk(
         if (!isAddingHiddenWallet || (isAddingHiddenWallet && isAddingExistingWallet)) {
             dispatch(runDiscoveryThunk(device));
         }
-
-                // metadata are enabled in settings but metadata master key does not exist for this device
-            // try to generate device metadata master key if passphrase is not used
-            const metadata = extra.selectors.selectMetadata(getState());
-            const metadataEnabled = metadata.enabled && !device.metadata[1];
-
-            if (metadataEnabled) {
-                dispatch(extra.thunks.initMetadata(false));
-            }
     },
 );
 
@@ -425,6 +425,36 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
+            if (isAddingHiddenWallet && device.features && !device.features.passphrase_protection) {
+                dispatch(
+                    discoveryActions.updateDiscovery(
+                        {
+                            status: 'passphrase-enable-on-device',
+                        },
+                        device.path,
+                    ),
+                );
+                const response = await TrezorConnect.applySettings({
+                    device,
+                    use_passphrase: true,
+                });
+
+                console.log('TrezorConnect.applySettings', response);
+
+                if (!response.success) {
+                    dispatch(
+                        discoveryActions.updateDiscovery(
+                            {
+                                status: 'cancelled',
+                            },
+                            device.path,
+                        ),
+                    );
+
+                    return;
+                }
+            }
+
             if (isAddingHiddenWallet) {
                 dispatch(
                     discoveryActions.updateDiscovery(
@@ -438,7 +468,7 @@ export const runDiscoveryThunk = createThunk(
 
             const instance = !device?.state
                 ? device.instance
-                : getNewInstanceNumber(getState().device.devices, device);
+                : getNewInstanceNumber(selectDevices(getState()), device);
 
             const deviceStateResponse = await TrezorConnect.getDeviceState({
                 device: {

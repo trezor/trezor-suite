@@ -28,6 +28,9 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
               status: 'enter-passphrase';
           }
         | {
+              status: 'passphrase-enable-on-device';
+          }
+        | {
               status: 'passphrase-duplicate';
               duplicateDeviceStaticSessionId: StaticSessionId;
           }

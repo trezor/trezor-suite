@@ -51,6 +51,14 @@ export const AddHiddenWalletButton = () => {
         setIsDeviceManagerVisible(false);
 
         analytics.report({ type: EventType.PassphraseAddHiddenWallet });
+        dispatch(
+            startDiscoveryThunk({
+                device,
+                isAddingHiddenWallet: true,
+                isAddingExistingWallet: false,
+            }),
+        );
+        dispatch(runDiscoveryThunk(device));
 
         // If passphrase is not enabled on the device, we need to show the enable screen first
         if (!isPassphraseEnabledOnDevice) {
@@ -59,14 +67,6 @@ export const AddHiddenWalletButton = () => {
                 screen: AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice,
             });
         } else {
-            dispatch(
-                startDiscoveryThunk({
-                    device,
-                    isAddingHiddenWallet: true,
-                    isAddingExistingWallet: false,
-                }),
-            );
-            dispatch(runDiscoveryThunk(device));
             // Navigate to the PassphraseStackNavigator which will handle showing the appropriate screen
             // based on the current state of the passphrase flow
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {

@@ -29,6 +29,13 @@ export const AuthorizeDeviceStackNavigator = () => {
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
         >
             {
+                // NOTE: render this first as it handles states that should be on top - passphrase on device enable
+            }
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseForm}
+                component={PassphraseStackNavigator}
+            />
+            {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate
                 // directly to the next screen without jumping back and forth.
@@ -48,10 +55,6 @@ export const AuthorizeDeviceStackNavigator = () => {
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PinMatrix}
                 component={PinScreen}
-            />
-            <AuthorizeDeviceStack.Screen
-                name={AuthorizeDeviceStackRoutes.PassphraseForm}
-                component={PassphraseStackNavigator}
             />
         </AuthorizeDeviceStack.Navigator>
     );
