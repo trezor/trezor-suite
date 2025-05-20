@@ -9,7 +9,7 @@ import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { deviceActions, selectDevices } from '@suite-common/wallet-core';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
-import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey, selectHistoricRatesByTransactions } from '@suite-common/wallet-utils';
 import { cloneObject } from '@trezor/utils';
 
@@ -208,7 +208,6 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
 
     return Promise.all([
         db.removeItemByPK('devices', staticSessionId),
-        db.removeItemByPK('discovery', staticSessionId),
         db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
         db.removeItemByIndex('txs', 'deviceState', staticSessionId),
         db.removeItemByIndex('graph', 'deviceState', staticSessionId),
@@ -226,12 +225,6 @@ export const saveTradingTrade = async (trade: TradingTransaction) => {
     if (!(await db.isAccessible())) return;
 
     return db.addItem('tradingTrades', trade, undefined, true);
-};
-
-export const saveDiscovery = async (discoveries: Discovery[]) => {
-    if (!(await db.isAccessible())) return;
-
-    return db.addItems('discovery', discoveries, true);
 };
 
 export const saveGraph = async (graphData: GraphData[]) => {
@@ -283,9 +276,6 @@ export const rememberDevice =
         const graphData = wallet.graph.data.filter(d =>
             deviceGraphDataFilterFn(d, device.state?.staticSessionId),
         );
-        const discovery = wallet.discovery.filter(
-            d => d.deviceState === device.state?.staticSessionId,
-        );
         const historicRates = wallet.fiat.historic;
 
         const accountPromises = accounts.reduce(
@@ -309,7 +299,6 @@ export const rememberDevice =
                 saveDevice(device, forcedRemember),
                 saveAccounts(accounts),
                 saveGraph(graphData),
-                saveDiscovery(discovery),
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
                 dispatch(saveDeviceMetadataError(device)),
                 ...accountPromises,
