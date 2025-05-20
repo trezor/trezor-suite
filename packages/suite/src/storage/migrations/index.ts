@@ -76,6 +76,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
 
         // object store for discovery
+        // @ts-expect-error
         db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         db.createObjectStore('analytics');
@@ -225,6 +226,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
         });
 
+        // @ts-expect-error
         await updateAll(transaction, 'discovery', (d: any) => {
             // reset discovery
             if (d.networks.includes('ltc')) {
@@ -283,6 +285,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
         });
 
+        // @ts-expect-error
         await updateAll(transaction, 'discovery', (d: any) => {
             // reset discovery
             if (d.networks.includes('vtc')) {
@@ -391,10 +394,13 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         // discovery
+        // @ts-expect-error
         const discoveryStoreOld = transaction.objectStore('discovery');
         const discoveries = await discoveryStoreOld.getAll();
+        // @ts-expect-error
         db.deleteObjectStore('discovery');
 
+        // @ts-expect-error
         const discoveryStoreNew = db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         discoveries.forEach(discovery => {
@@ -593,6 +599,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return walletSettings;
         });
 
+        // @ts-expect-error
         await updateAll(transaction, 'discovery', (discovery: any) => {
             // remove trop from discovery networks
             discovery.networks = discovery.networks.filter(
@@ -809,6 +816,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return walletSettings;
         });
 
+        // @ts-expect-error
         await updateAll(transaction, 'discovery', (discovery: any) => {
             // remove tgor from discovery networks
             discovery.networks = discovery.networks.filter((network: any) => network !== 'tgor');
@@ -972,6 +980,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             tokenManagement.delete('matic-coin-hide');
         }
 
+        // @ts-expect-error
         await updateAll(transaction, 'discovery', (discovery: any) => {
             discovery.networks = discovery.networks.map((network: any) =>
                 network === 'matic' ? 'pol' : network,
@@ -1221,6 +1230,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         // Remove deprecated networks from discovery networks
+        // @ts-expect-error
         await updateAll(transaction, 'discovery', (discovery: any) => {
             discovery.networks = discovery.networks.filter(
                 (network: any) => !deprecatedNetworks.includes(network), // Exclude deprecated networks from discovery
@@ -1282,6 +1292,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 56) {
         await migrateToV56(db, oldVersion, newVersion, transaction);
+        // @ts-expect-error
+        db.deleteObjectStore('discovery');
     }
 
     if (oldVersion < 57) {

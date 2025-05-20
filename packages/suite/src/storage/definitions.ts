@@ -24,7 +24,7 @@ import type { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { MetadataState } from 'src/types/suite/metadata';
-import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
+import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
 import { GraphData } from '../types/wallet/graph';
@@ -109,10 +109,6 @@ export interface SuiteDBSchema extends DBSchema {
     coinjoinDebugSettings: {
         key: 'debug';
         value: CoinjoinDebugSettings;
-    };
-    discovery: {
-        key: string;
-        value: Discovery;
     };
     analytics: {
         key: string;
