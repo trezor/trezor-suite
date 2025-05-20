@@ -95,6 +95,8 @@ export const recomposeAndSignTxThunk = createThunk<
             feePerUnit: composed.feePerByte,
             feeLimit: composed.feeLimit ?? '',
             estimatedFeeLimit: composed.estimatedFeeLimit,
+            maxFeePerGas: composed.maxFeePerGas,
+            maxPriorityFeePerGas: composed.maxPriorityFeePerGas,
             options,
             destinationTag,
             ethereumDataHex,
