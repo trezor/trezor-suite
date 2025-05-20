@@ -4,25 +4,29 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectIsWipingDevice } from '@suite-native/device-authorization';
 import {
     AppTabsRoutes,
-    DeviceStackRoutes,
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    SettingsStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
-    SettingsStackParamList,
-    DeviceStackRoutes.DeviceSettings,
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.DeviceSettings,
     RootStackParamList
 >;
 
+// When user accesses device settings in remember mode and tries to modify the device,
+// he will be prompted to connect Trezor. This hook prevents usage of incorrect device.
 export const useDeviceChangedCheck = () => {
     const device = useSelector(selectSelectedDevice);
+    const isWipingDevice = useSelector(selectIsWipingDevice);
     const navigation = useNavigation<NavigationProps>();
     const initialDeviceIdRef = useRef<string | null>(null);
 
@@ -34,8 +38,13 @@ export const useDeviceChangedCheck = () => {
             return;
         }
 
-        // Check for device mismatch only after initial device ID is set
-        if (initialDeviceIdRef.current && device?.id && initialDeviceIdRef.current !== device.id) {
+        // When device is wiped, the device ID changes and we shouldn't trigger this.
+        if (
+            initialDeviceIdRef.current &&
+            device?.id &&
+            initialDeviceIdRef.current !== device.id &&
+            !isWipingDevice
+        ) {
             TrezorConnect.cancel();
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
@@ -44,5 +53,5 @@ export const useDeviceChangedCheck = () => {
                 },
             });
         }
-    }, [device?.id, navigation]);
+    }, [device?.id, navigation, isWipingDevice]);
 };

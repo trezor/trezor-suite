@@ -8,7 +8,7 @@ import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -50,7 +50,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
     const handleDeviceRedirect = () => {
         setIsDeviceManagerVisible(false);
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-            screen: DeviceStackRoutes.DeviceSettings,
+            screen: DeviceSettingsStackRoutes.DeviceSettings,
         });
         analytics.report({
             type: EventType.DeviceManagerClick,

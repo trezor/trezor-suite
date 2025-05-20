@@ -10,7 +10,7 @@ import {
     DevicePinProtectionStackParamList,
     DevicePinProtectionStackRoutes,
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     StackNavigationProps,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
@@ -27,7 +27,7 @@ const DevicePinProtectionStack = createNativeStackNavigator<DevicePinProtectionS
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.DevicePinProtectionStack
+    DeviceSettingsStackRoutes.DevicePinProtectionStack
 >;
 
 export const DevicePinProtectionStackNavigator = () => {
@@ -35,7 +35,10 @@ export const DevicePinProtectionStackNavigator = () => {
 
     const route =
         useRoute<
-            RouteProp<DeviceSettingsStackParamList, DeviceStackRoutes.DevicePinProtectionStack>
+            RouteProp<
+                DeviceSettingsStackParamList,
+                DeviceSettingsStackRoutes.DevicePinProtectionStack
+            >
         >();
 
     const { type } = route.params;

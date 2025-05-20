@@ -569,6 +569,9 @@ export const en = {
                         'Make sure you have your wallet backup. You won’t be able to recover access to your assets without it.',
                 },
             },
+            loadingSuccessScreen: {
+                title: 'Device wiped',
+            },
         },
         bluetooth: {
             title: 'Bluetooth',

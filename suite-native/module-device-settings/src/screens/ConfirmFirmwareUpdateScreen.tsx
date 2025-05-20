@@ -7,7 +7,7 @@ import {
 } from '@suite-native/firmware';
 import {
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     Screen,
     ScreenHeader,
     StackNavigationProps,
@@ -17,7 +17,7 @@ import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.ConfirmFirmwareUpdate
+    DeviceSettingsStackRoutes.ConfirmFirmwareUpdate
 >;
 
 export const ConfirmFirmwareUpdateScreen = () => {
@@ -25,7 +25,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
     const { isDeviceConnected } = useDeviceConnectionGuard();
 
     const handleUpdateConfirmation = () => {
-        navigation.navigate(DeviceStackRoutes.FirmwareInstallation);
+        navigation.navigate(DeviceSettingsStackRoutes.FirmwareInstallation);
     };
 
     if (!isDeviceConnected) return;

@@ -11,7 +11,7 @@ import {
     DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
@@ -28,7 +28,7 @@ export const DeviceAuthenticityCard = () => {
     const { showAlert } = useAlert();
 
     const navigateToDeviceAuthenticityStack = useCallback(() => {
-        navigation.navigate(DeviceStackRoutes.DeviceAuthenticityStack);
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceAuthenticityStack);
     }, [navigation]);
 
     const showInfoAlert = useCallback(() => {

@@ -4,14 +4,14 @@ import { Box } from '@suite-native/atoms';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
 import {
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.FirmwareInstallation
+    DeviceSettingsStackRoutes.FirmwareInstallation
 >;
 
 export const FirmwareInstallationScreen = () => {
@@ -19,7 +19,7 @@ export const FirmwareInstallationScreen = () => {
 
     const handleFirmwareInstallationSuccess = () => {
         const initialRoute = navigation.getState().routes.at(0)
-            ?.name as DeviceStackRoutes.DeviceSettings;
+            ?.name as DeviceSettingsStackRoutes.DeviceSettings;
 
         if (initialRoute) {
             navigation.navigate(initialRoute);
@@ -30,7 +30,7 @@ export const FirmwareInstallationScreen = () => {
     };
 
     const handleFirmwareInstallationFailure = () => {
-        navigation.navigate(DeviceStackRoutes.ConfirmFirmwareUpdate);
+        navigation.navigate(DeviceSettingsStackRoutes.ConfirmFirmwareUpdate);
     };
 
     return (

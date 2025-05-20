@@ -1,16 +1,14 @@
-import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { AnimatedText, Box, Spinner, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    Screen,
+    LoadingSuccessScreen,
     StackProps,
 } from '@suite-native/navigation';
 
 const NAVIGATION_TIMEOUT = 3000;
-const ANIMATION_END_FRAME = 305;
 
 export const WalletCreatedSuccessScreen = ({
     navigation,
@@ -22,7 +20,7 @@ export const WalletCreatedSuccessScreen = ({
     const { flowType } = route.params;
     const textOpacity = useSharedValue(0);
 
-    const handleAnimationEnd = () => {
+    const handleFinish = () => {
         textOpacity.value = withTiming(1);
         setTimeout(() => {
             if (flowType === 'create') {
@@ -33,25 +31,12 @@ export const WalletCreatedSuccessScreen = ({
         }, NAVIGATION_TIMEOUT);
     };
 
-    const textStyle = useAnimatedStyle(() => ({
-        opacity: textOpacity.value,
-    }));
-
     return (
-        <Screen isScrollable={false}>
-            <Box justifyContent="center" alignItems="center" flex={1}>
-                <VStack alignItems="center" spacing="sp20">
-                    <Spinner
-                        loadingState="success"
-                        onComplete={handleAnimationEnd}
-                        endFrame={ANIMATION_END_FRAME}
-                        size={80}
-                    />
-                    <AnimatedText style={textStyle} variant="titleSmall">
-                        <Translation id="moduleDeviceOnboarding.walletCreatedSuccessScreen.successLabel" />
-                    </AnimatedText>
-                </VStack>
-            </Box>
-        </Screen>
+        <LoadingSuccessScreen
+            onFinish={handleFinish}
+            title={
+                <Translation id="moduleDeviceOnboarding.walletCreatedSuccessScreen.successLabel" />
+            }
+        />
     );
 };

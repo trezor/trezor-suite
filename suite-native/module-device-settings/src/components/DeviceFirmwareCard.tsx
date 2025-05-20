@@ -18,7 +18,7 @@ import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -48,7 +48,7 @@ const FirmwareInfo = ({ label, value }: DeviceInfoProps) => {
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.ConfirmFirmwareUpdate
+    DeviceSettingsStackRoutes.ConfirmFirmwareUpdate
 >;
 
 export const DeviceFirmwareCard = () => {
@@ -89,7 +89,7 @@ export const DeviceFirmwareCard = () => {
                     variant: 'info',
                     buttonLabel: <Translation id="firmware.updateCard.updateButton" />,
                     onButtonPress: () => {
-                        navigation.navigate(DeviceStackRoutes.ConfirmFirmwareUpdate);
+                        navigation.navigate(DeviceSettingsStackRoutes.ConfirmFirmwareUpdate);
                     },
                     buttonProps: {
                         isDisabled: isDiscoveryRunning,

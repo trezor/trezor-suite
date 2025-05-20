@@ -21,7 +21,7 @@ import {
     DeviceAuthenticityStackRoutes,
     DeviceOnboardingStackRoutes,
     DevicePinProtectionStackRoutes,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     HomeStackRoutes,
     OnboardingStackRoutes,
     ReceiveStackRoutes,
@@ -192,15 +192,15 @@ export type AddCoinAccountStackParamList = {
 };
 
 export type DeviceSettingsStackParamList = {
-    [DeviceStackRoutes.DeviceSettings]: undefined;
-    [DeviceStackRoutes.DevicePinProtectionStack]: {
+    [DeviceSettingsStackRoutes.DeviceSettings]: undefined;
+    [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
     };
-    [DeviceStackRoutes.DeviceAuthenticityStack]: undefined;
-    [DeviceStackRoutes.ConfirmFirmwareUpdate]: undefined;
-    [DeviceStackRoutes.FirmwareInstallation]: undefined;
-    [DeviceStackRoutes.ContinueOnTrezor]: undefined;
-    [DeviceStackRoutes.WipeDeviceStack]: undefined;
+    [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: undefined;
+    [DeviceSettingsStackRoutes.ConfirmFirmwareUpdate]: undefined;
+    [DeviceSettingsStackRoutes.FirmwareInstallation]: undefined;
+    [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
+    [DeviceSettingsStackRoutes.WipeDeviceStack]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {
@@ -212,6 +212,8 @@ export type DevicePinProtectionStackParamList = {
 
 export type WipeDeviceStackParamList = {
     [WipeDeviceStackRoutes.WipeDevice]: undefined;
+    [WipeDeviceStackRoutes.ContinueOnTrezor]: undefined;
+    [WipeDeviceStackRoutes.WipeDeviceLoadingScreen]: undefined;
 };
 
 export type DeviceAuthenticityStackParamList = {

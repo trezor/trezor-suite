@@ -19,7 +19,7 @@ import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -78,7 +78,7 @@ export const FirmwareUpdateAlert = () => {
 
     const handleUpdateFirmware = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-            screen: DeviceStackRoutes.ConfirmFirmwareUpdate,
+            screen: DeviceSettingsStackRoutes.ConfirmFirmwareUpdate,
         });
     };
 

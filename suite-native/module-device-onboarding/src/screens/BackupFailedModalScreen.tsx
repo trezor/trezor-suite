@@ -1,39 +1,21 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
 import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
-import { ContinueOnTrezorScreenContent, useWipeDevice } from '@suite-native/device';
+import { useWipeDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackProps,
-} from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 export const BACKUP_FAILED_SUPPORT_URL =
     'https://trezor.io/support/a/trezor-recovery-issues#open-chat';
 
-export const BackupFailedModalScreen = ({
-    navigation,
-}: StackProps<RootStackParamList, RootStackRoutes.BackupFailedModal>) => {
+export const BackupFailedModalScreen = () => {
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
-    const { isWipeInProgress, wipeDevice } = useWipeDevice();
+    const { wipeDevice } = useWipeDevice();
 
     const handleSecondaryButtonPress = () => openLink(BACKUP_FAILED_SUPPORT_URL);
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            if (isWipeInProgress && e.data.action.type === 'GO_BACK') {
-                e.preventDefault();
-            }
-        });
-
-        return unsubscribe;
-    }, [navigation, isWipeInProgress]);
 
     const showWipeDeviceAlert = useCallback(
         () =>
@@ -57,14 +39,6 @@ export const BackupFailedModalScreen = ({
             }),
         [showAlert, openLink, wipeDevice],
     );
-
-    if (isWipeInProgress) {
-        return (
-            <Screen header={<ScreenHeader leftIcon={null} />}>
-                <ContinueOnTrezorScreenContent />
-            </Screen>
-        );
-    }
 
     return (
         <Screen header={<ScreenHeader />}>

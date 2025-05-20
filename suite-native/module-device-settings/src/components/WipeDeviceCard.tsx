@@ -4,23 +4,20 @@ import { Box, Button, CardWithIconLayout, Text, VStack } from '@suite-native/ato
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
-    StackToStackCompositeNavigationProps,
-    WipeDeviceStackParamList,
-    WipeDeviceStackRoutes,
+    DeviceSettingsStackRoutes,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    WipeDeviceStackParamList,
-    WipeDeviceStackRoutes,
-    DeviceSettingsStackParamList
+type NavigationProp = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.DeviceSettings
 >;
 
 export const WipeDeviceCard = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const handleRedirect = () => {
-        navigation.navigate(DeviceStackRoutes.WipeDeviceStack);
+        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
     };
 
     return (

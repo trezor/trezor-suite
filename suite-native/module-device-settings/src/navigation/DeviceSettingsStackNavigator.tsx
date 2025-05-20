@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
@@ -17,35 +17,35 @@ const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamL
 
 export const DeviceSettingsStackNavigator = () => (
     <DeviceSettingsStack.Navigator
-        initialRouteName={DeviceStackRoutes.DeviceSettings}
+        initialRouteName={DeviceSettingsStackRoutes.DeviceSettings}
         screenOptions={{ ...stackNavigationOptionsConfig, animation: 'slide_from_bottom' }}
     >
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.DeviceSettings}
+            name={DeviceSettingsStackRoutes.DeviceSettings}
             component={DeviceSettingsModalScreen}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.DevicePinProtectionStack}
+            name={DeviceSettingsStackRoutes.DevicePinProtectionStack}
             component={DevicePinProtectionStackNavigator}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.DeviceAuthenticityStack}
+            name={DeviceSettingsStackRoutes.DeviceAuthenticityStack}
             component={DeviceAuthenticityStackNavigator}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.WipeDeviceStack}
+            name={DeviceSettingsStackRoutes.WipeDeviceStack}
             component={WipeDeviceStackNavigator}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.ConfirmFirmwareUpdate}
+            name={DeviceSettingsStackRoutes.ConfirmFirmwareUpdate}
             component={ConfirmFirmwareUpdateScreen}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.ContinueOnTrezor}
+            name={DeviceSettingsStackRoutes.ContinueOnTrezor}
             component={ContinueOnTrezorScreen}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.FirmwareInstallation}
+            name={DeviceSettingsStackRoutes.FirmwareInstallation}
             component={FirmwareInstallationScreen}
         />
     </DeviceSettingsStack.Navigator>

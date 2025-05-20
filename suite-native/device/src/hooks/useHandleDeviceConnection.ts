@@ -16,7 +16,7 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import { selectDeviceRequestedPin, selectIsWipingDevice } from '@suite-native/device-authorization';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
@@ -62,6 +62,7 @@ export const useHandleDeviceConnection = () => {
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
+    const isWipingDevice = useSelector(selectIsWipingDevice);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
@@ -117,7 +118,8 @@ export const useHandleDeviceConnection = () => {
             !isFirmwareInstallationRunning &&
             (!isDeviceOnboardingStackFocused || isDeviceOnboardingConnectAndUnlockScreenFocused) &&
             !wasDeviceOnboardingCancelled &&
-            !shouldNavigateToDeviceCompromisedModal
+            !shouldNavigateToDeviceCompromisedModal &&
+            !isWipingDevice // After device wipe through settings, we want to redirect to homescreen
         ) {
             navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
@@ -138,6 +140,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceOnboardingConnectAndUnlockScreenFocused,
         wasDeviceOnboardingCancelled,
         shouldNavigateToDeviceCompromisedModal,
+        isWipingDevice,
     ]);
 
     // At the moment when unauthorized physical device is selected,

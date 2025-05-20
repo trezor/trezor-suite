@@ -67,7 +67,7 @@ export enum AccountsImportStackRoutes {
     AccountImportSummary = 'AccountImportSummary',
 }
 
-export enum DeviceStackRoutes {
+export enum DeviceSettingsStackRoutes {
     DeviceSettings = 'DeviceSettings',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
@@ -91,6 +91,8 @@ export enum DeviceAuthenticityStackRoutes {
 
 export enum WipeDeviceStackRoutes {
     WipeDevice = 'WipeDevice',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+    WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
 }
 
 export enum AuthorizeDeviceStackRoutes {

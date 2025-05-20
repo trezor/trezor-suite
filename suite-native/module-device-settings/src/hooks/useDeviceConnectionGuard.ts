@@ -6,7 +6,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     SettingsStackParamList,
@@ -15,7 +15,7 @@ import {
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SettingsStackParamList,
-    DeviceStackRoutes.DeviceSettings,
+    DeviceSettingsStackRoutes.DeviceSettings,
     RootStackParamList
 >;
 
@@ -30,7 +30,7 @@ export const useDeviceConnectionGuard = () => {
             params: {
                 onCancelNavigationTarget: {
                     name: RootStackRoutes.DeviceSettingsStack,
-                    params: { screen: DeviceStackRoutes.DeviceSettings },
+                    params: { screen: DeviceSettingsStackRoutes.DeviceSettings },
                 },
             },
         });

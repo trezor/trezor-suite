@@ -1,47 +1,47 @@
-import { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { isFulfilled } from '@reduxjs/toolkit';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
+import { setIsWipingDevice } from '@suite-native/device-authorization';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
-    DeviceOnboardingStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
+    WipeDeviceStackParamList,
+    WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
-import TrezorConnect from '@trezor/connect';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.BackupFailedModal>;
+type NavigationProp = StackToStackCompositeNavigationProps<
+    WipeDeviceStackParamList,
+    WipeDeviceStackRoutes.ContinueOnTrezor,
+    RootStackParamList
+>;
 
 export const useWipeDevice = () => {
-    const [isWipeInProgress, setIsWipeInProgress] = useState(false);
+    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
 
     const wipeDevice = useCallback(async () => {
-        setIsWipeInProgress(true);
         if (!device) return;
+        dispatch(setIsWipingDevice(true));
+        navigation.navigate(WipeDeviceStackRoutes.ContinueOnTrezor);
 
         const response = await requestPrioritizedDeviceAccess({
-            deviceCallback: async () =>
-                await TrezorConnect.wipeDevice({
-                    device: {
-                        path: device.path,
-                    },
-                    // In bootloader mode we need the skip the final reload otherwise we never get the resolution
-                    skipFinalReload: device.mode === 'bootloader',
-                }),
+            deviceCallback: async () => await dispatch(wipeDeviceThunk()),
         });
 
-        if (response.success && response.payload.success) {
-            navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
-            });
+        if (response.success && isFulfilled(response.payload)) {
+            navigation.navigate(WipeDeviceStackRoutes.WipeDeviceLoadingScreen);
+        } else {
+            if (navigation.canGoBack()) {
+                navigation.goBack();
+            }
         }
-        setIsWipeInProgress(false);
-    }, [device, navigation]);
+    }, [device, navigation, dispatch]);
 
-    return { wipeDevice, isWipeInProgress };
+    return { wipeDevice };
 };

@@ -10729,6 +10729,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
+    jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.9"
     react-redux: "npm:9.2.0"

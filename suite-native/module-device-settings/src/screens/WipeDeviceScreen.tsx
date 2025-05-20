@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { CardStepper, CardStepperMap, Text, VStack } from '@suite-native/atoms';
-import { ContinueOnTrezorScreenContent, useWipeDevice } from '@suite-native/device';
+import { useWipeDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
@@ -28,21 +28,13 @@ const cardStepperContentMap = {
 
 export const WipeDeviceScreen = () => {
     const navigation = useNavigation();
-    const { wipeDevice, isWipeInProgress } = useWipeDevice();
+    const { wipeDevice } = useWipeDevice();
 
     const handleSecondaryButtonPress = () => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
     };
-
-    if (isWipeInProgress) {
-        return (
-            <Screen header={<ScreenHeader leftIcon={null} />}>
-                <ContinueOnTrezorScreenContent />
-            </Screen>
-        );
-    }
 
     return (
         <Screen header={<ScreenHeader closeActionType="close" />}>

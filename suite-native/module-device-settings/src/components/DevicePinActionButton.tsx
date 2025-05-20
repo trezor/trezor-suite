@@ -7,14 +7,14 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
 import {
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     PinActionType,
     StackNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.DevicePinProtectionStack
+    DeviceSettingsStackRoutes.DevicePinProtectionStack
 >;
 
 type DevicePinActionButtonProps = {
@@ -33,7 +33,7 @@ export const DevicePinActionButton = ({
     const navigation = useNavigation<NavigationProp>();
 
     const navigateToPinStack = useCallback(() => {
-        navigation.navigate(DeviceStackRoutes.DevicePinProtectionStack, {
+        navigation.navigate(DeviceSettingsStackRoutes.DevicePinProtectionStack, {
             type,
         });
     }, [navigation, type]);
