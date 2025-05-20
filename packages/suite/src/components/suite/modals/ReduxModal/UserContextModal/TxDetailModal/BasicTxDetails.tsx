@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
 import { Network } from '@suite-common/wallet-config';
-import { getFeeRate, getTxIcon, isPending } from '@suite-common/wallet-utils';
+import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
 import {
     Box,
     Card,
@@ -196,7 +196,7 @@ export const BasicTxDetails = ({
                         </Item>
 
                         <Item label={<Translation id="TR_GAS_PRICE" />} iconName="gasPump">
-                            {isConfirmed ? (
+                            {isConfirmed || !isEip1559(tx.ethereumSpecific) ? (
                                 <FeeRate
                                     feeRate={fromWei(tx.ethereumSpecific?.gasPrice || 0, 'gwei')}
                                     networkType="ethereum"
