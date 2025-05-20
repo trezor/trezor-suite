@@ -11,7 +11,6 @@ import { Account } from 'src/types/wallet';
 
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
-import { AuthConfirmFailed } from './AuthConfirmFailed';
 import { BackendDisconnected } from './BackendDisconnected';
 import { ContextMessage } from './ContextMessage';
 import { DeviceUnavailable } from './DeviceUnavailable';
@@ -38,7 +37,6 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             {account?.symbol &&
                 isSupportedSolStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && <ContextMessage context={Context.solStaking} />}
-            <AuthConfirmFailed />
             <BackendDisconnected />
             <DeviceUnavailable />
             <TorDisconnected />
