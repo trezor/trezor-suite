@@ -25,5 +25,14 @@
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",
         "@types/jws": "^3.2.10"
+    },
+    "nx": {
+        "targets": {
+            "build:lib": {
+                "outputs": [
+                    "{projectRoot}/files"
+                ]
+            }
+        }
     }
 }
