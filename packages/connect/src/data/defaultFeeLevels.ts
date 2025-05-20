@@ -86,7 +86,7 @@ export const getEthereumFeeLevels = (network: CoinsJsonData): FeeInfoWithLevels 
     const { min, max, defaultGas } = getEvmChainGweiGasPrice(network.chain);
 
     return {
-        blockTime: -1, // unknown
+        blockTime: Math.max(0.1, Math.round(network.blocktime_seconds)),
         defaultFees: [
             {
                 label: 'normal' as const,

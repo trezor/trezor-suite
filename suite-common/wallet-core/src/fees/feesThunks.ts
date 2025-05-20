@@ -113,7 +113,6 @@ export const updateFeeInfoThunk = createThunk(
                                 baseFeePerGas: undefined,
                                 maxFeePerGas: undefined,
                                 maxPriorityFeePerGas: undefined,
-                                maxWaitTimeEstimate: undefined,
                                 label: 'normal' as const,
                             },
                         ],

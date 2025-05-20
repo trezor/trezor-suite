@@ -257,7 +257,7 @@ const parseEthereumNetworksJson = (json: any) => {
 
         ethereumNetworks.push({
             ...ethereumNetworkInfoBase,
-            ...getEthereumFeeLevels(network.chain),
+            ...getEthereumFeeLevels(network),
             blockchainLink: network.blockchain_link,
             chainId: network.chain_id,
             label: network.label,

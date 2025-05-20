@@ -50,7 +50,6 @@ export type FeeOptionType = {
     networkAmount?: string | null;
     feePerTx?: string; // Solana specific
     // EIP-1559
-    maxWaitTimeEstimate?: number;
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
     baseFeePerGas?: string;

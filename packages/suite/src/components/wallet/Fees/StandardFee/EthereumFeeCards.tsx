@@ -22,6 +22,7 @@ export const EthereumFeeCards = ({
     networkType,
     isDirty,
     transactionInfo,
+    feeInfo,
 }: StandardFeeProps) => {
     const locale = useLocales();
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -41,8 +42,8 @@ export const EthereumFeeCards = ({
     }
 
     const getTimeEstimate = (fee: FeeOptionType) => {
-        if (fee.maxWaitTimeEstimate) {
-            return `~${formatDurationStrict(fee.maxWaitTimeEstimate / 1000, locale)}`;
+        if (fee.blocks && fee.blocks > 0 && feeInfo.blockTime) {
+            return `~${formatDurationStrict(fee.blocks * feeInfo.blockTime, locale)}`;
         }
 
         return undefined;

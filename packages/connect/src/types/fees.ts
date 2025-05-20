@@ -26,7 +26,6 @@ export const FeeLevel = Type.Object({
     baseFeePerGas: Type.Optional(Type.String()),
     maxFeePerGas: Type.Optional(Type.String()),
     maxPriorityFeePerGas: Type.Optional(Type.String()),
-    maxWaitTimeEstimate: Type.Optional(Type.Number()),
 });
 
 export type SelectFeeLevel = Static<typeof SelectFeeLevel>;

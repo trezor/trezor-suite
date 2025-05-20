@@ -47,11 +47,13 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                         label,
                         feePerUnit,
                         feeLimit: response.feeLimit,
-                        blocks: -1, // TODO: reuse this instead of maxWaitTimeEstimate?
+                        blocks: Math.max(
+                            1,
+                            (level?.maxWaitTimeEstimate || 0) / 1000 / this.coinInfo.blockTime,
+                        ),
                         baseFeePerGas: eip1559.baseFeePerGas,
                         maxFeePerGas,
                         maxPriorityFeePerGas: level.maxPriorityFeePerGas,
-                        maxWaitTimeEstimate: level?.maxWaitTimeEstimate,
                     };
                 });
 
