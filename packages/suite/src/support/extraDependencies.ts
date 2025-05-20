@@ -159,7 +159,6 @@ export const extraDependencies: ExtraDependencies = {
             payload.accounts.map(acc =>
                 acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
             ),
-        storageLoadDiscovery: (_, { payload }: StorageLoadAction) => payload.discovery,
         setDeviceMetadataReducer: (
             state,
             {
