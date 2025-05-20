@@ -47,10 +47,13 @@ export const AuthorizeDeviceStackNavigator = () => {
                     </AuthorizeDeviceStack.Group>
                 )
             }
-            <AuthorizeDeviceStack.Screen
-                name={AuthorizeDeviceStackRoutes.PinMatrix}
-                component={PinScreen}
-            />
+
+            {hasDeviceRequestedPin && (
+                <AuthorizeDeviceStack.Screen
+                    name={AuthorizeDeviceStackRoutes.PinMatrix}
+                    component={PinScreen}
+                />
+            )}
         </AuthorizeDeviceStack.Navigator>
     );
 };

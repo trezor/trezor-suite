@@ -90,6 +90,8 @@ export const selectPassphraseError = (
     }
 
     switch (discovery.status) {
+        case 'failed':
+            return 'action-failed';
         case 'cancelled':
             return 'action-cancelled';
         case 'passphrase-mismatch':
