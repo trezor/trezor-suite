@@ -615,8 +615,9 @@ const getEthereumRbfParams = (
               formattedAmount: formatNetworkAmount(vout[0].value!, account.symbol),
           };
 
-    const ethereumData =
-        tx.ethereumSpecific.data?.indexOf('0x') === 0 ? tx.ethereumSpecific.data.substring(2) : '';
+    const { data, nonce, gasPrice, maxFeePerGas, maxPriorityFeePerGas } = tx.ethereumSpecific;
+
+    const ethereumData = data?.indexOf('0x') === 0 ? data.substring(2) : '';
 
     return {
         type: 'ethereum',
@@ -627,11 +628,11 @@ const getEthereumRbfParams = (
                 ...output,
             },
         ],
-        ethereumNonce: tx.ethereumSpecific.nonce,
+        ethereumNonce: nonce,
         ethereumData,
-        gasPrice: fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei'),
-        maxFeePerGas: fromWei(tx.ethereumSpecific?.maxFeePerGas ?? '0', 'gwei'),
-        maxPriorityFeePerGas: fromWei(tx.ethereumSpecific?.maxPriorityFeePerGas ?? '0', 'gwei'),
+        gasPrice: gasPrice ? fromWei(gasPrice, 'gwei') : '',
+        maxFeePerGas: maxFeePerGas ? fromWei(maxFeePerGas, 'gwei') : '',
+        maxPriorityFeePerGas: maxPriorityFeePerGas ? fromWei(maxPriorityFeePerGas, 'gwei') : '',
     };
 };
 
