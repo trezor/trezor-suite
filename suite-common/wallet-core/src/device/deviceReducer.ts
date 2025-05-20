@@ -849,6 +849,14 @@ export const selectDeviceByStaticSessionId = createMemoizedSelector(
     (devices, staticSessionId) => devices.find(d => d.state?.staticSessionId === staticSessionId),
 );
 
+export const selectDeviceByBaseStaticSessionId = createMemoizedSelector(
+    [selectDevices, (_state, staticSessionId: StaticSessionId) => staticSessionId],
+    (devices, staticSessionId) =>
+        devices.find(
+            d => d.state?.staticSessionId?.split(':')[0] === staticSessionId.split(':')[0],
+        ),
+);
+
 export const selectDeviceUnavailableCapabilities = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.unavailableCapabilities,

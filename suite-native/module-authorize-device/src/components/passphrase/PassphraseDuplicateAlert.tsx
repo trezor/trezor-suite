@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { switchDuplicatedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
+import { selectPassphraseDuplicateStaticSessionId } from '@suite-native/device-authorization';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -18,15 +19,13 @@ import {
 } from '@suite-native/navigation';
 import { StaticSessionId } from '@trezor/connect';
 
-import { selectPassphraseDuplicateStaticSessionId } from '../deviceAuthorizationSlice';
-
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     RootStackParamList
 >;
 
-export const useHandleDuplicatePassphrase = () => {
+export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNode }) => {
     const dispatch = useDispatch();
 
     const passphraseDuplicateStaticSessionId = useSelector(
@@ -70,4 +69,6 @@ export const useHandleDuplicatePassphrase = () => {
             });
         }
     }, [handleDuplicateDevicePassphrase, passphraseDuplicateStaticSessionId, showAlert, translate]);
+
+    return children ?? null;
 };
