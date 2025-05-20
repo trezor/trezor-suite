@@ -48,7 +48,7 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://eth1.trezor.io', 'ethereum'),
+        explorer: getExplorerUrls('https://etherscan.io', 'ethereum'),
         features: [
             'rbf',
             'sign-verify',
@@ -87,7 +87,7 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://pol1.trezor.io', 'ethereum'),
+        explorer: getExplorerUrls('https://polygonscan.com', 'ethereum'),
         features: [
             'rbf',
             'sign-verify',
@@ -119,7 +119,7 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://bsc1.trezor.io', 'ethereum'),
+        explorer: getExplorerUrls('https://bscscan.com', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -422,7 +422,7 @@ export const networks = {
         bip43Path: "m/84'/1'/i'",
         decimals: 8,
         testnet: true,
-        explorer: getExplorerUrls('https://tbtc1.trezor.io', 'bitcoin'),
+        explorer: getExplorerUrls('https://tbtc4-1.trezor.io', 'bitcoin'),
         features: ['rbf', 'sign-verify', 'amount-unit'],
         backendTypes: ['blockbook', 'electrum'],
         accountTypes: {
@@ -494,7 +494,7 @@ export const networks = {
         chainId: 11155111,
         decimals: 18,
         testnet: true,
-        explorer: getExplorerUrls('https://sepolia1.trezor.io', 'ethereum'),
+        explorer: getExplorerUrls('https://sepolia.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559'],
         backendTypes: ['blockbook'],
         accountTypes: {},
@@ -510,7 +510,7 @@ export const networks = {
         chainId: 17000,
         decimals: 18,
         testnet: true,
-        explorer: getExplorerUrls('https://holesky1.trezor.io', 'ethereum'),
+        explorer: getExplorerUrls('https://holesky.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'nft-definitions', 'eip1559'],
         backendTypes: ['blockbook'],
         accountTypes: {},
