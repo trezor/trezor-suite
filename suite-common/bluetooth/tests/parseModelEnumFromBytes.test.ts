@@ -12,6 +12,6 @@ describe(parseModelEnumFromBytes.name, () => {
     });
 
     it('parses correctly T3W1', () => {
-        expect(parseModelEnumFromBytes([1, 0, 84, 51, 87, 49])).toBe(DeviceModelInternal.T3W1);
+        expect(parseModelEnumFromBytes([1, 0, 49, 87, 51, 84])).toBe(DeviceModelInternal.T3W1);
     });
 });

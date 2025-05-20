@@ -12,10 +12,13 @@ const bluetoothReducer =
     prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(extraDependenciesMock);
 
 const initialState: BluetoothState<BluetoothDeviceCommon> = {
+    isBluetoothListOpen: false,
     adapterStatus: 'unknown',
     scanStatus: 'idle',
     nearbyDevices: [] as BluetoothDeviceCommon[],
     knownDevices: [] as BluetoothDeviceCommon[],
+    unpairedDeviceNeedsManualOsRemoval: false,
+    connectingDeviceIds: [],
 };
 
 const pairingDeviceA: BluetoothDeviceCommon = {
@@ -67,7 +70,7 @@ describe('bluetoothReducer', () => {
         });
 
         store.dispatch(
-            bluetoothActions.connectDeviceEventAction({
+            bluetoothActions.deviceUpdateAction({
                 device: {
                     ...pairingDeviceA,
                     connectionStatus: { type: 'pairing', pin: '12345' },
@@ -156,5 +159,36 @@ describe('bluetoothReducer', () => {
 
         store.dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
         expect(store.getState().bluetooth.nearbyDevices).toEqual([pairingDeviceA]);
+    });
+
+    it('starts and stops the auto-connection of the device', () => {
+        const store = configureMockStore({
+            extra: {},
+            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+            preloadedState: {
+                bluetooth: { ...initialState, knownDevices: [disconnectedDeviceB] },
+            },
+        });
+
+        store.dispatch(
+            bluetoothActions.startConnectingBluetoothDevice({
+                deviceId: disconnectedDeviceB.id,
+            }),
+        );
+        expect(store.getState().bluetooth.connectingDeviceIds).toEqual([disconnectedDeviceB.id]);
+
+        store.dispatch(
+            bluetoothActions.stopConnectingBluetoothDevice({
+                deviceId: 'non-existing-device',
+            }),
+        );
+        expect(store.getState().bluetooth.connectingDeviceIds).toEqual([disconnectedDeviceB.id]);
+
+        store.dispatch(
+            bluetoothActions.stopConnectingBluetoothDevice({
+                deviceId: disconnectedDeviceB.id,
+            }),
+        );
+        expect(store.getState().bluetooth.connectingDeviceIds).toEqual([]);
     });
 });

@@ -3,10 +3,13 @@ import { BluetoothDeviceCommon, BluetoothState } from '../src/bluetoothReducer';
 import { WithBluetoothState } from '../src/bluetoothSelectors';
 
 const initialState: BluetoothState<BluetoothDeviceCommon> = {
+    isBluetoothListOpen: false,
     adapterStatus: 'unknown',
     scanStatus: 'idle',
     nearbyDevices: [] as BluetoothDeviceCommon[],
     knownDevices: [] as BluetoothDeviceCommon[],
+    unpairedDeviceNeedsManualOsRemoval: false,
+    connectingDeviceIds: [],
 };
 
 const pairingDeviceStateA: BluetoothDeviceCommon = {
@@ -17,7 +20,7 @@ const pairingDeviceStateA: BluetoothDeviceCommon = {
     connectionStatus: { type: 'pairing' },
 };
 
-const disconenctedDeviceB: BluetoothDeviceCommon = {
+const disconnectedDeviceB: BluetoothDeviceCommon = {
     id: 'B',
     data: [],
     name: 'Trezor B',
@@ -40,7 +43,7 @@ describe('bluetoothSelectors', () => {
         const state: WithBluetoothState<BluetoothDeviceCommon> = {
             bluetooth: {
                 ...initialState,
-                knownDevices: [pairingDeviceStateA, disconenctedDeviceB],
+                knownDevices: [pairingDeviceStateA, disconnectedDeviceB],
                 nearbyDevices: [
                     {
                         ...pairingDeviceStateA,
@@ -54,7 +57,7 @@ describe('bluetoothSelectors', () => {
         const devices = selectAllDevices(state);
 
         expect(devices).toEqual([
-            { ...disconenctedDeviceB, connectionStatus: { type: 'disconnected' } }, // from knownDevices only, first in the list
+            { ...disconnectedDeviceB, connectionStatus: { type: 'disconnected' } }, // from knownDevices only, first in the list
             { ...pairingDeviceStateA, connectionStatus: { type: 'connected' } }, // override by nearbyDevices
             pairingDeviceStateC, // from nearbyDevices only
         ]);

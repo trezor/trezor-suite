@@ -43,8 +43,8 @@ const removeKnownDeviceAction = createAction(
     }),
 );
 
-const connectDeviceEventAction = createAction(
-    `${BLUETOOTH_PREFIX}/connect-device-event`,
+const deviceUpdateAction = createAction(
+    `${BLUETOOTH_PREFIX}/device-update-event`,
     ({ device }: { device: BluetoothDeviceCommon }) => ({
         payload: { device },
     }),
@@ -68,12 +68,44 @@ const scanStatusAction = createAction(
     ({ status }: { status: BluetoothScanStatus }) => ({ payload: { status } }),
 );
 
+const setBluetoothDeviceNeedsManualOsRemoval = createAction(
+    `${BLUETOOTH_PREFIX}/set-bluetooth-device-needs-manual-os-removal`,
+    ({ needsManualRemoval }: { needsManualRemoval: boolean }) => ({
+        payload: { needsManualRemoval },
+    }),
+);
+
+const startConnectingBluetoothDevice = createAction(
+    `${BLUETOOTH_PREFIX}/start-connecting-bluetooth-device`,
+    ({ deviceId }: { deviceId: string }) => ({
+        payload: { deviceId },
+    }),
+);
+
+const stopConnectingBluetoothDevice = createAction(
+    `${BLUETOOTH_PREFIX}/stop-connecting-bluetooth-device`,
+    ({ deviceId }: { deviceId: string }) => ({
+        payload: { deviceId },
+    }),
+);
+
+const setBluetoothListOpen = createAction(
+    `${BLUETOOTH_PREFIX}/set-bluetooth-list-open`,
+    ({ isOpen }: { isOpen: boolean }) => ({
+        payload: { isOpen },
+    }),
+);
+
 export const bluetoothActions = {
     adapterEventAction,
     nearbyDevicesUpdateAction,
-    connectDeviceEventAction,
+    deviceUpdateAction,
     scanStatusAction,
     knownDevicesUpdateAction,
     removeKnownDeviceAction,
     updateDeviceConnectionStatus,
+    setBluetoothDeviceNeedsManualOsRemoval,
+    startConnectingBluetoothDevice,
+    stopConnectingBluetoothDevice,
+    setBluetoothListOpen,
 };

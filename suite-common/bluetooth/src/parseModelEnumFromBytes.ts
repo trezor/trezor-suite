@@ -5,7 +5,7 @@ export const parseModelEnumFromBytes = (data: number[]): DeviceModelInternal => 
         return DeviceModelInternal.UNKNOWN;
     }
 
-    const bytes = data.slice(2, 6);
+    const bytes = data.slice(2, 6).reverse();
     if (bytes.length !== 4) {
         return DeviceModelInternal.UNKNOWN;
     }

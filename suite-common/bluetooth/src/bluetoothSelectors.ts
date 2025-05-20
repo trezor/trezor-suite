@@ -13,17 +13,29 @@ export const selectAdapterStatus = <T extends BluetoothDeviceCommon>(
 export const selectKnownDevices = <T extends BluetoothDeviceCommon>(state: WithBluetoothState<T>) =>
     state.bluetooth.knownDevices;
 
+export const selectConnectingDevices = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+) => state.bluetooth.connectingDeviceIds;
+
 export const selectNearbyDevices = <T extends BluetoothDeviceCommon>(
     state: WithBluetoothState<T>,
 ) => state.bluetooth.nearbyDevices;
+
+export const selectUnpairedDeviceNeedsManualOsRemoval = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+) => state.bluetooth.unpairedDeviceNeedsManualOsRemoval;
+
+export const selectIsBluetoothListOpen = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+) => state.bluetooth.isBluetoothListOpen;
 
 /**
  * We need to have generic `createWeakMapSelector.withTypes` so we need to wrap it into Higher Order Function,
  * but we need to make sure it is called only **once** to not break the memoization. So it is named
  * `prepareSelectAllDevices` and shall be called **outside** of the component to create a selector with
- * concrete type:
+ *  a concrete type:
  *
- * For example: `const selectAllDevices = prepareSelectAllDevices<ConcreteBluetoothDevice>();`
+ * For example, `const selectAllDevices = prepareSelectAllDevices<ConcreteBluetoothDevice>();`
  */
 export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
     createWeakMapSelector.withTypes<WithBluetoothState<T>>()(

@@ -9,6 +9,9 @@ export {
     selectAdapterStatus,
     selectScanStatus,
     selectNearbyDevices,
+    selectUnpairedDeviceNeedsManualOsRemoval,
+    selectConnectingDevices,
+    selectIsBluetoothListOpen,
 } from './bluetoothSelectors';
 
 export { parseModelEnumFromBytes } from './parseModelEnumFromBytes';
