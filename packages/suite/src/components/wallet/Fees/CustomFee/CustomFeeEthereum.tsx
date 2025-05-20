@@ -65,7 +65,6 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
         ...sharedRules,
         validate: {
             ...sharedRules.validate,
-            // GWEI: 9 decimal places.
             ethereumDecimalsLimit: validateDecimals(translationString, {
                 decimals: 9,
                 except: networkType !== 'ethereum',
@@ -88,14 +87,14 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
         validate: {
             ...sharedRules.validate,
             ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
-            // Base fee can't be lower than the current network base fee.
             customMaxFeePerGas: (value: string) => {
                 const baseFee = new BigNumber(value);
 
-                // TODO: change to min fee from connect
-                const minBaseFee = feeInfo.levels?.[0].baseFeePerGas || 0;
-                if (baseFee.isLessThan(minBaseFee)) {
-                    return translationString('TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT');
+                if (baseFee.isGreaterThan(maxFee) || baseFee.isLessThan(minFee)) {
+                    return translationString('CUSTOM_FEE_NOT_IN_RANGE', {
+                        minFee: new BigNumber(minFee).toString(),
+                        maxFee: new BigNumber(maxFee).toString(),
+                    });
                 }
             },
         },
