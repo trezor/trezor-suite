@@ -38,12 +38,7 @@ export type DiscoveryStatusType =
       }
     | {
           status: 'exception';
-          type:
-              | 'auth-failed'
-              | 'auth-confirm-failed'
-              | 'discovery-empty'
-              | 'discovery-failed'
-              | 'device-unavailable';
+          type: 'discovery-empty' | 'discovery-failed' | 'device-unavailable';
       };
 export type {
     Account,

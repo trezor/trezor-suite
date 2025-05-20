@@ -5,7 +5,6 @@ import {
     getFirstDeviceInstance,
     getNewInstanceNumber,
     getSelectedDevice,
-    isDeviceAcquired,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -227,7 +226,6 @@ export const forgetDisconnectedDevices = createThunk(
 /**
  * Called from `suiteMiddleware`
  * Keep `suite` reducer synchronized with `devices` reducer
- * @param {Action} action
  */
 export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
     const devices = selectDevices(getState());
@@ -273,39 +271,6 @@ export const acquireDevice = createThunk(
                 }),
             );
         }
-    },
-);
-
-/**
- * Called from `discoveryMiddleware`
- * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
- */
-type AuthorizeDeviceParams = { shouldIgnoreDeviceState: boolean } | undefined;
-export type AuthorizeDeviceError = {
-    error: 'no-device' | 'device-not-ready' | 'auth-failed' | 'passphrase-duplicate';
-    device?: TrezorDevice;
-    duplicate?: TrezorDevice;
-};
-type AuthorizeDeviceSuccess = { device: TrezorDevice; state: any };
-
-export const authorizeDeviceThunk = createThunk<
-    AuthorizeDeviceSuccess,
-    AuthorizeDeviceParams,
-    { rejectValue: AuthorizeDeviceError }
->(
-    `${DEVICE_MODULE_PREFIX}/authorizeDevice`,
-    async (_, { dispatch, getState, extra, rejectWithValue }) => {
-        console.log('removed');
-    },
-);
-
-/**
- * Called from `suiteMiddleware`
- */
-export const authConfirm = createThunk(
-    `${DEVICE_MODULE_PREFIX}/authConfirm`,
-    async (_, { dispatch, getState, extra }) => {
-        console.log('auth confirm removed ');
     },
 );
 
