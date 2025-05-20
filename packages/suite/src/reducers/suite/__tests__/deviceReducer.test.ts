@@ -92,21 +92,6 @@ describe('SUITE.UPDATE_PASSPHRASE_MODE', () => {
     });
 });
 
-describe('SUITE.AUTH_DEVICE', () => {
-    fixtures.authDevice.forEach(f => {
-        it(f.description, () => {
-            let state: State = f.initialState;
-            f.actions.forEach(a => {
-                state = deviceReducer(state, a);
-            });
-            expect(state.devices.length).toEqual(f.result.length);
-            state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
-            });
-        });
-    });
-});
-
 describe('SUITE.FORGET_DEVICE', () => {
     fixtures.forget.forEach(f => {
         it(f.description, () => {

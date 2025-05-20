@@ -433,7 +433,7 @@ const changePassphraseMode = (
 };
 
 /**
- * Action handler: authorizeDeviceThunk.pending
+ * Action handler: UI.REQUEST_PIN
  * Reset authFailed flag
  * @param {DeviceReducerState} draft
  * @returns

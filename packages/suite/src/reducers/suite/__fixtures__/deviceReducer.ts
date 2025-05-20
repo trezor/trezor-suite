@@ -1232,7 +1232,6 @@ export default {
     changed,
     updateTimestamp,
     changePassphraseMode,
-    authDevice,
     forget,
     remember,
 };

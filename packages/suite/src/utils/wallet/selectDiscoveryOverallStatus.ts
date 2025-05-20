@@ -1,6 +1,10 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectDiscoveryByDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import {
+    selectDeviceAccounts,
+    selectDiscoveryByDevicePath,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { Account, DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { AppState } from 'src/types/suite';
 
@@ -9,26 +13,18 @@ import { DiscoveryStatusType } from '../../types/wallet';
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
     discovery: DiscoveryStatus | undefined;
+    accounts: Account[];
 };
 
 const getDiscoveryStatus = ({
     device,
     discovery,
+    accounts,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
     if (!device)
         return {
             status: 'loading',
             type: 'waiting-for-device',
-        };
-    if (device.authFailed)
-        return {
-            status: 'exception',
-            type: 'auth-failed',
-        };
-    if (device.authConfirm)
-        return {
-            status: 'exception',
-            type: 'auth-confirm-failed',
         };
     if (!device.state) {
         return {
@@ -52,23 +48,31 @@ const getDiscoveryStatus = ({
                 type: 'auth-confirm',
             };
 
-        // if (discovery.networks.length === 0)
-        //     return {
-        //         status: 'exception',
-        //         type: 'discovery-empty',
-        //     };
+        const nonEmptyAccounts = accounts.filter(a => !a.empty);
+        if (nonEmptyAccounts.length === 0)
+            return {
+                status: 'exception',
+                type: 'discovery-empty',
+            };
 
-        // if (discovery.errorCode === 'Device_InvalidState' && !device.available)
-        //     return {
-        //         status: 'exception',
-        //         type: 'device-unavailable',
-        //     };
+        if (
+            discovery.status === 'failed' &&
+            discovery.errorCode === 'Device_InvalidState' &&
+            !device.available
+        )
+            return {
+                status: 'exception',
+                type: 'device-unavailable',
+            };
 
-        // if (discovery.error || discovery.failed.length > 0)
-        //     return {
-        //         status: 'exception',
-        //         type: 'discovery-failed',
-        //     };
+        if (
+            (discovery.status === 'failed' && discovery.error) ||
+            (discovery.failed ?? []).length > 0
+        )
+            return {
+                status: 'exception',
+                type: 'discovery-failed',
+            };
     }
 
     return undefined;
@@ -78,6 +82,7 @@ const getDiscoveryStatus = ({
 export const selectDiscoveryOverallStatus = (state: AppState) => {
     const device = selectSelectedDevice(state);
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
+    const accounts = selectDeviceAccounts(state);
 
-    return getDiscoveryStatus({ device, discovery });
+    return getDiscoveryStatus({ device, discovery, accounts });
 };

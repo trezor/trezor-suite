@@ -2,13 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { LogEntry, selectLogs } from '@suite-common/logger';
 import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
-import {
-    accountsActions,
-    // authorizeDeviceThunk,
-    deviceActions,
-    discoveryActions,
-    selectDevices,
-} from '@suite-common/wallet-core';
+import { accountsActions, deviceActions, selectDevices } from '@suite-common/wallet-core';
 import { Discovery } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';
@@ -126,13 +120,6 @@ export const redactAction = (action: LogEntry) => {
         };
     }
 
-    // if (authorizeDeviceThunk.fulfilled.match(action)) {
-    //     payload = {
-    //         state: REDACTED_REPLACEMENT,
-    //         ...redactDevice(action.payload.device),
-    //     };
-    // }
-
     switch (action.type) {
         case accountsActions.createAccount.type:
         case accountsActions.updateAccount.type:
@@ -143,9 +130,6 @@ export const redactAction = (action: LogEntry) => {
         case deviceActions.updateSelectedDevice.type:
         case deviceActions.rememberDevice.type:
             payload = redactDevice(action.payload);
-            break;
-        case discoveryActions.completeDiscovery.type:
-            payload = redactDiscovery(action.payload);
             break;
         default:
             return action;

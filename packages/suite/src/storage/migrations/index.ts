@@ -223,7 +223,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
         });
 
-        await updateAll(transaction, 'discovery', d => {
+        await updateAll(transaction, 'discovery', (d: any) => {
             // reset discovery
             if (d.networks.includes('ltc')) {
                 d.index = 0;
@@ -281,9 +281,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
         });
 
-        await updateAll(transaction, 'discovery', d => {
+        await updateAll(transaction, 'discovery', (d: any) => {
             // reset discovery
-            // @ts-expect-error
             if (d.networks.includes('vtc')) {
                 d.index = 0;
                 d.loaded = 0;
@@ -592,7 +591,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return walletSettings;
         });
 
-        await updateAll(transaction, 'discovery', discovery => {
+        await updateAll(transaction, 'discovery', (discovery: any) => {
             // remove trop from discovery networks
             discovery.networks = discovery.networks.filter(
                 // @ts-expect-error
@@ -808,12 +807,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return walletSettings;
         });
 
-        await updateAll(transaction, 'discovery', discovery => {
+        await updateAll(transaction, 'discovery', (discovery: any) => {
             // remove tgor from discovery networks
-            discovery.networks = discovery.networks.filter(
-                // @ts-expect-error
-                network => network !== 'tgor',
-            );
+            discovery.networks = discovery.networks.filter((network: any) => network !== 'tgor');
             discovery.failed = [];
 
             return discovery;
@@ -974,14 +970,12 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             tokenManagement.delete('matic-coin-hide');
         }
 
-        await updateAll(transaction, 'discovery', discovery => {
-            discovery.networks = discovery.networks.map(network =>
-                // @ts-expect-error
+        await updateAll(transaction, 'discovery', (discovery: any) => {
+            discovery.networks = discovery.networks.map((network: any) =>
                 network === 'matic' ? 'pol' : network,
             );
 
-            discovery.failed = discovery.failed.map(network => {
-                // @ts-expect-error
+            discovery.failed = discovery.failed.map((network: any) => {
                 if (network.symbol === 'matic') {
                     network = { ...network, symbol: 'pol' };
                 }
@@ -1225,9 +1219,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         // Remove deprecated networks from discovery networks
-        await updateAll(transaction, 'discovery', discovery => {
+        await updateAll(transaction, 'discovery', (discovery: any) => {
             discovery.networks = discovery.networks.filter(
-                network => !deprecatedNetworks.includes(network), // Exclude deprecated networks from discovery
+                (network: any) => !deprecatedNetworks.includes(network), // Exclude deprecated networks from discovery
             );
             discovery.failed = []; // Clear failed discovery attempts
 

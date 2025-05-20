@@ -1,14 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import {
-    AUTH_DEVICE,
-    notificationsActions,
-    removeAccountEventsThunk,
-} from '@suite-common/toast-notifications';
+import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
 import {
     accountsActions,
-    authorizeDeviceThunk,
     deviceActions,
     selectDevices,
     selectSelectedDevice,
@@ -125,10 +120,6 @@ const eventsMiddleware =
             action.payload.forEach(account => {
                 api.dispatch(removeAccountEventsThunk(account.descriptor));
             });
-        }
-
-        if (authorizeDeviceThunk.fulfilled.match(action)) {
-            api.dispatch(notificationsActions.addEvent({ type: AUTH_DEVICE, seen: true }));
         }
 
         return action;
