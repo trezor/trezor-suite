@@ -20,7 +20,6 @@ export class EthereumFeeLevels extends MiscFeeLevels {
 
             const { eip1559 } = response;
 
-            // TODO: use web3-utils?
             // gas price in wei
             const maxFeeInWei = new BigNumber(this.coinInfo.maxFee).multipliedBy('1e+9').toNumber();
             const minFeeInWei = new BigNumber(this.coinInfo.minFee).multipliedBy('1e+9').toNumber();
@@ -39,14 +38,19 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                         return null;
                     }
 
+                    const maxFeePerGas = BigNumber.max(
+                        this.coinInfo.minFee,
+                        level.maxFeePerGas,
+                    ).toString();
+
                     return {
                         label,
                         feePerUnit,
                         feeLimit: response.feeLimit,
                         blocks: -1, // TODO: reuse this instead of maxWaitTimeEstimate?
                         baseFeePerGas: eip1559.baseFeePerGas,
-                        maxFeePerGas: level?.maxFeePerGas,
-                        maxPriorityFeePerGas: level?.maxPriorityFeePerGas,
+                        maxFeePerGas,
+                        maxPriorityFeePerGas: level.maxPriorityFeePerGas,
                         maxWaitTimeEstimate: level?.maxWaitTimeEstimate,
                     };
                 });
