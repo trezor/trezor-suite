@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { getDeviceColorVariant, getDeviceInternalModel } from '@suite-common/suite-utils';
+import { selectThpStep } from '@suite-common/thp';
 import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -52,6 +53,8 @@ export const FirmwareModal = ({
     } = useFirmwareInstallation({ shouldSwitchFirmwareType });
     const device = useSelector(selectSelectedDevice);
 
+    const thpStep = useSelector(selectThpStep);
+
     const dispatch = useDispatch();
     const intl = useIntl();
     const [isChecked, setIsChecked] = useState(false);
@@ -78,6 +81,37 @@ export const FirmwareModal = ({
 
     const getContent = () => {
         console.log('_____FirmwareModal::status', status);
+        console.log('_____FirmwareModal::thpStep', thpStep);
+
+        if (thpStep !== null) {
+            switch (thpStep) {
+                case 'BeforeConnectionInfo':
+                    return <StepThpStart modalHeading={heading} />;
+                case 'Pairing':
+                    return device !== undefined ? (
+                        <StepThpPairingRequest modalHeading={heading} />
+                    ) : null;
+                case 'Connection':
+                    return device !== undefined ? (
+                        <StepThpPairingRequest modalHeading={heading} />
+                    ) : null;
+                case 'CodeEntry':
+                    return device !== undefined ? <StepThpPairing modalHeading={heading} /> : null;
+
+                // Auto-connect not relevant for Firmware Installation.
+                // We don't want to ask the user for autoconnect during FW installation, instead we
+                // postpone it for the next connection.
+                case 'AutoconnectInfo':
+                case 'Autoconnect':
+                    return null;
+
+                case 'CodeInvalid':
+                    return <StepThpFailed modalHeading={heading} />;
+
+                default:
+                    exhaustive(thpStep);
+            }
+        }
 
         switch (status) {
             case 'error':
@@ -115,27 +149,6 @@ export const FirmwareModal = ({
                         isCustomFirmwareUploaded={isCustomFirmwareUploaded}
                     />
                 );
-            case 'thp-pairing-start':
-                return <StepThpStart modalHeading={heading} />;
-            case 'thp_pairing_request':
-                return device !== undefined ? (
-                    <StepThpPairingRequest modalHeading={heading} />
-                ) : null;
-            case 'thp-pairing':
-                return device !== undefined ? <StepThpPairing modalHeading={heading} /> : null;
-            case 'thp_connection_request':
-                return device !== undefined ? (
-                    <StepThpPairingRequest modalHeading={heading} />
-                ) : null;
-
-            // Auto-connect not relevant for Firmware Installation.
-            // We don't want to ask user for autoconnect during FW installation, instead we
-            // postpone it for the next connection.
-            case 'thp_autoconnect_credential_request':
-                return null;
-
-            case 'thp-pairing-failed':
-                return <StepThpFailed modalHeading={heading} />;
             case 'done':
                 return (
                     <StepDone

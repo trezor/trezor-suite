@@ -7,8 +7,6 @@ import {
     FirmwareReconnect,
     FirmwareType,
     UI,
-    UiRequestConfirmation,
-    UiRequestThpPairing,
 } from '@trezor/connect';
 
 import { firmwareActions } from './firmwareActions';
@@ -19,12 +17,7 @@ type FirmwareUpdateCommon = {
     // Stores firmware type currently being installed so that it can be displayed to the user during installation
     targetType?: FirmwareType;
     useDevkit: boolean;
-    uiEvent?:
-        | DeviceButtonRequest
-        | FirmwareProgress
-        | FirmwareReconnect
-        | UiRequestThpPairing
-        | UiRequestConfirmation;
+    uiEvent?: DeviceButtonRequest | FirmwareProgress | FirmwareReconnect;
 };
 
 export type FirmwareUpdateState =
@@ -75,52 +68,16 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
         .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
             state.cachedDevice = payload;
         })
-        .addMatcher<
-            | FirmwareProgress
-            | FirmwareReconnect
-            | DeviceButtonRequest
-            | UiRequestThpPairing
-            | UiRequestConfirmation
-        >(
+        .addMatcher<FirmwareProgress | FirmwareReconnect | DeviceButtonRequest>(
             action =>
                 action.type === UI.FIRMWARE_RECONNECT ||
                 action.type === UI.FIRMWARE_PROGRESS ||
-                action.type === UI.REQUEST_CONFIRMATION ||
-                action.type === UI.REQUEST_THP_PAIRING ||
                 action.type === DEVICE.BUTTON,
             (state, action) => {
                 // DEVICE.BUTTON can be dispatched outside the firmware update flow and that should not change the uiEvent,
                 // otherwise it could result in confirmation pill being displayed unintentionally.
                 if (!(action.type === DEVICE.BUTTON && state.status === 'initial')) {
                     state.uiEvent = action;
-                }
-
-                // THP device is ready for pairing, wait for user action
-                if (state.status !== 'initial' && action.type === UI.REQUEST_CONFIRMATION) {
-                    if (action.payload.view === 'thp-pairing-start') {
-                        state.status = 'thp-pairing-start';
-                    }
-                    if (action.payload.view === 'thp-pairing-failed') {
-                        state.status = 'thp-pairing-failed';
-                    }
-                }
-
-                // handle button requests in THP pairing
-                if (state.status !== 'initial' && action.type === DEVICE.BUTTON) {
-                    if (action.payload.name === 'thp_pairing_request') {
-                        state.status = action.payload.name;
-                    }
-                    if (action.payload.name === 'thp_connection_request') {
-                        state.status = action.payload.name;
-                    }
-                    if (action.payload.name === 'thp_autoconnect_credential_request') {
-                        state.status = action.payload.name;
-                    }
-                }
-
-                // THP pairing view
-                if (state.status !== 'initial' && action.type === UI.REQUEST_THP_PAIRING) {
-                    state.status = 'thp-pairing';
                 }
             },
         );

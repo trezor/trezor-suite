@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
+import { selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -22,13 +23,13 @@ import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
 import { ThpPairingFailedStep } from './ThpPairingFailedStep';
 import { ThpPairingStartStep } from './ThpPairingStartStep';
 import { ThpPairingStep } from './ThpPairingStep';
-import { ThpConnectionModal } from '../../../components/suite/modals';
 
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const { status, error, resetReducer, firmwareUpdate, targetType } = useFirmwareInstallation();
+    const thpStep = useSelector(selectThpStep);
 
     const install = () => firmwareUpdate({ firmwareType: targetType });
     const goToNextStepAndResetReducer = useCallback(() => {
@@ -121,6 +122,32 @@ export const FirmwareStep = () => {
         return <PrerequisitesGuide />;
     }
 
+    if (thpStep !== null) {
+        switch (thpStep) {
+            case 'BeforeConnectionInfo':
+                return device !== undefined ? <ThpPairingStartStep /> : null;
+            case 'Connection':
+                return device !== undefined ? <ThpPairingConfirmStep device={device} /> : null;
+            case 'Pairing':
+                return device !== undefined ? <ThpPairingConfirmStep device={device} /> : null;
+            case 'CodeEntry':
+                return device !== undefined ? <ThpPairingStep /> : null;
+
+            // Auto-connect not relevant for Onboarding Firmware Installation.
+            // 1) We don't want to ask user for autoconnect during FW installation.
+            // 2) It shall never happen anyway, onboarding is the 1st connection.
+            case 'AutoconnectInfo':
+            case 'Autoconnect':
+                return null;
+
+            case 'CodeInvalid':
+                return device !== undefined ? <ThpPairingFailedStep /> : null;
+
+            default:
+                exhaustive(thpStep);
+        }
+    }
+
     switch (status) {
         // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
         case 'initial':
@@ -130,23 +157,6 @@ export const FirmwareStep = () => {
             return (
                 <FirmwareInstallation install={install} onSuccess={goToNextStepAndResetReducer} />
             );
-        case 'thp-pairing-start':
-            return device !== undefined ? <ThpPairingStartStep /> : null;
-        case 'thp_pairing_request':
-            return device !== undefined ? <ThpConnectionModal device={device} /> : null;
-        case 'thp_connection_request':
-            return device !== undefined ? <ThpPairingConfirmStep device={device} /> : null;
-
-        // Auto-connect not relevant for Onboarding Firmware Installation.
-        // 1) We don't want to ask user for autoconnect during FW installation.
-        // 2) It shall never happen anyway, onboarding is 1st connection.
-        case 'thp_autoconnect_credential_request':
-            return null;
-
-        case 'thp-pairing':
-            return device !== undefined ? <ThpPairingStep /> : null;
-        case 'thp-pairing-failed':
-            return device !== undefined ? <ThpPairingFailedStep /> : null;
 
         // This step does not make sense in onboarding; when installing firmware
         // for the first time, there is no seed to be backed up before the firmware update.

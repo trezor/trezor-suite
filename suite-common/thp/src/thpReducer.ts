@@ -2,7 +2,14 @@ import { AnyAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { ThpSuiteCredentials } from '@suite-common/suite-types';
-import { DEVICE, DeviceThpCredentialsChanged, UI } from '@trezor/connect';
+import {
+    DEVICE,
+    DeviceButtonRequest,
+    DeviceThpCredentialsChanged,
+    UI,
+    UiRequestConfirmation,
+    UiRequestThpPairing,
+} from '@trezor/connect';
 
 import { thpActions } from './thpActions';
 
@@ -15,12 +22,18 @@ export const THP_BUTTON_REQUESTS_NAMES = [
 export type THPButtonRequestName = (typeof THP_BUTTON_REQUESTS_NAMES)[number];
 
 export type ThpStep =
-    | 'CodeEntry'
+    // I don't have credentials, and the user
+    //    1) Confirms connection
+    //    2) In next step, user will do the THP Pairing
     | 'Pairing'
+    // I have credentials and the user only confirms the connection
     | 'Connection'
+    | 'CodeEntry'
     | 'CodeInvalid'
     | 'AutoconnectInfo'
     | 'Autoconnect'
+    // Currently relevant only for Firmware Update / Custom Firmware & Onboarding Firmware
+    | 'BeforeConnectionInfo'
     | null;
 
 export type ThpState = {
@@ -86,17 +99,49 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 (state, action: AnyAction) => {
                     const actionName: THPButtonRequestName = action.payload.name;
                     switch (actionName) {
+                        // I don't have credentials, and the user
+                        //    1) Confirms connection
+                        //    2) In next step, user will do the THP Pairing
                         case 'thp_pairing_request':
                             state.step = 'Pairing';
                             break;
-                        case 'thp_autoconnect_credential_request':
-                            state.step = 'Autoconnect';
-                            break;
+
+                        // I have credentials and the user only confirms the connection
                         case 'thp_connection_request':
                             state.step = 'Connection';
                             break;
 
-                        // intentionally, not exhaustive, non-THP button requests not-handled here
+                        case 'thp_autoconnect_credential_request':
+                            state.step = 'Autoconnect';
+                            break;
+                    }
+                },
+            )
+            // This is the THP flow in Firmware Update
+            .addMatcher<DeviceButtonRequest | UiRequestThpPairing | UiRequestConfirmation>(
+                action => action.type === UI.REQUEST_CONFIRMATION || action.type === DEVICE.BUTTON,
+                (state, action) => {
+                    // The THP device is ready for pairing, wait for user action
+                    if (action.type === UI.REQUEST_CONFIRMATION) {
+                        if (action.payload.view === 'thp-pairing-start') {
+                            state.step = 'BeforeConnectionInfo';
+                        }
+                        if (action.payload.view === 'thp-pairing-failed') {
+                            state.step = 'CodeInvalid';
+                        }
+                    }
+
+                    // Handle button requests in the THP pairing
+                    if (action.type === DEVICE.BUTTON) {
+                        if (action.payload.name === 'thp_pairing_request') {
+                            state.step = 'Pairing';
+                        }
+                        if (action.payload.name === 'thp_connection_request') {
+                            state.step = 'Connection';
+                        }
+                        if (action.payload.name === 'thp_autoconnect_credential_request') {
+                            state.step = 'Autoconnect';
+                        }
                     }
                 },
             )
