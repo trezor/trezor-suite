@@ -66,12 +66,12 @@ export enum AccountsImportStackRoutes {
 
 export enum DeviceStackRoutes {
     DeviceSettings = 'DeviceSettings',
-    DevicePinProtection = 'DevicePinProtection',
-    DeviceAuthenticity = 'DeviceAuthenticity',
+    DevicePinProtectionStack = 'DevicePinProtectionStack',
+    DeviceAuthenticityStack = 'DeviceAuthenticityStack',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
     ContinueOnTrezor = 'ContinueOnTrezor',
-    WipeDevice = 'WipeDevice',
+    WipeDeviceStack = 'WipeDeviceStack',
 }
 
 export enum DevicePinProtectionStackRoutes {

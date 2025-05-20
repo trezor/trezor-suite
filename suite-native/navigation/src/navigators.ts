@@ -188,14 +188,14 @@ export type AddCoinAccountStackParamList = {
 
 export type DeviceSettingsStackParamList = {
     [DeviceStackRoutes.DeviceSettings]: undefined;
-    [DeviceStackRoutes.DevicePinProtection]: {
+    [DeviceStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
     };
-    [DeviceStackRoutes.DeviceAuthenticity]: undefined;
+    [DeviceStackRoutes.DeviceAuthenticityStack]: undefined;
     [DeviceStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceStackRoutes.FirmwareInstallation]: undefined;
     [DeviceStackRoutes.ContinueOnTrezor]: undefined;
-    [DeviceStackRoutes.WipeDevice]: undefined;
+    [DeviceStackRoutes.WipeDeviceStack]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {

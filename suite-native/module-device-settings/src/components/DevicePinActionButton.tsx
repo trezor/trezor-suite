@@ -14,7 +14,7 @@ import {
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.DevicePinProtection
+    DeviceStackRoutes.DevicePinProtectionStack
 >;
 
 type DevicePinActionButtonProps = {
@@ -33,7 +33,7 @@ export const DevicePinActionButton = ({
     const navigation = useNavigation<NavigationProp>();
 
     const navigateToPinStack = useCallback(() => {
-        navigation.navigate(DeviceStackRoutes.DevicePinProtection, {
+        navigation.navigate(DeviceStackRoutes.DevicePinProtectionStack, {
             type,
         });
     }, [navigation, type]);

@@ -27,14 +27,16 @@ const DevicePinProtectionStack = createNativeStackNavigator<DevicePinProtectionS
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.DevicePinProtection
+    DeviceStackRoutes.DevicePinProtectionStack
 >;
 
 export const DevicePinProtectionStackNavigator = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const route =
-        useRoute<RouteProp<DeviceSettingsStackParamList, DeviceStackRoutes.DevicePinProtection>>();
+        useRoute<
+            RouteProp<DeviceSettingsStackParamList, DeviceStackRoutes.DevicePinProtectionStack>
+        >();
 
     const { type } = route.params;
     usePinAction({ type, onSuccess: navigation.goBack });

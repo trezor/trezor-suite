@@ -9,7 +9,7 @@ export const WipeDeviceScreen = () => (
                 <Translation id="moduleDeviceSettings.wipeDevice.title" />
             </Text>
             <Text variant="body" color="textSubdued">
-                <Translation id="moduleDeviceSettings.wipeDevice.subTitle" />
+                <Translation id="moduleDeviceSettings.wipeDevice.subtitle" />
             </Text>
         </VStack>
     </Screen>

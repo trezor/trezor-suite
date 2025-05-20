@@ -25,15 +25,15 @@ export const DeviceSettingsStackNavigator = () => (
             component={DeviceSettingsModalScreen}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.DevicePinProtection}
+            name={DeviceStackRoutes.DevicePinProtectionStack}
             component={DevicePinProtectionStackNavigator}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.DeviceAuthenticity}
+            name={DeviceStackRoutes.DeviceAuthenticityStack}
             component={DeviceAuthenticityStackNavigator}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceStackRoutes.WipeDevice}
+            name={DeviceStackRoutes.WipeDeviceStack}
             component={WipeDeviceStackNavigator}
         />
         <DeviceSettingsStack.Screen

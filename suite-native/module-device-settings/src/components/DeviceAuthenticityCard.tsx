@@ -29,7 +29,7 @@ export const DeviceAuthenticityCard = () => {
     const { showAlert } = useAlert();
 
     const navigateToDeviceAuthenticityStack = useCallback(() => {
-        navigation.navigate(DeviceStackRoutes.DeviceAuthenticity);
+        navigation.navigate(DeviceStackRoutes.DeviceAuthenticityStack);
     }, [navigation]);
 
     const showInfoAlert = useCallback(() => {
