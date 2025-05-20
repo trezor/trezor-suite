@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Image, Text } from '@suite-native/atoms';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
-    selectDeviceRequestedPassphrase,
     selectDeviceRequestedPin,
     selectIsCreatingNewPassphraseWallet,
     selectPassphraseError,
@@ -41,16 +41,16 @@ type PinOnDeviceProps = {
 export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
     const dispatch = useDispatch();
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-    const hasDeviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
     const hasPassphraseError = !!useSelector(selectPassphraseError);
+    const discovery = useSelector(selectDiscoveryForSelectedDevice);
 
     const { applyStyle } = useNativeStyles();
 
     const navigation = useNavigation();
 
     const handlePinFlowFinish = useCallback(() => {
-        const isNotPassphraseFlowActive = !hasDeviceRequestedPassphrase && !hasPassphraseError;
+        const isNotPassphraseFlowActive = !discovery?.isAddingHiddenWallet && !hasPassphraseError;
 
         // If the device asks for a passphrase after unlocking the PIN, we ignore this and let the passphrase flow handle the success / failure.
         if (navigation.canGoBack() && isNotPassphraseFlowActive) {
@@ -61,11 +61,11 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
             navigation.goBack();
         }
     }, [
-        hasDeviceRequestedPassphrase,
+        discovery?.isAddingHiddenWallet,
         hasPassphraseError,
+        navigation,
         isCreatingNewWalletInstance,
         dispatch,
-        navigation,
     ]);
 
     useEffect(() => {

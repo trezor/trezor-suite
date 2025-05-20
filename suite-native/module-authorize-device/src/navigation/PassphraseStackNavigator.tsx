@@ -17,6 +17,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { PassphraseDuplicateAlert } from '../components/passphrase/PassphraseDuplicateAlert';
 import { PassphraseFlowDoneRedirect } from '../components/passphrase/PassphraseFlowDoneRedirect';
 import { PassphraseMismatchAlert } from '../components/passphrase/PassphraseMismatchAlert';
 import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
@@ -156,6 +157,19 @@ export const PassphraseStackNavigator = () => {
                     component={PassphraseConfirmOnTrezorScreen}
                 />
             )}
+            {passphraseState.screen === 'passphrase-duplicate' && (
+                <PassphraseStack.Screen
+                    name={AuthorizeDeviceStackRoutes.PassphraseDuplicateAlert}
+                    component={function PassphraseMismatchAlertScreen() {
+                        return (
+                            <PassphraseDuplicateAlert>
+                                <PassphraseLoadingScreen />
+                            </PassphraseDuplicateAlert>
+                        );
+                    }}
+                />
+            )}
+
             {/* This is a catch-all route that handles failures and completion redirects */}
             <PassphraseStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseRedirecting}
