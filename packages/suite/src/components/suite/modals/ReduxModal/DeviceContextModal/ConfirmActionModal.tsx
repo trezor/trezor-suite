@@ -24,11 +24,15 @@ interface ConfirmActionProps {
     device: TrezorDevice;
     children?: ReactNode;
     title?: TranslationKey;
+    onCancel?: () => void;
 }
 
-export const ConfirmActionModal = ({ title, device, children }: ConfirmActionProps) => {
+export const ConfirmActionModal = ({ title, device, children, onCancel }: ConfirmActionProps) => {
     const intl = useIntl();
-    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    const handleCancel = () => {
+        TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+        onCancel?.();
+    };
 
     return (
         <Modal.Backdrop onClick={onCancel} data-testid="@suite/modal/confirm-action-on-device">
@@ -36,7 +40,7 @@ export const ConfirmActionModal = ({ title, device, children }: ConfirmActionPro
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={getDeviceInternalModel(device)}
                 deviceUnitColor={getDeviceColorVariant(device)}
-                onCancel={onCancel}
+                onCancel={handleCancel}
             />
             <Modal.ModalBase size="tiny">
                 <ImageWrapper>
