@@ -35,6 +35,7 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
     const { maxFee, minFee, levels } = feeInfo;
 
     const estimatedFeeLimit = getValues('estimatedFeeLimit');
+    const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
 
     const gasLimitRules = {
         required: translationString('GAS_LIMIT_IS_NOT_SET'),
@@ -55,7 +56,7 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
             setValue(FEE_LIMIT, estimatedFeeLimit, {
                 shouldValidate: true,
             }),
-        text: translationString('CUSTOM_FEE_LIMIT_USE_RECOMMENDED'),
+        text: translationString('CUSTOM_FEE_USE_RECOMMENDED'),
     };
 
     const gasLimitValidationButtonProps =
@@ -100,6 +101,19 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
         },
     };
 
+    const maxFeePerGasValidationProps = {
+        onClick: () =>
+            recommendedMaxFeePerGas &&
+            setValue(MAX_FEE_PER_GAS, recommendedMaxFeePerGas, {
+                shouldValidate: true,
+            }),
+        text: translationString('CUSTOM_FEE_USE_RECOMMENDED'),
+    };
+
+    const maxFeePerGasValidationButtonProps = errors.maxFeePerGas
+        ? maxFeePerGasValidationProps
+        : undefined;
+
     const maxPriorityFeePerGasRules = {
         validate: {
             ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
@@ -142,7 +156,18 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
                         name={MAX_FEE_PER_GAS}
                         data-testid={MAX_FEE_PER_GAS}
                         rules={maxFeePerGasRules}
-                        bottomText={errors.maxFeePerGas?.message}
+                        bottomText={
+                            errors.maxFeePerGas?.message && (
+                                <InputError
+                                    message={errors.maxFeePerGas?.message}
+                                    buttonProps={
+                                        recommendedMaxFeePerGas
+                                            ? maxFeePerGasValidationButtonProps
+                                            : undefined
+                                    }
+                                />
+                            )
+                        }
                     />
                     <NumberInput
                         label={<Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />}

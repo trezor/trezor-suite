@@ -5790,9 +5790,9 @@ export default defineMessages({
         defaultMessage: 'Gas limit too low',
         id: 'CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED',
     },
-    CUSTOM_FEE_LIMIT_USE_RECOMMENDED: {
+    CUSTOM_FEE_USE_RECOMMENDED: {
         defaultMessage: 'Use recommended',
-        id: 'CUSTOM_FEE_LIMIT_USE_RECOMMENDED',
+        id: 'CUSTOM_FEE_USE_RECOMMENDED',
     },
     TOKEN_BALANCE: {
         defaultMessage: 'Balance: {balance}',
