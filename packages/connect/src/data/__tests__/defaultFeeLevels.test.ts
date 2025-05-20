@@ -4,29 +4,37 @@ describe('getEthereumFeeLevels', () => {
     const fixtures = {
         eth: {
             defaultGas: 15,
-            minFee: 1,
+            minFee: 0.1,
             maxFee: 10000,
+            coinInfo: {
+                chain: 'eth',
+                blocktime_seconds: 12,
+            },
             expected: {
-                blockTime: -1,
+                blockTime: 12,
                 defaultFees: [
                     {
                         label: 'normal',
-                        feePerUnit: '15000000000', // 15 Gwei * 1e9 = 15000000000 Wei
+                        feePerUnit: '10000000000', // 10 Gwei * 1e9 = 15000000000 Wei
                         feeLimit: '21000',
                         blocks: -1,
                     },
                 ],
-                minFee: 1,
+                minFee: 0.1,
                 maxFee: 10000,
                 dustLimit: -1,
             },
         },
         pol: {
             defaultGas: 200,
-            minFee: 1,
+            minFee: 0.1,
             maxFee: 10000000,
+            coinInfo: {
+                chain: 'pol',
+                blocktime_seconds: 2,
+            },
             expected: {
-                blockTime: -1,
+                blockTime: 2,
                 defaultFees: [
                     {
                         label: 'normal',
@@ -35,7 +43,7 @@ describe('getEthereumFeeLevels', () => {
                         blocks: -1,
                     },
                 ],
-                minFee: 1,
+                minFee: 0.1,
                 maxFee: 10000000,
                 dustLimit: -1,
             },
@@ -44,8 +52,12 @@ describe('getEthereumFeeLevels', () => {
             defaultGas: 0.01,
             minFee: 0.000000001,
             maxFee: 100,
+            coinInfo: {
+                chain: 'base',
+                blocktime_seconds: 2,
+            },
             expected: {
-                blockTime: -1,
+                blockTime: 2,
                 defaultFees: [
                     {
                         label: 'normal',
@@ -63,12 +75,16 @@ describe('getEthereumFeeLevels', () => {
             defaultGas: 5,
             minFee: 0.000000001,
             maxFee: 10000,
+            coinInfo: {
+                chain: 'meme',
+                blocktime_seconds: 100,
+            },
             expected: {
-                blockTime: -1,
+                blockTime: 100,
                 defaultFees: [
                     {
                         label: 'normal',
-                        feePerUnit: '5000000000', // 5 Gwei * 1e9 = 5000000000 Wei
+                        feePerUnit: '1000000000', // 1 Gwei * 1e9 = 1000000000 Wei
                         feeLimit: '21000',
                         blocks: -1,
                     },
@@ -80,9 +96,10 @@ describe('getEthereumFeeLevels', () => {
         },
     };
 
-    Object.entries(fixtures).forEach(([chain, { expected }]) => {
+    Object.entries(fixtures).forEach(([chain, { expected, coinInfo }]) => {
         it(`should return correct fee levels for ${chain}`, () => {
-            const result = getEthereumFeeLevels(chain);
+            // @ts-expect-error
+            const result = getEthereumFeeLevels(coinInfo);
 
             expect(result).toEqual(expected);
         });
