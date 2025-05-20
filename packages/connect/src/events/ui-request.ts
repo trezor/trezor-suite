@@ -3,6 +3,7 @@
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import type { ThpPairingMethod } from '@trezor/protocol';
 
 import type { PROTO } from '../constants';
 import type {
@@ -35,6 +36,7 @@ export const UI_REQUEST = {
 
     /** connect is waiting for device to be automatically reconnected */
     FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
+    FIRMWARE_DISCONNECT: 'ui-firmware_disconnect',
 
     FIRMWARE_DOWNLOADED: 'ui-firmware_downloaded',
 
@@ -50,6 +52,7 @@ export const UI_REQUEST = {
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     INVALID_PASSPHRASE: 'ui-invalid_passphrase',
+    REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
     CONNECT: 'ui-connect',
     LOADING: 'ui-loading',
     SET_OPERATION: 'ui-set_operation',
@@ -154,6 +157,16 @@ export type UiRequestButtonData =
           message: string;
       };
 
+export interface UiRequestThpPairing {
+    type: typeof UI_REQUEST.REQUEST_THP_PAIRING;
+    payload: {
+        device: Device;
+        availableMethods: ThpPairingMethod[];
+        selectedMethod?: ThpPairingMethod; // expected pairing response data
+        nfcData?: string; // data for NFC module, if selected_method === ThpPairingMethod.NFC
+    };
+}
+
 // ButtonRequest_FirmwareUpdate is a artificial button request thrown by "uploadFirmware" method
 // at the beginning of the uploading process
 export interface UiRequestButton {
@@ -186,6 +199,8 @@ export interface UiRequestConfirmation {
     type: typeof UI_REQUEST.REQUEST_CONFIRMATION;
     payload: {
         view:
+            | 'thp-pairing-start'
+            | 'thp-pairing-failed'
             | 'no-backup'
             | 'export-xpub'
             | 'export-address'
@@ -304,6 +319,13 @@ export interface FirmwareReconnect {
     };
 }
 
+export interface FirmwareDisconnect {
+    type: typeof UI_REQUEST.FIRMWARE_DISCONNECT;
+    payload: {
+        device: Device;
+    };
+}
+
 export type UiEvent =
     | UiRequestWithoutPayload
     | UiRequestDeviceAction
@@ -314,11 +336,13 @@ export type UiEvent =
     | UiRequestUnexpectedDeviceMode
     | UiRequestSelectAccount
     | UiRequestSelectFee
+    | UiRequestThpPairing
     | UpdateCustomFee
     | BundleProgress<any>
     | FirmwareProgress
     | FirmwareException
     | FirmwareReconnect
+    | FirmwareDisconnect
     | UiRequestAddressValidation
     | UiRequestSetOperation
     | UiRequestFirmwareDownloaded;

@@ -29,6 +29,12 @@ export const events = (api: TrezorConnect) => {
 
             return;
         }
+        if (event.type === 'device-thp_credentials_changed') {
+            const { payload } = event;
+            payload.credentials.credential.toLowerCase();
+
+            return;
+        }
         const { payload } = event;
         payload.path.toLowerCase();
         if (payload.type === 'acquired') {
