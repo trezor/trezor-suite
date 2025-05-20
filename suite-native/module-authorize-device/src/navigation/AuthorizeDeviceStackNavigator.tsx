@@ -2,10 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    selectDeviceRequestedPin,
-    useHandleDuplicatePassphrase,
-} from '@suite-native/device-authorization';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -21,8 +18,6 @@ export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceSt
 
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-
-    useHandleDuplicatePassphrase();
 
     return (
         <AuthorizeDeviceStack.Navigator

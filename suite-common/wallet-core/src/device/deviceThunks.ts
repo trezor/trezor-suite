@@ -33,12 +33,13 @@ import { isChanged } from '@trezor/utils';
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import {
+    selectDeviceByBaseStaticSessionId,
     selectDeviceById,
-    selectDeviceByStaticSessionId,
     selectDevices,
     selectSelectedDevice,
 } from './deviceReducer';
 import { selectAccountByKey } from '../accounts/accountsReducer';
+import { cancelDiscoveryThunk } from '../discovery/discoveryThunks';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -317,7 +318,7 @@ export const switchDuplicatedDevice = createThunk(
         // close modal
         dispatch(onModalCancel());
 
-        const device = selectDeviceByStaticSessionId(
+        const device = selectDeviceByBaseStaticSessionId(
             getState(),
             passphraseDuplicateStaticSessionId,
         );
@@ -328,6 +329,8 @@ export const switchDuplicatedDevice = createThunk(
             return;
         }
 
+        dispatch(cancelDiscoveryThunk(device));
+
         // release session from authorizeDevice
         await TrezorConnect.getFeatures({
             device,
@@ -335,13 +338,7 @@ export const switchDuplicatedDevice = createThunk(
         });
 
         // switch to existing wallet
-        // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
-        // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
-        await dispatch(selectDeviceThunk({ device }));
-
-        // remove stateless instance
-        const settings = extra.selectors.selectSuiteSettings(getState());
-        dispatch(deviceActions.forgetDevice({ device, settings }));
+        dispatch(selectDeviceThunk({ device }));
     },
 );
 
