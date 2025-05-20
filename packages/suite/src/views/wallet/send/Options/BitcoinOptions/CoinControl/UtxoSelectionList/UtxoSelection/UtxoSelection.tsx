@@ -203,7 +203,16 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const showTransactionDetail: MouseEventHandler = e => {
         e.stopPropagation(); // do not trigger the checkbox
         if (transaction) {
-            dispatch(openModal({ type: 'transaction-detail', tx: transaction, flow: 'detail' }));
+            dispatch(
+                openModal({
+                    type: 'transaction-detail',
+                    txid: transaction.txid,
+                    descriptor: transaction.descriptor,
+                    symbol: transaction.symbol,
+                    deviceState: transaction.deviceState,
+                    flow: 'detail',
+                }),
+            );
         }
     };
 

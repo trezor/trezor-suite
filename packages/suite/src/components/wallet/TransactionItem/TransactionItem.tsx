@@ -156,7 +156,10 @@ export const TransactionItem = memo(
             dispatch(
                 openModal({
                     type: 'transaction-detail',
-                    tx: { ...transaction, internalTransfers: filteredInternalTransfers },
+                    txid: transaction.txid,
+                    descriptor: transaction.descriptor,
+                    symbol: transaction.symbol,
+                    deviceState: transaction.deviceState,
                     flow,
                 }),
             );

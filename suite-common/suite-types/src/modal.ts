@@ -1,6 +1,6 @@
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Account, AddressType } from '@suite-common/wallet-types';
 import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
@@ -51,7 +51,10 @@ export type UserContextPayload =
       }
     | {
           type: 'transaction-detail';
-          tx: WalletAccountTransaction;
+          txid: string;
+          descriptor: Account['descriptor'];
+          symbol: Account['symbol'];
+          deviceState: Account['deviceState'];
           flow: 'detail' | 'bump-fee' | 'cancel-transaction';
       }
     | {
