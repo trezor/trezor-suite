@@ -43,6 +43,11 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                         level.maxFeePerGas,
                     ).toString();
 
+                    const maxPriorityFeePerGas = BigNumber.min(
+                        maxFeePerGas,
+                        level.maxPriorityFeePerGas,
+                    ).toString();
+
                     return {
                         label,
                         feePerUnit,
@@ -53,7 +58,7 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                         ),
                         baseFeePerGas: eip1559.baseFeePerGas,
                         maxFeePerGas,
-                        maxPriorityFeePerGas: level.maxPriorityFeePerGas,
+                        maxPriorityFeePerGas,
                     };
                 });
 
