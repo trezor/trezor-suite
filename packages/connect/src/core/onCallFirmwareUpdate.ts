@@ -92,11 +92,7 @@ const waitForReconnectedDevice = async (
         // 3. listen now reported a new device in bootloader mode but it still has the session from the previous device in normal mode
         // 4. now we automatically take the device, as if user clicked on the "use device here button"
 
-        if (
-            reconnectedDevice &&
-            !reconnectedDevice.features &&
-            reconnectedDevice.handshakeFinished
-        ) {
+        if (reconnectedDevice && !reconnectedDevice.features) {
             log.debug(
                 'onCallFirmwareUpdate',
                 'we were unable to read device.features on the first interaction after seeing it, retrying...',

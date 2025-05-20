@@ -9,6 +9,7 @@ import {
     createDeferred,
     getSynchronize,
     isNotUndefined,
+    resolveAfter,
     typedObjectKeys,
 } from '@trezor/utils';
 
@@ -140,9 +141,23 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         });
     }
 
-    private onDeviceConnected(descriptor: Descriptor, transport: Transport) {
+    private async onDeviceConnected(descriptor: Descriptor, transport: Transport) {
         const id = (this.deviceCounter++).toString(16).slice(-8);
         const device = new Device({ id: DeviceUniquePath(id), transport, descriptor });
+
+        const penalty = this.authPenaltyManager.get();
+        const stillConnected = await this.handshakeLock(() =>
+            resolveAfter(penalty && penalty + 501).then(() => device.handshake()),
+        );
+
+        if (!stillConnected) {
+            // this emit is here solely for waitForDevices to work; it would be nice to remove it
+            this.emit(DEVICE.DISCONNECT, device);
+
+            return;
+        }
+
+        this.devices.push(device);
 
         device.lifecycle.on(DEVICE.CONNECT, () => this.emit(DEVICE.CONNECT, device));
         device.lifecycle.on(DEVICE.CHANGED, () => this.emit(DEVICE.CHANGED, device));
@@ -157,15 +172,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             this.emit(DEVICE.DISCONNECT, device);
         });
 
-        this.devices.push(device);
-
-        const penalty = this.authPenaltyManager.get();
-        this.handshakeLock(async () => {
-            if (this.devices.includes(device)) {
-                // device wasn't removed while waiting for lock
-                await device.handshake(penalty);
-            }
-        });
+        this.emit(device.isUnacquired() ? DEVICE.CONNECT_UNACQUIRED : DEVICE.CONNECT, device);
     }
 
     private getOrCreateTransportManager(apiType: TransportApiType) {

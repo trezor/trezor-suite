@@ -16,7 +16,6 @@ import {
     TypedEmitter,
     createDeferred,
     isArrayMember,
-    resolveAfter,
     serializeError,
     versionUtils,
 } from '@trezor/utils';
@@ -206,9 +205,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private sessionDfd?: Deferred<Session | null>;
 
-    // todo: marek will solve this
-    public handshakeFinished = false;
-
     constructor({ id, transport, descriptor }: DeviceParams) {
         super();
 
@@ -351,61 +347,39 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     // call only once, right after device creation
-    async handshake(delay?: number) {
-        if (delay) {
-            await resolveAfter(501 + delay);
+    async handshake() {
+        if (this.isUsedElsewhere()) {
+            return true;
         }
 
-        while (true) {
-            if (this.isUsedElsewhere()) {
-                this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
-            } else {
-                try {
-                    await this.run();
-                } catch (error) {
-                    _log.warn(`device.run error.message: ${error.message}, code: ${error.code}`);
+        try {
+            await this.run();
+        } catch (error) {
+            _log.warn(`device.run error.message: ${error.message}, code: ${error.code}`);
 
-                    if (
-                        error.code === 'Device_NotFound' ||
-                        error.code === 'Device_Disconnected' ||
-                        error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
-                        error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                        error.message === TRANSPORT_ERROR.HTTP_ERROR // bridge died during device initialization
-                    ) {
-                        // disconnected, do nothing
-                    } else if (
-                        // if unable to open device and it's HID -> device is unreadable
-                        (this.possibleHIDdevice &&
-                            error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE) ||
-                        // catch LIBUSB_ERROR_ACCESS -> missing udev rules usually
-                        error.message === TRANSPORT_ERROR.LIBUSB_ERROR_ACCESS
-                    ) {
-                        this.unreadableError = error.message;
-                        this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
-                    } else if (
-                        // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
-                        error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
-                        // we don't know what really happened
-                        error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
-                        // someone else took the device at the same time
-                        error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS ||
-                        // device had some session when first seen -> we do not read it so that we don't interrupt somebody else's flow
-                        error.code === 'Device_UsedElsewhere' ||
-                        // TODO: is this needed? can't I just use transport error?
-                        error.code === 'Device_InitializeFailed'
-                    ) {
-                        this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
-                    } else {
-                        await resolveAfter(501);
-                        continue;
-                    }
-                }
+            if (
+                error.code === 'Device_NotFound' ||
+                error.code === 'Device_Disconnected' ||
+                error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
+                error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
+                error.message === TRANSPORT_ERROR.HTTP_ERROR // bridge died during device initialization
+            ) {
+                // disconnected, do nothing
+                return false;
             }
 
-            this.handshakeFinished = true;
-
-            return;
+            if (
+                // if unable to open device and it's HID -> device is unreadable
+                (this.possibleHIDdevice &&
+                    error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE) ||
+                // catch LIBUSB_ERROR_ACCESS -> missing udev rules usually
+                error.message === TRANSPORT_ERROR.LIBUSB_ERROR_ACCESS
+            ) {
+                this.unreadableError = error.message;
+            }
         }
+
+        return true;
     }
 
     private async updateDescriptor(descriptor: Descriptor) {
@@ -462,8 +436,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.lifecycle.emit(DEVICE.CONNECT);
-                } else if (wasUnacquired && this.isUnacquired() && this.thp?.properties) {
-                    this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
                 }
             });
 
