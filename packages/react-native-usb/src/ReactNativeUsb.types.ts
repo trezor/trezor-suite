@@ -51,6 +51,7 @@ export interface WebUSBDevice {
     readonly configurations: USBConfiguration[];
     readonly opened: boolean;
     open(): Promise<void>;
+    reset(): Promise<void>;
     close(): Promise<void>;
     forget(): Promise<void>;
     selectConfiguration(configurationValue: number): Promise<void>;
@@ -77,7 +78,6 @@ export interface WebUSBDevice {
         data: BufferSource,
         packetLengths: number[],
     ): Promise<USBIsochronousOutTransferResult>;
-    reset(): Promise<void>;
 }
 
 export interface OnConnectEvent extends Event {
