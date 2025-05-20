@@ -1,5 +1,4 @@
 import { ReactNode, forwardRef, useCallback } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {
     BottomSheetBackdrop,
@@ -22,15 +21,11 @@ const MAX_HEIGHT = SCREEN_HEIGHT * 0.9;
 export type BottomSheetModalProps = {
     children: ReactNode;
     footer?: ReactNode;
-    title?: string;
-    subtitle?: string;
+    title?: ReactNode;
+    subtitle?: ReactNode;
     isCloseDisplayed?: boolean;
     onDismiss?: () => void;
 } & BoxProps;
-
-const containerStyle = prepareNativeStyle(() => ({
-    flex: 1,
-}));
 
 const backgroundStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
@@ -62,29 +57,27 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         }, [ref, onDismiss]);
 
         return (
-            <GestureHandlerRootView style={applyStyle(containerStyle)}>
-                <BottomSheetModalBase
-                    ref={ref}
-                    backdropComponent={renderBackdrop}
-                    maxDynamicContentSize={MAX_HEIGHT}
-                    backgroundStyle={applyStyle(backgroundStyle)}
-                    handleComponent={() => (
-                        <BottomSheetHeader
-                            title={title}
-                            subtitle={subtitle}
-                            isCloseDisplayed={isCloseDisplayed}
-                            onCloseSheet={onCloseModal}
-                            scrollDivider={scrollDivider}
-                        />
-                    )}
-                    onDismiss={onDismiss}
-                >
-                    <BottomSheetModalContent handleScroll={handleScroll} style={style} {...rest}>
-                        {children}
-                    </BottomSheetModalContent>
-                    {footer}
-                </BottomSheetModalBase>
-            </GestureHandlerRootView>
+            <BottomSheetModalBase
+                ref={ref}
+                backdropComponent={renderBackdrop}
+                maxDynamicContentSize={MAX_HEIGHT}
+                backgroundStyle={applyStyle(backgroundStyle)}
+                handleComponent={() => (
+                    <BottomSheetHeader
+                        title={title}
+                        subtitle={subtitle}
+                        isCloseDisplayed={isCloseDisplayed}
+                        onCloseSheet={onCloseModal}
+                        scrollDivider={scrollDivider}
+                    />
+                )}
+                onDismiss={onDismiss}
+            >
+                <BottomSheetModalContent handleScroll={handleScroll} style={style} {...rest}>
+                    {children}
+                </BottomSheetModalContent>
+                {footer}
+            </BottomSheetModalBase>
         );
     },
 );
