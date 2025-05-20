@@ -75,7 +75,7 @@ const applyDeviceStatesThunk = createThunk(
             newDeviceState: DeviceState;
             devicePath: DeviceUniquePath;
         },
-        { dispatch, getState, extra },
+        { dispatch, getState },
     ) => {
         try {
             const devices = selectDevices(getState());
@@ -130,8 +130,6 @@ const applyDeviceStatesThunk = createThunk(
                     );
                 }
             }
-
-            await dispatch(extra.thunks.initMetadata(false));
         } catch (error) {
             console.warn('applyDeviceStatesThunk error', error);
         }
@@ -175,7 +173,7 @@ export const startDiscoveryThunk = createThunk(
             isAddingHiddenWallet?: boolean;
             isAddingExistingWallet?: boolean;
         },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
         if (isDiscoveryInProgress(currentDiscovery)) {
@@ -201,6 +199,15 @@ export const startDiscoveryThunk = createThunk(
         if (!isAddingHiddenWallet || (isAddingHiddenWallet && isAddingExistingWallet)) {
             dispatch(runDiscoveryThunk(device));
         }
+
+                // metadata are enabled in settings but metadata master key does not exist for this device
+            // try to generate device metadata master key if passphrase is not used
+            const metadata = extra.selectors.selectMetadata(getState());
+            const metadataEnabled = metadata.enabled && !device.metadata[1];
+
+            if (metadataEnabled) {
+                dispatch(extra.thunks.initMetadata(false));
+            }
     },
 );
 
