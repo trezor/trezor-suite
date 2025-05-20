@@ -5781,6 +5781,14 @@ export default defineMessages({
         defaultMessage: 'Enter a fee between {minFee} and {maxFee}',
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
+    CUSTOM_PRIORITY_HIGHER_THAN_MAX: {
+        defaultMessage: 'Max priority fee per gas cannot be higher than Max fee per gas ',
+        id: 'CUSTOM_PRIORITY_HIGHER_THAN_MAX',
+    },
+    CUSTOM_MAX_LOWER_THAN_PRIORITY: {
+        defaultMessage: 'Max fee per gas cannot be lower than Max priority fee per gas ',
+        id: 'CUSTOM_MAX_LOWER_THAN_PRIORITY',
+    },
     TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT: {
         defaultMessage: "The custom base fee can't be set lower than the current network base fee.",
         id: 'TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT',

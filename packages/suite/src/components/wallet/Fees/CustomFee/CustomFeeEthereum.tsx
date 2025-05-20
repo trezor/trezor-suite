@@ -35,6 +35,9 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
     const { maxFee, minFee, levels } = feeInfo;
 
     const estimatedFeeLimit = getValues('estimatedFeeLimit');
+    const customMaxFeePerGas = getValues('maxFeePerGas');
+    const customMaxPriorityFeePerGas = getValues('maxPriorityFeePerGas');
+
     const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
 
     const gasLimitRules = {
@@ -89,13 +92,23 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
             ...sharedRules.validate,
             ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
             customMaxFeePerGas: (value: string) => {
-                const baseFee = new BigNumber(value);
+                const customMaxFeePerGas = new BigNumber(value);
 
-                if (baseFee.isGreaterThan(maxFee) || baseFee.isLessThan(minFee)) {
+                if (
+                    customMaxFeePerGas.isGreaterThan(maxFee) ||
+                    customMaxFeePerGas.isLessThan(minFee)
+                ) {
                     return translationString('CUSTOM_FEE_NOT_IN_RANGE', {
                         minFee: new BigNumber(minFee).toString(),
                         maxFee: new BigNumber(maxFee).toString(),
                     });
+                }
+
+                if (
+                    customMaxPriorityFeePerGas &&
+                    customMaxFeePerGas.isLessThan(customMaxPriorityFeePerGas)
+                ) {
+                    return translationString('CUSTOM_MAX_LOWER_THAN_PRIORITY');
                 }
             },
         },
@@ -117,6 +130,13 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
     const maxPriorityFeePerGasRules = {
         validate: {
             ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
+            customPriorityFeePerGas: (value: string) => {
+                const customPriorityFeePerGas = new BigNumber(value);
+
+                if (customMaxFeePerGas && customPriorityFeePerGas.gte(customMaxFeePerGas)) {
+                    return translationString('CUSTOM_PRIORITY_HIGHER_THAN_MAX');
+                }
+            },
         },
     };
 
