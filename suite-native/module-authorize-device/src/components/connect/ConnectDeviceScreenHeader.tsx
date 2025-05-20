@@ -6,7 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import {
+    selectDeviceRequestedPin,
+    selectIsCreatingNewPassphraseWallet,
+} from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -39,10 +42,11 @@ export const ConnectDeviceScreenHeader = ({
     const { showAlert, hideAlert } = useAlert();
 
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const isAddingHiddenWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const handleCancel = useCallback(() => {
-        if (hasDiscovery) {
+        if (hasDiscovery && !isAddingHiddenWallet) {
             if (hasDeviceRequestedPin) {
                 // Do not allow to cancel PIN entry while discovery is in progress
                 showAlert({
@@ -60,7 +64,7 @@ export const ConnectDeviceScreenHeader = ({
                 });
             }
         } else {
-            if (hasDeviceRequestedPin) {
+            if (hasDeviceRequestedPin || isAddingHiddenWallet) {
                 TrezorConnect.cancel('pin-cancelled');
             }
 
@@ -76,6 +80,7 @@ export const ConnectDeviceScreenHeader = ({
         }
     }, [
         hasDiscovery,
+        isAddingHiddenWallet,
         hasDeviceRequestedPin,
         showAlert,
         hideAlert,
