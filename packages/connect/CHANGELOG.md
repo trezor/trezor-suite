@@ -11,6 +11,49 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.6.0-beta.1
+
+Starting with Connect version 9.6.0, we are introducing a new integration with Trezor Suite. The new flow is designed to provide a more seamless and user-friendly experience for users interacting with Trezor devices.
+To learn more, please take a look at the full [New Connect flow in Trezor Suite](https://connect.trezor.io/9.6.0-beta.1/guides/new-connect-flow-in-trezor-suite/) article.
+We encourage you to try out the new flow to make sure everything works as expected. If you encounter any issues, please let us know.
+
+This requires one change in the manifest - there is an additional required field `appName` that is used in the permission prompt. Optionally, you can also provide an `appIcon` which will be shown in the future.
+
+```javascript
+TrezorConnect.init({
+    manifest: {
+        email: 'developer@xyz.com',
+        appName: 'Your Application',
+        appUrl: 'http://your.application.com',
+        appIcon: 'http://your.application.com/icon-64.png',
+    },
+});
+```
+
+## Features
+
+- Use suite-desktop by default (73d8a0a)
+- `appName` in manifest now required (6103a68)
+- New `discoverAccount` method (0b584aa, 3a07e81, 8389827, e2f66ef, f0f9197, 084089d, 978c2f5, dc1a77d)
+
+## Chain Support
+
+- Improved support for Stellar (180265b, 48b5ca0), including testnet (4231425)
+- Removed support for old Binance beacon chain (97a2dfd)
+- Use Solana token definitions (4be5bea)
+
+## Fixes
+
+- Do not throw entropy check failure during backup (81d582e)
+- Keep session dispose error (f2dcd3a)
+- `getAccountDescriptor` polished (e5b2cff)
+
+## Chores
+
+- Update Ethereum libs (ab5ad7b)
+- Update Solana libs (f58d9b6)
+- Update dependencies (47b7a34, 7bf17ef, 680cc6b, 2c97fed, 3c05b26)
+
 # 9.5.5
 
 This release is mostly about refactoring and preparatory work for the new way of using TrezorConnect together with Trezor Suite as its UI.
