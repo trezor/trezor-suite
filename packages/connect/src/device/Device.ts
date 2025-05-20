@@ -106,19 +106,17 @@ export interface DeviceEvents {
     [DEVICE.THP_CREDENTIALS_CHANGED]: DeviceThpCredentialsChangedPayload;
 }
 
-type DeviceLifecycle =
-    | typeof DEVICE.CONNECT
-    | typeof DEVICE.CONNECT_UNACQUIRED
-    | typeof DEVICE.DISCONNECT
-    | typeof DEVICE.CHANGED;
-
-type DeviceLifecycleListener = (lifecycle: DeviceLifecycle) => void;
+interface DeviceLifecycleEvents {
+    [DEVICE.CONNECT]: void;
+    [DEVICE.CONNECT_UNACQUIRED]: void;
+    [DEVICE.CHANGED]: void;
+    [DEVICE.DISCONNECT]: void;
+}
 
 type DeviceParams = {
     id: DeviceUniquePath;
     transport: Transport;
     descriptor: Descriptor;
-    listener: DeviceLifecycleListener;
 };
 
 export class Device extends TypedEmitter<DeviceEvents> {
@@ -204,17 +202,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private readonly uniquePath;
 
-    private emitLifecycle;
+    readonly lifecycle = new TypedEmitter<DeviceLifecycleEvents>();
 
     private sessionDfd?: Deferred<Session | null>;
 
     // todo: marek will solve this
     public handshakeFinished = false;
 
-    constructor({ id, transport, descriptor, listener }: DeviceParams) {
+    constructor({ id, transport, descriptor }: DeviceParams) {
         super();
 
-        this.emitLifecycle = listener;
         this._protocol = protocolV1;
 
         // === immutable properties
@@ -361,7 +358,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         while (true) {
             if (this.isUsedElsewhere()) {
-                this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
             } else {
                 try {
                     await this.run();
@@ -384,7 +381,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         error.message === TRANSPORT_ERROR.LIBUSB_ERROR_ACCESS
                     ) {
                         this.unreadableError = error.message;
-                        this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                        this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
                     } else if (
                         // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
                         error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
@@ -397,7 +394,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         // TODO: is this needed? can't I just use transport error?
                         error.code === 'Device_InitializeFailed'
                     ) {
-                        this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                        this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
                     } else {
                         await resolveAfter(501);
                         continue;
@@ -430,7 +427,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.keepTransportSession = false;
         }
 
-        this.emitLifecycle(DEVICE.CHANGED);
+        this.lifecycle.emit(DEVICE.CHANGED);
     }
 
     // TODO empty fn variant can be split/removed
@@ -464,9 +461,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
             })
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
-                    this.emitLifecycle(DEVICE.CONNECT);
+                    this.lifecycle.emit(DEVICE.CONNECT);
                 } else if (wasUnacquired && this.isUnacquired() && this.thp?.properties) {
-                    this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                    this.lifecycle.emit(DEVICE.CONNECT_UNACQUIRED);
                 }
             });
 
@@ -1009,8 +1006,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.sessionAcquired = null; // set to null to prevent transport.release and cancelableAction
         }
 
-        this.emitLifecycle(DEVICE.DISCONNECT);
-        this.emitLifecycle = () => {};
+        this.lifecycle.emit(DEVICE.DISCONNECT);
 
         return this.interrupt(ERRORS.TypedError('Device_Disconnected'));
     }

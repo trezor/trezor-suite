@@ -142,19 +142,21 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private onDeviceConnected(descriptor: Descriptor, transport: Transport) {
         const id = (this.deviceCounter++).toString(16).slice(-8);
-        const device = new Device({
-            id: DeviceUniquePath(id),
-            transport,
-            descriptor,
-            listener: lifecycle => {
-                if (lifecycle === DEVICE.DISCONNECT) {
-                    this.authPenaltyManager.remove(device);
-                    const index = this.devices.indexOf(device);
-                    if (index >= 0) this.devices.splice(index, 1);
-                }
-                this.emit(lifecycle, device);
-            },
+        const device = new Device({ id: DeviceUniquePath(id), transport, descriptor });
+
+        device.lifecycle.on(DEVICE.CONNECT, () => this.emit(DEVICE.CONNECT, device));
+        device.lifecycle.on(DEVICE.CHANGED, () => this.emit(DEVICE.CHANGED, device));
+        device.lifecycle.on(DEVICE.CONNECT_UNACQUIRED, () =>
+            this.emit(DEVICE.CONNECT_UNACQUIRED, device),
+        );
+        device.lifecycle.on(DEVICE.DISCONNECT, () => {
+            device.lifecycle.removeAllListeners();
+            this.authPenaltyManager.remove(device);
+            const index = this.devices.indexOf(device);
+            if (index >= 0) this.devices.splice(index, 1);
+            this.emit(DEVICE.DISCONNECT, device);
         });
+
         this.devices.push(device);
 
         const penalty = this.authPenaltyManager.get();
