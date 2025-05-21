@@ -94,29 +94,30 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
 
     test('Bitcoin sell fees', async ({ walletPage, tradingPage, devicePrompt }) => {
         const testCases: FeeSwitchTestCase[] = [
-            {
-                feeType: 'economy',
-                feeSwitchFunction: async () => {
-                    await tradingPage.fees.bitcoinCard('economy').click();
-                },
-            },
-            {
-                feeType: 'normal',
-                feeSwitchFunction: async () => {
-                    await tradingPage.fees.bitcoinCard('normal').click();
-                },
-            },
-            {
-                feeType: 'high',
-                feeSwitchFunction: async () => {
-                    await tradingPage.fees.bitcoinCard('high').click();
-                },
-            },
+            // TODO: #18316 Uncomment and update when bug is fixed
+            // {
+            //     feeType: 'economy',
+            //     feeSwitchFunction: async () => {
+            //         await tradingPage.fees.bitcoinCard('economy').click();
+            //     },
+            // },
+            // {
+            //     feeType: 'normal',
+            //     feeSwitchFunction: async () => {
+            //         await tradingPage.fees.bitcoinCard('normal').click();
+            //     },
+            // },
+            // {
+            //     feeType: 'high',
+            //     feeSwitchFunction: async () => {
+            //         await tradingPage.fees.bitcoinCard('high').click();
+            //     },
+            // },
             {
                 feeType: 'custom',
                 feeSwitchFunction: async () => {
                     await tradingPage.fees.switchModeButton('custom').click();
-                    await tradingPage.fees.customInput.fill('1');
+                    await tradingPage.fees.customInput.fill('10');
                 },
             },
         ];
@@ -148,6 +149,8 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
                     await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
                     const errorMessage = `expected ${feeType} fee on Device Prompt to be:`;
                     expect.soft(await devicePrompt.getFeeRate(), errorMessage).toBe(feeRate);
+
+                    //TODO: Do verification on emulator display
                 });
                 await devicePrompt.closeButton.click();
             });

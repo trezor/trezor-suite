@@ -23,7 +23,7 @@ export const DustPreventionNotice = ({
     if (!isComposedFeeRateDifferent) return null;
 
     return (
-        <Note>
+        <Note data-testid="@wallet/fees/dust-prevention-notice">
             <Translation
                 id={
                     baseFee !== undefined

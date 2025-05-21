@@ -20,6 +20,7 @@ export class Fees {
     readonly customFiatAmount: Locator;
     readonly miscAmount: Locator;
     readonly swapDetails: Locator;
+    readonly dustPreventionNotice: Locator;
 
     constructor(private readonly page: Page) {
         this.customInput = this.page.getByTestId('feePerUnit');
@@ -27,6 +28,7 @@ export class Fees {
         this.customFiatAmount = this.page.getByTestId('@trading/quote/custom-fee-fiat-amount');
         this.miscAmount = this.page.getByTestId('@wallet/misc-fee-amount');
         this.swapDetails = this.page.getByTestId('@wallet/fee-details');
+        this.dustPreventionNotice = this.page.getByTestId('@wallet/fees/dust-prevention-notice');
     }
 
     @step()
@@ -83,6 +85,7 @@ export class Fees {
     async getBitcoinFeeRate(type: FeeTypes | 'custom') {
         let feeRateText: string | null;
         const nonBreakingSpace = '\u00A0';
+        const suffixForDustPreventionFee = `${nonBreakingSpace}sat/vB`;
         const suffixForCustomFee = `.00${nonBreakingSpace}sat/vB`;
 
         if (type !== 'custom') {
@@ -92,10 +95,32 @@ export class Fees {
             feeRateText = (await this.customInput.inputValue()) + suffixForCustomFee;
         }
 
+        const isDustPreventionRateApplied = await this.dustPreventionNotice.isVisible();
+        if (isDustPreventionRateApplied) {
+            feeRateText = (await this.getDustPreventionFeeRate()) + suffixForDustPreventionFee;
+        }
+
         if (!feeRateText) {
             throw new Error('Fee amount is undefined or null');
         }
 
         return feeRateText;
+    }
+
+    @step()
+    async getDustPreventionFeeRate() {
+        const dustPreventionText = await this.dustPreventionNotice.textContent();
+        if (!dustPreventionText) {
+            throw new Error('Dust prevention text is undefined or null');
+        }
+
+        const regex = /has been adjusted to (?<value>\d+\.\d+) sat\/vB/;
+        const match = dustPreventionText.match(regex);
+
+        if (!match?.groups?.value) {
+            throw new Error(`Failed to extract fee rate from text: "${dustPreventionText}"`);
+        }
+
+        return match.groups.value;
     }
 }

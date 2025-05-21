@@ -27,6 +27,7 @@ export type NoteProps = AllowedFrameProps & {
     variant?: NoteVariant;
     gap?: SpacingValues;
     children: ReactNode;
+    'data-testid'?: string;
 };
 
 export const Note = ({
@@ -36,10 +37,11 @@ export const Note = ({
     gap = spacings.xxs,
     minWidth,
     variant = 'tertiary',
+    'data-testid': dataTestId,
 }: NoteProps) => (
     <Row gap={gap} margin={margin} minWidth={minWidth}>
         <Icon name={iconName} size={16} variant={variant} />
-        <Paragraph typographyStyle="hint" variant={variant}>
+        <Paragraph data-testid={dataTestId} typographyStyle="hint" variant={variant}>
             {children}
         </Paragraph>
     </Row>
