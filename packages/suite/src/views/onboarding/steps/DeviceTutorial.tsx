@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Button } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';

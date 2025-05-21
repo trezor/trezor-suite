@@ -1,5 +1,4 @@
-import { useFirmwareInstallation } from '@suite-common/device';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, useFirmwareInstallation } from '@suite-common/device';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { MODAL } from 'src/actions/suite/constants';

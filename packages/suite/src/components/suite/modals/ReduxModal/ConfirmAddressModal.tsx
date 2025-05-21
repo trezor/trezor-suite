@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectTradingModalAccountKey } from '@suite-common/trading';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';

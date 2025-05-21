@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { WalletType } from '@suite-common/wallet-types';
 import { Banner, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';

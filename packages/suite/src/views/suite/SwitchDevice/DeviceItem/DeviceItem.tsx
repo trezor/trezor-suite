@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

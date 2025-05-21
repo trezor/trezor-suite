@@ -16,8 +16,8 @@ import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
 import { SerializedTx } from './sendFormTypes';
+import { DeviceRootState, selectDeviceButtonRequestsCodes } from '../../../device/src/device/deviceReducer';
 import { accountsActions } from '../accounts/accountsActions';
-import { DeviceRootState, selectDeviceButtonRequestsCodes } from '../device/deviceReducer';
 
 export type SendState = {
     drafts: {

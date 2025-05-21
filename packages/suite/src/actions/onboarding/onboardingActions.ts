@@ -1,5 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { BackupType } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 

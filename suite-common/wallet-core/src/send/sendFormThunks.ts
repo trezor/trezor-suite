@@ -67,10 +67,10 @@ import {
     SignTransactionError,
     SignTransactionTimeoutError,
 } from './sendFormTypes';
+import { selectSelectedDevice } from '../../../device/src/device/deviceReducer';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsReducer';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
-import { selectSelectedDevice } from '../device/deviceReducer';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,

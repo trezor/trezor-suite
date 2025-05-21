@@ -6,7 +6,7 @@ import { createDeferred } from '@trezor/utils';
 
 import { discoveryActions } from './discoveryActions';
 import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
-import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
+import { DeviceRootState, selectSelectedDevice } from '../../../device/src/device/deviceReducer';
 
 export type DiscoveryState = Discovery[];
 

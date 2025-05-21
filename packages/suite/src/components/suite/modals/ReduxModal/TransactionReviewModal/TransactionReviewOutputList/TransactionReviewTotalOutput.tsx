@@ -1,5 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { NetworkType } from '@suite-common/wallet-config';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 import {
     getIsUpdatedEthereumSendFlow,

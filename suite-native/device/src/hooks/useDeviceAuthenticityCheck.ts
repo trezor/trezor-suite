@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     CheckDeviceAuthenticityThunkResult,
     deviceAuthenticityActions,
 } from '@suite-common/device-authenticity';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';

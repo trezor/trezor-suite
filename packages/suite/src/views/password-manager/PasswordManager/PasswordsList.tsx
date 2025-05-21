@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 
 import { TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

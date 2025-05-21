@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/core';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { allowReportTag } from '@suite-common/sentry';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
 import { getApplicationLog, redactDevice, redactDiscovery } from 'src/utils/suite/logsUtils';

@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { randomBytes } from 'crypto';
 import styled from 'styled-components';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import type { PasswordEntry, PasswordEntryDecoded } from '@suite-common/metadata-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Checkbox, Input } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';

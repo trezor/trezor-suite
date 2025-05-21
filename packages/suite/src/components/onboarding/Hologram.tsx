@@ -2,8 +2,8 @@ import { useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { getPackagingUrl } from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, DeviceAnimation, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { typography } from '@trezor/theme';

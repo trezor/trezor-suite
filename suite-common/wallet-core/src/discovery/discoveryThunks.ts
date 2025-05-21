@@ -37,9 +37,9 @@ import {
     selectDiscoveryByDeviceState,
 } from './discoveryReducer';
 import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
+import { selectDeviceByStaticSessionId } from '../../../device/src/device/deviceReducer';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccounts } from '../accounts/accountsReducer';
-import { selectDeviceByStaticSessionId } from '../device/deviceReducer';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];

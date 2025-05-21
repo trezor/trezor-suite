@@ -1,5 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 

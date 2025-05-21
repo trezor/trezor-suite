@@ -1,5 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, H4, Paragraph } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 

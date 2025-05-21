@@ -1,5 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Discovery } from '@suite-common/wallet-types';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import {

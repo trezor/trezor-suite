@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv, resolveStaticPath } from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Icon, Link, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';

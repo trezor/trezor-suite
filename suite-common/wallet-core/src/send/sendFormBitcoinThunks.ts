@@ -33,7 +33,7 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectSelectedDevice } from '../device/deviceReducer';
+import { selectSelectedDevice } from '../../../device/src/device/deviceReducer';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,

@@ -1,6 +1,6 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getDerivationType } from '@suite-common/wallet-utils';
 import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
 

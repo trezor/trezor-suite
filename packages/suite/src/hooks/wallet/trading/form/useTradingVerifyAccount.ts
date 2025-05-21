@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
 } from '@suite-common/trading';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 

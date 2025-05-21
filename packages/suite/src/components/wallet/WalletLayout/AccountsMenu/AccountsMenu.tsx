@@ -2,7 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { useScrollShadow } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 

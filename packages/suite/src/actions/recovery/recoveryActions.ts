@@ -1,4 +1,4 @@
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { PROTO, RecoveryDevice, UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';

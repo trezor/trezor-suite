@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,

@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { getFirmwareVersion } from '@trezor/device-utils';
 

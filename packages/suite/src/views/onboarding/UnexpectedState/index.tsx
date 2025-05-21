@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 

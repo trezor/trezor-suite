@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Icon, Tooltip } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { borders, spacingsPx } from '@trezor/theme';

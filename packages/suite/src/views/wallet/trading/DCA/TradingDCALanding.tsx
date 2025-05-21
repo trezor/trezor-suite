@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     BulletList,
     Button,

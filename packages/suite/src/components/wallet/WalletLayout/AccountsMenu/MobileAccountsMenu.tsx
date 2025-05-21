@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
 import { H2, Icon, variables } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 

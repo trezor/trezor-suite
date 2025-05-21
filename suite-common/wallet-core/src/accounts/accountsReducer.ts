@@ -18,13 +18,13 @@ import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './accountsConstants';
-import { deviceActions } from '../device/deviceActions';
+import { deviceActions } from '../../../device/src/device/deviceActions';
 import {
     DeviceRootState,
     selectDeviceState,
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
-} from '../device/deviceReducer';
+} from '../../../device/src/device/deviceReducer';
 import {
     DiscoveryRootState,
     selectHasDeviceDiscovery,
