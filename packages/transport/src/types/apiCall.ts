@@ -18,7 +18,7 @@ type ErrorGeneric<ErrorType> = {
 export type ResultWithTypedError<T, E> = Success<T> | ErrorGeneric<E>;
 export type AsyncResultWithTypedError<T, E> = Promise<Success<T> | ErrorGeneric<E>>;
 
-export type AbortableParam = { signal?: AbortSignal };
+export type AbortableParam = { signal?: AbortSignal; timeout?: number };
 
 export type BridgeProtocolMessage = {
     data: string;

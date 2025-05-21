@@ -171,6 +171,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         data,
         protocol: customProtocol,
         signal,
+        timeout,
     }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
             async signal => {
@@ -228,7 +229,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return readResult;
             },
-            { signal, timeout: undefined },
+            { signal, timeout },
         );
     }
 
