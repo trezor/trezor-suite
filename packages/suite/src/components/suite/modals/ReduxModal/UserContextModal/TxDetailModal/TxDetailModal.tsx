@@ -8,7 +8,9 @@ import {
 } from '@suite-common/wallet-core';
 import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wallet-types';
 import { findChainedTransactions, getAccountKey, isPending } from '@suite-common/wallet-utils';
+import { Modal } from '@trezor/components';
 
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
@@ -45,26 +47,27 @@ export const TxDetailModal = ({
     const accountKey = getAccountKey(descriptor, symbol, deviceState);
     const originalTx = useSelector(state =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    ) as WalletAccountTransaction;
+    );
 
     // Filter out internal transfers that are instant staking transactions
-    const filteredInternalTransfers = useMemo(
-        () =>
-            originalTx.internalTransfers.filter(t => {
-                const stakeType = getInstantStakeType(t, descriptor, symbol);
+    const filteredInternalTransfers = useMemo(() => {
+        if (!originalTx) return [];
 
-                return stakeType !== 'stake';
-            }),
-        [originalTx.internalTransfers, descriptor, symbol],
-    );
+        return originalTx.internalTransfers.filter(t => {
+            const stakeType = getInstantStakeType(t, descriptor, symbol);
 
-    const tx = useMemo(
-        () => ({
+            return stakeType !== 'stake';
+        });
+    }, [originalTx, descriptor, symbol]);
+
+    const tx = useMemo(() => {
+        if (!originalTx) return null;
+
+        return {
             ...originalTx,
             internalTransfers: filteredInternalTransfers,
-        }),
-        [originalTx, filteredInternalTransfers],
-    );
+        };
+    }, [originalTx, filteredInternalTransfers]);
 
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
@@ -76,6 +79,7 @@ export const TxDetailModal = ({
     // TODO: replace this part will be refactored after blockbook implementation:
     // https://github.com/trezor/blockbook/issues/555
     const chainedTxs = useMemo(() => {
+        if (!tx) return;
         if (!isPending(tx)) return;
 
         return findChainedTransactions(tx.descriptor, tx.txid, transactions);
@@ -100,6 +104,14 @@ export const TxDetailModal = ({
         setSection('cancel-transaction');
         setTab(undefined);
     };
+
+    if (tx === null) {
+        return (
+            <Modal onCancel={onCancel} heading={<Translation id="TR_TRANSACTION_DETAILS" />}>
+                <Translation id="TR_TRANSACTION_NOT_FOUND" />
+            </Modal>
+        );
+    }
 
     const canReplaceTransaction =
         hasRbfParams(tx) &&

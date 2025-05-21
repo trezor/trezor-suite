@@ -3351,6 +3351,10 @@ export default defineMessages({
         defaultMessage: 'Details',
         id: 'TR_TRANSACTION_DETAILS',
     },
+    TR_TRANSACTION_NOT_FOUND: {
+        defaultMessage: 'Transaction not found. Please try again later.',
+        id: 'TR_TRANSACTION_NOT_FOUND',
+    },
     TR_TOKEN_ID_COLON: {
         defaultMessage: 'Token ID:',
         id: 'TR_TOKEN_ID_COLON',
