@@ -9112,6 +9112,15 @@ export default defineMessages({
         defaultMessage:
             "The maximum fee you're willing to pay for the transaction. You'll only pay what's necessary — typically the minimum fee during light network traffic. Higher fees help prioritize your transaction during network congestion.",
     },
+    TR_STELLAR_LIMIT_HISTORY_TITLE: {
+        id: 'TR_STELLAR_LIMIT_HISTORY_TITLE',
+        defaultMessage: 'Transaction history limited to 12 months',
+    },
+    TR_STELLAR_LIMIT_HISTORY_DESCRIPTION: {
+        id: 'TR_STELLAR_LIMIT_HISTORY_DESCRIPTION',
+        defaultMessage:
+            'Only transactions from the past 12 months are available in this view. To explore older activity, use the blockchain explorer.',
+    },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
         defaultMessage:

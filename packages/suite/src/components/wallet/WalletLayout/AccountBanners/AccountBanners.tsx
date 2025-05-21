@@ -18,6 +18,7 @@ import { DeviceUnavailable } from './DeviceUnavailable';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { ReserveBanner } from './ReserveBanner';
 import { StakingBanner } from './StakingBanner';
+import { StellarLimitedHistoryBanner } from './StellarLimitedHistoryBanner';
 import { TaprootBanner } from './TaprootBanner';
 import { TorDisconnected } from './TorDisconnected';
 
@@ -46,6 +47,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <AccountOutOfSync account={account} />
             <EvmExplanationBanner account={account} />
             <TaprootBanner account={account} />
+            {account?.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
             {account?.symbol && <StakingBanner account={account} />}
         </Column>
     );

@@ -217,6 +217,7 @@ const initialRun = [
                 enableAutoupdateOnNextRun: false,
                 isBluetoothEnabled: false,
                 showBluetoothDebugInfo: false,
+                stellarLimitedHistoryBannerClosed: false,
             },
         },
     },

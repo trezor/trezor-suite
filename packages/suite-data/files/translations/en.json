@@ -1839,6 +1839,8 @@
   "TR_STEP_OF_TOTAL": "Step {index} of {total}",
   "TR_STILL_DONT_SEE_YOUR_TREZOR": "Don’t see your Trezor?",
   "TR_STELLAR_FEE_DESC": "The maximum fee you're willing to pay for the transaction. You'll only pay what's necessary — typically the minimum fee during light network traffic. Higher fees help prioritize your transaction during network congestion.",
+  "TR_STELLAR_LIMIT_HISTORY_DESCRIPTION": "Only transactions from the past 12 months are available in this view. To explore older activity, use the blockchain explorer.",
+  "TR_STELLAR_LIMIT_HISTORY_TITLE": "Transaction history limited to 12 months",
   "TR_STOP": "Stop",
   "TR_STOPPING": "Stopping",
   "TR_STORAGE_CLEARED": "Storage cleared",
