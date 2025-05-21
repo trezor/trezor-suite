@@ -2,7 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import {
+    selectDeviceRequestedPin,
+    selectInputPassphraseOnDevice,
+} from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -13,11 +16,13 @@ import { PassphraseStackNavigator } from './PassphraseStackNavigator';
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { ConnectingDeviceScreen } from '../screens/connect/ConnectingDeviceScreen';
 import { PinScreen } from '../screens/connect/PinScreen';
+import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
 
 export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
 
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
 
     return (
         <AuthorizeDeviceStack.Navigator
@@ -52,6 +57,12 @@ export const AuthorizeDeviceStackNavigator = () => {
                 <AuthorizeDeviceStack.Screen
                     name={AuthorizeDeviceStackRoutes.PinMatrix}
                     component={PinScreen}
+                />
+            )}
+            {inputPassphraseOnDevice && (
+                <AuthorizeDeviceStack.Screen
+                    name={AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor}
+                    component={PassphraseEnterOnTrezorScreen}
                 />
             )}
         </AuthorizeDeviceStack.Navigator>

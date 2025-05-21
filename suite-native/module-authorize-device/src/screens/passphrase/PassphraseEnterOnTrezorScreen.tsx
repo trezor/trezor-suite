@@ -10,7 +10,7 @@ import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import {
     isPassphraseDeviceLoadingDone,
     selectIsCreatingNewPassphraseWallet,
-    useHandlePassphraseMismatch,
+    setInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
@@ -69,6 +69,8 @@ export const PassphraseEnterOnTrezorScreen = () => {
             if (device) {
                 dispatch(cancelDiscoveryThunk(device));
             }
+            navigateToInitialScreen();
+            dispatch(setInputPassphraseOnDevice(false));
         } else {
             analytics.report({
                 type: EventType.PassphraseExit,
