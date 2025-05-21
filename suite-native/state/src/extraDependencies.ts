@@ -2,13 +2,10 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
-import {
-    selectDeviceDiscovery,
-    selectDevices,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectDeviceDiscovery } from '@suite-common/wallet-core';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';

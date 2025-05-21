@@ -1,5 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    selectAllNetworkSymbolsOfVisibleAccounts,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
+import {
     SupportedEthereumNetworkSymbol,
     SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
@@ -26,8 +30,6 @@ import {
     StakeRewardsByAccount,
     ValidatorsQueue,
 } from './stakeTypes';
-import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsReducer';
-import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 

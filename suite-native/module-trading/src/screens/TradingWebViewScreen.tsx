@@ -7,8 +7,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useURL } from 'expo-linking';
 import { WebViewSource } from 'react-native-webview/lib/WebViewTypes';
 
+import { DeviceRootState } from '@suite-common/device';
 import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {

@@ -9,13 +9,15 @@ import { useAtomValue } from 'jotai';
 
 import {
     AccountsRootState,
-    SendRootState,
     TransactionsRootState,
-    pushSendFormTransactionThunk,
     selectAccountByKey,
-    selectSendFormDraftByKey,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
+import {
+    SendRootState,
+    pushSendFormTransactionThunk,
+    selectSendFormDraftByKey,
+} from '@suite-common/wallet-send';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';

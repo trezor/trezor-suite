@@ -1,22 +1,20 @@
 import { D, pipe } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
+import { selectAccountByKey, selectNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
     SignTransactionError,
     SignTransactionTimeoutError,
     composeSendFormTransactionFeeLevelsThunk,
-    deviceActions,
     enhancePrecomposedTransactionThunk,
-    selectAccountByKey,
-    selectNetworkFeeInfo,
-    selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
     sendFormActions,
     signTransactionThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
 import {
     AccountKey,
     FormState,

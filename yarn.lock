@@ -9616,8 +9616,6 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.8.2"
-    "@suite-common/device": "workspace:*"
-    "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -9630,7 +9628,6 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -9638,8 +9635,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
-    react-hook-form: "npm:^7.56.3"
-    web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
 
@@ -9671,6 +9666,26 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
+    react-hook-form: "npm:^7.56.3"
+    web3-utils: "npm:^4.3.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/wallet-stake@workspace:*, @suite-common/wallet-stake@workspace:suite-common/wallet-stake":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/wallet-stake@workspace:suite-common/wallet-stake"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react-hook-form: "npm:^7.56.3"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
@@ -10754,11 +10769,13 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-send": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
@@ -11050,6 +11067,7 @@ __metadata:
   dependencies:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-stake": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/utils": "workspace:*"

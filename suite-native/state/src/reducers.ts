@@ -3,7 +3,7 @@ import { getStoredState } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
-import { prepareFirmwareReducer } from '@suite-common/device';
+import { prepareDeviceReducer, prepareFirmwareReducer } from '@suite-common/device';
 import { logsSlice } from '@suite-common/logger';
 import {
     messageSystemPersistedWhitelist,
@@ -15,16 +15,15 @@ import {
     feesReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
-    prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareFiatRatesReducer,
-    prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     walletSettingsPersistedWhitelist,
 } from '@suite-common/wallet-core';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
+import { prepareStakeReducer } from '@suite-common/wallet-stake';
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { discoveryConfigReducer } from '@suite-native/discovery';

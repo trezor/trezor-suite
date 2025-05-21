@@ -1,9 +1,6 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    selectAccountByKey,
-    selectPoolStatsApyData,
-    selectSolAccountHasStaked,
-} from '@suite-common/wallet-core';
+import { selectAccountByKey, selectSolAccountHasStaked } from '@suite-common/wallet-core';
+import { selectPoolStatsApyData } from '@suite-common/wallet-stake';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     getEthereumCryptoBalanceWithStaking,

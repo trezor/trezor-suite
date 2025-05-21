@@ -1,6 +1,7 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/device';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
@@ -18,7 +19,6 @@ import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './accountsConstants';
-import { deviceActions } from '../../../device/src/device/deviceActions';
 import {
     DeviceRootState,
     selectDeviceState,

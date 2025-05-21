@@ -1,5 +1,6 @@
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { selectSendSignedTx } from '@suite-common/wallet-send';
 import {
     Account,
     AccountKey,
@@ -35,7 +36,6 @@ import {
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectSendSignedTx } from '../send/sendFormReducer';
 
 /**
  * Replace existing transaction in the reducer (RBF)

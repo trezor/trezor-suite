@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { roundToNearestMinutes, subHours } from 'date-fns';
 
+import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectIsDeviceAuthorized, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';
 import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';

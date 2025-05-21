@@ -1,7 +1,7 @@
 import { AsyncThunkAction } from '@reduxjs/toolkit';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, { CallMethodParams, CallMethodResponse } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';

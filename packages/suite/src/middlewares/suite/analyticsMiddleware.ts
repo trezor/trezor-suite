@@ -1,17 +1,16 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
-import { firmwareUpdate } from '@suite-common/device';
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {
-    WALLET_SETTINGS,
     authorizeDeviceThunk,
     deviceActions,
-    discoveryActions,
+    firmwareUpdate,
     selectDevices,
     selectDevicesCount,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
+import { WALLET_SETTINGS, discoveryActions } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';

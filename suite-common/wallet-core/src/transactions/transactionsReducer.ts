@@ -10,6 +10,7 @@ import {
     getIsPhishingTransaction,
 } from '@suite-common/token-definitions';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
+import { isAccountStakingActive } from '@suite-common/wallet-stake';
 import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     findTransaction,
@@ -37,7 +38,6 @@ import {
     BlockchainRootState,
     selectBlockchainHeightBySymbol,
 } from '../blockchain/blockchainReducer';
-import { isAccountStakingActive } from '../stake/stakeUtils';
 
 export type AccountTransactionsFetchStatusDetail =
     | {
