@@ -13,6 +13,7 @@ import { PassphraseStackNavigator } from './PassphraseStackNavigator';
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { ConnectingDeviceScreen } from '../screens/connect/ConnectingDeviceScreen';
 import { PinScreen } from '../screens/connect/PinScreen';
+import { PassphraseConfirmFeatureUnlockOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockOnTrezorScreen';
 import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
 import { PassphraseFeatureUnlockFormScreen } from '../screens/passphrase/PassphraseFeatureUnlockFormScreen';
 
@@ -64,6 +65,10 @@ export const AuthorizeDeviceStackNavigator = () => {
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor}
                 component={PassphraseEnterOnTrezorScreen}
+            />
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseConfirmFeatureUnlockOnTrezor}
+                component={PassphraseConfirmFeatureUnlockOnTrezorScreen}
             />
         </AuthorizeDeviceStack.Navigator>
     );

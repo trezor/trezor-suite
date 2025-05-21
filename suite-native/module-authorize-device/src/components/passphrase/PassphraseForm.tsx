@@ -29,6 +29,7 @@ type PassphraseFormProps = {
     onFocus?: () => void;
     inputLabel: string;
     noPassphraseEnabled?: boolean;
+    onAfterSubmit?: () => void;
 };
 
 const cardStyle = prepareNativeStyle(_ => ({
@@ -39,6 +40,7 @@ export const PassphraseForm = ({
     inputLabel,
     onFocus,
     noPassphraseEnabled,
+    onAfterSubmit,
 }: PassphraseFormProps) => {
     const dispatch = useDispatch();
     const formWrapperView = useRef<View>(null);
@@ -72,6 +74,8 @@ export const PassphraseForm = ({
         dispatch(setCheckPassphraseOnDevice(true));
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
         reset();
+        // NOTE: useful for redirets from different contexts eg. passphrase feature unlock
+        onAfterSubmit?.();
     });
 
     const handleFocusInput = () => {

@@ -103,6 +103,7 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseRedirecting = 'PassphraseRedirecting',
     PassphraseDuplicateAlert = 'PassphraseDuplicateAlert',
     PassphraseMismatchAlert = 'PassphraseMismatchAlert',
+    PassphraseConfirmFeatureUnlockOnTrezor = 'PassphraseConfirmFeatureUnlockOnTrezor',
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',

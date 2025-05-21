@@ -230,6 +230,7 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.PassphraseLoading]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseRedirecting]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseDuplicateAlert]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseConfirmFeatureUnlockOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEmptyWallet]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseMismatchAlert]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
