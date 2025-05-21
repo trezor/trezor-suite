@@ -42,16 +42,12 @@ export const useHandleDeviceRequestsPassphrase = () => {
         if (discovery?.isAddingHiddenWallet) return;
 
         // Feature requests passphrase
-        if (
-            discovery &&
-            !discovery.isAddingHiddenWallet &&
-            selectedDevice?.state?.staticSessionId
-        ) {
+        if (selectedDevice?.state?.staticSessionId) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm,
             });
         }
-    }, [discovery, selectedDevice?.state?.staticSessionId, navigation]);
+    }, [discovery?.isAddingHiddenWallet, selectedDevice?.state?.staticSessionId, navigation]);
 
     useEffect(() => {
         if (deviceRequestedPassphrase) {
