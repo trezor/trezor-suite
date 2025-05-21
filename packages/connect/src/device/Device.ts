@@ -524,10 +524,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             } catch (error) {
                 _log.warn('Device._runInner error: ', error.message);
 
-                if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
-                    this.unreadableError = 'Connection timeout';
-                }
-
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',

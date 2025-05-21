@@ -3,7 +3,7 @@
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
-import { Session, TRANSPORT, TRANSPORT_ERROR, Transport } from '@trezor/transport';
+import { Session, TRANSPORT, Transport } from '@trezor/transport';
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
@@ -47,13 +47,9 @@ const fail = (msg: string) =>
         ),
     );
 
-const getFeaturesTimeoutPromise = () =>
-    resolveAfter(
-        // Due to performance issues in suite-native during app start, original timeout is not sufficient.
-        DataManager.getSettings('env') === 'react-native' ? 20_000 : 3_000,
-        undefined,
-        fail(TRANSPORT_ERROR.ABORTED_BY_TIMEOUT),
-    );
+const getFeaturesTimeout = () =>
+    // Due to performance issues in suite-native during app start, original timeout is not sufficient.
+    DataManager.getSettings('env') === 'react-native' ? 20_000 : 3_000;
 
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
@@ -165,8 +161,6 @@ export class DeviceCurrentSession implements TypedCallProvider {
         let pinUnlocked = false;
 
         while (true) {
-            const callPromise = this.call(name, data);
-
             // note: tested on 24.7.2024 and whatever is written below this line is still valid
             // We do not support T1B1 <1.9.0 but we still need Features even from not supported devices to determine your version
             // and tell you that update is required.
@@ -174,12 +168,13 @@ export class DeviceCurrentSession implements TypedCallProvider {
             // transport response is pending endlessly, calling any other message will end up with "device call in progress"
             // set the timeout for this call so whenever it happens "unacquired device" will be created instead
             // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
-            const timeoutPromise = name === 'GetFeatures' ? getFeaturesTimeoutPromise() : undefined;
+            const timeout = name === 'GetFeatures' ? getFeaturesTimeout() : undefined;
+
+            const callPromise = this.call(name, data, timeout);
 
             const [abortedDuringCall, response] = await Promise.race([
                 callPromise.then(res => [false, res] as const),
                 abortPromise.then(res => [true, res] as const),
-                ...(timeoutPromise ? [timeoutPromise.then(res => [false, res] as const)] : []),
             ]);
 
             if (name === 'ButtonAck' && abortedDuringCall && !this.disposed) {
@@ -308,14 +303,18 @@ export class DeviceCurrentSession implements TypedCallProvider {
         }
     }
 
-    private async call<T extends Messages.MessageKey>(name: T, data: Messages.MessagePayload<T>) {
+    private async call<T extends Messages.MessageKey>(
+        name: T,
+        data: Messages.MessagePayload<T>,
+        timeout?: number,
+    ) {
         if (this.disposed) return Promise.resolve(error(this.disposed));
 
         logger.debug('Sending', name, filterForLog(name, data));
 
         const { session, protocol } = this;
 
-        const result = await this.transport.call({ name, data, session, protocol });
+        const result = await this.transport.call({ name, data, session, protocol, timeout });
 
         if (result.success) {
             const { type, message } = result.payload;
