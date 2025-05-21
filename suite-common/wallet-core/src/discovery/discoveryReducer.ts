@@ -61,22 +61,6 @@ export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & Dev
     return selectDiscoveryByDevicePath(state, selectedDevice?.path);
 };
 
-export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
-    !!selectDiscoveryForSelectedDevice(state);
-
-// todo: who knows if this is correct?
-export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) =>
-    selectDiscoveryForSelectedDevice(state)?.status === 'progress';
-
-/**
- * Helper selector called from components
- * return `true` if discovery process is running/completed and `authConfirm` is required
- */
-export const selectIsDiscoveryAuthConfirmationRequired = (
-    state: DiscoveryRootState & DeviceRootState,
-    path?: DeviceUniquePath,
-) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
-
 export function isDiscoveryInProgress(
     discovery?: DiscoveryStatus,
 ): discovery is Exclude<
@@ -93,6 +77,27 @@ export function isDiscoveryInProgress(
         discovery.status !== 'cancelled'
     );
 }
+export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryForSelectedDevice(state);
+
+    return isDiscoveryInProgress(discovery);
+};
+
+export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
+    !!selectHasRunningDiscovery(state);
+
+// todo: who knows if this is correct?
+export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) =>
+    selectDiscoveryForSelectedDevice(state)?.status === 'progress';
+
+/**
+ * Helper selector called from components
+ * return `true` if discovery process is running/completed and `authConfirm` is required
+ */
+export const selectIsDiscoveryAuthConfirmationRequired = (
+    state: DiscoveryRootState & DeviceRootState,
+    path?: DeviceUniquePath,
+) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
 
 export const selectNetworksToDiscover = (
     state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
@@ -141,10 +146,4 @@ export const selectAccountsToBeForgotten = (
     );
 
     return accountsToRemove;
-};
-
-export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDiscoveryForSelectedDevice(state);
-
-    return isDiscoveryInProgress(discovery);
 };
