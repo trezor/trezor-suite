@@ -18,10 +18,10 @@ import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
-import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 
 interface AccountListProps {
     onItemClick?: () => void;

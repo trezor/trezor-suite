@@ -1,20 +1,15 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    selectDeviceAccounts,
-    selectDiscoveryByDevicePath,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
-import { Account, DiscoveryStatus } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectDiscoveryByDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { AppState } from 'src/types/suite';
 
 import { DiscoveryStatusType } from '../../types/wallet';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
     discovery: DiscoveryStatus | undefined;
-    accounts: Account[];
     walletSettings: {
         enabledNetworks: NetworkSymbol[];
     };
@@ -23,7 +18,6 @@ type GetDiscoveryStatusParams = {
 const getDiscoveryStatus = ({
     device,
     discovery,
-    accounts,
     walletSettings,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
     if (!device)
@@ -86,8 +80,7 @@ const getDiscoveryStatus = ({
 export const selectDiscoveryOverallStatus = (state: AppState) => {
     const device = selectSelectedDevice(state);
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
-    const accounts = selectDeviceAccounts(state);
     const walletSettings = state.wallet.settings;
 
-    return getDiscoveryStatus({ device, discovery, accounts, walletSettings });
+    return getDiscoveryStatus({ device, discovery, walletSettings });
 };
