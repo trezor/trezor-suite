@@ -33,7 +33,7 @@ export const TradingFormOffersSwitcher = ({
     const hasSingleOption = !cexQuote !== !dexQuote;
     const bestQuote = cexQuote ?? dexQuote;
 
-    if (!bestQuote || isFormLoading) {
+    if (!bestQuote || isFormLoading || isFormInvalid) {
         if (isFormLoading && !isFormInvalid) {
             return (
                 <Card>

@@ -19,7 +19,7 @@ export const TradingFormOfferItem = ({
     isFormInvalid,
     providers,
 }: TradingFormOfferItemProps) => {
-    if (!bestQuote || isFormLoading) {
+    if (!bestQuote || isFormLoading || isFormInvalid) {
         if (isFormLoading && !isFormInvalid) {
             return (
                 <Card>
