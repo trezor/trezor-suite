@@ -33,6 +33,9 @@ export const allowedDomains = [
     'verify.walletconnect.org', // WalletConnect
     'horizon.stellar.org', // Stellar Horizon, hosted by SDF
     'horizon-testnet.stellar.org', // Stellar Horizon (testnet), hosted by SDF
+    'xrplcluster.com', // XRP Ledger cluster, hosted by XRP Ledger Foundation
+    'xrpl.ws', // XRP Ledger cluster, hosted by XRP Ledger Foundation
+    's2.ripple.com', // XRP Ledger cluster, hosted by Ripple
 ];
 
 export const silentlyBlockedDomains = [
