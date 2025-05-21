@@ -8,6 +8,7 @@ import {
     ETH_TRANSFER_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
+import { selectTransactions } from '@suite-common/wallet-core';
 import {
     Account,
     AddressDisplayOptions,
@@ -41,7 +42,6 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectTransactions } from '../transactions/transactionsReducer';
 
 export const calculate = (
     availableBalance: string,

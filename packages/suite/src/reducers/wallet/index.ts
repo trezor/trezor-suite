@@ -8,11 +8,11 @@ import {
     prepareDiscoveryReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,
-    prepareSendFormReducer,
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
+import { prepareSendFormReducer } from '@suite-common/wallet-send';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 

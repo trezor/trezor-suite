@@ -1,17 +1,19 @@
+import {
+    deviceActions,
+    prepareDeviceReducer,
+    selectDevices,
+    selectDevicesCount,
+} from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
 import {
     createDiscoveryThunk,
-    deviceActions,
     disableAccountsThunk,
-    prepareDeviceReducer,
     prepareDiscoveryReducer,
-    prepareSendFormReducer,
-    selectDevices,
-    selectDevicesCount,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
+import { prepareSendFormReducer } from '@suite-common/wallet-send';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { SETTINGS } from 'src/config/suite';
@@ -242,7 +244,6 @@ describe('Storage actions', () => {
                     accounts: [acc1, acc2],
                     send: {
                         drafts: {
-                            // @ts-expect-error partial params
                             'desc1-btc-state1': { address: 'A' },
                         },
                     },

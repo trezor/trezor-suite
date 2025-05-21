@@ -1,7 +1,9 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
+import { selectAreSatsAmountUnit, selectBitcoinAmountUnit , selectTransactions } from '@suite-common/wallet-core';
 import {
     Account,
     AddressDisplayOptions,
@@ -33,12 +35,6 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectSelectedDevice } from '../../../device/src/device/deviceReducer';
-import {
-    selectAreSatsAmountUnit,
-    selectBitcoinAmountUnit,
-} from '../settings/walletSettingsReducer';
-import { selectTransactions } from '../transactions/transactionsReducer';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
 

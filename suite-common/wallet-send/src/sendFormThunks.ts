@@ -1,9 +1,19 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    accountsActions,
+    addFakePendingCardanoTxThunk,
+    addFakePendingTxThunk,
+    selectAccountByKey,
+    selectAreSatsAmountUnit,
+    selectBitcoinAmountUnit,
+    syncAccountsWithBlockchainThunk,
+} from '@suite-common/wallet-core';
 import {
     Account,
     AccountKey,
@@ -67,18 +77,6 @@ import {
     SignTransactionError,
     SignTransactionTimeoutError,
 } from './sendFormTypes';
-import { selectSelectedDevice } from '../../../device/src/device/deviceReducer';
-import { accountsActions } from '../accounts/accountsActions';
-import { selectAccountByKey } from '../accounts/accountsReducer';
-import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
-import {
-    selectAreSatsAmountUnit,
-    selectBitcoinAmountUnit,
-} from '../settings/walletSettingsReducer';
-import {
-    addFakePendingCardanoTxThunk,
-    addFakePendingTxThunk,
-} from '../transactions/transactionsThunks';
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,

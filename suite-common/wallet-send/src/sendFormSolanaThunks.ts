@@ -1,6 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
+import { selectBlockchainBlockInfoBySymbol } from '@suite-common/wallet-core';
 import {
     Account,
     ExternalOutput,
@@ -27,7 +28,6 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
 
 const calculate = (
     availableBalance: string,
