@@ -40,7 +40,8 @@ export const determinePassphraseFlowState = (
                 screen: 'exists-enter-passphrase',
                 discovery,
                 loading: !(
-                    modalState.context === modalState.modalContextDevice &&
+                    (!modalState.modalContextDevice ||
+                        modalState.context === modalState.modalContextDevice) &&
                     modalState.windowType === UI.REQUEST_PASSPHRASE
                 ),
             } as const;

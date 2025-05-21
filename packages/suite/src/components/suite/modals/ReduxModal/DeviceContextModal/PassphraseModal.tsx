@@ -10,6 +10,7 @@ import {
     submitPassphrase,
 } from '@suite-common/wallet-core';
 
+import { CONTEXT_DEVICE } from 'src/actions/suite/constants/modalConstants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';
@@ -27,7 +28,12 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     const dispatch = useDispatch();
 
-    const passphraseState = discovery ? determinePassphraseFlowState(discovery, modal) : null;
+    const passphraseState = discovery
+        ? determinePassphraseFlowState(discovery, {
+              ...modal,
+              modalContextDevice: CONTEXT_DEVICE,
+          })
+        : null;
 
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
