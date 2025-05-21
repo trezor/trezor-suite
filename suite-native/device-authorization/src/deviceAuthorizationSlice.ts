@@ -60,6 +60,11 @@ export const deviceAuthorizationSlice = createSlice({
                 } else {
                     state.checkPassphraseOnDevice = true;
                 }
+
+                // @ts-expect-error Actions are not typed properly
+                if (action.payload.code === 'ButtonRequest_Address') {
+                    state.inputPassphraseOnDevice = false;
+                }
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.hasDeviceRequestedPin = false;
