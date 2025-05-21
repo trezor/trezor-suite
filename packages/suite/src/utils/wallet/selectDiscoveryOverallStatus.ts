@@ -9,17 +9,22 @@ import { Account, DiscoveryStatus } from '@suite-common/wallet-types';
 import { AppState } from 'src/types/suite';
 
 import { DiscoveryStatusType } from '../../types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
     discovery: DiscoveryStatus | undefined;
     accounts: Account[];
+    walletSettings: {
+        enabledNetworks: NetworkSymbol[];
+    };
 };
 
 const getDiscoveryStatus = ({
     device,
     discovery,
     accounts,
+    walletSettings,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
     if (!device)
         return {
@@ -48,8 +53,7 @@ const getDiscoveryStatus = ({
                 type: 'auth-confirm',
             };
 
-        const nonEmptyAccounts = accounts.filter(a => !a.empty);
-        if (nonEmptyAccounts.length === 0)
+        if (walletSettings.enabledNetworks.length === 0)
             return {
                 status: 'exception',
                 type: 'discovery-empty',
@@ -83,6 +87,7 @@ export const selectDiscoveryOverallStatus = (state: AppState) => {
     const device = selectSelectedDevice(state);
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
     const accounts = selectDeviceAccounts(state);
+    const walletSettings = state.wallet.settings;
 
-    return getDiscoveryStatus({ device, discovery, accounts });
+    return getDiscoveryStatus({ device, discovery, accounts, walletSettings });
 };
