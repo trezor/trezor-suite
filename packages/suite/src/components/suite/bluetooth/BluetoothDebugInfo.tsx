@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
 import { Code, Icon, InfoSegments, Text, iconSizes } from '@trezor/components';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
 
 const TimeAgo = ({ timestamp }: { timestamp: number }) => {
@@ -24,12 +24,14 @@ const TimeAgo = ({ timestamp }: { timestamp: number }) => {
 };
 
 type BluetoothDeviceProps = {
-    device: BluetoothDevice;
+    device: DesktopBluetoothDevice;
 };
 
 export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
     const nearbyDevices = useSelector(selectNearbyDevices);
-    const isNearbyDevice = nearbyDevices.find(nearbyDevice => nearbyDevice.id === device.id);
+    const isNearbyDevice = (nearbyDevices ?? []).find(
+        nearbyDevice => nearbyDevice.id === device.id,
+    );
 
     const knownDevices = useSelector(selectKnownDevices);
     const isKnownDevice = knownDevices.find(knownDevice => knownDevice.id === device.id);

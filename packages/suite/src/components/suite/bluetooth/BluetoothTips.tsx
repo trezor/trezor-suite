@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 
 import { Button, Card, Column, Divider, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
 import { TroubleshootingTipsList } from '../troubleshooting/TroubleshootingTipsList';
 import { TROUBLESHOOTING_ALL_BLUETOOTH_TIPS } from '../troubleshooting/tips';
@@ -11,7 +11,7 @@ import { TROUBLESHOOTING_ALL_BLUETOOTH_TIPS } from '../troubleshooting/tips';
 type BluetoothTipsProps = {
     onReScanClick: () => void;
     header: ReactNode;
-    device?: BluetoothDevice;
+    device?: DesktopBluetoothDevice;
 };
 
 export const BluetoothTips = ({ onReScanClick, header, device }: BluetoothTipsProps) => (

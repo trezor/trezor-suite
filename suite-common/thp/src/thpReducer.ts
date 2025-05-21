@@ -22,12 +22,12 @@ export const THP_BUTTON_REQUESTS_NAMES = [
 export type THPButtonRequestName = (typeof THP_BUTTON_REQUESTS_NAMES)[number];
 
 export type ThpStep =
-    // I don't have credentials, and the user
-    //    1) Confirms connection
-    //    2) In next step, user will do the THP Pairing
-    | 'Pairing'
+    // I don't have credentials, and the user has to
+    //    1) confirm connection
+    //    2) do the THP pairing afterwords
+    | 'ConfirmConnectionBeforePairing'
     // I have credentials and the user only confirms the connection
-    | 'Connection'
+    | 'ConfirmOnlyConnection'
     | 'CodeEntry'
     | 'CodeInvalid'
     | 'AutoconnectInfo'
@@ -76,6 +76,18 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                     credentialToUpdate.connectionCounter = credentialToUpdate.connectionCounter + 1;
                 }
             })
+            .addCase(thpActions.addCredential, (state, { payload }) => {
+                state.credentials.push({ ...payload.credential, connectionCounter: 0 });
+            })
+            .addCase(thpActions.removeCredentials, (state, { payload }) => {
+                state.credentials = state.credentials.filter(
+                    stateCredential =>
+                        payload.credentials.find(
+                            payloadCredential =>
+                                stateCredential.credential === payloadCredential.credential,
+                        ) === undefined,
+                );
+            })
             .addMatcher(
                 action => action.type === UI.REQUEST_THP_PAIRING,
                 state => {
@@ -99,18 +111,12 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 (state, action: AnyAction) => {
                     const actionName: THPButtonRequestName = action.payload.name;
                     switch (actionName) {
-                        // I don't have credentials, and the user
-                        //    1) Confirms connection
-                        //    2) In next step, user will do the THP Pairing
                         case 'thp_pairing_request':
-                            state.step = 'Pairing';
+                            state.step = 'ConfirmConnectionBeforePairing';
                             break;
-
-                        // I have credentials and the user only confirms the connection
                         case 'thp_connection_request':
-                            state.step = 'Connection';
+                            state.step = 'ConfirmOnlyConnection';
                             break;
-
                         case 'thp_autoconnect_credential_request':
                             state.step = 'Autoconnect';
                             break;
@@ -134,10 +140,10 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                     // Handle button requests in the THP pairing
                     if (action.type === DEVICE.BUTTON) {
                         if (action.payload.name === 'thp_pairing_request') {
-                            state.step = 'Pairing';
+                            state.step = 'ConfirmConnectionBeforePairing';
                         }
                         if (action.payload.name === 'thp_connection_request') {
-                            state.step = 'Connection';
+                            state.step = 'ConfirmOnlyConnection';
                         }
                         if (action.payload.name === 'thp_autoconnect_credential_request') {
                             state.step = 'Autoconnect';

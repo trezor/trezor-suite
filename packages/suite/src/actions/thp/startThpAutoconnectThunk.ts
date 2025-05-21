@@ -17,16 +17,15 @@ export const startThpAutoconnectThunk = createThunk<void, void, void>(
 
         const response = await TrezorConnect.thpGetCredentials({ device });
 
+        console.log('response', response);
+
         if (response.success) {
-            // Todo: handle keys, save them
-            console.log('credentials', response.payload.autoconnect);
-            console.log('credentials', response.payload.credential);
-            console.log('credentials', response.payload.trezor_static_pubkey);
+            dispatch(thpActions.addCredential({ credential: response.payload }));
         } else {
             dispatch(
                 notificationsActions.addToast({ type: 'error', error: response.payload.error }),
             );
-            dispatch(thpActions.resetThpFlow());
         }
+        dispatch(thpActions.resetThpFlow());
     },
 );

@@ -1,17 +1,17 @@
 import { selectScanStatus } from '@suite-common/bluetooth';
 import { ElevationUp, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import { BluetoothDeviceList } from './BluetoothDeviceList';
 import { BluetoothDialogCard } from './BluetoothDialogCard';
 import { BluetoothScanFooter } from './BluetoothScanFooter';
 import { BluetoothTips } from './BluetoothTips';
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
 import { Translation } from '../Translation';
 
 type BluetoothScanningListProps = {
-    devices: BluetoothDevice[];
+    devices: DesktopBluetoothDevice[];
     uiMode: 'spatial' | 'card';
     onConnect: (deviceId: string) => Promise<void>;
     onClose: () => void;

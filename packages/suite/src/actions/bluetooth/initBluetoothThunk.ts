@@ -8,7 +8,11 @@ import { createThunk } from '@suite-common/redux-utils/';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { DesktopBluetoothDevice, toBluetoothDevice } from './DesktopBluetoothDevice';
+import {
+    DesktopBluetoothDevice,
+    fromBluetoothDevice,
+    toBluetoothDevice,
+} from './DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { remapKnownDevicesForLinux } from './remapKnownDevicesForLinux';
@@ -45,7 +49,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             dispatch(bluetoothStartScanningThunk());
         }
 
-        const attemptDeviceConnect = async ({ device }: { device: BluetoothDevice }) => {
+        const attemptDeviceConnect = async ({ device }: { device: DesktopBluetoothDevice }) => {
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
             const autoConnectingDevices =
                 selectConnectingDevices<DesktopBluetoothDevice>(getState());
@@ -64,8 +68,10 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             dispatch(bluetoothActions.adapterEventAction({ status }));
         });
 
-        bluetoothIpc.on('device-list-update', nearbyDevices => {
-            console.warn('device-list-update', nearbyDevices);
+        bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
+            console.warn('device-list-update', nearbyDevicesIpc);
+
+            const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
 
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
 
@@ -80,8 +86,10 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
         });
 
-        bluetoothIpc.on('device-update', async (device: BluetoothDevice) => {
-            console.warn('device-update', device);
+        bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
+            console.warn('device-update', deviceIpc);
+            const device = fromBluetoothDevice(deviceIpc);
+
             dispatch(bluetoothActions.deviceUpdateAction({ device }));
             await attemptDeviceConnect({ device });
         });

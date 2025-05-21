@@ -1,24 +1,22 @@
-import { parseModelEnumFromBytes } from '@suite-common/bluetooth';
 import { Column, FlexProps, InfoSegments, Row, Text } from '@trezor/components';
 import { models } from '@trezor/connect/src/data/models'; // Todo: solve this import issue
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import { BluetoothDebugInfo } from './BluetoothDebugInfo';
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 type BluetoothDeviceProps = {
-    device: BluetoothDevice;
+    device: DesktopBluetoothDevice;
     flex?: FlexProps['flex'];
     margin?: FlexProps['margin'];
 };
 
 export const BluetoothDeviceComponent = ({ device, flex, margin }: BluetoothDeviceProps) => {
-    const model = parseModelEnumFromBytes(device.data);
-
-    const color = device.data[1] !== undefined ? device.data[1] : 1; // Colors are counted from `1` in the model config
+    const model = device.manufacturerData.deviceModel;
+    const color = device.manufacturerData.deviceColor;
     const colorName = models[model]?.colors[color.toString()];
 
     const { showBluetoothDebugInfo } = useSelector(selectSuiteFlags);

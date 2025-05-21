@@ -7,7 +7,11 @@ import {
     getSelectedDevice,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
-import { connectThpDeviceThunk, thpActions } from '@suite-common/thp';
+import {
+    autoInitThpAfterDeviceConnectionThunk,
+    connectThpDeviceThunk,
+    thpActions,
+} from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
@@ -40,6 +44,8 @@ import {
 } from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '../discovery/discoveryThunks';
+import { connectThpDeviceThunk } from '../thp/connectThpDeviceThunk';
+import { thpActions } from '../thp/thpActions';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -509,6 +515,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
+                dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
                 break;
             default:
                 exhaustive(type);

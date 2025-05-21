@@ -21,15 +21,10 @@ export const ThpGlobalModals = () => {
         // Not relevant here, used only in Firmware Installation
         case 'BeforeConnectionInfo':
             return null;
-
-        // User needs to confirm Connection. We also know that the THP pairing will follow
-        case 'Pairing':
+        case 'ConfirmConnectionBeforePairing':
             return <ThpConnectionModal device={device} />;
-
-        // Connection, where we know, that no THP pairing will follow
-        case 'Connection':
+        case 'ConfirmOnlyConnection':
             return <ThpConnectionModal device={device} />;
-
         case 'CodeEntry':
             return <ThpPairingPinEntryModal />;
         case 'CodeInvalid':

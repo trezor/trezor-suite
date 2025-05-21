@@ -87,11 +87,11 @@ export const FirmwareModal = ({
             switch (thpStep) {
                 case 'BeforeConnectionInfo':
                     return <StepThpStart modalHeading={heading} />;
-                case 'Pairing':
+                case 'ConfirmConnectionBeforePairing':
                     return device !== undefined ? (
                         <StepThpPairingRequest modalHeading={heading} />
                     ) : null;
-                case 'Connection':
+                case 'ConfirmOnlyConnection':
                     return device !== undefined ? (
                         <StepThpPairingRequest modalHeading={heading} />
                     ) : null;

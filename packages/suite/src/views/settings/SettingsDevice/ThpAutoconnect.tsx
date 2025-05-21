@@ -6,6 +6,7 @@ import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
+import { removeThpAutoconnectThunk } from '../../../actions/thp/removeThpAutoconnectThunk';
 import { startThpAutoconnectThunk } from '../../../actions/thp/startThpAutoconnectThunk';
 
 interface PinProtectionProps {
@@ -16,13 +17,19 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const isAutoconnectOn =
-        (device?.thp?.credentials ?? []).filter(credential => credential?.autoconnect)?.length > 0;
+    if (device?.thp?.credentials === undefined) {
+        return null;
+    }
+
+    const autoconnectCredentials = device.thp.credentials.filter(
+        credential => credential?.autoconnect,
+    );
+
+    const isAutoconnectOn = autoconnectCredentials.length > 0;
 
     const handleChange = () => {
         if (isAutoconnectOn) {
-            // Todo: remove autoconnect => TrezorConnect.removeThoCredentials(...)
-            // Todo: propagate data thpReducer.thpCredentals = thpCredentals.filter(cred => !cred.autconnect)
+            dispatch(removeThpAutoconnectThunk({ credentials: autoconnectCredentials }));
         } else {
             dispatch(startThpAutoconnectThunk());
         }

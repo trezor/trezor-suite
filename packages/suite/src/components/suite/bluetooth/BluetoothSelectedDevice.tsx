@@ -3,11 +3,11 @@ import { ReactNode, useState } from 'react';
 import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
 import { Card, Column, Icon, Row, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothDialogCard } from './BluetoothDialogCard';
 import { BluetoothTips } from './BluetoothTips';
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
 
 const DisconnectedButWaitingComponent = () => (
@@ -65,7 +65,7 @@ const ConnectedComponent = () => (
 );
 
 export type OkComponentProps = {
-    device: BluetoothDevice;
+    device: DesktopBluetoothDevice;
     isCancelling: boolean;
 };
 
@@ -92,7 +92,7 @@ const OkComponent = ({ device, isCancelling }: OkComponentProps) => {
 };
 
 export type ErrorComponentProps = {
-    device: BluetoothDevice;
+    device: DesktopBluetoothDevice;
     onReScanClick: () => void;
 };
 
@@ -105,7 +105,7 @@ const ErrorComponent = ({ device, onReScanClick }: ErrorComponentProps) => (
 );
 
 export type BluetoothSelectedDeviceProps = {
-    device: BluetoothDevice;
+    device: DesktopBluetoothDevice;
     onReScanClick: () => void;
     onCancel: (deviceId: string) => Promise<void>;
 };

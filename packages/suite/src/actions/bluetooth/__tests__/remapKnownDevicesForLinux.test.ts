@@ -1,10 +1,18 @@
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
+import { BluetoothFilterPolicy, BluetoothManufacturerData } from '@suite-common/bluetooth';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
 import { remapKnownDevicesForLinux } from '../remapKnownDevicesForLinux';
 
-const nearbyDeviceA: BluetoothDevice = {
+const manufacturerData: BluetoothManufacturerData = {
+    deviceModel: DeviceModelInternal.T3W1,
+    deviceColor: 0,
+    filterPolicy: BluetoothFilterPolicy.UNFILTERED,
+};
+
+const nearbyDeviceA: DesktopBluetoothDevice = {
     id: 'New-Id-A',
-    data: [],
+    manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
     macAddress: 'Address-Trezor-A-Staying-Same',
@@ -14,9 +22,9 @@ const nearbyDeviceA: BluetoothDevice = {
     connectionStatus: { type: 'pairing' },
 };
 
-const nearbyDeviceC: BluetoothDevice = {
+const nearbyDeviceC: DesktopBluetoothDevice = {
     id: 'C',
-    data: [],
+    manufacturerData,
     name: 'Trezor C',
     lastUpdatedTimestamp: 1,
     macAddress: 'Address-Trezor-C',
@@ -26,9 +34,9 @@ const nearbyDeviceC: BluetoothDevice = {
     connectionStatus: { type: 'pairing' },
 };
 
-const knownDeviceB: BluetoothDevice = {
+const knownDeviceB: DesktopBluetoothDevice = {
     id: 'B',
-    data: [],
+    manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
     macAddress: 'Address-Trezor-B',
@@ -38,9 +46,9 @@ const knownDeviceB: BluetoothDevice = {
     connectionStatus: { type: 'pairing' },
 };
 
-const knownDeviceA: BluetoothDevice = {
+const knownDeviceA: DesktopBluetoothDevice = {
     id: 'Original-Id A',
-    data: [],
+    manufacturerData,
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,
     macAddress: 'Address-Trezor-A-Staying-Same',

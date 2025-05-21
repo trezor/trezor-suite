@@ -2243,7 +2243,7 @@ export default defineMessages({
         id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
     },
     TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION: {
-        defaultMessage: 'Continue with connected Trezor Safe 7?',
+        defaultMessage: 'Continue to THP pairing',
         id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION',
     },
     TR_UDEV_DOWNLOAD_TITLE: {
@@ -3055,6 +3055,10 @@ export default defineMessages({
         description: 'Subheading on PIN page',
         id: 'TR_PIN_SUBHEADING',
     },
+    TR_PLEASE_ALLOW_YOUR_CAMERA: {
+        defaultMessage: 'Enable your camera to scan QR codes.',
+        id: 'TR_PLEASE_ALLOW_YOUR_CAMERA',
+    },
     TR_PLEASE_CONNECT_YOUR_DEVICE: {
         defaultMessage: 'Connect your Trezor to continue with the verification process.',
         id: 'TR_PLEASE_CONNECT_YOUR_DEVICE',
@@ -3295,8 +3299,7 @@ export default defineMessages({
         id: 'TR_SOLVE_ISSUE',
     },
     TR_THP_RESET_CREDENTIALS_SUCCESS: {
-        defaultMessage:
-            'Trezor Host Protocol credentials has been reset. Refresh suite to take effect',
+        defaultMessage: 'Trezor Host Protocol credentials has been reset. RECONNECT THE DEVICE',
         id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
     },
     TR_THP_PAIR: {
@@ -10015,7 +10018,7 @@ export default defineMessages({
         defaultMessage: 'Open permissions settings',
     },
     TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS: {
-        id: 'R_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
+        id: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
         defaultMessage: 'Allow bluetooth permissions',
     },
     TR_BLUETOOTH_OR_CONNECT_VIA_CABLE: {
@@ -10078,10 +10081,6 @@ export default defineMessages({
     TR_BLUETOOTH_PIN_CODE_DONT_MATCH: {
         id: 'TR_BLUETOOTH_PIN_CODE_DONT_MATCH',
         defaultMessage: "Codes don't match?",
-    },
-    TR_BLUETOOTH_SCAN_IDLE_FOOTER: {
-        id: 'TR_BLUETOOTH_SCAN_IDLE_FOOTER',
-        defaultMessage: 'Make sure your TS7 is on and in pairing mode (hold power button)',
     },
     TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN: {
         id: 'TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN',

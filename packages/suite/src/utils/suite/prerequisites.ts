@@ -31,7 +31,7 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
     if (device.type === 'unacquired' && device?.transportSessionOwner)
         return 'device-used-elsewhere';
 
-    // Unacquired device with Trezor Host Protocol properties means,
+    // Unacquired device with Trezor Host Protocol properties means
     // that the user must perform the Trezor Host Protocol paring
     if (device.type === 'unacquired' && device.thp?.properties !== undefined) {
         return 'device-unacquired-requires-thp';

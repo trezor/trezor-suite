@@ -9,9 +9,9 @@ import {
 } from '@suite-common/bluetooth';
 import { Banner, Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 import { Translation, TranslationKey } from '../Translation';
 
@@ -29,7 +29,7 @@ const LOADING_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'con
 const DISABLED_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'connecting'];
 
 type BluetoothDeviceItemProps = {
-    device: BluetoothDevice;
+    device: DesktopBluetoothDevice;
     onConnect: (deviceId: string) => Promise<void>;
 };
 

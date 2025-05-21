@@ -1,8 +1,8 @@
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
+import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 type RemapKnownDevicesForLinuxParams = {
-    knownDevices: BluetoothDevice[];
-    nearbyDevices: BluetoothDevice[];
+    knownDevices: DesktopBluetoothDevice[];
+    nearbyDevices: DesktopBluetoothDevice[];
 };
 
 /**
@@ -14,7 +14,7 @@ type RemapKnownDevicesForLinuxParams = {
 export const remapKnownDevicesForLinux = ({
     knownDevices,
     nearbyDevices,
-}: RemapKnownDevicesForLinuxParams): BluetoothDevice[] =>
+}: RemapKnownDevicesForLinuxParams): DesktopBluetoothDevice[] =>
     knownDevices.map(knownDevice => {
         const nearbyDeviceWithSameAddress = nearbyDevices.find(
             nearbyDevice =>

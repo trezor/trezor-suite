@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import { Card, Link, Modal, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
 
 const Pin = styled.div`
@@ -19,7 +19,7 @@ const Pin = styled.div`
 type BluetoothPairingPinProps = {
     onCancel: (deviceId: string) => void;
     pairingPin?: string;
-    device: BluetoothDevice;
+    device: DesktopBluetoothDevice;
 };
 
 export const BluetoothPairingPin = ({ onCancel, pairingPin, device }: BluetoothPairingPinProps) => {

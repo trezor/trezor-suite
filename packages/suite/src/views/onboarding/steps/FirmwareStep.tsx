@@ -126,9 +126,9 @@ export const FirmwareStep = () => {
         switch (thpStep) {
             case 'BeforeConnectionInfo':
                 return device !== undefined ? <ThpPairingStartStep /> : null;
-            case 'Connection':
+            case 'ConfirmOnlyConnection':
                 return device !== undefined ? <ThpPairingConfirmStep device={device} /> : null;
-            case 'Pairing':
+            case 'ConfirmConnectionBeforePairing':
                 return device !== undefined ? <ThpPairingConfirmStep device={device} /> : null;
             case 'CodeEntry':
                 return device !== undefined ? <ThpPairingStep /> : null;

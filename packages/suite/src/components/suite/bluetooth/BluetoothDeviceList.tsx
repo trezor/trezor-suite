@@ -1,8 +1,8 @@
 import { Card, Column, Row, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import { BluetoothDeviceListItem } from './BluetoothDeviceListItem';
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 
 const SkeletonDevice = () => (
     <Row width="100%" gap={spacings.md} justifyContent="stretch" height="44px" alignItems="center">
@@ -16,7 +16,7 @@ const SkeletonDevice = () => (
 );
 
 type BluetoothDeviceListProps = {
-    deviceList: BluetoothDevice[];
+    deviceList: DesktopBluetoothDevice[];
     onConnect: (deviceId: string) => Promise<void>;
     isScanning: boolean;
     isDisabled: boolean;

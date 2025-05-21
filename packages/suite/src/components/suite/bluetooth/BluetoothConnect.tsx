@@ -7,7 +7,6 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
 import { TimerId } from '@trezor/type-utils';
 
 import { BluetoothLoading } from './BluetoothLoading';
@@ -17,6 +16,7 @@ import { BluetoothSelectedDevice } from './BluetoothSelectedDevice';
 import { BluetoothDeniedForSuite } from './errors/BluetoothDeniedForSuite';
 import { BluetoothNotEnabled } from './errors/BluetoothNotEnabled';
 import { BluetoothVersionNotCompatible } from './errors/BluetoothVersionNotCompatible';
+import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from '../../../actions/bluetooth/bluetoothConnectDeviceThunk';
 import { bluetoothDisconnectDeviceThunk } from '../../../actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { bluetoothStartScanningThunk } from '../../../actions/bluetooth/bluetoothStartScanningThunk';
@@ -31,7 +31,7 @@ type BluetoothConnectProps = {
     uiMode: 'spatial' | 'card';
 };
 
-const selectAllDevices = prepareSelectAllDevices<BluetoothDevice>();
+const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
 
 export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
     const dispatch = useDispatch();
@@ -184,7 +184,7 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
     }
 
     if (nearbyDevices === null || waitingForFirstUpdate) {
-        return <BluetoothLoading />;
+        return <BluetoothLoading onClose={onClose} />;
     }
 
     return (
