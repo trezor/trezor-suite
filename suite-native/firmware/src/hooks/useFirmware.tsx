@@ -5,7 +5,7 @@ import {
     FirmwareUpdateResult,
     UseFirmwareInstallationParams,
     useFirmwareInstallation,
-} from '@suite-common/firmware';
+} from '@suite-common/device';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { setPriorityMode } from '@trezor/react-native-usb';

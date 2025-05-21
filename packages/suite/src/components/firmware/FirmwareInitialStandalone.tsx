@@ -1,4 +1,4 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
+import { useFirmwareInstallation } from '@suite-common/device';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column, Text } from '@trezor/components';

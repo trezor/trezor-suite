@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
+import { useFirmwareInstallation } from '@suite-common/device';
 import { Button } from '@trezor/components';
 import { UI } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';

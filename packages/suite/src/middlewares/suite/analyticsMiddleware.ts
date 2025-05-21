@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
-import { firmwareUpdate } from '@suite-common/firmware';
+import { firmwareUpdate } from '@suite-common/device';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {

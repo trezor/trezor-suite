@@ -1,4 +1,4 @@
-import { firmwareActions, firmwareUpdate } from '@suite-common/firmware';
+import { firmwareActions, firmwareUpdate } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
 import { FirmwareType, UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';

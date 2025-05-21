@@ -1,4 +1,4 @@
-import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
+import { FIRMWARE_MODULE_PREFIX } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { firmwareActions } from '@suite-common/firmware';
+import { firmwareActions } from '@suite-common/device';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';

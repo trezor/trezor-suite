@@ -3,7 +3,7 @@ import { getStoredState } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
-import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { prepareFirmwareReducer } from '@suite-common/device';
 import { logsSlice } from '@suite-common/logger';
 import {
     messageSystemPersistedWhitelist,

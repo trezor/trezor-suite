@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { FirmwareOperationStatus, useFirmwareInstallation } from '@suite-common/firmware';
+import { FirmwareOperationStatus, useFirmwareInstallation } from '@suite-common/device';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Box, Column, Icon, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';

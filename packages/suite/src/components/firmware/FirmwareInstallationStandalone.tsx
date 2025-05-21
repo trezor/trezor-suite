@@ -1,4 +1,4 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
+import { useFirmwareInstallation } from '@suite-common/device';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';

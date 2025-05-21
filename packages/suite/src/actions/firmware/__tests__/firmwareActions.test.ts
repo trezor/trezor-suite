@@ -1,4 +1,4 @@
-import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { prepareFirmwareReducer } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';

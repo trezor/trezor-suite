@@ -14,7 +14,7 @@ import { addLog } from '@suite-common/logger';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
-import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { prepareFirmwareReducer } from '@suite-common/device';
 import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
 import { accountsActions } from '@suite-common/wallet-core';
 

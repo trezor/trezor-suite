@@ -1,4 +1,4 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
+import { useFirmwareInstallation } from '@suite-common/device';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 

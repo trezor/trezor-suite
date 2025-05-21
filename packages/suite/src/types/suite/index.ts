@@ -3,8 +3,8 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { firmwareActions } from '@suite-common/device';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
-import { firmwareActions } from '@suite-common/firmware';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';

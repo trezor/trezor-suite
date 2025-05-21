@@ -12,7 +12,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/analytics": "workspace:*",
-        "@suite-common/firmware": "workspace:*",
+        "@suite-common/device": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

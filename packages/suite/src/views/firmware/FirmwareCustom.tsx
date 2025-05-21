@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
+import { useFirmwareInstallation } from '@suite-common/device';
 
 import { SelectCustomFirmware } from 'src/components/firmware';
 import { Translation } from 'src/components/suite';

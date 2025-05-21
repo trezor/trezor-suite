@@ -1,4 +1,4 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
+import { useFirmwareInstallation } from '@suite-common/device';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitialStandalone } from 'src/components/firmware';

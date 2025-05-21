@@ -9276,6 +9276,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/device@workspace:*, @suite-common/device@workspace:suite-common/device":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/device@workspace:suite-common/device"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    react: "npm:18.2.0"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/fiat-services@workspace:*, @suite-common/fiat-services@workspace:suite-common/fiat-services":
   version: 0.0.0-use.local
   resolution: "@suite-common/fiat-services@workspace:suite-common/fiat-services"
@@ -9287,22 +9303,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
-  languageName: unknown
-  linkType: soft
-
-"@suite-common/firmware@workspace:*, @suite-common/firmware@workspace:suite-common/firmware":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/firmware@workspace:suite-common/firmware"
-  dependencies:
-    "@reduxjs/toolkit": "npm:2.8.2"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
-    react: "npm:18.2.0"
-    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -10201,7 +10201,7 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/react-native-skia": "npm:^1.11.6"
-    "@suite-common/firmware": "workspace:*"
+    "@suite-common/device": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -11027,7 +11027,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/analytics": "workspace:*"
-    "@suite-common/firmware": "workspace:*"
+    "@suite-common/device": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -12499,9 +12499,9 @@ __metadata:
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
+    "@suite-common/device": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/firmware": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/intl-types": "workspace:*"

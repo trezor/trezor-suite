@@ -1,4 +1,4 @@
-import { firmwareActions, selectUseDevkit } from '@suite-common/firmware';
+import { firmwareActions, selectUseDevkit } from '@suite-common/device';
 import { Switch } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';

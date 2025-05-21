@@ -1,4 +1,4 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
+import { useFirmwareInstallation } from '@suite-common/device';
 import { Button } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
