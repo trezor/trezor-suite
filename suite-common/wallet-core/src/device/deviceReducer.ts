@@ -31,7 +31,6 @@ import { isNative } from '@trezor/env-utils';
 
 import { ConnectDeviceSettings, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
-import { createDeviceInstanceThunk, createImportedDeviceThunk } from './deviceThunks';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -687,12 +686,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             }
             state.devicesWithFailedEntropyCheck.push(payload);
         })
-        .addMatcher(
-            isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),
-            (state, { payload }) => {
-                createInstance(state, payload.device);
-            },
-        )
+        .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
+            createInstance(state, payload.device);
+        })
         .addMatcher(
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
             (state, { payload: { device, settings } }) => {
