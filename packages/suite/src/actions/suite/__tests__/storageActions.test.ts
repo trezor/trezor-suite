@@ -303,12 +303,6 @@ describe('Storage actions', () => {
         expect(load2DevicesCount).toEqual(2);
         expect(load2.device.devices[0]).toEqual({ ...dev2, path: '' });
 
-        // discovery object for dev1 deleted
-        expect(load2.wallet.discovery.length).toEqual(2);
-        expect(
-            load2.wallet.discovery.find((d: any) => d.deviceState === dev1.state!),
-        ).toBeUndefined();
-
         // txs deleted
         const deletedAcc1Txs = getAccountTransactions(
             acc1.key,

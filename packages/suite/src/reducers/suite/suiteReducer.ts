@@ -6,7 +6,6 @@ import type { InvityServerEnvironment, TradingType } from '@suite-common/trading
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
-    discoveryActions,
     selectIsEntropyCheckFailed,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';

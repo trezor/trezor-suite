@@ -4,11 +4,10 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import {
-    runAdditionalDiscoveryThunk,
+    restartDiscoveryThunk,
     selectIsDeviceDiscoveryActive,
     selectIsRediscoverNeeded,
     selectSelectedDevice,
-    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -57,10 +56,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
         return null;
     }
 
-    const startDiscovery = () => {
-        if (!selectedDevice?.state?.staticSessionId) return;
-        dispatch(runAdditionalDiscoveryThunk(selectedDevice.state.staticSessionId));
-    };
+    const restartDiscovery = () => dispatch(restartDiscoveryThunk());
 
     return (
         <AnimatePresence>
@@ -77,7 +73,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
                                     variant="tertiary"
                                     size="tiny"
                                     icon="repeat"
-                                    onClick={startDiscovery}
+                                    onClick={restartDiscovery}
                                 />
                             </Tooltip>
                         </Row>
@@ -92,7 +88,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
                                 variant="tertiary"
                                 size="tiny"
                                 icon="repeat"
-                                onClick={startDiscovery}
+                                onClick={restartDiscovery}
                             >
                                 <Translation id="REFRESH" />
                             </Button>
