@@ -35,7 +35,7 @@ const cardInnerContainerStyle = prepareNativeStyle<{
 }>((utils, { alertPosition, noPadding, borderColor, noShadow }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.r16,
-    padding: noPadding ? 0 : utils.spacings.sp16,
+    padding: utils.spacings.sp16,
 
     extend: [
         {
@@ -60,8 +60,14 @@ const cardInnerContainerStyle = prepareNativeStyle<{
             },
         },
         {
+            condition: noPadding,
+            style: {
+                padding: 0,
+            },
+        },
+        {
             condition: !noShadow,
-            style: utils.boxShadows.small,
+            style: { ...utils.boxShadows.small },
         },
     ],
 }));
