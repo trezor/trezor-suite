@@ -33,7 +33,7 @@ export const WipeDeviceCard = () => {
                     <Translation id="moduleDeviceSettings.wipeDevice.content" />
                 </Text>
                 <Box flex={1}>
-                    <Button colorScheme="redBold" onPress={handleRedirect}>
+                    <Button size="small" colorScheme="redBold" onPress={handleRedirect}>
                         <Translation id="moduleDeviceSettings.wipeDevice.buttonTitle" />
                     </Button>
                 </Box>
