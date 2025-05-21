@@ -3,14 +3,16 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    DeviceRootState,
-    DiscoveryRootState,
     determinePassphraseFlowState,
-    selectDiscoveryByDevicePath,
+    selectDiscoveryForSelectedDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { selectCheckPassphraseOnDevice } from '@suite-native/device-authorization';
+import {
+    selectCheckPassphraseOnDevice,
+    selectDeviceRequestedPin,
+    selectInputPassphraseOnDevice,
+} from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -20,18 +22,17 @@ import {
 import { PassphraseDuplicateAlert } from '../components/passphrase/PassphraseDuplicateAlert';
 import { PassphraseFlowDoneRedirect } from '../components/passphrase/PassphraseFlowDoneRedirect';
 import { PassphraseMismatchAlert } from '../components/passphrase/PassphraseMismatchAlert';
+import { PinScreen } from '../screens/connect/PinScreen';
 import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
 import { PassphraseEmptyWalletScreen } from '../screens/passphrase/PassphraseEmptyWalletScreen';
 import { PassphraseEnableOnDeviceScreen } from '../screens/passphrase/PassphraseEnableOnDeviceScreen';
+import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
 import { PassphraseFormScreen } from '../screens/passphrase/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from '../screens/passphrase/PassphraseLoadingScreen';
 import { PassphraseVerifyEmptyWalletScreen } from '../screens/passphrase/PassphraseVerifyEmptyWalletScreen';
 import { useRedirectOnPassphraseCompletion } from '../useRedirectOnPassphraseCompletion';
 
 export const PassphraseStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
-
-// Define the state type for our component
-type RootState = DiscoveryRootState & DeviceRootState;
 
 const determineNativePassphraseFlowState = (
     discovery: DiscoveryStatus,
@@ -74,9 +75,9 @@ const determineNativePassphraseFlowState = (
 
 export const PassphraseStackNavigator = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const discovery = useSelector((state: RootState) =>
-        selectDiscoveryByDevicePath(state, selectedDevice?.path),
-    );
+    const discovery = useSelector(selectDiscoveryForSelectedDevice);
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
 
     const checkingOnDevice = useSelector(selectCheckPassphraseOnDevice);
 
@@ -96,6 +97,19 @@ export const PassphraseStackNavigator = () => {
         <PassphraseStack.Navigator
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
         >
+            {hasDeviceRequestedPin && (
+                <PassphraseStack.Screen
+                    name={AuthorizeDeviceStackRoutes.PinMatrix}
+                    component={PinScreen}
+                />
+            )}
+            {inputPassphraseOnDevice && (
+                <PassphraseStack.Screen
+                    name={AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor}
+                    component={PassphraseEnterOnTrezorScreen}
+                />
+            )}
+
             {passphraseState.screen === 'discovery-loader' && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseLoading}
