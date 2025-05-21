@@ -4,8 +4,8 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
 import {
-    acquireDevice,
     ConnectDeviceSettings,
+    acquireDevice,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,

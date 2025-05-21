@@ -3,11 +3,11 @@ import { MiddlewareAPI } from 'redux';
 import { analyticsActions } from '@suite-common/analytics';
 import { addLog } from '@suite-common/logger';
 import {
+    WALLET_SETTINGS,
     acquireDevice,
     changeNetworks,
     deviceActions,
     setLocalCurrency,
-    WALLET_SETTINGS,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';

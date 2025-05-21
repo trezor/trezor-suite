@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 
-import { redactAccount, redactDevice, REDACTED_REPLACEMENT } from 'src/utils/suite/logsUtils';
+import { REDACTED_REPLACEMENT, redactAccount, redactDevice } from 'src/utils/suite/logsUtils';
 
 describe('logsUtils', () => {
     const account = testMocks.getWalletAccount({
