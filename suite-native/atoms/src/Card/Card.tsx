@@ -9,6 +9,9 @@ import { Color } from '@trezor/theme';
 
 import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 
+const CARD_CONTAINER_TEST_ID = '@atom/card/container';
+const ALERT_TEST_ID = '@atom/card/alert/';
+
 type AlertPosition = 'top' | 'bottom';
 
 export type CardProps = {
@@ -103,7 +106,7 @@ export const Card = React.forwardRef<View, CardProps>(
             children,
             style,
             alertProps,
-            alertPosition,
+            alertPosition: alertPositionProp,
             borderColor,
             noPadding = false,
             noShadow = false,
@@ -112,10 +115,18 @@ export const Card = React.forwardRef<View, CardProps>(
     ) => {
         const { applyStyle } = useNativeStyles();
 
+        const isAlertDisplayed = !!alertProps;
+        const alertPosition = isAlertDisplayed ? (alertPositionProp ?? 'top') : undefined;
+
         return (
             <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}>
-                {!!alertProps && alertPosition !== 'bottom' && (
-                    <View style={applyStyle(alertBoxWrapperStyle, { alertPosition })}>
+                {isAlertDisplayed && alertPosition === 'top' && (
+                    <View
+                        style={applyStyle(alertBoxWrapperStyle, {
+                            alertPosition,
+                        })}
+                        testID={ALERT_TEST_ID + 'top'}
+                    >
                         <InlineAlertBox {...alertProps} />
                     </View>
                 )}
@@ -130,13 +141,19 @@ export const Card = React.forwardRef<View, CardProps>(
                         }),
                         style,
                     ]}
+                    testID={CARD_CONTAINER_TEST_ID}
                     // Ref must be here otherwise the animation will not work
                     ref={ref}
                 >
                     {children}
                 </View>
-                {!!alertProps && alertPosition === 'bottom' && (
-                    <View style={applyStyle(alertBoxWrapperStyle, { alertPosition })}>
+                {isAlertDisplayed && alertPosition === 'bottom' && (
+                    <View
+                        style={applyStyle(alertBoxWrapperStyle, {
+                            alertPosition,
+                        })}
+                        testID={ALERT_TEST_ID + 'bottom'}
+                    >
                         <InlineAlertBox {...alertProps} />
                     </View>
                 )}
