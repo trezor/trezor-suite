@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { getFailedAccounts as _getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import {
     Box,
     Column,
@@ -26,11 +26,9 @@ export const AccountsMenuHeader = () => {
     const accounts = useSelector(state => state.wallet.accounts);
     const { discovery } = useDiscovery();
 
-    // const failed = getFailedAccounts(discovery);
-    const failed: any[] = [];
-    const list = sortByCoin(
-        accounts.filter(a => a.deviceState === device?.state?.staticSessionId).concat(failed),
-    );
+    const staticSessionId = device?.state?.staticSessionId;
+    const failed = getFailedAccounts(staticSessionId, discovery);
+    const list = sortByCoin(accounts.filter(a => a.deviceState === staticSessionId).concat(failed));
     const isEmpty = list.length === 0;
 
     const isDiscoveryRunning = discovery?.status === 'progress';
