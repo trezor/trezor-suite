@@ -130,12 +130,15 @@ export const createDeviceInstanceThunk = createThunk<
 
         const devices = selectDevices(getState());
 
+        const newDeviceInstance: TrezorDevice = {
+            ...device,
+            useEmptyPassphrase,
+            instance: getNewInstanceNumber(devices, device),
+        };
+        dispatch(deviceActions.createDeviceInstance({ device: newDeviceInstance }));
+
         return fulfillWithValue({
-            device: {
-                ...device,
-                useEmptyPassphrase,
-                instance: getNewInstanceNumber(devices, device),
-            },
+            device: newDeviceInstance,
         });
     },
 );
@@ -349,10 +352,12 @@ export const createImportedDeviceThunk = createThunk<
     { rejectValue: { error: 'already-created' } }
 >(
     `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
-    (_, { getState, rejectWithValue, fulfillWithValue }) => {
+    (_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
         const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
         if (device) return rejectWithValue({ error: 'already-created' });
+
+        dispatch(deviceActions.createDeviceInstance({ device: portfolioTrackerDevice }));
 
         return fulfillWithValue({ device: portfolioTrackerDevice });
     },

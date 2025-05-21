@@ -16,6 +16,11 @@ const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectAction
     payload,
 }));
 
+const createDeviceInstance = createAction(
+    `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
+    (payload: { device: TrezorDevice }) => ({ payload }),
+);
+
 const connectUnacquiredDevice = createAction(
     DEVICE.CONNECT_UNACQUIRED,
     (payload: DeviceConnectActionPayload) => ({ payload }),
@@ -112,6 +117,7 @@ const setEntropyCheckFail = createAction(
 
 export const deviceActions = {
     connectDevice,
+    createDeviceInstance,
     connectUnacquiredDevice,
     deviceChanged,
     setDeviceState,
