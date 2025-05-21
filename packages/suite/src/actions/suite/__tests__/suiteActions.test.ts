@@ -4,9 +4,8 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
 import {
-    ConnectDeviceSettings,
     acquireDevice,
-    createDeviceInstanceThunk,
+    ConnectDeviceSettings,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
@@ -14,10 +13,6 @@ import {
     observeSelectedDevice,
     prepareDeviceReducer,
     selectDeviceThunk,
-    selectDevices,
-    selectDevicesCount,
-    selectSelectedDevice,
-    switchDuplicatedDevice,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 

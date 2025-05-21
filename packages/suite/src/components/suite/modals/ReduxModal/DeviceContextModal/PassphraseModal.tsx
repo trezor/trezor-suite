@@ -10,7 +10,6 @@ import {
     submitPassphrase,
 } from '@suite-common/wallet-core';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';
@@ -28,9 +27,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     const dispatch = useDispatch();
 
-    const passphraseState = discovery
-        ? determinePassphraseFlowState(discovery, modal, MODAL.CONTEXT_DEVICE)
-        : null;
+    const passphraseState = discovery ? determinePassphraseFlowState(discovery, modal) : null;
 
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
@@ -131,7 +128,6 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     return (
         <PassphraseWalletIsNotExistFlow
-            discovery={passphraseState.discovery}
             device={device}
             passphraseState={passphraseState.screen}
             loading={Boolean(passphraseState.loading)}

@@ -33,11 +33,6 @@ export type UserContextPayload =
           isConfirmed?: boolean;
       }
     | {
-          type: 'passphrase-duplicate';
-          device: TrezorDevice;
-          duplicate: TrezorDevice;
-      }
-    | {
           type: 'add-account';
           device: TrezorDevice;
           symbol?: Account['symbol'];
@@ -183,9 +178,6 @@ export type UserContextPayload =
     | {
           type: 'unhide-token';
           address: string;
-      }
-    | {
-          type: 'passphrase-mismatch-warning';
       }
     | {
           type: 'cardano-withdraw-modal';
