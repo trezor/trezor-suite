@@ -19,3 +19,7 @@ export type ThpCredentialResponse = {
     trezor_static_pubkey: string;
     credential: string;
 };
+
+export type ThpProtobufMessageType = {
+    ThpDeviceProperties: ThpDeviceProperties;
+};
