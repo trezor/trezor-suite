@@ -66,7 +66,7 @@ function assertStaticSessionId(
 
 const applyDeviceStatesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
-    async (
+    (
         {
             isAddingHiddenWallet,
             newDeviceState,
@@ -148,7 +148,7 @@ const applyDeviceStatesThunk = createThunk(
 
 const completeDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/complete`,
-    async (
+    (
         {
             staticSessionId,
             devicePath,
@@ -866,7 +866,7 @@ export const submitPassphrase = createThunk(
 
 export const cancelDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/cancel`,
-    async (device: TrezorDevice, { dispatch }) => {
+    (device: TrezorDevice, { dispatch }) => {
         TrezorConnect.cancel(USER_UI_CANCEL_CODE);
 
         dispatch(discoveryActions.deleteDiscovery(device.path));
@@ -878,7 +878,7 @@ export const cancelDiscoveryThunk = createThunk(
  */
 export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    async (_, { dispatch, getState }) => {
+    (_, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
         const staticSessionId = device?.state?.staticSessionId;
         if (staticSessionId === undefined) return;
