@@ -25,7 +25,7 @@ export const useTradingBuildAccountGroups = (
                 deviceState: device?.state?.staticSessionId,
                 accountLabels,
                 tokenDefinitions,
-                supportedCryptoIds: supportedSymbols,
+                supportedCryptoIds: new Set(supportedSymbols),
                 getDefaultAccountLabel,
             }),
 

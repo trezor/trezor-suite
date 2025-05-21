@@ -1197,12 +1197,12 @@ describe('tradingSelectors', () => {
     });
 
     describe('selectTradingSupportedSymbols', () => {
-        const supportedSymbols = new Set([
+        const supportedSymbols = [
             'bitcoin',
             'ethereum',
             'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             'base--0x0000000000000000000000000000000000000000',
-        ]);
+        ];
 
         it('should return supported symbols for buy', () => {
             expect(selectTradingSupportedSymbols(state, 'buy')).toEqual(supportedSymbols);

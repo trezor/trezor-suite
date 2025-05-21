@@ -554,19 +554,21 @@ export const selectTradingActiveSection = (state: TradingRootState) =>
 
 export const selectTradingSupportedSymbols = createMemoizedSelector(
     [
-        (_: TradingRootState, type: TradingType) => type,
         selectTradingBuySupportedCryptoIds,
         selectTradingExchangeSellCryptoIds,
         selectTradingSellSupportedCryptoIds,
+        (_: TradingRootState, type: TradingType) => type,
     ],
-    (type, buyCryptoIds, exchangeCryptoIds, sellCryptoIds) => {
+    (buyCryptoIds, exchangeCryptoIds, sellCryptoIds, type) => {
         switch (type) {
             case 'buy':
-                return new Set(buyCryptoIds);
+                return buyCryptoIds;
             case 'exchange':
-                return new Set(exchangeCryptoIds);
+                return exchangeCryptoIds;
             case 'sell':
-                return new Set(sellCryptoIds);
+                return sellCryptoIds;
+            default:
+                throw new UnreachableCaseError(type, 'Unexpected trade type');
         }
     },
 );
