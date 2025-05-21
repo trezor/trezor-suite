@@ -568,7 +568,7 @@ export const selectTradingSupportedSymbols = createMemoizedSelector(
             case 'sell':
                 return sellCryptoIds;
             default:
-                throw new UnreachableCaseError(type, 'Unexpected trade type');
+                exhaustive(type, 'Unexpected trade type');
         }
     },
 );

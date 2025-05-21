@@ -1121,7 +1121,7 @@ describe('tradingSelectors', () => {
         it('should throw an error for an invalid trade type', () => {
             expect(() =>
                 selectTradingProviderByNameAndTradeType(state, 'provider1', 'invalid' as any),
-            ).toThrow('Unexpected trade type');
+            ).toThrow('Unreachable case: ["invalid"]');
         });
     });
 
