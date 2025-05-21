@@ -1,6 +1,7 @@
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { restartDiscoveryThunk } from '@suite-common/wallet-core';
 
 /**
  * Handler for 'bundle-exception' in discovery
@@ -12,7 +13,7 @@ export const AccountNotLoaded = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
-    const handleClick = () => {};
+    const handleClick = () => dispatch(restartDiscoveryThunk());
 
     return (
         <AccountExceptionLayout
