@@ -92,7 +92,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                 openLink(PIN_HELP_URL);
             },
         });
-    }, [dispatch, hasDeviceAuthFailed, openLink, reset, showAlert]);
+    }, [hasDeviceAuthFailed, openLink, reset, showAlert]);
 
     useEffect(() => {
         // After third wrong PIN, UI.INVALID_PIN is no more reported
