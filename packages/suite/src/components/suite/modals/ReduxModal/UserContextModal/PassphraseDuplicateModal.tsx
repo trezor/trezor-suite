@@ -1,7 +1,6 @@
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
-    selectDeviceByStaticSessionId,
     selectDeviceThunk,
     selectDevices,
     selectDiscovery,

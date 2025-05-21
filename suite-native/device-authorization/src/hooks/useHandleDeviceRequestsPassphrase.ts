@@ -15,9 +15,11 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import TrezorConnect, { UI } from '@trezor/connect';
 
-import { selectDeviceRequestedPassphrase } from '../deviceAuthorizationSlice';
+import {
+    selectDeviceRequestedPassphrase,
+    selectInputPassphraseOnDevice,
+} from '../deviceAuthorizationSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -33,6 +35,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
         selectDiscoveryByDevicePath(state, selectedDevice?.path),
     );
     const deviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
+    const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
 
     const handleRequestPassphrase = useCallback(() => {
         // NOTE: if the passphrase flow IS NOT in the beginning skip these calls
@@ -61,9 +64,8 @@ export const useHandleDeviceRequestsPassphrase = () => {
     }, [navigation]);
 
     useEffect(() => {
-        TrezorConnect.on(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRequestPassphraseOnDevice);
-
-        return () =>
-            TrezorConnect.off(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRequestPassphraseOnDevice);
-    }, [handleRequestPassphraseOnDevice]);
+        if (inputPassphraseOnDevice) {
+            handleRequestPassphraseOnDevice();
+        }
+    }, [inputPassphraseOnDevice, handleRequestPassphraseOnDevice]);
 };

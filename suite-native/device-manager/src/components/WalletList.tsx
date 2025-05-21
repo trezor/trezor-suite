@@ -45,8 +45,6 @@ export const WalletList = ({ onSelectDevice }: WalletListProps) => {
         }
     };
 
-    console.log('WalletList render devices', devices);
-
     return (
         <VStack spacing="sp12" paddingHorizontal="sp16">
             {showPlaceholder && (
