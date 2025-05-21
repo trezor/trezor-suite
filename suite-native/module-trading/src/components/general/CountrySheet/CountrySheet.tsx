@@ -5,7 +5,7 @@ import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useCountryFilteredData } from '../../../hooks/general/useCountryFilteredData';
-import { Country } from '../../../types';
+import { Country } from '../../../types/general';
 import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';

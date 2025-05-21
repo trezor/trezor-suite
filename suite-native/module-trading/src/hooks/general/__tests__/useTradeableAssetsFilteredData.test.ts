@@ -11,7 +11,7 @@ import {
     usdtOnArbAsset,
     usdtOnBscAsset,
 } from '../../../__fixtures__/tradeableAssets';
-import { TradeableAsset } from '../../../types';
+import { TradeableAsset } from '../../../types/general';
 import { useTradeableAssetsFilteredData } from '../useTradeableAssetsFilteredData';
 
 const mockAssets: TradeableAsset[] = [

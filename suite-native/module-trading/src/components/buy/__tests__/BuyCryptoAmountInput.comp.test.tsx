@@ -11,13 +11,13 @@ import { PROTO } from '@trezor/connect';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyForm } from '../../../types/buy';
 import { BuyCryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
 
 describe('BuyCryptoAmountInput', () => {
     const renderCryptoAmountInput = (
         props: Partial<CryptoAmountInputProps>,
-        form: TradingBuyForm,
+        form: BuyForm,
         preloadedState: PreloadedState = {},
     ) =>
         renderWithStoreProviderAsync(
@@ -27,7 +27,7 @@ describe('BuyCryptoAmountInput', () => {
             { preloadedState },
         );
 
-    const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
+    const renderUseBuyForm = async (preloadedState: PreloadedState = {}) => {
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });
@@ -36,7 +36,7 @@ describe('BuyCryptoAmountInput', () => {
     };
 
     it('should set fiat value in form', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
@@ -48,7 +48,7 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should be disabled when asset is not selected', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         expect(getByLabelText('You get')).toBeDisabled();
@@ -56,7 +56,7 @@ describe('BuyCryptoAmountInput', () => {
 
     it('should call showAssetsSheet when disabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         const { getByLabelText } = await renderCryptoAmountInput({ showAssetsSheet }, form);
 
         await userEvent.press(getByLabelText('You get'));
@@ -66,7 +66,7 @@ describe('BuyCryptoAmountInput', () => {
 
     it('should not call showAssetsSheet when enabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
@@ -78,7 +78,7 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should format input value to be decimal by default', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
@@ -94,7 +94,7 @@ describe('BuyCryptoAmountInput', () => {
         const preloadedState = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
@@ -110,7 +110,7 @@ describe('BuyCryptoAmountInput', () => {
         const preloadedState = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
@@ -125,7 +125,7 @@ describe('BuyCryptoAmountInput', () => {
     it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
         preloadedState.wallet.tradingNew.buy.isLoading = true;
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
 
         const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
 
@@ -135,7 +135,7 @@ describe('BuyCryptoAmountInput', () => {
     it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
         preloadedState.wallet.tradingNew.buy.isLoading = true;
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('amountInCrypto', true);
         });
@@ -146,7 +146,7 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should limit value to 9 decimals', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });

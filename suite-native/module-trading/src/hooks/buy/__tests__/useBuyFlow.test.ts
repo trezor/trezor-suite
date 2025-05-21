@@ -13,7 +13,7 @@ import {
 import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { TradingBuyFormValues } from '../../../types';
+import { BuyFormValues } from '../../../types/buy';
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
 
@@ -46,7 +46,7 @@ describe('useBuyFlow', () => {
     const renderUseTradingBuyFlow = ({
         store,
         ...formValues
-    }: Partial<TradingBuyFormValues> & { store: TestStore }) =>
+    }: Partial<BuyFormValues> & { store: TestStore }) =>
         renderHookWithStoreProviderAsync(
             () => {
                 const form = useBuyForm();
@@ -56,7 +56,7 @@ describe('useBuyFlow', () => {
                     // Set all provided form values
                     Object.entries(formValues).forEach(([key, value]) => {
                         act(() => {
-                            setValue(key as keyof TradingBuyFormValues, value);
+                            setValue(key as keyof BuyFormValues, value);
                         });
                     });
                 }, [setValue]);

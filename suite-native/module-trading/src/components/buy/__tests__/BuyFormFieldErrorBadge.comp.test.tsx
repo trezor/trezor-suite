@@ -7,13 +7,13 @@ import {
 } from '@suite-native/test-utils';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyForm } from '../../../types/buy';
 import { BuyFormFieldErrorBadge, BuyFormFieldErrorBadgeProps } from '../BuyFormFieldErrorBadge';
 
 describe('BuyFormFieldErrorBadge', () => {
-    let tradingForm: TradingBuyForm;
+    let tradingForm: BuyForm;
 
-    const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
+    const renderUseBuyForm = async (preloadedState: PreloadedState = {}) => {
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });
@@ -21,10 +21,7 @@ describe('BuyFormFieldErrorBadge', () => {
         return result.current;
     };
 
-    const renderBuyFormFieldErrorBadge = (
-        props: BuyFormFieldErrorBadgeProps,
-        form: TradingBuyForm,
-    ) =>
+    const renderBuyFormFieldErrorBadge = (props: BuyFormFieldErrorBadgeProps, form: BuyForm) =>
         renderWithBasicProvider(
             <Form form={form}>
                 <BuyFormFieldErrorBadge {...props} />
@@ -32,7 +29,7 @@ describe('BuyFormFieldErrorBadge', () => {
         );
 
     beforeEach(async () => {
-        tradingForm = await renderUseTradingBuyForm();
+        tradingForm = await renderUseBuyForm();
     });
 
     it('should render nothing where there is no error in form', () => {

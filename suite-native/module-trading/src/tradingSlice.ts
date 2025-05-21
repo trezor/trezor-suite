@@ -10,7 +10,7 @@ import {
     prepareTradingReducer,
 } from '@suite-common/trading';
 
-import { ReceiveAccount } from './types';
+import { ReceiveAccount } from './types/general';
 
 export interface TradingBuyState extends CommonTradingBuyState {
     selectedReceiveAccount: ReceiveAccount | undefined;

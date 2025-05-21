@@ -1,4 +1,4 @@
-import { BuyTrade, CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
+import { CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { Formatters } from '@suite-common/formatters';
 import { TradingAmountLimitProps } from '@suite-common/trading';
@@ -22,26 +22,17 @@ export type ReceiveAccount = {
     address?: Address;
 };
 
-export type TradingBuyFormValues = {
-    quote: BuyTrade | undefined;
-    asset: TradeableAsset | undefined;
-    receiveAccount: ReceiveAccount | undefined;
-    fiatCurrency: FiatCurrencyCode;
-    fiatValue: string | undefined;
-    cryptoValue: string | undefined;
-    amountInCrypto: boolean;
-    focusedValue: 'fiatValue' | 'cryptoValue' | undefined;
-    country: Country;
-    generalAlert: string | undefined;
-};
+export type FocusableFormValues<T extends string> = {
+    focusedValue: T | undefined;
+} & Record<Exclude<T, 'focusedValue'>, string | undefined>;
 
-export type TradingBuyFormContext = (TradingAmountLimitProps | Record<string, never>) & {
+export type GenericForm<T extends string> = UseFormReturn<FocusableFormValues<T>>;
+
+export type FormContext = (TradingAmountLimitProps | Record<string, never>) & {
     translate: ReturnType<typeof useTranslate>['translate'];
     FiatAmountFormatter: Formatters['FiatAmountFormatter'];
     CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
 };
-
-export type TradingBuyForm = UseFormReturn<TradingBuyFormValues>;
 
 export type FiatCurrencyItem = {
     value: FiatCurrencyCode;

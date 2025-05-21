@@ -1,7 +1,7 @@
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ReceiveAccount } from '../../../types';
+import { ReceiveAccount } from '../../../types/general';
 import { AccountAddress } from '../AccountAddress';
 import { AccountListBaseItem } from './AccountListBaseItem';
 

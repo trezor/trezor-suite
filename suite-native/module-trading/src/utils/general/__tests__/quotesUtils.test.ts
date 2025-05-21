@@ -7,19 +7,19 @@ import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
-import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
+import { BuyForm } from '../../../types/buy';
+import { buyFormTobuyFormProps, getPaymentMethodFromBuyForm } from '../quotesUtils';
 
 describe('quotesUtils', () => {
-    let form: TradingBuyForm;
+    let form: BuyForm;
 
-    const renderUseTradingBuyForm = () =>
+    const renderUseBuyForm = () =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState: { wallet: { tradingNew: getInitializedTradingState() } },
         });
 
     beforeEach(async () => {
-        const { result } = await renderUseTradingBuyForm();
+        const { result } = await renderUseBuyForm();
         form = result.current;
     });
 
@@ -40,11 +40,9 @@ describe('quotesUtils', () => {
         });
     });
 
-    describe('tradingBuyFormToTradingBuyFormProps', () => {
+    describe('buyFormTobuyFormProps', () => {
         it('should throw when crypto value is not selected', () => {
-            expect(() => tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin)).toThrow(
-                'Asset is required',
-            );
+            expect(() => buyFormTobuyFormProps(form, coins.bitcoin)).toThrow('Asset is required');
         });
 
         describe('with buy form populated', () => {
@@ -61,13 +59,13 @@ describe('quotesUtils', () => {
             });
 
             it('should throw when info is not defined', () => {
-                expect(() => tradingBuyFormToTradingBuyFormProps(form, undefined)).toThrow(
+                expect(() => buyFormTobuyFormProps(form, undefined)).toThrow(
                     'CoinInfo is required',
                 );
             });
 
             it('should return correct props', () => {
-                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
+                const props = buyFormTobuyFormProps(form, coins.bitcoin);
                 expect(props).toEqual({
                     fiatInput: '100',
                     cryptoInput: '0.001000168',
@@ -104,7 +102,7 @@ describe('quotesUtils', () => {
                     } as unknown as BuyTrade);
                 });
 
-                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
+                const props = buyFormTobuyFormProps(form, coins.bitcoin);
 
                 expect(props).toEqual(
                     expect.objectContaining({

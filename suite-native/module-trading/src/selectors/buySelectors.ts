@@ -11,7 +11,8 @@ import {
 
 import { supportedFiatCurrenciesMap } from '../consts/general/supportedFiatCurrencies';
 import { TradingRootState, createMemoizedSelector } from '../tradingSlice';
-import { Country, FiatCurrencyItem, TradingBuyFormValues } from '../types';
+import { BuyFormValues } from '../types/buy';
+import { Country, FiatCurrencyItem } from '../types/general';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -54,7 +55,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
     ],
     (buyInfo, coins) => {
         if (!buyInfo || !coins) {
-            return {} as Partial<TradingBuyFormValues>;
+            return {} as Partial<BuyFormValues>;
         }
 
         const { country, suggestedFiatCurrency } = buyInfo.buyInfo;
@@ -71,7 +72,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
             fiatCurrency: fiatCurrency.toLowerCase(),
             country: countryDefaultValue,
             amountInCrypto: false,
-        } as Partial<TradingBuyFormValues>;
+        } as Partial<BuyFormValues>;
     },
 );
 

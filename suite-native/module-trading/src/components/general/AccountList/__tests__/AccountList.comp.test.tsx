@@ -6,7 +6,7 @@ import { Address } from '@trezor/blockchain-link-types';
 import { StaticSessionId } from '@trezor/connect';
 
 import fixturesAccounts from '../../../../__fixtures__/accounts.json';
-import { ReceiveAccount } from '../../../../types';
+import { ReceiveAccount } from '../../../../types/general';
 import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 
 const accounts = fixturesAccounts as Account[];

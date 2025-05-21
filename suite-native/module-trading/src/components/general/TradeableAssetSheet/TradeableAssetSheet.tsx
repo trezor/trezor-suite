@@ -11,7 +11,7 @@ import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyCompo
 import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
 import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
 import { ItemRenderConfig } from '../../../hooks/general/useSectionList';
-import { TradeableAsset } from '../../../types';
+import { TradeableAsset } from '../../../types/general';
 
 export type TradeableAssetsSheetProps = {
     isVisible: boolean;

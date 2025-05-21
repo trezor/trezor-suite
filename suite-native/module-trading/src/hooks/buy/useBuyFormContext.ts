@@ -1,5 +1,5 @@
 import { useFormContext } from '@suite-native/forms';
 
-import { TradingBuyFormValues } from '../../types';
+import { BuyFormValues } from '../../types/buy';
 
-export const useBuyFormContext = () => useFormContext<TradingBuyFormValues>();
+export const useBuyFormContext = () => useFormContext<BuyFormValues>();

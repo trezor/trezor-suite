@@ -1,15 +1,15 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { TradingBuyFormContext } from '../../types';
+import { FormContext } from '../../types/general';
 
 const getAmountLimitContext = ({ options }: yup.TestContext<unknown>) =>
-    options.context as TradingBuyFormContext;
+    options.context as FormContext;
 
 const formatCryptoAmount = (
     amount: string,
     currency: string,
-    CryptoAmountFormatter: TradingBuyFormContext['CryptoAmountFormatter'],
+    CryptoAmountFormatter: FormContext['CryptoAmountFormatter'],
 ) =>
     CryptoAmountFormatter.format(amount, {
         symbol: currency.toLowerCase() as NetworkSymbol,

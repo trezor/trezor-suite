@@ -4,7 +4,7 @@ import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wal
 import { Badge } from '@suite-native/atoms';
 
 import { AccountListBaseItem } from './AccountListBaseItem';
-import { ReceiveAccount } from '../../../types';
+import { ReceiveAccount } from '../../../types/general';
 
 export type AccountListItemProps = {
     receiveAccount: ReceiveAccount;

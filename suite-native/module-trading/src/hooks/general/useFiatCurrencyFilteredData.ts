@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useListDataFilter } from './useListDataFilter';
 import { selectBuySupportedFiatCurrenciesList } from '../../selectors/buySelectors';
-import { FiatCurrencyItem } from '../../types';
+import { FiatCurrencyItem } from '../../types/general';
 
 const filterCallback = ({ label, value }: FiatCurrencyItem, filterValue: string): boolean =>
     label.toLowerCase().includes(filterValue.toLowerCase()) ||

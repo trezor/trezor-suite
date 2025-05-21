@@ -10,7 +10,7 @@ import {
     usdcAsset,
 } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradeableAsset } from '../../../types';
+import { TradeableAsset } from '../../../types/general';
 import {
     coinInfoToTradeableAsset,
     getSelectedSymbolFromBuyForm,

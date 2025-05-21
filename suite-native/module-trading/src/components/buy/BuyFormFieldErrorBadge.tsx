@@ -1,10 +1,10 @@
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 
-import { TradingBuyFormValues } from '../../types';
+import { BuyFormValues } from '../../types/buy';
 
 export type BuyFormFieldErrorBadgeProps = {
-    fieldName: keyof TradingBuyFormValues;
+    fieldName: keyof BuyFormValues;
 };
 
 export const BuyFormFieldErrorBadge = ({ fieldName }: BuyFormFieldErrorBadgeProps) => {

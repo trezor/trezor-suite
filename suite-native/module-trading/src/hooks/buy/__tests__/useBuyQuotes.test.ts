@@ -13,7 +13,7 @@ import {
 import quotes from '../../../__fixtures__/quotes.json';
 import { bnbAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { TradingBuyFormValues } from '../../../types';
+import { BuyFormValues } from '../../../types/buy';
 import { useBuyForm } from '../useBuyForm';
 import { useBuyQuotes } from '../useBuyQuotes';
 
@@ -171,7 +171,7 @@ describe('useBuyQuotes', () => {
         ['fiatValue', '1000'],
         ['country', 'CZ'],
         ['receiveAccount', { account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account }],
-    ] as [keyof TradingBuyFormValues, TradingBuyFormValues[keyof TradingBuyFormValues]][])(
+    ] as [keyof BuyFormValues, BuyFormValues[keyof BuyFormValues]][])(
         'should re-fetch quotes on %s value change',
         async (field, value) => {
             const store = await getInitializedStore();

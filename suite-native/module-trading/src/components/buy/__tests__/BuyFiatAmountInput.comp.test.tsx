@@ -9,11 +9,11 @@ import {
 
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyForm } from '../../../types/buy';
 import { BuyFiatAmountInput } from '../BuyFiatAmountInput';
 
 describe('BuyFiatAmountInput', () => {
-    const renderFiatAmountInput = (form: TradingBuyForm, preloadedState: PreloadedState = {}) =>
+    const renderFiatAmountInput = (form: BuyForm, preloadedState: PreloadedState = {}) =>
         renderWithStoreProviderAsync(
             <Form form={form}>
                 <BuyFiatAmountInput />
@@ -21,7 +21,7 @@ describe('BuyFiatAmountInput', () => {
             { preloadedState },
         );
 
-    const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
+    const renderUseBuyForm = async (preloadedState: PreloadedState = {}) => {
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });
@@ -30,7 +30,7 @@ describe('BuyFiatAmountInput', () => {
     };
 
     it('should set fiat value in form', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(getByLabelText('You pay'), '100');
@@ -39,7 +39,7 @@ describe('BuyFiatAmountInput', () => {
     });
 
     it('should format input value to be decimal', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(getByLabelText('You pay'), 'asd1.123');
@@ -49,7 +49,7 @@ describe('BuyFiatAmountInput', () => {
     });
 
     it('should always escape non-numeric characters', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(getByLabelText('You pay'), 'asd');
@@ -61,7 +61,7 @@ describe('BuyFiatAmountInput', () => {
     it('should display loading skeleton while amountInCrypto is true and buyInfo is loading', async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
         preloadedState.wallet.tradingNew.buy.isLoading = true;
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         act(() => {
             form.setValue('amountInCrypto', true);
         });
@@ -74,7 +74,7 @@ describe('BuyFiatAmountInput', () => {
     it('should not display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
         preloadedState.wallet.tradingNew.buy.isLoading = true;
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
 
         const { queryByLabelText } = await renderFiatAmountInput(form, preloadedState);
 
@@ -82,7 +82,7 @@ describe('BuyFiatAmountInput', () => {
     });
 
     it('should limit value to 3 decimals', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = await renderUseBuyForm();
         const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(getByLabelText('You pay'), '1.0123456789');

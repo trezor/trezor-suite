@@ -19,8 +19,9 @@ import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { setBuySelectedReceiveAccount } from '../../../tradingSlice';
-import { TradeableAsset, TradingBuyForm } from '../../../types';
-import { clearTradingBuyFormQuoteData, useBuyForm } from '../useBuyForm';
+import { BuyForm } from '../../../types/buy';
+import { TradeableAsset } from '../../../types/general';
+import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
 jest.mock('../../../utils/general/utils', () => ({
     ...jest.requireActual('../../../utils/general/utils'),
@@ -28,7 +29,7 @@ jest.mock('../../../utils/general/utils', () => ({
 }));
 
 describe('useBuyForm', () => {
-    const renderUseTradingBuyForm = (store: TestStore) =>
+    const renderUseBuyForm = (store: TestStore) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
 
     const getInitializedStore = async (amountInSats = false) => {
@@ -49,7 +50,7 @@ describe('useBuyForm', () => {
         return await initStore(preloadedState);
     };
 
-    const initFormAndQuotes = (form: TradingBuyForm, store: EnhancedStore) => {
+    const initFormAndQuotes = (form: BuyForm, store: EnhancedStore) => {
         act(() => {
             form.setValue('fiatValue', '10');
             form.setValue('asset', btcAsset);
@@ -66,7 +67,7 @@ describe('useBuyForm', () => {
 
     it('should update form value when account in redux store is changed', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
 
         act(() => {
             store.dispatch(
@@ -84,7 +85,7 @@ describe('useBuyForm', () => {
             const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
             const store = await getInitializedStore();
 
-            await renderUseTradingBuyForm(store);
+            await renderUseBuyForm(store);
 
             expect(invityAPISpy).toHaveBeenCalledWith('random_string');
         });
@@ -92,7 +93,7 @@ describe('useBuyForm', () => {
         it('should update invityAPIKey when account is changed', async () => {
             const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
             const store = await getInitializedStore();
-            await renderUseTradingBuyForm(store);
+            await renderUseBuyForm(store);
             invityAPISpy.mockClear();
 
             act(() => {
@@ -111,7 +112,7 @@ describe('useBuyForm', () => {
         it('should not call createInvityAPIKey when descriptor is not changed', async () => {
             const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
             const store = await getInitializedStore();
-            await renderUseTradingBuyForm(store);
+            await renderUseBuyForm(store);
             invityAPISpy.mockClear();
 
             act(() => {
@@ -141,7 +142,7 @@ describe('useBuyForm', () => {
         it('should not call createInvityAPIKey when descriptor is empty string', async () => {
             const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
             const store = await getInitializedStore();
-            await renderUseTradingBuyForm(store);
+            await renderUseBuyForm(store);
             invityAPISpy.mockClear();
 
             act(() => {
@@ -160,7 +161,7 @@ describe('useBuyForm', () => {
         it('should not call createInvityAPIKey when descriptor is undefined ', async () => {
             const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
             const store = await getInitializedStore();
-            await renderUseTradingBuyForm(store);
+            await renderUseBuyForm(store);
             invityAPISpy.mockClear();
 
             act(() => {
@@ -197,7 +198,7 @@ describe('useBuyForm', () => {
 
     it('should clear selected account on asset network change', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
 
         act(() => {
             store.dispatch(
@@ -216,7 +217,7 @@ describe('useBuyForm', () => {
 
     it('should not clear selected account when asset is set to undefined', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
 
         act(() => {
             store.dispatch(
@@ -232,7 +233,7 @@ describe('useBuyForm', () => {
 
     it('should clear crypto amount on coin change', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
 
         act(() => {
             result.current.setValue('asset', btcAsset);
@@ -245,7 +246,7 @@ describe('useBuyForm', () => {
 
     it('should clear crypto amount on fiat currency change', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
 
         act(() => {
             result.current.setValue('cryptoValue', '10');
@@ -257,7 +258,7 @@ describe('useBuyForm', () => {
 
     it('should clear fiat amount on fiat currency change', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
 
         act(() => {
             result.current.setValue('fiatValue', '10');
@@ -269,7 +270,7 @@ describe('useBuyForm', () => {
 
     it('should clear cryptoValue when user edits fiatValue', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
         const { result: fieldResult } = renderHook(() => useField({ name: 'fiatValue' }), {
             wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
         });
@@ -286,7 +287,7 @@ describe('useBuyForm', () => {
 
     it('should clear fiatValue when user edits cryptoValue', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
         const { result: fieldResult } = renderHook(() => useField({ name: 'cryptoValue' }), {
             wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
         });
@@ -303,7 +304,7 @@ describe('useBuyForm', () => {
 
     it('should set amountInCrypto to true when user edits cryptoValue', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
         const { result: fieldResult } = renderHook(() => useField({ name: 'cryptoValue' }), {
             wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
         });
@@ -318,7 +319,7 @@ describe('useBuyForm', () => {
 
     it('should set amountInCrypto to false when user edits fiatValue', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
         const { result: fieldResult } = renderHook(() => useField({ name: 'fiatValue' }), {
             wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
         });
@@ -335,7 +336,7 @@ describe('useBuyForm', () => {
     describe('on quotes change', () => {
         it('if no quote is selected should select 1st quote with creditCard payment method', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             initFormAndQuotes(result.current, store);
 
@@ -349,7 +350,7 @@ describe('useBuyForm', () => {
 
         it('if no quote is selected and creditCard method is not available should select 1st quote', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             act(() => {
                 result.current.setValue('fiatValue', '10');
@@ -367,7 +368,7 @@ describe('useBuyForm', () => {
 
         it('should set quote to undefined when no quotes are available', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             // this will load quotes and selects one
             initFormAndQuotes(result.current, store);
@@ -381,7 +382,7 @@ describe('useBuyForm', () => {
 
         it('should clear cryptoValue when no quotes are available', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             // this will load quotes and selects one
             initFormAndQuotes(result.current, store);
@@ -396,7 +397,7 @@ describe('useBuyForm', () => {
 
         it('should clear fiatValue when no quotes are available and user inserted cryptoValue', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             // this will load quotes and selects one
             act(() => {
@@ -416,7 +417,7 @@ describe('useBuyForm', () => {
 
         it('should update cryptoValue when selected quote is changed and truncate it to 9 decimals', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             initFormAndQuotes(result.current, store);
 
@@ -430,7 +431,7 @@ describe('useBuyForm', () => {
 
         it('should update fiatAmount when selected quote is changed and user inserted cryptoAmount and truncate it to 3 decimals', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             act(() => {
                 result.current.setValue('asset', btcAsset);
@@ -450,11 +451,11 @@ describe('useBuyForm', () => {
 
         describe('when quote is selected and new quotes are fetched', () => {
             let store: EnhancedStore;
-            let form: TradingBuyForm;
+            let form: BuyForm;
 
             beforeEach(async () => {
                 store = await getInitializedStore();
-                const { result } = await renderUseTradingBuyForm(store);
+                const { result } = await renderUseBuyForm(store);
                 form = result.current;
 
                 act(() => {
@@ -512,7 +513,7 @@ describe('useBuyForm', () => {
 
     it('should set correct cryptoValue when using BTC and amount in sats', async () => {
         const store = await getInitializedStore(true);
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseBuyForm(store);
 
         initFormAndQuotes(result.current, store);
 
@@ -532,7 +533,7 @@ describe('useBuyForm', () => {
                     currency: 'USD',
                 }),
             );
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             act(() => {
                 result.current.setValue('fiatValue', amount);
@@ -559,7 +560,7 @@ describe('useBuyForm', () => {
                     currency: 'BTC',
                 }),
             );
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             act(() => {
                 result.current.setValue('amountInCrypto', true);
@@ -579,7 +580,7 @@ describe('useBuyForm', () => {
 
         it('should trigger validation once limits are loaded', async () => {
             const store = await getInitializedStore(true);
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             act(() => {
                 result.current.setValue('fiatValue', '1');
@@ -605,7 +606,7 @@ describe('useBuyForm', () => {
         describe('generalAlert', () => {
             it('should be undefined by default', async () => {
                 const store = await getInitializedStore(true);
-                const { result } = await renderUseTradingBuyForm(store);
+                const { result } = await renderUseBuyForm(store);
 
                 act(() => {
                     store.dispatch(tradingBuyActions.saveQuotes([] as BuyTrade[]));
@@ -617,7 +618,7 @@ describe('useBuyForm', () => {
 
             it('should be set when empty quotes are fetched and no limits are set', async () => {
                 const store = await getInitializedStore(true);
-                const { result } = await renderUseTradingBuyForm(store);
+                const { result } = await renderUseBuyForm(store);
 
                 act(() => {
                     store.dispatch(
@@ -639,7 +640,7 @@ describe('useBuyForm', () => {
 
             it('should be undefined when empty quotes are fetched and limits are set', async () => {
                 const store = await getInitializedStore(true);
-                const { result } = await renderUseTradingBuyForm(store);
+                const { result } = await renderUseBuyForm(store);
 
                 act(() => {
                     store.dispatch(
@@ -664,7 +665,7 @@ describe('useBuyForm', () => {
 
             it('should be undefined when quotes are fetched ', async () => {
                 const store = await getInitializedStore(true);
-                const { result } = await renderUseTradingBuyForm(store);
+                const { result } = await renderUseBuyForm(store);
 
                 act(() => {
                     store.dispatch(
@@ -684,7 +685,7 @@ describe('useBuyForm', () => {
 
             it('should be cleared once quotes are fetched', async () => {
                 const store = await getInitializedStore(true);
-                const { result } = await renderUseTradingBuyForm(store);
+                const { result } = await renderUseBuyForm(store);
 
                 act(() => {
                     store.dispatch(
@@ -708,10 +709,10 @@ describe('useBuyForm', () => {
         });
     });
 
-    describe('clearTradingBuyFormQuoteData', () => {
+    describe('clearBuyFormQuoteData', () => {
         it('should clear quote, fiatValue, cryptoValue and generalAlert data', async () => {
             const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+            const { result } = await renderUseBuyForm(store);
 
             act(() => {
                 result.current.setValue('fiatValue', '10');
@@ -720,7 +721,7 @@ describe('useBuyForm', () => {
             });
 
             act(() => {
-                clearTradingBuyFormQuoteData(result.current);
+                clearBuyFormQuoteData(result.current);
             });
 
             expect(result.current.getValues('quote')).toBeUndefined();

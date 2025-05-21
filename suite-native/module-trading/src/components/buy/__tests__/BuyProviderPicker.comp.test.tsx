@@ -11,19 +11,16 @@ import {
 import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyForm } from '../../../types/buy';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
 describe('BuyProviderPicker', () => {
-    const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) =>
+    const renderUseBuyForm = (preloadedState: PreloadedState = {}) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), {
             preloadedState,
         });
 
-    const renderTradingProviderPicker = (
-        form: TradingBuyForm,
-        preloadedState: PreloadedState = {},
-    ) =>
+    const renderTradingProviderPicker = (form: BuyForm, preloadedState: PreloadedState = {}) =>
         renderWithStoreProviderAsync(
             <Form form={form}>
                 <BuyProviderPicker />
@@ -32,14 +29,14 @@ describe('BuyProviderPicker', () => {
         );
 
     it('should display nothing when in default state', async () => {
-        const { result } = await renderUseTradingBuyForm();
+        const { result } = await renderUseBuyForm();
         const { toJSON } = await renderTradingProviderPicker(result.current);
         expect(toJSON()).toBeNull();
     });
 
     it('should display selected provider according to quotes', async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
-        const { result } = await renderUseTradingBuyForm(preloadedState);
+        const { result } = await renderUseBuyForm(preloadedState);
         act(() => {
             result.current.setValue('quote', quotes[2] as BuyTrade);
         });
@@ -55,7 +52,7 @@ describe('BuyProviderPicker', () => {
     it('should display loader while quotes are fetched', async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
         preloadedState!.wallet!.tradingNew!.buy!.isLoading = true;
-        const { result } = await renderUseTradingBuyForm(preloadedState);
+        const { result } = await renderUseBuyForm(preloadedState);
         act(() => {
             result.current.setValue('quote', quotes[2] as BuyTrade);
         });

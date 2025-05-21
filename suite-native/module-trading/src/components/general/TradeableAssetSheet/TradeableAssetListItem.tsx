@@ -17,7 +17,7 @@ import {
     addTradeableAssetToFavourites,
     removeTradeableAssetFromFavourites,
 } from '../../../tradingSlice';
-import { TradeableAsset } from '../../../types';
+import { TradeableAsset } from '../../../types/general';
 
 export type TradeableAssetListItemProps = {
     asset: TradeableAsset;

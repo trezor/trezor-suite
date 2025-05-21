@@ -10,7 +10,7 @@ import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
 import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
-import { TradeableAsset } from '../../types';
+import { TradeableAsset } from '../../types/general';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/buy/asset-button';

@@ -13,7 +13,7 @@ import { hexToRgba } from '@trezor/utils';
 
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
 import { useTradeableAssetDominantColor } from '../../hooks/general/useTradeableAssetDominantColor';
-import { TradeableAsset } from '../../types';
+import { TradeableAsset } from '../../types/general';
 
 export type TradeableAssetButtonProps = {
     asset: TradeableAsset;

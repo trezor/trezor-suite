@@ -7,7 +7,7 @@ import { useTranslate } from '@suite-native/intl';
 
 import { SectionListData } from './useSectionList';
 import { selectTradingFavouriteAssets } from '../../selectors/favouritesSelectors';
-import { TradeableAsset } from '../../types';
+import { TradeableAsset } from '../../types/general';
 
 export type ListItemExtraData = {
     isFavourite: boolean;
