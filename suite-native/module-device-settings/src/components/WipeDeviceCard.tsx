@@ -4,6 +4,7 @@ import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
+    DeviceStackRoutes,
     StackToStackCompositeNavigationProps,
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
@@ -20,7 +21,7 @@ export const WipeDeviceCard = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const handleRedirect = () => {
-        navigation.navigate(WipeDeviceStackRoutes.WipeDevice);
+        navigation.navigate(DeviceStackRoutes.WipeDeviceStack);
     };
 
     return (

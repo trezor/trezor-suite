@@ -24,7 +24,7 @@ type CardStepperProps<ContentIdType = undefined> = {
     stepToContentMap: CardStepperMap<ContentIdType>;
 };
 
-export const CardStepper = <ContentIdType = undefined>({
+export const CardStepper = <ContentIdType = undefined,>({
     stepToContentMap,
     onFinish,
     onPressSecondaryButton,
