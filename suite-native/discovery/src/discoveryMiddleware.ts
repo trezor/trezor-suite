@@ -21,8 +21,6 @@ import { discoveryCheckThunk, startDescriptorPreloadedDiscoveryThunk } from './d
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
-        console.log('action', action);
-        console.log('state', getState());
         if (
             deviceActions.forgetDevice.match(action) &&
             action.payload.device.state?.staticSessionId
