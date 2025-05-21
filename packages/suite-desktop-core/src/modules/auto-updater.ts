@@ -16,7 +16,7 @@ import { verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
 import { app, ipcMain } from '../typed-electron';
 
-import type { ModuleInit } from './index';
+import { type ModuleInit, mainThreadEmitter } from './index';
 
 const defaultFeedURL = {
     // This should correspond with the value in electron-builder-config.js file.
@@ -242,12 +242,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         setImmediate(() => {
             // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
             app.removeAllListeners('window-all-closed');
-            if (process.platform === 'linux') {
-                // On Linux there were some issues with re-opening the app, due to a possible race condition where the old app was not fully closed yet.
-                // This resolves the issue by removing the handlers and closing the app immediately.
-                app.removeAllListeners('before-quit');
-                app.removeAllListeners('second-instance');
-            }
+            mainThreadEmitter.emit('app/fully-quit');
             mainWindowProxy.getInstance()?.removeAllListeners('close');
             mainWindowProxy.getInstance()?.close();
 
