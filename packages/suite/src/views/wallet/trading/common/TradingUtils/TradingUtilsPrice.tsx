@@ -4,10 +4,12 @@ import styled from 'styled-components';
 import { Tooltip } from '@trezor/components';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx, typography } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCryptoAmountProps } from 'src/types/trading/trading';
+import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
@@ -43,12 +45,21 @@ export const TradingUtilsPrice = ({
     receiveAmount,
     receiveCurrency,
 }: TradingCryptoAmountProps) => {
-    const { type } = useTradingFormContext();
+    const context = useTradingFormContext();
+    const { type } = context;
+
+    const showProviderAdjustedAmountTooltip =
+        isTradingSellContext(context) &&
+        receiveAmount &&
+        context.quotesRequest?.cryptoStringAmount &&
+        !new BigNumber(receiveAmount).isEqualTo(
+            new BigNumber(context.quotesRequest?.cryptoStringAmount),
+        );
 
     return (
         <PriceWrap>
             <PriceTitle>
-                {type === 'sell' ? (
+                {showProviderAdjustedAmountTooltip ? (
                     <Tooltip
                         hasIcon
                         placement="right"

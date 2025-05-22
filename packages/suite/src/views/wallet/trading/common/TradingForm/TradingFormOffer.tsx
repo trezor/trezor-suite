@@ -12,6 +12,7 @@ import {
 } from '@suite-common/trading';
 import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
@@ -83,7 +84,13 @@ export const TradingFormOffer = () => {
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     const showProviderAdjustedAmountTooltip =
-        isTradingSellContext(context) && bestScoredQuoteAmounts && !state.isFormLoading;
+        !state.isFormLoading &&
+        isTradingSellContext(context) &&
+        context.quotesRequest?.cryptoStringAmount &&
+        bestScoredQuoteAmounts &&
+        !new BigNumber(context.quotesRequest.cryptoStringAmount).isEqualTo(
+            new BigNumber(bestScoredQuoteAmounts.receiveAmount),
+        );
 
     const onSelectQuote = () => {
         if (!quote) {
