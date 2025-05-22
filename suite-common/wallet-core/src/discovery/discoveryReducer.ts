@@ -1,6 +1,7 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networksCollection } from '@suite-common/wallet-config';
 import { Discovery, DiscoveryStatus } from '@suite-common/wallet-types';
+import { getFailedAccounts } from '@suite-common/wallet-utils';
 import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
@@ -110,11 +111,13 @@ export const selectNetworksToDiscover = (
 
         return enabledNetworks;
     }
+    const device = selectSelectedDevice(state);
+    const discovery = selectDiscoveryByDevicePath(state, device?.path);
+    const okAccounts = selectAccountsByDeviceState(state, staticSessionId);
+    const failedAccounts = getFailedAccounts(staticSessionId, discovery);
 
     const discoveredNetworks = [
-        ...new Set(
-            selectAccountsByDeviceState(state, staticSessionId).map(account => account.symbol),
-        ),
+        ...new Set([...okAccounts, ...failedAccounts].map(account => account.symbol)),
     ];
 
     return enabledNetworks.filter(network => !discoveredNetworks.includes(network));

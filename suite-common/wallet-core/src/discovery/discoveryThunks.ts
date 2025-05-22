@@ -207,7 +207,7 @@ export const startDiscoveryThunk = createThunk(
 
         dispatch(
             discoveryActions.startDiscovery(
-                device.path,
+                actualDevice.path,
                 isAddingHiddenWallet,
                 isAddingExistingWallet,
             ),
@@ -218,7 +218,7 @@ export const startDiscoveryThunk = createThunk(
         // - or adding an existing hidden wallet,
         // -
         if (!isAddingHiddenWallet || (isAddingHiddenWallet && isAddingExistingWallet)) {
-            dispatch(runDiscoveryThunk(device));
+            dispatch(runDiscoveryThunk(actualDevice));
         }
     },
 );
