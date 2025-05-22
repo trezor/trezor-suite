@@ -39,7 +39,7 @@
         "style-loader": "^4.0.0",
         "terser-webpack-plugin": "^5.3.14",
         "vm-browserify": "^1.1.2",
-        "webpack": "5.98.0",
+        "webpack": "5.99.9",
         "webpack-bundle-analyzer": "^4.10.2",
         "webpack-merge": "^6.0.1",
         "webpack-nano": "^1.1.1",
