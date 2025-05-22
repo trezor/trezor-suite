@@ -124,6 +124,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
         getValues,
         handleSubmit,
         formState: { isDirty, errors },
+        trigger,
     } = methods;
 
     const onSend = handleSubmit(data => {
@@ -190,6 +191,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                     errors={errors}
                     isDirty={isDirty}
                     changeFeeLevel={changeFeeLevel}
+                    trigger={trigger}
                 />
             </Column>
         </Modal>

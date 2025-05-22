@@ -15,6 +15,7 @@ export const RbfFees = () => {
         account,
         feeInfo,
         composedLevels,
+        trigger,
     } = useRbfContext();
 
     return (
@@ -35,6 +36,7 @@ export const RbfFees = () => {
                     : 'TR_NEW_FEE'
             }
             rbfForm
+            trigger={trigger}
         />
     );
 };

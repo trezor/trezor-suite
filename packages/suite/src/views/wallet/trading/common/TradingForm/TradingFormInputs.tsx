@@ -77,6 +77,7 @@ export const TradingFormInputs = () => {
             setValue,
             getValues,
             changeFeeLevel,
+            trigger,
         } = context;
         const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
         const output = outputs[0];
@@ -133,6 +134,7 @@ export const TradingFormInputs = () => {
                     setValue={setValue}
                     getValues={getValues}
                     changeFeeLevel={changeFeeLevel}
+                    trigger={trigger}
                 />
                 <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
@@ -154,6 +156,7 @@ export const TradingFormInputs = () => {
             getValues,
             changeFeeLevel,
             shouldSendInSats,
+            trigger,
         } = context;
         const { rateType, sendCryptoSelect, outputs, amountInCrypto } = getValues();
         const output = outputs[0];
@@ -218,6 +221,7 @@ export const TradingFormInputs = () => {
                     setValue={setValue}
                     getValues={getValues}
                     changeFeeLevel={changeFeeLevel}
+                    trigger={trigger}
                 />
                 <TradingFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
             </>

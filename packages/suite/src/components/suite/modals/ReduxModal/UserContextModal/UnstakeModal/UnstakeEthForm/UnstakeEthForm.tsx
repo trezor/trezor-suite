@@ -33,6 +33,7 @@ export const UnstakeEthForm = () => {
         changeFeeLevel,
         feeInfo,
         composedLevels,
+        trigger,
     } = useUnstakeEthFormContext();
 
     const { symbol, networkType } = account;
@@ -93,6 +94,7 @@ export const UnstakeEthForm = () => {
                     account={account}
                     composedLevels={composedLevels}
                     changeFeeLevel={changeFeeLevel}
+                    trigger={trigger}
                 />
 
                 <InfoItem

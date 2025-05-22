@@ -42,6 +42,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         handleSubmit,
         onClaimChange,
         signTx,
+        trigger,
     } = useClaimEthForm({ selectedAccount });
 
     const hasValues = Boolean(watch(CRYPTO_INPUT));
@@ -154,6 +155,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                         account={account}
                         composedLevels={composedLevels}
                         changeFeeLevel={changeFeeLevel}
+                        trigger={trigger}
                     />
 
                     {errors[CRYPTO_INPUT] && (

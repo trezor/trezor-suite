@@ -23,6 +23,7 @@ export const StakeEthForm = () => {
         changeFeeLevel,
         feeInfo,
         composedLevels,
+        trigger,
     } = useStakeEthFormContext();
 
     const { formattedBalance, symbol } = account;
@@ -50,6 +51,7 @@ export const StakeEthForm = () => {
                     feeInfo={feeInfo}
                     setValue={setValue}
                     getValues={getValues}
+                    trigger={trigger}
                     account={account}
                     composedLevels={composedLevels}
                     changeFeeLevel={changeFeeLevel}

@@ -6,6 +6,7 @@ import {
     UseFormRegister,
     UseFormReturn,
     UseFormSetValue,
+    UseFormTrigger,
 } from 'react-hook-form';
 
 import { useTheme } from 'styled-components';
@@ -64,6 +65,7 @@ export interface FeesProps<TFieldValues extends FormState> {
     getValues: UseFormGetValues<TFieldValues>;
     errors: FieldErrors<TFieldValues>;
     isDirty: boolean;
+    trigger: UseFormTrigger<TFieldValues>;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     label?: TranslationKey;
@@ -140,7 +142,7 @@ export const Fees = <TFieldValues extends FormState>({
     ...props
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { getValues, register, setValue } = props as unknown as UseFormReturn<FormState>;
+    const { getValues, register, setValue, trigger } = props as unknown as UseFormReturn<FormState>;
     const theme = useTheme();
     const dispatch = useDispatch();
 
@@ -243,6 +245,7 @@ export const Fees = <TFieldValues extends FormState>({
                     getValues={getValues}
                     setValue={setValue}
                     transactionInfo={transactionInfo}
+                    trigger={trigger}
                 />
             )}
             {error && (

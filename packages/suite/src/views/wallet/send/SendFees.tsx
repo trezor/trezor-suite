@@ -14,6 +14,7 @@ export const SendFees = () => {
         account,
         feeInfo,
         composedLevels,
+        trigger,
     } = useSendFormContext();
 
     return (
@@ -29,6 +30,7 @@ export const SendFees = () => {
                 account={account}
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
+                trigger={trigger}
             />
         </Card>
     );

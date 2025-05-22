@@ -5,6 +5,7 @@ import {
     UseFormGetValues,
     UseFormRegister,
     UseFormSetValue,
+    UseFormTrigger,
 } from 'react-hook-form';
 
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
@@ -35,6 +36,7 @@ export type CustomFeeBasicProps<TFieldValues extends FormState> = {
     composedFeePerByte: string | undefined;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
+    trigger: UseFormTrigger<TFieldValues>;
     translationString: TranslationFunction;
     feeUnits: string;
     sharedRules: {
@@ -52,6 +54,7 @@ interface CustomFeeProps<TFieldValues extends FormState> {
     control: Control;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
+    trigger: UseFormTrigger<TFieldValues>;
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
 }
 
