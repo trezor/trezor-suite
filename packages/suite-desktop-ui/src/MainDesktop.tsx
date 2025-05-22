@@ -23,7 +23,7 @@ import Protocol from 'src/support/suite/Protocol';
 import { useTor } from 'src/support/suite/useTor';
 import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
-import ErrorBoundary from 'src/support/suite/ErrorBoundary';
+import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
 import RouterHandler from 'src/support/suite/Router';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';

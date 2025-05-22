@@ -42,6 +42,7 @@ postcss-modules-values
 postcss-styled-syntax
 qrcode.react
 react
+react-error-boundary
 react-date-range
 react-dom
 react-focus-lock
