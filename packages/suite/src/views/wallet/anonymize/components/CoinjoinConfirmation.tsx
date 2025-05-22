@@ -3,22 +3,11 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import {
-    Button,
-    Card,
-    Checkbox,
-    H3,
-    Link,
-    Note,
-    Paragraph,
-    Tooltip,
-    variables,
-} from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
-import { DATA_TOS_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
+import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { Error } from 'src/components/suite/Error';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -73,11 +62,6 @@ const Tiles = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCheckbox = styled(Checkbox)`
-    ${typography.highlight}
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin: ${spacingsPx.xl} auto 0;
 
@@ -109,7 +93,6 @@ interface CoinjoinConfirmationProps {
 }
 
 export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => {
-    const [termsConfirmed, setTermsConfirmed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const coinjoinClient = useSelector(state => selectCoinjoinClient(state, account.key));
@@ -133,18 +116,14 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         );
     }
 
-    const isDisabled = !termsConfirmed || isCoinjoinSessionBlocked;
+    const isDisabled = isCoinjoinSessionBlocked;
     const coordinatorFeePercentage = `${coinjoinClient.coordinationFeeRate.rate * 100}%`;
 
     const getButtonTooltipMessage = () => {
         if (coinjoinSessionBlockedMessage) {
             return coinjoinSessionBlockedMessage;
         }
-        if (!termsConfirmed) {
-            return <Translation id="TR_CONFIRM_CONDITIONS" />;
-        }
     };
-    const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
     const anonymize = async () => {
         setIsLoading(true);
         await dispatch(startCoinjoinSession(...startCoinjoinArgs));
@@ -175,27 +154,6 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                         <Translation id="TR_SERVICE_FEE_NOTE" />
                     </Note>
                 </FeeWrapper>
-                <StyledCheckbox
-                    isChecked={termsConfirmed}
-                    onClick={toggleTermsConfirmation}
-                    data-testid="@coinjoin/checkbox"
-                >
-                    <Translation
-                        id="TR_TERMS_AND_PRIVACY_CONFIRMATION"
-                        values={{
-                            coordinator: chunks => (
-                                <Link href={ZKSNACKS_TERMS_URL} variant="underline">
-                                    {chunks}
-                                </Link>
-                            ),
-                            trezor: chunks => (
-                                <TrezorLink href={DATA_TOS_URL} variant="underline">
-                                    {chunks}
-                                </TrezorLink>
-                            ),
-                        }}
-                    />
-                </StyledCheckbox>
             </Card>
 
             <Tooltip content={getButtonTooltipMessage()}>
