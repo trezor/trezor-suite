@@ -160,8 +160,6 @@ export const EXPERIMENTAL_FEATURES_KB_URL: Url =
     'https://trezor.io/learn/a/experimental-features-in-trezor-suite';
 export const EXPERIMENTAL_PASSWORD_MANAGER_KB_URL: Url =
     'https://trezor.io/learn/a/retrieve-dropbox-passwords-from-password-manager';
-export const ZKSNACKS_TERMS_URL: Url =
-    'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';
 export const CROWDIN_URL: Url = 'https://crowdin.com/project/trezor-suite';
 
 export const TREZOR_SAFE_5_URL: Url = 'https://trezor.io/trezor-safe-5';
