@@ -568,8 +568,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
             try {
                 if (this.protocol.name === 'v2') {
                     const enforcePairing = !!fn;
+                    const thpState = this.getThpState();
+                    if (!thpState) {
+                        throw ERRORS.TypedError('Device_ThpStateMissing');
+                    }
                     await getThpChannel(this, DataManager.getSettings('thp'), enforcePairing);
-                    if (this.getThpState()?.isAutoconnectPaired || enforcePairing) {
+                    if (
+                        // thpState.pairingCredentials.length > 0 ||
+                        thpState.isAutoconnectPaired ||
+                        enforcePairing
+                    ) {
                         await this.getFeatures();
                     }
                 } else if (fn) {
