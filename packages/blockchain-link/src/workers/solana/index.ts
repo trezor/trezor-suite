@@ -20,7 +20,7 @@ import {
     createDefaultRpcTransport,
     createSolanaRpcFromTransport,
     createSolanaRpcSubscriptions,
-    decompileTransactionMessage,
+    decompileTransactionMessageFetchingLookupTables,
     getBase16Encoder,
     getBase64Encoder,
     getCompiledTransactionMessageDecoder,
@@ -148,7 +148,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     assertTransactionIsFullySigned(transaction);
 
     const compiledMessage = getCompiledTransactionMessageDecoder().decode(transaction.messageBytes);
-    const message = decompileTransactionMessage(compiledMessage);
+    const message = await decompileTransactionMessageFetchingLookupTables(compiledMessage, api.rpc);
     if (isDurableNonceTransaction(message)) {
         // TODO: Handle durable nonce transactions.
         throw new Error('Unimplemented: Confirming durable nonce transactions');
