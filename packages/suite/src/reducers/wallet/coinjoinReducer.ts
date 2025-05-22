@@ -1030,7 +1030,7 @@ export const selectStartCoinjoinSessionArguments = (
     return [
         selectedAccount,
         {
-            maxCoordinatorFeeRate: coinjoinClient?.coordinationFeeRate.rate,
+            maxCoordinatorFeeRate: Math.min(coinjoinClient.coordinationFeeRate.rate, 0.01), // 1% max cap by suite
             maxFeePerKvbyte,
             maxRounds,
             skipRounds,
