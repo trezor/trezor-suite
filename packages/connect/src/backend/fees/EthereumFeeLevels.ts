@@ -29,6 +29,10 @@ export class EthereumFeeLevels extends MiscFeeLevels {
             const feePerUnit = Math.min(maxFeeInWei, Math.max(minFeeInWei, feeInWei)).toString();
 
             if (eip1559?.baseFeePerGas) {
+                const minMaxPriorityFeePerGas = new BigNumber(this.coinInfo.minPriorityFee)
+                    .multipliedBy('1e+9')
+                    .toNumber();
+
                 const levels = (['low', 'medium', 'high'] as const).map(levelKey => {
                     const level = eip1559[levelKey];
 
@@ -41,11 +45,12 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                     const maxFeePerGas = BigNumber.max(
                         this.coinInfo.minFee,
                         level.maxFeePerGas,
+                        minMaxPriorityFeePerGas,
                     ).toString();
 
-                    const maxPriorityFeePerGas = BigNumber.min(
-                        maxFeePerGas,
-                        level.maxPriorityFeePerGas,
+                    const maxPriorityFeePerGas = BigNumber.max(
+                        minMaxPriorityFeePerGas,
+                        BigNumber.min(maxFeePerGas, level.maxPriorityFeePerGas),
                     ).toString();
 
                     return {

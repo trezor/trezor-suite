@@ -24,6 +24,7 @@ export const DEFAULT_FEE_INFO: FeeInfo = {
     blockTime: 10,
     minFee: 1,
     maxFee: 100,
+    minPriorityFee: 0,
     levels: [{ label: 'normal', feePerUnit: '1', blocks: 0 }],
 };
 

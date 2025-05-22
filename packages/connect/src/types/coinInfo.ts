@@ -57,6 +57,7 @@ const Common = Type.Object({
     blockTime: Type.Number(),
     minFee: Type.Number(),
     maxFee: Type.Number(),
+    minPriorityFee: Type.Number(),
     defaultFees: Type.Array(FeeLevel),
 });
 
@@ -101,6 +102,7 @@ export const EthereumNetworkInfoDefinitionValues = Type.Omit(EthereumNetworkInfo
     'minFee',
     'maxFee',
     'defaultFees',
+    'minPriorityFee',
     'blockTime',
 ]);
 

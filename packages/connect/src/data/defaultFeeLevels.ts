@@ -23,14 +23,14 @@ const getDefaultBlocksForFeeLevel = (shortcut: string, label: string) =>
 
 const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     string,
-    { min: number; max: number; defaultGas: number }
+    { min: number; max: number; defaultGas: number; minPriorityFee: number }
 > = {
-    eth: { min: 0.1, max: 10000, defaultGas: 10 },
-    pol: { min: 0.1, max: 10000000, defaultGas: 200 },
-    bsc: { min: 0.1, max: 100000, defaultGas: 1 },
-    base: { min: 0.0000001, max: 1000, defaultGas: 0.01 },
-    arb: { min: 0.001, max: 1000, defaultGas: 0.01 },
-    op: { min: 0.000000001, max: 1000, defaultGas: 0.01 },
+    eth: { min: 0.1, max: 10000, defaultGas: 10, minPriorityFee: 0 },
+    pol: { min: 0.1, max: 10000000, defaultGas: 200, minPriorityFee: 30 },
+    bsc: { min: 0.1, max: 100000, defaultGas: 1, minPriorityFee: 0 },
+    base: { min: 0.0000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
+    arb: { min: 0.001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
+    op: { min: 0.000000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
 };
 
 const getEvmChainGweiGasPrice = (chain: string) =>
@@ -38,6 +38,7 @@ const getEvmChainGweiGasPrice = (chain: string) =>
         min: 0.000000001,
         max: 10000,
         defaultGas: 1,
+        minPriorityFee: 0,
     };
 
 // partial data from coins.jon
@@ -78,12 +79,13 @@ export const getBitcoinFeeLevels = (coin: CoinsJsonData): FeeInfoWithLevels => {
         dustLimit: coin.dust_limit,
         maxFee: Math.round(coin.maxfee_kb / 1000),
         minFee: Math.round(coin.minfee_kb / 1000),
+        minPriorityFee: -1, // unknown/unused
         defaultFees: levels,
     };
 };
 
 export const getEthereumFeeLevels = (network: CoinsJsonData): FeeInfoWithLevels => {
-    const { min, max, defaultGas } = getEvmChainGweiGasPrice(network.chain);
+    const { min, max, defaultGas, minPriorityFee } = getEvmChainGweiGasPrice(network.chain);
 
     return {
         blockTime: Math.max(0.1, Math.round(network.blocktime_seconds)),
@@ -97,6 +99,7 @@ export const getEthereumFeeLevels = (network: CoinsJsonData): FeeInfoWithLevels 
         ],
         minFee: min,
         maxFee: max,
+        minPriorityFee,
         dustLimit: -1, // unknown/unused
     };
 };
@@ -106,6 +109,7 @@ const RIPPLE_FEE_INFO: FeeInfoWithLevels = {
     defaultFees: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
     minFee: 10,
     maxFee: 10000,
+    minPriorityFee: -1, // unknown/unused
     dustLimit: -1, // unknown/unused
 };
 
@@ -114,6 +118,7 @@ const CARDANO_FEE_INFO: FeeInfoWithLevels = {
     defaultFees: [{ label: 'normal', feePerUnit: '44', blocks: -1 }],
     minFee: 44,
     maxFee: 16384 * 44 + 155381,
+    minPriorityFee: -1, // unknown/unused
     dustLimit: -1, // unknown/unused
 };
 
@@ -132,6 +137,7 @@ const SOLANA_FEE_INFO: FeeInfoWithLevels = {
     ],
     minFee: 5000,
     maxFee: 1000000000,
+    minPriorityFee: -1, // unknown/unused
     dustLimit: -1, // unknown/unused
 };
 
@@ -140,6 +146,7 @@ const STELLAR_FEE_INFO: FeeInfoWithLevels = {
     defaultFees: [{ label: 'normal', feePerUnit: '100', blocks: -1 }],
     minFee: 100, // 0.00001 XLM
     maxFee: 10000000, // 1 XLM
+    minPriorityFee: -1, // unknown/unused
     dustLimit: -1, // unknown/unused
 };
 
@@ -163,6 +170,7 @@ export const getMiscFeeLevels = (data: CoinsJsonData): FeeInfoWithLevels => {
             minFee: -1,
             maxFee: -1,
             defaultFees: [{ label: 'normal', feePerUnit: '-1', blocks: -1 }],
+            minPriorityFee: -1,
             dustLimit: -1,
         }
     );

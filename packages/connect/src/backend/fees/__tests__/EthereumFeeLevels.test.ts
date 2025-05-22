@@ -48,7 +48,6 @@ describe('api/ethereum/Fees', () => {
     /* ---------------------------------------------------------------------- */
     it('Ethereum smart FeeLevels (EIP-1559) – exact match', async () => {
         const coinInfo = getEthereumNetwork('eth')!;
-        if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest
             .spyOn(BlockchainLink.prototype, 'estimateFee')
@@ -116,8 +115,7 @@ describe('api/ethereum/Fees', () => {
     /*  3) BNB Smart Chain – legacy gasPrice                                  */
     /* ---------------------------------------------------------------------- */
     it('BSC smart FeeLevels (legacy gasPrice)', async () => {
-        const coinInfo = getEthereumNetwork('bsc');
-        if (!coinInfo) throw new Error('coinInfo is missing');
+        const coinInfo = getEthereumNetwork('bsc')!;
 
         const spy = jest
             .spyOn(BlockchainLink.prototype, 'estimateFee')
@@ -132,6 +130,56 @@ describe('api/ethereum/Fees', () => {
         expect(smartLevels?.[0].label).toBe('normal');
         expect(smartLevels?.[0].feePerUnit).toBe('5000000000');
         expect(smartLevels?.[0].feeLimit).toBe('21000');
+
+        backend.disconnect();
+        spy.mockRestore();
+    });
+
+    /* ------------------------------------------------------------------ */
+    /*  4) minPriorityFeePerGas clamp (Polygon – 30 Gwei floor)           */
+    /* ------------------------------------------------------------------ */
+    it('Polygon – adjusts maxFeePerGas & priority tip up to minPriorityFee (30 Gwei)', async () => {
+        const coinInfo = getEthereumNetwork('pol')!;
+
+        const LOW_LIMIT_RESPONSE = [
+            {
+                feePerUnit: '30000000000', // 30 Gwei
+                feeLimit: '21000',
+                eip1559: {
+                    baseFeePerGas: '28000000000',
+                    low: {
+                        maxFeePerGas: '18000000000',
+                        maxPriorityFeePerGas: '1000000000',
+                        maxWaitTimeEstimate: 6000,
+                    },
+                    medium: {
+                        maxFeePerGas: '20000000000',
+                        maxPriorityFeePerGas: '2000000000',
+                        maxWaitTimeEstimate: 4000,
+                    },
+                    high: {
+                        maxFeePerGas: '22000000000',
+                        maxPriorityFeePerGas: '3000000000',
+                        maxWaitTimeEstimate: 2000,
+                    },
+                },
+            },
+        ];
+
+        const spy = jest
+            .spyOn(BlockchainLink.prototype, 'estimateFee')
+            .mockResolvedValue(LOW_LIMIT_RESPONSE);
+
+        const backend = await initBlockchain(coinInfo, () => {});
+        const feeLevels = new EthereumFeeLevels(coinInfo);
+
+        const smart = await feeLevels.load(backend, ETH_REQUEST);
+
+        smart.forEach(lvl => {
+            expect(Number(lvl.maxPriorityFeePerGas)).toBe(30e9);
+            expect(Number(lvl.maxFeePerGas)).toBe(30e9);
+            expect(lvl.maxPriorityFeePerGas).toBe(lvl.maxFeePerGas);
+        });
 
         backend.disconnect();
         spy.mockRestore();

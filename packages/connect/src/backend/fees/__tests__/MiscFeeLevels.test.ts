@@ -11,6 +11,7 @@ const SOL_COIN_INFO: CoinInfo = {
     blockTime: 0.4,
     minFee: 5_000,
     maxFee: 1_000_000,
+    minPriorityFee: -1,
     curve: '',
     defaultFees: [
         {

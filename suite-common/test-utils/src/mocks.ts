@@ -615,6 +615,7 @@ const fee: FeeInfo = {
     blockHeight: 590093,
     minFee: 1,
     maxFee: 100,
+    minPriorityFee: 0,
     levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
 };
 
