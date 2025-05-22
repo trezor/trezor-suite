@@ -1,8 +1,7 @@
 import type { FirmwareRelease } from '@trezor/device-utils';
+import { removeTrailingSlashes } from '@trezor/utils';
 
 import { httpRequest } from '../../utils/assets';
-
-const ALL_SLASHES_AT_THE_END_REGEX = /\/+$/;
 
 interface GetBinaryProps {
     baseUrl: string;
@@ -12,7 +11,7 @@ interface GetBinaryProps {
 
 export const getBinary = ({ baseUrl, btcOnly, release }: GetBinaryProps) => {
     const fwUrl = release[btcOnly ? 'url_bitcoinonly' : 'url'];
-    const sanitizedBaseUrl = baseUrl.replace(ALL_SLASHES_AT_THE_END_REGEX, '');
+    const sanitizedBaseUrl = removeTrailingSlashes(baseUrl);
     const url = `${sanitizedBaseUrl}/${fwUrl}`;
 
     return httpRequest(url, 'binary');
