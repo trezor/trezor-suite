@@ -6,10 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
-import {
-    applyDiscoveryChangesThunk,
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -38,7 +35,7 @@ export const CoinEnablingInitScreen = () => {
         dispatch(setIsCoinEnablingInitFinished(true));
         if (enabledNetworkSymbols.length > 0) {
             dispatch(setIsCoinEnablingInitFinished(true));
-            dispatch(applyDiscoveryChangesThunk());
+            // dispatch(applyDiscoveryChangesThunk());
             analytics.report({
                 type: EventType.CoinEnablingInitState,
                 payload: { enabledNetworks: enabledNetworkSymbols },

@@ -7,7 +7,6 @@ import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { changeNetworks, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { selectShouldShowCoinEnablingInitFlow } from '@suite-native/coin-enabling';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
-import { applyDiscoveryChangesThunk } from '@suite-native/discovery';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -43,7 +42,6 @@ export const useCoinEnablingInitialCheck = () => {
             if (hasBitcoinOnlyFirmware) {
                 // discoveryMiddleware ensures that BTC is enabled for devices with BTC-only firmware
                 dispatch(setIsCoinEnablingInitFinished(true));
-                dispatch(applyDiscoveryChangesThunk());
             } else {
                 // if there are remembered accounts, enable its networks before showing UI
                 if (A.isNotEmpty(viewOnlyDevicesAccountsNetworkSymbols)) {
