@@ -2,6 +2,8 @@ import fs from 'fs';
 import { createMessage, readKey, readSignature, verify } from 'openpgp';
 import path from 'path';
 
+import { removeTrailingSlashes } from '@trezor/utils';
+
 const signingKey = process.env.APP_PUBKEY;
 
 // This will prevent the auto-updater from loading if the pubkey is not defined
@@ -15,7 +17,7 @@ const getSignatureFile = async ({ filename, feedURL }: GetSignatureFileProps) =>
     /**
      * Signature files are available next to installation files.
      */
-    const signatureFileURL = `${feedURL.replace(/\/+$/, '')}/${filename}.asc`;
+    const signatureFileURL = `${removeTrailingSlashes(feedURL)}/${filename}.asc`;
 
     const signatureFile = await fetch(signatureFileURL);
 
