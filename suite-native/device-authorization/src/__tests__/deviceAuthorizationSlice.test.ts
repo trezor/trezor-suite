@@ -1,4 +1,4 @@
-import { createDeviceInstanceThunk } from '@suite-common/wallet-core';
+import { createDeviceInstanceThunk } from '@suite-common/device';
 import { UI } from '@trezor/connect';
 
 import {

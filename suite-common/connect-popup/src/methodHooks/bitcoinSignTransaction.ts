@@ -1,5 +1,8 @@
+import {
+    accountsActions,
+    selectAccountForNetworkSymbolAndPath,
+} from '@suite-common/wallet-blockchain';
 import { Bip43Path, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { accountsActions, selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
 import { sendFormActions } from '@suite-common/wallet-send';
 import { Account, FormOptions } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';

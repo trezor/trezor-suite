@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { AccountsRootState, selectIsTestnetAccount } from '@suite-common/wallet-blockchain';
 import {
-    AccountsRootState,
     TransactionsRootState,
     selectIsPhishingTransaction,
-    selectIsTestnetAccount,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box } from '@suite-native/atoms';
 import {

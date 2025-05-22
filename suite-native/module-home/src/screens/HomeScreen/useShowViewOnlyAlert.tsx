@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     deviceActions,
-    selectHasDeviceDiscovery,
     selectIsDeviceRemembered,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';

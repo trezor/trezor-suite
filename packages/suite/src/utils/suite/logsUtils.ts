@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { authorizeDeviceThunk, deviceActions, selectDevices } from '@suite-common/device';
 import { LogEntry, selectLogs } from '@suite-common/logger';
 import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
-import {
-    accountsActions,
-    authorizeDeviceThunk,
-    deviceActions,
-    discoveryActions,
-    selectDevices,
-} from '@suite-common/wallet-core';
+import { accountsActions, discoveryActions } from '@suite-common/wallet-blockchain';
 import { Discovery } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';

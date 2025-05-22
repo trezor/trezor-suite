@@ -1,4 +1,4 @@
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { WalletType as DefaultWalletLoadingOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';

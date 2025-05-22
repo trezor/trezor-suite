@@ -12,7 +12,7 @@ import {
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-settings';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';

@@ -13,13 +13,13 @@ import {
     useGraphForAccounts,
 } from '@suite-common/graph';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     BlockchainRootState,
     selectAccountByKey,
     selectIsElectrumBackendSelected,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 

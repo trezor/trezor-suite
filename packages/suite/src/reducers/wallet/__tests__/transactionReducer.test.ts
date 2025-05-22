@@ -3,7 +3,7 @@ import {
     prepareTransactionsReducer,
     transactionsActions,
     transactionsInitialState,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 

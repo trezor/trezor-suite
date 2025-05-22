@@ -2,12 +2,9 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { accountsActions } from '@suite-common/wallet-blockchain';
 import { Network, NetworkAccount, NetworkSymbol, networks } from '@suite-common/wallet-config';
-import {
-    accountsActions,
-    changeCoinVisibility,
-    selectEnabledNetworks,
-} from '@suite-common/wallet-core';
+import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-settings';
 import { CollapsibleBox, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings, spacingsPx } from '@trezor/theme';

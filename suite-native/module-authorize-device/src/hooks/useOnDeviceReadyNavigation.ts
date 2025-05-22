@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
+import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';

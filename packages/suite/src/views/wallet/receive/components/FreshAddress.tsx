@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-blockchain';
 import { getNetwork } from '@suite-common/wallet-config';
-import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import {
     Banner,

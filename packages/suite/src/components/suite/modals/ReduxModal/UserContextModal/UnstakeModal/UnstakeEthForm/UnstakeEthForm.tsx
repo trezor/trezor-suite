@@ -1,5 +1,5 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { selectValidatorsQueueData } from '@suite-common/wallet-stake';
 import { getStakingDataForNetwork, getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';

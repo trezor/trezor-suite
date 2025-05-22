@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { Button } from '@suite-native/atoms';

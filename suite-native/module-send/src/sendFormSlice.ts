@@ -9,7 +9,7 @@ import {
     prepareSendFormReducer as prepareCommonSendFormReducer,
     pushSendFormTransactionThunk,
     signTransactionThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
 import {
     AccountKey,
     GeneralPrecomposedLevels,

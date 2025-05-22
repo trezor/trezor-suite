@@ -3,7 +3,7 @@ import { memo, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountType, Network } from '@suite-common/wallet-config';
-import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { selectIsPhishingTransaction } from '@suite-common/wallet-transactions';
 import {
     formatNetworkAmount,
     isStakeTypeTx,

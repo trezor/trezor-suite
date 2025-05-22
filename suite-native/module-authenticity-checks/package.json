@@ -13,7 +13,6 @@
     "dependencies": {
         "@react-navigation/core": "^6.4.10",
         "@react-navigation/native": "6.1.18",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",

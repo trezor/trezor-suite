@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-blockchain';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     ExcludedUtxos,
     FeeInfo,

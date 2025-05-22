@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { DeviceRootState } from '@suite-common/device';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 
 import {
     TradeHistoryListItemMemoized,

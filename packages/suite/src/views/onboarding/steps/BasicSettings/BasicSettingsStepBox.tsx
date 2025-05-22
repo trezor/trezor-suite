@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-core';
+import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-settings';
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

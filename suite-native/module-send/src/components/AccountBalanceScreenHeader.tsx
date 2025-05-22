@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

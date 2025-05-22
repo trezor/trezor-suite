@@ -11,9 +11,7 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
+
         {
             "path": "../../suite-common/wallet-utils"
         },

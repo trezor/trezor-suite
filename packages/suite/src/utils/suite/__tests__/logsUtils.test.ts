@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
+import { discoveryActions } from '@suite-common/wallet-blockchain';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { discoveryActions } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
 import {

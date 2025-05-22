@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import { BottomSheet, Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';

@@ -1,5 +1,6 @@
 import { SignOperator } from '@suite-common/suite-types';
-import { selectHistoricFiatRatesByTimestamp, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
     formatCardanoDeposit,

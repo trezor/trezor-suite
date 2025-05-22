@@ -7,14 +7,14 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import {
-    WalletSettingsAction,
     accountsActions,
     blockchainActions,
     discoveryActions,
-    explorerActions,
-    sendFormActions,
-    stakeActions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { explorerActions } from '@suite-common/wallet-explorer/libDev/src';
+import { sendFormActions } from '@suite-common/wallet-send';
+import { WalletSettingsAction } from '@suite-common/wallet-settings';
+import { stakeActions } from '@suite-common/wallet-stake';
 
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
@@ -24,6 +24,7 @@ import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
+
 
 // reexport
 export type { Icon } from './iconTypes';

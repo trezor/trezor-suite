@@ -1,15 +1,12 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { createImportedDeviceThunk, initDevices } from '@suite-common/device';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
-import {
-    createImportedDeviceThunk,
-    initBlockchainThunk,
-    initDevices,
-    initStakeDataThunk,
-    periodicFetchFiatRatesThunk,
-    selectLocalCurrency,
-} from '@suite-common/wallet-core';
+import { initBlockchainThunk } from '@suite-common/wallet-blockchain';
+import { periodicFetchFiatRatesThunk } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
+import { initStakeDataThunk } from '@suite-common/wallet-stake';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';

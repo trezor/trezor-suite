@@ -1,4 +1,4 @@
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
 import { Account } from '@suite-common/wallet-types';
 
 export const accountSpendingCoins: Account = {

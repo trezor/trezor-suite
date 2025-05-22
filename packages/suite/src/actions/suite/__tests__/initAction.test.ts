@@ -1,5 +1,6 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { initDevices, prepareDeviceReducer } from '@suite-common/device';
 import {
     fetchConfigThunk,
     initMessageSystemThunk,
@@ -13,16 +14,15 @@ import {
 } from '@suite-common/token-definitions';
 import {
     feesActions,
-    fetchFiatRatesThunk,
     initBlockchainThunk,
-    initDevices,
-    initStakeDataThunk,
-    periodicCheckStakeDataThunk,
-    periodicFetchFiatRatesThunk,
     preloadFeeInfoThunk,
-    prepareDeviceReducer,
+} from '@suite-common/wallet-blockchain';
+import {
+    fetchFiatRatesThunk,
+    periodicFetchFiatRatesThunk,
     updateMissingTxFiatRatesThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-fiat-rates';
+import { initStakeDataThunk, periodicCheckStakeDataThunk } from '@suite-common/wallet-stake';
 import TrezorConnect from '@trezor/connect';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';

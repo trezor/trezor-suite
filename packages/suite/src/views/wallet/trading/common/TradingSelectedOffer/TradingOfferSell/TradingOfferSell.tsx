@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 
 import { type TradingSellType, selectTradingSellFormStep } from '@suite-common/trading';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 import { Card, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { transactionsActions } from '@suite-common/wallet-core/';
+import { transactionsActions } from '@suite-common/wallet-transactions/';
 import { isRbfTransaction } from '@suite-common/wallet-utils';
 
 import { Action, AppState, Dispatch } from 'src/types/suite';

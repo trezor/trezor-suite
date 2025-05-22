@@ -1,11 +1,8 @@
 import { ComponentProps } from 'react';
 
+import { authConfirm, authorizeDeviceThunk } from '@suite-common/device';
+import { restartDiscoveryThunk as restartDiscovery } from '@suite-common/wallet-blockchain';
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
-import {
-    authConfirm,
-    authorizeDeviceThunk,
-    restartDiscoveryThunk as restartDiscovery,
-} from '@suite-common/wallet-core';
 import { Discovery } from '@suite-common/wallet-types';
 import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';

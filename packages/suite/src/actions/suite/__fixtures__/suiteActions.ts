@@ -1,11 +1,11 @@
-import { testMocks } from '@suite-common/test-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     authorizeDeviceThunk,
     createDeviceInstanceThunk,
     deviceActions,
-    discoveryActions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { testMocks } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { discoveryActions } from '@suite-common/wallet-blockchain';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';

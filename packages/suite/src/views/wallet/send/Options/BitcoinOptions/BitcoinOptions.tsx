@@ -2,7 +2,7 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { selectNetworkBlockchainInfo } from '@suite-common/wallet-blockchain';
 import { Button, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 

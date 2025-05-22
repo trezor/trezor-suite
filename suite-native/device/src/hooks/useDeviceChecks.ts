@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsFirmwareAuthenticityCheckDismissed } from '@suite-common/wallet-core';
+import { selectIsFirmwareAuthenticityCheckDismissed } from '@suite-common/device';
 import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsOnboardingFinished,

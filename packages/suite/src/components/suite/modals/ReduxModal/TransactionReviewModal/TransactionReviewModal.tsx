@@ -1,10 +1,6 @@
 import { UserContextPayload } from '@suite-common/suite-types';
-import {
-    cancelSignSendFormTransactionThunk,
-    selectStake,
-    sendFormActions,
-    stakeActions,
-} from '@suite-common/wallet-core';
+import { cancelSignSendFormTransactionThunk, sendFormActions } from '@suite-common/wallet-send';
+import { selectStake, stakeActions } from '@suite-common/wallet-stake';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';

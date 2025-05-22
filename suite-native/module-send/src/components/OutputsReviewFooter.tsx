@@ -7,17 +7,16 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
-import {
-    AccountsRootState,
-    TransactionsRootState,
-    selectAccountByKey,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import {
     SendRootState,
     pushSendFormTransactionThunk,
     selectSendFormDraftByKey,
 } from '@suite-common/wallet-send';
+import {
+    TransactionsRootState,
+    selectTransactionByAccountKeyAndTxid,
+} from '@suite-common/wallet-transactions';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';

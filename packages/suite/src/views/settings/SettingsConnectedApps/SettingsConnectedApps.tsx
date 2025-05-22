@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectDevices } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/device';
 import { selectSessions } from '@suite-common/walletconnect';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';

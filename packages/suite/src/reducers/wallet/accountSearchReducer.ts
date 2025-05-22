@@ -1,6 +1,7 @@
 import { produce } from 'immer';
 
-import { changeNetworks, deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/device';
+import { changeNetworks } from '@suite-common/wallet-settings';
 
 import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';

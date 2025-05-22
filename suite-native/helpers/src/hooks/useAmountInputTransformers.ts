@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-settings';
 
 export const decimalTransformer = (value: string) =>
     value

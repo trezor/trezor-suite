@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { selectValidatorsQueueData } from '@suite-common/wallet-stake';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { IntervalId } from '@trezor/type-utils';
 
 import { selectDiscoveryInfo } from './discoveryConfigSlice';

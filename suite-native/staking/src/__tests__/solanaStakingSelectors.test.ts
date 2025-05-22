@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { StakeState, stakeInitialState } from '@suite-common/wallet-core';
+import { StakeState, stakeInitialState } from '@suite-common/wallet-stake';
 import { Account, Timestamp } from '@suite-common/wallet-types';
 
 import {

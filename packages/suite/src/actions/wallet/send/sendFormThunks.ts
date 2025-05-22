@@ -1,19 +1,19 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
-    replaceTransactionThunk,
     selectPrecomposedSendForm,
-    selectSelectedDevice,
     selectSendFormDrafts,
     sendFormActions,
     signTransactionThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
+import { replaceTransactionThunk } from '@suite-common/wallet-transactions';
 import {
     Account,
     FormState,

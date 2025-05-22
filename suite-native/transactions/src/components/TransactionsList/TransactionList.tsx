@@ -7,13 +7,15 @@ import { FlashList } from '@shopify/flash-list';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     AccountsRootState,
-    TransactionsRootState,
     fetchAndUpdateAccountThunk,
-    fetchTransactionsPageThunk,
     selectAccountByKey,
+} from '@suite-common/wallet-blockchain';
+import {
+    TransactionsRootState,
+    fetchTransactionsPageThunk,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';

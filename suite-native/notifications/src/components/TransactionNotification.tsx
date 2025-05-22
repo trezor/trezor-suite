@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { DeviceRootState } from '@suite-common/device';
 import {
     NotificationId,
     NotificationsRootState,
@@ -11,12 +12,13 @@ import {
 } from '@suite-common/toast-notifications';
 import {
     AccountsRootState,
-    DeviceRootState,
-    TransactionsRootState,
     selectDeviceAccountKeyByDescriptorAndNetworkSymbol,
+} from '@suite-common/wallet-blockchain';
+import {
+    TransactionsRootState,
     selectTransactionByAccountKeyAndTxid,
     selectTransactionFirstTargetAddress,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { TransactionType } from '@suite-common/wallet-types';
 import { Icon } from '@suite-native/icons';
 import {

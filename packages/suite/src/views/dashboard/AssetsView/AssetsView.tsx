@@ -9,11 +9,7 @@ import {
     getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import {
-    selectCurrentFiatRates,
-    selectEnabledNetworks,
-    selectLocalCurrency,
-} from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 import { RatesByKey } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,

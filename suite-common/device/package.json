@@ -10,10 +10,11 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-blockchain": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",

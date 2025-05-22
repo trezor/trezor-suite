@@ -1,4 +1,4 @@
-import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-settings';
 import { Icon, iconSizes } from '@trezor/components';
 
 import { QuickActionButton } from './QuickActionButton';

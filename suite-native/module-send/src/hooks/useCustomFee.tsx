@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-blockchain';
 import {
     AccountKey,
     TokenAddress,

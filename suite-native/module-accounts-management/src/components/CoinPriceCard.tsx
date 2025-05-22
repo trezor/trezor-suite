@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PriceChangeBadge, Text } from '@suite-native/atoms';
 import { FiatAmountFormatter } from '@suite-native/formatters';

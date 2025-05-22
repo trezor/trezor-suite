@@ -1,10 +1,10 @@
+import { accountsActions } from '@suite-common/wallet-blockchain';
 import {
     SerializedTx,
-    accountsActions,
     initialState,
     prepareSendFormReducer,
     sendFormActions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
 import { Account, FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { STORAGE } from 'src/actions/suite/constants';

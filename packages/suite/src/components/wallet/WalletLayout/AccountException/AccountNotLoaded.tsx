@@ -1,4 +1,4 @@
-import { restartDiscoveryThunk } from '@suite-common/wallet-core';
+import { restartDiscoveryThunk } from '@suite-common/wallet-blockchain';
 
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';

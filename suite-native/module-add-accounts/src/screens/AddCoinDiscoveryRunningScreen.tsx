@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
-    changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
     selectHasDeviceDiscovery,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { getNetwork } from '@suite-common/wallet-config';
+import { changeCoinVisibility } from '@suite-common/wallet-settings';
 import { Account } from '@suite-common/wallet-types';
 import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import {

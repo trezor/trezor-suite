@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccounts } from '@suite-common/wallet-core';
 import {
     Card,
     Column,

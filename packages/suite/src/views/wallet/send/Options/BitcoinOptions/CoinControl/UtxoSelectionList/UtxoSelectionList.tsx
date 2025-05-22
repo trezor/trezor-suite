@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { transparentize } from 'polished';
 import styled from 'styled-components';
 
-import { selectAccountTransactions } from '@suite-common/wallet-core';
+import { selectAccountTransactions } from '@suite-common/wallet-transactions';
 import { Icon, IconName, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { CSSColor } from '@trezor/theme';

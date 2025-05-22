@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceStackRoutes,

@@ -2,7 +2,7 @@ import {
     selectDeviceByStaticSessionId,
     selectDevices,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { cloneObject } from '@trezor/utils';

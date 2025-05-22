@@ -1,14 +1,10 @@
 import * as trezorConnectActions from '@suite-common/connect-init';
+import { initDevices, selectDevices } from '@suite-common/device';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
-import {
-    initBlockchainThunk,
-    initDevices,
-    periodicCheckStakeDataThunk,
-    periodicFetchFiatRatesThunk,
-    selectDevices,
-    updateMissingTxFiatRatesThunk,
-} from '@suite-common/wallet-core';
+import { initBlockchainThunk } from '@suite-common/wallet-blockchain';
+import { periodicFetchFiatRatesThunk, updateMissingTxFiatRatesThunk } from '@suite-common/wallet-fiat-rates';
+import { periodicCheckStakeDataThunk } from '@suite-common/wallet-stake';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { DEVICE } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';

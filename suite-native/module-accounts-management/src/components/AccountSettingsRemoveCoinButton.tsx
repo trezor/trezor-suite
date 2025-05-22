@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    accountsActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-blockchain';
 import { AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';

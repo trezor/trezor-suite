@@ -6,9 +6,9 @@ import { cryptoIdToSymbol, mapTestnetSymbol } from '@suite-common/trading';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     selectFiatRatesByFiatRateKey,
-    selectLocalCurrency,
     updateFiatRatesThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 

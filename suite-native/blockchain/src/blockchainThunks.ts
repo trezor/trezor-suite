@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     blockchainActions,
     fetchAndUpdateAccountThunk,
@@ -7,7 +6,8 @@ import {
     selectDeviceAccountByDescriptorAndNetworkSymbol,
     selectDeviceAccountsByNetworkSymbol,
     subscribeBlockchainThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { NetworkSymbol, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
 import { BlockchainNotification } from '@trezor/connect';
 

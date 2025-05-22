@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@trezor/connect": "workspace:*"
     }

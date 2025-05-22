@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
-import { selectEnabledNetworks, selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
+import { selectPoolStatsApyData } from '@suite-common/wallet-stake';
 import {
     Card,
     Column,

@@ -1,5 +1,5 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-transactions';
 import { Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';

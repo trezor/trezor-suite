@@ -2,14 +2,16 @@ import { useEffect, useMemo } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    selectPoolStatsApyData,
+    selectPoolStatsNextRewardPayout,
+    selectValidatorsQueue,
+} from '@suite-common/wallet-stake';
+import {
     fetchAllTransactionsForAccountThunk,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
-    selectPoolStatsApyData,
-    selectPoolStatsNextRewardPayout,
-    selectValidatorsQueue,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid, useMediaQuery, variables } from '@trezor/components';

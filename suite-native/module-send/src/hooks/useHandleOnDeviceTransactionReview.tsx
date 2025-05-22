@@ -4,13 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import {
-    AccountsRootState,
-    DeviceRootState,
-    SendRootState,
-    selectIsDeviceRemembered,
-    sendFormActions,
-} from '@suite-common/wallet-core';
+import { DeviceRootState, selectIsDeviceRemembered } from '@suite-common/device';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
+import { SendRootState, sendFormActions } from '@suite-common/wallet-send';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {

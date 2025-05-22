@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BlockchainState } from '@suite-common/wallet-core';
+import { BlockchainState } from '@suite-common/wallet-blockchain';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

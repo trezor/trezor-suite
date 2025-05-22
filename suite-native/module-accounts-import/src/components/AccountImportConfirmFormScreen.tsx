@@ -4,16 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { FlashList } from '@shopify/flash-list';
 
+import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import {
     TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDeviceState,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
 import { EventType, analytics } from '@suite-native/analytics';

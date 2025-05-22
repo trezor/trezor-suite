@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { UserContextPayload } from '@suite-common/suite-types';
+import { blockchainActions } from '@suite-common/wallet-blockchain';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { blockchainActions } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

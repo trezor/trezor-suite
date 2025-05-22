@@ -1,4 +1,4 @@
-import { authorizeDeviceThunk } from '@suite-common/wallet-core';
+import { authorizeDeviceThunk } from '@suite-common/device';
 
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT, claim, unstake } from '@suite-common/staking-solana';
+import { selectBlockchainState } from '@suite-common/wallet-blockchain';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
-import { selectBlockchainState } from '@suite-common/wallet-core';
 import { Account, PrecomposedLevels } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,

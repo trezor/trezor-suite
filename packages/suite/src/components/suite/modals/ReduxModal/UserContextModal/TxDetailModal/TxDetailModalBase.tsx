@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
 
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
+import { selectExplorer } from '@suite-common/wallet-explorer';
 import {
-    selectAccountByKey,
-    selectExplorer,
     selectIsPhishingTransaction,
     selectTransactionConfirmations,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';

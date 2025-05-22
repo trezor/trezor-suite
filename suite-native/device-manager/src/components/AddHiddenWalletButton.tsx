@@ -6,7 +6,7 @@ import {
     createDeviceInstanceThunk,
     selectIsDeviceProtectedByPassphrase,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

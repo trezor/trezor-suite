@@ -1,9 +1,9 @@
-import { Bip43Path, getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
-    sendFormActions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { Bip43Path, getNetwork } from '@suite-common/wallet-config';
+import { sendFormActions } from '@suite-common/wallet-send';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import type { SolanaSignTransaction } from '@trezor/connect';

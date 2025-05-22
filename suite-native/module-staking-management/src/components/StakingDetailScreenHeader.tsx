@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-blockchain';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

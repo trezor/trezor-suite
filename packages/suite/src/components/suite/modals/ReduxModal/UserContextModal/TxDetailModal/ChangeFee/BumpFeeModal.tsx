@@ -1,4 +1,4 @@
-import { selectTransactionConfirmations } from '@suite-common/wallet-core';
+import { selectTransactionConfirmations } from '@suite-common/wallet-transactions';
 import {
     ChainedTransactions,
     SelectedAccountLoaded,

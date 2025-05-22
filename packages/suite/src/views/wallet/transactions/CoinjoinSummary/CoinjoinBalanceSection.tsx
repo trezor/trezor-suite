@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { selectHasAccountTransactionHistory } from '@suite-common/wallet-core';
+import { selectHasAccountTransactionHistory } from '@suite-common/wallet-blockchain';
 import { Card, Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-stake';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Card, Column, Icon, Row, SkeletonStack, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';

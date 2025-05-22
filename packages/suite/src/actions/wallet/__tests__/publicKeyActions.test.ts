@@ -1,8 +1,8 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { connectInitThunk } from '@suite-common/connect-init';
+import { DeviceReducerState } from '@suite-common/device';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
-import { DeviceReducerState } from '@suite-common/wallet-core';
 
 import fixtures from '../__fixtures__/publicKeyActions';
 

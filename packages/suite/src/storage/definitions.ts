@@ -4,12 +4,12 @@ import type { DBSchema } from 'idb';
 
 import { AnalyticsState } from '@suite-common/analytics';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { DeviceReducerState } from '@suite-common/device';
 import type { MessageState } from '@suite-common/message-system';
 import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-types';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceReducerState } from '@suite-common/wallet-core';
 import type {
     BackendSettings,
     FormState,

@@ -7,15 +7,17 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import {
+    selectAccountNetworkType,
+    selectHasAccountTransactionHistory,
+} from '@suite-common/wallet-blockchain';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     TransactionsRootState,
-    selectAccountNetworkType,
     selectAccountTransactions,
-    selectHasAccountTransactionHistory,
     selectTransactionByAccountKeyAndTxid,
     selectTransactionTargets,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
 
 import { AddressesType, VinVoutAddress } from './types';

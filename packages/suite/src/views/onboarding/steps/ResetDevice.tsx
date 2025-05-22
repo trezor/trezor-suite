@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
 import { BackupType } from '@suite-common/suite-types';
-import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Divider, Text, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

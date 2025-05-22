@@ -1,11 +1,11 @@
-import { createThunk } from '@suite-common/redux-utils';
 import {
     createDeviceInstanceThunk,
     deviceActions,
     selectDeviceThunk,
     selectDevices,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { finishPassphraseFlow } from './deviceAuthorizationSlice';

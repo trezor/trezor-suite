@@ -4,16 +4,14 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { getNetworkType } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     FeesRootState,
-    SendRootState,
     selectAccountByKey,
-    selectNetworkFeeInfo,
-    selectNetworkFeeLevelFeePerUnit,
-    selectSendFormDraftByKey,
-} from '@suite-common/wallet-core';
+    selectNetworkFeeInfo, selectNetworkFeeLevelFeePerUnit
+} from '@suite-common/wallet-blockchain';
+import { getNetworkType } from '@suite-common/wallet-config';
+import { SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-send';
 import {
     AccountKey,
     GeneralPrecomposedTransactionFinal,

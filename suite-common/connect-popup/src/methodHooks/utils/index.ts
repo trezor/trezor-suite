@@ -1,5 +1,5 @@
+import { accountsActions } from '@suite-common/wallet-blockchain';
 import { Bip43Path, Network } from '@suite-common/wallet-config';
-import { accountsActions } from '@suite-common/wallet-core';
 
 export const createPlaceholderAccount = (
     network: Pick<Network, 'networkType' | 'symbol' | 'name'>,

@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     deviceActions,
-    selectHasDeviceDiscovery,
     selectIsDeviceConnectedAndAuthorized,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { useHandlePassphraseMismatch } from '@suite-native/device-authorization';

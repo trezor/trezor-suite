@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 

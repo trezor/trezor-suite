@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     AccountsRootState,
-    TransactionsRootState,
     selectAccountByKey,
-    selectIsPortfolioTrackerDevice,
     selectIsTestnetAccount,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { TransactionsRootState } from '@suite-common/wallet-transactions';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';

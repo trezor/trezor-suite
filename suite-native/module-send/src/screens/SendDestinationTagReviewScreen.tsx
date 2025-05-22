@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
+import { DeviceRootState } from '@suite-common/device';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
+import { SendRootState } from '@suite-common/wallet-send';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {

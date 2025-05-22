@@ -4,16 +4,13 @@ import { isRejected } from '@reduxjs/toolkit';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { accountsActions, selectAccountByKey , syncAccountsWithBlockchainThunk } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectAreSatsAmountUnit, selectBitcoinAmountUnit } from '@suite-common/wallet-settings';
 import {
-    accountsActions,
     addFakePendingCardanoTxThunk,
     addFakePendingTxThunk,
-    selectAccountByKey,
-    selectAreSatsAmountUnit,
-    selectBitcoinAmountUnit,
-    syncAccountsWithBlockchainThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import {
     Account,
     AccountKey,

@@ -1,5 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectFiatRatesByFiatRateKey, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 

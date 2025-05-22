@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
+import { DeviceRootState } from '@suite-common/device';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
+import { SendRootState } from '@suite-common/wallet-send';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {

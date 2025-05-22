@@ -8,12 +8,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     FeesRootState,
     selectNetworkFeeLevelFeePerUnit,
     selectNetworkFeeLevelTimeEstimate,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     AccountKey,
     GeneralPrecomposedTransaction,

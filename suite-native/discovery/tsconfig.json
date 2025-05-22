@@ -14,9 +14,7 @@
         {
             "path": "../../suite-common/wallet-constants"
         },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
+
         {
             "path": "../../suite-common/wallet-types"
         },

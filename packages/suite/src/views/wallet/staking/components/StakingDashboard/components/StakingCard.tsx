@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
+import { selectAccountStakeTransactions } from '@suite-common/wallet-transactions';
 import {
     calculateSolanaStakingReward,
     getStakingAccountCurrentStatus,

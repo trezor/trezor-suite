@@ -8,8 +8,8 @@ import {
     FiatRatesRootState,
     selectFiatRatesByFiatRateKey,
     selectHistoricFiatRatesByTimestamp,
-    selectLocalCurrency,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Timestamp, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
@@ -20,6 +20,7 @@ import {
 import { useTranslate } from '@suite-native/intl';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
+
 
 type TransactionDetailValuesSheetProps = {
     transaction: WalletAccountTransaction;

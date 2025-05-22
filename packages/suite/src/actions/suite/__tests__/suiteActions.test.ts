@@ -1,8 +1,6 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
 import { connectInitThunk } from '@suite-common/connect-init';
-import { prepareFirmwareReducer } from '@suite-common/device';
-import { testMocks } from '@suite-common/test-utils';
 import {
     ConnectDeviceSettings,
     acquireDevice,
@@ -15,12 +13,14 @@ import {
     handleDeviceDisconnect,
     observeSelectedDevice,
     prepareDeviceReducer,
+    prepareFirmwareReducer,
     selectDeviceThunk,
     selectDevices,
     selectDevicesCount,
     selectSelectedDevice,
     switchDuplicatedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { testMocks } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import modalReducer from 'src/reducers/suite/modalReducer';

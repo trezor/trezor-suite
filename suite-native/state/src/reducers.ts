@@ -16,14 +16,16 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
-    prepareFiatRatesReducer,
-    prepareTransactionsReducer,
+} from '@suite-common/wallet-blockchain';
+import { prepareFiatRatesReducer } from '@suite-common/wallet-fiat-rates';
+import {
     prepareWalletSettingsReducer,
     walletSettingsPersistedWhitelist,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-settings';
+import { prepareStakeReducer } from '@suite-common/wallet-stake';
+import { prepareTransactionsReducer } from '@suite-common/wallet-transactions';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
-import { prepareStakeReducer } from '@suite-common/wallet-stake';
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { discoveryConfigReducer } from '@suite-native/discovery';

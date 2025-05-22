@@ -1,4 +1,4 @@
-import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
+import { acquireDevice, selectDeviceThunk } from '@suite-common/device';
 import { DEVICE } from '@trezor/connect';
 
 import { NotificationRendererProps, NotificationViewProps } from 'src/components/suite';

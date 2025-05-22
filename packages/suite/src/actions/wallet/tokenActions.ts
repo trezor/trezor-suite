@@ -1,5 +1,5 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/connect';
 

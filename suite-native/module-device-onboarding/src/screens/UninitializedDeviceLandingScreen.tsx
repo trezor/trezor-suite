@@ -8,7 +8,7 @@ import {
     selectDeviceModel,
     selectHasDeviceFirmwareInstalled,
     selectIsLatestFirmwareInstalled,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Image, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel } from '@suite-native/device';
@@ -26,6 +26,7 @@ import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
+
 const trezorImageStyle = prepareNativeStyle<{ hasDeviceFirmwareInstalled: boolean }>(
     (_, { hasDeviceFirmwareInstalled }) => ({
         width: '100%',

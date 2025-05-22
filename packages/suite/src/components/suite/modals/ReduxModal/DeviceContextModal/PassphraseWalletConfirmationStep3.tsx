@@ -1,4 +1,4 @@
-import { selectDeviceFeatures, selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceFeatures, selectDeviceModel } from '@suite-common/device';
 import { Banner, Column, H3 } from '@trezor/components';
 import { PassphraseTypeCard } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

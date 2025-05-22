@@ -2,7 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-send';
 import { Account } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 
@@ -14,8 +14,8 @@ import {
     prepareTradingReducer,
 } from '../../../reducers/tradingReducer';
 
-jest.mock('@suite-common/wallet-core', () => {
-    const actualModule = jest.requireActual('@suite-common/wallet-core');
+jest.mock('@suite-common/wallet-send', () => {
+    const actualModule = jest.requireActual('@suite-common/wallet-send');
 
     return {
         ...actualModule,

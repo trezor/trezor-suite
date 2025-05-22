@@ -1,7 +1,7 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { selectDeviceAccounts } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectDeviceAccounts } from '@suite-common/wallet-core';
 import { Card, Column, DotIndicator, H4, Modal, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';

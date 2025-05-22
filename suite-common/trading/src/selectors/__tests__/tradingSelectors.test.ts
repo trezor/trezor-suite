@@ -7,11 +7,12 @@ import type {
     Platforms,
 } from 'invity-api';
 
+import { DeviceRootState } from '@suite-common/device';
 import {
     TradingPaymentMethodProps,
     selectTradingBuyLoadingTimestampAndStatus,
 } from '@suite-common/trading';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
 import { StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';

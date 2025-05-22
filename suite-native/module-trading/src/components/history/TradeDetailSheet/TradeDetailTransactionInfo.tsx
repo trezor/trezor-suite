@@ -2,13 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { CryptoId } from 'invity-api';
 
+import { DeviceRootState } from '@suite-common/device';
 import {
     TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { NetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Card, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

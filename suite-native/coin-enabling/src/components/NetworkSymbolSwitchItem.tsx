@@ -1,8 +1,9 @@
 import { TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectIsDeviceConnected } from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { changeCoinVisibility, selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { changeCoinVisibility } from '@suite-common/wallet-settings';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';

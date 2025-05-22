@@ -6,8 +6,8 @@ import {
     selectIsDeviceAuthorized,
     selectIsDeviceInitialized,
     selectIsDeviceUnlocked,
-    selectIsDiscoveredDeviceAccountless,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-blockchain';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 
@@ -16,6 +16,7 @@ import { PortfolioContent } from './components/PortfolioContent';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { useShowViewOnlyAlert } from './useShowViewOnlyAlert';
+
 
 export const HomeScreen = () => {
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);

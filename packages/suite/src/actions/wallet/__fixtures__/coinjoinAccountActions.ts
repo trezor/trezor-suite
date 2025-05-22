@@ -1,5 +1,5 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { Account } from 'src/types/wallet';

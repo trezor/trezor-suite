@@ -1,5 +1,5 @@
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
-import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-settings';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings';

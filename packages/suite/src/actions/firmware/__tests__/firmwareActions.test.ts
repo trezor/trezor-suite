@@ -1,6 +1,5 @@
-import { prepareFirmwareReducer } from '@suite-common/device';
+import { DeviceReducerState , prepareFirmwareReducer } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
-import { DeviceReducerState } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -13,6 +12,7 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type FirmwareState = ReturnType<typeof firmwareReducer>;
+
 interface InitialState {
     suite?: Partial<SuiteState>;
     firmware?: Partial<FirmwareState>;

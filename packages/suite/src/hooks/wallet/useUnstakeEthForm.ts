@@ -3,12 +3,12 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
-    selectFiatRatesByFiatRateKey,
-    selectLocalCurrency,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-stake';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     fromFiatCurrency,

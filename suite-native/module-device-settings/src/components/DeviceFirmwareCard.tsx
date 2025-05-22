@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
-import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import {
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsDeviceBackedUp,
-    selectIsDeviceDiscoveryActive,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { getFwUpdateVersion } from '@suite-common/suite-utils';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-blockchain';
 import { HStack, InlineAlertBoxProps, Text, VStack } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { deviceModelToIconName } from '@suite-native/icons';

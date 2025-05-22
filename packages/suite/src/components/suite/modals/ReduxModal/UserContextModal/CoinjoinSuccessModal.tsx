@@ -1,4 +1,4 @@
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';

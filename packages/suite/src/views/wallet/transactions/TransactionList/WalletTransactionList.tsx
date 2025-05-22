@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
-import { selectIsHideSuspiciousTransactions } from '@suite-common/wallet-core';
+import { selectIsHideSuspiciousTransactions } from '@suite-common/wallet-settings';
 import { Card, Column, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';

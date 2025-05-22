@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import type { Route } from '@suite-common/suite-types';
-import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-settings';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';

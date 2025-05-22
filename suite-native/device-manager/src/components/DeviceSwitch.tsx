@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
+import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/device';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

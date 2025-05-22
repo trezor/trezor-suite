@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { AccountsState, selectAccounts } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
-    AccountsState,
-    DeviceRootState,
     SendState,
     SerializedTx,
-    StakeState,
-    selectAccounts,
     selectPrecomposedSendForm,
-    selectSelectedDevice,
     selectSendFormReviewButtonRequestsCount,
-    selectStakePrecomposedForm,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
+import { StakeState, selectStakePrecomposedForm } from '@suite-common/wallet-stake';
 import {
     FormState,
     RbfTransactionType,

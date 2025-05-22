@@ -1,9 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
-import {
-    SendState,
-    prepareBlockchainMiddleware,
-    prepareSendFormReducer,
-} from '@suite-common/wallet-core';
+import { prepareBlockchainMiddleware } from '@suite-common/wallet-blockchain';
+import { SendState, prepareSendFormReducer } from '@suite-common/wallet-send';
 
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { RouterState } from 'src/reducers/suite/routerReducer';

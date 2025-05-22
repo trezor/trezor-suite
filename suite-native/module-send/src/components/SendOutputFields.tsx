@@ -1,7 +1,7 @@
 import { useFieldArray } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Card, Text, VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';

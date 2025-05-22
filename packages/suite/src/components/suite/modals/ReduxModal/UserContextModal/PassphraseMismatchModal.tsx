@@ -1,4 +1,4 @@
-import { passwordMismatchResetThunk } from '@suite-common/wallet-core';
+import { passwordMismatchResetThunk } from '@suite-common/device';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectPoolStatsApyData } from '@suite-common/wallet-stake';
 import {
     Button,
     Card,

@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Box, Button, Card, Text, TextDivider } from '@suite-native/atoms';

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wallet-core';
+import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wallet-settings';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

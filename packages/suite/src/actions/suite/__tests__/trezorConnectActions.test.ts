@@ -1,6 +1,6 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { prepareDeviceReducer } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';

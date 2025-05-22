@@ -1,11 +1,9 @@
+import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    ComposeActionContext,
-    replaceTransactionThunk,
-    selectSelectedDevice,
-    stakeActions,
-    syncAccountsWithBlockchainThunk,
-} from '@suite-common/wallet-core';
+import { syncAccountsWithBlockchainThunk } from '@suite-common/wallet-blockchain';
+import { ComposeActionContext } from '@suite-common/wallet-send';
+import { stakeActions } from '@suite-common/wallet-stake';
+import { replaceTransactionThunk } from '@suite-common/wallet-transactions';
 import { PrecomposedTransactionFinal, StakeFormState, StakeType } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,

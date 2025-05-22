@@ -1,8 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    selectAllNetworkSymbolsOfVisibleAccounts,
-    selectEnabledNetworks,
-} from '@suite-common/wallet-core';
+import { selectAllNetworkSymbolsOfVisibleAccounts } from '@suite-common/wallet-blockchain';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 import {
     SupportedEthereumNetworkSymbol,
     SupportedSolanaNetworkSymbols,

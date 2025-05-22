@@ -1,15 +1,10 @@
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
+import { authorizeDeviceThunk, deviceActions } from '@suite-common/device';
 import { addLog } from '@suite-common/logger';
-import {
-    WALLET_SETTINGS,
-    authorizeDeviceThunk,
-    changeNetworks,
-    deviceActions,
-    discoveryActions,
-    setLocalCurrency,
-} from '@suite-common/wallet-core';
+import { discoveryActions } from '@suite-common/wallet-blockchain';
+import { WALLET_SETTINGS, changeNetworks, setLocalCurrency } from '@suite-common/wallet-settings';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 

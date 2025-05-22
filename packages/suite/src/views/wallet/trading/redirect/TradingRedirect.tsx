@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { BuyCryptoPaymentMethod, CryptoId, SellCryptoPaymentMethod } from 'invity-api';
 import styled from 'styled-components';
 
-import { updateFeeInfoThunk } from '@suite-common/wallet-core';
+import { updateFeeInfoThunk } from '@suite-common/wallet-blockchain';
 import { variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 

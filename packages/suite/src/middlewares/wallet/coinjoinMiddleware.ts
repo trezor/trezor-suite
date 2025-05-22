@@ -12,9 +12,9 @@ import {
     accountsActions,
     blockchainActions,
     discoveryActions,
-    selectAccountByKey,
-    transactionsActions,
-} from '@suite-common/wallet-core';
+    selectAccountByKey
+} from '@suite-common/wallet-blockchain';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { DEVICE, UI } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';

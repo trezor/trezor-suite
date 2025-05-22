@@ -1,9 +1,8 @@
-import { FIRMWARE_MODULE_PREFIX } from '@suite-common/device';
+import { FIRMWARE_MODULE_PREFIX , deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';

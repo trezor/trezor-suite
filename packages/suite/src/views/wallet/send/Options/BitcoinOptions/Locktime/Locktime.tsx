@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { selectNetworkBlockchainInfo } from '@suite-common/wallet-blockchain';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { Card, Icon, IconButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';

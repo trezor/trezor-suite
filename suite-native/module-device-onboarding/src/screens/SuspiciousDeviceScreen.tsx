@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
+import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
 import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';

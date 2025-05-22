@@ -1,16 +1,11 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { createThunk } from '@suite-common/redux-utils';
 import {
-    type AccountType,
-    type Network,
-    type NetworkAccount,
-    type NetworkSymbol,
-    getNetworkType,
-    isNetworkSymbol,
-    normalizeNetworkAccounts,
-} from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
+    selectDeviceByStaticSessionId,
+    selectDeviceStaticSessionId,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import { createThunk } from '@suite-common/redux-utils';
 import {
     DISCOVERY_MODULE_PREFIX,
     LIMIT,
@@ -22,14 +17,21 @@ import {
     removeDiscovery,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
     selectDeviceAccountsForNetworkSymbolAndAccountType,
-    selectDeviceByStaticSessionId,
     selectDeviceDiscovery,
-    selectDeviceStaticSessionId,
     selectFirstNormalAccountForNetworkSymbol,
     selectHasDeviceDiscovery,
-    selectSelectedDevice,
     updateDiscovery,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import {
+    type AccountType,
+    type Network,
+    type NetworkAccount,
+    type NetworkSymbol,
+    getNetworkType,
+    isNetworkSymbol,
+    normalizeNetworkAccounts,
+} from '@suite-common/wallet-config';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import {
     getDerivationType,

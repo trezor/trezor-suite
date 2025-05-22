@@ -25,8 +25,9 @@ import {
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { networks } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 

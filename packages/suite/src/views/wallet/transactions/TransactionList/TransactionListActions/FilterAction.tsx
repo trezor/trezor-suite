@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     selectIsHideSuspiciousTransactions,
     toggleHideSuspiciousTransactions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-settings';
 import {
     Box,
     Button,

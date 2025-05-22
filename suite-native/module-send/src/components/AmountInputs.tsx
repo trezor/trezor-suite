@@ -9,7 +9,7 @@ import {
     AccountsRootState,
     selectAccountNetworkSymbol,
     selectIsTestnetAccount,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

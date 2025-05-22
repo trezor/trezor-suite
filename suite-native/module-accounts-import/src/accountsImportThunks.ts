@@ -1,3 +1,4 @@
+import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
@@ -8,17 +9,16 @@ import {
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
+    accountsActions,
+    selectAccountsByNetworkAndDeviceState,
+} from '@suite-common/wallet-blockchain';
+import {
     type AccountType,
     type Bip43Path,
     type NetworkSymbol,
     getNetworkType,
 } from '@suite-common/wallet-config';
-import {
-    PORTFOLIO_TRACKER_DEVICE_STATE,
-    accountsActions,
-    selectAccountsByNetworkAndDeviceState,
-    updateFiatRatesThunk,
-} from '@suite-common/wallet-core';
+import { updateFiatRatesThunk } from '@suite-common/wallet-fiat-rates';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { isCoinWithTokens } from '@suite-native/tokens';

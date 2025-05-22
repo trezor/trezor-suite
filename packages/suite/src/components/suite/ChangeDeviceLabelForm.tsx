@@ -2,7 +2,7 @@ import { Controller, useController } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { selectDeviceLabel, selectDeviceName } from '@suite-common/wallet-core';
+import { selectDeviceLabel, selectDeviceName } from '@suite-common/device';
 import { Button, Input, Tooltip } from '@trezor/components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { spacingsPx } from '@trezor/theme';

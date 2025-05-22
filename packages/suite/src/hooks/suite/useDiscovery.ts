@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectDiscoveryByDeviceState } from '@suite-common/wallet-blockchain';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { selectDiscoveryByDeviceState, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { useSelector } from './useSelector';
 import { getDiscoveryStatus } from '../../utils/wallet/getDiscoveryStatus';

@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceByState,
     selectDeviceLabelOrNameById,
-    selectHasOnlyEmptyPortfolioTracker,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { useSelectorDeepComparison } from '@suite-common/redux-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-blockchain';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

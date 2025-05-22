@@ -3,14 +3,14 @@ import { Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceThunk,
-    selectHasDeviceDiscovery,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { EventType, analytics } from '@suite-native/analytics';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Stack, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

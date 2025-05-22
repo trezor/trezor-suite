@@ -1,4 +1,4 @@
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { H2, Modal } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

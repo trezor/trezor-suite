@@ -1,7 +1,7 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { prepareAccountsReducer } from '@suite-common/wallet-blockchain';
 import { Account } from '@suite-common/wallet-types';
 
 import { buyThunks, exchangeThunks, sellThunks } from '../../';

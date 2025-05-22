@@ -19,7 +19,7 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { FormState, Output } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';

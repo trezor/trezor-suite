@@ -11,7 +11,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-fiat-rates';
 import { FormState } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
@@ -57,6 +57,7 @@ export interface SendFormProps {
     targetAnonymity?: number;
     prison?: Record<string, unknown>;
 }
+
 // Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
 export interface UseSendFormProps extends SendFormProps {
     selectedAccount: Extract<SendFormProps['selectedAccount'], { status: 'loaded' }>;

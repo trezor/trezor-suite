@@ -1,5 +1,5 @@
 import { createMiddleware } from '@suite-common/redux-utils';
-import { WALLET_SETTINGS } from '@suite-common/wallet-core';
+import { WALLET_SETTINGS } from '@suite-common/wallet-settings';
 
 import { removeSendFormDraftsSupportingAmountUnitThunk } from './sendFormThunks';
 

@@ -4,7 +4,7 @@
     "references": [
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
-        { "path": "../wallet-core" },
+
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" }

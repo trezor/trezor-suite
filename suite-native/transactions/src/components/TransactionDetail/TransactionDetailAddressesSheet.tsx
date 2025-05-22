@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { TransactionsRootState } from '@suite-common/wallet-core';
+import { TransactionsRootState } from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { BottomSheet, Box, Button, Card, Text, Toggle, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';

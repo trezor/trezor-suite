@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

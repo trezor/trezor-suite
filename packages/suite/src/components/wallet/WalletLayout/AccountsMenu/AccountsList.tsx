@@ -1,6 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 import { AccountType } from '@suite-common/wallet-config';
-import { selectAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';

@@ -5,9 +5,7 @@
         {
             "path": "../../suite-common/validators"
         },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
+
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },

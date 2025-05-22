@@ -1,10 +1,8 @@
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import {
-    selectAccountByKey,
-    selectExplorer,
-    selectIsPhishingTransaction,
-} from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
+import { selectIsPhishingTransaction } from '@suite-common/wallet-transactions';
 import { Account, ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';

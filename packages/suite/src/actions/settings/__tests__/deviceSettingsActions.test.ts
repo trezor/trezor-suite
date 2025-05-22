@@ -1,5 +1,5 @@
+import { deviceActions } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
-import { deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';

@@ -3,8 +3,9 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { selectLocalCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Button, variables } from '@trezor/components';
 
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';

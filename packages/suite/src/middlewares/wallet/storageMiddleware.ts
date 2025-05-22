@@ -3,30 +3,29 @@ import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { connectPopupActions } from '@suite-common/connect-popup';
+import {
+    deviceActions,
+    selectDeviceByStaticSessionId,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { tradingActions } from '@suite-common/trading';
 import {
-    WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
-    changeNetworks,
-    deviceActions,
     discoveryActions,
-    explorerActions,
     selectAccountByKey,
-    selectDeviceByStaticSessionId,
-    selectDevices,
     selectDiscoveryByDeviceState,
-    selectHistoricFiatRates,
-    selectSelectedDevice,
-    sendFormActions,
-    setLocalCurrency,
-    transactionsActions,
-    updateTxsFiatRatesThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { explorerActions } from '@suite-common/wallet-explorer';
+import { selectHistoricFiatRates, updateTxsFiatRatesThunk } from '@suite-common/wallet-fiat-rates';
+import { sendFormActions } from '@suite-common/wallet-send';
+import { WALLET_SETTINGS, changeNetworks, setLocalCurrency } from '@suite-common/wallet-settings';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 

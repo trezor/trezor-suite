@@ -13,7 +13,7 @@ import {
     selectIsDeviceUsingPassphrase,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';

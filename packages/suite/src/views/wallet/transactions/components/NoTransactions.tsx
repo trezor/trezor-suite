@@ -1,6 +1,6 @@
 import { Explorer } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { selectExplorer } from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';

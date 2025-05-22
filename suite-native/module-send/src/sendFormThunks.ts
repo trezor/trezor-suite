@@ -3,8 +3,8 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { selectAccountByKey, selectNetworkFeeInfo } from '@suite-common/wallet-blockchain';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
     SignTransactionError,
     SignTransactionTimeoutError,

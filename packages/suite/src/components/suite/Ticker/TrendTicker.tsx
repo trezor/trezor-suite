@@ -1,7 +1,8 @@
 import styled, { useTheme } from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectFiatRatesByFiatRateKey, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
@@ -35,6 +36,7 @@ interface TickerProps {
     noEmptyStateTooltip?: boolean;
     showLoadingSkeleton?: boolean;
 }
+
 export const TrendTicker = ({
     symbol,
     contractAddress,

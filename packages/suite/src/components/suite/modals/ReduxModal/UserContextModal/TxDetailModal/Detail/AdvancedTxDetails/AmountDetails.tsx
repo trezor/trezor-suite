@@ -1,8 +1,8 @@
 import {
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
-    selectLocalCurrency,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     formatAmount,

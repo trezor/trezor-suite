@@ -1,11 +1,7 @@
 import styled, { css } from 'styled-components';
 
-import {
-    selectAccountByKey,
-    selectDeviceThunk,
-    selectDevices,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie, variables } from '@trezor/components';
 
@@ -47,6 +43,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
 
             &:hover {
                 background: ${theme.legacy.BG_WHITE_ALT_HOVER};
+
                 ${ViewText} {
                     text-decoration: underline;
                     transform: translateX(-4px);

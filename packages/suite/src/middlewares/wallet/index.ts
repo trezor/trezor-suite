@@ -1,10 +1,4 @@
 /* eslint-disable import/order */
-import {
-    prepareAccountsMiddleware,
-    prepareBlockchainMiddleware,
-    prepareFiatRatesMiddleware,
-    prepareStakeMiddleware,
-} from '@suite-common/wallet-core';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
@@ -18,6 +12,12 @@ import graphMiddleware from './graphMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
+import {
+    prepareAccountsMiddleware,
+    prepareBlockchainMiddleware,
+} from '@suite-common/wallet-blockchain';
+import { prepareFiatRatesMiddleware } from '@suite-common/wallet-fiat-rates';
+import { prepareStakeMiddleware } from '@suite-common/wallet-stake';
 
 export default [
     prepareBlockchainMiddleware(extraDependencies),

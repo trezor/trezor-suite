@@ -1,10 +1,6 @@
+import { ConnectDeviceSettings, authorizeDeviceThunk, deviceActions } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import {
-    ConnectDeviceSettings,
-    authorizeDeviceThunk,
-    deviceActions,
-} from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 

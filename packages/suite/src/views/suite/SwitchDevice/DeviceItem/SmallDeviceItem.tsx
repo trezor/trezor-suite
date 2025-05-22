@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/device';
 import { Image, Row } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';

@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     ConnectDeviceSettings,
     DeviceRootState,
     deviceActions,
     selectDeviceLabelOrNameById,
-    selectHasDeviceDiscovery,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, HStack, Loader, Text } from '@suite-native/atoms';

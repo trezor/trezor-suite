@@ -1,11 +1,10 @@
 import {
-    selectAccounts,
-    selectBlockchainState,
     selectSelectedDevice as selectDeviceSelector,
     selectDeviceThunk,
     selectDevices,
-    selectTransactions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectAccounts, selectBlockchainState } from '@suite-common/wallet-blockchain';
+import { selectTransactions } from '@suite-common/wallet-transactions';
 import {
     findAccountDevice,
     findAccountsByDescriptor,

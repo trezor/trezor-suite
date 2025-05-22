@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { selectPhysicalDevices } from '@suite-common/wallet-core';
+import { selectPhysicalDevices } from '@suite-common/device';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 

@@ -1,6 +1,20 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
 import {
+    DeviceRootState,
+    PORTFOLIO_TRACKER_DEVICE_ID,
+    selectDeviceFirmwareVersion,
+    selectDeviceInstances,
+    selectDeviceModel,
+    selectDevices,
+    selectIsConnectedDeviceUninitialized,
+    selectIsDeviceConnectedAndAuthorized,
+    selectIsEntropyCheckFailed,
+    selectIsUnacquiredDevice,
+    selectSelectedDevice,
+    selectSelectedDeviceAuthenticity,
+} from '@suite-common/device';
+import {
     Feature,
     MessageSystemRootState,
     selectIsFeatureEnabled,
@@ -10,29 +24,15 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import {
     AccountsRootState,
-    DeviceRootState,
     DiscoveryRootState,
-    FiatRatesRootState,
-    PORTFOLIO_TRACKER_DEVICE_ID,
-    WalletSettingsRootState,
     getAccountsByDeviceState,
     selectAccounts,
     selectAccountsByDeviceState,
-    selectCurrentFiatRates,
     selectDeviceAccounts,
-    selectDeviceFirmwareVersion,
-    selectDeviceInstances,
-    selectDeviceModel,
-    selectDevices,
-    selectIsConnectedDeviceUninitialized,
-    selectIsDeviceConnectedAndAuthorized,
     selectIsDiscoveredDeviceAccountless,
-    selectIsEntropyCheckFailed,
-    selectIsUnacquiredDevice,
-    selectLocalCurrency,
-    selectSelectedDevice,
-    selectSelectedDeviceAuthenticity,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { FiatRatesRootState, selectCurrentFiatRates } from '@suite-common/wallet-fiat-rates';
+import { WalletSettingsRootState, selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import {

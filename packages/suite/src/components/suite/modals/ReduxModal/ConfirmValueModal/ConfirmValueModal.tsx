@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from 'react';
 
+import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     Banner,

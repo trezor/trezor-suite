@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
 import {
     Button,
     Card,

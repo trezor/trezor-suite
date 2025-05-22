@@ -1,12 +1,9 @@
 import { G } from '@mobily/ts-belt';
 
-import {
-    DeviceRootState,
-    selectDeviceButtonRequestsCodes,
-} from '@suite-common/device/src/device/deviceReducer';
+import { DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/device';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { accountsActions } from '@suite-common/wallet-core';
 import {
     AccountKey,
     FormState,

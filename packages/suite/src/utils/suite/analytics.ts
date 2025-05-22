@@ -1,8 +1,8 @@
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getBrowserName,

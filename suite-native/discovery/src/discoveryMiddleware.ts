@@ -1,15 +1,13 @@
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
-    accountsActions,
     authorizeDeviceThunk,
-    changeCoinVisibility,
-    changeNetworks,
     deviceActions,
-    discoveryActions,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
+import { accountsActions, discoveryActions } from '@suite-common/wallet-blockchain';
+import { changeCoinVisibility, changeNetworks } from '@suite-common/wallet-settings';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 import {
     selectAreTestnetsEnabled,
@@ -19,6 +17,7 @@ import {
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { discoveryCheckThunk, startDescriptorPreloadedDiscoveryThunk } from './discoveryThunks';
+
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {

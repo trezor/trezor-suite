@@ -1,5 +1,6 @@
 import { toWei } from 'web3-utils';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -8,7 +9,7 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import { ComposeActionContext } from '@suite-common/wallet-send';
 import {
     AddressDisplayOptions,
     ExternalOutput,

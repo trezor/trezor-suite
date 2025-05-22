@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
+import { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { ErrorMessage } from '@suite-native/atoms';
 import { selectSupportedNetworkSymbols } from '@suite-native/discovery';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';

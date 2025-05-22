@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-fiat-rates';
 import { FormOptions, FormState, Rate, TokenAddress } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,

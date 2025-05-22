@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import {
     ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
-    selectTransactionConfirmations,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
+import { selectTransactionConfirmations } from '@suite-common/wallet-transactions';
 import {
     Account,
     ChainedTransactions,

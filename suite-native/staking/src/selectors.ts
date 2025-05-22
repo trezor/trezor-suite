@@ -1,5 +1,5 @@
+import { selectAccountByKey, selectSolAccountHasStaked } from '@suite-common/wallet-blockchain';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectSolAccountHasStaked } from '@suite-common/wallet-core';
 import { selectPoolStatsApyData } from '@suite-common/wallet-stake';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import {

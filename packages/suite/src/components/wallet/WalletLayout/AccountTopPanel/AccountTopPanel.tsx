@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';

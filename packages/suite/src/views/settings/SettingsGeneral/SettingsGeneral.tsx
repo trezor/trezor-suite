@@ -1,5 +1,5 @@
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';

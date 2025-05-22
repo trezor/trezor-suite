@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -8,8 +9,8 @@ import {
     type TradingSellFormProps,
     tradingActions,
 } from '@suite-common/trading';
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
 

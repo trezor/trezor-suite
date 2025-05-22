@@ -4,3 +4,4 @@ export * from './sendFormActions';
 export * from './sendFormReducer';
 export * from './sendFormThunks';
 export * from './sendFormTypes';
+export { ethereumGetCurrentNonceThunk } from './sendFormEthereumThunks';

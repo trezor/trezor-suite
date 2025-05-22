@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Button, Card, Column, Row, variables } from '@trezor/components';
 
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';

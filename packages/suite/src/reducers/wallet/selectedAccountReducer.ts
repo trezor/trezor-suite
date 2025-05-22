@@ -1,6 +1,10 @@
 import { ConnectPopupState } from '@suite-common/connect-popup';
 import { TradingState as TradingNewState } from '@suite-common/trading';
-import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    accountsActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-blockchain';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import type { Action } from 'src/types/suite';

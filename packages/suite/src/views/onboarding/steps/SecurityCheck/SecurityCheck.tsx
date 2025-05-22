@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Button,
     Card,

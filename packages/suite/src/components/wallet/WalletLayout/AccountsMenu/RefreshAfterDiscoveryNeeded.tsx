@@ -3,7 +3,8 @@ import React from 'react';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/device';
+import { startDiscoveryThunk } from '@suite-common/wallet-blockchain';
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 

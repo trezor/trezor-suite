@@ -9,7 +9,7 @@ import {
     sortByTimestamp,
 } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { AccountKey, WalletType } from '@suite-common/wallet-types';
 import {
     getAddressType,

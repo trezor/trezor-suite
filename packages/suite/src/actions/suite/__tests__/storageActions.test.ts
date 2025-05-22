@@ -9,11 +9,16 @@ import '@suite-common/test-utils/src/globalOverrides';
 import {
     createDiscoveryThunk,
     disableAccountsThunk,
+    discoveryActions,
     prepareDiscoveryReducer,
-    transactionsActions,
-} from '@suite-common/wallet-core';
-import * as discoveryActions from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { prepareSendFormReducer } from '@suite-common/wallet-send';
+import {
+    changeNetworks,
+    prepareWalletSettingsReducer,
+    setLocalCurrency,
+} from '@suite-common/wallet-settings';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { SETTINGS } from 'src/config/suite';
@@ -35,7 +40,7 @@ const { getSuiteDevice, getWalletAccount, getWalletTransaction } = testMocks;
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
-const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
@@ -192,7 +197,7 @@ describe('Storage actions', () => {
         // save wallet settings to the db
         await store.dispatch(storageActions.saveWalletSettings());
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
-        await store.dispatch(discoveryActions.setLocalCurrency('czk'));
+        await store.dispatch(setLocalCurrency('czk'));
         const { settings } = store.getState().wallet;
         store.dispatch(await preloadStore());
 
@@ -493,7 +498,7 @@ describe('Storage actions', () => {
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
         // disable btc network, enable ltc
-        await store.dispatch(discoveryActions.changeNetworks(['ltc']));
+        await store.dispatch(changeNetworks(['ltc']));
         // remove accounts belonging to disabled coins, triggering ACCOUNT.REMOVE
         await store.dispatch(disableAccountsThunk());
 

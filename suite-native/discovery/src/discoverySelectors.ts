@@ -1,28 +1,30 @@
 import { A, D, O, S, pipe } from '@mobily/ts-belt';
 
 import {
-    TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    LIMIT as ACCOUNTS_LIMIT,
-    AccountsRootState,
     DeviceRootState,
-    DiscoveryRootState,
-    selectAccountsByNetworkAndDeviceState,
-    selectDeviceAccounts,
     selectDeviceAuthFailed,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
     selectDeviceState,
     selectHasDeviceAuthConfirm,
-    selectHasDeviceDiscovery,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInViewOnlyMode,
     selectIsDeviceUnlocked,
     selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import {
+    TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
+import {
+    LIMIT as ACCOUNTS_LIMIT,
+    AccountsRootState,
+    DiscoveryRootState,
+    selectAccountsByNetworkAndDeviceState,
+    selectDeviceAccounts,
+    selectHasDeviceDiscovery,
+} from '@suite-common/wallet-blockchain';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';

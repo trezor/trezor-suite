@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { StakeRootState, selectValidatorsQueue } from '@suite-common/wallet-core';
+import { StakeRootState, selectValidatorsQueue } from '@suite-common/wallet-stake';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';

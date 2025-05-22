@@ -1,5 +1,5 @@
+import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { Action, Feature, Message } from '@suite-common/suite-types';
-import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/wallet-core';
 import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

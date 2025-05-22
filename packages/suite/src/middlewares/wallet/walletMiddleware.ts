@@ -1,21 +1,23 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
+import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingBuyActions } from '@suite-common/trading';
 import {
-    WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
-    convertSendFormDraftsBtcAmountUnitsThunk,
-    deviceActions,
-    sendFormActions,
     setCustomBackendThunk,
-    stakeActions,
     subscribeBlockchainThunk,
-    transactionsActions,
     unsubscribeBlockchainThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import {
+    convertSendFormDraftsBtcAmountUnitsThunk,
+    sendFormActions,
+} from '@suite-common/wallet-send';
+import { WALLET_SETTINGS } from '@suite-common/wallet-settings';
+import { stakeActions } from '@suite-common/wallet-stake';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';

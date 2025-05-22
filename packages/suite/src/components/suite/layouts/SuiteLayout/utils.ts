@@ -1,4 +1,4 @@
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 
 import { useCustomBackends } from 'src/hooks/settings/backends';
 import { useSelector } from 'src/hooks/suite';

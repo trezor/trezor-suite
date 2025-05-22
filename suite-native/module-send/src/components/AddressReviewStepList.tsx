@@ -5,7 +5,9 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
+import { DeviceRootState } from '@suite-common/device';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
+import { SendRootState } from '@suite-common/wallet-send';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {

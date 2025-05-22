@@ -1,5 +1,5 @@
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import { TranslationKey } from '@suite-common/intl-types';
-import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Banner, Row } from '@trezor/components';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { spacings } from '@trezor/theme';

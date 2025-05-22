@@ -3,13 +3,14 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { firmwareActions } from '@suite-common/device';
+import { deviceActions, firmwareActions } from '@suite-common/device';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, discoveryActions, transactionsActions } from '@suite-common/wallet-core';
+import { discoveryActions } from '@suite-common/wallet-blockchain';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 import { BlockchainEvent, DEVICE, DeviceEvent, TransportEvent, UiEvent } from '@trezor/connect';
 import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 

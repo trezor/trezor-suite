@@ -1,10 +1,7 @@
+import { deviceConnectThunks, selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    deviceConnectThunks,
-    selectDevices,
-    selectEnabledNetworks,
-} from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,

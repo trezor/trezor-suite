@@ -5,7 +5,7 @@ import {
     selectIsPortfolioTrackerDevice,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { DiscoveryConfigSliceRootState } from '@suite-native/discovery';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';

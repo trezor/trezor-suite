@@ -1,5 +1,6 @@
 import { address } from '@solana/kit';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -8,7 +9,7 @@ import {
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
-import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import { ComposeActionContext } from '@suite-common/wallet-send';
 import {
     Account,
     AddressDisplayOptions,

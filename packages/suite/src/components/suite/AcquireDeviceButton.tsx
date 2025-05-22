@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react';
 
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDevice } from '@suite-common/device';
 import { Button } from '@trezor/components';
 
 import { useDevice, useDispatch } from 'src/hooks/suite';

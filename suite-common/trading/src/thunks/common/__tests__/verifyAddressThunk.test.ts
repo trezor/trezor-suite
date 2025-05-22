@@ -1,8 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/device';
 import { createReducerWithExtraDeps, createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { tradingThunks } from '../../';
@@ -21,9 +21,12 @@ const mockedSuiteReducer = createReducerWithExtraDeps(
     () => {},
 );
 
-jest.mock('@suite-common/wallet-core', () => ({
+jest.mock('@suite-common/device', () => ({
     confirmAddressOnDeviceThunk: jest.fn(),
     selectSelectedDevice: jest.fn(),
+}));
+
+jest.mock('@suite-common/wallet-blockchain', () => ({
     selectAccounts: jest.fn(),
 }));
 

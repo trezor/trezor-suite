@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';

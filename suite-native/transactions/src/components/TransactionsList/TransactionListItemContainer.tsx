@@ -12,7 +12,7 @@ import {
     selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
     selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetText, HStack, Text } from '@suite-native/atoms';

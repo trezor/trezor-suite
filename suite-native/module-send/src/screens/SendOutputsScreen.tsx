@@ -8,21 +8,22 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import {
     AccountsRootState,
     FeesRootState,
-    SendRootState,
-    WalletSettingsRootState,
-    composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
-    selectDeviceUnavailableCapabilities,
-    selectIsAmountInSats,
     selectNetworkFeeInfo,
+    updateFeeInfoThunk,
+} from '@suite-common/wallet-blockchain';
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    SendRootState,
+    composeSendFormTransactionFeeLevelsThunk,
     selectSendFormDraftByKey,
     sendFormActions,
-    updateFeeInfoThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-settings';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, Button } from '@suite-native/atoms';

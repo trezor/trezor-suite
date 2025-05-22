@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 
-import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
+import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-send';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 

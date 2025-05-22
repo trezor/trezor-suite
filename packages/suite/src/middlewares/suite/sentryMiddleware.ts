@@ -1,17 +1,14 @@
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
+import { authorizeDeviceThunk, deviceActions } from '@suite-common/device';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import {
-    WALLET_SETTINGS,
     accountsActions,
-    authorizeDeviceThunk,
     blockchainActions,
-    changeNetworks,
-    deviceActions,
     discoveryActions,
-    setLocalCurrency,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { WALLET_SETTINGS, changeNetworks, setLocalCurrency } from '@suite-common/wallet-settings';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 

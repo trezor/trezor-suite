@@ -9,6 +9,7 @@ import { WebViewSource } from 'react-native-webview/lib/WebViewTypes';
 
 import { DeviceRootState } from '@suite-common/device';
 import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {

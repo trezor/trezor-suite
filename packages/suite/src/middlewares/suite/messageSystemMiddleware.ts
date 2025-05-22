@@ -1,3 +1,4 @@
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import {
     categorizeMessages,
     getValidExperimentIds,
@@ -5,7 +6,7 @@ import {
     messageSystemActions,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
-import { changeNetworks, deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { changeNetworks } from '@suite-common/wallet-settings';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';

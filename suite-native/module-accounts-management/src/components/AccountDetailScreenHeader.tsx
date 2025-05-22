@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {

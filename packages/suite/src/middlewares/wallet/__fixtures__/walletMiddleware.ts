@@ -1,9 +1,9 @@
+import { accountsActions } from '@suite-common/wallet-blockchain';
 import {
-    WALLET_SETTINGS,
-    accountsActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
     sendFormActions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
+import { WALLET_SETTINGS } from '@suite-common/wallet-settings';
 import { Account, Output, FormState as SendFormState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 

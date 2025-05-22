@@ -1,9 +1,6 @@
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
-    accountsActions,
     authorizeDeviceThunk,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
@@ -11,10 +8,12 @@ import {
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    selectAccountsByDeviceState,
     selectDeviceThunk,
     selectIsDeviceForceRemembered,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
+import { accountsActions, selectAccountsByDeviceState } from '@suite-common/wallet-blockchain';
 import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';

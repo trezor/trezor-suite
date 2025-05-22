@@ -1,12 +1,9 @@
 import { AccountLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
-import {
-    TRANSACTIONS_MODULE_PREFIX,
-    selectHistoricFiatRates,
-    selectLocalCurrency,
-    selectTransactions,
-} from '@suite-common/wallet-core';
+import { selectHistoricFiatRates } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
+import { TRANSACTIONS_MODULE_PREFIX, selectTransactions } from '@suite-common/wallet-transactions';
 import { Account, ExportFileType } from '@suite-common/wallet-types';
 import { advancedSearchTransactions, getAccountTransactions } from '@suite-common/wallet-utils';
 

@@ -14,7 +14,7 @@ import {
     selectTradingBuyQuotes,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-settings';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useDebounce } from '@trezor/react-utils';
 

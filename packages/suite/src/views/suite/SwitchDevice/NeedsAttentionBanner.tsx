@@ -1,6 +1,6 @@
+import { acquireDevice, selectDeviceThunk } from '@suite-common/device';
 import { TranslationKey } from '@suite-common/intl-types';
 import { ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
-import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, BannerVariant } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

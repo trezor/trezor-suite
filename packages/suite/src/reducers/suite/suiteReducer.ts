@@ -1,15 +1,15 @@
 import { produce } from 'immer';
 
+import {
+    DeviceRootState,
+    selectIsEntropyCheckFailed,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
+import { discoveryActions } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    DeviceRootState,
-    discoveryActions,
-    selectIsEntropyCheckFailed,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';

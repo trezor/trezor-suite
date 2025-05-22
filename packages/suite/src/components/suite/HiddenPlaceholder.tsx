@@ -2,7 +2,7 @@ import { MouseEventHandler, ReactNode, useLayoutEffect, useRef, useState } from 
 
 import styled, { css } from 'styled-components';
 
-import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive } from '@suite-common/wallet-settings';
 import { RedactNumbersContext } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';

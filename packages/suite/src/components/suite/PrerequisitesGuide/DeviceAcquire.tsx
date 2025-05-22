@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react';
 
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDevice } from '@suite-common/device';
 import { Button } from '@trezor/components';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';

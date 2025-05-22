@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { sortLevels } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { sortLevels } from '@suite-common/wallet-core';
 import { Account, FormState } from '@suite-common/wallet-types';
 import { Button, Column, Modal } from '@trezor/components';
 import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';

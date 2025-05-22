@@ -1,6 +1,7 @@
 import { fromUnixTime, isWithinInterval } from 'date-fns';
 
-import { selectIsElectrumBackendSelected, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectIsElectrumBackendSelected } from '@suite-common/wallet-blockchain';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 

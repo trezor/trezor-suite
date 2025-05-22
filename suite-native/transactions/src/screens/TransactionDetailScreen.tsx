@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux';
 
 import {
     BlockchainRootState,
-    TransactionsRootState,
     selectBlockchainExplorerBySymbol,
+} from '@suite-common/wallet-blockchain';
+import {
+    TransactionsRootState,
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Text, VStack } from '@suite-native/atoms';

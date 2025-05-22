@@ -1,14 +1,13 @@
 import { useState } from 'react';
 
+import { selectDeviceThunk, selectSelectedDevice } from '@suite-common/device';
 import {
     createDiscoveryThunk,
     getAccountsByDeviceState,
-    selectCurrentFiatRates,
-    selectDeviceThunk,
     selectDiscoveryByDeviceState,
-    selectLocalCurrency,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { selectCurrentFiatRates } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { getAllAccounts } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Divider, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';

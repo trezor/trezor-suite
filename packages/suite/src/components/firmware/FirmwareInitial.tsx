@@ -2,11 +2,10 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { useFirmwareInstallation } from '@suite-common/device';
+import { selectDevices, useFirmwareInstallation } from '@suite-common/device';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
-import { selectDevices } from '@suite-common/wallet-core';
 import { Note, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';

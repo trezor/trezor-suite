@@ -1,9 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
-import { AnyAction } from '@suite-common/redux-utils';
-import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     authConfirm,
     authorizeDeviceThunk,
@@ -13,9 +10,12 @@ import {
     handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    restartDiscoveryThunk,
     selectDeviceThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { AnyAction } from '@suite-common/redux-utils';
+import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { restartDiscoveryThunk } from '@suite-common/wallet-blockchain';
 import { DEVICE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

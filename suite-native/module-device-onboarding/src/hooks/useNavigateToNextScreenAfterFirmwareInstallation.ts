@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectDeviceModel } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { selectDeviceModel } from '@suite-common/wallet-core';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,

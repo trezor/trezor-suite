@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { DEFAULT_FEE_INFO } from '@suite-common/wallet-blockchain';
 import {
     DEFAULT_OPRETURN,
     DEFAULT_PAYMENT,
     DEFAULT_VALUES,
     ETH_SPEED_UP_TX_MULTIPLIER,
 } from '@suite-common/wallet-constants';
-import { DEFAULT_FEE_INFO } from '@suite-common/wallet-core';
 import {
     ChainedTransactions,
     FeeInfo,

@@ -1,5 +1,5 @@
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import {
     GroupedTransactionsByDate,
     getTransactionWithLowestNonce,

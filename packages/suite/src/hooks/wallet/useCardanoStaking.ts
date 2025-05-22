@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { addFakePendingCardanoTxThunk, selectSelectedDevice } from '@suite-common/wallet-core';
+import { addFakePendingCardanoTxThunk } from '@suite-common/wallet-transactions';
 import { CardanoAction } from '@suite-common/wallet-types';
 import {
     getAddressParameters,

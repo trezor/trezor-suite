@@ -1,13 +1,9 @@
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { accountsActions, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    accountsActions,
-    selectAccountByKey,
-    selectDevices,
-    selectSelectedDevice,
-    transactionsActions,
-} from '@suite-common/wallet-core';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 import { Account } from '@suite-common/wallet-types';
 import {
     getAccountTransactions,

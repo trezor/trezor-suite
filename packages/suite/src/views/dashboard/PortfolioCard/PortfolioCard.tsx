@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 
-import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Card, Column, Dropdown, Switch, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';

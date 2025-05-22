@@ -2,7 +2,7 @@ import React from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { AccountKey } from '@suite-common/wallet-types';
 import { CardDivider, VStack } from '@suite-native/atoms';
 

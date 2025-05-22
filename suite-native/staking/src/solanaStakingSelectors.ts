@@ -1,11 +1,11 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
     selectDeviceAccounts,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { StakeRootState, selectPoolStatsApyData } from '@suite-common/wallet-stake';
 import {
     calculateSolanaStakingReward,

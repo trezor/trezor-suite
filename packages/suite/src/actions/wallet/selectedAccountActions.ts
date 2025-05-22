@@ -1,14 +1,14 @@
-import { networks } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { deviceActions } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device/src/device/deviceReducer';
 import {
     accountsActions,
     blockchainActions,
-    deviceActions,
     discoveryActions,
     feesActions,
     selectDeviceDiscovery,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { networks } from '@suite-common/wallet-config';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 

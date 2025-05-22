@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectHasDeviceDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 import { OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import {

@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectBannerMessage } from '@suite-common/message-system';
 import {
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectBannerMessage } from '@suite-common/message-system';
 import { spacingsPx } from '@trezor/theme';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';

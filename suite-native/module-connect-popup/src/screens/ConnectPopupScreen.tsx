@@ -6,9 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import {
     selectIsDeviceConnectedAndAuthorized,
-    selectIsDeviceDiscoveryActive,
     selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-blockchain';
 import { Box, Button, ErrorMessage, IconButton, Loader, Text, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { DeviceManager } from '@suite-native/device-manager';

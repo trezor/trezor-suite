@@ -5,7 +5,7 @@ import {
     AccountsRootState,
     selectAccountByKey,
     selectAccountLabel,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';

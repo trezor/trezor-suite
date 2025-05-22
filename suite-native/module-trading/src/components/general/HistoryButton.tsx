@@ -10,7 +10,7 @@ import {
     TradingType,
     selectDeviceHasTradingTradesOfTradeType,
 } from '@suite-common/trading';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
 import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

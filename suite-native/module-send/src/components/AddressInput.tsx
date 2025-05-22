@@ -2,11 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { formInputsMaxLength } from '@suite-common/validators';
-import {
-    AccountsRootState,
-    TransactionsRootState,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
+import { TransactionsRootState } from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';

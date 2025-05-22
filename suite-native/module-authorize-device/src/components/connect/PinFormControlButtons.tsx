@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { authorizeDeviceThunk, selectDeviceAuthFailed } from '@suite-common/wallet-core';
+import { authorizeDeviceThunk, selectDeviceAuthFailed } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';

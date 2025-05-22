@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {

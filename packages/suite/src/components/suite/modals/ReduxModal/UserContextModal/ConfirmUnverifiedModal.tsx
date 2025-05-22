@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Button, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';

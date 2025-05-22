@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { selectExplorer } from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';

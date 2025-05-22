@@ -1,4 +1,4 @@
-import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import { Card } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

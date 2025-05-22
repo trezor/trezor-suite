@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import { selectIsDiscreteModeActive, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive, selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {

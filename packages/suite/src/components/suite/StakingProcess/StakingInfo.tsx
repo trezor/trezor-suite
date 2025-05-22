@@ -1,16 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
-    AccountsRootState,
     StakeRootState,
-    TransactionsRootState,
-    selectAccountStakeTransactions,
     selectPoolStatsApyData,
     selectValidatorsQueue,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-stake';
+import {
+    TransactionsRootState,
+    selectAccountStakeTransactions,
+} from '@suite-common/wallet-transactions';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

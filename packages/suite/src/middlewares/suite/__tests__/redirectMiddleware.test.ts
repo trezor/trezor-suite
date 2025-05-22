@@ -1,5 +1,5 @@
+import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
-import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 import * as routerActions from 'src/actions/suite/routerActions';

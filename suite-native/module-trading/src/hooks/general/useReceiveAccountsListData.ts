@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectVisibleDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types/';
 import { useTranslate } from '@suite-native/intl';
 

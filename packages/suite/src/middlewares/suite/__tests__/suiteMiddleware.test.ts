@@ -1,5 +1,5 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
+import { prepareDeviceReducer } from '@suite-common/device';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import { appChanged } from 'src/actions/suite/suiteActions';

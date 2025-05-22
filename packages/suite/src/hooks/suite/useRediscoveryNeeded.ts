@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { selectDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectDeviceDiscovery } from '@suite-common/wallet-blockchain';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 

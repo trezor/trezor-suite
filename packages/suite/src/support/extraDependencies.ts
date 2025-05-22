@@ -1,23 +1,25 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
+import {
+    DeviceRootState,
+    deviceActions,
+    selectIsPendingTransportEvent,
+} from '@suite-common/device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     BlockchainState,
-    DeviceRootState,
     DiscoveryRootState,
-    ExplorerConfig,
-    FiatRatesState,
-    TransactionsState,
-    deviceActions,
     selectDiscoveryByDeviceState,
-    selectIsPendingTransportEvent,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { ExplorerConfig } from '@suite-common/wallet-explorer/libDev/src';
+import { FiatRatesState } from '@suite-common/wallet-fiat-rates';
+import { TransactionsState } from '@suite-common/wallet-transactions';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';

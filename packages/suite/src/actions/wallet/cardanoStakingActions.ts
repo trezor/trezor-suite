@@ -2,7 +2,7 @@ import { getUnixTime } from 'date-fns';
 
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
-import { transactionsActions } from '@suite-common/wallet-core';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 import { getAccountTransactions, getNetworkName, isPending } from '@suite-common/wallet-utils';
 import { BlockchainBlock } from '@trezor/connect';
 import {

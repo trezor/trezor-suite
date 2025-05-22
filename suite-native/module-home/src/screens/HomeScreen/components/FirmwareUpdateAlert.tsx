@@ -7,16 +7,18 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import {
     DeviceRootState,
-    DiscoveryRootState,
     selectDeviceId,
     selectDeviceReleaseInfo,
     selectDeviceState,
     selectDeviceUpdateFirmwareVersion,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
-    selectIsDiscoveryActiveByDeviceState,
     selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import {
+    DiscoveryRootState,
+    selectIsDiscoveryActiveByDeviceState,
+} from '@suite-common/wallet-blockchain';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Icon } from '@suite-native/icons';

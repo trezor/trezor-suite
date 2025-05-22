@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 
+import { acquireDevice, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { acquireDevice, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { TrezorDevice } from 'src/types/suite';
 

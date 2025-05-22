@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-blockchain';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
 import {
     DeviceSettingsStackParamList,

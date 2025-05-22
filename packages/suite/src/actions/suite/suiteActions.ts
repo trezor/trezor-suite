@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TradingType } from '@suite-common/trading';
-import { deviceActions } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { changeCoinVisibility } from '@suite-common/wallet-core';
+import { changeCoinVisibility } from '@suite-common/wallet-settings';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,0 +1,25 @@
+{
+    "name": "@suite-common/wallet-transactions",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "test:unit": "yarn g:jest -c=../../jest.config.base.js",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/wallet-stake": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/connect": "workspace:*"
+    }
+}

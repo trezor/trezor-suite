@@ -1,10 +1,7 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import {
-    StakeRootState,
-    selectAccountIsStakingActive,
-    selectPoolStatsApyData,
-} from '@suite-common/wallet-core';
+import { StakeRootState, selectPoolStatsApyData } from '@suite-common/wallet-stake';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-transactions';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid, useMediaQuery, variables } from '@trezor/components';

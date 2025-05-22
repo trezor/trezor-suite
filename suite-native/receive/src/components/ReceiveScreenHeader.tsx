@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

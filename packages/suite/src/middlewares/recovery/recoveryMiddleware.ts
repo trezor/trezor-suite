@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/device';
 import { UI } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';

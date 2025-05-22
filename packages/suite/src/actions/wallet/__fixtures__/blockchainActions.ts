@@ -1,10 +1,6 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    accountsActions,
-    blockchainActions,
-    feesActions,
-    transactionsActions,
-} from '@suite-common/wallet-core';
+import { accountsActions, blockchainActions, feesActions } from '@suite-common/wallet-blockchain';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
 
 const DEFAULT_ACCOUNT = {

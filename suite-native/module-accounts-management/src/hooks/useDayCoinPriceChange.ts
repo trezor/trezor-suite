@@ -5,12 +5,12 @@ import { G } from '@mobily/ts-belt';
 import { getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     BlockchainRootState,
     selectIsElectrumBackendSelected,
-    selectLocalCurrency,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { percentageDiff } from '@suite-native/graph';
 
 const UNIX_DAY = 24 * 60 * 60;

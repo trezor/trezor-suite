@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
-import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Image, TitleHeader } from '@suite-native/atoms';
 import { usePinAction } from '@suite-native/device';

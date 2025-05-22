@@ -12,8 +12,8 @@ import {
 import { useTheme } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
+import { updateFeeInfoThunk } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import {
     FeeInfo,
     FormState,

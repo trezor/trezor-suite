@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-settings';
 
 export const useDiscreetMode = () => {
     const isDiscreetMode = useSelector(selectIsDiscreteModeActive);

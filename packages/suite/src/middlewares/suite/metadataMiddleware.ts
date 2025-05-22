@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
-import { accountsActions, deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/device';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 
 import { METADATA_LABELING, ROUTER } from 'src/actions/suite/constants';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';

@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { selectAccounts } from '@suite-common/wallet-core';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { findAccountsByAddress, isTestnet } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';

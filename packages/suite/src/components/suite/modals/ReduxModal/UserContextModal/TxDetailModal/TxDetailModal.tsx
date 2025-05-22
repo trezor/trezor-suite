@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    selectAccountByKey,
     selectAllPendingTransactions,
     selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wallet-types';
 import { findChainedTransactions, getAccountKey, isPending } from '@suite-common/wallet-utils';
 

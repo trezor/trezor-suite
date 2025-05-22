@@ -3,9 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/graph" },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
+
         { "path": "../analytics" },
         { "path": "../assets" },
         { "path": "../atoms" },

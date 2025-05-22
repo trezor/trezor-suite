@@ -1,8 +1,10 @@
 import { LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { DeviceRootState } from '@suite-common/device';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
+import { SendRootState } from '@suite-common/wallet-send';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';

@@ -23,9 +23,7 @@
         {
             "path": "../../suite-common/token-definitions"
         },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
+
         {
             "path": "../../suite-common/wallet-types"
         },

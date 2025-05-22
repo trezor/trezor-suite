@@ -1,5 +1,5 @@
+import { selectDevices } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectDevices } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

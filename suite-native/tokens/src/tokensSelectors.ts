@@ -9,15 +9,17 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    TransactionsRootState,
     selectAccountByKey,
-    selectAccountTransactions,
     selectAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    TransactionsRootState,
+    selectAccountTransactions,
+} from '@suite-common/wallet-transactions';
 import {
     AccountKey,
     TokenAddress,

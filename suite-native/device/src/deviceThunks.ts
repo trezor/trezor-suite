@@ -1,11 +1,6 @@
+import { deviceActions, selectDevicePath, selectIsDeviceInitialized, selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    deviceActions,
-    selectDevicePath,
-    selectIsDeviceInitialized,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
 import { WalletBackupType, reportCheckFail } from '@suite-native/device';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';

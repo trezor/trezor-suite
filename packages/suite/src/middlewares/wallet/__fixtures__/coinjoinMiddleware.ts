@@ -1,4 +1,4 @@
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, StaticSessionId } from '@trezor/connect';

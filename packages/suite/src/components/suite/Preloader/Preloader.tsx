@@ -3,7 +3,7 @@ import { FC, PropsWithChildren, useEffect } from 'react';
 import {
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 
 import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';

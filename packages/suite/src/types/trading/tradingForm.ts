@@ -33,8 +33,8 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
+import { AccountsState } from '@suite-common/wallet-blockchain';
 import { Network } from '@suite-common/wallet-config';
-import { AccountsState } from '@suite-common/wallet-core';
 import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';

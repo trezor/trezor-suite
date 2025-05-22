@@ -1,4 +1,4 @@
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 
 import { OnboardingButtonCta } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';

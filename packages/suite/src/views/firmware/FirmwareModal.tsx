@@ -1,8 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { useFirmwareInstallation } from '@suite-common/device';
-import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
+import { acquireDevice, selectSelectedDevice, useFirmwareInstallation } from '@suite-common/device';
 import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';

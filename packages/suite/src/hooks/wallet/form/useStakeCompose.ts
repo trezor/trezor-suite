@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { ComposeActionContext, StakeContextValues } from '@suite-common/wallet-core';
+import { ComposeActionContext, StakeContextValues } from '@suite-common/wallet-stake';
 import {
     PrecomposedLevels,
     PrecomposedTransaction,

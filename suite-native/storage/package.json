@@ -15,7 +15,6 @@
         "@reduxjs/toolkit": "2.8.2",
         "@sentry/react-native": "6.10.0",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "bs58": "^6.0.0",
         "expo-crypto": "^14.0.1",
         "expo-secure-store": "^14.0.0",

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
     TransactionsRootState,
     selectAreAllAccountTransactionsLoaded,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

@@ -4,7 +4,7 @@ import {
     onPassphraseSubmit,
     selectDeviceModel,
     selectIsDiscoveryAuthConfirmationRequired,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { Column, H3, Icon, List, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { PassphraseTypeCard } from '@trezor/product-components';

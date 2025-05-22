@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { updateFiatRatesThunk } from '@suite-common/wallet-fiat-rates';
 import { FiatRates, FiatRatesResult, Output, Rate, Timestamp } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,

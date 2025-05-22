@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { type TradingType, selectTradingSupportedSymbols } from '@suite-common/trading';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';

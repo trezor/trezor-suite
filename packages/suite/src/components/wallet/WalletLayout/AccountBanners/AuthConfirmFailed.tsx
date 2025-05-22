@@ -1,4 +1,4 @@
-import { authConfirm } from '@suite-common/wallet-core';
+import { authConfirm } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';

@@ -1,8 +1,9 @@
 import { act } from '@testing-library/react';
 import { combineReducers } from 'redux';
 
+import { prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore } from '@suite-common/test-utils';
-import { prepareDeviceReducer, prepareDiscoveryReducer } from '@suite-common/wallet-core';
+import { prepareDiscoveryReducer } from '@suite-common/wallet-blockchain';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';

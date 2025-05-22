@@ -1,6 +1,7 @@
+import { deviceActions } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
+import { discoveryActions } from '@suite-common/wallet-blockchain';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { deviceActions, discoveryActions } from '@suite-common/wallet-core';
 
 const { getSuiteDevice } = testMocks;
 const DEV = getSuiteDevice();

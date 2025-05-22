@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
-import { selectHistoricFiatRatesByTimestamp, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     formatAmount,

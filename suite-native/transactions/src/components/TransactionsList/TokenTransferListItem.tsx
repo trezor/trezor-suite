@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import {
-    AccountsRootState,
     TransactionsRootState,
-    selectAccountNetworkSymbol,
     selectIsPhishingTransaction,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';

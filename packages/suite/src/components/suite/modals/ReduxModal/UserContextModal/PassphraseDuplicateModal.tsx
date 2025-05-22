@@ -1,4 +1,4 @@
-import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
+import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/device';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

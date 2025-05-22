@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { getCalendars } from 'expo-localization';
 
 import { FormatterProviderConfig } from '@suite-common/formatters';
-import { selectBitcoinAmountUnit, selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectBitcoinAmountUnit, selectLocalCurrency } from '@suite-common/wallet-settings';
 
 const is24HourFormat = getCalendars()[0].uses24hourClock ?? true;
 

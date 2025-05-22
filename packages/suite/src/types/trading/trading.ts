@@ -25,8 +25,8 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
+import { AccountsState } from '@suite-common/wallet-blockchain';
 import { AccountType } from '@suite-common/wallet-config';
-import { AccountsState } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AssetLogoProps } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
@@ -43,12 +43,14 @@ export type UseTradingCommonProps = UseTradingProps & {
     pageType: TradingPageType;
     isLoading: boolean;
 };
+
 export interface UseTradingCommonReturnProps {
     account: Account;
     timer: Timer;
     device: TrezorDevice | undefined;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
+
 export type UseTradingFormProps = UseTradingProps & {
     /**
      * Difference between form and offers is that on the offers page are used all data filled in the form

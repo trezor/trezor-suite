@@ -10,7 +10,7 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { prepareAccountsReducer } from '@suite-common/wallet-blockchain';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';

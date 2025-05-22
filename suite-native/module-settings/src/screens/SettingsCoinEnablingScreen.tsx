@@ -3,11 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import {
-    changeNetworks,
-    selectEnabledNetworks,
-    selectHasBitcoinOnlyFirmware,
-} from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { changeNetworks, selectEnabledNetworks } from '@suite-common/wallet-settings';
 import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';

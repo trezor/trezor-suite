@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import {
     selectIsDiscoveryAuthConfirmationRequired,
     selectSelectedDeviceLabelOrName,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';

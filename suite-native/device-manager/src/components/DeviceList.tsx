@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
-    selectHasDeviceDiscovery,
     selectInstacelessUnselectedDevices,
     selectIsDeviceConnected,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+    selectSelectedDevice
+} from '@suite-common/device';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-blockchain';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
     ACCESSIBILITY_FONTSIZE_MULTIPLIER,

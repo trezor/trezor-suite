@@ -5,8 +5,8 @@ import { G } from '@mobily/ts-belt';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import { getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext } from '@suite-native/forms';

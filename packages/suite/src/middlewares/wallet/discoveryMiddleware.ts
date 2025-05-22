@@ -1,21 +1,20 @@
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
+import { authorizeDeviceThunk, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     accountsActions,
-    authorizeDeviceThunk,
     createDiscoveryThunk,
-    deviceActions,
     disableAccountsThunk,
+    discoveryActions,
     removeFeeInfoThunk,
     selectDeviceDiscovery,
-    selectSelectedDevice,
     startDiscoveryThunk,
     stopDiscoveryThunk,
     updateNetworkSettingsThunk,
-} from '@suite-common/wallet-core';
-import * as discoveryActions from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { changeNetworks } from '@suite-common/wallet-settings';
 import { UI } from '@trezor/connect';
 
 import { MODAL, ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -80,7 +79,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // Note: TS says next(action) generally isn't async, but the action may return anything; sometimes it's a Promise → needs to be awaited
         await next(action);
 
-        if (discoveryActions.changeNetworks.match(action)) {
+        if (changeNetworks.match(action)) {
             // update Discovery fields
             dispatch(updateNetworkSettingsThunk());
             // remove accounts which are no longer part of Discovery
@@ -166,7 +165,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             authorizeDeviceThunk.fulfilled.match(action) ||
-            discoveryActions.changeNetworks.match(action) ||
+            changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
             const discovery = selectDeviceDiscovery(getState());

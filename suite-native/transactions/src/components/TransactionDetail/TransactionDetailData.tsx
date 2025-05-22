@@ -4,12 +4,14 @@ import { useFormatters } from '@suite-common/formatters';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     FiatRatesRootState,
-    TransactionsRootState,
     selectHistoricFiatRatesByTimestamp,
+} from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
+import {
+    TransactionsRootState,
     selectIsPhishingTransaction,
-    selectLocalCurrency,
     selectTransactionBlockTimeById,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey, Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Box, Card, InlineAlertBox, Text, VStack } from '@suite-native/atoms';

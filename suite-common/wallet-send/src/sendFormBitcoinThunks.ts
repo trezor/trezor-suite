@@ -3,7 +3,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
-import { selectAreSatsAmountUnit, selectBitcoinAmountUnit , selectTransactions } from '@suite-common/wallet-core';
+import { selectAreSatsAmountUnit, selectBitcoinAmountUnit } from '@suite-common/wallet-settings';
+import { selectTransactions } from '@suite-common/wallet-transactions';
 import {
     Account,
     AddressDisplayOptions,

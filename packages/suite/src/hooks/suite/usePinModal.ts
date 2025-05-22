@@ -1,5 +1,5 @@
+import { selectDeviceButtonRequests } from '@suite-common/device';
 import { ButtonRequest } from '@suite-common/suite-types';
-import { selectDeviceButtonRequests } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 

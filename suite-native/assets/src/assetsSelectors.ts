@@ -1,24 +1,22 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
+import { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    DeviceRootState,
-    FiatRatesRootState,
-    WalletSettingsRootState,
-    selectCurrentFiatRates,
     selectDeviceAccounts,
-    selectLocalCurrency,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { FiatRatesRootState, selectCurrentFiatRates } from '@suite-common/wallet-fiat-rates';
+import { WalletSettingsRootState, selectLocalCurrency } from '@suite-common/wallet-settings';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';

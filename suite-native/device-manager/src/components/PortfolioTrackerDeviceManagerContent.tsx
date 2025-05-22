@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
+import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-blockchain';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

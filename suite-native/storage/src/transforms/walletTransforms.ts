@@ -1,7 +1,8 @@
 import { A } from '@mobily/ts-belt';
 import { createTransform } from 'redux-persist';
 
-import { AccountsState, TransactionsState } from '@suite-common/wallet-core';
+import { AccountsState } from '@suite-common/wallet-blockchain';
+import { TransactionsState } from '@suite-common/wallet-transactions';
 
 import { filterKeysByPartialMatch, selectDeviceStatesNotRemembered } from './utils';
 

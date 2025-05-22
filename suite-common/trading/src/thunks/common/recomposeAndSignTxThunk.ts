@@ -1,12 +1,10 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { selectNetworkFeeInfo } from '@suite-common/wallet-blockchain';
 import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import {
-    composeSendFormTransactionFeeLevelsThunk,
-    selectNetworkFeeInfo,
-} from '@suite-common/wallet-core';
+import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-send';
 import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
 import { Success, Unsuccessful } from '@trezor/connect';
 

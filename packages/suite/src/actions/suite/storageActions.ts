@@ -1,5 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
+import { deviceActions, selectDevices } from '@suite-common/device';
 import { MetadataState } from '@suite-common/metadata-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -7,7 +8,6 @@ import { DefinitionType, TokenManagementAction } from '@suite-common/token-defin
 import type { TradingTransaction } from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import { deviceActions, selectDevices } from '@suite-common/wallet-core';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey, selectHistoricRatesByTransactions } from '@suite-common/wallet-utils';

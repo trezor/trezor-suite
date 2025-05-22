@@ -6,7 +6,7 @@ import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     TransactionsRootState,
     selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

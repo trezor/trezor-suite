@@ -5,11 +5,11 @@ import { Address } from '@trezor/blockchain-link-types';
 import { ReceiveAccount } from '../../../../types';
 import { AccountListAddressItem } from '../AccountListAddressItem';
 
-jest.mock('@suite-common/wallet-core', () => {
+jest.mock('@suite-common/wallet-fiat-rates', () => {
     const fiatRate = { rate: 1e8 };
 
     return {
-        ...jest.requireActual('@suite-common/wallet-core'),
+        ...jest.requireActual('@suite-common/wallet-fiat-rates'),
         selectFiatRatesByFiatRateKey: () => fiatRate,
     };
 });

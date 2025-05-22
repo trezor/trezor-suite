@@ -3,12 +3,12 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     deviceNeedsAttention,
     getStatus,
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Button,
     Column,

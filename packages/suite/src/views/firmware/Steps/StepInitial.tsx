@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
+import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { FirmwareStatus } from '@suite-common/suite-types';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 
 import { updateAnalytics } from '../../../actions/onboarding/onboardingActions';

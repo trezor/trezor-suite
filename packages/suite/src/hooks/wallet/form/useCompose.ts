@@ -7,7 +7,7 @@ import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     ComposeActionContext,
     composeSendFormTransactionFeeLevelsThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
 import {
     FormState,
     PrecomposedLevels,

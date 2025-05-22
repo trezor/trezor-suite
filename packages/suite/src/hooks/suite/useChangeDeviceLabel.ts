@@ -2,8 +2,8 @@ import { useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { yup } from '@suite-common/validators';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isAscii } from '@trezor/utils';
 

@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectIsDeviceInViewOnlyMode } from '@suite-common/wallet-core';
 import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,

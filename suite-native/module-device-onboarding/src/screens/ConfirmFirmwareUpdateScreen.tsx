@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { selectHasDeviceFirmwareInstalled } from '@suite-common/wallet-core';
+import { selectHasDeviceFirmwareInstalled } from '@suite-common/device';
 import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
 import {
     ConfirmFirmwareUpdateScreenContent,
@@ -17,6 +17,7 @@ import {
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
+
 export const ConfirmFirmwareUpdateScreen = ({
     navigation,
 }: StackProps<

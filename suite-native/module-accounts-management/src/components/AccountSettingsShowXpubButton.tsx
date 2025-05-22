@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

@@ -9,7 +9,7 @@ import {
     onBlockchainNotificationThunk,
     preloadFeeInfoThunk,
     setCustomBackendThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { PROTO } from '@trezor/connect';
 
 import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';

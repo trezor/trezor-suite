@@ -1,12 +1,9 @@
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { DeviceRootState, selectDeviceByState } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    DeviceRootState,
-    selectDeviceByState,
-    selectHasOnlyEmptyPortfolioTracker,
-} from '@suite-common/wallet-core';
+import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-blockchain';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

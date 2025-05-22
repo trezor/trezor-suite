@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
+import { selectNetworkBlockchainInfo } from '@suite-common/wallet-blockchain';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-settings';
 import { ConnectionStatus } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';

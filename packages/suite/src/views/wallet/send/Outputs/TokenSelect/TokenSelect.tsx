@@ -15,12 +15,9 @@ import {
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
-import {
-    selectCurrentFiatRates,
-    selectExplorer,
-    selectLocalCurrency,
-    updateFiatRatesThunk,
-} from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
+import { selectCurrentFiatRates, updateFiatRatesThunk } from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,

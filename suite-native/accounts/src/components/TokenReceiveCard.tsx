@@ -4,7 +4,7 @@ import {
     AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Badge, Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';

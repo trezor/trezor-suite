@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { switchDuplicatedDevice } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { switchDuplicatedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';

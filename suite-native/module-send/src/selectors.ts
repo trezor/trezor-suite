@@ -1,16 +1,14 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
+import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import {
-    AccountsRootState,
-    DeviceRootState,
     SendRootState,
-    selectAccountByKey,
-    selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormReviewButtonRequestsCount,
     selectSendPrecomposedTx,
     selectSendSerializedTx,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-send';
 import { AccountKey, ReviewOutputState, TokenAddress } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,

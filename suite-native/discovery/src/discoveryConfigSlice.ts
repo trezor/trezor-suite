@@ -1,16 +1,11 @@
 import { A, pipe } from '@mobily/ts-belt';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { DeviceRootState, selectDeviceSupportedNetworks } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { AccountsRootState, filterUnavailableNetworks } from '@suite-common/wallet-blockchain';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    WalletSettingsRootState,
-    filterUnavailableNetworks,
-    selectDeviceSupportedNetworks,
-    selectEnabledNetworks,
-} from '@suite-common/wallet-core';
+import { WalletSettingsRootState, selectEnabledNetworks } from '@suite-common/wallet-settings';
 import {
     filterTestnetNetworks,
     getNativeMainnetSymbols,

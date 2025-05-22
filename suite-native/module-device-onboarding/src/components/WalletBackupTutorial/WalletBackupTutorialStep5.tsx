@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import * as Haptics from 'expo-haptics';
 
-import { selectIsDeviceInitialized } from '@suite-common/wallet-core';
+import { selectIsDeviceInitialized } from '@suite-common/device';
 import { Box, Button, Card, InlineAlertBox, Text, TitleHeader } from '@suite-native/atoms';
 import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';

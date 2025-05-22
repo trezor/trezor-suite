@@ -5,7 +5,7 @@ import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_SOL_AMOUNT_FOR_STAKING,
 } from '@suite-common/wallet-constants';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectPoolStatsApyData } from '@suite-common/wallet-stake';
 import { Account } from '@suite-common/wallet-types';
 import {
     isSupportedEthStakingNetworkSymbol,

@@ -5,7 +5,7 @@ import {
     selectDeviceFirmwareVersion,
     selectDeviceUpdateFirmwareVersion,
     selectHasBitcoinOnlyFirmware,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { Box, BoxProps, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';

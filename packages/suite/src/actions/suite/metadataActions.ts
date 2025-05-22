@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { selectDevices } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { createZip } from '@trezor/utils';

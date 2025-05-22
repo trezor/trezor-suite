@@ -9,10 +9,11 @@ import {
     populateAuthPayload,
 } from '@walletconnect/utils';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-blockchain';
 import { getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { selectSelectedDevice, selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 

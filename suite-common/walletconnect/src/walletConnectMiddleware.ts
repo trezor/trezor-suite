@@ -1,5 +1,6 @@
+import { deviceActions } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { accountsActions, deviceActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 
 import { walletConnectActions } from './walletConnectActions';
 import * as walletConnectThunks from './walletConnectThunks';

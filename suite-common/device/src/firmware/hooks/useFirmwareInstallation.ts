@@ -6,7 +6,8 @@ import {
     firmwareActions,
     firmwareUpdate as firmwareUpdateThunk,
     selectFirmware,
- selectSelectedDevice } from '@suite-common/device';
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { DEVICE, FirmwareType, UI } from '@trezor/connect';
 import {

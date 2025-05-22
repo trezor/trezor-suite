@@ -2,7 +2,7 @@ import React from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { selectValidatorsQueueData } from '@suite-common/wallet-stake';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import {
     Badge,

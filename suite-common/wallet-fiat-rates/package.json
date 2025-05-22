@@ -1,0 +1,28 @@
+{
+    "name": "@suite-common/wallet-fiat-rates",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "test:unit": "yarn g:jest -c=../../jest.config.base.js",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
+        "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/fiat-services": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-config": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/wallet-blockchain": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-settings": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*"
+    }
+}

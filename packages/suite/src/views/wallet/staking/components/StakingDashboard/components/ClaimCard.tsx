@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
+import { selectAccountClaimTransactions } from '@suite-common/wallet-transactions';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';

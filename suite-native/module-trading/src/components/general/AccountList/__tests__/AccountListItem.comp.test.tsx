@@ -4,11 +4,11 @@ import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-util
 import { ReceiveAccount } from '../../../../types';
 import { AccountListItem } from '../AccountListItem';
 
-jest.mock('@suite-common/wallet-core', () => {
+jest.mock('@suite-common/wallet-fiat-rates', () => {
     const fiatRate = { rate: 1e8 };
 
     return {
-        ...jest.requireActual('@suite-common/wallet-core'),
+        ...jest.requireActual('@suite-common/wallet-fiat-rates'),
         selectFiatRatesByFiatRateKey: () => fiatRate,
     };
 });

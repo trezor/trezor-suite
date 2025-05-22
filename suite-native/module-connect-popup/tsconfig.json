@@ -5,9 +5,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
+
         {
             "path": "../../suite-common/walletconnect"
         },

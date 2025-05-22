@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { selectDeviceModel, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { selectDeviceModel, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Text, TextDivider, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';

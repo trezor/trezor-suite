@@ -1,6 +1,6 @@
 import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { selectExplorer } from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
 import { Banner, Column, H4, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';

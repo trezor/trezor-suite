@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
-import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-transactions';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Dropdown, Note, Text } from '@trezor/components';

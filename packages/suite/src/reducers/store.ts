@@ -16,7 +16,7 @@ import { mergeDeepObject } from '@trezor/utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { prepareFirmwareReducer } from '@suite-common/device';
 import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 
 import suiteMiddlewares from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';

@@ -8,7 +8,7 @@ import {
     accountsActions,
     selectAccountByKey,
     selectAccountLabel,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import {
     AccountFormValues,
     AccountLabelFieldHint,

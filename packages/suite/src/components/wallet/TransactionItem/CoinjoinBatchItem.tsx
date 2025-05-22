@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { selectHistoricFiatRates } from '@suite-common/wallet-fiat-rates';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,

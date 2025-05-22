@@ -7,7 +7,7 @@ import {
     StakeRootState,
     fetchEverstakeRewards,
     selectStakingRewards,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-stake';
 import { useDebounce } from '@trezor/react-utils';
 
 import { Account } from 'src/types/wallet';

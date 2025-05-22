@@ -1,15 +1,14 @@
 import { produce } from 'immer';
 
 import {
-    AccountsRootState,
     DeviceReducerState,
     DeviceRootState,
     deviceActions,
-    selectAccountByKey,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { AccountKey } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 

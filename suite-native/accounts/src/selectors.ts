@@ -9,20 +9,20 @@ import {
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
     selectAccountByKey,
     selectAccounts,
-    selectCurrentFiatRates,
     selectIsAccountUtxoBased,
-    selectLocalCurrency,
-    selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { FiatRatesRootState, selectCurrentFiatRates } from '@suite-common/wallet-fiat-rates';
+import { WalletSettingsRootState, selectLocalCurrency } from '@suite-common/wallet-settings';
+import {
+    TransactionsRootState,
+    selectPendingAccountAddresses,
+} from '@suite-common/wallet-transactions';
 import { Account, AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
 import {
     getAccountFiatBalance,

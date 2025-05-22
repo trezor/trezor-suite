@@ -1,5 +1,5 @@
+import { isUnlocked, prepareDeviceReducer } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
-import { isUnlocked, prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 

@@ -1,13 +1,9 @@
 import assert from 'assert';
 
+import { ConnectDeviceSettings, deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    ConnectDeviceSettings,
-    deviceActions,
-    prepareDeviceReducer,
-} from '@suite-common/wallet-core';
 import { Response } from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';

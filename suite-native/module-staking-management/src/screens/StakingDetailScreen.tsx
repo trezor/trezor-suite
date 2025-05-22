@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { initStakeDataThunk } from '@suite-common/wallet-core';
+import { initStakeDataThunk } from '@suite-common/wallet-stake';
 import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles';
 

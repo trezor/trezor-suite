@@ -1,12 +1,11 @@
 import { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { DeviceRootState, selectDeviceState } from '@suite-common/device';
 import {
-    DeviceRootState,
     DiscoveryRootState,
-    selectDeviceState,
     selectIsDiscoveryActiveByDeviceState,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { useAlert } from '@suite-native/alerts';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';

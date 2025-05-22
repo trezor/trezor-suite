@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddleware } from '@suite-common/redux-utils';
-import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
+import { accountsActions, blockchainActions } from '@suite-common/wallet-blockchain';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
 
 import { addLog } from './logsSlice';

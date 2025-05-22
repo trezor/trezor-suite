@@ -5,15 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { onPassphraseSubmit, selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
 import {
     PassphraseFormValues,
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';
-import {
-    onPassphraseSubmit,
-    selectHasDevicePassphraseEntryCapability,
-} from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';

@@ -4,6 +4,7 @@ import { useDebounce } from 'react-use';
 
 import { FiatCurrencyCode } from 'invity-api';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -19,7 +20,7 @@ import {
     exchangeUtils,
     useTradingInfo,
 } from '@suite-common/trading';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,

@@ -16,7 +16,6 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/icons": "workspace:*",

@@ -1,13 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    SendRootState,
-    WalletSettingsRootState,
-    selectAccountNetworkSymbol,
-    selectIsAmountInSats,
-    selectSendFormDraftOutputsByAccountKey,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
+import { SendRootState, selectSendFormDraftOutputsByAccountKey } from '@suite-common/wallet-send';
+import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-settings';
 import {
     AccountKey,
     GeneralPrecomposedTransaction,

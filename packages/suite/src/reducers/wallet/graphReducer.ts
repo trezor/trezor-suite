@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-blockchain';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import { GRAPH } from 'src/actions/wallet/constants';

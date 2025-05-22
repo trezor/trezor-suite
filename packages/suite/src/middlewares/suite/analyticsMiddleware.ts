@@ -10,7 +10,8 @@ import {
 } from '@suite-common/device';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
-import { WALLET_SETTINGS, discoveryActions } from '@suite-common/wallet-core';
+import { discoveryActions } from '@suite-common/wallet-blockchain';
+import { WALLET_SETTINGS } from '@suite-common/wallet-settings';
 import { Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';

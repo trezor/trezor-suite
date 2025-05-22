@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-blockchain';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import {

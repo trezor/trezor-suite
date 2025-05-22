@@ -5,7 +5,7 @@ import {
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
     startDiscoveryThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';

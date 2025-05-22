@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
+import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-transactions';
 import { ExcludedUtxos, FormState, UtxoSorting } from '@suite-common/wallet-types';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import type { AccountUtxo, PROTO } from '@trezor/connect';

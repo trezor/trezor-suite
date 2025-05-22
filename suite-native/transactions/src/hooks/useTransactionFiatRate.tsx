@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     FiatRatesRootState,
     selectHistoricFiatRatesByTimestamp,
-    selectLocalCurrency,
     updateTxsFiatRatesThunk,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-fiat-rates';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import {
     AccountKey,
     Timestamp,

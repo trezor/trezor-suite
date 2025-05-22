@@ -7,7 +7,7 @@ import {
     authorizeDeviceThunk,
     selectIsDeviceAuthorized,
     selectIsDeviceConnected,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {

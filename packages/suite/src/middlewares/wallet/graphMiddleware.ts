@@ -1,12 +1,12 @@
 import { MiddlewareAPI } from 'redux';
 
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     accountsActions,
     discoveryActions,
     selectDeviceDiscovery,
-    transactionsActions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { transactionsActions } from '@suite-common/wallet-transactions';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';

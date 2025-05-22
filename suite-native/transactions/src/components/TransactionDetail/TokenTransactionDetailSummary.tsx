@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
 import { AccountKey } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { TypedTokenTransfer } from '@suite-native/tokens';

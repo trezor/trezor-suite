@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDeviceState } from '@suite-common/wallet-core';
+import { selectDeviceState } from '@suite-common/device';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,

@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { DeviceRootState } from '@suite-common/device';
 import {
     TradingRootState,
     TradingTransaction,
     selectDeviceTradingTradesByTradeTypeOrderedByDate,
 } from '@suite-common/trading';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
 import { useTranslate } from '@suite-native/intl';
 import {
     Screen,

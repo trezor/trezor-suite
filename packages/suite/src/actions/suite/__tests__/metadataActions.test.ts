@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { prepareDeviceReducer } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
@@ -39,6 +39,7 @@ jest.unmock('dropbox');
 jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve<any>({}));
 
 type MetadataState = ReturnType<typeof metadataReducer>;
+
 interface InitialState {
     metadata?: MetadataState;
     device: any;

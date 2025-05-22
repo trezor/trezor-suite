@@ -2,13 +2,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
+import { removeButtonRequests, selectSelectedDevice } from '@suite-common/device';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    removeButtonRequests,
-    selectAccountByKey,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, ErrorMessage, InlineAlertBox, VStack } from '@suite-native/atoms';

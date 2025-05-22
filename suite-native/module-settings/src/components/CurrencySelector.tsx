@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FiatCurrency, FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
-import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-settings';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

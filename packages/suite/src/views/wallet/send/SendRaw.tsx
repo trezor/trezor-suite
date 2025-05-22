@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 
-import { pushSendFormRawTransactionThunk, sendFormActions } from '@suite-common/wallet-core';
+import { pushSendFormRawTransactionThunk, sendFormActions } from '@suite-common/wallet-send';
 import { getInputState, isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';

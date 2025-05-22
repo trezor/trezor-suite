@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     DefinitionType,
     EnhancedTokenInfo,
@@ -15,7 +16,8 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { Explorer, Network, getCoingeckoId } from '@suite-common/wallet-config';
-import { selectExplorer, selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
+import { sendFormActions } from '@suite-common/wallet-send';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,

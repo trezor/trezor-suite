@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { toggleRememberDevice } from '@suite-common/wallet-core';
+import { toggleRememberDevice } from '@suite-common/wallet-settings';
 import { CollapsibleBox, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 

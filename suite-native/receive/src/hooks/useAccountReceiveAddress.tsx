@@ -4,13 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    AccountsRootState,
-    TransactionsRootState,
     confirmAddressOnDeviceThunk,
-    selectAccountNetworkSymbol,
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-blockchain';
+import { TransactionsRootState } from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';

@@ -16,7 +16,6 @@
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/trading": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",

@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-blockchain';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Text, TextProps } from '@suite-native/atoms';
 import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';

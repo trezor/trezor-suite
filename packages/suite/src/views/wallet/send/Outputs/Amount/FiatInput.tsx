@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { updateFiatRatesThunk } from '@suite-common/wallet-fiat-rates';
 import {
     CurrencyOption,
     FiatRatesResult,

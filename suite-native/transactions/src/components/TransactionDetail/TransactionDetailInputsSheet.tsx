@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { TransactionsRootState } from '@suite-common/wallet-core';
+import { TransactionsRootState } from '@suite-common/wallet-transactions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

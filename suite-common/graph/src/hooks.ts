@@ -6,7 +6,7 @@ import { roundToNearestMinutes, subHours } from 'date-fns';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-blockchain';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';
 import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';

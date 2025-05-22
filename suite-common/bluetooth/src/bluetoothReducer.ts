@@ -1,7 +1,7 @@
 import { AnyAction, Draft } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/device';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { deviceActions } from '@suite-common/wallet-core';
 
 import { bluetoothActions } from './bluetoothActions';
 

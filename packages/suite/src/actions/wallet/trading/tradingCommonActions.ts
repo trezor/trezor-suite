@@ -1,4 +1,4 @@
-import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/device';
 import { Output } from '@suite-common/wallet-types/src';
 import {
     amountToSmallestUnit,

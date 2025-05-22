@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { AccountsRootState, selectLocalCurrency } from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-blockchain';
+import { selectLocalCurrency } from '@suite-common/wallet-settings';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     NativeAccountsRootState,

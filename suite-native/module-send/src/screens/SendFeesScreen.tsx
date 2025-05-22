@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';

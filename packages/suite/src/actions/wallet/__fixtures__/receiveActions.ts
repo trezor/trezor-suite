@@ -1,7 +1,7 @@
 import { connectInitThunk } from '@suite-common/connect-init';
+import { confirmAddressOnDeviceThunk } from '@suite-common/device';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
 import { MODAL, SUITE } from 'src/actions/suite/constants';
 import * as receiveActions from 'src/actions/wallet/receiveActions';

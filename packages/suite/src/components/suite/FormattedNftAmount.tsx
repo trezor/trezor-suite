@@ -2,7 +2,7 @@ import { useTheme } from 'styled-components';
 
 import { SignValue } from '@suite-common/suite-types';
 import { getExplorerUrl } from '@suite-common/wallet-config';
-import { selectExplorer } from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
 import { Box, Column, Row, Text } from '@trezor/components';
 import { TokenTransfer } from '@trezor/connect';

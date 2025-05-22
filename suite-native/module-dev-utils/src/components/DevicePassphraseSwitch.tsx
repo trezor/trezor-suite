@@ -6,7 +6,7 @@ import {
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
-} from '@suite-common/wallet-core';
+} from '@suite-common/device';
 import { Box, HStack, Switch, Text } from '@suite-native/atoms';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';

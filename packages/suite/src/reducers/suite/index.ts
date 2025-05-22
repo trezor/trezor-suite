@@ -1,9 +1,9 @@
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
+import { prepareDeviceReducer } from '@suite-common/device';
 import { logsSlice } from '@suite-common/logger';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
 import { extraDependencies } from 'src/support/extraDependencies';

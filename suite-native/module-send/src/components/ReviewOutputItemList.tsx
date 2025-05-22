@@ -2,12 +2,9 @@ import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    DeviceRootState,
-    SendRootState,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
+import { DeviceRootState } from '@suite-common/device';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-blockchain';
+import { SendRootState } from '@suite-common/wallet-send';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { ErrorMessage, VStack } from '@suite-native/atoms';
 import { nativeSpacings } from '@trezor/theme';

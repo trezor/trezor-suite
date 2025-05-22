@@ -5,7 +5,7 @@ import { BuyTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import type { TradingBuyType } from '@suite-common/trading';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { selectAccounts } from '@suite-common/wallet-blockchain';
 import { Card } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 

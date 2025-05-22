@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
+import { BlockchainRootState } from '@suite-common/wallet-blockchain';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import {
-    BlockchainRootState,
     TransactionsRootState,
     selectTransactionConfirmations,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';

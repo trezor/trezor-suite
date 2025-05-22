@@ -2,11 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import { DeviceRootState } from '@suite-common/device';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
 import { ReceiveStackParamList, ReceiveStackRoutes, Screen } from '@suite-native/navigation';
 import { getScreenWidth } from '@trezor/env-utils';

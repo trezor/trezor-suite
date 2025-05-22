@@ -6,6 +6,17 @@ import { CommonActions, useNavigation, useRoute } from '@react-navigation/native
 import { isRejected } from '@reduxjs/toolkit';
 
 import {
+    DeviceRootState,
+    selectIsDeviceInViewOnlyMode,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import {
+    AccountsRootState,
+    LIMIT,
+    accountsActions,
+    selectDeviceAccounts,
+} from '@suite-common/wallet-blockchain';
+import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
@@ -13,15 +24,6 @@ import {
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    LIMIT,
-    accountsActions,
-    selectDeviceAccounts,
-    selectIsDeviceInViewOnlyMode,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
 import {

@@ -2,14 +2,16 @@ import { useEffect, useState } from 'react';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import {
+    selectRememberedHiddenWalletsCount,
+    selectRememberedStandardWalletsCount,
+} from '@suite-common/device';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     selectBitcoinAmountUnit,
     selectEnabledNetworks,
     selectLocalCurrency,
-    selectRememberedHiddenWalletsCount,
-    selectRememberedStandardWalletsCount,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-settings';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';

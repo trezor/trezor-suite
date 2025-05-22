@@ -24,8 +24,8 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { tradingExchangeActions } from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-blockchain';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';

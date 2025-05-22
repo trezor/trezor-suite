@@ -6,7 +6,7 @@ import {
     TransactionsState,
     transactionsActions,
     transactionsInitialState,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { transactionsReducer } from 'src/reducers/wallet';

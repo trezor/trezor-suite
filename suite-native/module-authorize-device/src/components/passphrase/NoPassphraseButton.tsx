@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { onPassphraseSubmit, selectDeviceInternalModel } from '@suite-common/wallet-core';
+import { onPassphraseSubmit, selectDeviceInternalModel } from '@suite-common/device';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';

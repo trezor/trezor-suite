@@ -1,10 +1,10 @@
 import { createMiddleware } from '@suite-common/redux-utils';
+import { onBlockchainDisconnectThunk } from '@suite-common/wallet-blockchain';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     TransactionsRootState,
-    onBlockchainDisconnectThunk,
     selectAllPendingTransactions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 import { BlockchainEvent, BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
 
 import {

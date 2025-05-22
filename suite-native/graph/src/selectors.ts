@@ -1,5 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
+import { DeviceRootState } from '@suite-common/device';
 import { AccountItem } from '@suite-common/graph';
 import { isIgnoredBalanceHistoryCoin } from '@suite-common/graph/src/constants';
 import {
@@ -8,10 +9,9 @@ import {
 } from '@suite-common/token-definitions';
 import {
     AccountsRootState,
-    DeviceRootState,
     selectAccountByKey,
     selectDeviceMainnetAccounts,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 

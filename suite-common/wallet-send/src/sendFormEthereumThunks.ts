@@ -8,7 +8,7 @@ import {
     ETH_TRANSFER_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
-import { selectTransactions } from '@suite-common/wallet-core';
+import { selectTransactions } from '@suite-common/wallet-transactions';
 import {
     Account,
     AddressDisplayOptions,

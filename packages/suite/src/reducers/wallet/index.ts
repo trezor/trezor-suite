@@ -6,13 +6,13 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
-    prepareExplorerReducer,
-    prepareFiatRatesReducer,
-    prepareStakeReducer,
-    prepareTransactionsReducer,
-    prepareWalletSettingsReducer,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-blockchain';
+import { prepareExplorerReducer } from '@suite-common/wallet-explorer';
+import { prepareFiatRatesReducer } from '@suite-common/wallet-fiat-rates';
 import { prepareSendFormReducer } from '@suite-common/wallet-send';
+import { prepareWalletSettingsReducer } from '@suite-common/wallet-settings';
+import { prepareStakeReducer } from '@suite-common/wallet-stake';
+import { prepareTransactionsReducer } from '@suite-common/wallet-transactions';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 

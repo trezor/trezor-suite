@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { selectHistoricFiatRates } from '@suite-common/wallet-fiat-rates';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,

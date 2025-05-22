@@ -3,7 +3,7 @@ import {
     selectAccountTransactionsWithNulls,
     selectAreAllTransactionsLoaded,
     selectIsLoadingAccountTransactions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 
 import { useSelector } from 'src/hooks/suite';
 import { TransactionList } from 'src/views/wallet/transactions/TransactionList/TransactionList';

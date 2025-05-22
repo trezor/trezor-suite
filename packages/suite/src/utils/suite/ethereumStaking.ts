@@ -13,7 +13,7 @@ import {
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
-import { ValidatorsQueue } from '@suite-common/wallet-core';
+import { ValidatorsQueue } from '@suite-common/wallet-stake';
 import {
     PrecomposedLevels,
     StakeFormState,
@@ -367,6 +367,7 @@ interface PrepareStakeEthTxParams {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
 }
+
 export type PrepareStakeEthTxResponse =
     | {
           success: true;

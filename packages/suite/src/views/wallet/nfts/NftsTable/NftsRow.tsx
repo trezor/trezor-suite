@@ -7,7 +7,7 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { Explorer, Network } from '@suite-common/wallet-config';
-import { selectExplorer } from '@suite-common/wallet-core';
+import { selectExplorer } from '@suite-common/wallet-explorer';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import {

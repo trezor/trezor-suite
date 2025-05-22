@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceNotEmpty } from '@suite-common/wallet-core';
+import { selectIsDeviceNotEmpty } from '@suite-common/device';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { finishPassphraseFlow } from '@suite-native/device-authorization';

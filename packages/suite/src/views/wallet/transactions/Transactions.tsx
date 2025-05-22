@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-transactions';
 
 import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';

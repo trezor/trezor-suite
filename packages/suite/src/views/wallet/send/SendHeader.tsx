@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { sendFormActions } from '@suite-common/wallet-core';
+import { sendFormActions } from '@suite-common/wallet-send';
 import { Button, Dropdown, DropdownMenuItemProps } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 

@@ -2,7 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { createTransform } from 'redux-persist';
 
-import { deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/device';
 import { AccountKey } from '@suite-common/wallet-types';
 import { filterKeysByPartialMatch, selectDeviceStatesNotRemembered } from '@suite-native/storage';
 
