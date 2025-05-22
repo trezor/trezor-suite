@@ -5,6 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { TradingBuyForm } from '../../../types';
 import {
@@ -32,7 +33,7 @@ describe('BuyReceiveAccountCryptoBalance', () => {
         buyForm = await renderBuyForm();
     });
 
-    it('should display empty box when symbol is not specified', async () => {
+    it('should display empty box when nor symbol nor asset is specified', async () => {
         act(() => {
             buyForm.setValue('receiveAccount', {
                 account: {
@@ -46,7 +47,7 @@ describe('BuyReceiveAccountCryptoBalance', () => {
         expect(queryByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
     });
 
-    it('should display empty box when balance is not specified', async () => {
+    it('should display empty balance when balance is not specified', async () => {
         act(() => {
             buyForm.setValue('receiveAccount', {
                 account: {
@@ -55,9 +56,9 @@ describe('BuyReceiveAccountCryptoBalance', () => {
                 } as any,
             });
         });
-        const { queryByTestId } = await renderComponent();
+        const { getByTestId } = await renderComponent();
 
-        expect(queryByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
+        expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 
     it('should display balance when symbol and balance is specified', async () => {
@@ -72,5 +73,14 @@ describe('BuyReceiveAccountCryptoBalance', () => {
         const { getByTestId } = await renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
+    });
+
+    it('should display empty balance when symbol is not specified, but asset is', async () => {
+        act(() => {
+            buyForm.setValue('asset', btcAsset);
+        });
+        const { getByTestId } = await renderComponent();
+
+        expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 });
