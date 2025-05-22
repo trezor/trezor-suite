@@ -319,17 +319,22 @@ const createOnBundleProgressHandler = (
 
     const progressEventToCreateAccountPayload = (
         event: ProgressOkEvent,
-    ): CreateAccountActionProps => ({
-        deviceState: deviceStaticSessionId,
-        discoveryItem: {
-            path: event.response.path as Bip43Path,
-            coin: event.response.symbol,
-            index: event.response.index,
-            accountType: event.response.type,
-        },
-        accountInfo: event.response,
-        visible: true,
-    });
+    ): CreateAccountActionProps => {
+        const { response } = event;
+
+        return {
+            deviceState: deviceStaticSessionId,
+            discoveryItem: {
+                path: response.path as Bip43Path,
+                coin: response.symbol,
+                index: response.index,
+                accountType: response.type,
+            },
+            accountInfo: response,
+            // first normal account is always visible on web & desktop
+            visible: (response.type === 'normal' && response.index === 0) || !response.empty,
+        };
+    };
 
     return (event: ProgressEvent) => {
         console.log('bundle progress handler', event);
