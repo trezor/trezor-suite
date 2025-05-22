@@ -1,0 +1,47 @@
+name: "[Build] suite-native adhoc"
+
+on:
+  workflow_dispatch:
+    inputs:
+      PLATFORM:
+        type: choice
+        options:
+          - all
+          - android
+          - ios
+        description: Select platform to run build
+        required: true
+
+jobs:
+  adhoc-build:
+    if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
+    name: EAS adhoc build
+    runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      EXPO_PUBLIC_ENVIRONMENT: preview
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: write
+    steps:
+      - name: Print selected platform
+        run: |
+          echo "Selected platform: ${{ github.event.inputs.PLATFORM }}"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN_DEVELOP }}
+      - name: Install libs
+        run: |
+          yarn workspaces focus @suite-native/app
+          npx patch-package # Apply global patches.
+      - name: Trigger adhoc build
+        run: |
+          yarn native:adhoc -p ${{ github.event.inputs.PLATFORM  }} --non-interactive --message ${{ github.sha }}
