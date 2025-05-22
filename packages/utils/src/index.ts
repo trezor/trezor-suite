@@ -57,3 +57,4 @@ export * from './typedEventEmitter';
 export * from './typedObjectKeys';
 export * from './urlToOnion';
 export * from './zip';
+export * from './removeTrailingSlashes';
