@@ -10,7 +10,6 @@ import {
 import { DiscoveryStatus } from '@suite-common/wallet-types';
 import {
     selectCheckPassphraseOnDevice,
-    selectDeviceRequestedPassphrase,
     selectDeviceRequestedPin,
     selectInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
@@ -39,18 +38,9 @@ const determineNativePassphraseFlowState = (
     discovery: DiscoveryStatus,
     options: {
         checkingOnDevice: boolean;
-        hasDeviceRequestedPassphrase: boolean;
     },
 ) => {
     const passphraseState = determinePassphraseFlowState(discovery);
-
-    if (!passphraseState && options.hasDeviceRequestedPassphrase) {
-        // NOTE: when device requestsed passphrase outside of the passphrase flow
-        // display just the form
-        return {
-            screen: 'not-exist-enter-passphrase',
-        };
-    }
 
     if (options.checkingOnDevice) {
         return {
@@ -88,7 +78,6 @@ export const PassphraseStackNavigator = () => {
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
-    const hasDeviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
 
     const checkingOnDevice = useSelector(selectCheckPassphraseOnDevice);
 
@@ -99,7 +88,6 @@ export const PassphraseStackNavigator = () => {
     // Use the shared determinePassphraseFlowState function to get the current state
     const passphraseState = determineNativePassphraseFlowState(discovery, {
         checkingOnDevice,
-        hasDeviceRequestedPassphrase,
     });
 
     // If there's no passphrase state, don't render anything
@@ -122,32 +110,31 @@ export const PassphraseStackNavigator = () => {
                 />
             )}
 
-            {passphraseState?.screen === 'discovery-loader' && (
+            {passphraseState.screen === 'discovery-loader' && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseLoading}
                     component={PassphraseLoadingScreen}
                 />
             )}
 
-            {(passphraseState?.screen === 'not-exist-enter-passphrase' ||
-                passphraseState?.screen === 'exists-enter-passphrase' ||
-                hasDeviceRequestedPassphrase) && (
+            {(passphraseState.screen === 'not-exist-enter-passphrase' ||
+                passphraseState.screen === 'exists-enter-passphrase') && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseForm}
                     component={PassphraseFormScreen}
                 />
             )}
 
-            {(passphraseState?.screen === 'not-exist-confirm-passphrase' ||
-                passphraseState?.screen === 'exists-confirm-passphrase') && (
+            {(passphraseState.screen === 'not-exist-confirm-passphrase' ||
+                passphraseState.screen === 'exists-confirm-passphrase') && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseEmptyWallet}
                     component={PassphraseEmptyWalletScreen}
                 />
             )}
 
-            {(passphraseState?.screen === 'not-exist-passphrase-mismatch-warning' ||
-                passphraseState?.screen === 'exists-passphrase-mismatch-warning') && (
+            {(passphraseState.screen === 'not-exist-passphrase-mismatch-warning' ||
+                passphraseState.screen === 'exists-passphrase-mismatch-warning') && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseMismatchAlert}
                     component={function PassphraseMismatchAlertScreen() {
@@ -160,7 +147,7 @@ export const PassphraseStackNavigator = () => {
                 />
             )}
 
-            {passphraseState?.screen === 'passphrase-enable-on-device' && (
+            {passphraseState.screen === 'passphrase-enable-on-device' && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice}
                     component={PassphraseEnableOnDeviceScreen}
@@ -168,20 +155,20 @@ export const PassphraseStackNavigator = () => {
             )}
 
             {/* The PassphraseVerifyEmptyWallet screen is shown when user confirms they want to use an empty passphrase */}
-            {(passphraseState?.screen === 'not-exist-confirm-passphrase' ||
-                passphraseState?.screen === 'exists-confirm-passphrase') && (
+            {(passphraseState.screen === 'not-exist-confirm-passphrase' ||
+                passphraseState.screen === 'exists-confirm-passphrase') && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet}
                     component={PassphraseVerifyEmptyWalletScreen}
                 />
             )}
-            {passphraseState?.screen === 'passphrase-checking-on-device' && (
+            {passphraseState.screen === 'passphrase-checking-on-device' && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor}
                     component={PassphraseConfirmOnTrezorScreen}
                 />
             )}
-            {passphraseState?.screen === 'passphrase-duplicate' && (
+            {passphraseState.screen === 'passphrase-duplicate' && (
                 <PassphraseStack.Screen
                     name={AuthorizeDeviceStackRoutes.PassphraseDuplicateAlert}
                     component={function PassphraseMismatchAlertScreen() {
