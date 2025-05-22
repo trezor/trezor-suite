@@ -5790,8 +5790,12 @@ export default defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     CUSTOM_PRIORITY_HIGHER_THAN_MAX: {
-        defaultMessage: 'Max priority fee per gas cannot be higher than Max fee per gas ',
+        defaultMessage: 'Max priority fee per gas cannot be higher than Max fee per gas',
         id: 'CUSTOM_PRIORITY_HIGHER_THAN_MAX',
+    },
+    CUSTOM_MAX_PRIORITY_FEE_NOT_IN_RANGE: {
+        defaultMessage: 'Max priority fee per gas has to be at least {minPriorityFee}',
+        id: 'CUSTOM_MAX_PRIORITY_FEE_NOT_IN_RANGE',
     },
     CUSTOM_MAX_LOWER_THAN_PRIORITY: {
         defaultMessage: 'Max fee per gas cannot be lower than Max priority fee per gas ',

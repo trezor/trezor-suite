@@ -102,6 +102,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
         ),
         minFee,
         maxFee,
+        minPriorityFee: -1,
         blockHeight: 0,
         blockTime: data.coinInfo.blockTime,
     };

@@ -33,7 +33,7 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
     const { getValues, setValue, trigger } = props as unknown as UseFormReturn<FormState>;
     const errors = props.errors as unknown as FieldErrors<FormState>;
 
-    const { maxFee, minFee, levels } = feeInfo;
+    const { maxFee, minFee, levels, minPriorityFee } = feeInfo;
 
     const estimatedFeeLimit = getValues('estimatedFeeLimit');
     const customMaxFeePerGas = getValues('maxFeePerGas');
@@ -152,6 +152,12 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
 
                 if (customMaxFeePerGas && customPriorityFeePerGas.gte(customMaxFeePerGas)) {
                     return translationString('CUSTOM_PRIORITY_HIGHER_THAN_MAX');
+                }
+
+                if (customPriorityFeePerGas.lt(minPriorityFee)) {
+                    return translationString('CUSTOM_MAX_PRIORITY_FEE_NOT_IN_RANGE', {
+                        minPriorityFee: new BigNumber(minPriorityFee).toString(),
+                    });
                 }
             },
         },

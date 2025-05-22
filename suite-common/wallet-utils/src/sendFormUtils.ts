@@ -237,6 +237,7 @@ export const getFeeInfo = ({ networkType, feeInfo }: GetFeeInfoProps): FeeInfo =
     blockTime: feeInfo?.blockTime ?? 0,
     minFee: feeInfo?.minFee ?? 0,
     maxFee: feeInfo?.maxFee ?? 0,
+    minPriorityFee: feeInfo?.minPriorityFee ?? 0,
     dustLimit: feeInfo?.dustLimit ?? 0,
     feeLimit: feeInfo?.feeLimit ?? 0,
 });
