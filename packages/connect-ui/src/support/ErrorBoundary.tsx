@@ -1,30 +1,6 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
 
-interface StateProps {
-    error: Error | null | undefined;
-}
-
-interface Props {
-    children: ReactNode;
-}
-
-export class ErrorBoundary extends Component<Props, StateProps> {
-    constructor(props: Props) {
-        super(props);
-        this.state = { error: null };
-    }
-
-    componentDidCatch(error: Error | null, _errorInfo: ErrorInfo) {
-        this.setState({ error });
-    }
-
-    render() {
-        return this.state.error ? (
-            // render fallback UI
-            <>Something went wrong</>
-        ) : (
-            // when there's not an error, render children untouched
-            this.props.children
-        );
-    }
-}
+export const ErrorBoundary = ({ children }: { children: ReactNode }) => (
+    <ReactErrorBoundary fallback="Something went wrong">{children}</ReactErrorBoundary>
+);
