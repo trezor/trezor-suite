@@ -66,7 +66,7 @@ function assertStaticSessionId(
 
 const applyDeviceStatesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
-    (
+    async (
         {
             isAddingHiddenWallet,
             newDeviceState,
@@ -138,7 +138,7 @@ const applyDeviceStatesThunk = createThunk(
             const metadataEnabled = metadata.enabled && !device.metadata[1];
 
             if (metadataEnabled) {
-                dispatch(extra.thunks.initMetadata(false));
+                await dispatch(extra.thunks.initMetadata(false));
             }
         } catch (error) {
             console.warn('applyDeviceStatesThunk error', error);
