@@ -179,13 +179,24 @@ export const startDiscoveryThunk = createThunk(
             isAddingHiddenWallet,
             isAddingExistingWallet,
         }: {
-            device: TrezorDevice;
+            device?: TrezorDevice;
             isAddingHiddenWallet?: boolean;
             isAddingExistingWallet?: boolean;
         },
         { dispatch, getState },
     ): void => {
-        const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
+        const selectedDevice = selectSelectedDevice(getState());
+
+        const actualDevice = device ?? selectedDevice;
+
+        if (!actualDevice) {
+            console.warn('startDiscoveryThunk: no device found');
+
+            return;
+        }
+
+        const currentDiscovery = selectDiscoveryByDevicePath(getState(), actualDevice.path);
+
         if (isDiscoveryInProgress(currentDiscovery)) {
             console.warn(
                 'startDiscoveryThunk: discovery already in progress, cancelling start call',

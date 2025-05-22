@@ -13,10 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
-import {
-    applyDiscoveryChangesThunk,
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
     AddCoinAccountStackParamList,
@@ -93,7 +90,7 @@ export const AddCoinDiscoveryRunningScreen = ({
                     shouldBeVisible: true,
                 }),
             );
-            dispatch(applyDiscoveryChangesThunk());
+            // dispatch(applyDiscoveryChangesThunk());
         }
 
         if (accounts.length > 0 && !hasDiscovery) {
