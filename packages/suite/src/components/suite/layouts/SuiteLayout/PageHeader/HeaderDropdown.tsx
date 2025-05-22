@@ -1,7 +1,7 @@
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
-import { breakpointThresholds } from '@trezor/styles';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { breakpoints } from '@trezor/theme';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 import { useSelector } from '../../../../../hooks/suite';
@@ -29,11 +29,11 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
 
     const isTradingVisible = useConditionalRender({
         container: 'content',
-        minWidth: breakpointThresholds.lg,
+        minWidth: breakpoints.laptop,
     });
     const isSwapVisible = useConditionalRender({
         container: 'content',
-        minWidth: breakpointThresholds.md,
+        minWidth: breakpoints.tablet,
     });
 
     const additionalActions: ActionItem[] = [

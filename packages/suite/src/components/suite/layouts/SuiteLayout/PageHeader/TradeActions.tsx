@@ -2,9 +2,8 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { breakpointThresholds } from '@trezor/styles';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings } from '@trezor/theme';
+import { breakpoints, spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
@@ -80,7 +79,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     return (
         <Row gap={spacings.xxs}>
             <AppNavigationTooltip>
-                <ConditionalRender container="content" minWidth={breakpointThresholds.lg}>
+                <ConditionalRender container="content" minWidth={breakpoints.laptop}>
                     <HeaderActionButton
                         icon="currencyCircleDollar"
                         onClick={onBuyAndSellClick}
@@ -93,7 +92,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                     </HeaderActionButton>
                 </ConditionalRender>
                 {!hasBitcoinOnlyFirmware(device) && (
-                    <ConditionalRender container="content" minWidth={breakpointThresholds.md}>
+                    <ConditionalRender container="content" minWidth={breakpoints.tablet}>
                         <HeaderActionButton
                             icon="arrowsLeftRight"
                             onClick={onSwapClick}

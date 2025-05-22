@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Banner, Column } from '@trezor/components';
-import { breakpointMediaQueries } from '@trezor/styles';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -26,7 +26,7 @@ import { TotalSent } from './TotalSent/TotalSent';
 const FormGrid = styled.div`
     gap: ${spacingsPx.md};
 
-    ${breakpointMediaQueries.xl} {
+    ${SCREEN_QUERY.ABOVE_DESKTOP} {
         display: grid;
         grid-template-columns: minmax(500px, auto) minmax(340px, 420px);
 
@@ -40,7 +40,7 @@ const FormGrid = styled.div`
         }
     }
 
-    ${breakpointMediaQueries.below_xl} {
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
         display: flex;
         flex-direction: column;
     }

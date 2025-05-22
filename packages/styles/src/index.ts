@@ -6,6 +6,5 @@ export * from './createRenderer';
 export * from './useDirection';
 export * from './mergeStyleObjects';
 export * from './mergeStyles';
-export * from './breakpoints';
 export * from './mediaQueries';
 export * from './utils';

@@ -22,7 +22,6 @@ const windowReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case WINDOW.UPDATE_BREAKPOINTS:
-                // Simply copy all properties from the payload
                 Object.assign(draft, action.payload);
                 break;
             case WINDOW.UPDATE_WINDOW_VISIBILITY:

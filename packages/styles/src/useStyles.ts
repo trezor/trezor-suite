@@ -5,7 +5,6 @@ import { darken, lighten, transparentize } from 'polished';
 
 import { NativeTheme, Theme } from '@trezor/theme';
 
-import { breakpointMediaQueries } from './breakpoints';
 import { mediaQueries } from './mediaQueries';
 import { processNativeStyles, processStyles } from './processStyles';
 import {
@@ -47,7 +46,6 @@ export const useStyles = () => {
             ...theme,
             ...directionUtils,
             ...sharedUtils,
-            breakpoints: breakpointMediaQueries,
             media: mediaQueries,
         }),
         [directionUtils, theme],

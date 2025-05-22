@@ -1,5 +1,5 @@
 import { Button, ButtonProps, IconButton, IconButtonProps } from '@trezor/components';
-import { breakpointThresholds } from '@trezor/styles';
+import { breakpoints } from '@trezor/theme';
 
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
 
@@ -17,11 +17,13 @@ export const HeaderActionButton = ({
 
     return (
         <>
-            <ConditionalRender container="content" maxWidth={breakpointThresholds.sm}>
+            <ConditionalRender container="content" maxWidth={breakpoints.mobile}>
                 <IconButton {...commonProps} />
             </ConditionalRender>
-            <ConditionalRender container="content" minWidth={breakpointThresholds.sm}>
-                <Button {...commonProps}>{children}</Button>
+            <ConditionalRender container="content" minWidth={breakpoints.mobile}>
+                <Button {...commonProps} textWrap={false}>
+                    {children}
+                </Button>
             </ConditionalRender>
         </>
     );

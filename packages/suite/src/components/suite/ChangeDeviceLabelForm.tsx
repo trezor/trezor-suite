@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectDeviceLabel, selectDeviceName } from '@suite-common/wallet-core';
 import { Button, Input, Tooltip } from '@trezor/components';
-import { breakpointMediaQueries } from '@trezor/styles';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -17,7 +17,7 @@ const Container = styled.form<{ $isVertical?: boolean }>`
     gap: ${spacingsPx.sm};
     min-width: ${({ $isVertical }) => $isVertical && '200px'};
 
-    ${breakpointMediaQueries.below_sm} {
+    ${SCREEN_QUERY.MOBILE} {
         min-width: ${({ $isVertical }) => $isVertical && '100%'};
     }
 `;

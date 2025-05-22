@@ -10,16 +10,7 @@ import type { CSSColor, NativeTheme, Theme } from '@trezor/theme';
 import type { mediaQueries } from './mediaQueries';
 import type { getValueAndUnit, isDarkColor, multiply, negative, sum } from './utils';
 
-export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
-
 export type Direction = 'ltr' | 'rtl';
-
-type MediaQuery = string;
-
-type NonZeroBreakpoint = Exclude<Breakpoint, 'xs'>;
-type BelowBreakpoints = `below_${NonZeroBreakpoint}`;
-
-export type BreakpointMediaQueries = Record<NonZeroBreakpoint | BelowBreakpoints, MediaQuery>;
 
 export interface DirectionUtils {
     direction: Direction;
@@ -41,7 +32,6 @@ export interface UniversalStyleUtils extends DirectionUtils {
 }
 
 export interface StyleUtils extends Theme, UniversalStyleUtils {
-    breakpoints: BreakpointMediaQueries;
     media: typeof mediaQueries;
 }
 
@@ -58,7 +48,7 @@ type PlainResponsiveStyleObject = {
     [KPropertyName in Exclude<keyof PlainStyleObject, DisallowedPropertyName>]?:
         | PlainStyleObject[KPropertyName]
         | {
-              [KBreakpoint in Breakpoint]?: PlainStyleObject[KPropertyName];
+              [KBreakpoint in string]?: PlainStyleObject[KPropertyName];
           };
 } & {
     [KPropertyName in DisallowedPropertyName]?: never;

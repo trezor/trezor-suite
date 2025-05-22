@@ -19,7 +19,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { BulletListItem } from '@trezor/components/src/components/BulletList/BulletListItem';
-import { breakpointMediaQueries } from '@trezor/styles';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { TRADING_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 
@@ -43,7 +43,7 @@ const IconWrapper = styled.div`
 `;
 
 const ColumnsWrapper = styled.div`
-    ${breakpointMediaQueries.xl} {
+    ${SCREEN_QUERY.ABOVE_DESKTOP} {
         display: flex;
         flex-direction: row;
     }
@@ -71,7 +71,7 @@ const DCACardsWrapper = styled.div`
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-gap: 20px;
 
-    ${breakpointMediaQueries.below_xl} {
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
         grid-template-columns: 1fr;
     }
 `;
