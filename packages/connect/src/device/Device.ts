@@ -147,7 +147,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this._features;
     }
 
-    private _featuresNeedsReload = false;
+    private wasUsedElsewhere = false;
 
     // variables used in one workflow: acquire -> transportSession -> commands -> run -> keepTransportSession -> release
     private acquirePromise?: ReturnType<Transport['acquire']>;
@@ -272,6 +272,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(result => this.waitAndCompareSession(result, sessionPromise))
             .then(result => {
                 if (result.success) {
+                    this.wasUsedElsewhere = false;
                     this.sessionAcquired = result.payload;
                     this.currentSession = new DeviceCurrentSession(
                         this,
@@ -446,6 +447,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private usedElsewhere() {
+        this.wasUsedElsewhere = true;
+
         // only makes sense to continue when device held by this instance
         if (!this.sessionAcquired) {
             return;
@@ -456,8 +459,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // and release device too.
         this.transport.releaseDevice(this.sessionAcquired);
         this.sessionAcquired = null;
-
-        this._featuresNeedsReload = true;
 
         _log.debug('interruptionFromOutside');
 
@@ -944,7 +945,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         this._features = feat;
-        this._featuresNeedsReload = false;
 
         // Vendor headers have been changed in 2.6.3.
         if (feat.fw_vendor === 'Trezor Bitcoin-only') {
@@ -1137,8 +1137,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const defaultLabel = 'My Trezor';
         const label =
             this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
-        let status: DeviceStatus = this.isUsedElsewhere() ? 'occupied' : 'available';
-        if (this._featuresNeedsReload) status = 'used';
+        const status: DeviceStatus = this.isUsedElsewhere()
+            ? 'occupied'
+            : (this.wasUsedElsewhere && 'used') || 'available';
 
         return {
             ...base,
