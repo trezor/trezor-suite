@@ -1,8 +1,9 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
+import { useDebounce } from '@trezor/react-utils';
 import { spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
@@ -101,29 +102,31 @@ type MainContentProps = {
 
 export const MainContent = ({ children }: MainContentProps) => {
     const ref = useRef<HTMLDivElement>(null);
-    const { setContentWidth, sidebarWidth } = useResponsiveContext();
+    const { setContentWidth } = useResponsiveContext();
+    const debounce = useDebounce();
 
-    const updateContainerWidth = useCallback(() => {
-        if (ref.current) {
-            const { current } = ref;
-            const boundingRect = current?.getBoundingClientRect();
-            const { width } = boundingRect;
-            setContentWidth(width);
-        }
-    }, [setContentWidth]);
     useEffect(() => {
-        updateContainerWidth();
+        const resizeObserver = new ResizeObserver(entries => {
+            if (entries[0]) {
+                const newWidth = entries[0].contentRect.width;
 
-        window.addEventListener('resize', updateContainerWidth);
-        window.addEventListener('orientationchange', updateContainerWidth);
-        window.addEventListener('load', updateContainerWidth);
+                debounce(() => {
+                    setContentWidth(newWidth);
+                });
+            }
+        });
+
+        if (ref.current) {
+            const boundingRect = ref.current.getBoundingClientRect();
+
+            setContentWidth(boundingRect.width);
+            resizeObserver.observe(ref.current);
+        }
 
         return () => {
-            window.removeEventListener('resize', updateContainerWidth);
-            window.removeEventListener('orientationchange', updateContainerWidth);
-            window.removeEventListener('load', updateContainerWidth);
+            resizeObserver.disconnect();
         };
-    }, [ref, setContentWidth, sidebarWidth, updateContainerWidth]);
+    }, [ref, setContentWidth, debounce]);
 
     return <MainContentContainer ref={ref}>{children}</MainContentContainer>;
 };
@@ -137,7 +140,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const theme = useSelector(state => state.suite.settings.theme);
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { scrollRef } = useResetScrollOnUrl();
     useClearAnchorHighlightOnClick(wrapperRef);
@@ -155,22 +158,22 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                         <ModalSwitcher />
 
-                        {isMobileLayout && <CoinjoinBars />}
+                        {isBelowTablet && <CoinjoinBars />}
 
-                        {isMobileLayout && <MobileMenu />}
+                        {isBelowTablet && <MobileMenu />}
 
                         <DiscoveryProgress />
 
                         <LayoutContext.Provider value={setLayoutPayload}>
                             <Body data-testid="@suite-layout/body">
                                 <Columns>
-                                    {!isMobileLayout && (
+                                    {!isBelowTablet && (
                                         <ElevationDown>
                                             <Sidebar />
                                         </ElevationDown>
                                     )}
                                     <MainContent>
-                                        {!isMobileLayout && <CoinjoinBars />}
+                                        {!isBelowTablet && <CoinjoinBars />}
                                         <SuiteBanners />
                                         <AppWrapper
                                             data-testid="@app"
@@ -178,7 +181,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                             id={SCROLL_WRAPPER_ID}
                                         >
                                             <ElevationUp>
-                                                {isMobileLayout && isAccountPage && (
+                                                {isBelowTablet && isAccountPage && (
                                                     <MobileAccountsMenu />
                                                 )}
                                                 {layoutHeader}
@@ -191,7 +194,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                             </Body>
                         </LayoutContext.Provider>
 
-                        {!isMobileLayout && <GuideButton />}
+                        {!isBelowTablet && <GuideButton />}
                     </Modal.Provider>
                 </PageWrapper>
 

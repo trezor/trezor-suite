@@ -111,14 +111,14 @@ const StoreBadge = ({
     analyticsPayload,
     shownQRState: [showQR, setShowQr],
 }: StoreBadgeProps) => {
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
 
     return (
         <Tooltip
             isOpen={isTooltipOpen}
-            cursor={isMobileLayout ? 'not-allowed' : undefined}
+            cursor={isBelowTablet ? 'not-allowed' : undefined}
             content={
                 <Column alignItems="center">
                     <StoreTitle
@@ -163,12 +163,12 @@ const StoreBadge = ({
 
 export const PromoBanner = () => {
     const shownQRState = useState<QrType>();
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const { contentWidth } = useResponsiveContext();
 
     return (
         <Container>
-            {isWeb() && !isMobileLayout && (
+            {isWeb() && !isBelowTablet && (
                 <DesktopPromoContainer>
                     <Row gap={spacings.xs}>
                         <Image image="HOLLOW_APP_LOGO" width={44} height={44} />

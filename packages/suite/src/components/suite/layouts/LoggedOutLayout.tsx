@@ -30,7 +30,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
 
     const theme = useSelector(state => state.suite.settings.theme);
     const { scrollRef } = useResetScrollOnUrl();
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     useClearAnchorHighlightOnClick(wrapperRef);
@@ -63,7 +63,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                             </Body>
                         </LayoutContext.Provider>
 
-                        {!isMobileLayout && <GuideButton />}
+                        {!isBelowTablet && <GuideButton />}
                     </Modal.Provider>
                 </PageWrapper>
                 <GuideRouter />

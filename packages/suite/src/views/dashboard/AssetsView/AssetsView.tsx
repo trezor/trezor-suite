@@ -93,7 +93,7 @@ export const AssetsView = () => {
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
     const { supportedMainnets } = useNetworkSupport();
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     const localCurrency = useSelector(selectLocalCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -171,7 +171,7 @@ export const AssetsView = () => {
     const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));
     const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
 
-    const showCards = isMobileLayout || dashboardAssetsGridMode;
+    const showCards = isBelowTablet || dashboardAssetsGridMode;
 
     return (
         <DashboardSection
@@ -182,7 +182,7 @@ export const AssetsView = () => {
                 </LoadingContent>
             }
             actions={
-                isMobileLayout ? (
+                isBelowTablet ? (
                     <></>
                 ) : (
                     <Row justifyContent="space-around" gap={spacings.sm}>

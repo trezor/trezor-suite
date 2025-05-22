@@ -85,7 +85,7 @@ export const TokenRow = ({
     isCollapsed,
 }: TokenRowProps) => {
     const dispatch = useDispatch();
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
     const device = useSelector(selectSelectedDevice);
     const { isLocked } = useDevice();
@@ -298,7 +298,7 @@ export const TokenRow = ({
                                 icon: 'arrowsLeftRight',
                                 onClick: () =>
                                     onTradeButtonClick('exchange', 'wallet-trading-exchange'),
-                                isHidden: !isMobileLayout,
+                                isHidden: !isBelowTablet,
                                 isDisabled: !canSwapToken,
                             },
                             {
@@ -317,7 +317,7 @@ export const TokenRow = ({
                                 isDisabled: token.balance === '0',
                                 isHidden:
                                     tokenStatusType === TokenManagementAction.HIDE
-                                        ? !isMobileLayout
+                                        ? !isBelowTablet
                                         : true,
                             },
                             {
@@ -328,7 +328,7 @@ export const TokenRow = ({
                                 isDisabled: isReceiveButtonDisabled,
                                 isHidden:
                                     tokenStatusType === TokenManagementAction.HIDE
-                                        ? !isMobileLayout
+                                        ? !isBelowTablet
                                         : true,
                             },
                             {
@@ -353,7 +353,7 @@ export const TokenRow = ({
                                     ),
                                 isHidden:
                                     tokenStatusType === TokenManagementAction.SHOW &&
-                                    !isMobileLayout,
+                                    !isBelowTablet,
                             },
                             {
                                 label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
@@ -382,7 +382,7 @@ export const TokenRow = ({
                             },
                         ]}
                     />
-                    {!isMobileLayout && (
+                    {!isBelowTablet && (
                         <IconButton
                             label={
                                 canSwapToken ? (
@@ -401,7 +401,7 @@ export const TokenRow = ({
                             }
                         />
                     )}
-                    {!isMobileLayout &&
+                    {!isBelowTablet &&
                         (tokenStatusType === TokenManagementAction.SHOW ? (
                             <Button
                                 icon="eye"

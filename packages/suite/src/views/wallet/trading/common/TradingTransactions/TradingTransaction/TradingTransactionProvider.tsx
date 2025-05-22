@@ -1,7 +1,8 @@
 import type { TradingPaymentMethodType } from '@suite-common/trading';
-import { Flex, FlexProps, useMediaQuery, variables } from '@trezor/components';
+import { Flex, FlexProps } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useLayoutSize } from 'src/hooks/suite';
 import { TradingPaymentType } from 'src/views/wallet/trading/common/TradingPaymentType';
 import {
     TradingProviderInfo,
@@ -19,7 +20,7 @@ export const TradingTransactionProvider = ({
     paymentMethod,
     paymentMethodName,
 }: TradingTransactionProvidersProps) => {
-    const isBelowDesktop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.XL})`);
+    const { isBelowDesktop } = useLayoutSize();
     const flexProps: Omit<FlexProps, 'children'> = isBelowDesktop
         ? {
               direction: 'row',

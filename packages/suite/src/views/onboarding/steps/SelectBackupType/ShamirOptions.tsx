@@ -12,14 +12,14 @@ import { Translation } from '../../../../components/suite';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 
 const UpgradableToMultiTag = () => {
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     return (
         <Badge
             variant="tertiary"
             inline
             margin={{ left: spacings.xs }}
-            size={isMobileLayout ? 'tiny' : undefined}
+            size={isBelowTablet ? 'tiny' : undefined}
         >
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI" />
         </Badge>
@@ -27,14 +27,14 @@ const UpgradableToMultiTag = () => {
 };
 
 const AdvancedTag = () => {
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     return (
         <Badge
             variant="tertiary"
             inline
             margin={{ left: spacings.xs }}
-            size={isMobileLayout ? 'tiny' : undefined}
+            size={isBelowTablet ? 'tiny' : undefined}
         >
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_ADVANCED" />
         </Badge>

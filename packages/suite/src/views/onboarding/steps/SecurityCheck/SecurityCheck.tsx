@@ -46,7 +46,7 @@ const firmwareInstalledChecklist = [
     },
 ] as const satisfies SecurityChecklistItem[];
 
-const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
+const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
     [
         {
             icon: <Icon size={24} name="sealCheck" />,
@@ -76,7 +76,7 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
                     values={{
                         strong: chunks => (
                             <Tooltip
-                                placement={isMobileLayout ? 'top' : 'left'}
+                                placement={isBelowTablet ? 'top' : 'left'}
                                 title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
                                 content={<Hologram />}
                                 isInline
@@ -106,7 +106,7 @@ const SecurityCheckContent = ({
     goToSuiteOrNextDevice,
     shouldAuthenticateSelectedDevice,
 }: SecurityCheckContentProps) => {
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectSelectedDevice);
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
@@ -133,7 +133,7 @@ const SecurityCheckContent = ({
 
     const checklistItems = isFirmwareInstalled
         ? firmwareInstalledChecklist
-        : getNoFirmwareChecklist(isMobileLayout);
+        : getNoFirmwareChecklist(isBelowTablet);
 
     const toggleView = () => setIsFailed(current => !current);
     const handleContinueButtonClick = () =>

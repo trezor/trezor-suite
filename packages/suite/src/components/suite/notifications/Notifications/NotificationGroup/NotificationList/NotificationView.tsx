@@ -29,7 +29,7 @@ export const NotificationView = ({
     variant,
     notification: { seen, id },
 }: NotificationViewProps) => {
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
     const defaultIcon = icon ?? getNotificationIcon(variant);
     const colorVariant = seen ? 'tertiary' : 'default';
 
@@ -50,7 +50,7 @@ export const NotificationView = ({
                 </Paragraph>
             </Column>
             {action?.onClick &&
-                (isMobileLayout ? (
+                (isBelowTablet ? (
                     <Icon name="caretRight" onClick={action.onClick} size={18} />
                 ) : (
                     <Button variant="tertiary" size="tiny" onClick={action.onClick} minWidth={80}>

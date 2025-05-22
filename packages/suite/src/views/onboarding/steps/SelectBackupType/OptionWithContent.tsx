@@ -164,7 +164,7 @@ export const OptionWithContent = ({
     disabled,
     tooltip,
 }: OptionWithContentProps) => {
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     const inner = (
         <Option
@@ -175,7 +175,7 @@ export const OptionWithContent = ({
         >
             <OptionText>
                 <Row alignItems="center">
-                    <Text typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}>
+                    <Text typographyStyle={isBelowTablet ? 'highlight' : 'titleSmall'}>
                         <Translation id={typesToLabelMap[value]} />
                     </Text>
                     {tags}

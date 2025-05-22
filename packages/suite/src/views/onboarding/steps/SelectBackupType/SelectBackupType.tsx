@@ -78,7 +78,7 @@ export const SelectBackupType = ({
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(false);
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     const isDefault = deviceDefaultBackupType === selected;
     const isShamirDefault = isShamirBackupType(deviceDefaultBackupType);
@@ -88,7 +88,7 @@ export const SelectBackupType = ({
         open: isOpen,
         onOpenChange: setIsOpen,
         middleware: [
-            offset(-(isMobileLayout ? SELECT_ELEMENT_HEIGHT_MOBILE : SELECT_ELEMENT_HEIGHT) + 1),
+            offset(-(isBelowTablet ? SELECT_ELEMENT_HEIGHT_MOBILE : SELECT_ELEMENT_HEIGHT) + 1),
             size({
                 apply: ({ rects, elements, availableHeight }) => {
                     Object.assign(elements.floating.style, {
@@ -123,7 +123,7 @@ export const SelectBackupType = ({
                             <Text variant="tertiary" typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
                             </Text>
-                            <Text typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}>
+                            <Text typographyStyle={isBelowTablet ? 'highlight' : 'titleSmall'}>
                                 <Translation
                                     id={
                                         isDefault

@@ -1,16 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { WINDOW } from './constants';
+import { BreakpointFlags } from '@trezor/theme';
 
-export const updateWindowSize = createAction(
-    WINDOW.UPDATE_WINDOW_SIZE,
-    (screenWidth: number, screenHeight: number) => ({
-        payload: {
-            screenWidth,
-            screenHeight,
-        },
-    }),
-);
+import { WINDOW } from './constants';
 
 export const updateWindowVisibility = createAction(
     WINDOW.UPDATE_WINDOW_VISIBILITY,
@@ -19,6 +11,13 @@ export const updateWindowVisibility = createAction(
     }),
 );
 
+export const updateBreakpoints = createAction(
+    WINDOW.UPDATE_BREAKPOINTS,
+    (breakpointFlags: Partial<BreakpointFlags>) => ({
+        payload: breakpointFlags,
+    }),
+);
+
 export type WindowAction =
-    | ReturnType<typeof updateWindowSize>
-    | ReturnType<typeof updateWindowVisibility>;
+    | ReturnType<typeof updateWindowVisibility>
+    | ReturnType<typeof updateBreakpoints>;

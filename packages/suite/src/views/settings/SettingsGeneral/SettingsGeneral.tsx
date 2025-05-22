@@ -46,7 +46,7 @@ export const SettingsGeneral = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const metadata = useSelector(state => state.metadata);
-    const { isMobileLayout } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
         const networkFeatures = getNetwork(symbol).features;
@@ -65,7 +65,7 @@ export const SettingsGeneral = () => {
     return (
         <SettingsLayout data-testid="@settings/index">
             <div>
-                {isWeb() && !isMobileLayout && shouldShowSettingsDesktopAppPromoBanner && (
+                {isWeb() && !isBelowTablet && shouldShowSettingsDesktopAppPromoBanner && (
                     <DesktopSuiteBanner />
                 )}
 

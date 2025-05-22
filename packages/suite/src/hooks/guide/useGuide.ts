@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { close, open } from 'src/actions/suite/guideActions';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
@@ -11,12 +9,10 @@ export const useGuide = () => {
     const isGuideOpen = useSelector(state => state.guide.open);
     const dispatch = useDispatch();
 
-    const { layoutSize } = useLayoutSize();
+    const { isBelowLaptop } = useLayoutSize();
 
-    const isGuideOnTop = useMemo(
-        () => ['NORMAL', 'SMALL', 'TINY'].includes(layoutSize),
-        [layoutSize],
-    );
+    // The guide should be on top for smaller screens (below laptop size)
+    const isGuideOnTop = isBelowLaptop;
 
     const isModalOpen = usePreferredModal().type !== 'none';
 

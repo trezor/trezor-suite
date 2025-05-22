@@ -1,5 +1,8 @@
 import { icons } from '@suite-common/icons/src/icons';
 
+/**
+ * @deprecated This key is deprecated. Please use `useLayoutSize` hook.
+ */
 export const SCREEN_SIZE = {
     UNAVAILABLE: '260px',
     SM: '576px', // phones
@@ -16,6 +19,9 @@ const HELPER_SCREEN_SIZE = {
     XL: '1199px', // extra Large laptops/desktops
 };
 
+/**
+ * @deprecated This key is deprecated. Please use `useLayoutSize` hook.
+ */
 export const SCREEN_QUERY = {
     MOBILE: `@media (max-width: ${HELPER_SCREEN_SIZE.SM})`,
     ABOVE_MOBILE: `@media (min-width: ${SCREEN_SIZE.SM})`,

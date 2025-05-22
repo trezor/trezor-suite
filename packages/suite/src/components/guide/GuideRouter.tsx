@@ -3,7 +3,7 @@ import { FreeFocusInside } from 'react-focus-lock';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { ActiveView } from '@suite-common/suite-types';
-import { Box, Modal, useMediaQuery, variables } from '@trezor/components';
+import { Box, Modal, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { borders, spacings, zIndices } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
@@ -39,8 +39,7 @@ const getGuideContent = (activeView: ActiveView) => {
 
 export const GuideRouter = () => {
     const activeView = useSelector(state => state.guide.view);
-    const { isGuideOpen, closeGuide } = useGuide();
-    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const { isGuideOpen, closeGuide, isGuideOnTop } = useGuide();
 
     // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
     const isFirstRender = useOnce(isGuideOpen, false);
@@ -80,7 +79,7 @@ export const GuideRouter = () => {
     return (
         <AnimatePresence>
             {isGuideOpen &&
-                (isBelowLaptop ? (
+                (isGuideOnTop ? (
                     <Modal.Backdrop
                         alignment={{ x: 'end', y: 'center' }}
                         padding={spacings.zero}
