@@ -89,10 +89,11 @@ export const AddCoinDiscoveryFinishedScreen = ({
                 </Text>
             </Box>
             <Card style={applyStyle(accountsStyle)}>
-                {accounts.map(account => (
+                {accounts.map((account, index) => (
                     <AccountsListItem
                         key={account.key}
                         account={account}
+                        index={index}
                         onPress={() => handleSelectedAccount(account)}
                     />
                 ))}

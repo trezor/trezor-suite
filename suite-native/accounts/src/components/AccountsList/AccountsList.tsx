@@ -63,10 +63,11 @@ export const AccountsList = ({
             <VStack marginTop="sp8" spacing="sp16">
                 {groups.map(([accountTypeHeader, networkAccounts]) => (
                     <Card key={accountTypeHeader} noPadding>
-                        {networkAccounts.map(account => (
+                        {networkAccounts.map((account, index) => (
                             <AccountsListItem
                                 key={account.key}
                                 account={account}
+                                index={index}
                                 onPress={handleSetBottomSheetAccount}
                             />
                         ))}
