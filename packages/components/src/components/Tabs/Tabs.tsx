@@ -73,6 +73,7 @@ const Tabs = ({
     const [indicatorWidth, setIndicatorWidth] = useState(0);
     const [indicatorPosition, setIndicatorPosition] = useState(0);
     const tabsRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
+    const containerRef = useRef<HTMLDivElement>(null);
     const frameProps = pickAndPrepareFrameProps(rest, allowedTabsFrameProps);
 
     const setTabRef = useCallback(
@@ -95,16 +96,22 @@ const Tabs = ({
 
     useEffect(() => {
         updateIndicator();
-        window.addEventListener('resize', updateIndicator);
 
-        return () => {
-            window.removeEventListener('resize', updateIndicator);
-        };
-    }, [updateIndicator, size, children]);
+        if (!containerRef.current) return undefined;
+
+        const observer = new ResizeObserver(() => {
+            updateIndicator();
+        });
+
+        observer.observe(containerRef.current);
+
+        return () => observer.disconnect();
+    }, [updateIndicator]);
 
     return (
         <TabsContext.Provider value={{ activeItemId, isDisabled, size, setTabRef }}>
             <Container
+                ref={containerRef}
                 $hasBorder={hasBorder}
                 $elevation={elevation}
                 $indicatorWidth={indicatorWidth}
