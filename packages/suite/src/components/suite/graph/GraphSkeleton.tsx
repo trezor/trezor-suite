@@ -70,7 +70,7 @@ export const GraphSkeleton = ({ animate, ...rest }: GraphSkeletonProps) => {
                 </SkeletonStack>
             </SkeletonSpread>
             <SkeletonRectangle height="2px" width="100%" animate={animationEnabled} />
-            <SkeletonSpread $spaceAround $margin="12px 0px 50px 0px" $alignItems="flex-end">
+            <SkeletonSpread $spaceAround $margin="12px 0px 10px 0px" $alignItems="flex-end">
                 <SkeletonRectangle height="10px" animate={false} />
                 <SkeletonRectangle height="10px" animate={false} />
                 <SkeletonRectangle height="10px" animate={false} />

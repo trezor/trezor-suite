@@ -3,7 +3,16 @@ import { Locator, Page, expect } from '@playwright/test';
 import { TrezorUserEnvLinkProxy, step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 
-export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
+// @TODO unify!
+export type graphRangeOptions =
+    | 'day'
+    | 'week'
+    | 'month'
+    | 'six-months'
+    | 'year'
+    | 'two-years'
+    | 'range'
+    | 'all';
 
 export class DashboardPage {
     readonly dashboardMenuButton: Locator;
