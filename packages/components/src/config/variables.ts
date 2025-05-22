@@ -1,26 +1,26 @@
 import { icons } from '@suite-common/icons/src/icons';
+import { breakpoints } from '@trezor/theme';
 
 /**
- * @deprecated This key is deprecated. Please use `useLayoutSize` hook.
+ * @deprecated This key is deprecated. Please use `useLayoutSize` hook or breakpoints from `@trezor/theme`.
  */
 export const SCREEN_SIZE = {
-    UNAVAILABLE: '260px',
-    SM: '576px', // phones
-    MD: '768px', // tablets
-    LG: '992px', // laptops/desktops
-    XL: '1200px', // extra Large laptops/desktops
+    UNAVAILABLE: `${breakpoints.unavailable}px`,
+    SM: `${breakpoints.mobile}px`,
+    MD: `${breakpoints.tablet}px`,
+    LG: `${breakpoints.laptop}px`,
+    XL: `${breakpoints.desktop}px`,
 } as const;
 
-// Temporary solution to enable the simultaneous use of above and below breakpoints, ideally SCREEN SIZE should be just numbers IMO
 const HELPER_SCREEN_SIZE = {
-    SM: '575px', // phones
-    MD: '767px', // tablets
-    LG: '991px', // laptops/desktops
-    XL: '1199px', // extra Large laptops/desktops
+    SM: `${breakpoints.mobile - 1}px`,
+    MD: `${breakpoints.tablet - 1}px`,
+    LG: `${breakpoints.laptop - 1}px`,
+    XL: `${breakpoints.desktop - 1}px`,
 };
 
 /**
- * @deprecated This key is deprecated. Please use `useLayoutSize` hook.
+ * @deprecated This key is deprecated. Please use `useLayoutSize` hook or breakpoints from `@trezor/theme`.
  */
 export const SCREEN_QUERY = {
     MOBILE: `@media (max-width: ${HELPER_SCREEN_SIZE.SM})`,
