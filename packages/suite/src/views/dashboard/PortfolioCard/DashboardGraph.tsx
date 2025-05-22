@@ -15,7 +15,7 @@ import { Account } from 'src/types/wallet';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
 
-import { TransactionsGraph } from '../../../components/suite/graph/TransactionsGraph/TransactionsGraph';
+import { TransactionsGraph } from '../../../components/suite/graph/TransactionsGraph/newGraph/TransactionsGraph';
 
 const Wrapper = styled.div`
     display: flex;
@@ -135,7 +135,11 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         </Button>
                     </ErrorMessage>
                 ) : (
-                    <TransactionsGraph />
+                    <TransactionsGraph
+                        selectedRange={graph.selectedRange}
+                        portfolioData={data}
+                        localCurrency={localCurrency}
+                    />
                 )}
             </GraphWrapper>
         </Wrapper>
