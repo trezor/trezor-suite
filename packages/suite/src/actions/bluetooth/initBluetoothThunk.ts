@@ -3,6 +3,7 @@ import { createThunk } from '@suite-common/redux-utils/';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
+import { DesktopBluetoothDevice, toBluetoothDevice } from './DesktopBluetoothDevice';
 import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 export const initBluetoothThunk = createThunk<void, void, void>(
@@ -14,8 +15,11 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             return;
         }
 
-        const knownDevices = selectKnownDevices<BluetoothDevice>(getState());
-        const result = await bluetoothIpc.init({ knownDevices });
+        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
+        const result = await bluetoothIpc.init({
+            knownDevices: knownDevices.map(toBluetoothDevice),
+        });
+
         if (!result.success) {
             dispatch(
                 notificationsActions.addToast({

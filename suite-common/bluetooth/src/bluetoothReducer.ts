@@ -5,54 +5,7 @@ import { DeviceConnectActionPayload, deviceActions } from '@suite-common/wallet-
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
-
-export type BluetoothScanStatus = 'idle' | 'running' | 'error';
-
-export type DeviceBluetoothConnectionStatus =
-    | { type: 'disconnected' }
-    | { type: 'pairing'; pin?: string }
-    | { type: 'paired' }
-    | { type: 'connecting' }
-    | { type: 'connected' }
-    | {
-          type: 'pairing-error'; // This device cannot be paired ever again (new macAddress, new device)
-          error: string;
-      }
-    | {
-          type: 'connection-error'; // Out-of-range, offline, in the faraday cage, ...
-          error: string; // Timeout, connection aborted, ...
-      };
-
-// Do not export this outside this suite-common package, Suite uses ist own type
-// from the '@trezor/transport-bluetooth' and mobile (native) have its own type as well.
-export type BluetoothDeviceCommon = {
-    id: string;
-    name: string;
-
-    /**
-     * Manufacturer Specific Data:
-     *
-     * Bytes:
-     *      [0]: fist byte is an advertising type.
-     *             0 - advertising with whitelist,
-     *             1 - without a whitelist (pairing mode),
-     *             2 - also pairing mode, but bond memory is full, and therefore it cannot bond another device
-     *      [1]: the second is device color (interpreted the same way as from Device Features)
-     *      [2-6]: four remaining bytes represent internal device name, i.e., T3W1
-     */
-    data: number[];
-    lastUpdatedTimestamp: number;
-    connectionStatus: DeviceBluetoothConnectionStatus;
-};
-
-export type DeviceBluetoothConnectionStatusType = DeviceBluetoothConnectionStatus['type'];
-
-export type BluetoothAdapterStatus =
-    | 'unknown'
-    | 'enabled'
-    | 'disabled'
-    | 'permission-denied'
-    | 'not-compatible';
+import { BluetoothAdapterStatus, BluetoothDeviceCommon, BluetoothScanStatus } from './types';
 
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
     isBluetoothListOpen: boolean;

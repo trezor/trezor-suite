@@ -33,15 +33,15 @@ import backupReducers from 'src/reducers/backup';
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
+import { DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
 import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
-const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDevice>()(extraDependencies);
+const bluetoothReducer =
+    prepareBluetoothReducerCreator<DesktopBluetoothDevice>()(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
 const rootReducer = combineReducers({

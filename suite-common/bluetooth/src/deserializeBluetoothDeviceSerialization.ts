@@ -1,4 +1,4 @@
-import { BluetoothDeviceCommon } from './bluetoothReducer';
+import { BluetoothDeviceCommon } from './types';
 
 export const deserializeBluetoothDeviceSerialization = <
     TBluetoothDevice extends BluetoothDeviceCommon,

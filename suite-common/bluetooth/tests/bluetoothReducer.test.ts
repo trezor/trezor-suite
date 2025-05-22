@@ -4,9 +4,21 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 import { Device } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { bluetoothActions, prepareBluetoothReducerCreator } from '../src';
-import { BluetoothDeviceCommon, BluetoothState } from '../src/bluetoothReducer';
+import {
+    BluetoothManufacturerData,
+    bluetoothActions,
+    prepareBluetoothReducerCreator,
+} from '../src';
+import { BluetoothState } from '../src/bluetoothReducer';
+import { BluetoothDeviceCommon } from '../src/types';
+
+const manufacturerData: BluetoothManufacturerData = {
+    deviceModel: DeviceModelInternal.T3W1,
+    deviceColor: 0,
+    filterPolicy: null,
+};
 
 const bluetoothReducer =
     prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(extraDependenciesMock);
@@ -23,7 +35,7 @@ const initialState: BluetoothState<BluetoothDeviceCommon> = {
 
 const pairingDeviceA: BluetoothDeviceCommon = {
     id: 'A',
-    data: [],
+    manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
     connectionStatus: { type: 'pairing' },
@@ -31,7 +43,7 @@ const pairingDeviceA: BluetoothDeviceCommon = {
 
 const disconnectedDeviceB: BluetoothDeviceCommon = {
     id: 'B',
-    data: [],
+    manufacturerData,
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,
     connectionStatus: { type: 'disconnected' },
@@ -39,7 +51,7 @@ const disconnectedDeviceB: BluetoothDeviceCommon = {
 
 const pairingErrorDevice: BluetoothDeviceCommon = {
     id: 'pairing-error',
-    data: [],
+    manufacturerData,
     name: 'Trezor Pairing Error',
     lastUpdatedTimestamp: 1,
     connectionStatus: { type: 'pairing-error', error: "Can't pair this device" },

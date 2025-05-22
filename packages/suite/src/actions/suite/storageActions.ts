@@ -11,7 +11,6 @@ import { deviceActions, selectDevices } from '@suite-common/wallet-core';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey, selectHistoricRatesByTransactions } from '@suite-common/wallet-utils';
-import { BluetoothDevice } from '@trezor/transport-bluetooth/';
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -25,6 +24,7 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
 import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
+import { DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -130,11 +130,11 @@ export const saveKnownDevices = () => async (_dispatch: Dispatch, getState: GetS
         'bluetooth',
         {
             knownDevices: knownDevices.map(
-                (it): BluetoothDevice => ({
+                (it): DesktopBluetoothDevice => ({
                     id: it.id,
                     name: it.name,
                     macAddress: it.macAddress,
-                    data: it.data,
+                    manufacturerData: it.manufacturerData,
                     lastUpdatedTimestamp: it.lastUpdatedTimestamp,
                     paired: it.paired,
                     rssi: it.rssi,

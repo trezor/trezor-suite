@@ -1,20 +1,29 @@
-import { prepareSelectAllDevices } from '../src';
-import { BluetoothDeviceCommon, BluetoothState } from '../src/bluetoothReducer';
+import { DeviceModelInternal } from '@trezor/device-utils';
+
+import { BluetoothFilterPolicy, BluetoothManufacturerData, prepareSelectAllDevices } from '../src';
+import { BluetoothState } from '../src/bluetoothReducer';
 import { WithBluetoothState } from '../src/bluetoothSelectors';
+import { BluetoothDeviceCommon } from '../src/types';
+
+const manufacturerData: BluetoothManufacturerData = {
+    deviceModel: DeviceModelInternal.T3W1,
+    deviceColor: 0,
+    filterPolicy: BluetoothFilterPolicy.UNFILTERED,
+};
 
 const initialState: BluetoothState<BluetoothDeviceCommon> = {
     isBluetoothListOpen: false,
     adapterStatus: 'unknown',
     scanStatus: 'idle',
-    nearbyDevices: [] as BluetoothDeviceCommon[],
-    knownDevices: [] as BluetoothDeviceCommon[],
+    nearbyDevices: [],
+    knownDevices: [],
     unpairedDeviceNeedsManualOsRemoval: false,
     connectingDeviceIds: [],
 };
 
 const pairingDeviceStateA: BluetoothDeviceCommon = {
     id: 'A',
-    data: [],
+    manufacturerData,
     name: 'Trezor A',
     lastUpdatedTimestamp: 1,
     connectionStatus: { type: 'pairing' },
@@ -22,7 +31,7 @@ const pairingDeviceStateA: BluetoothDeviceCommon = {
 
 const disconnectedDeviceB: BluetoothDeviceCommon = {
     id: 'B',
-    data: [],
+    manufacturerData,
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,
     connectionStatus: { type: 'disconnected' },
@@ -30,7 +39,7 @@ const disconnectedDeviceB: BluetoothDeviceCommon = {
 
 const pairingDeviceStateC: BluetoothDeviceCommon = {
     id: 'C',
-    data: [],
+    manufacturerData,
     name: 'Trezor C',
     lastUpdatedTimestamp: 3,
     connectionStatus: { type: 'pairing' },

@@ -1,6 +1,7 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
-import { BluetoothDeviceCommon, BluetoothState } from './bluetoothReducer';
+import { BluetoothState } from './bluetoothReducer';
+import { BluetoothDeviceCommon } from './types';
 
 export type WithBluetoothState<T extends BluetoothDeviceCommon> = {
     bluetooth: BluetoothState<T>;

@@ -1,7 +1,12 @@
 export { BLUETOOTH_PREFIX, bluetoothActions } from './bluetoothActions';
 
 export { prepareBluetoothReducerCreator } from './bluetoothReducer';
-export type { BluetoothScanStatus, DeviceBluetoothConnectionStatusType } from './bluetoothReducer';
+export { BluetoothFilterPolicy } from './types';
+export type {
+    BluetoothManufacturerData,
+    BluetoothScanStatus,
+    DeviceBluetoothConnectionStatusType,
+} from './types';
 
 export {
     prepareSelectAllDevices,
@@ -14,4 +19,4 @@ export {
     selectIsBluetoothListOpen,
 } from './bluetoothSelectors';
 
-export { parseModelEnumFromBytes } from './parseModelEnumFromBytes';
+export { parseManufacturerData, serializeManufacturerData } from './manufacturerDataUtils';

@@ -5,7 +5,7 @@ import {
     BluetoothDeviceCommon,
     BluetoothScanStatus,
     DeviceBluetoothConnectionStatus,
-} from './bluetoothReducer';
+} from './types';
 
 export const BLUETOOTH_PREFIX = '@suite/bluetooth';
 
