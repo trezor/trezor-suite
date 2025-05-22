@@ -10,17 +10,12 @@ import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from './useSelector';
 
 export const useMessageSystemTrading = (type: TradingType) => {
-    const featureFlagType: Exclude<TradingType, 'exchange'> | 'swap' =
-        type === 'exchange' ? 'swap' : type;
-
     const language = useSelector(selectLanguage);
 
-    const isDisabled = useSelector(state =>
-        selectIsFeatureDisabled(state, Feature.trading[featureFlagType]),
-    );
+    const isDisabled = useSelector(state => selectIsFeatureDisabled(state, Feature.trading[type]));
 
     const content = useSelector(state =>
-        selectFeatureMessageContent(state, Feature.trading[featureFlagType], language),
+        selectFeatureMessageContent(state, Feature.trading[type], language),
     );
 
     return {

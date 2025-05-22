@@ -23,7 +23,7 @@ describe('featureFlagsSlice', () => {
                 isDebugKeysAllowed: false,
                 isWalletConnectEnabled: false,
                 isTradingBuyEnabled: false,
-                isTradingSwapEnabled: false,
+                isTradingExchangeEnabled: false,
                 isTradingSellEnabled: false,
             });
         });
@@ -46,7 +46,7 @@ describe('featureFlagsSlice', () => {
                 isDebugKeysAllowed: false,
                 isWalletConnectEnabled: false,
                 isTradingBuyEnabled: false,
-                isTradingSwapEnabled: false,
+                isTradingExchangeEnabled: false,
                 isTradingSellEnabled: false,
             });
         });

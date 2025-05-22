@@ -10,7 +10,7 @@ export const FeatureFlag = {
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
     IsWalletConnectEnabled: 'isWalletConnectEnabled',
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
-    IsTradingSwapEnabled: 'isTradingSwapEnabled',
+    IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
     IsTradingSellEnabled: 'isTradingSellEnabled',
 } as const;
 
@@ -35,7 +35,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsWalletConnectEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true',
     [FeatureFlag.IsTradingBuyEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_BUY_ENABLED === 'true',
-    [FeatureFlag.IsTradingSwapEnabled]:
+    [FeatureFlag.IsTradingExchangeEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SWAP_ENABLED === 'true',
     [FeatureFlag.IsTradingSellEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SELL_ENABLED === 'true',
@@ -48,7 +48,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsConnectPopupEnabled,
     FeatureFlag.IsWalletConnectEnabled,
     FeatureFlag.IsTradingBuyEnabled,
-    FeatureFlag.IsTradingSwapEnabled,
+    FeatureFlag.IsTradingExchangeEnabled,
     FeatureFlag.IsTradingSellEnabled,
 ];
 

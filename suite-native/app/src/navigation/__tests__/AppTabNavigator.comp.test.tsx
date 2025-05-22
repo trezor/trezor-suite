@@ -32,7 +32,7 @@ describe('AppTabNavigator', () => {
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: false,
-                [FeatureFlag.IsTradingSwapEnabled]: false,
+                [FeatureFlag.IsTradingExchangeEnabled]: false,
                 [FeatureFlag.IsTradingSellEnabled]: false,
             },
             messageSystem: {
@@ -55,7 +55,7 @@ describe('AppTabNavigator', () => {
                                         flag: false,
                                     },
                                     {
-                                        domain: 'trading.swap',
+                                        domain: 'trading.exchange',
                                         flag: false,
                                     },
                                     {

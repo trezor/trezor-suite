@@ -6,8 +6,8 @@ import { initialState } from '../../tradingSlice';
 import {
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
+    selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
-    selectIsTradingSwapEnabled,
     selectTradingEnvironment,
 } from '../commonSelectors';
 
@@ -17,11 +17,11 @@ const contentText = 'Content Text';
 const getPreloadedState = ({
     buy,
     sell,
-    swap,
+    exchange,
 }: {
     buy?: boolean;
     sell?: boolean;
-    swap?: boolean;
+    exchange?: boolean;
 }) => {
     const features: Feature[] = [];
     if (buy !== undefined) {
@@ -36,10 +36,10 @@ const getPreloadedState = ({
             flag: sell,
         });
     }
-    if (swap !== undefined) {
+    if (exchange !== undefined) {
         features.push({
-            domain: 'trading.swap',
-            flag: swap,
+            domain: 'trading.exchange',
+            flag: exchange,
         });
     }
 
@@ -119,13 +119,15 @@ describe('commonSelectors', () => {
         });
     });
 
-    describe('selectIsTradingSwapEnabled', () => {
-        it('should correctly select that swap is enabled if remote feature is enabled', () => {
-            expect(selectIsTradingSwapEnabled(getPreloadedState({ swap: true }))).toBe(true);
+    describe('selectIsTradingExchangeEnabled', () => {
+        it('should correctly select that exchange is enabled if remote feature is enabled', () => {
+            expect(selectIsTradingExchangeEnabled(getPreloadedState({ exchange: true }))).toBe(
+                true,
+            );
         });
 
-        it('should correctly select that swap is not enabled if remote feature is not enabled', () => {
-            expect(selectIsTradingSwapEnabled(getPreloadedState({}))).toBe(false);
+        it('should correctly select that exchange is not enabled if remote feature is not enabled', () => {
+            expect(selectIsTradingExchangeEnabled(getPreloadedState({}))).toBe(false);
         });
     });
 

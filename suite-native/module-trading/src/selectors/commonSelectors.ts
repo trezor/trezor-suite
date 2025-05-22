@@ -18,9 +18,11 @@ export const selectIsTradingBuyEnabled = (state: MessageSystemRootState & Featur
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingBuyEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.buy, true);
 
-export const selectIsTradingSwapEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSwapEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.swap, false);
+export const selectIsTradingExchangeEnabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState,
+) =>
+    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingExchangeEnabled) ||
+    selectIsFeatureEnabled(state, Feature.trading.exchange, false);
 
 export const selectIsTradingSellEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
@@ -28,7 +30,7 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
 
 export const selectIsTradingEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
     selectIsTradingBuyEnabled(state) ||
-    selectIsTradingSwapEnabled(state) ||
+    selectIsTradingExchangeEnabled(state) ||
     selectIsTradingSellEnabled(state);
 
 // trade for opening in detail

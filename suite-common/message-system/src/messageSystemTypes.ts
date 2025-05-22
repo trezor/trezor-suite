@@ -45,7 +45,7 @@ export const Feature = {
     trading: {
         buy: 'trading.buy',
         sell: 'trading.sell',
-        swap: 'trading.swap',
+        exchange: 'trading.exchange',
     },
 
     // device onboarding (MOBILE ONLY!!!).
@@ -68,7 +68,7 @@ export const Context = {
     solStaking: 'accounts.sol.staking',
     tradingBuy: 'trading.buy',
     tradingSell: 'trading.sell',
-    tradingSwap: 'trading.swap',
+    tradingExchange: 'trading.exchange',
 } as const;
 
 export type ContextDomain = (typeof Context)[keyof typeof Context];

@@ -11,8 +11,8 @@ import {
     TradingStackNavigator,
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
+    selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
-    selectIsTradingSwapEnabled,
 } from '@suite-native/module-trading';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 
@@ -22,13 +22,13 @@ const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 const getTradingAnalyticsType = (
     isTradingBuyEnabled: boolean,
-    isTradingSwapEnabled: boolean,
+    isTradingExchangeEnabled: boolean,
     isTradingSellEnabled: boolean,
 ) => {
     if (isTradingBuyEnabled) {
         return 'buy';
     }
-    if (isTradingSwapEnabled) {
+    if (isTradingExchangeEnabled) {
         return 'exchange';
     }
     if (isTradingSellEnabled) {
@@ -43,7 +43,7 @@ export const AppTabNavigator = () => {
 
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
     const isTradingBuyEnabled = useSelector(selectIsTradingBuyEnabled);
-    const isTradingSwapEnabled = useSelector(selectIsTradingSwapEnabled);
+    const isTradingExchangeEnabled = useSelector(selectIsTradingExchangeEnabled);
     const isTradingSellEnabled = useSelector(selectIsTradingSellEnabled);
 
     return (
@@ -67,7 +67,7 @@ export const AppTabNavigator = () => {
                         tabPress: () => {
                             const tradingType = getTradingAnalyticsType(
                                 isTradingBuyEnabled,
-                                isTradingSwapEnabled,
+                                isTradingExchangeEnabled,
                                 isTradingSellEnabled,
                             );
                             if (!tradingType) return;
