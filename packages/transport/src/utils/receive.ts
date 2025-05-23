@@ -1,5 +1,5 @@
 import { decodeMessage } from '@trezor/protobuf';
-import type { TransportProtocol } from '@trezor/protocol';
+import { ThpState, TransportProtocol } from '@trezor/protocol';
 
 import { success } from './result';
 import { AbstractApi } from '../api/abstract';
@@ -32,13 +32,14 @@ export async function receive<T extends () => ReturnType<AbstractApi['read']>>(
         offset += data.byteLength - chunkHeader.byteLength;
     }
 
-    return success({ messageType, payload: result });
+    return success({ messageType, payload: result, length });
 }
 
 export async function receiveAndParse<T extends () => ReturnType<AbstractApi['read']>>(
     messages: Parameters<typeof decodeMessage>[0],
     receiver: T,
     protocol: TransportProtocol,
+    _thpState?: ThpState,
 ) {
     const readResult = await receive(receiver, protocol);
     if (!readResult.success) return readResult;

@@ -1,5 +1,5 @@
 import { encodeMessage } from '@trezor/protobuf';
-import { TransportProtocol } from '@trezor/protocol';
+import { ThpState, TransportProtocol } from '@trezor/protocol';
 
 import { AsyncResultWithTypedError } from '../types';
 
@@ -31,6 +31,7 @@ interface BuildMessageProps {
     name: string;
     data: Record<string, unknown>;
     protocol: TransportProtocol;
+    thpState?: ThpState;
 }
 
 export const buildMessage = ({ messages, name, data, protocol }: BuildMessageProps) => {

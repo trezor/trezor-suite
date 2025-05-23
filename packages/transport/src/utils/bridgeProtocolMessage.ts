@@ -1,4 +1,4 @@
-import type { TransportProtocol } from '@trezor/protocol';
+import type { ThpStateSerialized, TransportProtocol } from '@trezor/protocol';
 
 import type { BridgeProtocolMessage } from '../types';
 
@@ -10,7 +10,7 @@ import type { BridgeProtocolMessage } from '../types';
 export function validateProtocolMessage(body: unknown, withData = true): BridgeProtocolMessage {
     const isHex = (s: string) => /^[0-9A-Fa-f]+$/g.test(s); // TODO: trezor/utils accepts 0x prefix (eth)
     const isValidProtocol = (s: any): s is BridgeProtocolMessage['protocol'] =>
-        s === 'v1' || s === 'bridge';
+        s === 'v1' || s === 'v2' || s === 'bridge';
 
     // Legacy bridge results
     if (typeof body === 'string') {
@@ -48,12 +48,14 @@ export function validateProtocolMessage(body: unknown, withData = true): BridgeP
     return {
         protocol: json.protocol,
         data: json.data,
+        thpState: json.thpState,
     };
 }
 
 export function createProtocolMessage(
     body: unknown,
     protocol?: TransportProtocol | TransportProtocol['name'],
+    thpState?: ThpStateSerialized,
 ) {
     let data;
     if (Buffer.isBuffer(body)) {
@@ -74,5 +76,6 @@ export function createProtocolMessage(
     return JSON.stringify({
         protocol: typeof protocol === 'string' ? protocol : protocol.name,
         data,
+        thpState,
     });
 }

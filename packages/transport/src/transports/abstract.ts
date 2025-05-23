@@ -1,5 +1,5 @@
-import { Messages, loadDefinitions, parseConfigure } from '@trezor/protobuf';
-import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
+import { loadDefinitions, parseConfigure } from '@trezor/protobuf';
+import { PROTOCOL_MALFORMED, ThpState, TransportProtocol } from '@trezor/protocol';
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
 import type { BridgeCommonErrors } from './bridge';
@@ -11,6 +11,7 @@ import {
     AsyncResultWithTypedError,
     Descriptor,
     Logger,
+    MessageResponse,
     PathPublic,
     ResultWithTypedError,
     Session,
@@ -252,6 +253,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
             name: string;
             data: Record<string, unknown>;
             protocol?: TransportProtocol;
+            thpState?: ThpState;
         } & AbortableParam,
     ): AsyncResultWithTypedError<undefined, ReadWriteError>;
 
@@ -263,8 +265,9 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
             path?: string;
             session: Session;
             protocol?: TransportProtocol;
+            thpState?: ThpState;
         } & AbortableParam,
-    ): AsyncResultWithTypedError<Messages.MessageResponse, ReadWriteError>;
+    ): AsyncResultWithTypedError<MessageResponse, ReadWriteError>;
 
     /**
      * Send and read after that
@@ -275,8 +278,9 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
             name: string;
             data: Record<string, unknown>;
             protocol?: TransportProtocol;
+            thpState?: ThpState;
         } & AbortableParam,
-    ): AsyncResultWithTypedError<Messages.MessageResponse, ReadWriteError>;
+    ): AsyncResultWithTypedError<MessageResponse, ReadWriteError>;
 
     /**
      * Stop transport = remove all listeners + try to release session + cancel all requests

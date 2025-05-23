@@ -170,6 +170,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         name,
         data,
         protocol: customProtocol,
+        thpState,
         signal,
         timeout,
     }: AbstractTransportMethodParams<'call'>) {
@@ -200,6 +201,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     name,
                     data,
                     protocol,
+                    thpState,
                 });
                 const chunks = createChunks(
                     bytes,
@@ -238,6 +240,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         session,
         name,
         protocol: customProtocol,
+        thpState,
         signal,
     }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(
@@ -256,6 +259,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     name,
                     data,
                     protocol,
+                    thpState,
                 });
                 const chunks = createChunks(
                     bytes,
@@ -280,6 +284,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     public receive({
         session,
         protocol: customProtocol,
+        thpState,
         signal,
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
@@ -297,6 +302,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     this.messages,
                     () => this.api.read(path, signal),
                     protocol,
+                    thpState,
                 );
 
                 if (!message.success) {
