@@ -886,7 +886,8 @@ export const getFailedAccounts = (
             accountType: f.accountType,
             symbol: f.symbol,
             empty: true,
-            visible: true,
+            // first normal account is always visible on web & desktop
+            visible: f.accountType === 'normal' && f.index === 0,
             balance: '0',
             availableBalance: '0',
             formattedBalance: '0',
