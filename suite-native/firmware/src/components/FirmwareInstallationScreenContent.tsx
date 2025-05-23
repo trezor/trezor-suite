@@ -12,7 +12,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Badge, Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage, setTemporaryRememberedDeviceThunk } from '@suite-native/device';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import TrezorConnect from '@trezor/connect';
@@ -107,9 +106,6 @@ export const FirmwareInstallationScreenContent = ({
         console.log(
             'FirmwareInstallationScreenContent: handleFirmwareUpdateFinished = authorize device thunk need to be replaced here',
         );
-        // await requestPrioritizedDeviceAccess({
-        //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
-        // });
 
         setIsFirmwareInstallationRunning(false);
         onFirmwareInstallationSuccess();

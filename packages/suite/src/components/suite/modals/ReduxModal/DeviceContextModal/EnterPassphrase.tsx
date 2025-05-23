@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types/libDev/src';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Column, H3, Icon, List } from '@trezor/components';
 import { PassphraseTypeCard } from '@trezor/product-components';
