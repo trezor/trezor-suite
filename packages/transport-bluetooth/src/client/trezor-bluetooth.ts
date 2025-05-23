@@ -49,12 +49,11 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
     send(method: 'close_device', id: string): Promise<boolean>;
     send(method: 'read', id: string): Promise<boolean>;
     send(method: 'write', args: [string, number[]]): Promise<boolean>; // args: id, data
-    public send(method: string, args?: any) {
-        const params = args || [];
+    public send(method: string, params?: any) {
         // connect_device timeout is dynamically set,
         // adjust websocket client and allow the server to respond with timeout error (timeout on the server)
         const timeout =
-            method === 'connect_device' && typeof params[1] === 'number'
+            method === 'connect_device' && Array.isArray(params) && typeof params[1] === 'number'
                 ? params[1] + 3000
                 : undefined;
 
