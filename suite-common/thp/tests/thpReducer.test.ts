@@ -18,7 +18,7 @@ describe('thpReducer', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ thp: thpReduce }),
-            preloadedState: { bluetooth: initialState },
+            preloadedState: { thp: initialState },
         });
 
         expect(store.getState().thp.lastThpCode).toEqual(undefined);

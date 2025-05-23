@@ -8,11 +8,11 @@ import { selectThpCredentials } from './thpSelectors';
 const NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT = 3;
 
 type ConnectThpDeviceThinkParams = {
-    device: Device;
+    device: Pick<Device, 'thp'>;
 };
 
 export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkParams, void>(
-    `${THP_PREFIX}/firmwareUpdate`,
+    `${THP_PREFIX}/connectThpDeviceThunk`,
     ({ device }, { dispatch, getState }) => {
         const credentials = selectThpCredentials(getState());
         const isFwInstall = selectFirmware(getState()).status !== 'initial';
@@ -25,19 +25,19 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
         );
 
         if (credential !== undefined) {
-            dispatch(thpActions.incrementCredentialConnectionCounter({ credential }));
+            // We do not want to offer Autoconnect after reconnection dues to Firmware installation.
+            // Autoconnect will be offered on the next reconnection.
+            if (!isFwInstall) {
+                dispatch(thpActions.incrementCredentialConnectionCounter({ credential }));
+            }
 
-            const shallShowAUtoConnectDialog =
+            const shallShowAutoConnectDialog =
                 // -1 because it was just about incremented
-                credential.connectionCounter >= NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT - 1 &&
-                !credential.wasUserAskedToAutoconnect &&
-                // We do not want to offer Autoconnect after reconnection dues to Firmware installation.
-                // Autoconnect will be offered on the next reconnection.
-                !isFwInstall;
+                credential.connectionCounter === NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT - 1;
 
             dispatch(
-                shallShowAUtoConnectDialog
-                    ? thpActions.showAutoconnectInfo({ credential })
+                shallShowAutoConnectDialog
+                    ? thpActions.showAutoconnectInfo()
                     : thpActions.resetThpFlow(),
             );
         } else {

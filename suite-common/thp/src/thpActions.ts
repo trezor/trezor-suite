@@ -8,12 +8,7 @@ const invalidCode = createAction(`${THP_PREFIX}/invalid-pin-action`);
 
 const resetThpFlow = createAction(`${THP_PREFIX}/cancel-thp-flow`);
 
-export const showAutoconnectInfo = createAction(
-    `${THP_PREFIX}/showAutoconnectInfo`,
-    (payload: { credential: ThpSuiteCredentials }) => ({
-        payload,
-    }),
-);
+export const showAutoconnectInfo = createAction(`${THP_PREFIX}/showAutoconnectInfo`);
 
 export const setLastThpCode = createAction(
     `${THP_PREFIX}/set-last-thp-code`,

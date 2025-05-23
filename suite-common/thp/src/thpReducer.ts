@@ -48,15 +48,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             .addCase(thpActions.setLastThpCode, (state, { payload }) => {
                 state.lastThpCode = payload.code;
             })
-            .addCase(thpActions.showAutoconnectInfo, (state, { payload }) => {
-                const credentialToUpdate = state.credentials.find(
-                    it => it.credential == payload.credential.credential,
-                );
-
-                if (credentialToUpdate !== undefined) {
-                    credentialToUpdate.wasUserAskedToAutoconnect = true;
-                }
-
+            .addCase(thpActions.showAutoconnectInfo, state => {
                 state.step = 'AutoconnectInfo';
             })
             .addCase(thpActions.incrementCredentialConnectionCounter, (state, { payload }) => {
@@ -82,7 +74,6 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                     state.credentials.push({
                         ...credentials,
                         connectionCounter: 0,
-                        wasUserAskedToAutoconnect: false,
                     });
                 },
             )
