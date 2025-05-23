@@ -1,4 +1,4 @@
-import { selectFirmware } from '@suite-common/firmware';
+import { selectFirmware } from '@suite-common/firmware/src/firmwareReducer';
 import { createThunk } from '@suite-common/redux-utils';
 import { Device } from '@trezor/connect';
 
