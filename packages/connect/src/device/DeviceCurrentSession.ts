@@ -1,9 +1,8 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { MessagesSchema as Messages } from '@trezor/protobuf';
-import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
-import { Session, TRANSPORT, Transport } from '@trezor/transport';
+import { MessageResponse, Session, TRANSPORT, Transport } from '@trezor/transport';
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
@@ -30,12 +29,10 @@ const filterForLog = (type: string, msg: any) =>
 const logger = initLog('DeviceCommands');
 
 const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKey[]>(
-    response: Pick<Messages.MessageResponse, 'type'>,
+    response: Pick<MessageResponse, 'type'>,
     expected: Key,
-): response is Extract<
-    Messages.MessageResponse,
-    { type: Key extends Array<any> ? Key[number] : Key }
-> => (Array.isArray(expected) ? expected : expected.split('|')).includes(response.type);
+): response is Extract<MessageResponse, { type: Key extends Array<any> ? Key[number] : Key }> =>
+    (Array.isArray(expected) ? expected : expected.split('|')).includes(response.type);
 
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
@@ -60,22 +57,15 @@ export interface TypedCallProvider {
 export class DeviceCurrentSession implements TypedCallProvider {
     private readonly device: Device;
     private readonly transport: Transport;
-    private readonly protocol: TransportProtocol;
     private readonly session: Session;
 
     private disposed?: Error;
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
 
-    constructor(
-        device: Device,
-        transport: Transport,
-        protocol: TransportProtocol,
-        session: Session,
-    ) {
+    constructor(device: Device, transport: Transport, session: Session) {
         this.device = device;
         this.transport = transport;
-        this.protocol = protocol;
         this.session = session;
 
         transport.deviceEvents.once(device.transportPath, e => {
@@ -128,7 +118,8 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 abort =>
                     this.transport.receive({
                         session: this.session,
-                        protocol: this.protocol,
+                        protocol: this.device.protocol,
+                        thpState: this.device.getThpState(),
                         signal: abort,
                     }),
                 { timeout: 500 },
@@ -189,8 +180,13 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         // ignore whatever happens
                     }
                 } else {
-                    const { session, protocol } = this;
-                    await this.transport.send({ name: 'Cancel', data: {}, session, protocol });
+                    await this.transport.send({
+                        name: 'Cancel',
+                        data: {},
+                        session: this.session,
+                        protocol: this.device.protocol,
+                        thpState: this.device.getThpState(),
+                    });
                 }
             }
 
@@ -312,9 +308,14 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
         logger.debug('Sending', name, filterForLog(name, data));
 
-        const { session, protocol } = this;
-
-        const result = await this.transport.call({ name, data, session, protocol, timeout });
+        const result = await this.transport.call({
+            name,
+            data,
+            session: this.session,
+            protocol: this.device.protocol,
+            thpState: this.device.getThpState(),
+            timeout,
+        });
 
         if (result.success) {
             const { type, message } = result.payload;

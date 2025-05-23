@@ -123,12 +123,21 @@ type DeviceParams = {
 
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
-    public readonly protocol: TransportProtocol;
     public readonly transportPath;
     public readonly bluetoothProps;
     private thp: protocolThp.ThpState | undefined;
     private readonly transportDescriptorType;
     private sessionAcquired: Session | null;
+
+    // protocol related
+    private _protocol: TransportProtocol;
+    public get protocol() {
+        return this._protocol;
+    }
+
+    public getThpState() {
+        return this.thp;
+    }
 
     /**
      * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
@@ -206,7 +215,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         super();
 
         this.emitLifecycle = listener;
-        this.protocol = protocolV1;
+        this._protocol = protocolV1;
 
         // === immutable properties
         this.uniquePath = id;
@@ -284,7 +293,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     this.currentSession = new DeviceCurrentSession(
                         this,
                         this.transport,
-                        this.protocol,
                         this.sessionAcquired,
                     );
 
