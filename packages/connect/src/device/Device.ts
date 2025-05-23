@@ -440,6 +440,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.emitLifecycle(DEVICE.CONNECT);
+                } else if (wasUnacquired && this.isUnacquired() && this.thp?.properties) {
+                    this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                 }
             });
 
