@@ -2,7 +2,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
-import { getFee, isEip1559 } from '@suite-common/wallet-utils';
+import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -98,6 +98,18 @@ export const TransactionReviewSummary = ({
                         {': '}
                         <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
                     </Note>
+                    {hasEip1559MaxPriorityFee(tx) ? (
+                        <Note iconName="gasPump">
+                            <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
+
+                            {': '}
+                            <FeeRate
+                                feeRate={tx.maxPriorityFeePerGas}
+                                networkType={network.networkType}
+                                symbol={symbol}
+                            />
+                        </Note>
+                    ) : undefined}
                 </>
             )}
 
