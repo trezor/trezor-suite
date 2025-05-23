@@ -10,13 +10,13 @@ import {
     hasNetworkFeatures,
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
-import { Banner, Flex, Icon, Row, Text, useMediaQuery, variables } from '@trezor/components';
+import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FiatValue, Translation } from 'src/components/suite';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useLayoutSize, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -51,7 +51,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     } = useSendFormContext();
     const { symbol, tokens } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const { isBelowLaptop } = useLayoutSize();
 
     const locale = useSelector(selectLanguage);
 

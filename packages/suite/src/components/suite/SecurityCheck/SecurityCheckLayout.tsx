@@ -1,17 +1,9 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import {
-    Box,
-    Column,
-    DeviceAnimation,
-    Grid,
-    Image,
-    useMediaQuery,
-    variables,
-} from '@trezor/components';
+import { Box, Column, DeviceAnimation, Grid, Image } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { borders, spacings } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
 type SecurityCheckLayoutProps = {
     isFailed?: boolean;
@@ -25,7 +17,7 @@ export const SecurityCheckLayout = ({
     imageMode,
 }: SecurityCheckLayoutProps) => {
     const device = useSelector(selectSelectedDevice);
-    const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
+    const { isBelowTablet } = useLayoutSize();
 
     const deviceModelInternal = device?.features?.internal_model;
     const imageVariant = isFailed ? 'GHOST' : 'LARGE';

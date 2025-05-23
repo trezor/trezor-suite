@@ -19,8 +19,6 @@ import {
     Paragraph,
     Row,
     Tooltip,
-    useMediaQuery,
-    variables,
 } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -28,7 +26,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -81,7 +79,7 @@ export const StakingCard = ({
     apy,
 }: StakingCardProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
-    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const { isBelowLaptop } = useLayoutSize();
 
     const {
         isStakingDisabled,

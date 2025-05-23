@@ -1,19 +1,11 @@
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import {
-    CollapsibleBox,
-    Column,
-    Grid,
-    H3,
-    Modal,
-    useMediaQuery,
-    variables,
-} from '@trezor/components';
+import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
-import { useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { UnstakeEthFormContext, useUnstakeEthForm } from 'src/hooks/wallet/useUnstakeEthForm';
 
 import { UnstakeButton } from './UnstakeEthForm/UnstakeButton';
@@ -28,7 +20,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
     const { account } = selectedAccount;
 
     const unstakeEthContextValues = useUnstakeEthForm({ selectedAccount });
-    const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
+    const { isBelowTablet } = useLayoutSize();
 
     const onCancelClick = () => {
         onCancel?.();

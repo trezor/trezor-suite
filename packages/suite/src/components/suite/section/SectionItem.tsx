@@ -1,8 +1,9 @@
 import { HTMLAttributes, forwardRef } from 'react';
 
-import { Flex, useMediaQuery, variables } from '@trezor/components';
+import { Flex } from '@trezor/components';
 
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
+import { useLayoutSize } from 'src/hooks/suite';
 
 interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {
     shouldHighlight?: boolean;
@@ -10,7 +11,7 @@ interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {
 
 export const SectionItem = forwardRef<HTMLDivElement, SectionItemProps>(
     ({ children, shouldHighlight, ...rest }, ref) => {
-        const isBelowMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
+        const { isBelowMobile } = useLayoutSize();
 
         return (
             <div ref={ref} {...rest}>

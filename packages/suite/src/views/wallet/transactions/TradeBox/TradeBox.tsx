@@ -5,16 +5,7 @@ import {
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import {
-    Button,
-    Card,
-    Flex,
-    InfoItem,
-    Row,
-    Text,
-    useMediaQuery,
-    variables,
-} from '@trezor/components';
+import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { CoinLogo } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -23,7 +14,7 @@ import { spacings } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
@@ -31,8 +22,7 @@ type TradeBoxProps = {
 };
 
 export const TradeBox = ({ account }: TradeBoxProps) => {
-    const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
-    const isBelowMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
+    const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const dispatch = useDispatch();
     const { device } = useDevice();
     const isTestnet = getNetwork(account.symbol).testnet;

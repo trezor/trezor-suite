@@ -12,12 +12,12 @@ import {
 } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Column, Flex, Grid, useMediaQuery, variables } from '@trezor/components';
+import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
@@ -39,7 +39,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const { device } = useDevice();
 
     const accountKey = account?.key ?? '';
-    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const { isBelowLaptop } = useLayoutSize();
     const isDeviceConnected = device?.connected && device?.available;
 
     const { data, isLoading } =

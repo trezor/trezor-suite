@@ -1,11 +1,11 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Grid, Modal, useMediaQuery, variables } from '@trezor/components';
+import { Grid, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { StakeEthFormContext, useStakeEthForm } from 'src/hooks/wallet/useStakeEthForm';
 
 import { StakeButton } from './StakeEthForm/StakeButton';
@@ -21,7 +21,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
     const { account } = selectedAccount;
 
     const stakeEthContextValues = useStakeEthForm({ selectedAccount });
-    const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
+    const { isBelowTablet } = useLayoutSize();
 
     const onCancelClick = () => {
         onCancel?.();

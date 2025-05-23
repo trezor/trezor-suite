@@ -3,25 +3,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
 import { selectEnabledNetworks, selectPoolStatsApyData } from '@suite-common/wallet-core';
-import {
-    Card,
-    Column,
-    Divider,
-    Grid,
-    H3,
-    IconName,
-    Paragraph,
-    Tooltip,
-    useMediaQuery,
-    variables,
-} from '@trezor/components';
+import { Card, Column, Divider, Grid, H3, IconName, Paragraph, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingFeature, Translation } from 'src/components/suite';
-import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
@@ -34,7 +23,7 @@ export const StakeEthCard = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { showDashboardStakingPromoBanner } = useSelector(selectSuiteFlags);
     const { device } = useDevice();
-    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const { isBelowLaptop } = useLayoutSize();
     const isBitcoinOnlyDevice = hasBitcoinOnlyFirmware(device);
 
     const closeBanner = () => {

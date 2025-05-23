@@ -3,11 +3,11 @@ import { useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Box, Menu, Popover, PopoverRef, useMediaQuery, variables } from '@trezor/components';
+import { Box, Menu, Popover, PopoverRef } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Notifications } from 'src/components/suite/notifications';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 
@@ -22,7 +22,7 @@ const StyledNavigationItem = styled(NavigationItem)`
 
 export const NotificationDropdown = (props: NavigationItemProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const { isBelowLaptop } = useLayoutSize();
     const popoverRef = useRef<PopoverRef>(null);
     const dispatch = useDispatch();
 

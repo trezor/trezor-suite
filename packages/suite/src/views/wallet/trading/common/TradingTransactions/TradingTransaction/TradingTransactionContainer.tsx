@@ -1,5 +1,7 @@
-import { Card, Column, Row, useMediaQuery, variables } from '@trezor/components';
+import { Card, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { useLayoutSize } from 'src/hooks/suite';
 
 interface TradingTransactionContainerProps {
     TradeDetail: JSX.Element;
@@ -12,8 +14,7 @@ export const TradingTransactionContainer = ({
     TradeProviders,
     TradeButton,
 }: TradingTransactionContainerProps) => {
-    const isBelowDesktop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.XL})`);
-    const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
+    const { isBelowDesktop, isBelowMobile } = useLayoutSize();
 
     return (
         <Card fillType="flat" margin={{ bottom: spacings.lg }}>
@@ -41,8 +42,8 @@ export const TradingTransactionContainer = ({
                     alignItems="flex-end"
                     justifyContent="center"
                     flex="none"
-                    order={isMobile ? 2 : undefined}
-                    width={isMobile ? '100%' : 180}
+                    order={isBelowMobile ? 2 : undefined}
+                    width={isBelowMobile ? '100%' : 180}
                 >
                     {TradeButton}
                 </Column>

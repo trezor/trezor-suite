@@ -1,17 +1,9 @@
 import React, { ReactNode } from 'react';
 
-import {
-    Box,
-    Card,
-    Column,
-    Icon,
-    IconName,
-    InfoItem,
-    Tooltip,
-    useMediaQuery,
-    variables,
-} from '@trezor/components';
+import { Box, Card, Column, Icon, IconName, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { useLayoutSize } from 'src/hooks/suite';
 
 type SettingsSectionProps = {
     title: ReactNode;
@@ -22,7 +14,7 @@ type SettingsSectionProps = {
 };
 
 export const SettingsSection = ({ title, icon, children, tooltipText }: SettingsSectionProps) => {
-    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const { isBelowLaptop } = useLayoutSize();
     const width = isBelowLaptop ? '100%' : 250;
 
     return (
