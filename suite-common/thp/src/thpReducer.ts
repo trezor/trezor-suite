@@ -3,7 +3,6 @@ import { AnyAction } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { ThpSuiteCredentials } from '@suite-common/suite-types';
 import { DEVICE, DeviceThpCredentialsChanged, UI } from '@trezor/connect';
-import { exhaustive } from '@trezor/type-utils';
 
 import { thpActions } from './thpActions';
 
@@ -101,8 +100,8 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                         case 'thp_connection_request':
                             state.step = 'Connection';
                             break;
-                        default:
-                            return exhaustive(actionName);
+
+                        // intentionally, not exhaustive, non-THP button requests not-handled here
                     }
                 },
             )
