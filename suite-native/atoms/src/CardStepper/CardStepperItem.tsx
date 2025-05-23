@@ -66,10 +66,12 @@ const buttonStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
-const DAMPING = 14;
-const LAYOUT_ANIMATION = LinearTransition.springify().damping(DAMPING);
-const ENTERING_ANIMATION = FadeInUp.springify().damping(DAMPING);
-const EXITING_ANIMATION = FadeOutDown.springify().damping(DAMPING);
+const DAMPING = 30;
+const STIFFNESS = 180;
+const MASS = 1;
+const LAYOUT_ANIMATION = LinearTransition.damping(DAMPING).stiffness(STIFFNESS).mass(MASS);
+const ENTERING_ANIMATION = FadeInUp.damping(DAMPING).stiffness(STIFFNESS).mass(MASS);
+const EXITING_ANIMATION = FadeOutDown.damping(DAMPING).stiffness(STIFFNESS).mass(MASS);
 
 export const CardStepperItem = ({
     header,
