@@ -44,4 +44,4 @@ jobs:
           npx patch-package # Apply global patches.
       - name: Trigger adhoc build
         run: |
-          yarn native:adhoc -p ${{ github.event.inputs.PLATFORM  }} --non-interactive --message ${{ github.sha }}
+          yarn native:adhoc -p ${{ github.event.inputs.PLATFORM  }} --non-interactive --no-wait --freeze-credentials --message ${{ github.sha }}
