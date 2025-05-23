@@ -85,7 +85,7 @@ const validateProtocolMessageBody =
 
 export class TrezordNode {
     /** versioning, baked in by webpack */
-    version = '3.0.0';
+    version = '3.1.0';
     serviceName = 'trezord-node';
     /** last known descriptors state */
     descriptors: Descriptor[];

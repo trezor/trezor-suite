@@ -1,6 +1,11 @@
 import { WebUSB, usb } from 'usb';
 
-import { TransportProtocol, bridge as protocolBridge, v1 as protocolV1 } from '@trezor/protocol';
+import {
+    TransportProtocol,
+    bridge as protocolBridge,
+    v1 as protocolV1,
+    v2 as protocolV2,
+} from '@trezor/protocol';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { UsbApi } from '@trezor/transport/src/api/usb';
@@ -178,6 +183,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
             return protocolV1;
         }
 
+        if (protocolName === 'v2') {
+            return protocolV2;
+        }
+
         return protocolBridge;
     };
 
@@ -200,13 +209,13 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     const call = async ({
         session,
         data,
-        signal,
         protocol: protocolName,
+        signal,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
     }) => {
-        logger?.debug(`core: call: session: ${session}`);
+        logger?.debug(`core: call: session: ${session} ${protocolName}`);
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -237,8 +246,8 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     const send = async ({
         session,
         data,
-        signal,
         protocol: protocolName,
+        signal,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
@@ -260,8 +269,8 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
     const receive = async ({
         session,
-        signal,
         protocol: protocolName,
+        signal,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
