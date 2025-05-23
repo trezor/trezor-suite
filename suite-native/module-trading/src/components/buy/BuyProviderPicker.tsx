@@ -3,18 +3,15 @@ import { useSelector } from 'react-redux';
 import { BuyTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import {
-    TradingRootState,
-    selectBuyQuotesByPaymentMethod,
-    selectTradingBuyIsLoading,
-    selectTradingBuyProviders,
-} from '@suite-common/trading';
+import { selectTradingBuyIsLoading, selectTradingBuyProviders } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
+import { selectBuyQuotesByPaymentMethodNative } from '../../selectors/buySelectors';
+import { TradingRootState } from '../../tradingSlice';
 import { OverviewRow } from '../general/OverviewRow';
 import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
 import { ProviderLogo } from '../general/ProviderLogo';
@@ -70,7 +67,7 @@ export const BuyProviderPicker = () => {
     const { paymentMethod } = selectedValue ?? {};
     const quotes =
         useSelector((state: TradingRootState) =>
-            selectBuyQuotesByPaymentMethod(state, paymentMethod),
+            selectBuyQuotesByPaymentMethodNative(state, paymentMethod),
         ) ?? [];
 
     const shouldShowPicker = (providers && quotes.length > 0) || isLoading;

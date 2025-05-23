@@ -2,11 +2,13 @@ import { BuyCryptoPaymentMethod, BuyTrade, FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
+    TradingPaymentMethodProps,
     getBestRatedQuote,
+    getTradingQuotesByPaymentMethod,
     regional,
     selectTradingBuyInfo,
-    selectTradingBuyQuotes,
     selectTradingBuySupportedCryptoIds,
+    selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
 
 import { supportedFiatCurrenciesMap } from '../consts/general/supportedFiatCurrencies';
@@ -99,12 +101,17 @@ export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
 export const selectBuyAmountLimits = (state: TradingRootState) =>
     selectTradingBuy(state).amountLimits;
 
-export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelector(
+export const selectValidTradingBuyQuotesNative = createMemoizedSelector(
     [
-        selectTradingBuyQuotes as unknown as (
+        selectValidTradingBuyQuotes as unknown as (
             state: TradingRootState,
-        ) => ReturnType<typeof selectTradingBuyQuotes>,
+        ) => ReturnType<typeof selectValidTradingBuyQuotes>,
     ],
+    quotes => quotes.filter(quote => quote.exchange !== 'simplex'),
+);
+
+export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelector(
+    [selectValidTradingBuyQuotesNative],
     quotes => {
         const allQuotesByPaymentMethodMap = quotes.reduce((quotesByPaymentMethodMap, quote) => {
             const { paymentMethod, paymentMethodName } = quote;
@@ -126,4 +133,18 @@ export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelec
             getBestRatedQuote(quotesForPaymentMethod, 'buy'),
         ) as BuyTrade[];
     },
+);
+
+export const selectBuyQuotesByPaymentMethodNative = createMemoizedSelector(
+    [
+        selectValidTradingBuyQuotesNative,
+        (_: TradingRootState, paymentMethod: TradingPaymentMethodProps | undefined) =>
+            paymentMethod,
+    ],
+    (quotes, paymentMethod) =>
+        paymentMethod
+            ? getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod)?.sort(
+                  (a, b) => (a.rate ?? 0) - (b.rate ?? 0),
+              )
+            : undefined,
 );
