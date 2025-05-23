@@ -9,10 +9,9 @@ import { ReceiveAccount } from '../../../types';
 export type AccountListItemProps = {
     receiveAccount: ReceiveAccount;
     onPress: () => void;
-    index?: number;
 };
 
-export const AccountListItem = ({ receiveAccount, onPress, index }: AccountListItemProps) => {
+export const AccountListItem = ({ receiveAccount, onPress }: AccountListItemProps) => {
     const { account } = receiveAccount;
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),

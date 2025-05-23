@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { networks } from '@suite-common/wallet-config';
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
@@ -35,7 +34,6 @@ export type AccountListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
     showDivider?: boolean;
-    index?: number;
 };
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
@@ -60,13 +58,9 @@ export const AccountsListItem = ({
     hasBackground = false,
     isFirst = false,
     isLast = false,
-    index = 0,
     showDivider = false,
 }: AccountListItemProps) => {
     const { accountLabel } = account;
-
-    const networkName = networks[account.symbol]?.name;
-    const actualAccountLabel = accountLabel ?? `${networkName} #${(index ?? 0) + 1}`;
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -117,7 +111,7 @@ export const AccountsListItem = ({
             icon={icon}
             title={
                 shouldShowAccountLabel ? (
-                    actualAccountLabel
+                    accountLabel
                 ) : (
                     <NetworkDisplaySymbolNameFormatter value={account.symbol} />
                 )

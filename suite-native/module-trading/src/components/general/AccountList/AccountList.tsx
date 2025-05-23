@@ -84,13 +84,9 @@ export const AccountList = ({
         }
     };
 
-    const renderItem = (item: ReceiveAccount, index: number) =>
+    const renderItem = (item: ReceiveAccount) =>
         pickerMode === 'account' ? (
-            <AccountListItem
-                index={index}
-                receiveAccount={item}
-                onPress={() => onItemSelect(item)}
-            />
+            <AccountListItem receiveAccount={item} onPress={() => onItemSelect(item)} />
         ) : (
             <AccountListAddressItem receiveAccount={item} onPress={() => onItemSelect(item)} />
         );

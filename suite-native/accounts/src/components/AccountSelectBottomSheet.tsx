@@ -29,7 +29,7 @@ export const AccountSelectBottomSheet = React.memo(
         const { showToast } = useToast();
 
         const renderItem = useCallback(
-            ({ item }: { item: AccountSelectBottomSheetSection }, index: number) => {
+            ({ item }: { item: AccountSelectBottomSheetSection }) => {
                 switch (item.type) {
                     case 'sectionTitle':
                         return <AccountSectionTitle {...item} />;
@@ -39,7 +39,6 @@ export const AccountSelectBottomSheet = React.memo(
                                 {...item}
                                 hasBackground
                                 showDivider
-                                index={index}
                                 isNativeCoinOnly
                                 onPress={() => onSelectAccount(item)}
                             />
