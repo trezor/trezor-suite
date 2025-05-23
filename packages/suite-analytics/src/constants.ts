@@ -32,6 +32,10 @@ export enum EventType {
     CreateReceiveAddressCopyAddress = 'create-receive-address/copy-address',
     CreateReceiveAddressConfirmOnTrezor = 'create-receive-address/confirm-on-trezor',
 
+    SendInitialised = 'send/initialised',
+    SendConfirmerOnDevice = 'send/confirmed-on-device',
+    SendDetailOpened = 'send/detail-opened',
+
     AccountsStatus = 'accounts/status',
     AccountsTokensStatus = 'accounts/tokens-status',
     AccountsNonZeroBalance = 'accounts/non-zero-balance',

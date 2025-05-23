@@ -21,6 +21,7 @@ import {
     PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { getSynchronize } from '@trezor/utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -218,6 +219,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // this action is blocked by modalActions.preserve()
         dispatch(modalActions.preserve());
 
+        analytics.report({
+            type: EventType.SendInitialised,
+            payload: {
+                assetSymbol: selectedAccount.symbol,
+            },
+        });
+
         const signResponse = await dispatch(
             signTransactionThunk({
                 formState,
@@ -225,6 +233,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
                 selectedAccount,
             }),
         );
+
+        analytics.report({
+            type: EventType.SendConfirmerOnDevice,
+            payload: {
+                assetSymbol: selectedAccount.symbol,
+            },
+        });
 
         if (isRejected(signResponse)) {
             // Do not close the modal, as we need that modal to display the error state.

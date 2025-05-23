@@ -315,6 +315,21 @@ export const TransactionReviewModalContent = ({
         });
     };
 
+    const handleDetailsClick = () => {
+        setAreDetailsVisible(areVisible => {
+            if (!areVisible) {
+                analytics.report({
+                    type: EventType.SendDetailOpened,
+                    payload: {
+                        assetSymbol: symbol,
+                    },
+                });
+            }
+
+            return !areVisible;
+        });
+    };
+
     const BottomContent = () => {
         if (isRbfConfirmedError) {
             return (
@@ -439,9 +454,7 @@ export const TransactionReviewModalContent = ({
                                 tx={precomposedTx}
                                 account={account}
                                 broadcast={isBroadcastEnabled}
-                                onDetailsClick={() => {
-                                    setAreDetailsVisible(!areDetailsVisible);
-                                }}
+                                onDetailsClick={handleDetailsClick}
                                 stakeType={stakeType}
                             />
                             {showTxValidityTimer && (

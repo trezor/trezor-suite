@@ -157,6 +157,24 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SendInitialised;
+          payload: {
+              assetSymbol: NetworkSymbol;
+          };
+      }
+    | {
+          type: EventType.SendConfirmerOnDevice;
+          payload: {
+              assetSymbol: NetworkSymbol;
+          };
+      }
+    | {
+          type: EventType.SendDetailOpened;
+          payload: {
+              assetSymbol: NetworkSymbol;
+          };
+      }
+    | {
           type: EventType.AccountsStatus;
           payload: {
               [key: string]: number;
