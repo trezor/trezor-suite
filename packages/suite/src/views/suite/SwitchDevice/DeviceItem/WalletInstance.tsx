@@ -117,7 +117,6 @@ export const WalletInstance = ({
                         ellipsisLineCount={1}
                     >
                         <Row justifyContent="space-between">
-                            {/* {discoveryProcess ? ( */}
                             <Row gap={spacings.xxs}>
                                 {!instance.useEmptyPassphrase && (
                                     <Tooltip
@@ -149,9 +148,6 @@ export const WalletInstance = ({
                                     <WalletLabeling device={instance} />
                                 )}
                             </Row>
-                            {/* ) : (
-                                <Translation id="TR_UNDISCOVERED_WALLET" />
-                            )} */}
                             <Box
                                 position={{
                                     type: 'absolute',

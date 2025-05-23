@@ -21,8 +21,6 @@ export interface SelectedAccountLoaded {
     account: Account;
     network: Network;
     params: WalletParams;
-    // blockchain?: any; // TODO:
-    // transactions?: any; // TODO:
 }
 
 // 100% view

@@ -50,7 +50,7 @@ export const usePreferredModal = () => {
     const route = useSelector(state => state.router.route);
     const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
     const modal = useSelector(state => state.modal);
-    const passphraseFlow =
+    const isPassphraseFlow =
         Boolean(discoveryForSelectedDevice?.isAddingHiddenWallet) &&
         discoveryForSelectedDevice?.status !== 'cancelled' &&
         discoveryForSelectedDevice?.status !== 'complete' &&
@@ -66,7 +66,7 @@ export const usePreferredModal = () => {
         if (
             'windowType' in modal &&
             modal.windowType === UI.REQUEST_PASSPHRASE &&
-            passphraseFlow &&
+            isPassphraseFlow &&
             discoveryForSelectedDevice
         ) {
             return {
@@ -87,7 +87,7 @@ export const usePreferredModal = () => {
         } as const;
     }
 
-    if (passphraseFlow && discoveryForSelectedDevice) {
+    if (isPassphraseFlow && discoveryForSelectedDevice) {
         return {
             type: 'passphrase-flow',
         } as const;

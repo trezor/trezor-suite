@@ -28,7 +28,7 @@ const getForegroundApp = (app: ForegroundAppRoute['app']) => {
         'bridge-requested': BridgeRequested,
         'bridge-deprecated': BridgeDeprecated,
         udev: UdevRules,
-        'switch-device': null,
+        'switch-device': null, // extracted to PassphraseFlow.tsx
         recovery: Recovery,
         backup: Backup,
         'create-multi-share-backup': MultiShareBackupModal,
