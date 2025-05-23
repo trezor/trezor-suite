@@ -184,13 +184,27 @@ describe('getRequestFormSource', () => {
 });
 
 describe('buildTradingUrl', () => {
-    it('should return correct url format', () => {
+    it('should return correct url format without https', () => {
         expect(
             buildTradingUrl({
                 actionType: 'quote',
                 tradeType: 'buy',
                 orderId: '1234',
+                exchange: 'paybis',
             }),
         ).toBe('trezorsuitelite://trading?action=quote&tradeType=buy&orderId=1234');
+    });
+
+    it('should return correct url format with https', () => {
+        expect(
+            buildTradingUrl({
+                actionType: 'quote',
+                tradeType: 'buy',
+                orderId: '1234',
+                exchange: 'invity',
+            }),
+        ).toBe(
+            'https://suite.trezor.io/web/accounts/coinmarket/buy?action=quote&tradeType=buy&orderId=1234',
+        );
     });
 });

@@ -5,7 +5,7 @@ import { useTranslate } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures__/trades';
-import { TRADING_URL_DEFAULT_BACK } from '../formUtils';
+import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from '../formUtils';
 import {
     doesUrlContainCloseCallbackUrl,
     getRandomAccountDescriptor,
@@ -146,6 +146,11 @@ describe('utils', () => {
 
         it('should return true when URL contains TRADING_URL_DEFAULT_BACK', () => {
             const url = `${TRADING_URL_DEFAULT_BACK}?action=trade&tradeType=buy&orderId=123`;
+            expect(doesUrlContainCloseCallbackUrl(url, closeCallbackUrl)).toBe(true);
+        });
+
+        it('should return true when URL contains INVITY_CALLBACK_TREZOR_BUY_URL', () => {
+            const url = `${INVITY_CALLBACK_TREZOR_BUY_URL}?action=trade&tradeType=buy&orderId=123`;
             expect(doesUrlContainCloseCallbackUrl(url, closeCallbackUrl)).toBe(true);
         });
 

@@ -161,6 +161,7 @@ export const useBuyFlow = (form: TradingBuyForm) => {
             actionType: 'trade',
             tradeType: 'buy',
             orderId: quote.orderId,
+            exchange: quote.exchange,
         });
 
         await dispatch(
@@ -209,6 +210,7 @@ export const useBuyFlow = (form: TradingBuyForm) => {
             actionType: 'quote',
             tradeType: 'buy',
             orderId: candidateQuote.orderId,
+            exchange: candidateQuote.exchange,
         });
 
         await dispatch(

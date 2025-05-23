@@ -49,6 +49,7 @@ export const TradeDetailWaitingAlert = ({
                           actionType: 'trade',
                           tradeType: trade.tradeType,
                           orderId,
+                          exchange: trade.data.partnerData,
                       }),
                       source: { uri: trade.data.partnerData },
                   });

@@ -21,6 +21,7 @@ export type BuildTradingUrlProps = {
     actionType: 'quote' | 'trade';
     tradeType: TradingType;
     orderId: string | undefined;
+    exchange: string | undefined;
 };
 
 export type GetAnalyticsTradingBuyPayloadProps = {
@@ -30,6 +31,9 @@ export type GetAnalyticsTradingBuyPayloadProps = {
 
 export const TRADING_URL_BASE = 'trezorsuitelite://trading';
 export const TRADING_URL_DEFAULT_BACK = `${TRADING_URL_BASE}/back`;
+export const INVITY_CALLBACK_TREZOR_BUY_URL = 'https://suite.trezor.io/web/accounts/coinmarket/buy';
+
+const exchangesWithHttps = ['invity', 'btcdirect-sandbox', 'btcdirect'];
 
 export const applyHtmlTemplate = (
     content = 'You may now close this window.',
@@ -125,8 +129,14 @@ export const getSourceForForm = (form: FormResponse['form'] | undefined, backUrl
     return null;
 };
 
-export const buildTradingUrl = ({ actionType, tradeType, orderId }: BuildTradingUrlProps) => {
-    const url = new URL(TRADING_URL_BASE);
+export const buildTradingUrl = ({
+    actionType,
+    tradeType,
+    orderId,
+    exchange,
+}: BuildTradingUrlProps) => {
+    const useHttpsVersion = exchangesWithHttps.includes(exchange ?? '');
+    const url = new URL(useHttpsVersion ? INVITY_CALLBACK_TREZOR_BUY_URL : TRADING_URL_BASE);
     const { searchParams } = url;
     searchParams.set('action', actionType);
     searchParams.set('tradeType', tradeType);
