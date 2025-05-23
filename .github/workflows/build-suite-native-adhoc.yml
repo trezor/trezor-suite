@@ -44,4 +44,10 @@ jobs:
           npx patch-package # Apply global patches.
       - name: Trigger adhoc build
         run: |
-          yarn native:adhoc -p ${{ github.event.inputs.PLATFORM  }} --non-interactive --no-wait --freeze-credentials --message ${{ github.sha }}
+          yarn native:adhoc \
+            -p ${{ github.event.inputs.PLATFORM }} \
+            --non-interactive \
+            --no-wait \
+            --freeze-credentials \
+            --message ${{ github.sha }} \
+            2>&1 | sed -E 's/UDID: [A-Za-z0-9-]+/UDID: [REDACTED]/g' # remove UDIDs from output
