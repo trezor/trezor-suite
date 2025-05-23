@@ -2,7 +2,7 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import {
-    runAdditionalDiscoveryThunk,
+    restartDiscoveryThunk,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
     selectIsRediscoverNeeded,
@@ -81,9 +81,10 @@ export const SettingsCoins = () => {
     const isDeviceLocked = !!device && isLocked();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
-    const isDiscoveryButtonVisible =
-        useSelector(state => selectIsRediscoverNeeded(state, device?.state?.staticSessionId)) &&
-        device?.state?.staticSessionId;
+    const staticSessionId = device?.state?.staticSessionId;
+    const isDiscoveryButtonVisible = useSelector(
+        state => !isDiscoveryRunning && selectIsRediscoverNeeded(state, staticSessionId),
+    );
 
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
         deviceSupportedNetworkSymbols.includes(enabledNetwork),
@@ -104,8 +105,7 @@ export const SettingsCoins = () => {
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     const startDiscovery = () => {
-        if (!device?.state?.staticSessionId) return;
-        dispatch(runAdditionalDiscoveryThunk(device?.state?.staticSessionId));
+        dispatch(restartDiscoveryThunk());
     };
 
     const animation = getDiscoveryButtonAnimationConfig(!!isDiscoveryRunning);

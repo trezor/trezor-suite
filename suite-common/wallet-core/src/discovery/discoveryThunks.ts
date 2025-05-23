@@ -26,7 +26,6 @@ import {
     selectNetworksToDiscover,
 } from './discoveryReducer';
 import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
-import { disableAccountsThunk } from '../accounts/accountsThunks';
 import { deviceActions } from '../device/deviceActions';
 import {
     selectDeviceByStaticSessionId,
@@ -253,8 +252,9 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         assertDeviceIsAuthorized(device);
 
-        if (selectAccountsToBeForgotten(getState()).length > 0) {
-            dispatch(disableAccountsThunk());
+        const accountsToRemove = selectAccountsToBeForgotten(getState());
+        if (accountsToRemove.length > 0) {
+            dispatch(accountsActions.removeAccount(accountsToRemove));
         }
 
         const isRediscoverNeeded = selectIsRediscoverNeeded(
@@ -267,6 +267,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
             return;
         }
+        dispatch(discoveryActions.startDiscovery(device.path, false, false));
 
         const onBundleProgress = createOnBundleProgressHandler(
             device.path,
@@ -326,7 +327,8 @@ const createOnBundleProgressHandler = (
     getState: any,
 ) => {
     let encounteredNonEmptyAccount = false;
-    const accountProgressEvents: ProgressOkEvent[] = [];
+    // we do not create empty accounts right away, but store the progress events for later
+    const emptyProgressEvents: ProgressOkEvent[] = [];
 
     const progressEventToCreateAccountPayload = (
         event: ProgressOkEvent,
@@ -368,10 +370,13 @@ const createOnBundleProgressHandler = (
         );
 
         if (isProgressEventOk(event)) {
+            // all encountered accounts were empty, so create all of the delayed empty accounts
             if (event.progress === 100 && !encounteredNonEmptyAccount) {
-                accountProgressEvents.forEach(event => {
+                emptyProgressEvents.forEach(delayedEvent => {
                     dispatch(
-                        accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
+                        accountsActions.createAccount(
+                            progressEventToCreateAccountPayload(delayedEvent),
+                        ),
                     );
                 });
 
@@ -383,15 +388,18 @@ const createOnBundleProgressHandler = (
 
                 return;
             } else {
-                accountProgressEvents.push(event);
+                emptyProgressEvents.push(event);
             }
 
+            // on first non-empty one, create all of the delayed empty accounts
             if (!encounteredNonEmptyAccount && event.response.empty === false) {
                 encounteredNonEmptyAccount = true;
 
-                accountProgressEvents.forEach(event => {
+                emptyProgressEvents.forEach(delayedEvent => {
                     dispatch(
-                        accountsActions.createAccount(progressEventToCreateAccountPayload(event)),
+                        accountsActions.createAccount(
+                            progressEventToCreateAccountPayload(delayedEvent),
+                        ),
                     );
                 });
             }
