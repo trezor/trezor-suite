@@ -24,12 +24,7 @@ import { DeviceState, StaticSessionId } from '@trezor/connect';
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './accountsConstants';
 import { deviceActions } from '../device/deviceActions';
-import {
-    DeviceRootState,
-    selectHasOnlyPortfolioDevice,
-    selectSelectedDevice,
-} from '../device/deviceReducer';
-import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
+import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
 
 export type AccountsState = Account[];
 
@@ -163,7 +158,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 );
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
-    AccountsRootState & DeviceRootState & DiscoveryRootState
+    AccountsRootState & DeviceRootState
 >();
 
 const EMPTY_STABLE_ACCOUNTS_ARRAY: Account[] = [];
@@ -485,16 +480,6 @@ export const selectAccountsSymbols = createMemoizedSelector([selectAccounts], ac
 export const selectIsDeviceAccountless = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
     accounts => accounts.length === 0,
-);
-
-export const selectIsDiscoveredDeviceAccountless = createMemoizedSelector(
-    [selectIsDeviceAccountless, selectIsDeviceDiscoveryActive],
-    (isAccountless, isDiscoveryActive) => isAccountless && !isDiscoveryActive,
-);
-
-export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
-    [selectIsDiscoveredDeviceAccountless, selectHasOnlyPortfolioDevice],
-    (isDiscoveredAccountless, hasOnlyPortfolio) => isDiscoveredAccountless && hasOnlyPortfolio,
 );
 
 export const selectSolStakingAccounts = createMemoizedSelector([selectAccountByKey], account => {

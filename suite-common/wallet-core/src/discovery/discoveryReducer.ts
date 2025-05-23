@@ -1,17 +1,9 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { networksCollection } from '@suite-common/wallet-config';
 import { Discovery, DiscoveryStatus } from '@suite-common/wallet-types';
-import { getFailedAccounts } from '@suite-common/wallet-utils';
-import { DeviceUniquePath, StaticSessionId } from '@trezor/connect';
+import { DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
-import {
-    AccountsRootState,
-    selectAccounts,
-    selectAccountsByDeviceState,
-} from '../accounts/accountsReducer';
 import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
-import { WalletSettingsRootState, selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 export type DiscoveryRootState = {
     wallet: {
@@ -99,54 +91,3 @@ export const selectIsDiscoveryAuthConfirmationRequired = (
     state: DiscoveryRootState & DeviceRootState,
     path?: DeviceUniquePath,
 ) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
-
-export const selectNetworksToDiscover = (
-    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
-    staticSessionId?: StaticSessionId,
-) => {
-    const enabledNetworks = selectEnabledNetworks(state);
-
-    if (!staticSessionId) {
-        console.log('staticSessionId is not defined, returning full');
-
-        return enabledNetworks;
-    }
-    const device = selectSelectedDevice(state);
-    const discovery = selectDiscoveryByDevicePath(state, device?.path);
-    const okAccounts = selectAccountsByDeviceState(state, staticSessionId);
-    const failedAccounts = getFailedAccounts(staticSessionId, discovery);
-
-    const discoveredNetworks = [
-        ...new Set([...okAccounts, ...failedAccounts].map(account => account.symbol)),
-    ];
-
-    return enabledNetworks.filter(network => !discoveredNetworks.includes(network));
-};
-
-export const selectIsRediscoverNeeded = (
-    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
-    staticSessionId?: StaticSessionId,
-) => {
-    if (!staticSessionId) return false;
-
-    const networksToDiscover = selectNetworksToDiscover(state, staticSessionId);
-
-    return networksToDiscover.length > 0;
-};
-
-export const selectAccountsToBeForgotten = (
-    state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,
-) => {
-    const accounts = selectAccounts(state);
-    const enabledNetworks = selectEnabledNetworks(state);
-    // find disabled networks
-    const disabledNetworks = networksCollection
-        .filter(n => !enabledNetworks.includes(n.symbol) || n.isHidden)
-        .map(n => n.symbol);
-    // find accounts for disabled networks
-    const accountsToRemove = accounts.filter(
-        a => disabledNetworks.includes(a.symbol) && !a.imported,
-    );
-
-    return accountsToRemove;
-};

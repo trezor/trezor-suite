@@ -19,11 +19,8 @@ import {
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import {
     isDiscoveryInProgress,
-    selectAccountsToBeForgotten,
     selectDiscovery,
     selectDiscoveryByDevicePath,
-    selectIsRediscoverNeeded,
-    selectNetworksToDiscover,
 } from './discoveryReducer';
 import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { deviceActions } from '../device/deviceActions';
@@ -34,6 +31,11 @@ import {
     selectSelectedDevice,
 } from '../device/deviceReducer';
 import { selectDeviceThunk } from '../device/deviceThunks';
+import {
+    selectAccountsToBeForgotten,
+    selectIsRediscoverNeeded,
+    selectNetworksToDiscover,
+} from '../selectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 // todo:
