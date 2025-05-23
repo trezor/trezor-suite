@@ -12228,12 +12228,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/firmware-release-config@workspace:packages/firmware-release-config"
   dependencies:
-    "@trezor/device-utils": "workspace:^"
-    "@trezor/env-utils": "workspace:^"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/jws": "npm:^3.2.10"
     fs-extra: "npm:^11.3.0"
     jws: "npm:^4.0.0"
+    rimraf: "npm:^6.0.1"
     tsx: "npm:^4.20.3"
   languageName: unknown
   linkType: soft

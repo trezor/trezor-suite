@@ -104,12 +104,15 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
       wipe_code_protection: False,
     },
   firmware: valid,
-  firmwareRelease:
+  firmwareReleaseConfig:
     {
-      changelog: [],
+      isRequired: False,
       isNewer: False,
-      isRequired: None,
-      release: {},
+      firmwareType: bitcoin-only,
+      isBitcoinOnlyAvailable: True,
+      intermediary: None,
+      releaseConditions: {},
+      release: {}
     },
   id: [redacted],
   instance: 1,
