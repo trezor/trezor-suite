@@ -1,8 +1,8 @@
 import { testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
 import {
+    changeCoinVisibility,
     deviceActions,
-    disableAccountsThunk,
     prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareSendFormReducer,
@@ -436,10 +436,9 @@ describe('Storage actions', () => {
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
-        // disable btc network, enable ltc
-        await store.dispatch(discoveryActions.changeNetworks(['ltc']));
-        // remove accounts belonging to disabled coins, triggering ACCOUNT.REMOVE
-        await store.dispatch(disableAccountsThunk());
+        // disable btc network, enable ltc, triggering ACCOUNT.REMOVE
+        await store.dispatch(changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }));
+        await store.dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: false }));
 
         // verify that graph data for acc1 were removed
         store.dispatch(await preloadStore());

@@ -7,6 +7,8 @@ import { PROTO } from '@trezor/connect';
 
 import { WALLET_SETTINGS } from './walletSettingsConstants';
 import { selectBitcoinAmountUnit, selectEnabledNetworks } from './walletSettingsReducer';
+import { selectAccountsToBeForgotten } from '../discovery/discoveryReducer';
+import { accountsActions } from '../accounts/accountsActions';
 
 export const setLocalCurrency = createAction(
     WALLET_SETTINGS.SET_LOCAL_CURRENCY,
@@ -70,6 +72,13 @@ export const changeCoinVisibility = createThunk<
         enabledNetworks = [...enabledNetworks, symbol];
     }
     dispatch(changeNetworks(enabledNetworks));
+
+    const accountsToRemove = selectAccountsToBeForgotten(getState());
+    if (accountsToRemove.length > 0) {
+        dispatch(accountsActions.removeAccount(accountsToRemove));
+    }
+
+    // this seems to be only for analyticsMiddleware
     dispatch({
         type: WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
         payload: {

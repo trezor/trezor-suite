@@ -1,7 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { networksCollection } from '@suite-common/wallet-config';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
@@ -19,32 +18,11 @@ import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
-import { selectAccountByKey, selectAccounts } from './accountsReducer';
+import { selectAccountByKey } from './accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectBitcoinAmountUnit, selectEnabledNetworks } from '../settings/walletSettingsReducer';
+import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsReducer';
-
-export const disableAccountsThunk = createThunk(
-    `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,
-    (_, { dispatch, getState }) => {
-        // todo: this logic is now duplicated in selectAccountsToBeForgotten (discoveryReducer)
-        const accounts = selectAccounts(getState());
-        const enabledNetworks = selectEnabledNetworks(getState());
-        // find disabled networks
-        const disabledNetworks = networksCollection
-            .filter(n => !enabledNetworks.includes(n.symbol) || n.isHidden)
-            .map(n => n.symbol);
-        // find accounts for disabled networks
-        const accountsToRemove = accounts.filter(
-            a => disabledNetworks.includes(a.symbol) && !a.imported,
-        );
-
-        if (accountsToRemove.length) {
-            dispatch(accountsActions.removeAccount(accountsToRemove));
-        }
-    },
-);
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];
