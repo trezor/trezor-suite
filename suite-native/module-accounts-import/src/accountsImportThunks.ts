@@ -7,12 +7,7 @@ import {
     selectFilterKnownTokens,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-import {
-    type AccountType,
-    type Bip43Path,
-    type NetworkSymbol,
-    getNetworkType,
-} from '@suite-common/wallet-config';
+import { type AccountType, type Bip43Path, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     PORTFOLIO_TRACKER_DEVICE_STATE,
     accountsActions,
@@ -70,7 +65,6 @@ export const importAccountThunk = createThunk(
                         index: deviceNetworkAccounts.length, // indexed from 0
                         path: (accountInfo?.path ?? '') as Bip43Path,
                         accountType,
-                        networkType: getNetworkType(symbol),
                         coin: symbol,
                     },
                     accountInfo,

@@ -10,7 +10,6 @@ import {
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
-// todo: not tested nor thought about
 const graphMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
@@ -29,7 +28,7 @@ const graphMiddleware =
             }
         }
 
-        // // don't run while fetching txs pages in transactions tab
+        // don't run while fetching txs pages in transactions tab
         if (transactionsActions.addTransaction.match(action) && !action.payload.page) {
             const { account, transactions } = action.payload;
 
@@ -47,18 +46,11 @@ const graphMiddleware =
             }
         }
 
-        switch (action.type) {
-            case discoveryActions.updateDiscovery.type:
-                if (action.payload.status.status === 'complete') {
-                    api.dispatch(
-                        graphActions.updateGraphData(currentAccounts, { newAccountsOnly: true }),
-                    );
-                }
-
-                break;
-
-            default:
-                break;
+        if (
+            action.type === discoveryActions.updateDiscovery.type &&
+            action.payload.status.status === 'complete'
+        ) {
+            api.dispatch(graphActions.updateGraphData(currentAccounts, { newAccountsOnly: true }));
         }
 
         return action;

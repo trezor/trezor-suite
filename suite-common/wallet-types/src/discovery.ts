@@ -75,6 +75,5 @@ export type DiscoveryItem = {
     // wallet
     index: number;
     accountType: Account['accountType'];
-    // networkType: Account['networkType'];
     derivationType?: 0 | 1 | 2;
 } & AccountBackendSpecific;

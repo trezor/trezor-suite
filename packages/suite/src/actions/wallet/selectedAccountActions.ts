@@ -5,7 +5,9 @@ import {
     deviceActions,
     discoveryActions,
     feesActions,
+    selectDeviceAccounts,
     selectDiscoveryForSelectedDevice,
+    selectEnabledNetworks,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -19,7 +21,7 @@ import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 // move to selector!!!!
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
-    const { accounts } = state.wallet;
+    const accounts = selectDeviceAccounts(state);
 
     // waiting for device
     if (!device) {
@@ -45,13 +47,13 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         };
     }
 
-    // account cannot exists since there are no selected networks in settings/wallet
-    // if (discovery.networks.length === 0) {
-    //     return {
-    //         status: 'exception',
-    //         loader: 'discovery-empty',
-    //     };
-    // }
+    // account cannot exist since there are no discovered accounts (maybe no networks enabled)
+    if (accounts.length === 0) {
+        return {
+            status: 'exception',
+            loader: 'discovery-empty',
+        };
+    }
 
     // get params from router
     // or set first default account from discovery list
@@ -68,32 +70,31 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     const network = networks[params.symbol];
 
     // account cannot exists since requested network is not selected in settings/wallet
-    // if (!discovery.networks.find(n => n === network.symbol)) {
-    //     return {
-    //         status: 'exception',
-    //         loader: 'account-not-enabled',
-    //         network,
-    //         discovery,
-    //         params,
-    //     };
-    // }
+    const enabledNetworks = selectEnabledNetworks(state);
+    if (!enabledNetworks.includes(network.symbol)) {
+        return {
+            status: 'exception',
+            loader: 'account-not-enabled',
+            network,
+            params,
+        };
+    }
 
-    // const failed = discovery.failed.find(
-    //     f =>
-    //         f.symbol === network.symbol &&
-    //         f.index === params.accountIndex &&
-    //         f.accountType === params.accountType,
-    // );
-    // // discovery for requested network failed
-    // if (failed) {
-    //     return {
-    //         status: 'exception',
-    //         loader: 'account-not-loaded',
-    //         network,
-    //         discovery,
-    //         params,
-    //     };
-    // }
+    const matchedFailed = (discovery?.failed ?? []).find(
+        f =>
+            f.symbol === network.symbol &&
+            f.index === params.accountIndex &&
+            f.accountType === params.accountType,
+    );
+    // discovery for requested network failed
+    if (matchedFailed) {
+        return {
+            status: 'exception',
+            loader: 'account-not-loaded',
+            network,
+            params,
+        };
+    }
 
     // get selected account
     const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
@@ -130,15 +131,14 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // account doesn't exist (yet?) checking why...
     // discovery is still running
-    // if (discovery.error) {
-    //     return {
-    //         status: 'exception',
-    //         loader: 'discovery-error',
-    //         network,
-    //         discovery,
-    //         params,
-    //     };
-    // }
+    if (discovery?.status === 'failed') {
+        return {
+            status: 'exception',
+            loader: 'discovery-error',
+            network,
+            params,
+        };
+    }
 
     if (discovery?.status === 'progress') {
         return {
@@ -172,7 +172,6 @@ const actions = [
     blockchainActions.setBackend.type,
     blockchainActions.synced.type,
     blockchainActions.connected.type,
-    // ???
     discoveryActions.updateDiscovery.type,
     feesActions.updateFee.type,
     feesActions.removeFee.type,

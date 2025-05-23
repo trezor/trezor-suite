@@ -54,8 +54,9 @@ const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
 
     const onCancel = () => dispatch(closeModalApp());
 
-    if (app === 'switch-device')
+    if (app === 'switch-device') {
         return <SwitchDevice cancelable={cancelable} onCancel={onCancel} />;
+    }
 };
 
 export const PassphraseFlow = () => {

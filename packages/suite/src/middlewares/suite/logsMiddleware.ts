@@ -4,7 +4,6 @@ import { analyticsActions } from '@suite-common/analytics';
 import { addLog } from '@suite-common/logger';
 import {
     WALLET_SETTINGS,
-    acquireDevice,
     changeNetworks,
     deviceActions,
     setLocalCurrency,
@@ -22,9 +21,6 @@ import {
 } from 'src/actions/suite/constants';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
-
-// @ts-expect-error unused variable, I just want this reference here to keep webpack from mysteriously crashing
-const a = acquireDevice;
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

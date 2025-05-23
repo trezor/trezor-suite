@@ -12,7 +12,6 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import {
     DiscoverAccountsProgress,
-    DiscoverAccountsProgressError,
     DiscoverAccountsProgressOk,
 } from '@trezor/connect/src/types/api/discoverAccounts';
 
@@ -42,8 +41,10 @@ import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
 type ProgressOkEvent = BundleProgress<DiscoverAccountsProgressOk>['payload'];
+const isProgressOk = (progress: DiscoverAccountsProgress): progress is DiscoverAccountsProgressOk =>
+    Object.prototype.hasOwnProperty.call(progress, 'path');
 const isProgressEventOk = (progressEvent: ProgressEvent): progressEvent is ProgressOkEvent =>
-    Object.prototype.hasOwnProperty.call(progressEvent.response, 'path');
+    isProgressOk(progressEvent.response);
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
     if (!device?.state?.staticSessionId) {
@@ -409,16 +410,15 @@ const createOnBundleProgressHandler = (
             return;
         }
 
-        // TODO solve TS smarter
-        const response = event.response as DiscoverAccountsProgressError;
-        console.warn(response.error);
+        const { response } = event;
+        if (isProgressOk(response)) {
+            console.error('Cannot happen per TS; event.response cannot be OK if event is not OK');
+
+            return;
+        }
+        console.warn(`bundle progress error handler: ${response.error}`);
         const currentFailedAccounts = discovery.failed ?? [];
-        const newFailedAccount: FailedAccount = {
-            symbol: response.symbol,
-            index: response.index,
-            accountType: response.type,
-            error: response.error,
-        };
+        const newFailedAccount: FailedAccount = { accountType: response.type, ...response };
 
         dispatch(
             discoveryActions.updateDiscovery(

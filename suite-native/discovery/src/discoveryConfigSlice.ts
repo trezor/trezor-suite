@@ -75,12 +75,6 @@ const filterUnavailableNetworks = (
         );
     });
 
-export const discoveryConfigPersistWhitelist: Array<keyof DiscoveryConfigState> = [
-    'areTestnetsEnabled',
-    'isCoinEnablingInitFinished',
-    'enabledDiscoveryNetworkSymbols',
-];
-
 export const discoveryConfigSlice = createSlice({
     name: 'discoveryConfig',
     initialState: discoveryConfigInitialState,
