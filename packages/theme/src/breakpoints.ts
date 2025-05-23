@@ -1,5 +1,4 @@
 export const breakpoints = {
-    unavailable: 260,
     mobile: 576, // Previously SM
     tablet: 768, // Previously MD
     laptop: 992, // Previously LG
@@ -8,28 +7,33 @@ export const breakpoints = {
 
 export type Breakpoint = keyof typeof breakpoints;
 export type BreakpointValue = (typeof breakpoints)[Breakpoint];
-
-export const below = (breakpoint: BreakpointValue) => `(max-width: ${breakpoint - 1}px)`;
-export const above = (breakpoint: BreakpointValue) => `(min-width: ${breakpoint}px)`;
+export type BreakpointFlagName =
+    | `isBelow${Capitalize<Breakpoint>}`
+    | `isAbove${Capitalize<Breakpoint>}`;
 
 export type BreakpointFlags = {
-    isBelowMobile: boolean;
-    isBelowTablet: boolean;
-    isBelowLaptop: boolean;
-    isBelowDesktop: boolean;
-    isAboveMobile: boolean;
-    isAboveTablet: boolean;
-    isAboveLaptop: boolean;
-    isAboveDesktop: boolean;
+    [K in BreakpointFlagName]: boolean;
 };
 
-export const initialBreakpointFlags: BreakpointFlags = {
-    isBelowMobile: false,
-    isBelowTablet: false,
-    isBelowLaptop: false,
-    isBelowDesktop: false,
-    isAboveMobile: false,
-    isAboveTablet: false,
-    isAboveLaptop: false,
-    isAboveDesktop: false,
+export const belowBreakpoint = (breakpoint: BreakpointValue) => `(max-width: ${breakpoint - 1}px)`;
+export const aboveBreakpoint = (breakpoint: BreakpointValue) => `(min-width: ${breakpoint}px)`;
+
+export const getBreakpointFlagNames = (
+    breakpoint: Breakpoint,
+): [BreakpointFlagName, BreakpointFlagName] => {
+    const capitalizedBreakpoint = (breakpoint.charAt(0).toUpperCase() +
+        breakpoint.slice(1)) as Capitalize<Breakpoint>;
+
+    return [`isBelow${capitalizedBreakpoint}`, `isAbove${capitalizedBreakpoint}`];
 };
+
+export const initialBreakpointFlags: BreakpointFlags = Object.keys(breakpoints).reduce(
+    (acc, breakpoint) => {
+        const [belowFlag, aboveFlag] = getBreakpointFlagNames(breakpoint as Breakpoint);
+        acc[belowFlag] = false;
+        acc[aboveFlag] = false;
+
+        return acc;
+    },
+    {} as BreakpointFlags,
+);

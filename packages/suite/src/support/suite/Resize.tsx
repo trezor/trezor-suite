@@ -1,43 +1,45 @@
 import { useEffect } from 'react';
 
-import { BreakpointFlags, above, below, breakpoints } from '@trezor/theme';
+import {
+    Breakpoint,
+    BreakpointFlagName,
+    BreakpointFlags,
+    BreakpointValue,
+    aboveBreakpoint,
+    belowBreakpoint,
+    breakpoints,
+    getBreakpointFlagNames,
+} from '@trezor/theme';
 
 import { updateBreakpoints } from 'src/actions/suite/windowActions';
 import { useDispatch } from 'src/hooks/suite';
-
-type FlagName = keyof BreakpointFlags;
 
 const Resize = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const queryList: Array<{ mq: MediaQueryList; flag: FlagName }> = Object.entries(breakpoints)
-            .filter(([key]) => key !== 'unavailable')
-            .flatMap(([key, value]) => {
-                // Capitalize first letter for flag names
-                const breakpointName = key.charAt(0).toUpperCase() + key.slice(1);
+        const queryList: Array<{ mq: MediaQueryList; flag: BreakpointFlagName }> = (
+            Object.entries(breakpoints) as [Breakpoint, BreakpointValue][]
+        ).flatMap(([breakpoint, breakpointValue]) => {
+            const [belowFlag, aboveFlag] = getBreakpointFlagNames(breakpoint);
 
-                const belowFlag = `isBelow${breakpointName}` as FlagName;
-                const aboveFlag = `isAbove${breakpointName}` as FlagName;
-
-                return [
-                    {
-                        mq: window.matchMedia(below(value)),
-                        flag: belowFlag,
-                    },
-                    {
-                        mq: window.matchMedia(above(value)),
-                        flag: aboveFlag,
-                    },
-                ];
-            });
+            return [
+                {
+                    mq: window.matchMedia(belowBreakpoint(breakpointValue)),
+                    flag: belowFlag,
+                },
+                {
+                    mq: window.matchMedia(aboveBreakpoint(breakpointValue)),
+                    flag: aboveFlag,
+                },
+            ];
+        });
 
         const initialFlags = queryList.reduce<Partial<BreakpointFlags>>((acc, { mq, flag }) => {
             acc[flag] = mq.matches;
 
             return acc;
         }, {});
-        dispatch(updateBreakpoints(initialFlags));
 
         const handlers = queryList.map(({ mq, flag }) => {
             const handler = (e: MediaQueryListEvent) => {
@@ -48,6 +50,8 @@ const Resize = () => {
 
             return { mq, handler };
         });
+
+        dispatch(updateBreakpoints(initialFlags));
 
         return () => {
             handlers.forEach(({ mq, handler }) => {

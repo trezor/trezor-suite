@@ -1,11 +1,10 @@
 import { icons } from '@suite-common/icons/src/icons';
-import { above, below, breakpoints } from '@trezor/theme';
+import { aboveBreakpoint, belowBreakpoint, breakpoints } from '@trezor/theme';
 
 /**
  * @deprecated This key is deprecated. Please use `useLayoutSize` hook or breakpoints from `@trezor/theme`.
  */
 export const SCREEN_SIZE = {
-    UNAVAILABLE: `${breakpoints.unavailable}px`,
     SM: `${breakpoints.mobile}px`,
     MD: `${breakpoints.tablet}px`,
     LG: `${breakpoints.laptop}px`,
@@ -16,14 +15,14 @@ export const SCREEN_SIZE = {
  * @deprecated This key is deprecated. Please use `useLayoutSize` hook or breakpoints from `@trezor/theme`.
  */
 export const SCREEN_QUERY = {
-    MOBILE: `@media ${below(breakpoints.mobile)}`,
-    ABOVE_MOBILE: `@media ${above(breakpoints.mobile)}`,
-    BELOW_TABLET: `@media ${below(breakpoints.tablet)}`,
-    ABOVE_TABLET: `@media ${above(breakpoints.tablet)}`,
-    BELOW_LAPTOP: `@media ${below(breakpoints.laptop)}`,
-    ABOVE_LAPTOP: `@media ${above(breakpoints.laptop)}`,
-    BELOW_DESKTOP: `@media ${below(breakpoints.desktop)}`,
-    ABOVE_DESKTOP: `@media ${above(breakpoints.desktop)}`,
+    MOBILE: `@media ${belowBreakpoint(breakpoints.mobile)}`,
+    ABOVE_MOBILE: `@media ${aboveBreakpoint(breakpoints.mobile)}`,
+    BELOW_TABLET: `@media ${belowBreakpoint(breakpoints.tablet)}`,
+    ABOVE_TABLET: `@media ${aboveBreakpoint(breakpoints.tablet)}`,
+    BELOW_LAPTOP: `@media ${belowBreakpoint(breakpoints.laptop)}`,
+    ABOVE_LAPTOP: `@media ${aboveBreakpoint(breakpoints.laptop)}`,
+    BELOW_DESKTOP: `@media ${belowBreakpoint(breakpoints.desktop)}`,
+    ABOVE_DESKTOP: `@media ${aboveBreakpoint(breakpoints.desktop)}`,
 } as const;
 
 export const LAYOUT_SIZE = {

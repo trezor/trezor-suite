@@ -35,14 +35,8 @@ export default windowReducer;
 
 export const selectIsWindowVisible = (state: WindowRootState) => state.window.isVisible;
 
-// Selector for the breakpoint flags
-export const selectBreakpointFlags = (state: WindowRootState): BreakpointFlags => ({
-    isBelowMobile: state.window.isBelowMobile,
-    isBelowTablet: state.window.isBelowTablet,
-    isBelowLaptop: state.window.isBelowLaptop,
-    isBelowDesktop: state.window.isBelowDesktop,
-    isAboveMobile: state.window.isAboveMobile,
-    isAboveTablet: state.window.isAboveTablet,
-    isAboveLaptop: state.window.isAboveLaptop,
-    isAboveDesktop: state.window.isAboveDesktop,
-});
+export const selectBreakpointFlags = (state: WindowRootState): BreakpointFlags => {
+    const { isVisible, ...breakpointFlags } = state.window;
+
+    return breakpointFlags;
+};
