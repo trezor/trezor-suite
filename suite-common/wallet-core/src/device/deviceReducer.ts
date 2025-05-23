@@ -700,19 +700,22 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
 // Basic state selectors (no need to wrap in createMemoizedSelector)
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
-export const selectSelectedDevice = (state: DeviceRootState) => {
-    const deviceId = state.device?.selectedDevice?.id;
-    const devicePath = state.device?.selectedDevice?.path;
-    const deviceInstance =
-        state.device?.selectedDevice?.instance ?? state.device?.selectedDevice?.walletNumber;
+export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
+export const selectSelectedDeviceBySelector = createMemoizedSelector(
+    [selectSelectedDevice, selectDevices],
+    (selectedDevice, devices) => {
+        const deviceId = selectedDevice?.id;
+        const devicePath = selectedDevice?.path;
+        const deviceInstance = selectedDevice?.instance ?? selectedDevice?.walletNumber;
 
-    return state.device?.devices.find(
-        device =>
-            device.id === deviceId &&
-            device.path === devicePath &&
-            (device.instance === deviceInstance || device.walletNumber === deviceInstance),
-    );
-};
+        return devices.find(
+            device =>
+                device.id === deviceId &&
+                device.path === devicePath &&
+                (device.instance === deviceInstance || device.walletNumber === deviceInstance),
+        );
+    },
+);
 
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(
