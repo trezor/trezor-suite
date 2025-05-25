@@ -78,7 +78,7 @@ const applyDeviceStatesThunk = createThunk(
             newDeviceState: DeviceState;
             devicePath: DeviceUniquePath;
         },
-        { dispatch, getState, extra },
+        { dispatch, getState },
     ) => {
         try {
             const devices = selectDevices(getState());
@@ -125,25 +125,30 @@ const applyDeviceStatesThunk = createThunk(
                     getState(),
                     newDeviceState.staticSessionId,
                 );
-                if (newlyAddedDevice) {
-                    dispatch(
-                        selectDeviceThunk({
-                            device: newlyAddedDevice,
-                        }),
-                    );
-                }
+                if (!newlyAddedDevice) return;
+                dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
             }
 
-            // metadata are enabled in settings but metadata master key does not exist for this device
-            // try to generate device metadata master key if passphrase is not used
-            const metadata = extra.selectors.selectMetadata(getState());
-            const metadataEnabled = metadata.enabled && !device.metadata[1];
-
-            if (metadataEnabled) {
-                await dispatch(extra.thunks.initMetadata(false));
-            }
+            const staticSessionId = newDeviceState.staticSessionId;
+            dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
         } catch (error) {
             console.warn('applyDeviceStatesThunk error', error);
+        }
+    },
+);
+
+/**
+ * If metadata are enabled in settings but metadata master key does not exist for this device state,
+ * try to generate device metadata master key
+ */
+const initNewDeviceStateMetadataThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/initNewDeviceStateMetadataThunk`,
+    (staticSessionId: StaticSessionId, { getState, dispatch, extra }) => {
+        const isMetadataEnabled = extra.selectors.selectMetadata(getState()).enabled;
+        const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
+        const metadataPresentOnDevice = device?.metadata[1];
+        if (isMetadataEnabled && !metadataPresentOnDevice) {
+            dispatch(extra.thunks.initMetadata(false));
         }
     },
 );
