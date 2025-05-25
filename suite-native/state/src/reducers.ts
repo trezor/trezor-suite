@@ -26,6 +26,7 @@ import {
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
+import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banner-flags';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
@@ -245,6 +246,13 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const bannerFlagsPersistedReducer = await preparePersistReducer({
+        reducer: bannerFlagsReducer,
+        persistedKeys: bannerFlagsPersistWhitelist,
+        key: 'bannerFlags',
+        version: 1,
+    });
+
     const messageSystemPersistedReducer = await preparePersistReducer({
         reducer: messageSystemReducer,
         persistedKeys: messageSystemPersistedWhitelist,
@@ -259,6 +267,7 @@ export const prepareRootReducers = async () => {
             appSettings: appSettingsPersistedReducer,
             wallet: walletPersistedReducer,
             featureFlags: featureFlagsPersistedReducer,
+            bannerFlags: bannerFlagsPersistedReducer,
             graph: graphReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,

@@ -30,6 +30,7 @@ import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
 import { selectIsNetworkSendFlowEnabled } from '../selectors';
+import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
@@ -190,6 +191,7 @@ export const TransactionListHeader = memo(
                         </HStack>
                     )}
                     {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
+                    {account.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
                 </VStack>
                 {hasAccountTransactions && (
                     <Box marginTop="sp52" marginHorizontal="sp32">

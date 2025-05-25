@@ -9984,6 +9984,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/banner-flags@workspace:*, @suite-native/banner-flags@workspace:suite-native/banner-flags":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/banner-flags@workspace:suite-native/banner-flags"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/biometrics@workspace:*, @suite-native/biometrics@workspace:suite-native/biometrics":
   version: 0.0.0-use.local
   resolution: "@suite-native/biometrics@workspace:suite-native/biometrics"
@@ -10451,6 +10459,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/banner-flags": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
@@ -11048,6 +11057,7 @@ __metadata:
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
+    "@suite-native/banner-flags": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"

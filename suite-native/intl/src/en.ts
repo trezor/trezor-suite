@@ -1881,6 +1881,14 @@ export const en = {
             },
         },
     },
+    banner: {
+        stellarLimitedHistoryBanner: {
+            title: 'Transaction history limited to 12 months',
+            description:
+                'Only transactions from the past 12 months are available in this view. To explore older activity, use the blockchain explorer.',
+            confirmButton: 'Got it',
+        },
+    },
 };
 
 export type Translations = typeof en;

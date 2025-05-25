@@ -28,6 +28,7 @@
         {
             "path": "../../suite-common/walletconnect"
         },
+        { "path": "../banner-flags" },
         { "path": "../blockchain" },
         { "path": "../device" },
         { "path": "../device-authorization" },
