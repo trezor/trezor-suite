@@ -13,6 +13,10 @@ export const determinePassphraseFlowState = (
         windowType?: string;
     } = {},
 ) => {
+    const isLoading = !(
+        (!modalState.modalContextDevice || modalState.context === modalState.modalContextDevice) &&
+        modalState.windowType === UI.REQUEST_PASSPHRASE
+    );
     if (!discovery.isAddingHiddenWallet) {
         return null;
     }
@@ -39,11 +43,7 @@ export const determinePassphraseFlowState = (
                 isExisting: true,
                 screen: 'exists-enter-passphrase',
                 discovery,
-                loading: !(
-                    (!modalState.modalContextDevice ||
-                        modalState.context === modalState.modalContextDevice) &&
-                    modalState.windowType === UI.REQUEST_PASSPHRASE
-                ),
+                loading: isLoading,
             } as const;
         }
 
@@ -52,6 +52,7 @@ export const determinePassphraseFlowState = (
                 isExisting: true,
                 screen: 'exists-confirm-passphrase',
                 discovery,
+                loading: isLoading,
             } as const;
         }
 
@@ -77,10 +78,7 @@ export const determinePassphraseFlowState = (
             isExisting: false,
             screen: 'not-exist-enter-passphrase',
             discovery,
-            loading: !(
-                modalState.context === modalState.modalContextDevice &&
-                modalState.windowType === UI.REQUEST_PASSPHRASE
-            ),
+            loading: isLoading,
         } as const;
     }
 
@@ -89,6 +87,7 @@ export const determinePassphraseFlowState = (
             isExisting: false,
             screen: 'not-exist-confirm-passphrase',
             discovery,
+            loading: isLoading,
         } as const;
     }
 

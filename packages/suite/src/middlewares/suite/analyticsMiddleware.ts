@@ -78,6 +78,12 @@ const analyticsMiddleware =
         }
 
         switch (action.type) {
+            case deviceActions.addAuthorizedDevice.type:
+                analytics.report({
+                    type: EventType.SelectWalletType,
+                    payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
+                });
+                break;
             case SUITE.READY:
                 // reporting can start when analytics is properly initialized and enabled
                 // it is done async because some UAParser queries are async
