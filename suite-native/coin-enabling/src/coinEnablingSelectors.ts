@@ -7,15 +7,11 @@ import {
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { DiscoveryConfigSliceRootState } from '@suite-native/discovery';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
+import { SettingsSliceRootState, selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 export const selectShouldShowCoinEnablingInitFlow = (
-    state: DeviceRootState &
-        DiscoveryConfigSliceRootState &
-        FeatureFlagsRootState &
-        DiscoveryRootState,
+    state: DeviceRootState & FeatureFlagsRootState & DiscoveryRootState & SettingsSliceRootState,
 ) => {
     const device = selectSelectedDevice(state);
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);

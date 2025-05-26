@@ -1,3 +1,3 @@
 export { prepareDiscoveryMiddleware } from './discoveryMiddleware';
-export * from './discoveryConfigSlice';
+export * from './discoverySelectors';
 export * from './useIsDiscoveryDurationTooLong';
