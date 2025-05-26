@@ -23,7 +23,6 @@ const initialState: State = {
     selectedView: 'linear',
     error: null,
     isLoading: false,
-    // selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
 };
 
 const updateError = (draft: State) => {
