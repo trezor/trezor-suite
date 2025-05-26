@@ -1,6 +1,7 @@
 import {
     DeviceRootState,
-    selectIsDeviceConnectedAndAuthorized,
+    DiscoveryRootState,
+    selectDiscoveryForSelectedDevice,
     selectIsDeviceUnlocked,
     selectIsPortfolioTrackerDevice,
     selectIsUnacquiredDevice,
@@ -11,13 +12,20 @@ import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 export const selectShouldShowCoinEnablingInitFlow = (
-    state: DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState,
+    state: DeviceRootState &
+        DiscoveryConfigSliceRootState &
+        FeatureFlagsRootState &
+        DiscoveryRootState,
 ) => {
     const device = selectSelectedDevice(state);
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);
     const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
     const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(state);
-    const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(state);
+    const discovery = selectDiscoveryForSelectedDevice(state);
+
+    // NOTE: in this state, discovery threw error that no account is selected
+    const isAccountsDiscoveryEmpty =
+        discovery?.status === 'failed' && discovery.errorCode === 'Method_InvalidParameter';
     const isUnacquiredDevice = selectIsUnacquiredDevice(state);
 
     return (
@@ -25,7 +33,7 @@ export const selectShouldShowCoinEnablingInitFlow = (
         !!device?.connected &&
         isDeviceUnlocked &&
         !isPortfolioTrackerDevice &&
-        isDeviceConnectedAndAuthorized &&
+        isAccountsDiscoveryEmpty &&
         !isUnacquiredDevice
     );
 };
