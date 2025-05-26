@@ -1190,3 +1190,12 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
     token.name?.toLowerCase().includes(search) ||
     token.contract?.toLowerCase().includes(search);
+
+export const isAccountInCollection = (account: Account, accounts: Account[]) =>
+    accounts.some(
+        ({ deviceState, symbol, path, index }) =>
+            deviceState === account.deviceState && // check only the relevant wallet
+            path === account.path && // path is the main identificator, but not fully unique...
+            symbol === account.symbol && // ...because some eth-based networks share the same path
+            index === account.index,
+    );

@@ -13,7 +13,12 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
+import {
+    enhanceHistory,
+    isAccountInCollection,
+    isTestnet,
+    isUtxoBased,
+} from '@suite-common/wallet-utils';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
@@ -81,12 +86,12 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 remove(state, action.payload);
             })
             .addCase(accountsActions.createAccount, (state, action) => {
-                // TODO: check if account already exist, for example 2 device instances with same passphrase
                 const account = {
                     ...action.payload,
                     // remove "transactions" field, they are stored in "transactionReducer"
                     history: enhanceHistory(action.payload.history),
                 };
+                if (isAccountInCollection(account, state)) return; // duplicate account was detected
                 state.push(account);
             })
             .addCase(accountsActions.createIndexLabeledAccount, (state, action) => {
