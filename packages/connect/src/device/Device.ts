@@ -877,7 +877,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         let response = await this.getCurrentSession().typedCall(
             'ChangeLanguage',
-            ['TranslationDataRequest', 'Success'],
+            ['DataChunkRequest', 'Success'],
             { data_length: length },
         );
 
@@ -887,8 +887,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             const chunk = payload.slice(start, end);
 
             response = await this.getCurrentSession().typedCall(
-                'TranslationDataAck',
-                ['TranslationDataRequest', 'Success'],
+                'DataChunkAck',
+                ['DataChunkRequest', 'Success'],
                 {
                     data_chunk: Buffer.from(chunk).toString('hex'),
                 },

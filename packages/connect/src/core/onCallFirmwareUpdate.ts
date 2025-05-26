@@ -379,9 +379,9 @@ export const onCallFirmwareUpdate = async ({
         } else {
             let rebootResponse = await device.getCommands().typedCall(
                 'RebootToBootloader',
-                // TranslationDataRequest is returned when language_data_length is sent and supported
+                // DataChunkRequest is returned when language_data_length is sent and supported
                 // Once Success is returned, device is ready to receive FirmwareErase and FirmwareUpload commands
-                ['TranslationDataRequest', 'Success'],
+                ['DataChunkRequest', 'Success'],
                 { ...rebootParams, language_data_length: languageBlob?.byteLength },
             );
 
@@ -397,10 +397,10 @@ export const onCallFirmwareUpdate = async ({
                 const chunk = languageBlob.slice(start, end);
 
                 rebootResponse = await device.getCommands().typedCall(
-                    'TranslationDataAck',
-                    // TranslationDataRequest is returned when language_data_length is sent and supported
+                    'DataChunkAck',
+                    // DataChunkRequest is returned when language_data_length is sent and supported
                     // Once Success is returned, device is ready to receive FirmwareErase and FirmwareUpload commands
-                    ['TranslationDataRequest', 'Success'],
+                    ['DataChunkRequest', 'Success'],
                     { data_chunk: Buffer.from(chunk).toString('hex') },
                 );
             }
