@@ -1,6 +1,10 @@
 export const getRuntimeEnvironment = (): 'native' | 'desktop' | 'web' | undefined => {
-    // React Native
-    if (typeof window === 'undefined' && typeof navigator !== 'undefined') {
+    // React Native, product is deprecated but most reliable
+    if (
+        typeof window === 'undefined' &&
+        typeof navigator !== 'undefined' &&
+        navigator.product === 'ReactNative'
+    ) {
         return 'native';
     }
 
