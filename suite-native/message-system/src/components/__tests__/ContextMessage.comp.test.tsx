@@ -54,6 +54,11 @@ const stateWithTradeContextMessage = {
     },
 };
 
+jest.mock('@suite-common/message-system', () => ({
+    ...jest.requireActual('@suite-common/message-system'),
+    initMessageSystemThunk: async () => {},
+}));
+
 describe('ContextMessage', () => {
     const render = ({
         context,
@@ -69,6 +74,14 @@ describe('ContextMessage', () => {
             },
         );
 
+    it('should render content when there is message of given context', async () => {
+        const { queryByText } = await render({
+            context: Context.tradingBuy,
+            preloadedState: stateWithTradeContextMessage,
+        });
+        expect(queryByText(contentText)).toBeTruthy();
+    });
+
     it('should return null when there is no message fetched', async () => {
         const { queryByHintText } = await render({
             context: Context.tradingBuy,
@@ -82,13 +95,5 @@ describe('ContextMessage', () => {
             preloadedState: stateWithTradeContextMessage,
         });
         expect(queryByHintText(contextActionId)).toBeNull();
-    });
-
-    it('should render content when there is message of given context', async () => {
-        const { queryByText } = await render({
-            context: Context.tradingBuy,
-            preloadedState: stateWithTradeContextMessage,
-        });
-        expect(queryByText(contentText)).toBeTruthy();
     });
 });
