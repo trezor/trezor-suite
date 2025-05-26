@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { runAdditionalDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
+import { restartDiscoveryThunk } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
@@ -26,16 +26,14 @@ export const DiscoveryCoinsFilter = ({
     const dispatch = useDispatch();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
-    const selectedDevice = useSelector(selectSelectedDevice);
 
     useFocusEffect(
         useCallback(
             () =>
                 // run on leaving the screen
                 () =>
-                    selectedDevice?.state?.staticSessionId &&
-                    dispatch(runAdditionalDiscoveryThunk(selectedDevice.state.staticSessionId)),
-            [dispatch, selectedDevice],
+                    dispatch(restartDiscoveryThunk()),
+            [dispatch],
         ),
     );
 
