@@ -23,26 +23,6 @@ function getTimeout(): number {
     return process.env.GITHUB_ACTION ? CI_TIMEOUT : LOCAL_TIMEOUT;
 }
 
-function getReporter(): PlaywrightTestConfig['reporter'] {
-    // Release - Manual regression: Generate manual suite in GitHub, without currents involvement
-    if (process.env.RUN_REPORTER === 'manual') {
-        return [['./support/reporters/gitHubReporter.ts']];
-    }
-
-    // Local run
-    if (!process.env.GITHUB_ACTION) {
-        return [['list'], ['html', { open: 'never' }]];
-    }
-
-    // Release - Automated CI run: Report results both in Currents and GitHub
-    if (process.env.RUN_REPORTER === 'true') {
-        return [['@currents/playwright'], ['./support/reporters/gitHubReporter.ts']];
-    }
-
-    // Default run on CI: Report results only in Currents
-    return [['@currents/playwright']];
-}
-
 const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWorkerFixtures>({
     projects: [
         {
@@ -78,7 +58,10 @@ const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWork
         currentsFixturesEnabled: !!process.env.GITHUB_ACTION,
     },
     reportSlowTests: null,
-    reporter: getReporter(),
+    // GitHub Reporter for release is called thru CLI (workflows and package.json)
+    reporter: process.env.GITHUB_ACTION
+        ? [['@currents/playwright']] // CI run
+        : [['list'], ['html', { open: 'never' }]], // Local run
     timeout: getTimeout(),
     outputDir: path.join(__dirname, 'test-results'),
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',

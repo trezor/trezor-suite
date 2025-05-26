@@ -15,7 +15,7 @@ on:
   workflow_call:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: desktop-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -74,7 +74,7 @@ jobs:
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
         with:
-          project: "desktop:release"
+          project: "desktop"
           containers: "trezor-user-env-unix bitcoin-regtest"
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
