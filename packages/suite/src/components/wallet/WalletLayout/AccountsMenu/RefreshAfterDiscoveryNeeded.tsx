@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import {
     restartDiscoveryThunk,
-    selectIsDeviceDiscoveryActive,
+    selectHasRunningDiscovery,
     selectIsRediscoverNeeded,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -51,7 +51,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
         selectIsRediscoverNeeded(state, selectedDevice?.state?.staticSessionId),
     );
     const isSidebarCollapsed = useIsSidebarCollapsed();
-    const isDiscoveryInProgress = useSelector(selectIsDeviceDiscoveryActive);
+    const isDiscoveryInProgress = useSelector(selectHasRunningDiscovery);
     if (!selectedDevice?.connected) {
         return null;
     }

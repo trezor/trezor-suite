@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
 import {
     DeviceSettingsStackParamList,
@@ -28,7 +28,7 @@ export const DevicePinActionButton = ({
     type,
     colorScheme,
 }: DevicePinActionButtonProps) => {
-    const isDiscoveryRunning = useSelector(selectIsDeviceDiscoveryActive);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const navigation = useNavigation<NavigationProp>();
 
