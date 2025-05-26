@@ -166,7 +166,6 @@ export const useHandleDeviceConnection = () => {
                     );
                 },
             });
-            console.log('=== authorizeDeviceThunk ===== ');
 
             // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
             // post auth navigation is handled in @suite-native/module-passphrase for custom UX flow.

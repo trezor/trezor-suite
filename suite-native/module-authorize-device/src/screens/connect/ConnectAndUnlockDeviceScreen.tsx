@@ -1,5 +1,8 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+    // useDispatch,
+    useSelector,
+} from 'react-redux';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
@@ -20,7 +23,7 @@ export const ConnectAndUnlockDeviceScreen = ({
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice
 >) => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isFocused = useIsFocused();
@@ -40,13 +43,13 @@ export const ConnectAndUnlockDeviceScreen = ({
             // When selected device become connected, we need to navigate out of this screen.
             navigateBack();
         } else {
-            console.log(' == meow == authorize device thnk needs to be replaced here ');
+            console.warn(' == meow == authorize device thnk needs to be replaced here ');
             // If user cancelled the authorization, we need to authorize the device again.
             // requestPrioritizedDeviceAccess({
             //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
             // });
         }
-    }, [isDeviceAuthorized, isDeviceConnected, dispatch, isFocused, navigateBack]);
+    }, [isDeviceAuthorized, isDeviceConnected, isFocused, navigateBack]);
 
     return (
         <Screen

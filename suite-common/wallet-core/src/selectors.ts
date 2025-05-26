@@ -37,8 +37,6 @@ export const selectNetworksToDiscover = (
     const enabledNetworks = selectEnabledNetworks(state);
 
     if (!staticSessionId) {
-        console.log('staticSessionId is not defined, returning full');
-
         return enabledNetworks;
     }
     const device = selectSelectedDevice(state);

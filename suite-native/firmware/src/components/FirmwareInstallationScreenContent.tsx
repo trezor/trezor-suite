@@ -102,14 +102,14 @@ export const FirmwareInstallationScreenContent = ({
         };
     }, [dispatch, isTemporaryRememeberAllowed, resetReducer, setIsFirmwareInstallationRunning]);
 
-    const handleFirmwareUpdateFinished = useCallback(async () => {
-        console.log(
+    const handleFirmwareUpdateFinished = useCallback(() => {
+        console.warn(
             'FirmwareInstallationScreenContent: handleFirmwareUpdateFinished = authorize device thunk need to be replaced here',
         );
 
         setIsFirmwareInstallationRunning(false);
         onFirmwareInstallationSuccess();
-    }, [dispatch, onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
+    }, [onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
 
     const handleCancel = useCallback(() => {
         navigation.goBack();

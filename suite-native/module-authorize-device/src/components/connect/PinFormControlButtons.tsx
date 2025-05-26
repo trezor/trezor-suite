@@ -7,7 +7,7 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectDeviceAuthFailed } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -37,7 +37,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     const [containerHeight, setContainerHeight] = useState(0);
     const animatedHeight = useSharedValue(0);
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
 
     const openLink = useOpenLink();
@@ -77,8 +77,6 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
             ),
             onPressPrimaryButton: () => {
                 if (hasDeviceAuthFailed) {
-                    console.log(' ==== authorizeDeviceThunk needs to be replaced here  2====');
-
                     // Ask for new PIN entry after 3 wrong attempts.
                     // requestPrioritizedDeviceAccess({
                     //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
