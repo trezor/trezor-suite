@@ -55,7 +55,7 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
         | {
               status: 'failed';
               error?: string;
-              errorCode?: string | number;
+              errorCode?: 'Method_InvalidParameter' | (string & {});
           }
     );
 

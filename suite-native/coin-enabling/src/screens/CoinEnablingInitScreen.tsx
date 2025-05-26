@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
@@ -35,7 +36,12 @@ export const CoinEnablingInitScreen = () => {
         dispatch(setIsCoinEnablingInitFinished(true));
         if (enabledNetworkSymbols.length > 0) {
             dispatch(setIsCoinEnablingInitFinished(true));
-            // dispatch(applyDiscoveryChangesThunk());
+            dispatch(
+                startDiscoveryThunk({
+                    isAddingHiddenWallet: false,
+                }),
+            );
+
             analytics.report({
                 type: EventType.CoinEnablingInitState,
                 payload: { enabledNetworks: enabledNetworkSymbols },
