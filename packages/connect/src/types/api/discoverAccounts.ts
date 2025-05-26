@@ -50,6 +50,8 @@ export const ACCOUNT_TYPES = [
     { symbol: 'bch', type: 'normal', path: "m/44'/145'/i'" },
     { symbol: 'doge', type: 'normal', path: "m/44'/3'/i'" },
     { symbol: 'zec', type: 'normal', path: "m/44'/133'/i'" },
+    { symbol: 'xlm', type: 'normal', path: "m/44'/148'/i'" },
+    { symbol: 'txlm', type: 'normal', path: "m/44'/148'/i'" },
 ] as const;
 
 export const CARDANO_DERIVATIONS = {
