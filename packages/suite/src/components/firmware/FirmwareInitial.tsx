@@ -9,7 +9,7 @@ import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Note, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
-import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { DeviceModelInternal, getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
 import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
@@ -143,6 +143,13 @@ export const FirmwareInitial = ({
     if (!device?.connected || !device?.features) {
         return null;
     }
+
+    // This is essential for detecting potentially malicious devices,
+    // as the firmware revision check is a critical part of the verification process.
+    //
+    // See: https://github.com/trezor/trezor-suite/issues/19157
+    const isFirmwareInstallationMandatory =
+        device.features.internal_model === DeviceModelInternal.T1B1;
 
     // todo: move to utils device.ts
     const devicesConnected = devices.filter(device => device?.connected);
@@ -345,8 +352,9 @@ export const FirmwareInitial = ({
                 </FirmwareButtonsRow>
             ),
             outerActions:
-                device.firmware === 'outdated' && !standaloneFwUpdate ? (
-                    // Fw update is not mandatory, show skip button
+                device.firmware === 'outdated' &&
+                !standaloneFwUpdate &&
+                !isFirmwareInstallationMandatory ? (
                     <OnboardingButtonSkip
                         onClick={() => {
                             setShowSkipConfirmation(true);
