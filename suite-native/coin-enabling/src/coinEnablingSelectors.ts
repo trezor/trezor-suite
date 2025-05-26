@@ -25,7 +25,9 @@ export const selectShouldShowCoinEnablingInitFlow = (
 
     // NOTE: in this state, discovery threw error that no account is selected
     const isAccountsDiscoveryEmpty =
-        discovery?.status === 'failed' && discovery.errorCode === 'Method_InvalidParameter';
+        discovery?.status === 'failed' &&
+        discovery.errorCode === 'Method_InvalidParameter' &&
+        discovery.error?.match(/Parameter "accounts" is empty\./);
     const isUnacquiredDevice = selectIsUnacquiredDevice(state);
 
     return (
