@@ -15,13 +15,22 @@ type WipeDeviceModalProps = {
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { device, isLocked } = useDevice();
     const dispatch = useDispatch();
 
     const isBootloaderMode = isDeviceInBootloaderMode(device);
 
-    const handleWipeDevice = () => dispatch(wipeDevice());
+    const handleWipeDevice = async () => {
+        setIsLoading(true);
+        await dispatch(wipeDevice());
+        setIsLoading(false);
+    };
+    const handleCancel = () => {
+        setIsLoading(false);
+        onCancel();
+    };
 
     const headingTranslation = isBootloaderMode
         ? 'TR_DEVICE_SETTINGS_FACTORY_RESET'
@@ -29,7 +38,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
 
     return (
         <Modal
-            onCancel={onCancel}
+            onCancel={handleCancel}
             variant="destructive"
             iconName="shieldWarning"
             size="small"
@@ -38,12 +47,13 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                     <Modal.Button
                         variant="destructive"
                         onClick={handleWipeDevice}
+                        isLoading={isLoading}
                         isDisabled={isLocked() || !checkbox1 || !checkbox2}
                         data-testid="@wipe/wipe-button"
                     >
                         <Translation id={headingTranslation} />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button variant="tertiary" onClick={handleCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
