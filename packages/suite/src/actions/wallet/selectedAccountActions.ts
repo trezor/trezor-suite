@@ -22,7 +22,6 @@ import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
     const accounts = selectDeviceAccounts(state);
-
     // waiting for device
     if (!device) {
         return {
@@ -40,6 +39,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // waiting for discovery
     const discovery = selectDiscoveryForSelectedDevice(state);
+
     if (!device.state) {
         return {
             status: 'loading',
@@ -62,9 +62,8 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             ? state.router.params
             : {
                   accountIndex: 0,
-                  accountType: accounts[0]?.accountType || ('normal' as const),
+                  accountType: 'normal' as const,
                   symbol: accounts[0]?.symbol || 'btc',
-                  //   symbol: discovery.networks[0],
               };
 
     const network = networks[params.symbol];
@@ -98,7 +97,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // get selected account
     const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
-
     // account does exist
     if (account && account.visible) {
         if (account.backendType === 'coinjoin') {
