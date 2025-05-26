@@ -17,7 +17,7 @@ import {
 import {
     DiscoveryRootState,
     selectDiscoveryByDevicePath,
-    selectIsDeviceDiscoveryActive,
+    selectHasRunningDiscovery,
 } from './discovery/discoveryReducer';
 import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
 
@@ -80,7 +80,7 @@ export const selectAccountsToBeForgotten = (
 };
 
 export const selectIsDiscoveredDeviceAccountless = createMemoizedSelector(
-    [selectIsDeviceAccountless, selectIsDeviceDiscoveryActive],
+    [selectIsDeviceAccountless, selectHasRunningDiscovery],
     (isAccountless, isDiscoveryActive) => isAccountless && !isDiscoveryActive,
 );
 

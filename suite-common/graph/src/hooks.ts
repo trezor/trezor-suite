@@ -5,7 +5,7 @@ import { A } from '@mobily/ts-belt';
 import { roundToNearestMinutes, subHours } from 'date-fns';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectIsDeviceAuthorized, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';
 import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';
@@ -91,7 +91,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
     const [graphEvents, setGraphEvents] = useState<GroupedBalanceMovementEvent[]>();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const isDiscoveryActive = useSelector(selectHasRunningDiscovery);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const dispatch = useDispatch();
 

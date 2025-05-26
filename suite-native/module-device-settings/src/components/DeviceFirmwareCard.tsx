@@ -8,8 +8,8 @@ import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import {
     selectDeviceModel,
     selectDeviceReleaseInfo,
+    selectHasRunningDiscovery,
     selectIsDeviceBackedUp,
-    selectIsDeviceDiscoveryActive,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { CardWithIconLayout, HStack, InlineAlertBoxProps, Text, VStack } from '@suite-native/atoms';
@@ -56,7 +56,7 @@ export const DeviceFirmwareCard = () => {
     const deviceModel = useSelector(selectDeviceModel);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
-    const isDiscoveryRunning = useSelector(selectIsDeviceDiscoveryActive);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const navigation = useNavigation<NavigationProp>();
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
