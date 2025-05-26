@@ -4421,6 +4421,10 @@
                 "haptic_feedback": {
                     "type": "bool",
                     "id": 13
+                },
+                "homescreen_length": {
+                    "type": "uint32",
+                    "id": 14
                 }
             }
         },
@@ -4437,7 +4441,7 @@
                 }
             }
         },
-        "TranslationDataRequest": {
+        "DataChunkRequest": {
             "fields": {
                 "data_length": {
                     "rule": "required",
@@ -4451,7 +4455,7 @@
                 }
             }
         },
-        "TranslationDataAck": {
+        "DataChunkAck": {
             "fields": {
                 "data_chunk": {
                     "rule": "required",
@@ -6575,8 +6579,8 @@
                 "AuthenticateDevice": 97,
                 "AuthenticityProof": 98,
                 "ChangeLanguage": 990,
-                "TranslationDataRequest": 991,
-                "TranslationDataAck": 992,
+                "DataChunkRequest": 991,
+                "DataChunkAck": 992,
                 "SetBrightness": 993,
                 "SetU2FCounter": 63,
                 "GetNextU2FCounter": 80,

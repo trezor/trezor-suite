@@ -2299,6 +2299,7 @@ export const ApplySettings = Type.Object(
         experimental_features: Type.Optional(Type.Boolean()),
         hide_passphrase_from_host: Type.Optional(Type.Boolean()),
         haptic_feedback: Type.Optional(Type.Boolean()),
+        homescreen_length: Type.Optional(Type.Number()),
     },
     { $id: 'ApplySettings' },
 );
@@ -2312,21 +2313,21 @@ export const ChangeLanguage = Type.Object(
     { $id: 'ChangeLanguage' },
 );
 
-export type TranslationDataRequest = Static<typeof TranslationDataRequest>;
-export const TranslationDataRequest = Type.Object(
+export type DataChunkRequest = Static<typeof DataChunkRequest>;
+export const DataChunkRequest = Type.Object(
     {
         data_length: Type.Number(),
         data_offset: Type.Number(),
     },
-    { $id: 'TranslationDataRequest' },
+    { $id: 'DataChunkRequest' },
 );
 
-export type TranslationDataAck = Static<typeof TranslationDataAck>;
-export const TranslationDataAck = Type.Object(
+export type DataChunkAck = Static<typeof DataChunkAck>;
+export const DataChunkAck = Type.Object(
     {
         data_chunk: Type.String(),
     },
-    { $id: 'TranslationDataAck' },
+    { $id: 'DataChunkAck' },
 );
 
 export type ApplyFlags = Static<typeof ApplyFlags>;
@@ -3585,8 +3586,8 @@ export const MessageType = Type.Object(
         EndSession,
         ApplySettings,
         ChangeLanguage,
-        TranslationDataRequest,
-        TranslationDataAck,
+        DataChunkRequest,
+        DataChunkAck,
         ApplyFlags,
         ChangePin,
         ChangeWipeCode,

@@ -1525,6 +1525,7 @@ export type ApplySettings = {
     experimental_features?: boolean;
     hide_passphrase_from_host?: boolean;
     haptic_feedback?: boolean;
+    homescreen_length?: number;
 };
 
 export type ChangeLanguage = {
@@ -1532,12 +1533,12 @@ export type ChangeLanguage = {
     show_display?: boolean;
 };
 
-export type TranslationDataRequest = {
+export type DataChunkRequest = {
     data_length: number;
     data_offset: number;
 };
 
-export type TranslationDataAck = {
+export type DataChunkAck = {
     data_chunk: string;
 };
 
@@ -2381,8 +2382,8 @@ export type MessageType = {
     EndSession: EndSession;
     ApplySettings: ApplySettings;
     ChangeLanguage: ChangeLanguage;
-    TranslationDataRequest: TranslationDataRequest;
-    TranslationDataAck: TranslationDataAck;
+    DataChunkRequest: DataChunkRequest;
+    DataChunkAck: DataChunkAck;
     ApplyFlags: ApplyFlags;
     ChangePin: ChangePin;
     ChangeWipeCode: ChangeWipeCode;

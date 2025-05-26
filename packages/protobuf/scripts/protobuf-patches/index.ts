@@ -20,7 +20,6 @@ export const FIELD_TYPES = {
 // Types needs reordering (used before defined).
 // The Type in the Value NEEDs (depends on) the Type in the Key.
 export const ORDER = {
-    BinanceCoin: 'BinanceInputOutput',
     HDNodeType: 'HDNodePathType',
     TxAck: 'TxAckInputWrapper',
     EthereumFieldType: 'EthereumStructMember',
