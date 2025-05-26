@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { SwipeableWalkthroughStepHeader } from '../SwipeableWalkthrough/SwipeableWalkthroughStepHeader';
+import { OnboardingStepHeader } from '../OnboardingStepHeader';
 
 type WalletBackupRecapStepContentProps = {
     title?: ReactNode;
@@ -29,7 +29,7 @@ export const WalletBackupRecapStepContent = ({
             justifyContent="center"
             style={applyStyle(innerContainerStyle)}
         >
-            {children || <SwipeableWalkthroughStepHeader callout={callout} title={title} />}
+            {children || <OnboardingStepHeader callout={callout} title={title} />}
         </Box>
     );
 };

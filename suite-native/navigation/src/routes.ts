@@ -53,7 +53,8 @@ export enum DeviceOnboardingStackRoutes {
     WalletBackupRecap = 'WalletBackupRecap',
     WalletCreation = 'WalletCreation',
     WalletCreatedSuccess = 'WalletCreatedSuccess',
-    Recovery = 'Recovery',
+    RecoveryUnsupported = 'RecoveryUnsupported',
+    RecoveryInstructions = 'RecoveryInstructions',
     CreatePin = 'CreatePin',
 }
 

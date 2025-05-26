@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, CardWithIconLayout, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -9,7 +9,6 @@ import {
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
-import { SettingsCardWithIconLayout } from '@suite-native/settings';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     WipeDeviceStackParamList,
@@ -25,7 +24,7 @@ export const WipeDeviceCard = () => {
     };
 
     return (
-        <SettingsCardWithIconLayout
+        <CardWithIconLayout
             title={<Translation id="moduleDeviceSettings.wipeDevice.title" />}
             icon="arrowsClockwise"
         >
@@ -39,6 +38,6 @@ export const WipeDeviceCard = () => {
                     </Button>
                 </Box>
             </VStack>
-        </SettingsCardWithIconLayout>
+        </CardWithIconLayout>
     );
 };

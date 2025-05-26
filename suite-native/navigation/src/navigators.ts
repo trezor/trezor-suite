@@ -141,7 +141,8 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.WalletCreation]: {
         walletBackupType: BackupType;
     };
-    [DeviceOnboardingStackRoutes.Recovery]: undefined;
+    [DeviceOnboardingStackRoutes.RecoveryUnsupported]: undefined;
+    [DeviceOnboardingStackRoutes.RecoveryInstructions]: undefined;
     [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: undefined;
     [DeviceOnboardingStackRoutes.WalletBackupRecap]: undefined;
     [DeviceOnboardingStackRoutes.CreatePin]: undefined;

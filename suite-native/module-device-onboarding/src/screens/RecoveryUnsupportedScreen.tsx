@@ -18,11 +18,11 @@ import { SUITE_WEB_URL } from '@trezor/urls';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.Recovery,
+    DeviceOnboardingStackRoutes.RecoveryUnsupported,
     RootStackParamList
 >;
 
-export const RecoveryScreen = () => {
+export const RecoveryUnsupportedScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const openLink = useOpenLink();
 
@@ -40,22 +40,26 @@ export const RecoveryScreen = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader content="" />}>
+        <Screen header={<ScreenHeader />}>
             <Box marginTop="sp16">
                 <TitleHeader
                     titleVariant="titleMedium"
-                    title={<Translation id="moduleDeviceOnboarding.recovery.title" />}
-                    subtitle={<Translation id="moduleDeviceOnboarding.recovery.subtitle" />}
+                    title={
+                        <Translation id="moduleDeviceOnboarding.recoveryUnsupportedScreen.title" />
+                    }
+                    subtitle={
+                        <Translation id="moduleDeviceOnboarding.recoveryUnsupportedScreen.subtitle" />
+                    }
                     titleSpacing="sp12"
                 />
             </Box>
             <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp16" marginTop="sp32">
                     <IconListTextItem textVariant="highlight" iconSize="large" icon="browsers">
-                        <Translation id="moduleDeviceOnboarding.recovery.step1" />
+                        <Translation id="moduleDeviceOnboarding.recoveryUnsupportedScreen.step1" />
                     </IconListTextItem>
                     <IconListTextItem textVariant="highlight" iconSize="large" icon="trezorBackup">
-                        <Translation id="moduleDeviceOnboarding.recovery.step2" />
+                        <Translation id="moduleDeviceOnboarding.recoveryUnsupportedScreen.step2" />
                     </IconListTextItem>
                     <IconListTextItem
                         textVariant="highlight"
@@ -63,15 +67,15 @@ export const RecoveryScreen = () => {
                         variant="primary"
                         icon="checkCircle"
                     >
-                        <Translation id="moduleDeviceOnboarding.recovery.step3" />
+                        <Translation id="moduleDeviceOnboarding.recoveryUnsupportedScreen.step3" />
                     </IconListTextItem>
                 </VStack>
                 <VStack spacing="sp12">
                     <Button viewLeft="arrowSquareOut" onPress={redirectToWeb}>
-                        <Translation id="moduleDeviceOnboarding.recovery.redirectButton" />
+                        <Translation id="moduleDeviceOnboarding.recoveryUnsupportedScreen.redirectButton" />
                     </Button>
                     <Button colorScheme="tertiaryElevation0" onPress={redirectHome}>
-                        <Translation id="moduleDeviceOnboarding.recovery.laterButton" />
+                        <Translation id="moduleDeviceOnboarding.recoveryUnsupportedScreen.laterButton" />
                     </Button>
                 </VStack>
             </VStack>

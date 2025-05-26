@@ -1107,6 +1107,46 @@ export const en = {
         walletCreatedSuccessScreen: {
             successLabel: 'All good!',
         },
+        recoveryUnsupportedScreen: {
+            title: 'For recovery, continue to web application.',
+            subtitle:
+                'We’re currently working on allowing recovery in mobile app as soon as possible',
+            redirectButton: 'Continue to Trezor Suite Web',
+            laterButton: 'I’ll do it later',
+            step1: 'Go to Trezor Suite for Web using the button below.',
+            step2: 'Complete recovery in your browser.',
+            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
+        },
+        recoveryInstructionsScreen: {
+            callout: 'Recover assets',
+            title: 'Get your wallet backup',
+            description:
+                'Your wallet backup is one or more lists of words you wrote down when you first set up your previous hardware wallet.',
+            secondaryButton: 'I don’t have a wallet backup',
+            bottomSheet: {
+                title: 'I don’t have a wallet backup',
+                card1: {
+                    title: 'Can’t find your wallet backup?',
+                    paragraph1:
+                        'Check every place where you might have stored it—drawers, safes, books.',
+                    cta: 'Learn more',
+                },
+                card2: {
+                    title: 'Want to access your exchange account?',
+                    paragraph1:
+                        "You can't directly recover your exchange account on Trezor, but you can always transfer your assets to it.",
+
+                    paragraph2: 'To transfer:',
+                    bullets: {
+                        1: 'Set up your Trezor',
+                        2: 'Generate a receive address',
+                        3: 'Use the receive address to transfer funds from the exchange account to your Trezor',
+                    },
+
+                    cta: 'Set up my new Trezor',
+                },
+            },
+        },
 
         backupFailedModalScreen: {
             title: 'Your wallet backup failed.',

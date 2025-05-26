@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai';
 
 import { Box, Button, Card, CenteredTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
@@ -28,6 +29,10 @@ export const CreateOrRecoverCrossroadsScreen = ({
     const { applyStyle } = useNativeStyles();
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
+    const isDeviceOnboardingRecoveryEnabled = useFeatureFlag(
+        FeatureFlag.IsDeviceOnboardingRecoveryEnabled,
+    );
+
     const handleCreateButtonPress = () => {
         updateOnboardingAnalytics({
             seed: 'create',
@@ -39,7 +44,12 @@ export const CreateOrRecoverCrossroadsScreen = ({
         updateOnboardingAnalytics({
             seed: 'recovery',
         });
-        navigation.navigate(DeviceOnboardingStackRoutes.Recovery);
+
+        if (isDeviceOnboardingRecoveryEnabled) {
+            navigation.navigate(DeviceOnboardingStackRoutes.RecoveryInstructions);
+        } else {
+            navigation.navigate(DeviceOnboardingStackRoutes.RecoveryUnsupported);
+        }
     };
 
     return (

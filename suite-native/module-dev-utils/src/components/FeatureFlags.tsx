@@ -11,6 +11,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
+    [FeatureFlagEnum.IsDeviceOnboardingRecoveryEnabled]: 'Device onboarding - recovery',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
     [FeatureFlagEnum.IsWalletConnectEnabled]: 'WalletConnect',
     [FeatureFlagEnum.IsTradingBuyEnabled]: '💰 Trading Buy',

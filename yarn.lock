@@ -10146,6 +10146,7 @@ __metadata:
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -11014,9 +11015,6 @@ __metadata:
   resolution: "@suite-native/settings@workspace:suite-native/settings"
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
-    "@suite-native/atoms": "workspace:*"
-    "@suite-native/icons": "workspace:*"
-    "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
   languageName: unknown
   linkType: soft

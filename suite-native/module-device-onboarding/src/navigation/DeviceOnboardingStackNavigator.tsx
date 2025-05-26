@@ -15,7 +15,8 @@ import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySuccessScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
-import { RecoveryScreen } from '../screens/RecoveryScreen';
+import { RecoveryInstructionsScreen } from '../screens/RecoveryInstructionsScreen';
+import { RecoveryUnsupportedScreen } from '../screens/RecoveryUnsupportedScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
 import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
@@ -75,10 +76,7 @@ export const DeviceOnboardingStackNavigator = () => (
             name={DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads}
             component={CreateOrRecoverCrossroadsScreen}
         />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.Recovery}
-            component={RecoveryScreen}
-        />
+
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.CreateWalletLoading}
             component={CreateWalletLoadingScreen}
@@ -87,10 +85,7 @@ export const DeviceOnboardingStackNavigator = () => (
             name={DeviceOnboardingStackRoutes.WalletBackupTutorial}
             component={WalletBackupTutorialScreen}
         />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.CreatePin}
-            component={CreatePinScreen}
-        />
+
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.WalletCreation}
             component={WalletCreationScreen}
@@ -108,6 +103,18 @@ export const DeviceOnboardingStackNavigator = () => (
             options={{
                 animation: 'fade',
             }}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.RecoveryUnsupported}
+            component={RecoveryUnsupportedScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.RecoveryInstructions}
+            component={RecoveryInstructionsScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.CreatePin}
+            component={CreatePinScreen}
         />
     </DeviceOnboardingStack.Navigator>
 );
