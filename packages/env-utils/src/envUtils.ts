@@ -3,7 +3,8 @@ import { UAParser } from 'ua-parser-js';
 import { firmwareConfigPublicKey, publicKey } from './jws';
 import { EnvUtils, Environment, JWSPublicKeyUse } from './types';
 
-export const isWeb = () => process.env.SUITE_TYPE === 'web';
+export const isWeb = () =>
+    process.env.SUITE_TYPE === 'web' || process.env.SUITE_TYPE === 'suite-web';
 
 export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
 
