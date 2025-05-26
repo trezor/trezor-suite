@@ -3,7 +3,7 @@ import {
     PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
-    renderWithBasicProvider,
+    renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
 import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
@@ -25,7 +25,7 @@ describe('BuyFormFieldErrorBadge', () => {
         props: BuyFormFieldErrorBadgeProps,
         form: TradingBuyForm,
     ) =>
-        renderWithBasicProvider(
+        renderWithStoreProviderAsync(
             <Form form={form}>
                 <BuyFormFieldErrorBadge {...props} />
             </Form>,
@@ -35,20 +35,26 @@ describe('BuyFormFieldErrorBadge', () => {
         tradingForm = await renderUseTradingBuyForm();
     });
 
-    it('should render nothing where there is no error in form', () => {
-        const { toJSON } = renderBuyFormFieldErrorBadge({ fieldName: 'fiatValue' }, tradingForm);
+    it('should render nothing where there is no error in form', async () => {
+        const { toJSON } = await renderBuyFormFieldErrorBadge(
+            { fieldName: 'fiatValue' },
+            tradingForm,
+        );
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render error when field has error', () => {
+    it('should render error when field has error', async () => {
         act(() => {
             tradingForm.setError('fiatValue', {
                 type: 'manual',
                 message: 'Error message',
             });
         });
-        const { getByText } = renderBuyFormFieldErrorBadge({ fieldName: 'fiatValue' }, tradingForm);
+        const { getByText } = await renderBuyFormFieldErrorBadge(
+            { fieldName: 'fiatValue' },
+            tradingForm,
+        );
 
         expect(getByText('Error message')).toBeTruthy();
     });

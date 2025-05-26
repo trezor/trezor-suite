@@ -1575,6 +1575,7 @@ export const en = {
                 learnMore: 'Learn more',
             },
             balance: 'Balance:',
+            providerOffer: 'Provider offer: {amount}',
         },
         selectFiat: {
             title: 'You pay',
