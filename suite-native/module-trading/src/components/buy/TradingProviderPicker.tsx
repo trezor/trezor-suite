@@ -2,18 +2,15 @@ import { useSelector } from 'react-redux';
 
 import { BuyTrade } from 'invity-api';
 
-import {
-    TradingRootState,
-    selectBuyQuotesByPaymentMethod,
-    selectTradingBuyIsLoading,
-    selectTradingBuyProviders,
-} from '@suite-common/trading';
+import { selectTradingBuyIsLoading, selectTradingBuyProviders } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+import { selectBuyQuotesByPaymentMethodNative } from '../../selectors/buySelectors';
+import { TradingRootState } from '../../tradingSlice';
 import { ProvidersSheet } from '../general/ProviderSheet/ProvidersSheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSkeleton';
@@ -30,7 +27,7 @@ export const TradingProviderPicker = () => {
     const { paymentMethod, exchange: providerKey } = selectedValue ?? {};
     const quotes =
         useSelector((state: TradingRootState) =>
-            selectBuyQuotesByPaymentMethod(state, paymentMethod),
+            selectBuyQuotesByPaymentMethodNative(state, paymentMethod),
         ) ?? [];
 
     const handleProviderPress = () => {

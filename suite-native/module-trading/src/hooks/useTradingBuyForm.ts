@@ -9,7 +9,6 @@ import {
     getBestRatedQuote,
     invityAPI,
     selectTradingBuyQuotesRequest,
-    selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
@@ -23,6 +22,7 @@ import {
     selectBuyAmountLimits,
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
+    selectValidTradingBuyQuotesNative,
 } from '../selectors/buySelectors';
 import { setBuySelectedReceiveAccount } from '../tradingSlice';
 import { TradingBuyForm, TradingBuyFormValues } from '../types';
@@ -124,7 +124,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 };
 
 const useBuyQuotesChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
-    const quotes = useSelector(selectValidTradingBuyQuotes);
+    const quotes = useSelector(selectValidTradingBuyQuotesNative);
 
     useEffect(() => {
         if (quotes.length === 0) {
@@ -204,7 +204,7 @@ const useValidations = (
     limits: TradingAmountLimitProps | undefined,
 ) => {
     const { translate } = useTranslate();
-    const quotes = useSelector(selectValidTradingBuyQuotes);
+    const quotes = useSelector(selectValidTradingBuyQuotesNative);
     const quoteRequest = useSelector(selectTradingBuyQuotesRequest);
 
     const generalAlertMsg =

@@ -11,13 +11,13 @@ import {
     buyThunks,
     cryptoIdToNetwork,
     selectTradingBuyIsLoading,
-    selectTradingBuyQuotes,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { useDebounce } from '@trezor/react-utils';
 
+import { selectValidTradingBuyQuotesNative } from '../selectors/buySelectors';
 import { clearBuyState, clearQuotesAndQuotesRequest } from '../tradingSlice';
 import { TradingBuyForm } from '../types';
 import { useReloadTimer } from './useReloadTimer';
@@ -101,7 +101,7 @@ const useBuyQuotesInvalidator = (
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const dispatch = useDispatch();
-    const quotes = useSelector(selectTradingBuyQuotes);
+    const quotes = useSelector(selectValidTradingBuyQuotesNative);
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
     const shouldClearDebounceCallback = !isFormValid;
