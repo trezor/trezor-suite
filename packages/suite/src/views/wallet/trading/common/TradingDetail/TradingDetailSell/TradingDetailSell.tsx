@@ -97,12 +97,12 @@ export const TradingDetailSell = () => {
         <Wrapper>
             <Column gap={spacings.lg}>
                 <Card>
-                    {tradeStatusStep === 'success' && (
-                        <TradingDetailSellPaymentSuccessful account={account} />
+                    {tradeStatusStep === 'success' && sendAccount && (
+                        <TradingDetailSellPaymentSuccessful account={sendAccount} />
                     )}
-                    {tradeStatusStep === 'error' && (
+                    {tradeStatusStep === 'error' && sendAccount && (
                         <TradingDetailSellPaymentFailed
-                            account={account}
+                            account={sendAccount}
                             transactionId={trade.key}
                             supportUrl={supportUrl}
                         />
