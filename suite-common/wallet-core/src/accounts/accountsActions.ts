@@ -40,11 +40,6 @@ export type CreateAccountActionProps = {
     visible: boolean;
 };
 
-type CreateIndexLabeledAccountActionProps = Omit<
-    CreateAccountActionProps,
-    'imported' | 'accountLabel'
->;
-
 const composeCreateAccountActionPayload = ({
     deviceState,
     discoveryItem,
@@ -114,23 +109,6 @@ const composeCreateAccountActionPayload = ({
         throw new Error('Failed to create account payload');
     }
 };
-
-const createIndexLabeledAccount = createAction(
-    `${ACCOUNTS_MODULE_PREFIX}/createIndexLabeledAccount`,
-    ({
-        deviceState,
-        discoveryItem,
-        accountInfo,
-        visible,
-    }: CreateIndexLabeledAccountActionProps): { payload: Account } => ({
-        payload: composeCreateAccountActionPayload({
-            deviceState,
-            discoveryItem,
-            accountInfo,
-            visible,
-        }),
-    }),
-);
 
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
@@ -254,7 +232,6 @@ export const accountsActions = {
     removeAccount,
     createAccount,
     createAccountFromAccountInfo,
-    createIndexLabeledAccount,
     updateAccount,
     updateAccountRefreshTimestamp,
     renameAccount,

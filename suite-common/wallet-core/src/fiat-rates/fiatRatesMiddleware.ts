@@ -104,7 +104,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // Fetch fiat rates for all tokens of newly suite-native discovered account.
-        if (accountsActions.createIndexLabeledAccount.match(action)) {
+        if (accountsActions.createAccount.match(action)) {
             const localCurrency = selectLocalCurrency(getState());
 
             const { tokens = [], symbol } = action.payload;
