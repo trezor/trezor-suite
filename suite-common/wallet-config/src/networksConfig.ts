@@ -342,7 +342,6 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'stellar',
         tradeCryptoId: 'stellar',
-        isDebugOnlyNetwork: true,
     },
     ltc: {
         symbol: 'ltc',
@@ -602,7 +601,6 @@ export const networks = {
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: undefined,
-        isDebugOnlyNetwork: true,
     },
 } as const satisfies Networks;
 

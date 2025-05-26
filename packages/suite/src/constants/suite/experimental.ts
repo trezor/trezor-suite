@@ -11,7 +11,8 @@ export type ExperimentalFeature =
     | 'tor-external'
     | 'nft-section'
     | 'trezor-connect-ws'
-    | 'walletconnect';
+    | 'walletconnect'
+    | 'stellar-support';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -60,5 +61,9 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         title: 'TR_WALLETCONNECT',
         description: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
         isDisabled: () => !isDesktop(),
+    },
+    'stellar-support': {
+        title: 'TR_EXPERIMENTAL_STELLAR_SUPPORT',
+        description: 'TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION',
     },
 };

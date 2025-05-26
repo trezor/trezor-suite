@@ -1,19 +1,27 @@
-import { Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
+import { Network, getMainnets, getNetworkType, getTestnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import {
+    selectHasExperimentalFeature,
+    selectIsDebugModeActive,
+} from 'src/reducers/suite/suiteReducer';
 
 export const useNetworkSupport = () => {
     const device = useSelector(selectSelectedDevice);
     const isDebug = useSelector(selectIsDebugModeActive);
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const isStellarSupportEnabled = useSelector(selectHasExperimentalFeature('stellar-support'));
 
-    const mainnets = getMainnets(isDebug);
+    const mainnets = getMainnets(isDebug).filter(
+        network => isStellarSupportEnabled || network.networkType !== 'stellar',
+    );
 
-    const testnets = getTestnets(isDebug);
+    const testnets = getTestnets(isDebug).filter(
+        network => isStellarSupportEnabled || getNetworkType(network.symbol) !== 'stellar',
+    );
 
     const isNetworkSupported = (network: Network) =>
         deviceSupportedNetworkSymbols.includes(network.symbol);
