@@ -190,6 +190,7 @@ describe('buildTradingUrl', () => {
                 actionType: 'quote',
                 tradeType: 'buy',
                 orderId: '1234',
+                exchange: 'paybis',
             }),
         ).toBe('trezorsuitelite://trading?action=quote&tradeType=buy&orderId=1234');
     });

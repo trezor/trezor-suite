@@ -13,7 +13,7 @@ import { TradingTradeStatusType, TradingTransaction, TradingType } from '@suite-
 import { useTranslate } from '@suite-native/intl';
 import { getWeakRandomId } from '@trezor/utils';
 
-import { TRADING_URL_DEFAULT_BACK } from './tradeFormUtils';
+import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from './tradeFormUtils';
 
 export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
     buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
@@ -157,7 +157,9 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
 };
 
 export const doesUrlContainCloseCallbackUrl = (url: string, closeCallbackUrl: string) =>
-    url.includes(closeCallbackUrl) || url.includes(TRADING_URL_DEFAULT_BACK);
+    url.includes(closeCallbackUrl) ||
+    url.includes(TRADING_URL_DEFAULT_BACK) ||
+    url.includes(INVITY_CALLBACK_TREZOR_BUY_URL);
 
 export const getRandomAccountDescriptor = () => getWeakRandomId(20);
 
