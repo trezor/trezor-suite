@@ -14,3 +14,4 @@ export { SignValueFormatter } from './components/SignValueFormatter';
 export { FeeFormatter } from './components/FeeFormatter';
 export { useFiatFromCryptoValue } from './hooks/useFiatFromCryptoValue';
 export { useCryptoFiatConverters } from './hooks/useCryptoFiatConverters';
+export { useFormattersConfig } from './hooks/useFormattersConfig';

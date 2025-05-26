@@ -8,6 +8,7 @@ import {
     waitFor,
 } from '@testing-library/react-native';
 
+import { FormatterProviderConfig } from '@suite-common/formatters';
 import { PreloadedState } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
@@ -15,8 +16,21 @@ import { STORE_WARMING_UP_MSG, StoreProviderForTests, TestStore } from './StoreP
 
 export const renderWithBasicProvider = <Props,>(
     element: ReactElement<Props>,
-    options: Omit<RenderOptions, 'wrapper'> = {},
-) => render(element, { wrapper: BasicProviderForTests, ...options });
+    {
+        formattersConfig,
+        ...options
+    }: Omit<RenderOptions, 'wrapper'> & {
+        formattersConfig?: FormatterProviderConfig;
+    } = {},
+) =>
+    render(element, {
+        wrapper: ({ children }) => (
+            <BasicProviderForTests formattersConfig={formattersConfig}>
+                {children}
+            </BasicProviderForTests>
+        ),
+        ...options,
+    });
 
 export const renderWithStoreProviderAsync = async <Props,>(
     element: ReactElement<Props>,
@@ -45,8 +59,21 @@ export const renderWithStoreProviderAsync = async <Props,>(
 
 export const renderHookWithBasicProvider = <Result, Props>(
     callback: (props: Props) => Result,
-    options: Omit<RenderHookOptions<Props>, 'wrapper'> = {},
-) => renderHook(callback, { wrapper: BasicProviderForTests, ...options });
+    {
+        formattersConfig,
+        ...options
+    }: Omit<RenderHookOptions<Props>, 'wrapper'> & {
+        formattersConfig?: FormatterProviderConfig;
+    } = {},
+) =>
+    renderHook(callback, {
+        wrapper: ({ children }) => (
+            <BasicProviderForTests formattersConfig={formattersConfig}>
+                {children}
+            </BasicProviderForTests>
+        ),
+        ...options,
+    });
 
 export const renderHookWithStoreProviderAsync = async <Result, Props>(
     callback: (props: Props) => Result,

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 import { EnhancedStore } from '@reduxjs/toolkit';
 
+import { useFormattersConfig } from '@suite-native/formatters';
 import { PreloadedState, initStore } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
@@ -17,6 +18,16 @@ type ReduxProviderProps = {
 };
 
 export const STORE_WARMING_UP_MSG = 'Store is warming up...';
+
+const BasicProviderWithFormattingConfig = ({ children }: { children: ReactNode }) => {
+    const formattersConfig = useFormattersConfig();
+
+    return (
+        <BasicProviderForTests formattersConfig={formattersConfig}>
+            {children}
+        </BasicProviderForTests>
+    );
+};
 
 /*
 This file is a copy of `StoreProvider.tsx` from `suite-native/state` but with ability
@@ -50,7 +61,7 @@ export const StoreProviderForTests = ({
 
     return (
         <Provider store={store}>
-            <BasicProviderForTests>{children}</BasicProviderForTests>
+            <BasicProviderWithFormattingConfig>{children}</BasicProviderWithFormattingConfig>
         </Provider>
     );
 };

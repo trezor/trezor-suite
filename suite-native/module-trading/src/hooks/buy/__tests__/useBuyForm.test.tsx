@@ -550,34 +550,39 @@ describe('useBuyForm', () => {
         });
 
         it.each([
-            ['10', 'Minimum is 1000 BTC'],
-            ['3000', 'Maximum is 2000 BTC'],
-        ])('should display crypto error for amount %s', async (amount, expectedValue) => {
-            const store = await getInitializedStore(true);
-            store.dispatch(
-                tradingBuyActions.setAmountLimits({
-                    minCrypto: '1000',
-                    maxCrypto: '2000',
-                    currency: 'BTC',
-                }),
-            );
-            const { result } = await renderUseTradingBuyForm(store);
+            ['10', false, 'Minimum is 1000 BTC'],
+            ['3000', false, 'Maximum is 2000 BTC'],
+            ['10', true, 'Minimum is 100000000000 sat'],
+            ['3000', true, 'Maximum is 200000000000 sat'],
+        ])(
+            'should display crypto error for amount %s',
+            async (amount, amountInSats, expectedValue) => {
+                const store = await getInitializedStore(amountInSats);
+                store.dispatch(
+                    tradingBuyActions.setAmountLimits({
+                        minCrypto: '1000',
+                        maxCrypto: '2000',
+                        currency: 'BTC',
+                    }),
+                );
+                const { result } = await renderUseTradingBuyForm(store);
 
-            act(() => {
-                result.current.setValue('amountInCrypto', true);
-                result.current.setValue('asset', btcAsset);
-            });
-            act(() => {
-                result.current.setValue('cryptoValue', amount);
-            });
+                act(() => {
+                    result.current.setValue('amountInCrypto', true);
+                    result.current.setValue('asset', btcAsset);
+                });
+                act(() => {
+                    result.current.setValue('cryptoValue', amount);
+                });
 
-            await act(() => result.current.trigger('cryptoValue'));
+                await act(() => result.current.trigger('cryptoValue'));
 
-            const { error, invalid } = result.current.getFieldState('cryptoValue');
+                const { error, invalid } = result.current.getFieldState('cryptoValue');
 
-            expect(invalid).toBe(true);
-            expect(error).toEqual(expect.objectContaining({ message: expectedValue }));
-        });
+                expect(invalid).toBe(true);
+                expect(error).toEqual(expect.objectContaining({ message: expectedValue }));
+            },
+        );
 
         it('should trigger validation once limits are loaded', async () => {
             const store = await getInitializedStore(true);

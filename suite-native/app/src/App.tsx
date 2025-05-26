@@ -10,6 +10,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
 import { configureNetInfo } from '@suite-native/connection-status';
+import { useFormattersConfig } from '@suite-native/formatters';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
@@ -19,7 +20,6 @@ import { StoreProvider, selectIsAppReady, selectIsConnectInitialized } from '@su
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
 import { StylesProvider } from './StylesProvider';
-import { useFormattersConfig } from './hooks/useFormattersConfig';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
 import { applicationInit } from './initActions';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
