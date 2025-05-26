@@ -6,14 +6,8 @@
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-types"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
-        { "path": "../alerts" },
-        { "path": "../analytics" },
-        { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" }
     ]

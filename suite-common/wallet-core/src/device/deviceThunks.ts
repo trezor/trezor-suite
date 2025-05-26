@@ -443,9 +443,7 @@ export const onPassphraseSubmit = createThunk(
         { value, passphraseOnDevice }: { value: string; passphraseOnDevice: boolean },
         { dispatch, getState },
     ) => {
-        console.log('onPassphraseSubmit', value, passphraseOnDevice);
         const device = selectSelectedDevice(getState());
-        console.log('device', device);
         if (!device) return;
 
         if (!device.state) {

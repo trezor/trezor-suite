@@ -172,7 +172,6 @@ export const connectInitThunk = createThunk<
         : DATA_URL;
 
     const { transports, showConnectLogs } = selectDebugSettings(getState());
-    if (1 < 0) console.log(showConnectLogs); // TODO delet this, just to pass typescript
     try {
         await TrezorConnect.init({
             ...connectInitSettings,
@@ -180,7 +179,7 @@ export const connectInitThunk = createThunk<
             pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             transports,
             _sessionsBackgroundUrl,
-            debug: false,
+            debug: showConnectLogs,
         });
     } catch (error) {
         let formattedError: string;

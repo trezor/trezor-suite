@@ -37,7 +37,9 @@ import {
 } from '../selectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
-// todo:
+const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
+const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
+const EXPECTED_CANCELLATION_CODES = [USER_UI_CANCEL_CODE, ...DEVICE_CANCELLATION_CODES];
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
 type ProgressOkEvent = BundleProgress<DiscoverAccountsProgressOk>['payload'];
@@ -65,6 +67,38 @@ function assertStaticSessionId(
         throw new Error('assertion error: device state does not contain static session id');
     }
 }
+
+const canDiscoveryContinue = (discovery?: DiscoveryStatus) => {
+    if (!discovery) {
+        console.warn('no discovery found, stopping');
+
+        return false;
+    }
+
+    if (!isDiscoveryInProgress(discovery)) {
+        console.warn('discovery not in progress, stopping');
+
+        return false;
+    }
+
+    return true;
+};
+
+/**
+ * If metadata are enabled in settings but metadata master key does not exist for this device state,
+ * try to generate device metadata master key
+ */
+const initNewDeviceStateMetadataThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/initNewDeviceStateMetadataThunk`,
+    (staticSessionId: StaticSessionId, { getState, dispatch, extra }) => {
+        const isMetadataEnabled = extra.selectors.selectMetadata(getState()).enabled;
+        const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
+        const metadataPresentOnDevice = device?.metadata[1];
+        if (isMetadataEnabled && !metadataPresentOnDevice) {
+            dispatch(extra.thunks.initMetadata(false));
+        }
+    },
+);
 
 const applyDeviceStatesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
@@ -129,202 +163,11 @@ const applyDeviceStatesThunk = createThunk(
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
             }
 
-            const staticSessionId = newDeviceState.staticSessionId;
-            dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
+            const { staticSessionId } = newDeviceState;
+            await dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
         } catch (error) {
             console.warn('applyDeviceStatesThunk error', error);
         }
-    },
-);
-
-/**
- * If metadata are enabled in settings but metadata master key does not exist for this device state,
- * try to generate device metadata master key
- */
-const initNewDeviceStateMetadataThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/initNewDeviceStateMetadataThunk`,
-    (staticSessionId: StaticSessionId, { getState, dispatch, extra }) => {
-        const isMetadataEnabled = extra.selectors.selectMetadata(getState()).enabled;
-        const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
-        const metadataPresentOnDevice = device?.metadata[1];
-        if (isMetadataEnabled && !metadataPresentOnDevice) {
-            dispatch(extra.thunks.initMetadata(false));
-        }
-    },
-);
-
-const completeDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/complete`,
-    (
-        {
-            staticSessionId,
-            devicePath,
-        }: {
-            staticSessionId: StaticSessionId;
-            devicePath: DeviceUniquePath;
-        },
-        { dispatch, extra },
-    ) => {
-        dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'complete',
-                },
-                devicePath,
-            ),
-        );
-
-        dispatch(extra.thunks.fetchAndSaveMetadata(staticSessionId));
-    },
-);
-
-export const startDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/start`,
-    (
-        {
-            device,
-            isAddingHiddenWallet,
-            isAddingExistingWallet,
-        }: {
-            device?: TrezorDevice;
-            isAddingHiddenWallet?: boolean;
-            isAddingExistingWallet?: boolean;
-        },
-        { dispatch, getState },
-    ): void => {
-        const selectedDevice = selectSelectedDevice(getState());
-
-        const actualDevice = device ?? selectedDevice;
-
-        if (!actualDevice) {
-            console.warn('startDiscoveryThunk: no device found');
-
-            return;
-        }
-
-        const currentDiscovery = selectDiscoveryByDevicePath(getState(), actualDevice.path);
-
-        if (isDiscoveryInProgress(currentDiscovery)) {
-            console.warn(
-                'startDiscoveryThunk: discovery already in progress, cancelling start call',
-            );
-
-            return;
-        }
-
-        dispatch(
-            discoveryActions.startDiscovery(
-                actualDevice.path,
-                isAddingHiddenWallet,
-                isAddingExistingWallet,
-            ),
-        );
-
-        // NOTE: run the discovery only if
-        // - we are adding a standard wallet,
-        // - or adding an existing hidden wallet,
-        // -
-        if (!isAddingHiddenWallet || (isAddingHiddenWallet && isAddingExistingWallet)) {
-            dispatch(runDiscoveryThunk(actualDevice));
-        }
-    },
-);
-
-const canDiscoveryContinue = (discovery?: DiscoveryStatus) => {
-    if (!discovery) {
-        console.warn('no discovery found, stopping');
-
-        return false;
-    }
-
-    if (!isDiscoveryInProgress(discovery)) {
-        console.warn('discovery not in progress, stopping');
-
-        return false;
-    }
-
-    return true;
-};
-
-const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
-const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
-const EXPECTED_CANCELLATION_CODES = [USER_UI_CANCEL_CODE, ...DEVICE_CANCELLATION_CODES];
-
-export const runAdditionalDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
-        // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
-        // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
-
-        const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
-
-        assertDeviceIsAuthorized(device);
-
-        const accountsToRemove = selectAccountsToBeForgotten(getState());
-        if (accountsToRemove.length > 0) {
-            dispatch(accountsActions.removeAccount(accountsToRemove));
-        }
-
-        const isRediscoverNeeded = selectIsRediscoverNeeded(
-            getState(),
-            device.state.staticSessionId,
-        );
-
-        if (!isRediscoverNeeded) {
-            console.warn('no rediscovery needed');
-
-            return;
-        }
-        dispatch(discoveryActions.startDiscovery(device.path, false, false));
-
-        const onBundleProgress = createOnBundleProgressHandler(
-            device.path,
-            device.state.staticSessionId,
-            dispatch,
-            getState,
-        );
-
-        const networksToDiscover = selectNetworksToDiscover(
-            getState(),
-            device.state.staticSessionId,
-        );
-
-        if (networksToDiscover.length === 0) {
-            console.warn('no networks to discover');
-
-            return;
-        }
-
-        TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
-
-        const result = await TrezorConnect.discoverAccounts({
-            device,
-            useEmptyPassphrase: device.useEmptyPassphrase,
-            accounts: networksToDiscover.map(n => ({
-                symbol: n,
-            })),
-        });
-
-        console.log('runAdditionalDiscovery: TrezorConnect.getAccountInfo, result: ', result);
-
-        TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
-
-        if (!result.success) {
-            dispatch(
-                discoveryActions.updateDiscovery(
-                    {
-                        status: 'failed',
-                        error: result.payload.error,
-                        errorCode: result.payload.code,
-                    },
-                    device.path,
-                ),
-            );
-
-            return;
-        }
-
-        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
     },
 );
 
@@ -358,7 +201,7 @@ const createOnBundleProgressHandler = (
     };
 
     return (event: ProgressEvent) => {
-        console.log('bundle progress handler', event);
+        console.warn('bundle progress handler', event);
         const discovery = selectDiscoveryByDevicePath(getState(), devicePath);
         if (!discovery) {
             console.warn('bundle progress handler: no discovery found');
@@ -434,10 +277,36 @@ const createOnBundleProgressHandler = (
     };
 };
 
+const completeDiscoveryThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/complete`,
+    (
+        {
+            staticSessionId,
+            devicePath,
+        }: {
+            staticSessionId: StaticSessionId;
+            devicePath: DeviceUniquePath;
+        },
+        { dispatch, extra },
+    ) => {
+        dispatch(
+            discoveryActions.updateDiscovery(
+                {
+                    status: 'complete',
+                },
+                devicePath,
+            ),
+        );
+
+        dispatch(extra.thunks.fetchAndSaveMetadata(staticSessionId));
+    },
+);
+
 export const runDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (passedDevice: TrezorDevice, { dispatch, getState }): Promise<void> => {
         try {
+            // eslint-disable-next-line no-console
             console.time('runDiscovery start');
             let device = passedDevice;
 
@@ -471,7 +340,7 @@ export const runDiscoveryThunk = createThunk(
                     use_passphrase: true,
                 });
 
-                console.log('TrezorConnect.applySettings', response);
+                console.warn('TrezorConnect.applySettings', response);
 
                 if (!response.success) {
                     dispatch(
@@ -511,7 +380,7 @@ export const runDiscoveryThunk = createThunk(
                 useEmptyPassphrase: !isAddingHiddenWallet,
             });
 
-            console.log('deviceStateResponse', deviceStateResponse);
+            console.warn('deviceStateResponse', deviceStateResponse);
 
             if (!canDiscoveryContinue(selectDiscoveryByDevicePath(getState(), device.path))) {
                 console.warn('no discovery found, stopping');
@@ -521,9 +390,9 @@ export const runDiscoveryThunk = createThunk(
 
             if (!deviceStateResponse.success) {
                 const { error, code } = deviceStateResponse.payload;
-                console.log('==========');
-                console.log('error', error);
-                console.log('code', code);
+                console.warn('==========');
+                console.warn('error', error);
+                console.warn('code', code);
 
                 if (USER_UI_CANCEL_CODE === error) {
                     // NOTE: the discovery must be in cancelled state here
@@ -601,7 +470,7 @@ export const runDiscoveryThunk = createThunk(
 
             const enabledNetworks = selectEnabledNetworks(getState());
             const discoveryAccountsPayload = enabledNetworks.map(n => ({ symbol: n }));
-            console.log('discoveryAccountsPayload', discoveryAccountsPayload);
+            console.warn('discoveryAccountsPayload', discoveryAccountsPayload);
 
             if (!discoveryAccountsPayload.length) {
                 console.warn('no networks to discover, todo: stop discovery');
@@ -618,7 +487,7 @@ export const runDiscoveryThunk = createThunk(
                 useEmptyPassphrase: !isAddingHiddenWallet,
                 accounts: discoveryAccountsPayload,
             });
-            console.log('startDiscoveryThunk: TrezorConnect.getAccountInfo, result: ', result);
+            console.warn('startDiscoveryThunk: TrezorConnect.getAccountInfo, result: ', result);
 
             TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 
@@ -646,7 +515,7 @@ export const runDiscoveryThunk = createThunk(
             assertStaticSessionId(deviceStateResponse.payload._state);
 
             if (!isAddingHiddenWallet) {
-                console.log('startDiscoveryThunk: adding standard wallet, ending here');
+                console.warn('startDiscoveryThunk: adding standard wallet, ending here');
 
                 dispatch(
                     completeDiscoveryThunk({
@@ -695,7 +564,7 @@ export const runDiscoveryThunk = createThunk(
 
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
-            console.log('allAccountsEmpty', allAccountsEmpty);
+            console.warn('allAccountsEmpty', allAccountsEmpty);
 
             if (!allAccountsEmpty) {
                 await dispatch(
@@ -713,7 +582,7 @@ export const runDiscoveryThunk = createThunk(
                     }),
                 );
 
-                console.log(
+                console.warn(
                     'startDiscoveryThunk: passphrase discovery -> passphrase is not empty, finished',
                 );
 
@@ -741,7 +610,7 @@ export const runDiscoveryThunk = createThunk(
                     device.path,
                 ),
             );
-            console.log('GET DEVICE STATE 2: SENDING INSTANCE NUMBER', instance);
+            console.warn('GET DEVICE STATE 2: SENDING INSTANCE NUMBER', instance);
 
             const getDeviceState2Res = await TrezorConnect.getDeviceState({
                 device: {
@@ -751,7 +620,7 @@ export const runDiscoveryThunk = createThunk(
                 },
                 useEmptyPassphrase: false,
             });
-            console.log('getDeviceState2Res', getDeviceState2Res);
+            console.warn('getDeviceState2Res', getDeviceState2Res);
 
             if (!canDiscoveryContinue(selectDiscoveryByDevicePath(getState(), device.path))) {
                 console.warn('no discovery found, stopping');
@@ -853,8 +722,139 @@ export const runDiscoveryThunk = createThunk(
             // todo: cleanup, probably set discovery to failed
             console.warn('runDiscovery error', error);
         } finally {
+            // eslint-disable-next-line no-console
             console.timeEnd('runDiscovery start');
         }
+    },
+);
+
+export const startDiscoveryThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/start`,
+    (
+        {
+            device,
+            isAddingHiddenWallet,
+            isAddingExistingWallet,
+        }: {
+            device?: TrezorDevice;
+            isAddingHiddenWallet?: boolean;
+            isAddingExistingWallet?: boolean;
+        },
+        { dispatch, getState },
+    ): void => {
+        const selectedDevice = selectSelectedDevice(getState());
+
+        const actualDevice = device ?? selectedDevice;
+
+        if (!actualDevice) {
+            console.warn('startDiscoveryThunk: no device found');
+
+            return;
+        }
+
+        const currentDiscovery = selectDiscoveryByDevicePath(getState(), actualDevice.path);
+
+        if (isDiscoveryInProgress(currentDiscovery)) {
+            console.warn(
+                'startDiscoveryThunk: discovery already in progress, cancelling start call',
+            );
+
+            return;
+        }
+
+        dispatch(
+            discoveryActions.startDiscovery(
+                actualDevice.path,
+                isAddingHiddenWallet,
+                isAddingExistingWallet,
+            ),
+        );
+
+        // NOTE: run the discovery only if
+        // - we are adding a standard wallet,
+        // - or adding an existing hidden wallet,
+        // -
+        if (!isAddingHiddenWallet || (isAddingHiddenWallet && isAddingExistingWallet)) {
+            dispatch(runDiscoveryThunk(actualDevice));
+        }
+    },
+);
+
+export const runAdditionalDiscoveryThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
+    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
+        // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
+        // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
+
+        const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
+
+        assertDeviceIsAuthorized(device);
+
+        const accountsToRemove = selectAccountsToBeForgotten(getState());
+        if (accountsToRemove.length > 0) {
+            dispatch(accountsActions.removeAccount(accountsToRemove));
+        }
+
+        const isRediscoverNeeded = selectIsRediscoverNeeded(
+            getState(),
+            device.state.staticSessionId,
+        );
+
+        if (!isRediscoverNeeded) {
+            console.warn('no rediscovery needed');
+
+            return;
+        }
+        dispatch(discoveryActions.startDiscovery(device.path, false, false));
+
+        const onBundleProgress = createOnBundleProgressHandler(
+            device.path,
+            device.state.staticSessionId,
+            dispatch,
+            getState,
+        );
+
+        const networksToDiscover = selectNetworksToDiscover(
+            getState(),
+            device.state.staticSessionId,
+        );
+
+        if (networksToDiscover.length === 0) {
+            console.warn('no networks to discover');
+
+            return;
+        }
+
+        TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
+
+        const result = await TrezorConnect.discoverAccounts({
+            device,
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            accounts: networksToDiscover.map(n => ({
+                symbol: n,
+            })),
+        });
+
+        console.warn('runAdditionalDiscovery: TrezorConnect.getAccountInfo, result: ', result);
+
+        TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
+
+        if (!result.success) {
+            dispatch(
+                discoveryActions.updateDiscovery(
+                    {
+                        status: 'failed',
+                        error: result.payload.error,
+                        errorCode: result.payload.code,
+                    },
+                    device.path,
+                ),
+            );
+
+            return;
+        }
+
+        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
     },
 );
 
