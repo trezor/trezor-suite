@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
-import { Bip43Path } from '@suite-common/wallet-config';
+import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
 import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
 import TrezorConnect, {
     BundleProgress,
@@ -90,12 +90,12 @@ const canDiscoveryContinue = (discovery?: DiscoveryStatus) => {
  */
 const initNewDeviceStateMetadataThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/initNewDeviceStateMetadataThunk`,
-    (staticSessionId: StaticSessionId, { getState, dispatch, extra }) => {
+    async (staticSessionId: StaticSessionId, { getState, dispatch, extra }) => {
         const isMetadataEnabled = extra.selectors.selectMetadata(getState()).enabled;
         const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
         const metadataPresentOnDevice = device?.metadata[1];
         if (isMetadataEnabled && !metadataPresentOnDevice) {
-            dispatch(extra.thunks.initMetadata(false));
+            await dispatch(extra.thunks.initMetadata(false));
         }
     },
 );
@@ -185,6 +185,7 @@ const createOnBundleProgressHandler = (
         event: ProgressOkEvent,
     ): CreateAccountActionProps => {
         const { response } = event;
+        const backendType = response.backendType as TrezorConnectBackendType | undefined;
 
         return {
             deviceState: deviceStaticSessionId,
@@ -193,7 +194,7 @@ const createOnBundleProgressHandler = (
                 coin: response.symbol,
                 index: response.index,
                 accountType: response.type,
-                backendType: response.backendType,
+                backendType,
             },
             accountInfo: response,
             // first normal account is always visible on web & desktop
@@ -268,6 +269,12 @@ const createOnBundleProgressHandler = (
         console.warn(`bundle progress error handler: ${response.error}`);
         const currentFailedAccounts = discovery.failed ?? [];
         const newFailedAccount: FailedAccount = { accountType: response.type, ...response };
+
+        const { symbol, accountType, index } = newFailedAccount;
+        const isDuplicate = currentFailedAccounts.some(
+            f => f.symbol === symbol && f.accountType === accountType && f.index === index,
+        );
+        if (isDuplicate) return; // only defensive programming
 
         dispatch(
             discoveryActions.updateDiscovery(
