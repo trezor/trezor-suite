@@ -2,7 +2,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -70,13 +70,23 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
         selectDeviceSupportedNetworks,
         selectAreTestnetsEnabled,
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsStellarSupportEnabled),
     ],
-    (deviceNetworks, defaultAreTestnetsEnabled, forcedAreTestnetsEnabled) => {
+    (
+        deviceNetworks,
+        defaultAreTestnetsEnabled,
+        forcedAreTestnetsEnabled,
+        isStellarSupportEnabled,
+    ) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? defaultAreTestnetsEnabled;
 
         return pipe(
             deviceNetworks,
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
+            networkSymbols =>
+                networkSymbols.filter(
+                    symbol => isStellarSupportEnabled || getNetworkType(symbol) !== 'stellar',
+                ),
             filterUnavailableNetworks,
             sortNetworks,
             returnStableArrayIfEmpty,

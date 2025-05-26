@@ -9,6 +9,7 @@ import {
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
+    [FeatureFlagEnum.IsStellarSupportEnabled]: 'Stellar network',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
