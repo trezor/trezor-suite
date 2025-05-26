@@ -124,19 +124,19 @@ export const TradingDetailExchange = () => {
                             />
                         </InfoItem>
                     )}
-                    {tradeStatusStep === 'success' && (
-                        <TradingDetailExchangePaymentSuccessful account={account} />
+                    {tradeStatusStep === 'success' && sendAccount && (
+                        <TradingDetailExchangePaymentSuccessful account={sendAccount} />
                     )}
-                    {tradeStatusStep === 'kyc' && (
+                    {tradeStatusStep === 'kyc' && sendAccount && (
                         <TradingDetailExchangePaymentKYC
-                            account={account}
+                            account={sendAccount}
                             provider={provider}
                             supportUrl={supportUrl}
                         />
                     )}
-                    {tradeStatusStep === 'error' && (
+                    {tradeStatusStep === 'error' && sendAccount && (
                         <TradingDetailExchangePaymentFailed
-                            account={account}
+                            account={sendAccount}
                             transactionId={trade.key}
                             supportUrl={supportUrl}
                         />
