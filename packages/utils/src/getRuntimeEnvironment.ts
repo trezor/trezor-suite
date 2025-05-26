@@ -1,11 +1,11 @@
-export const getRuntimeEnvironment = (): 'native' | 'desktop' | 'web' | undefined => {
+export const getRuntimeEnvironment = () => {
     // React Native, product is deprecated but most reliable
     if (
         typeof window === 'undefined' &&
         typeof navigator !== 'undefined' &&
         navigator.product === 'ReactNative'
     ) {
-        return 'native';
+        return 'mobile';
     }
 
     // Electron (both main and renderer)
