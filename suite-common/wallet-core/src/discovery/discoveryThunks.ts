@@ -193,6 +193,7 @@ const createOnBundleProgressHandler = (
                 coin: response.symbol,
                 index: response.index,
                 accountType: response.type,
+                backendType: response.backendType,
             },
             accountInfo: response,
             // first normal account is always visible on web & desktop
