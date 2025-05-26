@@ -99,6 +99,7 @@ export const connectInitThunk = createThunk<
         'cardanoSignTransaction',
         'changePin',
         'cipherKeyValue',
+        'discoverAccounts',
         'ethereumGetAddress',
         'ethereumSignTransaction',
         'getAddress',
