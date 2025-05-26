@@ -41,7 +41,12 @@ import {
 } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { amountToSmallestUnit, getUtxoOutpoint, networkAmountToSmallestUnit } from './accountUtils';
+import {
+    amountToSmallestUnit,
+    formatNetworkAmount,
+    getUtxoOutpoint,
+    networkAmountToSmallestUnit,
+} from './accountUtils';
 import { isEip1559, sanitizeHex } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
@@ -535,3 +540,53 @@ export const getSendFormDraftKey = (
     accountKey: AccountKey,
     tokenAddress?: TokenAddress,
 ): SendFormDraftKey => (tokenAddress ? `${accountKey}-${tokenAddress}` : accountKey);
+
+type AmountValidationResult =
+    | { type: 'ok' }
+    | { type: 'not_enough' }
+    | { type: 'reserve'; reserve: string };
+
+interface GetAmountValidationResultParams {
+    amount: string | undefined;
+    contractAddress?: string | null;
+    account: Account;
+    areSatsUsed?: boolean;
+}
+
+export const getAmountValidationResult = ({
+    amount,
+    contractAddress,
+    account,
+    areSatsUsed,
+}: GetAmountValidationResultParams): AmountValidationResult => {
+    const token = findToken(account.tokens, contractAddress);
+    let formattedAvailableBalance: string;
+
+    if (token) {
+        formattedAvailableBalance = token.balance || '0';
+    } else {
+        formattedAvailableBalance = areSatsUsed
+            ? account.availableBalance
+            : formatNetworkAmount(account.availableBalance, account.symbol);
+    }
+
+    const amountBig = new BigNumber(amount ?? '0');
+
+    if (amountBig.gt(formattedAvailableBalance)) {
+        const reserve =
+            account.networkType === 'ripple' || account.networkType === 'stellar'
+                ? formatNetworkAmount(account.misc.reserve, account.symbol)
+                : undefined;
+
+        if (reserve && amountBig.lt(formatNetworkAmount(account.balance, account.symbol))) {
+            return { type: 'reserve', reserve };
+        }
+
+        return { type: 'not_enough' };
+    }
+
+    return { type: 'ok' };
+};
+
+export const isAmountTooHigh = (params: GetAmountValidationResultParams): boolean =>
+    getAmountValidationResult(params).type !== 'ok';

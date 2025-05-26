@@ -105,7 +105,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
                       reserveOrBalance: validateReserveOrBalance(translationString, {
                           account,
                           areSatsUsed: !!shouldSendInSats,
-                          tokenAddress: (getValues() as FormState).outputs?.[0]?.token,
+                          contractAddress: (getValues() as FormState).outputs?.[0]?.token,
                       }),
                   }
                 : {}),

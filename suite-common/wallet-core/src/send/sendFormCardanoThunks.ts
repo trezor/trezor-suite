@@ -29,7 +29,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     ComposeTransactionThunkArguments,
     { rejectValue: ComposeFeeLevelsError }
 >(
-    `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
+    `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
         const { account, feeInfo } = composeContext;
         const changeAddress = getUnusedChangeAddress(account);

@@ -122,7 +122,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
                 areSatsUsed: !!shouldSendInSats,
-                tokenAddress: tokenValue,
+                contractAddress: tokenValue,
             }),
         },
     };

@@ -10,6 +10,8 @@ import {
     parseCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -55,6 +57,7 @@ export const TradingFormOffer = () => {
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
     const context = useTradingFormContext();
     const {
+        account,
         type,
         quotes,
         goToOffers,
@@ -104,6 +107,30 @@ export const TradingFormOffer = () => {
         setIsCompareLoading(true);
         await goToOffers();
     };
+
+    let amount: string = '0';
+    let tokenAddress: TokenAddress | undefined;
+    let areSatsUsed = false;
+
+    if (isTradingSellContext(context) || isTradingExchangeContext(context)) {
+        const { shouldSendInSats, getValues } = context;
+        const { outputs } = getValues();
+
+        const output = outputs[0];
+        amount = output.amount;
+        tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+        areSatsUsed = !!shouldSendInSats;
+    }
+
+    const amountTooHigh = isAmountTooHigh({
+        amount,
+        contractAddress: tokenAddress,
+        account,
+        areSatsUsed,
+    });
+
+    const isButtonDisabled =
+        tradingDeviceDisconnected || state.isLoadingOrInvalid || !quote || amountTooHigh;
 
     return (
         <Column gap={spacings.lg}>
@@ -197,7 +224,7 @@ export const TradingFormOffer = () => {
                     top: spacings.md,
                 }}
                 isFullWidth
-                isDisabled={tradingDeviceDisconnected || state.isLoadingOrInvalid || !quote}
+                isDisabled={isButtonDisabled}
                 data-testid={`@trading/form/${type}-button`}
             >
                 <Translation id={tradingGetSectionActionLabel(type)} />

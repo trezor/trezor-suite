@@ -3,9 +3,8 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
-    findToken,
-    formatNetworkAmount,
     fromFiatCurrency,
+    getAmountValidationResult,
     isDecimalsValid,
     isInteger,
     networkAmountToSmallestUnit,
@@ -184,40 +183,32 @@ export const validateMin =
 interface ValidateReserveOrBalanceOptions {
     account: Account;
     areSatsUsed?: boolean;
-    tokenAddress?: string | null;
+    contractAddress?: string | null;
 }
 
 export const validateReserveOrBalance =
     (
         translationString: TranslationFunction,
-        { account, areSatsUsed, tokenAddress }: ValidateReserveOrBalanceOptions,
+        { account, areSatsUsed, contractAddress }: ValidateReserveOrBalanceOptions,
     ) =>
     (value: string) => {
-        const token = findToken(account.tokens, tokenAddress);
-        let formattedAvailableBalance: string;
+        const result = getAmountValidationResult({
+            amount: value,
+            account,
+            areSatsUsed,
+            contractAddress,
+        });
 
-        if (token) {
-            formattedAvailableBalance = token.balance || '0';
-        } else {
-            formattedAvailableBalance = areSatsUsed
-                ? account.availableBalance
-                : formatNetworkAmount(account.availableBalance, account.symbol);
+        if (result.type === 'reserve') {
+            return translationString('AMOUNT_IS_MORE_THAN_RESERVE', {
+                reserve: result.reserve,
+                displaySymbol: getDisplaySymbol(account.symbol),
+            });
         }
 
-        const amountBig = new BigNumber(value);
-        if (amountBig.gt(formattedAvailableBalance)) {
-            const reserve =
-                account.networkType === 'ripple' || account.networkType === 'stellar'
-                    ? formatNetworkAmount(account.misc.reserve, account.symbol)
-                    : undefined;
-
-            if (reserve && amountBig.lt(formatNetworkAmount(account.balance, account.symbol))) {
-                return translationString('AMOUNT_IS_MORE_THAN_RESERVE', {
-                    reserve,
-                    displaySymbol: getDisplaySymbol(account.symbol),
-                });
-            }
-
+        if (result.type === 'not_enough') {
             return translationString('AMOUNT_IS_NOT_ENOUGH');
         }
+
+        return undefined;
     };

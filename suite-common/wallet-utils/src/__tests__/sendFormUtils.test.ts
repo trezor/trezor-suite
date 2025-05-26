@@ -8,6 +8,7 @@ import {
     calculateTotal,
     calculateTotalGasCost,
     findComposeErrors,
+    getAmountValidationResult,
     getBitcoinComposeOutputs,
     getExcludedUtxos,
     getExternalComposeOutput,
@@ -405,5 +406,122 @@ describe('sendForm utils', () => {
         expect(excludedUtxos[getUtxoOutpoint(lowAnonymityDustUtxo)]).toBe('dust');
         expect(excludedUtxos[getUtxoOutpoint(lowAnonymityUtxo)]).toBe('low-anonymity');
         expect(excludedUtxos[getUtxoOutpoint(spendableUtxo)]).toBe(undefined);
+    });
+
+    describe('getAmountValidationResult', () => {
+        describe('should test bitcoin without tokens', () => {
+            const btcAccount = getWalletAccount({
+                networkType: 'bitcoin',
+                symbol: 'btc',
+                tokens: undefined,
+                balance: '1000000000', // 10 BTC
+                availableBalance: '10000000', // 0.1 BTC
+            });
+
+            it('returns ok when amount is within available balance', () => {
+                expect(getAmountValidationResult({ amount: '0.05', account: btcAccount })).toEqual({
+                    type: 'ok',
+                });
+
+                expect(getAmountValidationResult({ amount: '0.1', account: btcAccount })).toEqual({
+                    type: 'ok',
+                });
+            });
+
+            it('returns not_enough when amount exceeds available balance', () => {
+                expect(getAmountValidationResult({ amount: '0.11', account: btcAccount })).toEqual({
+                    type: 'not_enough',
+                });
+            });
+        });
+
+        describe('should test ripple (with reserve)', () => {
+            const rippleAccount = getWalletAccount({
+                networkType: 'ripple',
+                symbol: 'xrp',
+                tokens: undefined,
+                balance: '10000000', // 10 XRP
+                availableBalance: '9000000', // 9 XRP
+                misc: { reserve: '1000000', sequence: 0 },
+            });
+
+            it('returns reserve when amount is above available but below total balance', () => {
+                expect(
+                    getAmountValidationResult({ amount: '9.9', account: rippleAccount }),
+                ).toEqual({
+                    type: 'reserve',
+                    reserve: '1',
+                });
+            });
+
+            it('returns not_enough when amount exceeds total balance', () => {
+                expect(getAmountValidationResult({ amount: '10', account: rippleAccount })).toEqual(
+                    { type: 'not_enough' },
+                );
+            });
+        });
+
+        describe('should test stellar (with reserve)', () => {
+            const stellarAccount = getWalletAccount({
+                networkType: 'stellar',
+                symbol: 'xlm',
+                balance: '100000000', // 10 XLM
+                availableBalance: '95000000', // 9.5 XLM
+                misc: { reserve: '5000000', stellarSequence: '0' },
+            });
+
+            it('returns reserve when amount exceeds available but below total', () => {
+                expect(
+                    getAmountValidationResult({ amount: '9.9', account: stellarAccount }),
+                ).toEqual({
+                    type: 'reserve',
+                    reserve: '0.5',
+                });
+            });
+
+            it('returns not_enough when amount exceeds total balance', () => {
+                expect(
+                    getAmountValidationResult({ amount: '10', account: stellarAccount }),
+                ).toEqual({ type: 'not_enough' });
+            });
+        });
+
+        describe('should test token balances', () => {
+            const tokenAccount = getWalletAccount({
+                networkType: 'ethereum',
+                symbol: 'eth',
+                balance: '0',
+                availableBalance: '0',
+                tokens: [
+                    {
+                        contract: '0xabc',
+                        balance: '200',
+                        decimals: 18,
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                    },
+                ],
+            });
+
+            it('returns ok when amount is within token balance', () => {
+                expect(
+                    getAmountValidationResult({
+                        amount: '150',
+                        account: tokenAccount,
+                        contractAddress: '0xabc',
+                    }),
+                ).toEqual({ type: 'ok' });
+            });
+
+            it('returns not_enough when amount exceeds token balance', () => {
+                expect(
+                    getAmountValidationResult({
+                        amount: '250',
+                        account: tokenAccount,
+                        contractAddress: '0xabc',
+                    }),
+                ).toEqual({ type: 'not_enough' });
+            });
+        });
     });
 });
