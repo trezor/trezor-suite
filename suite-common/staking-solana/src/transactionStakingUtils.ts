@@ -46,6 +46,7 @@ import {
     stakeAccountState,
 } from '@trezor/blockchain-link/src/workers/solana/stakingAccounts';
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
+import { serializeError } from '@trezor/utils';
 
 import { selectSolanaWalletSdkNetwork } from './connection';
 import {
@@ -279,8 +280,10 @@ export const stake = async ({
             stakeTx: signedTransactionMessage,
             stakeAccount: stakeAccountPublicKey,
         };
-    } catch {
-        throw new Error('An error occurred while staking');
+    } catch (error) {
+        throw new Error(
+            `Solana staking: staking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+        );
     }
 };
 
@@ -428,8 +431,10 @@ export const unstake = async ({
         }
 
         return { unstakeTx: transactionMessage, unstakeAmount };
-    } catch {
-        throw new Error('An error occurred while unstaking the stake');
+    } catch (error) {
+        throw new Error(
+            `Solana staking: unstaking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+        );
     }
 };
 
@@ -487,8 +492,10 @@ export const claim = async ({
             claimTx: transactionMessage,
             totalClaimAmount: totalClaimableStake,
         };
-    } catch {
-        throw new Error('An error occurred while claim SOL');
+    } catch (error) {
+        throw new Error(
+            `Solana staking: claiming failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+        );
     }
 };
 
