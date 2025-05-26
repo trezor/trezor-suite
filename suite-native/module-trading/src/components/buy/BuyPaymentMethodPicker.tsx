@@ -16,6 +16,45 @@ import { PaymentMethodSheet } from '../general/PaymentMethodSheet/PaymentMethodS
 
 const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
 
+type BuyPaymentMethodPickerRightProps = {
+    isLoading: boolean;
+    selectedValue: BuyTrade | undefined;
+};
+
+const BuyPaymentMethodPickerRight = ({
+    isLoading,
+    selectedValue,
+}: BuyPaymentMethodPickerRightProps) => {
+    const { translate } = useTranslate();
+
+    if (isLoading) {
+        return <OverviewValueSkeleton />;
+    }
+
+    if (selectedValue) {
+        return (
+            <Text
+                color="textSubdued"
+                variant="body"
+                accessibilityLabel={translate('moduleTrading.tradingScreen.selectedPaymentMethod')}
+                testID={PAYMENT_METHOD_PICKER_TEST_ID + '/value'}
+            >
+                {selectedValue.paymentMethodName}
+            </Text>
+        );
+    }
+
+    return (
+        <Text
+            color="textDisabled"
+            variant="body"
+            accessibilityLabel={translate('moduleTrading.tradingScreen.noPaymentMethod')}
+        >
+            {translate('moduleTrading.notSelected')}
+        </Text>
+    );
+};
+
 export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
     const form = useBuyFormContext();
@@ -24,17 +63,17 @@ export const BuyPaymentMethodPicker = () => {
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'quote');
 
-    if (isLoading) {
-        return (
-            <OverviewRow title={translate('moduleTrading.tradingScreen.paymentMethod')} noCaret>
-                <OverviewValueSkeleton />
-            </OverviewRow>
-        );
-    }
+    const shouldShowPicker = quotes.length > 0 || isLoading;
 
-    if (quotes.length === 0) {
+    if (!shouldShowPicker) {
         return null;
     }
+
+    const showSheetConditionally = () => {
+        if (!isLoading) {
+            showSheet();
+        }
+    };
 
     const handleQuoteSelect = (quote: BuyTrade) => {
         setSelectedValue(quote);
@@ -54,31 +93,11 @@ export const BuyPaymentMethodPicker = () => {
         <>
             <OverviewRow
                 title={translate('moduleTrading.tradingScreen.paymentMethod')}
-                onPress={showSheet}
+                onPress={showSheetConditionally}
                 testID={PAYMENT_METHOD_PICKER_TEST_ID}
+                noCaret={isLoading}
             >
-                {selectedValue ? (
-                    <Text
-                        color="textSubdued"
-                        variant="body"
-                        accessibilityLabel={translate(
-                            'moduleTrading.tradingScreen.selectedPaymentMethod',
-                        )}
-                        testID={PAYMENT_METHOD_PICKER_TEST_ID + '/value'}
-                    >
-                        {selectedValue.paymentMethodName}
-                    </Text>
-                ) : (
-                    <Text
-                        color="textDisabled"
-                        variant="body"
-                        accessibilityLabel={translate(
-                            'moduleTrading.tradingScreen.noPaymentMethod',
-                        )}
-                    >
-                        {translate('moduleTrading.notSelected')}
-                    </Text>
-                )}
+                <BuyPaymentMethodPickerRight isLoading={isLoading} selectedValue={selectedValue} />
             </OverviewRow>
             <PaymentMethodSheet
                 quotes={quotes}

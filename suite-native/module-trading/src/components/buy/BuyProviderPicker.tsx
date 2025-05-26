@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { BuyTrade } from 'invity-api';
 
+import { invariant } from '@suite-common/suite-utils';
 import {
     TradingRootState,
     selectBuyQuotesByPaymentMethod,
@@ -19,7 +20,44 @@ import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
 import { ProviderLogo } from '../general/ProviderLogo';
 import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 
+type BuyProviderPickerRightProps = {
+    isLoading: boolean;
+    selectedValue: BuyTrade | undefined;
+    providers: ReturnType<typeof selectTradingBuyProviders>;
+};
+
 const PROVIDER_PICKER_TEST_ID = '@trading/buy/provider-picker';
+
+const BuyProviderPickerRight = ({
+    isLoading,
+    selectedValue,
+    providers,
+}: BuyProviderPickerRightProps) => {
+    const { translate } = useTranslate();
+
+    if (isLoading) {
+        return <OverviewValueSkeleton />;
+    }
+
+    const { exchange } = selectedValue ?? {};
+    const selectedProvider = exchange ? providers?.[exchange] : undefined;
+    invariant(selectedProvider, 'Selected provider should be defined');
+    const { companyName, logo } = selectedProvider;
+
+    return (
+        <HStack>
+            <ProviderLogo logo={logo} />
+            <Text
+                color="textSubdued"
+                variant="body"
+                accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
+                testID={PROVIDER_PICKER_TEST_ID + '/value'}
+            >
+                {companyName}
+            </Text>
+        </HStack>
+    );
+};
 
 export const BuyProviderPicker = () => {
     const { translate } = useTranslate();
@@ -29,20 +67,24 @@ export const BuyProviderPicker = () => {
 
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'quote');
-    const { paymentMethod, exchange: providerKey } = selectedValue ?? {};
+    const { paymentMethod } = selectedValue ?? {};
     const quotes =
         useSelector((state: TradingRootState) =>
             selectBuyQuotesByPaymentMethod(state, paymentMethod),
         ) ?? [];
 
+    const shouldShowPicker = (providers && quotes.length > 0) || isLoading;
+
     const handleProviderPress = () => {
+        if (isLoading) return;
+
+        showSheet();
         analytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'buy',
             },
         });
-        showSheet();
     };
 
     const handleQuoteSelect = (quote: BuyTrade) => {
@@ -59,23 +101,9 @@ export const BuyProviderPicker = () => {
         });
     };
 
-    if (isLoading) {
-        return (
-            <OverviewRow
-                title={translate('moduleTrading.tradingScreen.provider')}
-                noBottomBorder
-                noCaret
-            >
-                <OverviewValueSkeleton />
-            </OverviewRow>
-        );
-    }
-
-    if (!providerKey || !providers || providers[providerKey] === undefined) {
+    if (!shouldShowPicker) {
         return null;
     }
-
-    const { companyName, logo } = providers[providerKey];
 
     return (
         <>
@@ -84,24 +112,17 @@ export const BuyProviderPicker = () => {
                 noBottomBorder
                 onPress={handleProviderPress}
                 testID={PROVIDER_PICKER_TEST_ID}
+                noCaret={isLoading}
             >
-                <HStack>
-                    <ProviderLogo logo={logo} />
-                    <Text
-                        color="textSubdued"
-                        variant="body"
-                        accessibilityLabel={translate(
-                            'moduleTrading.tradingScreen.selectedProvider',
-                        )}
-                        testID={PROVIDER_PICKER_TEST_ID + '/value'}
-                    >
-                        {companyName}
-                    </Text>
-                </HStack>
+                <BuyProviderPickerRight
+                    isLoading={isLoading}
+                    selectedValue={selectedValue}
+                    providers={providers}
+                />
             </OverviewRow>
             <ProviderSheet
                 quotes={quotes}
-                providerInfos={providers}
+                providerInfos={providers ?? {}}
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onQuoteSelect={handleQuoteSelect}
