@@ -6,6 +6,7 @@ import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors'
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion } from '@trezor/env-utils';
+import { getRuntimeEnvironment } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
@@ -291,7 +292,9 @@ class StellarWorker extends BaseWorker<Horizon.Server> {
     async tryConnect(url: string): Promise<Horizon.Server> {
         const api = new Horizon.Server(url, {
             headers: {
-                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
+                ...(getRuntimeEnvironment() !== 'web'
+                    ? { 'User-Agent': `Trezor Suite ${getSuiteVersion()}` }
+                    : {}),
             },
         });
 
