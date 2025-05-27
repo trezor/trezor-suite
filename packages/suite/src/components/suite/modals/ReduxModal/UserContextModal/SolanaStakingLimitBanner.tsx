@@ -36,6 +36,8 @@ export const SolanaStakingLimitBanner = ({
     const selectedBlockchain = blockchain[account.symbol];
 
     useEffect(() => {
+        if (account.networkType !== 'solana') return;
+
         const outputTxAmount = getOutputTxAmount(composedLevels);
         if (!outputTxAmount || !selectedBlockchain?.url) return;
 
