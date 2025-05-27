@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { Box } from '@suite-native/atoms';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
 import {
     DeviceSettingsStackParamList,
@@ -34,11 +35,13 @@ export const FirmwareInstallationScreen = () => {
 
     return (
         <Screen>
-            <FirmwareInstallationScreenContent
-                onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
-                onFirmwareInstallationFailure={handleFirmwareInstallationFailure}
-                navigationLocation="settings"
-            />
+            <Box flex={1}>
+                <FirmwareInstallationScreenContent
+                    onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
+                    onFirmwareInstallationFailure={handleFirmwareInstallationFailure}
+                    navigationLocation="settings"
+                />
+            </Box>
         </Screen>
     );
 };
