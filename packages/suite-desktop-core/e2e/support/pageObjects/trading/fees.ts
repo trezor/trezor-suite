@@ -60,6 +60,7 @@ export class Fees {
     @step()
     async getSolanaFee() {
         const lamportsToSolanaRatio = 1_000_000_000;
+        await expect(this.miscAmount).toBeVisible();
         const feeWithSymbol = await this.miscAmount.textContent();
         if (!feeWithSymbol) {
             throw new Error('Fee amount is undefined or null');

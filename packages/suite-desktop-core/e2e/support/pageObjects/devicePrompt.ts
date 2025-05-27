@@ -53,6 +53,12 @@ export class DevicePrompt {
     }
 
     @step()
+    async confirmOnDeviceIsCompleted() {
+        await this.confirmOnDevicePromptIsShown();
+        await expect(this.confirmOnDevicePrompt).toHaveText('Confirm on TrezorConfirmed');
+    }
+
+    @step()
     async confirmOnDevicePromptIsHidden() {
         await expect(this.confirmOnDevicePrompt).toBeHidden();
     }
@@ -66,6 +72,13 @@ export class DevicePrompt {
     async waitForPromptAndConfirm() {
         await this.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
+    }
+
+    @step()
+    async waitForFinalPromptAndConfirm() {
+        await this.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+        await this.confirmOnDeviceIsCompleted();
     }
 
     @step()

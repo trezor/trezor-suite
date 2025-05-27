@@ -134,7 +134,6 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
             await expect(tradingPage.fees.miscAmount).toBeVisible();
             await tradingPage.compareButton.click();
         });
-        await page.pause();
         await expect(tradingPage.youPayCryptoInput).toHaveValue(cryptoAmount);
 
         await test.step('Check compared offers', async () => {

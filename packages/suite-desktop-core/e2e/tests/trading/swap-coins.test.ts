@@ -59,9 +59,11 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
             });
         });
 
+        const solanaFee = (await tradingPage.fees.getSolanaFee()).toString();
+
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await tradingPage.clickSwapBestOfferAndWaitForFees();
+            await tradingPage.swapBestOfferButton.click();
             await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
         });
 
@@ -84,13 +86,19 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
         });
 
         await test.step('Initiate send', async () => {
-            await tradingPage.initiateSendConfirmation();
+            await tradingPage.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
+            await expect(devicePrompt).toDisplayRecipientAddress(sendAddress);
+
+            await devicePrompt.waitForPromptAndConfirm();
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 formattedSendAmount,
             );
-            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(solanaFee);
+            await expect(devicePrompt).toDisplaySummary(formattedSendAmount, `${solanaFee} SOL`);
+
+            await devicePrompt.waitForFinalPromptAndConfirm();
         });
 
         // Thanks to our mocked responses, the crypto is actually not send.

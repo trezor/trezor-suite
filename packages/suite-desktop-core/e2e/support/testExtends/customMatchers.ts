@@ -156,11 +156,11 @@ export const expect = baseExpect.extend({
     },
 
     async toDisplayRecipientAddress(devicePrompt: DevicePrompt, expectedAddress: string) {
-        const transformedExpectedAddress = transformAddress(expectedAddress);
+        const transformedExpectedAddress = transformAddress(expectedAddress, 'fullLine');
         const expectedContent = {
-            header: { title: 'Address', subtitle: 'Recipient #1' },
+            header: { title: 'Recipient' },
             body: [transformedExpectedAddress],
-            footer: 'Swipe up',
+            footer: 'Tap to continue',
         };
 
         return await compareDisplayContent(
@@ -173,8 +173,8 @@ export const expect = baseExpect.extend({
     async toDisplaySummary(devicePrompt: DevicePrompt, totalAmount: string, feeAmount: string) {
         const expectedContent = {
             header: { title: 'Summary' },
-            body: [['Total amount'], [totalAmount], [' '], ['incl. Transaction fee'], [feeAmount]],
-            footer: 'Swipe up',
+            body: [['Amount:'], [totalAmount], [' '], ['Expected fee:'], [feeAmount]],
+            footer: 'Tap to continue',
         };
 
         return await compareDisplayContent(

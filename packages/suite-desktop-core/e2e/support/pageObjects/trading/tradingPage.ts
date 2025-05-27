@@ -365,22 +365,22 @@ export class TradingPage {
 
     @step()
     async initiateSendConfirmation(options?: { confirmAlsoToken: boolean }) {
-        await this.confirmOnTrezorAndSend.click();
-        await expect(this.modal).toBeVisible();
-        await expect(this.devicePrompt.sendButton).toBeDisabled();
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.openConfirmAndSendModal();
+        await this.devicePrompt.waitForPromptAndConfirm();
         if (options?.confirmAlsoToken) {
-            await this.devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLinkProxy.pressYes();
+            await this.devicePrompt.waitForPromptAndConfirm();
         }
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.devicePrompt.waitForFinalPromptAndConfirm();
         // Note: We intentionally skip clicking the sell button in tests to prevent actual cryptocurrency transactions.
         // In a real scenario, the user would complete the transaction by clicking this button.
         await expect(this.devicePrompt.sendButton).toBeEnabled();
+    }
+
+    @step()
+    async openConfirmAndSendModal() {
+        await this.confirmOnTrezorAndSend.click();
+        await expect(this.modal).toBeVisible();
+        await expect(this.devicePrompt.sendButton).toBeDisabled();
     }
 
     @step()
