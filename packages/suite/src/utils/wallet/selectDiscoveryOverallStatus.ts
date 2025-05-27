@@ -25,7 +25,7 @@ const getDiscoveryStatus = ({
             status: 'loading',
             type: 'waiting-for-device',
         };
-    if (!device.state) {
+    if (!device.state?.staticSessionId) {
         return {
             status: 'loading',
             type: 'auth',
@@ -71,6 +71,13 @@ const getDiscoveryStatus = ({
                 status: 'exception',
                 type: 'discovery-failed',
             };
+
+        if (discovery.status === 'progress') {
+            return {
+                status: 'loading',
+                type: 'discovery',
+            };
+        }
     }
 
     return undefined;
