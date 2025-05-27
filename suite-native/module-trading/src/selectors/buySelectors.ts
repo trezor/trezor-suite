@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { BuyCryptoPaymentMethod, BuyTrade, FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
@@ -107,7 +109,15 @@ export const selectValidTradingBuyQuotesNative = createMemoizedSelector(
             state: TradingRootState,
         ) => ReturnType<typeof selectValidTradingBuyQuotes>,
     ],
-    quotes => quotes.filter(quote => quote.exchange !== 'simplex'),
+    quotes => {
+        const isProviderAllowed = ({ exchange }: BuyTrade) => exchange !== 'simplex';
+        const isAllowedOnPlatform = Platform.select<(quote: BuyTrade) => boolean>({
+            ios: () => true,
+            default: ({ paymentMethod }) => paymentMethod !== 'applePay',
+        });
+
+        return quotes.filter(isProviderAllowed).filter(isAllowedOnPlatform);
+    },
 );
 
 export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelector(

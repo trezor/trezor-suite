@@ -243,6 +243,31 @@ describe('buySelectors', () => {
                 selectValidTradingBuyQuotesNative({ wallet: { tradingNew: prevState } }),
             );
         });
+
+        describe('on android device', () => {
+            beforeAll(() => {
+                jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+                    OS: 'android',
+                    select: (specifics: Record<'ios' | 'android' | 'default', unknown>) =>
+                        specifics.android ?? specifics.default,
+                }));
+            });
+
+            afterAll(() => {
+                jest.unmock('react-native/Libraries/Utilities/Platform');
+            });
+
+            it('should ignore applePay', () => {
+                expect(
+                    selectValidTradingBuyQuotesNative({
+                        wallet: { tradingNew: prevState },
+                    }),
+                ).toEqual([
+                    expect.objectContaining({ orderId: 'order_id_1' }),
+                    expect.objectContaining({ orderId: 'order_id_3' }),
+                ]);
+            });
+        });
     });
 
     describe('selectBuyBestQuotesForAvailablePaymentMethods', () => {
