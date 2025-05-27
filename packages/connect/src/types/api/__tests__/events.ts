@@ -32,6 +32,11 @@ export const events = (api: TrezorConnect) => {
         if (event.type === 'device-thp_credentials_changed') {
             const { payload } = event;
             payload.credentials.credential.toLowerCase();
+            payload.credentials.trezor_static_pubkey.toLowerCase();
+            payload.staticKey.toLowerCase();
+            if (payload.credentials.autoconnect === true) {
+                //
+            }
 
             return;
         }

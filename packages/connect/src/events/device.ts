@@ -53,6 +53,7 @@ export interface DeviceThpCredentialsChanged {
     payload: {
         device: Device;
         credentials: ThpCredentials;
+        staticKey: string;
     };
 }
 
