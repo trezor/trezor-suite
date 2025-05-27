@@ -5,6 +5,19 @@ import { ForegroundAppModal } from './ForegroundAppModal';
 import { UnpairedBluetoothDeviceNeedsManualOsRemovalModal } from '../../bluetooth/UnpairedBluetoothDeviceNeedsManualOsRemovalModal';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 
+type ModalParams = ReturnType<typeof usePreferredModal>;
+
+const Inner = ({ modal }: { modal: ModalParams }) => {
+    switch (modal.type) {
+        case 'redux-modal':
+            return <ReduxModal {...modal.payload} />;
+        case 'discovery-loading':
+            return <DiscoveryLoader />;
+        default:
+            return null;
+    }
+};
+
 /** Displays whichever redux modal or foreground app should be displayed */
 export const ModalSwitcher = () => {
     const modal = usePreferredModal();
@@ -16,21 +29,10 @@ export const ModalSwitcher = () => {
         return <ForegroundAppModal {...modal.payload} />;
     }
 
-    const Inner = () => {
-        switch (modal.type) {
-            case 'redux-modal':
-                return <ReduxModal {...modal.payload} />;
-            case 'discovery-loading':
-                return <DiscoveryLoader />;
-            default:
-                return null;
-        }
-    };
-
     return (
         <>
             <UnpairedBluetoothDeviceNeedsManualOsRemovalModal />
-            <Inner />
+            <Inner modal={modal} />
         </>
     );
 };
