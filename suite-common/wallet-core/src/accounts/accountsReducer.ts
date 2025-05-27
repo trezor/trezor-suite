@@ -96,7 +96,8 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
                 const indexOfPreviousAccount = matchingNetworkAndTypeAccounts.length;
                 const networkName = networks[symbol].name;
-                const accountLabel = `${networkName} #${indexOfPreviousAccount + 1}`;
+                const accountLabel =
+                    action.payload.accountLabel ?? `${networkName} #${indexOfPreviousAccount + 1}`;
 
                 const account = {
                     ...action.payload,

@@ -4,6 +4,7 @@ import {
     prepareBlockchainMiddleware,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { RouterState } from 'src/reducers/suite/routerReducer';
@@ -116,11 +117,11 @@ describe('walletMiddleware', () => {
             if (subscribe) {
                 expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(subscribe.called);
                 if (subscribe.called) {
-                    // @ts-expect-error
-                    const accounts = subscribe.accounts?.map(a => getWalletAccount(a));
+                    const accounts =
+                        subscribe.accounts?.map(a => getWalletAccount(a as Partial<Account>)) ?? [];
                     expect(TrezorConnect.blockchainSubscribe).toHaveBeenLastCalledWith(
                         expect.objectContaining({
-                            accounts,
+                            accounts: accounts.map(a => expect.objectContaining(a)),
                             coin: subscribe.coin,
                         }),
                     );
