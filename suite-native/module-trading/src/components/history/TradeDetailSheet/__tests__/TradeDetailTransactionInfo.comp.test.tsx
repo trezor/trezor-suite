@@ -55,7 +55,7 @@ describe('TradeDetailTransactionInfo', () => {
             getPreloadedState([buyTrade]),
         );
 
-        expect(getByText('1234 USD')).toBeTruthy();
+        expect(getByText('$1,234.00')).toBeTruthy();
         expect(getByText('0.462586 ETH')).toBeTruthy();
         expect(getByText('ETH Account #1')).toBeTruthy();
         expect(queryByText('From')).toBeNull();
@@ -69,10 +69,8 @@ describe('TradeDetailTransactionInfo', () => {
             getPreloadedState([exchangeTrade]),
         );
 
-        expect(
-            getByText('10.1232 solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL'),
-        ).toBeTruthy();
-        expect(getByText('0.462586 solana')).toBeTruthy();
+        expect(getByText('10.1232 JTO')).toBeTruthy();
+        expect(getByText('0.462586 SOL')).toBeTruthy();
         expect(getByText('SOL Account #1')).toBeTruthy();
     });
 
@@ -85,7 +83,7 @@ describe('TradeDetailTransactionInfo', () => {
         );
 
         expect(getByText('1.22 BTC')).toBeTruthy();
-        expect(getByText('100 USD')).toBeTruthy();
+        expect(getByText('$100.00')).toBeTruthy();
         expect(getByText('BTC Account #1')).toBeTruthy();
         expect(queryByText('From')).toBeTruthy();
     });

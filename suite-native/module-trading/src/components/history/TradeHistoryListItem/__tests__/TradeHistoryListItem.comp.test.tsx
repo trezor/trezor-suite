@@ -18,7 +18,7 @@ describe('TradeHistoryListItem', () => {
         const { getByText } = await renderTradeHistoryListItem(buyTrade);
 
         expect(getByText('Mercuryo')).toBeTruthy();
-        expect(getByText('1234 USD')).toBeTruthy();
+        expect(getByText('$1,234.00')).toBeTruthy();
         expect(getByText('0.462586 ETH')).toBeTruthy();
         expect(getByText('Trans. ID: d3ef3451-8f68-4250-9e08-580ece5e7d12')).toBeTruthy();
         expect(getByText('Submitted')).toBeTruthy();

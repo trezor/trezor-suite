@@ -8,19 +8,19 @@ describe('useChangeStringsExtractor', () => {
     it('should extract strings for trade', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const { result } = await renderHookWithStoreProviderAsync(
-            () => useChangeStringsExtractor(buyTrade),
+            () => useChangeStringsExtractor(buyTrade.data),
             { preloadedState: { wallet: { tradingNew: getInitializedTradingState() } } },
         );
 
         expect(result.current).toEqual({
-            fromCryptoId: 'USD',
-            fromStringValue: '1234 USD',
-            toCryptoId: 'ethereum',
+            fromCurrency: 'USD',
+            fromStringValue: '$1,234.00',
+            toCurrency: 'ethereum',
             toStringValue: '0.462586 ETH',
             fromValue: '1234',
-            fromSymbol: 'USD',
             toValue: '0.462586',
-            toSymbol: 'ETH',
+            isFromCrypto: false,
+            isToCrypto: true,
         });
     });
 });

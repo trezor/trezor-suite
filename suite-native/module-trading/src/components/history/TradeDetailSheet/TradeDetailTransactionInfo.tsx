@@ -57,8 +57,8 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
         ),
     );
 
-    const { fromStringValue, toStringValue, fromCryptoId, toCryptoId } =
-        useChangeStringsExtractor(trade);
+    const { fromStringValue, toStringValue, fromCurrency, toCurrency, isFromCrypto, isToCrypto } =
+        useChangeStringsExtractor(trade?.data);
 
     if (!trade) {
         return null;
@@ -70,7 +70,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                 title={<Translation id="moduleTrading.tradeHistory.detail.paid" />}
                 content={
                     <HStack alignItems="center" spacing="sp2">
-                        <CryptoIdIcon cryptoId={fromCryptoId} />
+                        {isFromCrypto && <CryptoIdIcon cryptoId={fromCurrency} />}
                         <Text variant="hint" testID={TRADE_DETAIL_TEST_ID + '/paid'}>
                             {fromStringValue}
                         </Text>
@@ -87,7 +87,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
                 title={<Translation id="moduleTrading.tradeHistory.detail.received" />}
                 content={
                     <HStack alignItems="center" spacing="sp2">
-                        <CryptoIdIcon cryptoId={toCryptoId} />
+                        {isToCrypto && <CryptoIdIcon cryptoId={toCurrency} />}
                         <Text variant="hint">{toStringValue}</Text>
                     </HStack>
                 }

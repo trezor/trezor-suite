@@ -1,14 +1,22 @@
 import {
+    BuyTrade,
     BuyTradeFinalStatus,
     BuyTradeStatus,
     CryptoId,
+    ExchangeTrade,
     ExchangeTradeFinalStatus,
     ExchangeTradeStatus,
+    SellFiatTrade,
     SellTradeFinalStatus,
     SellTradeStatus,
 } from 'invity-api';
 
-import { TradingTradeStatusType, TradingTransaction, TradingType } from '@suite-common/trading';
+import {
+    TradingTradeStatusType,
+    TradingTradeType,
+    TradingTransaction,
+    TradingType,
+} from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
@@ -26,59 +34,103 @@ export const isFinalStatus = (
     tradeStatus: TradingTradeStatusType | undefined,
 ) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
 
-export const getTradeOperationData = (
-    transaction: TradingTransaction | undefined,
-): {
+export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
+    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
+
+export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
+    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
+
+export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
+    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
+
+type UndefinedTradeOperation = {
+    fromValue: undefined;
+    fromCurrency: undefined;
+    toValue: undefined;
+    toCurrency: undefined;
+    isFromCrypto: undefined;
+    isToCrypto: undefined;
+};
+
+type FiatToCryptoOperation = {
     fromValue: string | undefined;
-    fromCryptoId: CryptoId | undefined;
+    fromCurrency: string | undefined;
     toValue: string | undefined;
-    toCryptoId: CryptoId | undefined;
-} => {
-    if (!transaction) {
+    toCurrency: CryptoId | undefined;
+    isFromCrypto: false;
+    isToCrypto: true;
+};
+
+type CryptoToFiatOperation = {
+    fromValue: string | undefined;
+    fromCurrency: CryptoId | undefined;
+    toValue: string | undefined;
+    toCurrency: string | undefined;
+    isFromCrypto: true;
+    isToCrypto: false;
+};
+
+type CryptoToCryptoOperation = {
+    fromValue: string | undefined;
+    fromCurrency: CryptoId | undefined;
+    toValue: string | undefined;
+    toCurrency: CryptoId | undefined;
+    isFromCrypto: true;
+    isToCrypto: true;
+};
+
+export type TradeOperationData =
+    | UndefinedTradeOperation
+    | FiatToCryptoOperation
+    | CryptoToFiatOperation
+    | CryptoToCryptoOperation;
+
+export const getTradeOperationData = (trade: TradingTradeType | undefined): TradeOperationData => {
+    if (!trade) {
         return {
             fromValue: undefined,
-            fromCryptoId: undefined,
+            fromCurrency: undefined,
             toValue: undefined,
-            toCryptoId: undefined,
+            toCurrency: undefined,
+            isFromCrypto: undefined,
+            isToCrypto: undefined,
         };
     }
 
-    const { tradeType } = transaction;
-    switch (tradeType) {
-        case 'buy': {
-            const buy = transaction.data;
-
-            return {
-                fromValue: buy.fiatStringAmount,
-                fromCryptoId: buy.fiatCurrency as CryptoId | undefined,
-                toValue: buy.receiveStringAmount,
-                toCryptoId: buy.receiveCurrency,
-            };
-        }
-        case 'exchange': {
-            const exchange = transaction.data;
-
-            return {
-                fromValue: exchange.sendStringAmount,
-                fromCryptoId: exchange.send,
-                toValue: exchange.receiveStringAmount,
-                toCryptoId: exchange.receive,
-            };
-        }
-        case 'sell': {
-            const sell = transaction.data;
-
-            return {
-                fromValue: sell.cryptoStringAmount,
-                fromCryptoId: sell.cryptoCurrency,
-                toValue: sell.fiatStringAmount,
-                toCryptoId: sell.fiatCurrency as CryptoId | undefined,
-            };
-        }
-
-        default:
-            return exhaustive(tradeType);
+    if (isBuyTrade(trade)) {
+        return {
+            fromValue: trade.fiatStringAmount,
+            fromCurrency: trade.fiatCurrency,
+            toValue: trade.receiveStringAmount,
+            toCurrency: trade.receiveCurrency,
+            isFromCrypto: false,
+            isToCrypto: true,
+        };
     }
+
+    if (isSellFiatTrade(trade)) {
+        return {
+            fromValue: trade.cryptoStringAmount,
+            fromCurrency: trade.cryptoCurrency,
+            toValue: trade.fiatStringAmount,
+            toCurrency: trade.fiatCurrency,
+            isFromCrypto: true,
+            isToCrypto: false,
+        };
+    }
+
+    if (isExchangeTrade(trade)) {
+        return {
+            fromValue: trade.sendStringAmount,
+            fromCurrency: trade.send,
+            toValue: trade.receiveStringAmount,
+            toCurrency: trade.receive,
+            isFromCrypto: true,
+            isToCrypto: true,
+        };
+    }
+
+    return exhaustive(trade);
 };
 
 export const getBuyTradeStatusStep = (tradeStatus: BuyTradeStatus | undefined) => {

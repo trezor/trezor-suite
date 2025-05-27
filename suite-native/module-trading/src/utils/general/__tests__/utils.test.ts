@@ -19,37 +19,43 @@ describe('utils', () => {
     describe('getTradeOperationData', () => {
         it('should return correct data for buy trade', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            const result = getTradeOperationData(buyTrade);
+            const result = getTradeOperationData(buyTrade.data);
 
             expect(result).toEqual({
                 fromValue: '1234',
-                fromCryptoId: 'USD',
+                fromCurrency: 'USD',
                 toValue: '0.462586',
-                toCryptoId: 'ethereum',
+                toCurrency: 'ethereum',
+                isFromCrypto: false,
+                isToCrypto: true,
             });
         });
 
         it('should return correct data for exchange trade', () => {
             const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
-            const result = getTradeOperationData(exchangeTrade);
+            const result = getTradeOperationData(exchangeTrade.data);
 
             expect(result).toEqual({
                 fromValue: '10.1232',
-                fromCryptoId: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
+                fromCurrency: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
                 toValue: '0.462586',
-                toCryptoId: 'solana',
+                toCurrency: 'solana',
+                isFromCrypto: true,
+                isToCrypto: true,
             });
         });
 
         it('should return correct data for sell trade', () => {
             const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
-            const result = getTradeOperationData(sellTrade);
+            const result = getTradeOperationData(sellTrade.data);
 
             expect(result).toEqual({
                 fromValue: '1.22',
-                fromCryptoId: 'bitcoin',
+                fromCurrency: 'bitcoin',
                 toValue: '100',
-                toCryptoId: 'USD',
+                toCurrency: 'USD',
+                isFromCrypto: true,
+                isToCrypto: false,
             });
         });
 
@@ -58,9 +64,9 @@ describe('utils', () => {
 
             expect(result).toEqual({
                 fromValue: undefined,
-                fromCryptoId: undefined,
+                fromCurrency: undefined,
                 toValue: undefined,
-                toCryptoId: undefined,
+                toCurrency: undefined,
             });
         });
     });

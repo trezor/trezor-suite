@@ -26,7 +26,7 @@ export const TRADE_HISTORY_LIST_ITEM_HEIGHT = 148;
 export const TradeHistoryListItemMemoized = memo(
     ({ transaction, onPress }: TradeHistoryListItemMemoizedProps) => {
         const { DateFormatter, TimeFormatter } = useFormatters();
-        const { fromStringValue, toStringValue } = useChangeStringsExtractor(transaction);
+        const { fromStringValue, toStringValue } = useChangeStringsExtractor(transaction.data);
 
         const providerInfo = useSelector((state: TradingRootState) =>
             selectTradingProviderByNameAndTradeType(

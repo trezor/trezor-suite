@@ -84,7 +84,7 @@ describe('TradingHistoryScreen', () => {
         const { getByText } = await renderScreen(getPreloadedState([buyTrade]));
 
         await expect(getByText('Mercuryo')).toBeTruthy();
-        expect(getByText('1234 USD')).toBeTruthy();
+        expect(getByText('$1,234.00')).toBeTruthy();
         expect(getByText('0.462586 ETH')).toBeTruthy();
     });
 
