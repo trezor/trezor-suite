@@ -223,9 +223,9 @@ const createOnBundleProgressHandler = (
         );
 
         if (isProgressEventOk(event)) {
-            // all encountered accounts were empty, so create all of the delayed empty accounts
+            // all encountered accounts were empty, so create all of the delayed empty accounts (and also the latest event)
             if (event.progress === 100 && !encounteredNonEmptyAccount) {
-                emptyProgressEvents.forEach(delayedEvent => {
+                [...emptyProgressEvents, event].forEach(delayedEvent => {
                     dispatch(
                         accountsActions.createAccount(
                             progressEventToCreateAccountPayload(delayedEvent),

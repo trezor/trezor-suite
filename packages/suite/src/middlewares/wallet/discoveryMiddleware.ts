@@ -1,8 +1,14 @@
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { accountsActions, deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import * as discoveryActions from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    changeNetworks,
+    deviceActions,
+    runAdditionalDiscoveryThunk,
+    selectSelectedDevice,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
@@ -52,16 +58,14 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             action.type === SUITE.APP_CHANGED ||
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
-            discoveryActions.changeNetworks.match(action) ||
+            changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
             if (device && device.connected && isDeviceAcquired(device) && !isDeviceLocked) {
                 if (!device?.state) {
-                    dispatch(discoveryActions.startDiscoveryThunk({ device }));
+                    dispatch(startDiscoveryThunk({ device }));
                 } else if (device.state.staticSessionId) {
-                    dispatch(
-                        discoveryActions.runAdditionalDiscoveryThunk(device.state.staticSessionId),
-                    );
+                    dispatch(runAdditionalDiscoveryThunk(device.state.staticSessionId));
                 }
             }
         }
