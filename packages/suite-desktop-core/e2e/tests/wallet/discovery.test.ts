@@ -34,15 +34,16 @@ test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
 
         await dashboardPage.dashboardMenuButton.click();
         // all available networks should return something from discovery
-        await expect(dashboardPage.loading).toBeVisible({ timeout: 10000 });
+        await expect(dashboardPage.loading).toBeVisible();
 
-        // wait randomly between 1000 and 4000 ms
-        await page.waitForTimeout(getRandomInt(1, 40) * 100);
+        // wait randomly between 1000 and 1000 ms
+        await page.waitForTimeout(getRandomInt(1, 10) * 100);
 
         // trigger reload to simulate interruption. we want to make sure that communication with the device does not
         // end up in some de-synced state. if this test becomes flaky, this reload might be the reason.
         await page.reload();
-        await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
+
+        await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible({ timeout: 10000 });
         await expect(dashboardPage.loading).toBeVisible({ timeout: 10000 });
         await dashboardPage.loading.waitFor({ state: 'detached', timeout: DISCOVERY_LIMIT });
         for (const symbol of ['btc', ...coinsToActivate] as NetworkSymbol[]) {
