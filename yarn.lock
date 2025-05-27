@@ -12311,6 +12311,7 @@ __metadata:
     postcss-modules-local-by-default: "npm:4.2.0"
     postcss-modules-scope: "npm:^3.2.1"
     postcss-modules-values: "npm:^4.0.0"
+    semver: "npm:^7.7.1"
     simple-git: "npm:^3.27.0"
     style-loader: "npm:^4.0.0"
     tsx: "npm:^4.19.3"

@@ -1,3 +1,5 @@
+import * as semver from 'semver';
+
 import { getBrowserName, getBrowserVersion, getDeviceType, getOsNameWeb } from '@trezor/env-utils';
 import { CHROME_ANDROID_URL, CHROME_UPDATE_URL, CHROME_URL, SUITE_URL } from '@trezor/urls';
 
@@ -147,39 +149,39 @@ window.addEventListener('load', () => {
     const supportedBrowsers = [
         {
             name: 'chrome',
-            version: 92,
+            version: '109',
             mobile: true,
         },
         {
             name: 'chromium',
-            version: 92,
+            version: '109',
             mobile: true,
         },
         // in UAParser v2, chrome is differently identified between desktop & mobile version
         {
             name: 'mobilechrome',
-            version: 92,
+            version: '109',
             mobile: true,
         },
         {
             name: 'firefox',
-            version: 102,
+            version: '115',
             mobile: false, // no webusb support
         },
         // Other Chromium based browsers
         {
             name: 'brave',
-            version: 59,
+            version: '1.47.0', // Brave 1.47.x corresponds to Chromium 109
             mobile: true,
         },
         {
             name: 'edge',
-            version: 92, // Edge 92 is based on Chromium 92
+            version: '109', // Edge 109 is based on Chromium 109
             mobile: true,
         },
         {
             name: 'opera',
-            version: 95,
+            version: '95',
             mobile: true,
         },
     ] as const;
@@ -193,7 +195,10 @@ window.addEventListener('load', () => {
     );
     const updateRequired =
         supportedBrowser && browserVersion
-            ? supportedBrowser.version > parseInt(browserVersion, 10)
+            ? !semver.gte(
+                  semver.coerce(browserVersion) ?? '',
+                  semver.coerce(supportedBrowser.version) ?? '',
+              )
             : false;
 
     const goToSuite = () => {

@@ -22,7 +22,8 @@
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "semver": "^7.7.1"
     },
     "devDependencies": {
         "@mobily/ts-belt": "^3.13.1",
