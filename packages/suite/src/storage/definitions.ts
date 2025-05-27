@@ -82,6 +82,7 @@ export interface SuiteDBSchema extends DBSchema {
     thp: {
         key: string;
         value: {
+            staticKey?: string;
             credentials: ThpSuiteCredentials[];
         };
     };

@@ -27,6 +27,9 @@ export type ThpState = {
     step: ThpStep;
     lastThpCode?: string;
     credentials: ThpSuiteCredentials[];
+    // staticKey for the application.
+    // this value is generated at first THP pairing and should never change. will be used for all future pairings
+    staticKey?: string;
 };
 
 const initialState: ThpState = {
@@ -69,12 +72,13 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             .addMatcher(
                 action => action.type === DEVICE.THP_CREDENTIALS_CHANGED,
                 (state, action: DeviceThpCredentialsChanged) => {
-                    const { credentials } = action.payload;
+                    const { credentials, staticKey } = action.payload;
 
                     state.credentials.push({
                         ...credentials,
                         connectionCounter: 0,
                     });
+                    state.staticKey = staticKey;
                 },
             )
             .addMatcher(
@@ -100,6 +104,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 action => action.type === extra.actionTypes.storageLoad,
                 (state, action: AnyAction) => {
                     state.credentials = action.payload.thp?.credentials ?? [];
+                    state.staticKey = action.payload.thp?.staticKey;
                 },
             ),
 );

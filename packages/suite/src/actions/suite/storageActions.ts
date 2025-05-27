@@ -118,8 +118,8 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
 
 export const saveThpCredentials = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
-    const { credentials } = getState().thp;
-    db.addItem('thp', { credentials }, 'value', true);
+    const { credentials, staticKey } = getState().thp;
+    db.addItem('thp', { credentials, staticKey }, 'value', true);
 };
 
 export const saveKnownDevices = () => async (_dispatch: Dispatch, getState: GetState) => {
