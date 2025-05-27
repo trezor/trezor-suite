@@ -14,6 +14,7 @@ export class DashboardPage {
     readonly deviceSwitchingOpenButton: Locator;
     readonly deviceSwitchingCloseButton: Locator;
     readonly modal: Locator;
+    readonly deviceSwitcherModal: Locator;
     //TODO: Refactor to wallet page object
     readonly walletAtIndex = (index: number) =>
         this.page.getByTestId(`@switch-device/wallet-on-index/${index}`);
@@ -48,6 +49,7 @@ export class DashboardPage {
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
         this.deviceSwitchingCloseButton = this.page.getByTestId('@switch-device/cancel-button');
         this.modal = this.page.getByTestId('@modal');
+        this.deviceSwitcherModal = this.page.getByTestId('@modal/switch-device');
         this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
         this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');
         this.addHiddenWalletButton = this.page.getByTestId(
@@ -83,7 +85,7 @@ export class DashboardPage {
     @step()
     async openDeviceSwitcher() {
         await this.deviceSwitchingOpenButton.click();
-        await expect(this.modal).toBeVisible();
+        await expect(this.deviceSwitcherModal).toBeVisible();
     }
 
     @step()

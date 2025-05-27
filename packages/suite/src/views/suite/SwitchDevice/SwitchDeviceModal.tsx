@@ -44,7 +44,7 @@ export const SwitchDeviceModal = ({
             padding={spacings.xxs}
         >
             <TrafficLightOffset>
-                <Container data-testid={dataTest}>
+                <Container data-testid={`${dataTest}/switch-device`}>
                     <Column alignItems="flex-start" gap={spacings.md} flex="1">
                         <motion.div
                             initial={isAnimationEnabled ? initial : false}
