@@ -9,6 +9,7 @@ import {
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
 import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,
     ExternalOutput,
@@ -16,10 +17,9 @@ import {
     PrecomposedTransactionFinal,
     StakeFormState,
 } from '@suite-common/wallet-types';
-import { calculateTotalGasCost, getAccountIdentity, isPending } from '@suite-common/wallet-utils';
+import { calculateTotalGasCost, getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -109,7 +109,7 @@ export const composeTransaction =
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount, transactions } = getState().wallet;
+        const { selectedAccount } = getState().wallet;
         const device = selectSelectedDevice(getState());
         if (
             selectedAccount.status !== 'loaded' ||
@@ -124,28 +124,12 @@ export const signTransaction =
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
-        // Ethereum account `misc.nonce` is not updated before pending tx is mined
-        // Calculate `pendingNonce`: greatest value in pending tx + 1
-        // This may lead to unexpected/unwanted behavior
-        // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
-        const pendingTxs = (transactions.transactions[account.key] || []).filter(isPending);
-        const pendingNonce = pendingTxs.reduce((value, tx) => {
-            if (!tx.ethereumSpecific) return value;
-
-            return Math.max(value, tx.ethereumSpecific.nonce + 1);
-        }, 0);
-        const pendingNonceBig = new BigNumber(pendingNonce);
-        let nonce =
-            pendingNonceBig.gt(0) && pendingNonceBig.gt(account.misc.nonce)
-                ? pendingNonceBig.toString()
-                : account.misc.nonce;
-
-        if (
-            formValues.rbfParams?.type === 'ethereum' &&
-            typeof formValues.rbfParams.ethereumNonce === 'number'
-        ) {
-            nonce = formValues.rbfParams.ethereumNonce.toString();
-        }
+        const { nonce } = await dispatch(
+            ethereumGetCurrentNonceThunk({
+                selectedAccount: account,
+                rbfParams: formValues.rbfParams,
+            }),
+        ).unwrap();
 
         const identity = getAccountIdentity(account);
 
