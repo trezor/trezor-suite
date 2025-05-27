@@ -134,7 +134,7 @@ describe('useTradingBuyForm', () => {
             expect(invityAPISpy).toHaveBeenCalledTimes(1);
         });
 
-        it('should not call createInvityAPIKey when descriptor is empty string', async () => {
+        it('should call createInvityAPIKey with random string when descriptor is empty string', async () => {
             const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
             const store = await getInitializedStore();
             await renderUseTradingBuyForm(store);
@@ -150,10 +150,11 @@ describe('useTradingBuyForm', () => {
                 );
             });
 
-            expect(invityAPISpy).toHaveBeenCalledTimes(0);
+            expect(invityAPISpy).toHaveBeenCalledTimes(1);
+            expect(invityAPISpy).toHaveBeenCalledWith('random_string');
         });
 
-        it('should not call createInvityAPIKey when descriptor is undefined ', async () => {
+        it('should call createInvityAPIKey with random string when descriptor is undefined ', async () => {
             const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
             const store = await getInitializedStore();
             await renderUseTradingBuyForm(store);
@@ -187,7 +188,8 @@ describe('useTradingBuyForm', () => {
                 );
             });
 
-            expect(invityAPISpy).toHaveBeenCalledTimes(1);
+            expect(invityAPISpy).toHaveBeenCalledTimes(2);
+            expect(invityAPISpy).toHaveBeenLastCalledWith('random_string');
         });
     });
 
