@@ -35,6 +35,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
     groupBy: 'day' | 'month',
     type: TType,
 ): ObjectType<TType>[] => {
+    // console.log('___graphData', graphData);
     const groupedByTimestamp: { [key: string]: ObjectType<TType> } = {};
 
     for (let i = 0; i < graphData.length; i++) {

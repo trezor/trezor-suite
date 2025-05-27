@@ -135,11 +135,27 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         </Button>
                     </ErrorMessage>
                 ) : (
-                    <TransactionsGraph
-                        selectedRange={graph.selectedRange}
-                        portfolioData={data}
-                        localCurrency={localCurrency}
-                    />
+                    <>
+                        <TransactionsGraph
+                            selectedRange={graph.selectedRange}
+                            portfolioData={data}
+                            localCurrency={localCurrency}
+                        />
+                        {/*<LegacyTransactionsGraph*/}
+                        {/*    hideToolbar*/}
+                        {/*    variant="all-assets"*/}
+                        {/*    onRefresh={onRefresh}*/}
+                        {/*    isLoading={graph.isLoading || isProcessing}*/}
+                        {/*    localCurrency={localCurrency}*/}
+                        {/*    xTicks={xTicks}*/}
+                        {/*    minMaxValues={minMaxValues}*/}
+                        {/*    data={data}*/}
+                        {/*    selectedRange={graph.selectedRange}*/}
+                        {/*    receivedValueFn={receivedValueFn}*/}
+                        {/*    sentValueFn={sentValueFn}*/}
+                        {/*    balanceValueFn={balanceValueFn}*/}
+                        {/*/>*/}
+                    </>
                 )}
             </GraphWrapper>
         </Wrapper>

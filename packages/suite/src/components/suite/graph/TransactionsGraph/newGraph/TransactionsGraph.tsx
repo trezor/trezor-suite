@@ -92,6 +92,7 @@ export const TransactionsGraph = ({
     const theme = useTheme();
     const [segments, setSegments] = useState<RawDataItem[][]>([]);
     const [raw, setRaw] = useState<RawDataItem[]>([]);
+    const [sanitizedPortfolioData, setSanitizedPortfolioData] = useState<RawDataItem[]>([]);
     const [verticalSegments, setVerticalSegments] = useState<RawDataItem[][]>([]);
     const [ticks, setTicks] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -101,7 +102,6 @@ export const TransactionsGraph = ({
         average: null,
     });
 
-    sanitizePortfolioData(portfolioData);
     const removeData = () => {
         setVerticalSegments([]);
         setTicks([]);
@@ -152,6 +152,12 @@ export const TransactionsGraph = ({
         setMetaData(calculateMetaData(raw));
         setIsLoading(false);
     }, [raw]);
+
+    useEffect(() => {
+        const sanitizedData = sanitizePortfolioData(portfolioData);
+        console.log('___P', raw, sanitizedData);
+        setSanitizedPortfolioData(sanitizedData);
+    }, [portfolioData]);
 
     if (isLoading) {
         return <GraphSkeleton animate />;
@@ -270,6 +276,24 @@ export const TransactionsGraph = ({
                             />
                         );
                     })}
+                    {/*{sanitizedPortfolioData.map((pair, index) => {*/}
+                    {/*    return (*/}
+                    {/*        <Line*/}
+                    {/*            key={`b-${index}`}*/}
+                    {/*            data={pair}*/}
+                    {/*            type="linear"*/}
+                    {/*            dataKey="value"*/}
+                    {/*            stroke={'blue'}*/}
+                    {/*            strokeWidth={1.5}*/}
+                    {/*            strokeDasharray="3 6"*/}
+                    {/*            strokeLinejoin="round"*/}
+                    {/*            strokeLinecap="round"*/}
+                    {/*            isAnimationActive={false}*/}
+                    {/*            legendType="none"*/}
+                    {/*            name={`balance-${index}`}*/}
+                    {/*        />*/}
+                    {/*    );*/}
+                    {/*})}*/}
                     {metaData.min && (
                         <ReferenceLine
                             y={metaData.min}

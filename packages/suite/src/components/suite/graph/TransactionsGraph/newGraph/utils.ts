@@ -1,4 +1,4 @@
-import { differenceInDays, format, fromUnixTime, subMonths } from 'date-fns';
+import { format, fromUnixTime } from 'date-fns';
 
 import { ApiData, RawDataItem } from './types';
 import { GraphRange } from '../../../../../types/wallet/graph';
@@ -8,32 +8,6 @@ const getNewValue = (previousValue: number) => {
     const value = Math.floor(previousValue + Math.random() + 15000 * howClose);
 
     return value > 0 ? value : 0;
-};
-
-export const generateData = (startDate: Date, endDate: Date) => {
-    const endDateValue = endDate ?? new Date();
-    const startDateValue = startDate ?? subMonths(new Date(), 24);
-
-    const daysCount = differenceInDays(endDateValue, startDateValue);
-
-    const result = [];
-    let current = startDateValue.getTime();
-    let previousValue = 0;
-    for (let i = 0; i < daysCount; i++) {
-        const newValue = getNewValue(previousValue);
-        previousValue = newValue;
-
-        result.push({ date: new Date(current).toISOString(), value: newValue });
-        current += 1000 * 60 * 60 * 24 * 3;
-        if (Math.random() > 0.85) {
-            result.push({
-                date: new Date(current).toISOString(),
-                value: getNewValue(previousValue),
-            });
-        }
-    }
-
-    return result;
 };
 
 export const calculateSegments = (raw: RawDataItem[]) => {
@@ -58,11 +32,6 @@ export const calculateSegments = (raw: RawDataItem[]) => {
     }
     newSegments.push(seg);
 
-    // setSegments(newSegments);
-    // setVerticalSegments(newVerticalSegments);
-    // setTicks(raw.map(d => d.date).filter((_, i, arr) => i !== 0 && i !== arr.length - 1));
-
-    // setMetaData(calculateMetaData(raw));
     const filteredTicks = raw
         .map(d => d.date)
         .filter((_, i, arr) => i !== 0 && i !== arr.length - 1);
@@ -95,13 +64,12 @@ export const calculateMetaData = (data: RawDataItem[]) => {
 export const dateFormatter = (date: string, isSameYear: boolean) =>
     format(new Date(date), `d MMM${isSameYear ? '' : ' yyyy'}`);
 
-export const sanitizePortfolioData = data =>
-    data.map(item => ({
-        ...item,
-        date: fromUnixTime(item.time),
+export const sanitizePortfolioData = data => Object.values(data).map(item => ({
+        value: parseFloat(item.balanceFiat.usd),
+        date: fromUnixTime(item.time).toISOString(),
     }));
 
-const getProbabilityOfTransaction = selectedRange => {
+const getProbabilityOfTransaction = (selectedRange: GraphRange) => {
     switch (selectedRange.label) {
         case 'all':
             return 0.99;

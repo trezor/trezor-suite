@@ -19,6 +19,7 @@ import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/walle
 
 import { SummaryCards } from './SummaryCards';
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
+import { TransactionsGraph } from '../../../../components/suite/graph/TransactionsGraph/newGraph/TransactionsGraph';
 
 const ErrorMessage = styled.div`
     display: flex;
@@ -116,21 +117,26 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                             <HiddenPlaceholder enforceIntensity={8}>
                                 <Card overflow="visible">
                                     <Row height={320} overflow="visible" alignItems="stretch">
-                                        <LegacyTransactionsGraph
-                                            hideToolbar
-                                            variant="one-asset"
-                                            xTicks={xTicks}
-                                            account={account}
-                                            isLoading={isLoading}
-                                            data={data}
-                                            minMaxValues={minMaxValues}
-                                            localCurrency={localCurrency}
-                                            onRefresh={onRefresh}
+                                        <TransactionsGraph
                                             selectedRange={selectedRange}
-                                            receivedValueFn={data => data.received}
-                                            sentValueFn={data => data.sent}
-                                            balanceValueFn={data => data.balance}
+                                            portfolioData={data}
+                                            localCurrency={localCurrency}
                                         />
+                                        {/*<LegacyTransactionsGraph*/}
+                                        {/*    hideToolbar*/}
+                                        {/*    variant="one-asset"*/}
+                                        {/*    xTicks={xTicks}*/}
+                                        {/*    account={account}*/}
+                                        {/*    isLoading={isLoading}*/}
+                                        {/*    data={data}*/}
+                                        {/*    minMaxValues={minMaxValues}*/}
+                                        {/*    localCurrency={localCurrency}*/}
+                                        {/*    onRefresh={onRefresh}*/}
+                                        {/*    selectedRange={selectedRange}*/}
+                                        {/*    receivedValueFn={data => data.received}*/}
+                                        {/*    sentValueFn={data => data.sent}*/}
+                                        {/*    balanceValueFn={data => data.balance}*/}
+                                        {/*/>*/}
                                     </Row>
                                 </Card>
                             </HiddenPlaceholder>
