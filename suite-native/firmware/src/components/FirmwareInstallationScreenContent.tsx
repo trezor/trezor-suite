@@ -197,7 +197,7 @@ export const FirmwareInstallationScreenContent = ({
         return 'starting';
     }, [status, operation, isError]);
 
-    const showConfirmOnDevice = confirmOnDevice && !isError;
+    const showConfirmOnDevice = confirmOnDevice && !isError && !isDone;
     const isCancelButtonDisplayed = isCancellationAllowed && isError;
 
     const buttonStyle = applyStyle(bottomButtonsContainerStyle, {
