@@ -1,6 +1,8 @@
 import { BuyTrade, CryptoId } from 'invity-api';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import { getBtcAccount } from '../__fixtures__/account';
 import quotes from '../__fixtures__/quotes.json';
@@ -228,6 +230,21 @@ describe('tradingSlice', () => {
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
             expect(state.tradeOrderIdToBeOpened).toBeUndefined();
+        });
+    });
+
+    describe('@suite/device/selectDevice', () => {
+        it('should clear selectedReceiveAccount', () => {
+            const actions = [
+                setBuySelectedReceiveAccount({
+                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                }),
+                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.buy.selectedReceiveAccount).toBeUndefined();
         });
     });
 });
