@@ -27,11 +27,11 @@ export class FirmwareSection {
     async continueThroughFirmware() {
         await expect(this.onboardingLayout).toBeVisible();
         // Test using this method do not care if we have current firmware or not
-        // that is way we are using Promise.race to get thru firmware check either way
+        // that is way we are using Promise.race to get through firmware check either way
         await Promise.race([this.continueButton.click(), this.skip()]);
     }
 
-    // This methods serves as watchdog for situation where new firmware is released to suite desktop and web
+    // This method serves as a watchdog for the situation where new firmware is released to suite desktop and web
     // But is not yet available in our TrezorEnv that is used by the test CIs.
     @step()
     async expectFirmwareToBeReady() {
