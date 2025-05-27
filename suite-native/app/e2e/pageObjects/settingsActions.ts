@@ -67,7 +67,7 @@ class SettingsActions {
 
     async toggleWalletViewOnly(
         deviceName: string = TREZOR_E2E_DEVICE_LABEL,
-        walletIndex: number = 0,
+        walletIndex: number = 1,
     ) {
         const toggleButtonElement = element(
             by.id(`@settings/view-only/toggle-button/${deviceName}/${walletIndex}`),
