@@ -1183,3 +1183,12 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
     token.name?.toLowerCase().includes(search) ||
     token.contract?.toLowerCase().includes(search);
+
+export const isAccountInCollection = (account: Account, accounts: Account[]) =>
+    accounts.some(
+        ({ descriptor, symbol, accountType, index }) =>
+            descriptor === account.descriptor &&
+            symbol === account.symbol &&
+            accountType === account.accountType &&
+            index === account.index,
+    );

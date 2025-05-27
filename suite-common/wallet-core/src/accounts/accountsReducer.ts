@@ -3,7 +3,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { enhanceHistory } from '@suite-common/wallet-utils';
+import { enhanceHistory, isAccountInCollection } from '@suite-common/wallet-utils';
 
 import { accountsActions } from './accountsActions';
 import { deviceActions } from '../device/deviceActions';
@@ -68,12 +68,16 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 remove(state, action.payload);
             })
             .addCase(accountsActions.createAccount, (state, action) => {
-                // TODO: check if account already exist, for example 2 device instances with same passphrase
                 const account = {
                     ...action.payload,
                     // remove "transactions" field, they are stored in "transactionReducer"
                     history: enhanceHistory(action.payload.history),
                 };
+                if (isAccountInCollection(account, state)) {
+                    console.warn('Prevented duplicate account in accountsReducer: ', account);
+
+                    return;
+                }
                 state.push(account);
             })
             .addCase(accountsActions.createIndexLabeledAccount, (state, action) => {
