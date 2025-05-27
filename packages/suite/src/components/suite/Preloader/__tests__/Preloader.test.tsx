@@ -65,6 +65,9 @@ const getInitialState = ({ suite, router, device }: any = {}) => ({
         devices: [],
         ...device,
     },
+    bluetooth: {
+        unpairedDeviceNeedsManualOsRemoval: false,
+    },
     window: {
         size: 'LARGE',
     },
