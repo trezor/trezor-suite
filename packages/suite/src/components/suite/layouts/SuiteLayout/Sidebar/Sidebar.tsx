@@ -31,6 +31,7 @@ const Container = styled.nav<{ $elevation: Elevation }>`
 
 const Wrapper = styled.div`
     display: flex;
+    flex-direction: column;
 `;
 const Content = styled.div`
     height: 100%;
@@ -82,10 +83,10 @@ export const Sidebar = () => {
                 minWidth={SIDEBAR_MIN_WIDTH}
                 maxWidth={600}
                 zIndex={zIndices.draggableComponent}
-                updateHeightOnWindowResize
                 onWidthResizeEnd={handleSidebarWidthChanged}
                 onWidthResizeMove={handleSidebarWidthUpdate}
                 disabledWidthInterval={[84, 240]}
+                flex="1"
             >
                 <Container $elevation={elevation}>
                     <TrafficLightOffset>

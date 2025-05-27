@@ -41,8 +41,6 @@ export const ResizableBox: StoryObj<ResizableBoxProps> = {
         maxHeight: 300,
         disabledWidthInterval: [51, 100],
         disabledHeightInterval: undefined,
-        updateWidthOnWindowResize: false,
-        updateHeightOnWindowResize: false,
     },
     argTypes: {
         children: {
@@ -65,17 +63,5 @@ export const ResizableBox: StoryObj<ResizableBoxProps> = {
         height: { control: 'number' },
         minHeight: { control: 'number' },
         maxHeight: { control: 'number' },
-        updateWidthOnWindowResize: {
-            control: 'boolean',
-            description:
-                'Maximize the box width to the window width when resizing window or zooming',
-            defaultValue: false,
-        },
-        updateHeightOnWindowResize: {
-            control: 'boolean',
-            description:
-                'Maximize the box height to the window height when resizing window or zooming',
-            defaultValue: false,
-        },
     },
 };
