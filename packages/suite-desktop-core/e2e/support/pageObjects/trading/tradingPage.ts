@@ -341,7 +341,7 @@ export class TradingPage {
         // The suite does not wait for these responses and it causes flakiness in automation.
         // Toast error: 'Transaction signing error: Missing composed data' and not possible to send.
         // So we have to wait for them manually.
-        const swapFeeCallsPromise = this.fees.promiseForResponseSwapFeeCalls();
+        const swapFeeCallsPromise = this.fees.promiseForResponseSolanaFeeCalls();
         await this.swapBestOfferButton.click();
         await swapFeeCallsPromise;
     }

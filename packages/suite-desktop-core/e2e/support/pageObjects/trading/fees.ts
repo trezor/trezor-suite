@@ -32,7 +32,7 @@ export class Fees {
     }
 
     @step()
-    promiseForResponseSwapFeeCalls() {
+    promiseForResponseSolanaFeeCalls() {
         const isSolanaResponse = (response: Response, method: string) =>
             new RegExp(solanaUrlPattern).test(response.url()) &&
             response.request().postDataJSON().method === method;

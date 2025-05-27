@@ -62,7 +62,11 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
 
     test('Sell Solana', async ({ page, tradingPage, tradingMock, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
+            const solanaFeePromise = tradingPage.fees.promiseForResponseSolanaFeeCalls();
             await tradingPage.fillSellForm(cryptoAmount, 'solana');
+            // Automation is too fast, we need to wait for Fees to be resolved
+            await solanaFeePromise;
+            await expect(tradingPage.fees.miscAmount).toBeVisible();
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });
@@ -123,9 +127,15 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
 
     test('Sell Solana for compared offer', async ({ page, tradingPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
+            const solanaFeePromise = tradingPage.fees.promiseForResponseSolanaFeeCalls();
             await tradingPage.fillSellForm(cryptoAmount, 'solana');
+            // Automation is too fast, we need to wait for Fees to be resolved
+            await solanaFeePromise;
+            await expect(tradingPage.fees.miscAmount).toBeVisible();
             await tradingPage.compareButton.click();
         });
+        await page.pause();
+        await expect(tradingPage.youPayCryptoInput).toHaveValue(cryptoAmount);
 
         await test.step('Check compared offers', async () => {
             await expect(tradingPage.youPayCryptoInput).toHaveValue(cryptoAmount);
