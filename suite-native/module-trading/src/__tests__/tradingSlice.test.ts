@@ -2,6 +2,7 @@ import { BuyTrade, CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
+import { tradingBuyActions } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 
 import { getBtcAccount } from '../__fixtures__/account';
@@ -10,6 +11,8 @@ import { adaAsset, btcAsset, usdcAsset } from '../__fixtures__/tradeableAssets';
 import {
     TradingState,
     addTradeableAssetToFavourites,
+    buyAssetChanged,
+    buyFiatCurrencyChanged,
     clearTradeOrderIdToBeOpened,
     initialState,
     removeTradeableAssetFromFavourites,
@@ -245,6 +248,89 @@ describe('tradingSlice', () => {
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
             expect(state.buy.selectedReceiveAccount).toBeUndefined();
+        });
+    });
+
+    describe('buyAssetChanged', () => {
+        it('should clear selectedReceiveAccount', () => {
+            const actions = [
+                setBuySelectedReceiveAccount({
+                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                }),
+                buyAssetChanged(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.buy.selectedReceiveAccount).toBeUndefined();
+        });
+
+        it('should clear buy amountLimits', () => {
+            const actions = [
+                tradingBuyActions.setAmountLimits({
+                    currency: 'CZK',
+                    minFiat: '100',
+                    maxCrypto: '0.01',
+                    maxFiat: '1000',
+                    minCrypto: '0.0001',
+                }),
+                buyAssetChanged(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.buy.amountLimits).toBeUndefined();
+        });
+
+        it('should clear quotesRequest', () => {
+            const actions = [
+                tradingBuyActions.saveQuoteRequest({
+                    wantCrypto: true,
+                    receiveCurrency: 'btc' as CryptoId,
+                    fiatCurrency: 'czk',
+                    country: 'CZ',
+                }),
+                buyAssetChanged(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.buy.quotesRequest).toBeUndefined();
+        });
+    });
+
+    describe('buyFiatCurrencyChanged', () => {
+        it('should clear buy amountLimits', () => {
+            const actions = [
+                tradingBuyActions.setAmountLimits({
+                    currency: 'CZK',
+                    minFiat: '100',
+                    maxCrypto: '0.01',
+                    maxFiat: '1000',
+                    minCrypto: '0.0001',
+                }),
+                buyFiatCurrencyChanged(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.buy.amountLimits).toBeUndefined();
+        });
+
+        it('should clear quotesRequest', () => {
+            const actions = [
+                tradingBuyActions.saveQuoteRequest({
+                    wantCrypto: true,
+                    receiveCurrency: 'btc' as CryptoId,
+                    fiatCurrency: 'czk',
+                    country: 'CZ',
+                }),
+                buyAssetChanged(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.buy.quotesRequest).toBeUndefined();
         });
     });
 });

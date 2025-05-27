@@ -18,7 +18,11 @@ import { PROTO } from '@trezor/connect';
 import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { setBuySelectedReceiveAccount } from '../../../tradingSlice';
+import {
+    buyAssetChanged,
+    buyFiatCurrencyChanged,
+    setBuySelectedReceiveAccount,
+} from '../../../tradingSlice';
 import { TradeableAsset, TradingBuyForm } from '../../../types';
 import { clearTradingBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
@@ -197,23 +201,17 @@ describe('useBuyForm', () => {
         });
     });
 
-    it('should clear selected account on asset network change', async () => {
+    it('should dispatch buyAssetChanged on asset change', async () => {
         const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result } = await renderUseTradingBuyForm(store);
-
-        act(() => {
-            store.dispatch(
-                setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: { account: { key: 'btc2' } as Account },
-                }),
-            );
-        });
 
         act(() => {
             result.current.setValue('asset', usdcAsset);
         });
 
-        expect(result.current.getValues('receiveAccount')).toBeUndefined();
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledWith(buyAssetChanged());
     });
 
     it('should not clear selected account when asset is set to undefined', async () => {
@@ -267,6 +265,19 @@ describe('useBuyForm', () => {
         });
 
         expect(result.current.getValues('fiatValue')).toBeUndefined();
+    });
+
+    it('should dispatch buyFiatCurrencyChanged action on fiat currency change', async () => {
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseTradingBuyForm(store);
+
+        act(() => {
+            result.current.setValue('fiatCurrency', 'eur');
+        });
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledWith(buyFiatCurrencyChanged());
     });
 
     it('should clear cryptoValue when user edits fiatValue', async () => {
@@ -527,18 +538,22 @@ describe('useBuyForm', () => {
             ['3000', 'Maximum is $2,000.00'],
         ])('should display fiat error for amount %s', async (amount, expectedValue) => {
             const store = await getInitializedStore(true);
-            store.dispatch(
-                tradingBuyActions.setAmountLimits({
-                    minFiat: '1000',
-                    maxFiat: '2000',
-                    currency: 'USD',
-                }),
-            );
+
             const { result } = await renderUseTradingBuyForm(store);
 
             act(() => {
                 result.current.setValue('fiatValue', amount);
                 result.current.setValue('asset', btcAsset);
+            });
+
+            act(() => {
+                store.dispatch(
+                    tradingBuyActions.setAmountLimits({
+                        minFiat: '1000',
+                        maxFiat: '2000',
+                        currency: 'USD',
+                    }),
+                );
             });
 
             await act(() => result.current.trigger('fiatValue'));
@@ -558,18 +573,20 @@ describe('useBuyForm', () => {
             'should display crypto error for amount %s',
             async (amount, amountInSats, expectedValue) => {
                 const store = await getInitializedStore(amountInSats);
-                store.dispatch(
-                    tradingBuyActions.setAmountLimits({
-                        minCrypto: '0.1',
-                        maxCrypto: '2',
-                        currency: 'BTC',
-                    }),
-                );
                 const { result } = await renderUseTradingBuyForm(store);
 
                 act(() => {
                     result.current.setValue('amountInCrypto', true);
                     result.current.setValue('asset', btcAsset);
+                });
+                act(() => {
+                    store.dispatch(
+                        tradingBuyActions.setAmountLimits({
+                            minCrypto: '0.1',
+                            maxCrypto: '2',
+                            currency: 'BTC',
+                        }),
+                    );
                 });
                 act(() => {
                     result.current.setValue('cryptoValue', amount);

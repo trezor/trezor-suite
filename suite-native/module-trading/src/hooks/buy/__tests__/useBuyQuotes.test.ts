@@ -189,12 +189,12 @@ describe('useBuyQuotes', () => {
                 result.current.setValue(field, value);
             });
 
-            // 1st call - trading/setBuySelectedReceiveAccount
-            // 2nd call - initial handleRequestThunkMock
-            // 3rd call - re-fetch of handleRequestThunkMock
-            expect(dispatchSpy).toHaveBeenCalledTimes(3);
-            expect(dispatchSpy).toHaveBeenNthCalledWith(
-                3,
+            // 1st call - trading/buyAssetChanged
+            // 2nd call - trading/buyFiatCurrencyChanged
+            // 3rd call - initial handleRequestThunkMock
+            // 4th call - re-fetch of handleRequestThunkMock
+            expect(dispatchSpy).toHaveBeenCalledTimes(4);
+            expect(dispatchSpy).toHaveBeenLastCalledWith(
                 expect.objectContaining({
                     type: 'handleRequestThunkMock',
                 }),
@@ -214,17 +214,17 @@ describe('useBuyQuotes', () => {
             result.current.setValue('fiatValue', '100');
         });
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(2);
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
 
         mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
         rerender({});
 
-        // 1st call - trading/setBuySelectedReceiveAccount
-        // 2nd call - initial handleRequestThunkMock
-        // 3rd call - re-fetch of handleRequestThunkMock
-        expect(dispatchSpy).toHaveBeenCalledTimes(3);
-        expect(dispatchSpy).toHaveBeenNthCalledWith(
-            3,
+        // 1st call - trading/buyAssetChanged
+        // 2nd call - trading/buyFiatCurrencyChanged
+        // 3rd call - initial handleRequestThunkMock
+        // 4th call - re-fetch of handleRequestThunkMock
+        expect(dispatchSpy).toHaveBeenCalledTimes(4);
+        expect(dispatchSpy).toHaveBeenLastCalledWith(
             expect.objectContaining({
                 type: 'handleRequestThunkMock',
             }),
@@ -242,7 +242,8 @@ describe('useBuyQuotes', () => {
         mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
         rerender({});
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(0);
+        // 1st call - trading/buyAssetChanged
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should clear quotes when data in form becomes invalid', async () => {
@@ -265,12 +266,13 @@ describe('useBuyQuotes', () => {
             result.current.setValue('fiatValue', undefined);
         });
 
-        // 1st call - trading/setBuySelectedReceiveAccount
-        // 2nd call - initial handleRequestThunkMock
-        // 3rd call - manual saveQuotes
-        // 4th call - clearQuotesAndQuotesRequest
-        expect(dispatchSpy).toHaveBeenCalledTimes(4);
-        expect(dispatchSpy).toHaveBeenNthCalledWith(4, {
+        // 1st call - trading/buyAssetChanged
+        // 2nd call - trading/buyFiatCurrencyChanged
+        // 3rd call - initial handleRequestThunkMock
+        // 4th call - manual saveQuotes
+        // 5th call - clearQuotesAndQuotesRequest
+        expect(dispatchSpy).toHaveBeenCalledTimes(5);
+        expect(dispatchSpy).toHaveBeenLastCalledWith({
             payload: undefined,
             type: 'trading/clearQuotesAndQuotesRequest',
         });

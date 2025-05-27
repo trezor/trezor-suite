@@ -82,6 +82,15 @@ export const tradingSlice = createSliceWithExtraDeps({
         clearTradeOrderIdToBeOpened: state => {
             state.tradeOrderIdToBeOpened = undefined;
         },
+        buyAssetChanged: state => {
+            state.buy.selectedReceiveAccount = undefined;
+            state.buy.amountLimits = undefined;
+            state.buy.quotesRequest = undefined;
+        },
+        buyFiatCurrencyChanged: state => {
+            state.buy.amountLimits = undefined;
+            state.buy.quotesRequest = undefined;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
@@ -105,6 +114,8 @@ export const {
     clearQuotesAndQuotesRequest,
     setTradeOrderIdToBeOpened,
     clearTradeOrderIdToBeOpened,
+    buyAssetChanged,
+    buyFiatCurrencyChanged,
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();

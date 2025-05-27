@@ -24,7 +24,7 @@ import {
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
 } from '../../selectors/buySelectors';
-import { setBuySelectedReceiveAccount } from '../../tradingSlice';
+import { buyAssetChanged, buyFiatCurrencyChanged } from '../../tradingSlice';
 import { TradingBuyForm, TradingBuyFormValues } from '../../types';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
@@ -92,6 +92,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                             prevFiatCurrency.current = fiatCurrency;
                             setValue('fiatValue', undefined, { shouldValidate: true });
                             setValue('cryptoValue', undefined, { shouldValidate: true });
+                            dispatch(buyFiatCurrencyChanged());
                         }
                         break;
 
@@ -106,9 +107,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                             });
                             prevCryptoId.current = asset?.cryptoId as CryptoId | undefined;
                             setValue('cryptoValue', undefined, { shouldValidate: true });
-                            dispatch(
-                                setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }),
-                            );
+                            dispatch(buyAssetChanged());
                         }
                         break;
                     }
