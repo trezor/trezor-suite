@@ -1,9 +1,9 @@
 import { A } from '@mobily/ts-belt';
 
 import {
-    type AccountType,
-    type Network,
-    type NetworkSymbol,
+    AccountType,
+    Network,
+    NetworkSymbol,
     NetworkType,
     getMainnets,
     getTestnets,

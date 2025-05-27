@@ -11015,6 +11015,7 @@ __metadata:
   resolution: "@suite-native/settings@workspace:suite-native/settings"
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-native/config": "workspace:*"
     react: "npm:18.2.0"
   languageName: unknown
   linkType: soft
