@@ -46,8 +46,8 @@ const useReceiveAccountChangeEffect = ({ getValues, setValue }: TradingBuyForm) 
         setValue('receiveAccount', selectedReceiveAccount);
 
         // when user selects receive account set invityAPIKey accordingly
-        if (descriptor && descriptor !== prevReceiveAccount?.account?.descriptor) {
-            invityAPI.createInvityAPIKey(descriptor);
+        if (descriptor !== prevReceiveAccount?.account?.descriptor) {
+            invityAPI.createInvityAPIKey(descriptor || getRandomAccountDescriptor());
         }
     }, [selectedReceiveAccount, getValues, setValue]);
 };

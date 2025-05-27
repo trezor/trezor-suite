@@ -9,6 +9,7 @@ import {
     initialState as commonInitialState,
     prepareTradingReducer,
 } from '@suite-common/trading';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import { ReceiveAccount } from './types';
 
@@ -85,6 +86,9 @@ export const tradingSlice = createSliceWithExtraDeps({
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
         builder
+            .addCase(deviceActions.selectDevice, state => {
+                state.buy.selectedReceiveAccount = undefined;
+            })
             // In case that this reducer does not match the action, try to handle it by suite-common tradingReducer.
             .addDefaultCase((state, action) => {
                 commonTradingFormReducer(state, action);
