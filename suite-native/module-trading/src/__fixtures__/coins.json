@@ -58,5 +58,17 @@
             "sell": true,
             "exchange": true
         }
+    },
+    "solana": {
+        "symbol": "sol",
+        "name": "Solana",
+        "coingeckoId": "solana",
+        "services": { "buy": true, "sell": true, "exchange": true }
+    },
+    "solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL": {
+        "symbol": "jto",
+        "name": "Jito",
+        "coingeckoId": "jito-governance-token",
+        "services": { "buy": true, "sell": false, "exchange": true }
     }
 }

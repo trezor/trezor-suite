@@ -46,7 +46,7 @@ describe('Trade Buy', () => {
         await tradingBuyActions.closePaymentWebview();
 
         await tradingHistoryActions.openTradeHistory();
-        await tradingHistoryActions.openTradeDetail('PLN 100.00');
-        await tradingHistoryActions.assertTradeDetail('Buy', 'PLN 100.00', 'BTC SegWit');
+        await tradingHistoryActions.openTradeDetail('PLN\xa0100.00');
+        await tradingHistoryActions.assertTradeDetail('Buy', 'PLN\xa0100.00', 'BTC SegWit');
     });
 });

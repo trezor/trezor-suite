@@ -25,6 +25,7 @@ export type CryptoAmountFormatterDataContext = {
     isBalance?: boolean;
     maxDisplayedDecimals?: number;
     isEllipsisAppended?: boolean;
+    smallestUnitsOverride?: boolean;
 };
 
 export const BASE_CRYPTO_MAX_DISPLAYED_DECIMALS = 8;
@@ -47,6 +48,7 @@ const convertToUnit = (
     isBalance: boolean,
     config: FormatterConfig,
     symbol?: NetworkSymbol,
+    smallestUnitsOverride?: boolean,
 ) => {
     const { bitcoinAmountUnit } = config;
     const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
@@ -56,7 +58,14 @@ const convertToUnit = (
             ? A.includes(networks[symbol]?.features, 'amount-unit')
             : undefined;
 
-    if (isBalance && areAmountUnitsSupported && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI) {
+    if (smallestUnitsOverride === false) {
+        return value;
+    }
+
+    if (
+        smallestUnitsOverride === true ||
+        (isBalance && areAmountUnitsSupported && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI)
+    ) {
         return amountToSmallestUnit(value, decimals);
     }
 
@@ -71,10 +80,15 @@ const convertToUnit = (
     return value;
 };
 
-const appendSymbol = (value: string, config: FormatterConfig, symbol: NetworkSymbol) => {
+const appendSymbol = (
+    value: string,
+    config: FormatterConfig,
+    symbol: NetworkSymbol,
+    areAmountUnitsEnabled?: boolean,
+) => {
     const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
 
-    return `${value} ${DisplaySymbolFormatter.format(symbol)}`;
+    return `${value} ${DisplaySymbolFormatter.format(symbol, { areAmountUnitsEnabled })}`;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
@@ -87,18 +101,24 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                 withSymbol = true,
                 maxDisplayedDecimals = BASE_CRYPTO_MAX_DISPLAYED_DECIMALS,
                 isEllipsisAppended = true,
+                smallestUnitsOverride,
             },
             shouldRedactNumbers,
         ) => {
-            const convertedValue = convertToUnit(value, isBalance, config, symbol);
-
+            const convertedValue = convertToUnit(
+                value,
+                isBalance,
+                config,
+                symbol,
+                smallestUnitsOverride,
+            );
             const truncatedValue = maxDisplayedDecimals
                 ? truncateDecimals(convertedValue, maxDisplayedDecimals, isEllipsisAppended)
                 : convertedValue;
 
             const formattedValue =
                 withSymbol && symbol && isNetworkSymbol(symbol)
-                    ? appendSymbol(truncatedValue, config, symbol)
+                    ? appendSymbol(truncatedValue, config, symbol, smallestUnitsOverride)
                     : truncatedValue;
 
             return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;

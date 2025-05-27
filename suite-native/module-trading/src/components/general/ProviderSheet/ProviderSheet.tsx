@@ -1,13 +1,11 @@
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
-
 import { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader';
-import { PROVIDER_LIST_ITEM_HEIGHT, ProviderListItem } from './ProviderListItem';
+import { PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT, ProviderListItem } from './ProviderListItem';
 
-export type ProvidersSheetProps<T extends BuyTrade | SellFiatTrade | ExchangeTrade> = {
+export type ProvidersSheetProps<T extends TradingTradeType> = {
     quotes: T[];
     isVisible: boolean;
     onClose: () => void;
@@ -20,7 +18,7 @@ const EXTRA_LIST_PADDING = 20;
 
 const keyExtractor = <T extends TradingTradeType>(item: T) => item.orderId ?? '';
 const getEstimatedListHeight = (itemsCount: number) =>
-    itemsCount * PROVIDER_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
+    itemsCount * PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
 
 const getProviderInfo = (
     id: string | undefined,
@@ -31,7 +29,7 @@ const getProviderInfo = (
         logo: '',
     };
 
-export const ProviderSheet = <T extends BuyTrade | SellFiatTrade | ExchangeTrade>({
+export const ProviderSheet = <T extends TradingTradeType>({
     quotes,
     isVisible,
     onClose,
@@ -52,19 +50,12 @@ export const ProviderSheet = <T extends BuyTrade | SellFiatTrade | ExchangeTrade
             renderItem={({ item }) => {
                 const provider = getProviderInfo(item.exchange, providerInfos);
 
-                const { companyName, logo } = provider;
-
-                if (!companyName || !item.orderId) {
-                    return null;
-                }
-
                 return (
                     <ProviderListItem
-                        orderId={item.orderId}
-                        companyName={companyName ?? ''}
-                        logo={logo ?? ''}
-                        onPress={() => onQuoteSelectCallback(item)}
+                        onPress={onQuoteSelectCallback}
                         isSelected={item.exchange === selectedQuote?.exchange}
+                        quote={item}
+                        provider={provider}
                     />
                 );
             }}
@@ -76,7 +67,7 @@ export const ProviderSheet = <T extends BuyTrade | SellFiatTrade | ExchangeTrade
             )}
             data={quotes}
             estimatedListHeight={getEstimatedListHeight(quotes.length)}
-            estimatedItemSize={PROVIDER_LIST_ITEM_HEIGHT}
+            estimatedItemSize={PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT}
             keyExtractor={keyExtractor}
         />
     );

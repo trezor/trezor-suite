@@ -1799,6 +1799,14 @@ export const en = {
         coinName: 'Coin name',
         coinSymbol: 'Coin symbol',
         providerLogo: 'Provider logo',
+        providerListItem: {
+            rate: 'Rate',
+            youGet: 'You get',
+            decentralizedExchange: 'Decentralized exchange',
+            centralizedExchange: 'Centralized exchange',
+            anonymous: 'Anonymous',
+            kycRequired: 'This provider requires to verify identity.',
+        },
     },
     firmware: {
         title: 'Firmware',
