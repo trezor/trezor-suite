@@ -94,7 +94,13 @@ export const useDetectDeviceError = () => {
                 pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
                 appendix: <UnacquiredDeviceModalAppendix />,
-                onPressPrimaryButton: () => dispatch(acquireDevice()),
+                onPressPrimaryButton: () => {
+                    dispatch(
+                        acquireDevice({
+                            startDiscovery: true,
+                        }),
+                    );
+                },
                 testID: '@device/errors/alert/unacquired-device',
             });
         } else {

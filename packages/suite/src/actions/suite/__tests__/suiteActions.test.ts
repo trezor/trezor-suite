@@ -221,7 +221,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
-            await store.dispatch(acquireDevice(f.requestedDevice));
+            await store.dispatch(acquireDevice({ requestedDevice: f.requestedDevice }));
             // we are not interested in thunk state here
             const expectedActions = filterThunkActionTypes(
                 discardMockedConnectInitActions(store.getActions()),

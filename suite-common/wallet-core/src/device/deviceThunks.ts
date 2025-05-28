@@ -38,7 +38,7 @@ import {
     selectSelectedDevice,
 } from './deviceReducer';
 import { selectAccountByKey } from '../accounts/accountsReducer';
-import { cancelDiscoveryThunk } from '../discovery/discoveryThunks';
+import { cancelDiscoveryThunk, startDiscoveryThunk } from '../discovery/discoveryThunks';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -255,8 +255,17 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
  */
 export const acquireDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/acquireDevice`,
-    async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
-        const device = requestedDevice || selectSelectedDevice(getState());
+    async (
+        {
+            requestedDevice,
+            startDiscovery,
+        }: {
+            requestedDevice?: TrezorDevice | null;
+            startDiscovery?: boolean;
+        },
+        { dispatch, getState },
+    ) => {
+        const device = requestedDevice ?? selectSelectedDevice(getState());
 
         if (!device) return;
 
@@ -271,6 +280,14 @@ export const acquireDevice = createThunk(
                     type: 'acquire-error',
                     device,
                     error: response.payload.error,
+                }),
+            );
+        }
+
+        if (startDiscovery) {
+            dispatch(
+                startDiscoveryThunk({
+                    device,
                 }),
             );
         }

@@ -18,7 +18,7 @@ export const DeviceAcquire = () => {
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(acquireDevice());
+        dispatch(acquireDevice({}));
     };
 
     const ctaButton = (

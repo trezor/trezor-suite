@@ -22,7 +22,7 @@ export const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) 
         case DEVICE.CONNECT_UNACQUIRED:
             action = {
                 label: 'TR_SOLVE_ISSUE',
-                onClick: () => dispatch(acquireDevice(device)),
+                onClick: () => dispatch(acquireDevice({ requestedDevice: device })),
             };
             break;
         // no default
