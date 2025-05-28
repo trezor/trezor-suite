@@ -550,18 +550,18 @@ describe('useBuyForm', () => {
         });
 
         it.each([
-            ['10', false, 'Minimum is 1000 BTC'],
-            ['3000', false, 'Maximum is 2000 BTC'],
-            ['10', true, 'Minimum is 100000000000 sat'],
-            ['3000', true, 'Maximum is 200000000000 sat'],
+            ['0.01', false, 'Minimum is 0.1 BTC'],
+            ['3', false, 'Maximum is 2 BTC'],
+            ['10', true, 'Minimum is 10000000 sat'],
+            ['300000000', true, 'Maximum is 200000000 sat'],
         ])(
             'should display crypto error for amount %s',
             async (amount, amountInSats, expectedValue) => {
                 const store = await getInitializedStore(amountInSats);
                 store.dispatch(
                     tradingBuyActions.setAmountLimits({
-                        minCrypto: '1000',
-                        maxCrypto: '2000',
+                        minCrypto: '0.1',
+                        maxCrypto: '2',
                         currency: 'BTC',
                     }),
                 );

@@ -8,6 +8,8 @@ import type { UseFormReturn } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { Address } from '@trezor/blockchain-link-types';
 
+import { useConvertFormValueToBaseUnit } from './hooks/general/useConvertFormValueToBaseUnit';
+
 export type TradeableAsset = {
     symbol: NetworkSymbolExtended;
     contractAddress?: TokenAddress | undefined;
@@ -39,6 +41,9 @@ export type TradingBuyFormContext = (TradingAmountLimitProps | Record<string, ne
     translate: ReturnType<typeof useTranslate>['translate'];
     FiatAmountFormatter: Formatters['FiatAmountFormatter'];
     CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
+    convertNumberToBaseUnit: ReturnType<
+        typeof useConvertFormValueToBaseUnit
+    >['convertNumberToBaseUnit'];
 };
 
 export type TradingBuyForm = UseFormReturn<TradingBuyFormValues>;

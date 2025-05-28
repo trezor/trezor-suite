@@ -3,8 +3,14 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TradingBuyFormContext } from '../../types';
 
-const getAmountLimitContext = ({ options }: yup.TestContext<unknown>) =>
-    options.context as TradingBuyFormContext;
+const getAmountLimitContext = ({ options }: yup.TestContext<unknown>): TradingBuyFormContext => {
+    const context = options.context as TradingBuyFormContext;
+
+    return {
+        ...context,
+        currency: context.currency ?? 'unknown',
+    };
+};
 
 const formatCryptoAmount = (
     amount: string,
@@ -24,10 +30,20 @@ export const buyFormValidationSchema = yup.object({
         .typeError('Invalid number')
         .min(0, 'Invalid value')
         .test('crypto-min', (value, testContext) => {
-            const { currency, minCrypto, translate, CryptoAmountFormatter } =
-                getAmountLimitContext(testContext);
+            const {
+                currency,
+                minCrypto,
+                translate,
+                CryptoAmountFormatter,
+                convertNumberToBaseUnit,
+            } = getAmountLimitContext(testContext);
+            const convertedValue = convertNumberToBaseUnit(value, currency.toLowerCase());
 
-            if (value === undefined || minCrypto === undefined || value >= parseFloat(minCrypto)) {
+            if (
+                convertedValue === undefined ||
+                minCrypto === undefined ||
+                convertedValue >= parseFloat(minCrypto)
+            ) {
                 return true;
             }
 

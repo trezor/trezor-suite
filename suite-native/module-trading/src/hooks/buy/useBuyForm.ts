@@ -30,6 +30,7 @@ import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
 import { getRandomAccountDescriptor } from '../../utils/general/utils';
+import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
 
 const useReceiveAccountChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
@@ -226,11 +227,18 @@ export const useBuyForm = (): TradingBuyForm => {
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const defaultValues = useSelector(selectBuyFormDefaultValues);
     const limits = useSelector(selectBuyAmountLimits);
+    const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
 
     const form = useForm<TradingBuyFormValues>({
         defaultValues,
         validation: buyFormValidationSchema,
-        context: { ...limits, translate, FiatAmountFormatter, CryptoAmountFormatter },
+        context: {
+            ...limits,
+            translate,
+            FiatAmountFormatter,
+            CryptoAmountFormatter,
+            convertNumberToBaseUnit,
+        },
     });
 
     useAmountAndCurrencyFieldsChangeEffect(form);

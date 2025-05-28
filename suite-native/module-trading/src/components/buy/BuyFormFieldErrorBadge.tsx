@@ -2,14 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { satoshiAmountToBtc } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 import { TradingBuyFormValues } from '../../types';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
@@ -25,10 +24,7 @@ const useMismatchedAmountMessage = (fieldName: keyof TradingBuyFormValues) => {
     const { translate } = useTranslate();
     const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();
     const symbol = getSelectedSymbolFromBuyForm(form);
-
-    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
-        selectIsAmountInSats(state, symbol),
-    );
+    const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
 
     const [quote, amountInCrypto, value] = form.watch(['quote', 'amountInCrypto', fieldName]);
 
@@ -42,9 +38,7 @@ const useMismatchedAmountMessage = (fieldName: keyof TradingBuyFormValues) => {
 
     if (amountInCrypto && fieldName === 'cryptoValue' && receiveStringAmount && symbol) {
         const nonEmptyValue = asNonEmptyStringValue(value);
-        const convertedRequestedAmount = isAmountInSats
-            ? satoshiAmountToBtc(nonEmptyValue)
-            : nonEmptyValue;
+        const convertedRequestedAmount = convertStrToBaseUnit(nonEmptyValue, symbol) as string;
         requestedAmount = CryptoAmountFormatter.format(convertedRequestedAmount, {
             symbol,
             isBalance: true,
