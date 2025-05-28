@@ -180,12 +180,13 @@ export const getAccountListSections = (
     }
 
     if (hasAnyKnownTokens) {
-        tokens.forEach((token, index) => {
+        const tokensWithBalance = tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
+        tokensWithBalance.forEach((token, index) => {
             sections.push({
                 type: 'token',
                 account,
                 token: token as TokenInfoBranded,
-                isLast: index === tokens.length - 1,
+                isLast: index === tokensWithBalance.length - 1,
             });
         });
     }

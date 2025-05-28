@@ -63,6 +63,7 @@ export const AccountImportConfirmFormScreen = ({
         selectAccountsByNetworkAndDeviceState(state, PORTFOLIO_TRACKER_DEVICE_STATE, symbol),
     );
 
+    const nonEmptyTokens = knownTokens.filter(info => parseFloat(info.balance ?? '0') > 0);
     const defaultAccountLabel = `${getNetwork(symbol).name} #${deviceNetworkAccounts.length + 1}`;
 
     const form = useAccountLabelForm(defaultAccountLabel);
@@ -85,8 +86,8 @@ export const AccountImportConfirmFormScreen = ({
                 type: EventType.AssetsSync,
                 payload: {
                     assetSymbol: symbol,
-                    tokenSymbols: knownTokens.map(token => token.symbol as TokenSymbol),
-                    tokenAddresses: knownTokens.map(token => token.contract as TokenAddress),
+                    tokenSymbols: nonEmptyTokens.map(token => token.symbol as TokenSymbol),
+                    tokenAddresses: nonEmptyTokens.map(token => token.contract as TokenAddress),
                 },
             });
 
@@ -132,9 +133,9 @@ export const AccountImportConfirmFormScreen = ({
                     symbol={symbol}
                     formControl={form.control}
                 />
-                {knownTokens.length > 0 && (
+                {nonEmptyTokens.length > 0 && (
                     <FlashList
-                        data={knownTokens}
+                        data={nonEmptyTokens}
                         renderItem={renderItem}
                         ListEmptyComponent={null}
                         ListHeaderComponent={
