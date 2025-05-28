@@ -37,9 +37,8 @@ export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly 
         'op',
         'base',
         'arb',
-        'xlm',
     ],
-    testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp', 'txlm'],
+    testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp'],
 };
 
 export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];
