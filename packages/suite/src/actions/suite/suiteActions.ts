@@ -28,6 +28,9 @@ export type SuiteAction =
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
+    | { type: typeof SUITE.SET_BIO_AUTH_ENABLED; payload: boolean }
+    | { type: typeof SUITE.REQUEST_BIO_AUTH_CHANGE; payload: boolean }
+    | { type: typeof SUITE.REQUEST_BIO_AUTH_CHANGE_END }
     | { type: typeof requestAuthConfirm.type }
     | {
           type: typeof SUITE.SET_LANGUAGE;
@@ -107,6 +110,20 @@ export const appChanged = createAction(SUITE.APP_CHANGED, (payload: AppState['ro
 export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     type: SUITE.DESKTOP_HANDSHAKE,
     payload,
+});
+
+export const setBioAuthEnabled = (payload: boolean): SuiteAction => ({
+    type: SUITE.SET_BIO_AUTH_ENABLED,
+    payload,
+});
+
+export const requestBioAuthChange = (nextValue: boolean): SuiteAction => ({
+    type: SUITE.REQUEST_BIO_AUTH_CHANGE,
+    payload: nextValue,
+});
+
+export const requestBioAuthChangeEnd = (): SuiteAction => ({
+    type: SUITE.REQUEST_BIO_AUTH_CHANGE_END,
 });
 
 export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);

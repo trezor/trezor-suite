@@ -1692,6 +1692,14 @@ export default defineMessages({
             "Automatically download the latest version of Trezor Suite in the background and install it when restarting the app. This ensures you're always up-to-date with the latest features and security patches. Updates occur without requiring your permission.",
         id: 'TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION',
     },
+    TR_BIO_AUTH: {
+        defaultMessage: 'Biometric authentication',
+        id: 'TR_BIO_AUTH',
+    },
+    TR_BIO_AUTH_DESCRIPTION: {
+        defaultMessage: 'Use biometric authentication to confirm actions in Trezor Suite.',
+        id: 'TR_BIO_AUTH_DESCRIPTION',
+    },
     TR_ADDRESS_DISPLAY: {
         defaultMessage: 'Address display',
         id: 'TR_ADDRESS_DISPLAY',
