@@ -1,12 +1,14 @@
 import type { IpcRendererEvent } from 'electron';
 
 import { DesktopApi, RendererChannels } from './api';
+import { createBioAuthAPI } from './bioAuthAPIFactory';
 import { StrictIpcRenderer } from './ipc';
 import * as validation from './validation';
 
 // Provide fallback for missing ipcRenderer
-const fallbackMethod = (...args: any[]) => console.error('desktopApi not available:', ...args);
-const ipcRendererFallback: any = {
+export const fallbackMethod = (...args: any[]) =>
+    console.error('desktopApi not available:', ...args);
+export const ipcRendererFallback: any = {
     on: fallbackMethod,
     once: fallbackMethod,
     removeAllListeners: fallbackMethod,
@@ -194,5 +196,6 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         connectPopupResponse: response => ipcRenderer.invoke('connect-popup/response', response),
 
         openSystemSettings: settings => ipcRenderer.invoke('system/open-settings', settings),
+        ...createBioAuthAPI(ipcRenderer),
     };
 };

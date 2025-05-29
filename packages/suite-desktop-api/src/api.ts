@@ -1,3 +1,4 @@
+import { createBioAuthAPI } from './bioAuthAPIFactory';
 import {
     BootstrapTorEvent,
     BridgeSettings,
@@ -40,6 +41,9 @@ export interface MainChannels {
     'update/download': void;
     'update/install': void;
     'logger/config': LoggerConfig;
+
+    // bio auth
+    'bio-auth/request': void;
 }
 
 // Event messages from main to renderer process
@@ -81,6 +85,11 @@ export interface RendererChannels {
     'connect-popup/cancel': ConnectPopupCancel;
 
     'app/auto-start/popup-request': void;
+
+    // bio auth
+    'bio-auth/request': void;
+    'bio-auth/validated': void;
+    'bio-auth/validation-failure': void;
 }
 
 // Invocation from renderer process
@@ -118,6 +127,9 @@ export interface InvokeChannels {
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
     'system/open-settings': (settings: string) => InvokeResult;
+
+    // bio auth
+    'bio-auth/request': () => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -126,7 +138,7 @@ type DesktopApiSend<K extends keyof MainChannels> = SendMethod<{ 0: MainChannels
 
 type DesktopApiInvoke<K extends keyof InvokeChannels> = InvokeMethod<{ 0: InvokeChannels[K] }>;
 
-export interface DesktopApi {
+export interface DesktopApi extends ReturnType<typeof createBioAuthAPI> {
     available: boolean;
     on: DesktopApiListener;
     once: DesktopApiListener;

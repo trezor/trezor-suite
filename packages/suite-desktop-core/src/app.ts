@@ -23,6 +23,7 @@ import { Store } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules, mainThreadEmitter } from './modules';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
+import { initBioAuthModule } from './modules/bioAuthModule';
 import { init as initTorModule } from './modules/tor';
 import { ipcMain } from './typed-electron';
 
@@ -279,6 +280,15 @@ const init = async () => {
         mainThreadEmitter,
     });
 
+    const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule({
+        mainWindowProxy,
+        store,
+        interceptor,
+        mainThreadEmitter,
+    });
+
+    loadBioAuthModule();
+
     ipcMain.handle('handshake/load-tor-module', ipcEvent => {
         validateIpcMessage(ipcEvent);
 
@@ -293,6 +303,7 @@ const init = async () => {
     app.on('before-quit', async event => {
         if (readyToQuit) return;
         event.preventDefault();
+        quitBioAuthModule();
 
         const mainWindow = mainWindowProxy.getInstance();
         const windowExists =
