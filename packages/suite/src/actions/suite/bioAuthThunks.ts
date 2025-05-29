@@ -1,4 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { selectBioAuthEnabled, selectIsRequestingBioAuthChange } from 'src/reducers/desktop';
 
@@ -21,14 +22,12 @@ export const requestBioAuthChangeThunk = createThunk(
 
         // NOTE: async stuff here
 
-        await new Promise<void>(resolve => {
-            setTimeout(() => {
-                resolve();
-            }, 2000);
-        });
+        try {
+            await desktopApi.validateBioAuth();
 
-        dispatch(setBioAuthEnabled(nextBioEnabled));
-
-        dispatch(requestBioAuthChangeEnd());
+            dispatch(setBioAuthEnabled(nextBioEnabled));
+        } finally {
+            dispatch(requestBioAuthChangeEnd());
+        }
     },
 );
