@@ -31,6 +31,10 @@ export type SuiteAction =
     | { type: typeof SUITE.SET_BIO_AUTH_ENABLED; payload: boolean }
     | { type: typeof SUITE.REQUEST_BIO_AUTH_CHANGE; payload: boolean }
     | { type: typeof SUITE.REQUEST_BIO_AUTH_CHANGE_END }
+    | { type: typeof SUITE.TOGGLE_BIO_AUTH_VALIDATION_REQUESTED; payload: boolean }
+    | { type: typeof SUITE.REQUEST_BIO_AUTH_VALIDATED; payload: Date | null }
+    | { type: typeof SUITE.BIO_AUTH_WINDOW_BLUR; payload: Date }
+    | { type: typeof SUITE.BIO_AUTH_WINDOW_FOCUS; payload: Date }
     | { type: typeof requestAuthConfirm.type }
     | {
           type: typeof SUITE.SET_LANGUAGE;
@@ -124,6 +128,26 @@ export const requestBioAuthChange = (nextValue: boolean): SuiteAction => ({
 
 export const requestBioAuthChangeEnd = (): SuiteAction => ({
     type: SUITE.REQUEST_BIO_AUTH_CHANGE_END,
+});
+
+export const bioAuthValidated = (timestamp: Date | null): SuiteAction => ({
+    type: SUITE.REQUEST_BIO_AUTH_VALIDATED,
+    payload: timestamp,
+});
+
+export const bioAuthWindowBlur = (timestamp: Date): SuiteAction => ({
+    type: SUITE.BIO_AUTH_WINDOW_BLUR,
+    payload: timestamp,
+});
+
+export const bioAuthWindowFocus = (timestamp: Date): SuiteAction => ({
+    type: SUITE.BIO_AUTH_WINDOW_FOCUS,
+    payload: timestamp,
+});
+
+export const toggleBioAuthValidationRequested = (requested: boolean): SuiteAction => ({
+    type: SUITE.TOGGLE_BIO_AUTH_VALIDATION_REQUESTED,
+    payload: requested,
 });
 
 export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);
