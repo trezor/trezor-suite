@@ -42,7 +42,7 @@ export const PaymentMethodSheet = ({
                     orderId={item.orderId ?? ''}
                     paymentMethodName={item.paymentMethodName ?? ''}
                     onPress={() => onQuoteSelectCallback(item)}
-                    isSelected={item.paymentMethod === selectedQuote?.paymentMethod}
+                    isSelected={item.orderId === selectedQuote?.orderId}
                 />
             )}
             handleComponent={() => (
@@ -55,6 +55,7 @@ export const PaymentMethodSheet = ({
             estimatedListHeight={getEstimatedListHeight(quotes.length)}
             estimatedItemSize={PAYMENT_METHOD_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
+            extraData={selectedQuote?.orderId}
         />
     );
 };

@@ -71,6 +71,7 @@ export const CountrySheet = ({
             keyExtractor={keyExtractor}
             keyboardShouldPersistTaps="handled"
             flashListKey={flashListKey}
+            extraData={selectedCountryId}
         />
     );
 };

@@ -53,7 +53,7 @@ export const ProviderSheet = <T extends TradingTradeType>({
                 return (
                     <ProviderListItem
                         onPress={onQuoteSelectCallback}
-                        isSelected={item.exchange === selectedQuote?.exchange}
+                        isSelected={item.orderId === selectedQuote?.orderId}
                         quote={item}
                         provider={provider}
                     />
@@ -69,6 +69,7 @@ export const ProviderSheet = <T extends TradingTradeType>({
             estimatedListHeight={getEstimatedListHeight(quotes.length)}
             estimatedItemSize={PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT}
             keyExtractor={keyExtractor}
+            extraData={selectedQuote?.orderId}
         />
     );
 };
