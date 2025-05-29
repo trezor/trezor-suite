@@ -8,7 +8,7 @@ class TradingHistoryActions {
 
     async openTradeDetail(anyTradeSpecificText: string) {
         // this is a bit stupid, but I have no better idea
-        await element(by.text(anyTradeSpecificText)).tap();
+        await element(by.text(anyTradeSpecificText)).atIndex(0).tap();
     }
 
     async assertTradeDetail(title: string, paid: string, receiveAccount: string) {
