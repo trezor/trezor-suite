@@ -41,12 +41,16 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const AddressReviewStepList = () => {
     const route = useRoute<RouteProps>();
-    const { accountKey, tokenContract } = route.params;
+    const { accountKey, tokenContract, transaction } = route.params;
     const navigation = useNavigation<NavigationProps>();
 
     const [childHeights, setChildHeights] = useState<number[]>([]);
     const [stepIndex, setStepIndex] = useState(0);
-    const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview();
+    const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview({
+        accountKey,
+        tokenContract,
+        transaction,
+    });
     const setWasAppLeftDuringReview = useSetAtom(wasAppLeftDuringReviewAtom);
     const isTransactionReviewInProgress = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>

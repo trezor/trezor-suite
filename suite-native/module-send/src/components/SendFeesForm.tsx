@@ -38,6 +38,7 @@ import { CustomFee } from './CustomFee';
 import { FeeOptionsList } from './FeeOptionsList';
 import { FeesFooter } from './FeesFooter';
 import { RecipientsSummary } from './RecipientsSummary';
+import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
 import {
     NativeSendRootState,
     selectDestinationTagFromDraft,
@@ -122,6 +123,12 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         [normalFee, mockedFee],
     );
 
+    const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview({
+        accountKey,
+        tokenContract,
+        transaction: selectedFeeLevelTransaction,
+    });
+
     if (!account) return;
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
@@ -131,6 +138,14 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                 accountKey,
                 tokenContract,
                 transaction: selectedFeeLevelTransaction,
+            });
+        } else if (networkType === 'stellar') {
+            // The first review entry of Stellar is neither a destination address nor a destination tag.
+            handleOnDeviceTransactionReview();
+
+            navigation.navigate(SendStackRoutes.SendOutputsReview, {
+                accountKey,
+                tokenContract,
             });
         } else {
             navigation.navigate(SendStackRoutes.SendAddressReview, {

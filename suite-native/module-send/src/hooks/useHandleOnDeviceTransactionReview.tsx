@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import {
@@ -11,6 +11,7 @@ import {
     selectIsDeviceRemembered,
     sendFormActions,
 } from '@suite-common/wallet-core';
+import { GeneralPrecomposedTransactionFinal, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
@@ -18,7 +19,6 @@ import {
     RootStackRoutes,
     SendStackParamList,
     SendStackRoutes,
-    StackProps,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { TRANSPORT_ERROR } from '@trezor/transport';
@@ -34,12 +34,18 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
+type HandleOnDeviceTransactionReviewProps = {
+    accountKey: string;
+    tokenContract?: TokenAddress;
+    transaction: GeneralPrecomposedTransactionFinal;
+};
 
-export const useHandleOnDeviceTransactionReview = () => {
+export const useHandleOnDeviceTransactionReview = ({
+    accountKey,
+    tokenContract,
+    transaction,
+}: HandleOnDeviceTransactionReviewProps) => {
     const dispatch = useDispatch();
-    const route = useRoute<RouteProps>();
-    const { accountKey, tokenContract, transaction } = route.params;
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const isViewOnlyDevice = useSelector(selectIsDeviceRemembered);

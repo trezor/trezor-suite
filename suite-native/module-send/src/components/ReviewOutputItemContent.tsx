@@ -29,7 +29,12 @@ export const ReviewOutputItemContent = ({
         );
     }
 
-    if (outputType === 'address' || outputType === 'regular_legacy' || outputType === 'contract') {
+    if (
+        outputType === 'address' ||
+        outputType === 'regular_legacy' ||
+        outputType === 'contract' ||
+        outputType === 'signing-with'
+    ) {
         const chunkedAddress = splitAddressToChunks(value).join(' ');
 
         return <Text variant="hint">{chunkedAddress}</Text>;
@@ -40,6 +45,14 @@ export const ReviewOutputItemContent = ({
         return (
             <Text>
                 <Translation id="moduleSend.review.outputs.timeboundsNotSet" />
+            </Text>
+        );
+    }
+
+    if (outputType === 'network') {
+        return (
+            <Text>
+                <Translation id="moduleSend.review.outputs.networkTestnet" />
             </Text>
         );
     }

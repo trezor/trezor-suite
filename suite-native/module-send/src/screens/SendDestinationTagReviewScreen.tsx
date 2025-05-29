@@ -39,7 +39,11 @@ export const SendDestinationTagReviewScreen = ({
             selectIsDestinationTagOutputConfirmed(state, accountKey, tokenContract),
     );
 
-    const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview();
+    const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview({
+        accountKey,
+        tokenContract,
+        transaction,
+    });
 
     useFocusEffect(
         useCallback(() => {

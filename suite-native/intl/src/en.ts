@@ -1553,6 +1553,9 @@ export const en = {
                 timeboundsLabel: 'TimeBounds',
                 timeboundsNotSet: 'No restriction',
                 destinationTagNotSet: "Memo/Destination tag isn't set",
+                networkLabel: 'Network',
+                networkTestnet: 'Transaction is on testnet network',
+                signingWithLabel: 'Signing with',
                 contractLabel: 'Token address',
                 summary: {
                     label: 'Total including fee',
