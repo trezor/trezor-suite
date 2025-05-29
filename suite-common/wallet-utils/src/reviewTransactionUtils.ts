@@ -217,11 +217,23 @@ const constructNewFlow = ({
 
     if (networkType === 'stellar') {
         // stellar displays requests on device:
-        // 1. TimeBounds (no restriction)
-        // 2. Memo / destination-tag
-        // 3. Recipient
-        // 4. Amount
-        // 5. Fee
+        // 1. Signing with (address)
+        // 2. Network (only if it is testnet)
+        // 3. TimeBounds (no restriction)
+        // 4. Memo / destination-tag
+        // 5. Recipient
+        // 6. Amount
+        // 7. Fee
+        outputs.push({
+            type: 'signing-with',
+            value: account.descriptor,
+        });
+        if (account.symbol === 'txlm') {
+            outputs.push({
+                type: 'network',
+                value: '',
+            });
+        }
         outputs.push(
             {
                 type: 'timebounds',

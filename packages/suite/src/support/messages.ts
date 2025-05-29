@@ -2905,6 +2905,14 @@ export default defineMessages({
         defaultMessage: 'Incl. tokens & staking',
         id: 'TR_INCLUDING_TOKENS_AND_STAKING',
     },
+    TR_NETWORK_TITLE: {
+        defaultMessage: 'Network',
+        id: 'TR_NETWORK_TITLE',
+    },
+    TR_NETWORK_TESTNET: {
+        defaultMessage: 'Transaction is on testnet network',
+        id: 'TR_NETWORK_TESTNET',
+    },
     TR_NETWORK_COINJOIN_BITCOIN: {
         defaultMessage: 'Coinjoin',
         id: 'TR_NETWORK_COINJOIN_BITCOIN',
@@ -8648,6 +8656,10 @@ export default defineMessages({
     TR_AMOUNT_SENT: {
         id: 'TR_AMOUNT_SENT',
         defaultMessage: 'Amount sent',
+    },
+    TR_SIGNING_WITH: {
+        id: 'TR_SIGNING_WITH',
+        defaultMessage: 'Signing with',
     },
     TR_SUMMARY: {
         id: 'TR_SUMMARY',

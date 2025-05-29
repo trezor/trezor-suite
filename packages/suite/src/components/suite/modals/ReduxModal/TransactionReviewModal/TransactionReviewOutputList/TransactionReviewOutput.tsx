@@ -86,6 +86,10 @@ const getOutputTitle = (
             return <Translation id="TR_AMOUNT_SENT" />;
         case 'destination-tag':
             return <Translation id="DESTINATION_TAG" />;
+        case 'signing-with':
+            return <Translation id="TR_SIGNING_WITH" />;
+        case 'network':
+            return <Translation id="TR_NETWORK_TITLE" />;
         case 'gas':
             return <Translation id="TR_GAS_PRICE" />;
         case 'txid':
@@ -207,6 +211,8 @@ const getOutputLines = (
         case 'destination-tag':
         case 'locktime':
         case 'timebounds':
+        case 'network':
+        case 'signing-with':
             return [
                 {
                     id: type,
@@ -283,6 +289,13 @@ export const TransactionReviewOutput = ({
             return {
                 ...line,
                 value: translationString('TIME_BOUNDS_IS_NOT_SET'),
+            };
+        }
+
+        if (type === 'network') {
+            return {
+                ...line,
+                value: translationString('TR_NETWORK_TESTNET'),
             };
         }
 

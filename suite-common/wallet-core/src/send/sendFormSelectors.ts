@@ -50,13 +50,15 @@ export const selectSendFormReviewButtonRequestsCount = (
 
     const isCardano = networkType === 'cardano';
     const isEthereum = networkType === 'ethereum';
+    const isStellar = networkType === 'stellar';
 
     const sendFormReviewRequest = buttonRequestCodes.filter(
         code =>
             code === 'ButtonRequest_ConfirmOutput' ||
             code === 'ButtonRequest_SignTx' ||
             isCardano ||
-            (isEthereum && code === 'ButtonRequest_Other'),
+            (isEthereum && code === 'ButtonRequest_Other') ||
+            (isStellar && code === 'ButtonRequest_Other'),
     );
 
     // While confirming decrease amount in RBF, 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount).

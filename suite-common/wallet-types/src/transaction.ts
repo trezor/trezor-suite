@@ -290,6 +290,8 @@ export type ReviewOutput =
               | 'locktime'
               | 'fee'
               | 'destination-tag'
+              | 'signing-with'
+              | 'network'
               | 'timebounds'
               | 'txid'
               | 'address'
