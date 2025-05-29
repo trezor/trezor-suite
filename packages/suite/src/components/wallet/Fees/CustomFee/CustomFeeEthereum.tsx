@@ -150,7 +150,7 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
             customPriorityFeePerGas: (value: string) => {
                 const customPriorityFeePerGas = new BigNumber(value);
 
-                if (customMaxFeePerGas && customPriorityFeePerGas.gte(customMaxFeePerGas)) {
+                if (customMaxFeePerGas && customPriorityFeePerGas.gt(customMaxFeePerGas)) {
                     return translationString('CUSTOM_PRIORITY_HIGHER_THAN_MAX');
                 }
 
