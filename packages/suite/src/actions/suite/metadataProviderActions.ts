@@ -203,8 +203,9 @@ export const handleProviderError =
                 case 'NOT_FOUND_ERROR':
                     break;
 
+                // intentionally not exhaustive: although we expect a typed Error, any Error can in fact happen
                 default:
-                    exhaustive(error.code);
+                    console.error(error);
             }
         }
     };
