@@ -1,8 +1,13 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Note } from '@trezor/components';
+import { isApproximatelyEqual } from '@trezor/utils';
 
+import { useSelector } from '../../../hooks/suite';
 import { Translation } from '../../suite';
 
 type DustPreventionNoticeProps = {
+    symbol: NetworkSymbol;
     chosenFeePerByte: string | undefined;
     composedFeePerByte: string | undefined;
     baseFee: number | undefined;
@@ -10,15 +15,20 @@ type DustPreventionNoticeProps = {
 };
 
 export const DustPreventionNotice = ({
+    symbol,
     chosenFeePerByte,
     composedFeePerByte,
     baseFee,
     feeUnits,
 }: DustPreventionNoticeProps) => {
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
+
+    const relativeTolerance = 1e-3;
     const isComposedFeeRateDifferent =
+        !areFeesLoading &&
         composedFeePerByte !== undefined &&
-        composedFeePerByte !== '' &&
-        chosenFeePerByte !== composedFeePerByte;
+        chosenFeePerByte !== undefined &&
+        !isApproximatelyEqual(composedFeePerByte, chosenFeePerByte, relativeTolerance);
 
     if (!isComposedFeeRateDifferent) return null;
 

@@ -15,6 +15,7 @@ import { DustPreventionNotice } from '../DustPreventionNotice';
 
 export const CustomFeeMisc = <TFieldValues extends FormState>({
     networkType,
+    symbol,
     feeInfo,
     register,
     control,
@@ -77,6 +78,7 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
             />
             {isDustPreventionRelevant && (
                 <DustPreventionNotice
+                    symbol={symbol}
                     chosenFeePerByte={feePerUnitValue}
                     composedFeePerByte={composedFeePerByte}
                     baseFee={getValues('baseFee')}

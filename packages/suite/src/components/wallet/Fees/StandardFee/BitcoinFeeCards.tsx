@@ -1,10 +1,11 @@
 import { formatDurationStrict } from '@suite-common/suite-utils';
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { FeeRate } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
 import { FiatValue } from 'src/components/suite/FiatValue';
-import { useLocales } from 'src/hooks/suite';
+import { useLocales, useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
@@ -22,6 +23,7 @@ export const BitcoinFeeCards = ({
     getValues,
 }: StandardFeeProps) => {
     const locale = useLocales();
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
 
     if (!feeOptions.length) {
         return null;
@@ -45,6 +47,7 @@ export const BitcoinFeeCards = ({
                         value={fee.value}
                         isSelected={selectedLevel.label === fee.value}
                         changeFeeLevel={changeFeeLevel}
+                        isLoading={areFeesLoading}
                         topLeftChild={
                             <span data-testid={`@fee-card/${fee.value}`}>
                                 <Translation id={getFeeLevelTranslationId(fee.value)} />
@@ -74,6 +77,7 @@ export const BitcoinFeeCards = ({
                 ))}
             </FeeCardsWrapper>
             <DustPreventionNotice
+                symbol={symbol}
                 chosenFeePerByte={selectedLevel.feePerUnit}
                 composedFeePerByte={
                     transactionInfo?.type === 'final' ? transactionInfo.feePerByte : undefined
