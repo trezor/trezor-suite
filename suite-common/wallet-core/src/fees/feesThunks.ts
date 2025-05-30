@@ -65,21 +65,36 @@ export const preloadFeeInfoThunk = createThunk(
 
 type UpdateFeeInfoThunkProps = {
     networkSymbol: NetworkSymbol;
+    artificialDelay?: number;
 };
 
+const getArtificialDelayPromise = (artificialDelay?: number): Promise<void> =>
+    artificialDelay === undefined
+        ? Promise.resolve()
+        : new Promise(resolve => setTimeout(resolve, artificialDelay));
+
+/**
+ * Fetches feeInfo for a given network from backend.
+ * Can be called with an arbitrary delay [ms], in order to display loader for a bit longer,
+ * to visually draw users attention to the fees which are changing (because backend request is usually very quick).
+ */
 export const updateFeeInfoThunk = createThunk<
     FeeInfo,
     UpdateFeeInfoThunkProps,
     { rejectValue: undefined }
 >(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
-    async ({ networkSymbol }, { getState, fulfillWithValue, rejectWithValue }) => {
+    async ({ networkSymbol, artificialDelay }, { getState, fulfillWithValue, rejectWithValue }) => {
         const network = getNetwork(networkSymbol);
         const { symbol } = network;
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
         const device = selectSelectedDevice(getState());
 
-        const newFeeInfo = await getNewFeeInfo({ network, device });
+        const [newFeeInfo] = await Promise.all([
+            getNewFeeInfo({ network, device }),
+            getArtificialDelayPromise(artificialDelay),
+        ]);
+
         if (newFeeInfo === undefined) {
             // now errors just silently set status. If we want to handle them in any way, we might need more specific info
             return rejectWithValue(undefined);

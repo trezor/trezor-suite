@@ -29,6 +29,7 @@ export const FEE_LIMIT = 'feeLimit';
 
 export type CustomFeeBasicProps<TFieldValues extends FormState> = {
     networkType: NetworkType;
+    symbol: NetworkSymbol;
     feeInfo: FeeInfo;
     errors: FieldErrors<TFieldValues>;
     register: UseFormRegister<TFieldValues>;
@@ -97,6 +98,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 {networkType === 'ethereum' ? (
                     <CustomFeeEthereum
                         {...props}
+                        symbol={symbol}
                         networkType={networkType}
                         feeInfo={feeInfo}
                         register={register}
@@ -108,6 +110,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 ) : (
                     <CustomFeeMisc
                         {...props}
+                        symbol={symbol}
                         networkType={networkType}
                         feeInfo={feeInfo}
                         register={register}
