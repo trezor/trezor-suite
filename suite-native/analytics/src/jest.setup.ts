@@ -1,1 +1,1 @@
-jest.mock('./analytics');
+jest.mock('@suite-common/analytics/src/events/suite-native');

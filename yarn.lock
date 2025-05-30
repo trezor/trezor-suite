@@ -9202,6 +9202,14 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/analytics": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     react: "npm:18.2.0"
   languageName: unknown
   linkType: soft
@@ -9245,6 +9253,7 @@ __metadata:
   resolution: "@suite-common/connect-popup@workspace:suite-common/connect-popup"
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -9703,6 +9712,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
     "@reown/walletkit": "npm:^1.2.1"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -9774,14 +9784,8 @@ __metadata:
   dependencies:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
-    "@suite-common/suite-constants": "workspace:*"
-    "@suite-common/trading": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/analytics": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -12246,7 +12250,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-analytics@workspace:packages/suite-analytics"
   dependencies:
-    "@trezor/analytics": "workspace:*"
+    "@suite-common/analytics": "workspace:*"
   languageName: unknown
   linkType: soft
 

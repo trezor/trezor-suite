@@ -14,7 +14,7 @@ import {
     Text,
 } from '@trezor/components';
 import { ERRORS } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -42,7 +42,7 @@ export const ConnectPermissionsModal = () => {
         }
         dispatch(connectPopupActions.approvePermissions());
         analytics.report({
-            type: EventType.ConnectPopupPermissions,
+            type: EventTypeShared.ConnectPopupPermissions,
             payload: {
                 method,
                 origin: source.origin,
@@ -54,7 +54,7 @@ export const ConnectPermissionsModal = () => {
         dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
 
         analytics.report({
-            type: EventType.ConnectPopupPermissions,
+            type: EventTypeShared.ConnectPopupPermissions,
             payload: {
                 method,
                 origin: source.origin,

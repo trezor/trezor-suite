@@ -1,2 +1,4 @@
-export * from './analyticsReducer';
-export * from './analyticsActions';
+export * from './events/shared';
+
+export * from './redux/analyticsReducer';
+export * from './redux/analyticsActions';

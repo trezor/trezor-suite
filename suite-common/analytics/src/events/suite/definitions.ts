@@ -1,4 +1,4 @@
-import { AppUpdateEventStatus } from '../constants';
+import { AppUpdateEventStatus } from './constants';
 
 export type OnboardingAnalytics = {
     startTime: number;

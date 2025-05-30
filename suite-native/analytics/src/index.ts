@@ -1,4 +1,2 @@
-export * from './analytics';
 export * from './analyticsThunks';
-export * from './constants';
-export * from './types';
+export * from '@suite-common/analytics/src/events/suite-native';

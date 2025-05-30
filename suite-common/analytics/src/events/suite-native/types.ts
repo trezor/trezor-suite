@@ -13,7 +13,7 @@ import {
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
-} from './types';
+} from './definitions';
 
 export type SuiteNativeAnalyticsEvent =
     | {
