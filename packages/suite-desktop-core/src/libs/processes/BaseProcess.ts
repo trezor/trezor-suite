@@ -69,7 +69,7 @@ export abstract class BaseProcess {
      * - service: The service is working
      * - process: The process is running
      */
-    abstract status(): Promise<{ service: boolean; process: boolean }>;
+    abstract status(): Promise<Status>;
 
     /**
      * Start the bundled process
