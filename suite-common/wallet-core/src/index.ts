@@ -27,6 +27,7 @@ export * from './discovery/passphraseUtils';
 export * from './fees/feesActions';
 export * from './fees/feesReducer';
 export * from './fees/feesThunks';
+export * from './fees/feesUtils';
 export * from './fiat-rates/fiatRatesMiddleware';
 export * from './fiat-rates/fiatRatesReducer';
 export * from './fiat-rates/fiatRatesSelectors';
