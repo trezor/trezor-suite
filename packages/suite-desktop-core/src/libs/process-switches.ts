@@ -8,7 +8,6 @@ export type SuiteSwitch =
     | 'bridge-legacy'
     | 'bridge-test'
     | 'bridge-dev'
-    | 'skip-new-bridge-rollout'
     | 'bridge-daemon'
     | 'bridge-daemon-show-ui'
     | 'log-level'

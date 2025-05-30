@@ -1,7 +1,6 @@
 /**
  * Bridge runner
  */
-import { isDevEnv } from '@suite-common/suite-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 import { TrezordNode } from '@trezor/transport-bridge';
@@ -19,8 +18,6 @@ const bridgeLegacy = hasSwitch('bridge-legacy');
 // bridge node is intended for internal testing
 const bridgeTest = hasSwitch('bridge-test');
 const bridgeDev = hasSwitch('bridge-dev');
-
-const skipNewBridgeRollout = hasSwitch('skip-new-bridge-rollout');
 
 export const SERVICE_NAME = 'bridge';
 
@@ -85,26 +82,11 @@ const start = async (bridge: BridgeInterface) => {
 
 const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     const legacyRequestedBySettings = store.getBridgeSettings().legacy;
-    const { allowPrerelease } = store.getUpdateSettings();
 
     // Legacy bridge explicitly requested
     if (bridgeLegacy || legacyRequestedBySettings) return true;
-    // dev uses node-bridge by default on every platform
-    if (isDevEnv) return false;
 
-    if (allowPrerelease) return false;
-
-    // handle rollout for regular users
-    if (skipNewBridgeRollout) return false;
-    if (store.getBridgeSettings().newBridgeRollout === undefined) {
-        const newBridgeRollout = Math.round(Math.random() * 100) / 100;
-        store.setBridgeSettings({ ...store.getBridgeSettings(), newBridgeRollout });
-    }
-    const newBridgeRollout = store.getBridgeSettings().newBridgeRollout || 0;
-    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 1;
-    const legacyBridgeReasonRollout = newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
-
-    return legacyBridgeReasonRollout;
+    return false;
 };
 
 let bridge: BridgeInterface;
