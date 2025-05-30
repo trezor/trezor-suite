@@ -1148,6 +1148,26 @@ export const en = {
                 },
             },
         },
+        walletRecoveryScreen: {
+            accordion1: {
+                title: 'Get your wallet backup',
+                content:
+                    'Your wallet backup is the list of words you wrote down when you first set up your Trezor.',
+            },
+            accordion2: {
+                title: 'Enter your words',
+                paragraph1: {
+                    header: 'Single-share & Legacy Backups',
+                    content:
+                        'Your Trezor will ask how many words are in your wallet backup. Select the correct number. Enter each word in order.',
+                },
+                paragraph2: {
+                    header: 'Multi-share Backup',
+                    content:
+                        'Your Trezor will ask how many words are in your wallet backup—select 20. Pick one share and enter all 20 words in order. Repeat with additional shares until you reach your threshold.',
+                },
+            },
+        },
 
         backupFailedModalScreen: {
             title: 'Your wallet backup failed.',

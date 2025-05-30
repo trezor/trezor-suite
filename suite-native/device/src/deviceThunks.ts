@@ -130,3 +130,12 @@ export const createAndBackupWalletThunk = createThunk(
         return result;
     },
 );
+
+export const recoverWalletThunk = createThunk(
+    `${NATIVE_DEVICE_MODULE_PREFIX}/recoverWallet`,
+    (_, { getState }) => {
+        const devicePath = selectDevicePath(getState());
+
+        return TrezorConnect.recoveryDevice({ device: { path: devicePath } });
+    },
+);

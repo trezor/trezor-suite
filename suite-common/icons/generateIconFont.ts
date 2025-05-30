@@ -102,6 +102,7 @@ const usedIcons = [
     'prohibit',
     'qrCode',
     'question',
+    'scroll',
     'seal',
     'selectionSlash',
     'shareNetwork',

@@ -1,26 +1,32 @@
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
+import {
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
+    Screen,
+    ScreenHeader,
+    StackProps,
+} from '@suite-native/navigation';
 
 import { RecoveryCardSvg } from '../assets/RecoveryCardSvg';
 import { OnboardingStepHeader } from '../components/OnboardingStepHeader';
 import { RecoveryInstructionsBottomSheet } from '../components/RecoveryInstructionsBottomSheet';
 
-export const RecoveryInstructionsScreen = () => {
-    const { showToast } = useToast();
-
-    const handlePrimaryButtonPress = () => {
-        showToast({
-            message: 'TODO: redirect to the next screen',
-            variant: 'warning',
-        });
+export const RecoveryInstructionsScreen = ({
+    navigation,
+}: StackProps<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.RecoveryInstructions
+>) => {
+    const handleContinueButtonPress = () => {
+        navigation.navigate(DeviceOnboardingStackRoutes.WalletRecovery);
     };
+
     const { bottomSheetRef, openModal } = useBottomSheetModal();
 
     return (
         <Screen header={<ScreenHeader />}>
-            <VStack spacing="sp32" justifyContent="space-between" flex={1}>
+            <VStack paddingTop="sp16" spacing="sp32" justifyContent="space-between" flex={1}>
                 <OnboardingStepHeader
                     callout={
                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.callout" />
@@ -36,7 +42,7 @@ export const RecoveryInstructionsScreen = () => {
                     <RecoveryCardSvg />
                 </Box>
                 <VStack spacing="sp12" alignItems="stretch">
-                    <Button onPress={handlePrimaryButtonPress}>
+                    <Button onPress={handleContinueButtonPress}>
                         <Translation id="generic.buttons.continue" />
                     </Button>
                     <Button colorScheme="tertiaryElevation0" onPress={openModal}>
