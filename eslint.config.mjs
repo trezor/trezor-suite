@@ -13,6 +13,17 @@ export default [
                     ],
                 },
             ],
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            regex: '/libDev/src',
+                            message: 'Importing from "*/libDev/src" path is not allowed.',
+                        },
+                    ],
+                },
+            ],
         },
     },
 ];
