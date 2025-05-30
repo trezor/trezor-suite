@@ -89,6 +89,7 @@ const getPreloadedState = ({
             },
             dismissedMessages: {},
             validExperiments: [],
+            countryCode: null,
         },
     };
 };

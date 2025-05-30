@@ -281,7 +281,8 @@ Structure of config, types and optionality of specific keys can be found in the 
                     "duration": {
                         "from": "2021-03-01T12:10:00.000Z",
                         "to": "2022-01-31T12:10:00.000Z"
-                    }
+                    },
+                    "countryCodes": ["CZ", "US"]
                 }
             ],
             // Detail of an experiment

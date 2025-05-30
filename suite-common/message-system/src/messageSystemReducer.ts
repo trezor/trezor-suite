@@ -19,6 +19,8 @@ const initialState: MessageSystemState = {
     dismissedMessages: {},
 
     validExperiments: [],
+
+    countryCode: null,
 };
 
 export const messageSystemPersistedWhitelist: Array<keyof MessageSystemState> = [

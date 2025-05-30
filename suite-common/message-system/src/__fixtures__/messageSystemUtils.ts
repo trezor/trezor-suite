@@ -8,7 +8,10 @@ import { Options } from '../messageSystemUtils';
 
 const { getDeviceFeatures, getConnectDevice, getMessageSystemConfig } = testMocks;
 
-const defaultOptions: Options = { settings: { tor: false, enabledNetworks: ['btc'] } };
+const defaultOptions: Options = {
+    settings: { tor: false, enabledNetworks: ['btc'] },
+    countryCode: 'US',
+};
 const defaultTransportsOption: TransportInfo = {
     type: 'BridgeTransport',
     apiType: 'usb',
@@ -1428,7 +1431,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: [] } },
+        options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
         result: [getMessageSystemConfig().actions[1].message],
     },
     {
@@ -1451,7 +1454,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: [] } },
+        options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
         result: [],
     },
     {
@@ -1585,7 +1588,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: [] } },
+        options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
         result: [],
     },
     {
@@ -1603,7 +1606,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: ['btc'] } },
+        options: { settings: { tor: false, enabledNetworks: ['btc'] }, countryCode: 'US' },
         result: [getMessageSystemConfig().actions[1].message],
     },
     {
@@ -1627,6 +1630,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             transports: [{ ...defaultTransportsOption, version: '2.3.4' }],
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1651,6 +1655,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             transports: [{ ...defaultTransportsOption, version: '2.3.4' }],
+            countryCode: 'US',
         },
         result: [],
     },
@@ -1689,6 +1694,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1719,6 +1725,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: [],
     },
@@ -1753,6 +1760,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                     capabilities: ['Capability_Bitcoin'],
                 }),
             },
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1787,6 +1795,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                     capabilities: ['Capability_Bitcoin_like'],
                 }),
             },
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1803,6 +1812,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             settings: { tor: true, enabledNetworks: ['btc'] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: getMessageSystemConfig().actions.map(action => action.message),
     },
@@ -1843,6 +1853,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                     patch_version: 4,
                 }),
             },
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1860,6 +1871,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             settings: { tor: true, enabledNetworks: ['btc'] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: getMessageSystemConfig().actions.map(action => action.message),
     },
@@ -1877,6 +1889,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             settings: { tor: true, enabledNetworks: ['btc'] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },

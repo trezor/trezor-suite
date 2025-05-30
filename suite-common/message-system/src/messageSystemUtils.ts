@@ -12,6 +12,7 @@ import type {
     TrezorDevice,
     Version,
 } from '@suite-common/suite-types';
+import type { CountryCode } from '@suite-common/trading';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
 import {
@@ -64,6 +65,7 @@ export type Options = {
     settings: CurrentSettings;
     transports?: TransportInfo[];
     device?: TrezorDevice;
+    countryCode: CountryCode | null;
 };
 
 /**
@@ -205,6 +207,19 @@ export const validateEnvironmentCompatibility = (
     );
 };
 
+export const validateCountryCodeCompatibility = (
+    allowedCountryCodes: CountryCode[],
+    userCountryCode: CountryCode,
+): boolean => {
+    if (!allowedCountryCodes.length) {
+        return true;
+    }
+
+    return allowedCountryCodes.some(
+        location => location.toUpperCase() === userCountryCode.toUpperCase(),
+    );
+};
+
 type EnvData = {
     osName: ReturnType<typeof getOsName>;
     osVersion: ReturnType<typeof transformVersionToSemverFormat>;
@@ -228,7 +243,7 @@ export const getEnvData = async (): Promise<EnvData> => ({
 });
 
 export const validateConditions = (condition: Condition, options: Options, envData: EnvData) => {
-    const { device, transports = [], settings } = options;
+    const { device, transports = [], settings, countryCode } = options;
 
     const {
         duration: durationCondition,
@@ -238,6 +253,7 @@ export const validateConditions = (condition: Condition, options: Options, envDa
         transport: transportCondition,
         settings: settingsCondition,
         devices: deviceCondition,
+        countryCodes: countryCodeCondition,
     } = condition;
 
     if (durationCondition && !validateDurationCompatibility(durationCondition)) {
@@ -280,6 +296,13 @@ export const validateConditions = (condition: Condition, options: Options, envDa
     }
 
     if (deviceCondition && !validateDeviceCompatibility(deviceCondition, device)) {
+        return false;
+    }
+
+    if (
+        countryCodeCondition &&
+        (!countryCode || !validateCountryCodeCompatibility(countryCodeCondition, countryCode))
+    ) {
         return false;
     }
 
