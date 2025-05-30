@@ -1214,7 +1214,7 @@ export default defineMessages({
         id: 'TR_TRADING_SHOW_OFFERS',
     },
     TR_TRADING_LAST_TRANSACTIONS: {
-        defaultMessage: 'Previous transactions',
+        defaultMessage: 'Trade history',
         id: 'TR_TRADING_LAST_TRANSACTIONS',
     },
     TR_TRADING_BUY_AND_SELL_COUNTER: {
@@ -2261,7 +2261,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION',
     },
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
-        defaultMessage: 'Change name',
+        defaultMessage: 'Save name',
         id: 'TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL',
     },
     TR_DEVICE_SETTINGS_DEVICE_LABEL: {
@@ -2831,7 +2831,7 @@ export default defineMessages({
     TR_LOG_DESCRIPTION: {
         id: 'TR_LOG_DESCRIPTION',
         defaultMessage:
-            'This log contains essential technical information about Trezor Suite and may be needed when contacting Trezor Support.',
+            'Use this log to access essential technical information about Trezor Suite, which may be needed when contacting Trezor Support.',
     },
     TR_LTC_ADDRESS_INFO: {
         defaultMessage:
@@ -3575,11 +3575,11 @@ export default defineMessages({
     },
     TR_CURRENT_FEE_CUSTOM_FEES: {
         id: 'TR_CURRENT_FEE_CUSTOM_FEES',
-        defaultMessage: 'Current network fee:',
+        defaultMessage: 'Current fee:',
     },
     TR_CURRENT_BASE_FEE: {
         id: 'TR_CURRENT_BASE_FEE',
-        defaultMessage: 'Current network base fee:',
+        defaultMessage: 'Current base fee:',
     },
     GAS_LIMIT_IS_NOT_SET: {
         id: 'GAS_LIMIT_IS_NOT_SET',
@@ -3898,7 +3898,7 @@ export default defineMessages({
     },
     TOAST_AUTO_UPDATER_ERROR: {
         id: 'TOAST_AUTO_UPDATER_ERROR',
-        defaultMessage: 'Auto updater error ({state})',
+        defaultMessage: 'Update error ({state})',
     },
     TOAST_AUTO_UPDATER_NO_NEW: {
         id: 'TOAST_AUTO_UPDATER_NO_NEW',
@@ -4405,7 +4405,7 @@ export default defineMessages({
     TR_CLEAR_STORAGE_DESCRIPTION: {
         id: 'TR_CLEAR_STORAGE_DESCRIPTION',
         defaultMessage:
-            'Resetting the app to its default settings is a recommended initial step for troubleshooting. The app will automatically restart once the process is complete.',
+            'Reset the app to its default settings as a recommended first step for troubleshooting. Trezor Suite will automatically restart once the process is complete.',
     },
     TR_TO_ACCESS_OTHER_WALLETS: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
@@ -5136,7 +5136,7 @@ export default defineMessages({
     TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK',
         defaultMessage:
-            'You understand this allows you to test pre-release software, which may contain errors that affect the normal operation of Trezor Suite.',
+            'I understand this allows me to test pre-release software, which may contain errors that affect the normal operation of Trezor Suite.',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP',
@@ -5505,7 +5505,7 @@ export default defineMessages({
         id: 'AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
     },
     AMOUNT_IS_NOT_INTEGER: {
-        defaultMessage: "Amount isn't an integer",
+        defaultMessage: 'Enter a whole number',
         id: 'AMOUNT_IS_NOT_INTEGER',
     },
     AMOUNT_IS_NOT_SET: {
@@ -5617,7 +5617,7 @@ export default defineMessages({
     },
     DESTINATION_TAG_NOTE: {
         defaultMessage:
-            'Online exchanges require this to identify your account. Get your memo/destination tag from your online exchange.',
+            'Online exchanges require this to identify your account. Get your destination tag from your online exchange.',
         id: 'DESTINATION_TAG_NOTE',
     },
     DESTINATION_TAG_BANNER_SEND: {
@@ -6125,19 +6125,19 @@ export default defineMessages({
     },
     SETTINGS_ADV_COIN_CONN_INFO_URL: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_URL',
-        defaultMessage: 'Currently connected to {url}',
+        defaultMessage: 'Currently connected to',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH',
-        defaultMessage: 'Block hash: {hash}',
+        defaultMessage: 'Block hash',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT',
-        defaultMessage: 'Block height: {height}',
+        defaultMessage: 'Block height',
     },
     SETTINGS_ADV_COIN_CONN_INFO_VERSION: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_VERSION',
-        defaultMessage: 'Backend version: {version}',
+        defaultMessage: 'Backend version',
     },
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
@@ -6594,7 +6594,7 @@ export default defineMessages({
     },
     TR_EXPLORER_BASE_URL: {
         id: 'TR_EXPLORER_BASE_URL',
-        defaultMessage: 'Base URL',
+        defaultMessage: 'Root URL',
     },
     TR_EXPLORER_TX: {
         id: 'TR_EXPLORER_TX',
@@ -6630,7 +6630,7 @@ export default defineMessages({
     },
     TR_EXPLORER_INVALID_SUFFIX: {
         id: 'TR_EXPLORER_INVALID_SUFFIX',
-        defaultMessage: 'Field cannot be empty',
+        defaultMessage: 'This field is required',
     },
     TR_EXPORT_FAIL: {
         id: 'TR_EXPORT_FAIL',
@@ -6762,11 +6762,11 @@ export default defineMessages({
     },
     TR_SEARCH_TOKENS: {
         id: 'TR_SEARCH_TOKENS',
-        defaultMessage: 'Token, symbol, or contract address',
+        defaultMessage: 'Search tokens',
     },
     TR_SEARCH_COLLECTIONS: {
         id: 'TR_SEARCH_COLLECTIONS',
-        defaultMessage: 'Name, symbol, or contract address',
+        defaultMessage: 'Search collections',
     },
     TR_TOKENS_SEARCH_TOOLTIP: {
         id: 'TR_TOKENS_SEARCH_TOOLTIP',
@@ -6778,7 +6778,7 @@ export default defineMessages({
     },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
-        defaultMessage: 'Amount, label, date, or ID',
+        defaultMessage: 'Search transactions',
     },
     TR_NO_SEARCH_RESULTS: {
         id: 'TR_NO_SEARCH_RESULTS',
@@ -6797,52 +6797,52 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_1: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_1',
         defaultMessage:
-            '<strong>Example:</strong> You can search for transaction IDs, addresses, tokens, labels, amounts, and dates.',
+            'Tip: You can search for transaction IDs, addresses, tokens, labels, amounts, and dates.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            '<strong>Example:</strong> Use the greater than (>) and less than (<) symbols for amount searches. For example <span>1</span> will show all transactions that have an amount of 1 and higher.',
+            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong> 1</strong> will show all transactions that have an amount of 1 and higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
         defaultMessage:
-            '<strong>Example:</strong> You can search for exact amounts using the equal (=) symbol. For example <span>= 0.01</span> will show only transactions that have an amount of exactly 0.01.',
+            'Tip: You can search for exact amounts using the equal (=) symbol. For example <strong>= 0.01</strong> will show only transactions that have an amount of exactly 0.01.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_4: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_4',
         defaultMessage:
-            '<strong>Example:</strong> You can exclude an amount by using the exclamation mark and equal symbols together (!=). For example <span>!= -0.01</span> will show all transactions except the ones with an amount of -0.01.',
+            'Tip: You can exclude an amount by using the exclamation mark and equal symbols together (!=). For example <strong>!= -0.01</strong> will show all transactions except the ones with an amount of -0.01.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_5: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_5',
         defaultMessage:
-            '<strong>Example:</strong> Dates can be searched using the <span>YYYY-MM-DD</span> format. For example <span>{lastYear}-12-14</span> will show all transactions on December 14th, {lastYear}.',
+            'Tip: Dates can be searched using the <strong>YYYY-MM-DD</strong> format. For example <strong>{lastYear}-12-14</strong> will show all transactions on December 14th, {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_6: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_6',
         defaultMessage:
-            '<strong>Example:</strong> Use greater than (>) and lesser than (<) symbols on date searches. For example <span>> {lastYear}-12-01</span> will show all transactions on and after December 1st, {lastYear}.',
+            'Tip: Use greater than (>) and lesser than (<) symbols on date searches. For example <strong>> {lastYear}-12-01</strong> will show all transactions on and after December 1st, {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_7: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_7',
         defaultMessage:
-            '<strong>Example:</strong> You can exclude a date by using the exclamation mark and equal symbols together (!=). For example <span>!= {lastYear}-12-14</span> will show all transactions except the ones on December 14th, {lastYear}.',
+            'Tip: You can exclude a date by using the exclamation mark and equal symbols together (!=). For example <strong>!= {lastYear}-12-14</strong> will show all transactions except the ones on December 14th, {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_8: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_8',
         defaultMessage:
-            '<strong>Example:</strong> You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <span>{lastYear}-11-30 | {lastYear}-12-01</span> will show all transactions that have happened on the 30th of November or the 1st of December {lastYear}.',
+            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>{lastYear}-11-30 | {lastYear}-12-01</strong> will show all transactions that have happened on the 30th of November or the 1st of December {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_9: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_9',
         defaultMessage:
-            '<strong>Example:</strong> Display results matching multiple searches by grouping them with the AND operator (&). For example <span>> {lastYear}-12-01 & < {lastYear}-12-31 & > 0</span> will show all incoming (amount higher than 0) transactions in December {lastYear}.',
+            'Tip: Display results matching multiple searches by grouping them with the AND operator (&). For example <strong>> {lastYear}-12-01 & < {lastYear}-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_10: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
-            '<strong>Example:</strong> Combine AND (&) and OR (|) operators for more complex searches. For example <span>> {lastYear}-01-01 & < {lastYear}-01-31 | > {lastYear}-12-01 & < {lastYear}-12-31</span> will show all transactions in January or December {lastYear}.',
+            'Tip: Combine AND (&) and OR (|) operators for more complex searches. For example <strong>> {lastYear}-01-01 & < {lastYear}-01-31 | > {lastYear}-12-01 & < {lastYear}-12-31</strong> will show all transactions in January or December {lastYear}.',
     },
     TR_INTERNAL_TRANSACTIONS: {
         id: 'TR_INTERNAL_TRANSACTIONS',
@@ -8787,15 +8787,15 @@ export default defineMessages({
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
-        defaultMessage: 'Go to the app, exchange, or site where you got the original address.',
+        defaultMessage: 'Go to the app or place where you originally got the address.',
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
-        defaultMessage: "Compare that address with what's on your Trezor.",
+        defaultMessage: 'Compare the original address with what’s on your Trezor.',
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
-        defaultMessage: 'Confirm on your Trezor if they match exactly.',
+        defaultMessage: 'If they match exactly, confirm on your Trezor.',
     },
     TR_SEND_ADDRESS_CONFIRMATION_NOTE: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_NOTE',
@@ -9542,11 +9542,12 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE: {
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE',
-        defaultMessage: 'Enable view-only to see balances in app even after Trezor is disconnected',
+        defaultMessage: 'View-only',
     },
     TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC: {
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC',
-        defaultMessage: 'Connect Trezor to move or swap coins.',
+        defaultMessage:
+            "Your balances remain visible—even without your Trezor connected. To move or swap assets, you'll need to connect your Trezor.",
     },
     TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON: {
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON',
@@ -9735,7 +9736,7 @@ export default defineMessages({
     TR_BUMP_FEE_DISABLED_TOOLTIP: {
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
         defaultMessage:
-            'To speed up your transactions, increase the fee on the oldest (by nonce) pending transaction in the queue. Transactions must be confirmed in order. <a>Learn more</a>',
+            'To speed up your transactions, increase the fee on the oldest pending transaction in the queue (by nonce), as transactions must be confirmed in order. If you want to speed up this transaction specifically, open its detail and use the "Speed up" option. <a>Learn more</a>',
     },
     TR_TREZOR_CONNECT: {
         id: 'TR_TREZOR_CONNECT',
@@ -9941,7 +9942,7 @@ export default defineMessages({
     },
     TR_CONNECT_ERROR_GENERIC_DESCRIPTION: {
         id: 'TR_CONNECT_ERROR_GENERIC_DESCRIPTION',
-        defaultMessage: 'An error occured during the Trezor Connect request.',
+        defaultMessage: 'There was an error during the Trezor Connect request.',
     },
     TR_NO_CONNECTED_APPS_DESCRIPTION: {
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
@@ -9992,7 +9993,7 @@ export default defineMessages({
     TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
         id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
         defaultMessage:
-            'None of the supported networks are activated in Suite. Please activate them to connect to the app.',
+            'To connect to the app, activate at least one supported network in Trezor Suite.',
     },
     TR_REQUESTED_NETWORKS: {
         id: 'TR_REQUESTED_NETWORKS',
@@ -10029,12 +10030,12 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS',
-        defaultMessage: 'Trezor Connect and WalletConnect integration in Suite',
+        defaultMessage: 'Trezor Connect & WalletConnect',
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION',
         defaultMessage:
-            'Interact with 3rd party apps through Suite for a seamless user experience. Enabling will restart the app.',
+            'Connect with third-party apps directly from Trezor Suite for a smoother, more integrated experience. Enabling this feature will restart the app.',
     },
     TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
