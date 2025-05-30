@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { selectDevices } from '@suite-common/wallet-core';
 import { selectSessions } from '@suite-common/walletconnect';
@@ -6,8 +6,9 @@ import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
 
 import { ConnectPermissions } from './ConnectPermissions';
@@ -15,6 +16,7 @@ import { WalletConnectButton } from './WalletConnectButton';
 import { WalletConnectList } from './WalletConnectList';
 
 export const SettingsConnectedApps = () => {
+    const dispatch = useDispatch();
     const hasSupportedDevice =
         useSelector(selectDevices).find(device => !hasBitcoinOnlyFirmware(device)) !== undefined;
     const hasExistingWalletConnectSessions = useSelector(selectSessions).length > 0;
@@ -38,7 +40,13 @@ export const SettingsConnectedApps = () => {
             isEnabled: wcEnabled,
         },
     ].filter(tab => tab.isEnabled);
-    const [activeItemdId, setActiveItemId] = useState(tabs[0].id);
+    const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id ?? 0);
+
+    useEffect(() => {
+        if (tabs.length === 0) {
+            dispatch(goto('settings-index'));
+        }
+    }, [tabs.length, dispatch]);
 
     return (
         <Column gap={spacings.md} margin={{ top: spacings.md }} flex="1">
