@@ -6,11 +6,11 @@ import {
 } from '@suite-native/test-utils';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyAlert } from '../BuyAlert';
 
 describe('BuyAlert', () => {
-    let form: TradingBuyForm;
+    let form: BuyFormType;
 
     const renderFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
 

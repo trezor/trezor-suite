@@ -9,11 +9,11 @@ import {
 
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyFiatAmountInput } from '../BuyFiatAmountInput';
 
 describe('BuyFiatAmountInput', () => {
-    const renderFiatAmountInput = (form: TradingBuyForm, preloadedState: PreloadedState = {}) =>
+    const renderFiatAmountInput = (form: BuyFormType, preloadedState: PreloadedState = {}) =>
         renderWithStoreProviderAsync(
             <Form form={form}>
                 <BuyFiatAmountInput />

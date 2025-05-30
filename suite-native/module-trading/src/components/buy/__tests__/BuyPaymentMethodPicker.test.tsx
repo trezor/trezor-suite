@@ -16,11 +16,11 @@ import {
 import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
 
 describe('BuyPaymentMethodPicker', () => {
-    let form: TradingBuyForm;
+    let form: BuyFormType;
 
     const renderPaymentMethodPicker = async (
         preloadedState: PreloadedState | undefined = {},

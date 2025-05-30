@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
 import { useBottomSheetControls } from './useBottomSheetControls';
-import { TradingBuyForm, TradingBuyFormValues } from '../../types';
+import { BuyFormType, BuyFormValues } from '../../types/buy';
 
-export const useSheetControls = <Key extends keyof TradingBuyFormValues>(
-    { setValue, watch }: TradingBuyForm,
+export const useSheetControls = <Key extends keyof BuyFormValues>(
+    { setValue, watch }: BuyFormType,
     key: Key,
 ) => {
     const bottomSheetControls = useBottomSheetControls();

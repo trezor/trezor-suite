@@ -11,7 +11,7 @@ import {
 } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 
-import { ReceiveAccount } from './types';
+import { ReceiveAccount } from './types/general';
 
 export interface TradingBuyState extends CommonTradingBuyState {
     selectedReceiveAccount: ReceiveAccount | undefined;

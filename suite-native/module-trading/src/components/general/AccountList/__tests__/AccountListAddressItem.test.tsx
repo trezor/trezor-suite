@@ -2,7 +2,7 @@ import { Account } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { Address } from '@trezor/blockchain-link-types';
 
-import { ReceiveAccount } from '../../../../types';
+import { ReceiveAccount } from '../../../../types/general';
 import { AccountListAddressItem } from '../AccountListAddressItem';
 
 jest.mock('@suite-common/wallet-core', () => {

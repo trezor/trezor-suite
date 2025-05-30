@@ -5,7 +5,7 @@ import { FiatCurrencyCode } from 'invity-api';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useFiatCurrencyFilteredData } from '../../../hooks/general/useFiatCurrencyFilteredData';
-import { FiatCurrencyItem } from '../../../types';
+import { FiatCurrencyItem } from '../../../types/general';
 import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { FiatCurrencyListEmptyComponent } from './FiatCurrencyListEmptyComponent';

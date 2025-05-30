@@ -7,11 +7,11 @@ import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
 
 describe('quotesUtils', () => {
-    let form: TradingBuyForm;
+    let form: BuyFormType;
 
     const renderUseTradingBuyForm = () =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), {

@@ -1,5 +1,5 @@
 import { TradingRootState, createMemoizedSelector } from '../tradingSlice';
-import { TradeableAsset } from '../types';
+import { TradeableAsset } from '../types/general';
 
 export const selectTradingFavouriteAssets = (state: TradingRootState) =>
     state.wallet.tradingNew.favouriteAssets;

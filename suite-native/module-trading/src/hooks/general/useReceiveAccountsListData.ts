@@ -11,7 +11,7 @@ import { Account } from '@suite-common/wallet-types/';
 import { useTranslate } from '@suite-native/intl';
 
 import { SectionListData } from './useSectionList';
-import { ReceiveAccount } from '../../types';
+import { ReceiveAccount } from '../../types/general';
 
 export type ReceiveAccountsListMode = 'account' | 'address';
 

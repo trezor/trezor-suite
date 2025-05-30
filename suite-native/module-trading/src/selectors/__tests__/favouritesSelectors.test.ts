@@ -4,7 +4,7 @@ import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { btcAsset } from '../../__fixtures__/tradeableAssets';
 import { TradingState, addTradeableAssetToFavourites, tradingSlice } from '../../tradingSlice';
-import { TradeableAsset } from '../../types';
+import { TradeableAsset } from '../../types/general';
 import {
     selectIsTradingFavouriteAsset,
     selectTradingFavouriteAssets,

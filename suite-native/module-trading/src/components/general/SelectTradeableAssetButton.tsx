@@ -3,7 +3,7 @@ import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { TradeableAssetButton } from './TradeableAssetButton';
-import { TradeableAsset } from '../../types';
+import { TradeableAsset } from '../../types/general';
 
 export type SelectAssetButtonProps = {
     onPress: () => void;

@@ -11,13 +11,13 @@ import { PROTO } from '@trezor/connect';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyCryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
 
 describe('BuyCryptoAmountInput', () => {
     const renderCryptoAmountInput = (
         props: Partial<CryptoAmountInputProps>,
-        form: TradingBuyForm,
+        form: BuyFormType,
         preloadedState: PreloadedState = {},
     ) =>
         renderWithStoreProviderAsync(

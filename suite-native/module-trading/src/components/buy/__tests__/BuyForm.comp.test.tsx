@@ -9,14 +9,14 @@ import {
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyForm } from '../BuyForm';
 
 describe('BuyForm', () => {
     const renderFormHook = (preloadedState: PreloadedState) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), { preloadedState });
 
-    const renderBuyForm = (preloadedState: PreloadedState, form: TradingBuyForm) =>
+    const renderBuyForm = (preloadedState: PreloadedState, form: BuyFormType) =>
         renderWithStoreProviderAsync(
             <Form form={form}>
                 <BuyForm />
@@ -40,7 +40,7 @@ describe('BuyForm', () => {
     });
 
     describe('with preloaded buy data', () => {
-        let form: TradingBuyForm;
+        let form: BuyFormType;
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
 
         beforeEach(async () => {

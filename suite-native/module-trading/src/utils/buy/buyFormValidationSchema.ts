@@ -1,10 +1,12 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { TradingBuyFormContext } from '../../types';
+import { BuyFormContext } from '../../types/buy';
 
-const getAmountLimitContext = ({ options }: yup.TestContext<unknown>): TradingBuyFormContext => {
-    const context = options.context as TradingBuyFormContext;
+const getAmountLimitContext = ({
+    options,
+}: yup.TestContext<unknown>): Omit<BuyFormContext, 'currency'> & { currency: string } => {
+    const context = options.context as BuyFormContext;
 
     return {
         ...context,
@@ -15,7 +17,7 @@ const getAmountLimitContext = ({ options }: yup.TestContext<unknown>): TradingBu
 const formatCryptoAmount = (
     amount: string,
     currency: string,
-    CryptoAmountFormatter: TradingBuyFormContext['CryptoAmountFormatter'],
+    CryptoAmountFormatter: BuyFormContext['CryptoAmountFormatter'],
 ) =>
     CryptoAmountFormatter.format(amount, {
         symbol: currency.toLowerCase() as NetworkSymbol,

@@ -22,8 +22,8 @@ import {
 } from '@suite-native/navigation';
 import { useTimer } from '@trezor/react-utils';
 
-import { clearTradingBuyFormQuoteData } from './useBuyForm';
-import { TradingBuyForm } from '../../types';
+import { clearBuyFormQuoteData } from './useBuyForm';
+import { BuyFormType } from '../../types/buy';
 import {
     buildTradingUrl,
     getAnalyticsTradingBuyPayload,
@@ -58,7 +58,7 @@ const reportTradeConfirmation = () => {
     });
 };
 
-export const useBuyFlow = (form: TradingBuyForm) => {
+export const useBuyFlow = (form: BuyFormType) => {
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
@@ -149,7 +149,7 @@ export const useBuyFlow = (form: TradingBuyForm) => {
             handleWebview(response.tradeForm.form, returnUrl);
         }
 
-        clearTradingBuyFormQuoteData(form);
+        clearBuyFormQuoteData(form);
     };
 
     const confirmTrade = async (quote: BuyTrade, address: string) => {

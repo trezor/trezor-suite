@@ -14,11 +14,11 @@ import { cexdirect, invity, mercuryo } from '../../../__fixtures__/providers';
 import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
 describe('BuyProviderPicker', () => {
-    let form: TradingBuyForm;
+    let form: BuyFormType;
 
     const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {

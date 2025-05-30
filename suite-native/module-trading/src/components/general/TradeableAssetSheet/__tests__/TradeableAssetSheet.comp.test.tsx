@@ -1,7 +1,7 @@
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { adaAsset, btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
-import { TradeableAsset } from '../../../../types';
+import { TradeableAsset } from '../../../../types/general';
 import { TradeableAssetSheet, TradeableAssetsSheetProps } from '../TradeableAssetSheet';
 
 describe('TradeableAssetSheet', () => {

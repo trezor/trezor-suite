@@ -8,7 +8,7 @@ import { CryptoIcon, Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ReceiveAccount } from '../../../types';
+import { ReceiveAccount } from '../../../types/general';
 
 export type AccountListBaseItemProps = {
     receiveAccount: ReceiveAccount;

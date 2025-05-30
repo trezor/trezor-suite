@@ -27,7 +27,7 @@ import {
 import { useSectionList } from '../../../hooks/general/useSectionList';
 import { selectBuySelectedReceiveAccount } from '../../../selectors/buySelectors';
 import { setBuySelectedReceiveAccount } from '../../../tradingSlice';
-import { ReceiveAccount } from '../../../types';
+import { ReceiveAccount } from '../../../types/general';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     TradingStackParamList,

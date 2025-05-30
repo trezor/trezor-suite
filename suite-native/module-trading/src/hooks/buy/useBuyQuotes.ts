@@ -19,7 +19,7 @@ import { useDebounce } from '@trezor/react-utils';
 
 import { selectValidTradingBuyQuotesNative } from '../../selectors/buySelectors';
 import { clearBuyState, clearQuotesAndQuotesRequest } from '../../tradingSlice';
-import { TradingBuyForm } from '../../types';
+import { BuyFormType } from '../../types/buy';
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/general/quotesUtils';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
 import { useReloadTimer } from '../general/useReloadTimer';
@@ -42,7 +42,7 @@ type ShouldFetchBuyQuotes = {
     shouldFetchQuotes: boolean;
 };
 
-const useShouldFetchBuyQuotes = (form: TradingBuyForm): ShouldFetchBuyQuotes => {
+const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
     const prevState = useRef<ShouldFetchBuyQuotesRef>({
         cryptoId: undefined,
         fiatCurrency: undefined,
@@ -145,7 +145,7 @@ const useBuyQuotesInvalidator = (
 };
 
 const useBuyQuotesThunk = (
-    form: TradingBuyForm,
+    form: BuyFormType,
     timer: ReturnType<typeof useReloadTimer>['timer'],
     shouldRefetchQuotes: boolean,
     quotesPromiseRef: ReturnType<typeof useRef<PromiseType | undefined>>,
@@ -207,7 +207,7 @@ const useBuyQuotesThunk = (
     ]);
 };
 
-export const useBuyQuotes = (form: TradingBuyForm) => {
+export const useBuyQuotes = (form: BuyFormType) => {
     const debounce = useDebounce();
     const promiseRef = useRef<PromiseType | undefined>(undefined);
 

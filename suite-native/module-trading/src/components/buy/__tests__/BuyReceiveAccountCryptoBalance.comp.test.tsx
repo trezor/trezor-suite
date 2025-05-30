@@ -7,14 +7,14 @@ import {
 
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import {
     BuyReceiveAccountCryptoBalance,
     RECEIVE_ACCOUNT_BALANCE_TEST_ID,
 } from '../BuyReceiveAccountCryptoBalance';
 
 describe('BuyReceiveAccountCryptoBalance', () => {
-    let buyForm: TradingBuyForm;
+    let buyForm: BuyFormType;
 
     const renderBuyForm = async () => {
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());

@@ -23,8 +23,9 @@ import {
     buyFiatCurrencyChanged,
     setBuySelectedReceiveAccount,
 } from '../../../tradingSlice';
-import { TradeableAsset, TradingBuyForm } from '../../../types';
-import { clearTradingBuyFormQuoteData, useBuyForm } from '../useBuyForm';
+import { BuyFormType } from '../../../types/buy';
+import { TradeableAsset } from '../../../types/general';
+import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
 jest.mock('../../../utils/general/utils', () => ({
     ...jest.requireActual('../../../utils/general/utils'),
@@ -53,7 +54,7 @@ describe('useBuyForm', () => {
         return await initStore(preloadedState);
     };
 
-    const initFormAndQuotes = (form: TradingBuyForm, store: EnhancedStore) => {
+    const initFormAndQuotes = (form: BuyFormType, store: EnhancedStore) => {
         act(() => {
             form.setValue('fiatValue', '10');
             form.setValue('asset', btcAsset);
@@ -463,7 +464,7 @@ describe('useBuyForm', () => {
 
         describe('when quote is selected and new quotes are fetched', () => {
             let store: EnhancedStore;
-            let form: TradingBuyForm;
+            let form: BuyFormType;
 
             beforeEach(async () => {
                 store = await getInitializedStore();
@@ -732,7 +733,7 @@ describe('useBuyForm', () => {
         });
     });
 
-    describe('clearTradingBuyFormQuoteData', () => {
+    describe('clearBuyFormQuoteData', () => {
         it('should clear quote, fiatValue, cryptoValue and generalAlert data', async () => {
             const store = await getInitializedStore();
             const { result } = await renderUseTradingBuyForm(store);
@@ -744,7 +745,7 @@ describe('useBuyForm', () => {
             });
 
             act(() => {
-                clearTradingBuyFormQuoteData(result.current);
+                clearBuyFormQuoteData(result.current);
             });
 
             expect(result.current.getValues('quote')).toBeUndefined();

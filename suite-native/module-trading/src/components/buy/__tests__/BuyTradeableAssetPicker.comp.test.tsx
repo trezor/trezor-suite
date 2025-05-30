@@ -12,12 +12,12 @@ import { FirmwareType } from '@trezor/connect';
 
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
 
 describe('BuyTradeableAssetPicker', () => {
     let store: EnhancedStore;
-    let form: TradingBuyForm;
+    let form: BuyFormType;
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
         initStore({

@@ -4,7 +4,7 @@ import { useTranslate } from '@suite-native/intl';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { Country } from '../../types';
+import { Country } from '../../types/general';
 import { CountrySheet } from '../general/CountrySheet/CountrySheet';
 import { OverviewRow } from '../general/OverviewRow';
 

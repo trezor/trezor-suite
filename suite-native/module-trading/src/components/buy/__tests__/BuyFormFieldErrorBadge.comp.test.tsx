@@ -12,11 +12,11 @@ import { PROTO } from '@trezor/connect';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyFormFieldErrorBadge, BuyFormFieldErrorBadgeProps } from '../BuyFormFieldErrorBadge';
 
 describe('BuyFormFieldErrorBadge', () => {
-    let tradingForm: TradingBuyForm;
+    let tradingForm: BuyFormType;
 
     const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
@@ -28,7 +28,7 @@ describe('BuyFormFieldErrorBadge', () => {
 
     const renderBuyFormFieldErrorBadge = (
         props: BuyFormFieldErrorBadgeProps,
-        form: TradingBuyForm,
+        form: BuyFormType,
         preloadedState: PreloadedState = {},
     ) =>
         renderWithStoreProviderAsync(

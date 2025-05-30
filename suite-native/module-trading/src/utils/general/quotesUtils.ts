@@ -5,10 +5,10 @@ import type { TradingBuyFormProps, TradingPaymentMethodListProps } from '@suite-
 import { toCryptoOption } from '@suite-common/trading';
 
 import { supportedFiatCurrenciesMap } from '../../consts/general/supportedFiatCurrencies';
-import { TradingBuyForm } from '../../types';
+import { BuyFormType } from '../../types/buy';
 
 export const getPaymentMethodFromBuyForm = (
-    form: TradingBuyForm,
+    form: BuyFormType,
 ): TradingPaymentMethodListProps | undefined => {
     const quote = form.getValues('quote');
 
@@ -23,7 +23,7 @@ export const getPaymentMethodFromBuyForm = (
 };
 
 export const tradingBuyFormToTradingBuyFormProps = (
-    form: TradingBuyForm,
+    form: BuyFormType,
     coinInfo: CoinInfo | undefined,
 ): TradingBuyFormProps => {
     const [asset, fiatCurrency, fiatValue, cryptoValue, amountInCrypto, country] = form.getValues([

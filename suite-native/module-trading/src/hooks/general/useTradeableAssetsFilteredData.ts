@@ -4,7 +4,7 @@ import { cryptoIdToSymbol } from '@suite-common/trading';
 import { NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 
 import { useListDataFilter } from './useListDataFilter';
-import { TradeableAsset } from '../../types';
+import { TradeableAsset } from '../../types/general';
 
 const doesContractAddressIncludeValue = (asset: TradeableAsset, value: string) =>
     asset.contractAddress?.toLowerCase().includes(value.toLowerCase()) ?? false;

@@ -9,6 +9,7 @@ import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectIsTradingFavouriteAsset } from '../../../selectors/favouritesSelectors';
+import { TradeableAsset } from '../../../types/general';
 import { NetworkBadge } from '../NetworkBadge';
 import { NetworkSymbolExtendedFormatter } from '../NetworkSymbolExtendedFormatter';
 import { FavouriteIcon } from './FavouriteIcon';
@@ -17,7 +18,6 @@ import {
     addTradeableAssetToFavourites,
     removeTradeableAssetFromFavourites,
 } from '../../../tradingSlice';
-import { TradeableAsset } from '../../../types';
 
 export type TradeableAssetListItemProps = {
     asset: TradeableAsset;

@@ -9,15 +9,12 @@ import {
 import { paletteV1 } from '@trezor/theme';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
 import { BuyAmountInput, TradingAmountInputProps } from '../BuyAmountInput';
 
 describe('BuyAmountInput', () => {
     const renderBuyFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
-    const renderTradingAmountInput = (
-        props: Partial<TradingAmountInputProps>,
-        form: TradingBuyForm,
-    ) =>
+    const renderTradingAmountInput = (props: Partial<TradingAmountInputProps>, form: BuyFormType) =>
         renderWithBasicProvider(
             <Form form={form}>
                 <BuyAmountInput

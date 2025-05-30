@@ -9,7 +9,8 @@ import {
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { ReceiveAccount, TradingBuyForm } from '../../../types';
+import { BuyFormType } from '../../../types/buy';
+import { ReceiveAccount } from '../../../types/general';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
 
 let mockNavigate: jest.Mock;
@@ -35,7 +36,7 @@ const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
 });
 
 describe('BuyReceiveAccountPicker', () => {
-    let buyForm: TradingBuyForm;
+    let buyForm: BuyFormType;
 
     beforeEach(() => {
         jest.resetAllMocks();

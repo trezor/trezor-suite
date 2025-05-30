@@ -6,12 +6,12 @@ import {
     ListItemExtraData,
     useFavouriteAssetsSectionList,
 } from '../../../hooks/general/useFavouriteAssetsSectionList';
+import { TradeableAsset } from '../../../types/general';
 import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
 import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
 import { ItemRenderConfig } from '../../../hooks/general/useSectionList';
-import { TradeableAsset } from '../../../types';
 
 export type TradeableAssetsSheetProps = {
     isVisible: boolean;

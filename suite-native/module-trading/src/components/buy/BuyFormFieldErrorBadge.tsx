@@ -9,17 +9,17 @@ import { useTranslate } from '@suite-native/intl';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
-import { TradingBuyFormValues } from '../../types';
+import { BuyFormValues } from '../../types/buy';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
 
 export type BuyFormFieldErrorBadgeProps = {
-    fieldName: keyof TradingBuyFormValues;
+    fieldName: keyof BuyFormValues;
 };
 
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
-const useMismatchedAmountMessage = (fieldName: keyof TradingBuyFormValues) => {
+const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
     const form = useBuyFormContext();
     const { translate } = useTranslate();
     const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();

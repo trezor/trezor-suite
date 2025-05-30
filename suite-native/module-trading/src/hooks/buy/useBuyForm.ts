@@ -25,14 +25,14 @@ import {
     selectValidTradingBuyQuotesNative,
 } from '../../selectors/buySelectors';
 import { buyAssetChanged, buyFiatCurrencyChanged } from '../../tradingSlice';
-import { TradingBuyForm, TradingBuyFormValues } from '../../types';
+import { BuyFormType, BuyFormValues } from '../../types/buy';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
 import { getRandomAccountDescriptor } from '../../utils/general/utils';
 import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
 
-const useReceiveAccountChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
+const useReceiveAccountChangeEffect = ({ getValues, setValue }: BuyFormType) => {
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
     // make sure invityAPIKey is initialized with some unique string on form mount
@@ -53,7 +53,7 @@ const useReceiveAccountChangeEffect = ({ getValues, setValue }: TradingBuyForm) 
     }, [selectedReceiveAccount, getValues, setValue]);
 };
 
-const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: TradingBuyForm) => {
+const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
     const dispatch = useDispatch();
     const prevCryptoId = useRef<CryptoId | undefined>(undefined);
     const prevFiatCurrency = useRef<FiatCurrencyCode | undefined>(getValues('fiatCurrency'));
@@ -123,7 +123,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
     }, [dispatch, setValue, watch]);
 };
 
-const useBuyQuotesChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
+const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
     const quotes = useSelector(selectValidTradingBuyQuotesNative);
 
     useEffect(() => {
@@ -163,7 +163,7 @@ const useBuyQuotesChangeEffect = ({ getValues, setValue }: TradingBuyForm) => {
     }, [quotes, getValues, setValue]);
 };
 
-const useBuyQuoteChangeEffect = (form: TradingBuyForm) => {
+const useBuyQuoteChangeEffect = (form: BuyFormType) => {
     const { getValues, setValue, watch } = form;
     const quote = watch('quote');
     const symbol = getSelectedSymbolFromBuyForm(form);
@@ -200,7 +200,7 @@ const useBuyQuoteChangeEffect = (form: TradingBuyForm) => {
 };
 
 const useValidations = (
-    { trigger, setValue }: TradingBuyForm,
+    { trigger, setValue }: BuyFormType,
     limits: TradingAmountLimitProps | undefined,
 ) => {
     const { translate } = useTranslate();
@@ -221,14 +221,14 @@ const useValidations = (
     }, [generalAlertMsg, setValue]);
 };
 
-export const useBuyForm = (): TradingBuyForm => {
+export const useBuyForm = (): BuyFormType => {
     const { translate } = useTranslate();
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const defaultValues = useSelector(selectBuyFormDefaultValues);
     const limits = useSelector(selectBuyAmountLimits);
     const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
 
-    const form = useForm<TradingBuyFormValues>({
+    const form = useForm<BuyFormValues>({
         defaultValues,
         validation: buyFormValidationSchema,
         context: {
@@ -249,7 +249,7 @@ export const useBuyForm = (): TradingBuyForm => {
     return form;
 };
 
-export const clearTradingBuyFormQuoteData = (form: TradingBuyForm) => {
+export const clearBuyFormQuoteData = (form: BuyFormType) => {
     form.setValue('quote', undefined);
     form.setValue('fiatValue', undefined, { shouldValidate: true });
     form.setValue('cryptoValue', undefined, { shouldValidate: true });
