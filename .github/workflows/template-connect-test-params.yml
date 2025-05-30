@@ -39,7 +39,7 @@ on:
         description: "Transport to use (example: bridge, node-bridge)"
         type: "string"
         required: false
-        default: "Bridge"
+        default: "node-bridge"
       testEnv:
         description: "Environment to test (example: node, web)"
         type: "string"
