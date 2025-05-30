@@ -919,6 +919,7 @@ export const en = {
                 subtitle:
                     'Firmware is already installed on this Trezor. Continue only if you have used this Trezor before.',
                 confirmButton: 'Yes, set up my Trezor',
+                button: "Yes, let's get started",
                 noButton: 'No, I have not',
             },
             lookDifferentLabel: 'My device looks different',

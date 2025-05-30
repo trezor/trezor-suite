@@ -172,7 +172,11 @@ export const UninitializedDeviceLandingScreen = ({
                         onPress={handleConfirmButtonPress}
                         testID="@deviceOnboarding/UninitializedDeviceLandingScreen/confirmBtn"
                     >
-                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.button" />
+                        {hasDeviceFirmwareInstalled ? (
+                            <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.button" />
+                        ) : (
+                            <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.button" />
+                        )}
                     </Button>
                     {hasDeviceFirmwareInstalled && (
                         <Button
