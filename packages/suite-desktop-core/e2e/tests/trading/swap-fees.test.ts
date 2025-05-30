@@ -10,6 +10,10 @@ const gasLimit = '26000';
 const maxFeePerGas = '2.67674454';
 const maxFeePerGasRounded = new BigNumber(maxFeePerGas).decimalPlaces(2, BigNumber.ROUND_UP);
 const maxPriorityFeePerGas = '1.375641927';
+const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalPlaces(
+    2,
+    BigNumber.ROUND_UP,
+);
 
 test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -31,7 +35,6 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
     );
 
     test('Swap custom fees for Ethereum', async ({
-        page,
         tradingPage,
         devicePrompt,
         trezorUserEnvLink,
@@ -68,7 +71,13 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
 
         await test.step('Verify fees on modal and emulator', async () => {
             await expect(devicePrompt.ethereumGasLimit).toHaveText(`Gas limit: ${gasLimit}`);
-            await expect(devicePrompt.headerFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
+            await expect(devicePrompt.ethereumFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
+            // TODO: Investigate why this fee value is displayed only in CI run
+            if (process.env.GITHUB_ACTION) {
+                await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
+                    `${maxPriorityFeePerGasRounded} Gwei`,
+                );
+            }
             await expect(
                 devicePrompt.cryptoAmountWithSymbolOf('fee'),
                 errorMessageMaxCalculation,
@@ -80,7 +89,6 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await page.pause();
             const burgerMenuCoordinates = { x: 200, y: 20 };
             await trezorUserEnvLink.clickEmu(burgerMenuCoordinates);
             const feeInfoCoordinates = { x: 125, y: 100 };

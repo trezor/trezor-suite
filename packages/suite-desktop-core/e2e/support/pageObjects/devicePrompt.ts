@@ -28,6 +28,8 @@ export class DevicePrompt {
     readonly acquireDeviceButton: Locator;
     readonly closeButton: Locator;
     readonly ethereumGasLimit: Locator;
+    readonly ethereumFeeRate: Locator;
+    readonly ethereumPriorityFeeRate: Locator;
     readonly headerFeeRate: Locator;
 
     constructor(private page: Page) {
@@ -45,6 +47,12 @@ export class DevicePrompt {
         this.acquireDeviceButton = this.page.getByTestId('@device-acquire');
         this.closeButton = this.page.getByTestId('@confirm-on-device/close-button');
         this.ethereumGasLimit = this.page.getByTestId('@modal/ethereum/gas-limit');
+        this.ethereumFeeRate = this.page
+            .getByTestId('@modal/ethereum/fee')
+            .getByTestId('@fee-rate');
+        this.ethereumPriorityFeeRate = this.page
+            .getByTestId('@modal/ethereum/priority-fee')
+            .getByTestId('@fee-rate');
         this.headerFeeRate = this.page.getByTestId('@fee-rate');
     }
 

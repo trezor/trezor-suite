@@ -99,7 +99,7 @@ export const TransactionReviewSummary = ({
                         <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
                     </Note>
                     {hasEip1559MaxPriorityFee(tx) ? (
-                        <Note iconName="gasPump">
+                        <Note data-testid="@modal/ethereum/priority-fee" iconName="gasPump">
                             <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
 
                             {': '}
