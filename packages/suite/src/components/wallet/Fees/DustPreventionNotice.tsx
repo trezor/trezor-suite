@@ -1,5 +1,8 @@
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Note } from '@trezor/components';
+import { isApproxEqual } from '@trezor/utils';
 
+import { useSelector } from '../../../hooks/suite';
 import { Translation } from '../../suite';
 
 type DustPreventionNoticeProps = {
@@ -15,10 +18,14 @@ export const DustPreventionNotice = ({
     baseFee,
     feeUnits,
 }: DustPreventionNoticeProps) => {
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state));
+
+    const relativeTolerance = 1e-3;
     const isComposedFeeRateDifferent =
+        !areFeesLoading &&
         composedFeePerByte !== undefined &&
-        composedFeePerByte !== '' &&
-        chosenFeePerByte !== composedFeePerByte;
+        chosenFeePerByte !== undefined &&
+        !isApproxEqual(composedFeePerByte, chosenFeePerByte, relativeTolerance);
 
     if (!isComposedFeeRateDifferent) return null;
 

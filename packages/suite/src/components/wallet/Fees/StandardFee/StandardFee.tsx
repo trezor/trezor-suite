@@ -28,6 +28,7 @@ export type StandardFeeProps = {
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
     isDirty: boolean;
     getValues: UseFormGetValues<FormState>;
+    areFeesLoading: boolean;
 };
 
 export const FeeCardsWrapper = styled.div`

@@ -23,6 +23,7 @@ export const EthereumFeeCards = ({
     isDirty,
     transactionInfo,
     feeInfo,
+    areFeesLoading,
 }: StandardFeeProps) => {
     const locale = useLocales();
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -58,6 +59,7 @@ export const EthereumFeeCards = ({
                         key={fee.value}
                         isSelected={selectedLevel.label === fee.value}
                         changeFeeLevel={changeFeeLevel}
+                        isLoading={areFeesLoading}
                         topLeftChild={
                             <span data-testid={`@fee-card/${fee.value}`}>
                                 <Translation id={getFeeLevelTranslationId(fee.value)} />

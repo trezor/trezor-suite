@@ -13,6 +13,7 @@ export const MiscFeeCards = ({
     feeOptions,
     symbol,
     changeFeeLevel,
+    areFeesLoading,
 }: StandardFeeProps) => {
     if (!feeOptions.length) return null;
 
@@ -28,6 +29,7 @@ export const MiscFeeCards = ({
                 value={fee.value}
                 isSelected={true}
                 changeFeeLevel={changeFeeLevel}
+                isLoading={areFeesLoading}
                 topLeftChild={
                     <span data-testid={`@fee-card/${fee.value}`}>
                         <Translation id={getFeeLevelTranslationId(fee.value)} />

@@ -23,6 +23,7 @@ export * from './discovery/discoveryThunks';
 export * from './discovery/discoverySelectors';
 export * from './discovery/discoveryRunningStateLocks';
 export * from './fees/feesActions';
+export * from './fees/feesConstants';
 export * from './fees/feesReducer';
 export * from './fees/feesThunks';
 export * from './fiat-rates/fiatRatesMiddleware';

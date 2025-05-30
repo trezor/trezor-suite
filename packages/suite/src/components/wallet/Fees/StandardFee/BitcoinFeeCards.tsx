@@ -24,6 +24,7 @@ export const BitcoinFeeCards = ({
     symbol,
     isDirty,
     getValues,
+    areFeesLoading,
 }: StandardFeeProps) => {
     const locale = useLocales();
 
@@ -60,6 +61,7 @@ export const BitcoinFeeCards = ({
                         value={fee.value}
                         isSelected={selectedLevel.label === fee.value}
                         changeFeeLevel={changeFeeLevel}
+                        isLoading={areFeesLoading}
                         topLeftChild={
                             <span data-testid={`@fee-card/${fee.value}`}>
                                 <Translation id={getFeeLevelTranslationId(fee.value)} />
