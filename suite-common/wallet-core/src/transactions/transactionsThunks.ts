@@ -31,11 +31,11 @@ import {
     selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp,
     selectIsPageAlreadyFetched,
     selectTransactions,
-} from './transactionsReducer';
+} from './transactionsSelectors';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
+import { selectAccountByKey, selectAccounts } from '../accounts/accountsSelectors';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectSendSignedTx } from '../send/sendFormReducer';
+import { selectSendSignedTx } from '../send/sendFormSelectors';
 
 /**
  * Replace existing transaction in the reducer (RBF)

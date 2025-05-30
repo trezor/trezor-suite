@@ -48,14 +48,14 @@ import {
     signEthereumSendFormTransactionThunk,
 } from './sendFormEthereumThunks';
 import {
-    selectSendFormDrafts,
-    selectSendPrecomposedTx,
-    selectSendSerializedTx,
-} from './sendFormReducer';
-import {
     composeRippleStellarTransactionFeeLevelsThunk,
     signRippleStellarSendFormTransactionThunk,
 } from './sendFormRippleStellarThunks';
+import {
+    selectSendFormDrafts,
+    selectSendPrecomposedTx,
+    selectSendSerializedTx,
+} from './sendFormSelectors';
 import {
     composeSolanaTransactionFeeLevelsThunk,
     signSolanaSendFormTransactionThunk,
@@ -68,9 +68,9 @@ import {
     SignTransactionTimeoutError,
 } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectAccountByKey } from '../accounts/accountsReducer';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
-import { selectSelectedDevice } from '../device/deviceReducer';
+import { selectSelectedDevice } from '../device/deviceSelectors';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,

@@ -33,12 +33,12 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectSelectedDevice } from '../device/deviceReducer';
+import { selectSelectedDevice } from '../device/deviceSelectors';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
-import { selectTransactions } from '../transactions/transactionsReducer';
+import { selectTransactions } from '../transactions/transactionsSelectors';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
 

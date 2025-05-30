@@ -41,7 +41,7 @@ import {
     SignTransactionError,
     SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectTransactions } from '../transactions/transactionsReducer';
+import { selectTransactions } from '../transactions/transactionsSelectors';
 
 export const calculate = (
     availableBalance: string,

@@ -27,12 +27,10 @@ import {
 
 import { MAX_AGE } from './fiatRatesConstants';
 import { FiatRatesRootState } from './fiatRatesTypes';
-import {
-    AccountsRootState,
-    selectAccountByKey,
-    selectDeviceAccounts,
-} from '../accounts/accountsReducer';
-import { TransactionsRootState, selectTransactions } from '../transactions/transactionsReducer';
+import { AccountsRootState } from '../accounts/accountsReducer';
+import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSelectors';
+import { TransactionsRootState } from '../transactions/transactionsReducer';
+import { selectTransactions } from '../transactions/transactionsSelectors';
 
 type UnixTimestamp = number;
 

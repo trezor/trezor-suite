@@ -32,7 +32,7 @@ import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
-import { selectAccounts } from '../accounts/accountsReducer';
+import { selectAccounts } from '../accounts/accountsSelectors';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';

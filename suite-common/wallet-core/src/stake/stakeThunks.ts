@@ -26,7 +26,7 @@ import {
     StakeRewardsByAccount,
     ValidatorsQueue,
 } from './stakeTypes';
-import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsReducer';
+import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsSelectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';

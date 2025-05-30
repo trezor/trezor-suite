@@ -22,7 +22,7 @@ import { TimerId, exhaustive } from '@trezor/type-utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
-import { selectAccountByKey } from '../accounts/accountsReducer';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { selectIsElectrumBackendSelected } from '../blockchain/blockchainSelectors';
 
 type UpdateTxsFiatRatesThunkPayload = {

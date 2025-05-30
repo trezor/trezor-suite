@@ -32,8 +32,8 @@ import { isChanged } from '@trezor/utils';
 
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
-import { selectDeviceById, selectDevices, selectSelectedDevice } from './deviceReducer';
-import { selectAccountByKey } from '../accounts/accountsReducer';
+import { selectDeviceById, selectDevices, selectSelectedDevice } from './deviceSelectors';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
