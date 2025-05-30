@@ -1,29 +1,18 @@
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    NetworkSymbol,
-    getNetwork,
-    getNetworkOptional,
-    networksCollection,
-} from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkOptional, networksCollection } from '@suite-common/wallet-config';
 import type { NetworksFees } from '@suite-common/wallet-types';
-import { isEip1559 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
-import { isNative } from '@trezor/env-utils';
+import TrezorConnect from '@trezor/connect';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
+import { getNewFeeInfo, sortLevels } from './feesUtils';
 import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
+import { selectSelectedDevice } from '../device/deviceSelectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
-
-// sort FeeLevels in reversed order (Low > High)
-// TODO: consider to use same order in @trezor/connect to avoid double sorting
-const order: FeeLevel['label'][] = ['low', 'economy', 'normal', 'high'];
-export const sortLevels = (levels: FeeLevel[]) =>
-    levels.sort((levelA, levelB) => order.indexOf(levelA.label) - order.indexOf(levelB.label));
 
 export const preloadFeeInfoThunk = createThunk(
     `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
@@ -72,81 +61,20 @@ export const preloadFeeInfoThunk = createThunk(
 
 export const updateFeeInfoThunk = createThunk(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
-    async ({ networkSymbol }: { networkSymbol: NetworkSymbol }, { dispatch, getState, extra }) => {
+    async ({ networkSymbol }: { networkSymbol: NetworkSymbol }, { dispatch, getState }) => {
         const network = getNetworkOptional(networkSymbol.toLowerCase());
         if (!network) return;
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), network.symbol);
+        const device = selectSelectedDevice(getState());
 
-        const device = extra.selectors.selectDevice(getState());
+        const newFeeInfo = await getNewFeeInfo({ network, device });
+        if (newFeeInfo === undefined) return;
 
-        let newFeeInfo;
-
-        if (network.networkType === 'ethereum') {
-            const result = await TrezorConnect.blockchainEstimateFee({
-                coin: network.symbol,
-                request: {
-                    blocks: [2],
-                    feeLevels: 'smart',
-                    specific: {
-                        from: '0x0000000000000000000000000000000000000000',
-                        to: '0x0000000000000000000000000000000000000000',
-                    },
-                },
-            });
-            if (result.success) {
-                const feeLevelBase = result.payload.levels[0];
-                const isEip1559ActivatedAndAvailable =
-                    getNetwork(network.symbol).features.includes('eip1559') &&
-                    isEip1559(feeLevelBase) &&
-                    !device?.unavailableCapabilities?.['eip1559'] &&
-                    !isNative(); // suite-native does not have eip1559 implementation yet #16372
-
-                if (isEip1559ActivatedAndAvailable) {
-                    newFeeInfo = result.payload;
-                } else {
-                    newFeeInfo = {
-                        ...result.payload,
-                        levels: [
-                            {
-                                ...feeLevelBase,
-                                baseFeePerGas: undefined,
-                                maxFeePerGas: undefined,
-                                maxPriorityFeePerGas: undefined,
-                                label: 'normal' as const,
-                            },
-                        ],
-                    };
-                }
-            }
-        } else {
-            const result = await TrezorConnect.blockchainEstimateFee({
-                coin: network.symbol,
-                request: {
-                    feeLevels: 'smart',
-                },
-            });
-
-            if (result.success) {
-                newFeeInfo = {
-                    ...result.payload,
-                    levels: sortLevels(
-                        result.payload.levels
-                            // hack to hide "low" fee option
-                            // (we do not want to change the connect API as it is a potentially breaking change)
-                            .filter(level => level.label !== 'low'),
-                    ),
-                };
-            }
-        }
-
-        if (newFeeInfo) {
-            const partial: Partial<NetworksFees> = {};
-            partial[network.symbol] = {
-                blockHeight: blockchainInfo.blockHeight,
-                ...newFeeInfo,
-            };
-
-            dispatch(feesActions.updateFee(partial));
-        }
+        const partialFees: Partial<NetworksFees> = {};
+        partialFees[network.symbol] = {
+            blockHeight: blockchainInfo.blockHeight,
+            ...newFeeInfo,
+        };
+        dispatch(feesActions.updateFee(partialFees));
     },
 );
