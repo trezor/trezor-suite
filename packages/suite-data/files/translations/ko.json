@@ -19,7 +19,6 @@
   "CUSTOM_FEE_IS_NOT_INTEGER": "전체 숫자를 입력하세요",
   "CUSTOM_FEE_IS_NOT_SET": "원하시는 수수료를 입력하세요",
   "CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED": "Gas 요금이 너무 낮습니다",
-  "CUSTOM_FEE_LIMIT_USE_RECOMMENDED": "자동 책정된 Gas 요금 사용",
   "CUSTOM_FEE_NOT_IN_RANGE": "{minFee}부터 {maxFee}까지의 요금을 입력하세요",
   "DATA_ETH": "ETH 데이터",
   "DATA_ETH_ADD": "데이터 추가하기",

@@ -20,7 +20,6 @@
   "CUSTOM_FEE_IS_NOT_INTEGER": "Wprowadź liczbę całkowitą",
   "CUSTOM_FEE_IS_NOT_SET": "Wprowadź żądaną opłatę",
   "CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED": "Limit gazu zbyt niski",
-  "CUSTOM_FEE_LIMIT_USE_RECOMMENDED": "Polecane użycie",
   "CUSTOM_FEE_NOT_IN_RANGE": "Wprowadź opłatę pomiędzy {minFee} a {maxFee}",
   "DATA_ETH": "Dane",
   "DATA_ETH_ADD": "Dodaj dane",
