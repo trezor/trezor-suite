@@ -84,12 +84,12 @@ export const TransactionReviewSummary = ({
 
             {isEthereumNetworkType && (
                 <>
-                    <Note iconName="gasPump">
+                    <Note data-testid="@modal/ethereum/gas-limit" iconName="gasPump">
                         <Translation id="TR_GAS_LIMIT" />
                         {': '}
                         {tx.feeLimit}
                     </Note>
-                    <Note iconName="gasPump">
+                    <Note data-testid="@modal/ethereum/fee" iconName="gasPump">
                         {isEip1559(tx) ? (
                             <Translation id="TR_MAX_FEE_PER_GAS" />
                         ) : (

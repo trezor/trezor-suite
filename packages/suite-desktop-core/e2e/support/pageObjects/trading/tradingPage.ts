@@ -316,8 +316,10 @@ export class TradingPage {
         receiveSymbol: NetworkSymbol;
         receiveNetwork: string;
     }) {
-        await this.swapFromAccountInput.click();
-        await this.swapFromAccountOption(params.sendCurrency).click();
+        await this.page.selectDropdownOptionWithRetry(
+            this.swapFromAccountInput,
+            this.swapFromAccountOption(params.sendCurrency),
+        );
         await this.selectAccount(params.receiveCurrency, params.receiveSymbol);
         // We should not fill in amount until account change takes effect = correct ticker is displayed
         await expect(this.swapAmountInputCurrencyTicker).toHaveText(params.sendTicker);

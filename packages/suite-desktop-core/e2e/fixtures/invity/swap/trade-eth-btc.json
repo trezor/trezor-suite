@@ -1,0 +1,19 @@
+{
+    "receiveAddress": "bc1qhnqs78qhvffm95mjdwet39wnhhydtenk7z5h82",
+    "sendAddress": "0xFb206A5b4CceBF15988c60De70956Fb04cCc2C75",
+    "orderId": "f6d72096ceb235",
+    "quoteId": "73a854b6-a8ec-4d69-a3cc-4bff212cc959",
+    "status": "CONFIRM",
+    "statusUrl": "https://changenow.io/exchange/txs/f6d72096ceb235",
+    "exchange": "changenowfr",
+    "send": "ethereum",
+    "receive": "bitcoin",
+    "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+    "sendStringAmount": "0.008",
+    "receiveStringAmount": "0.00017479",
+    "fee": "INCLUDED",
+    "min": 0.00563268,
+    "max": 74.89642331822544,
+    "rate": 0.02184875,
+    "rateIdentificator": "qT8R6/J6QZfBEv78zdUKrzdGfNlTDc0bUGgXcvfsKQlO1NLOwa4eFTbyqK53jkT6bS/rYdGw4XndSRrTi00//1Xm4jWfn6vO4Qlpp96WqomajEJ+bG9vZsraps0pWxyTHPBIUm4OlQuXyxeIy65eExRAiT1vPCV4SRBiYL1ByBHXQnh77cDeRgQMm9aMKcpBN9kPc3qbOk6jXhXQHwTGVQ=="
+}

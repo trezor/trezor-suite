@@ -27,6 +27,8 @@ export class DevicePrompt {
     readonly headerParagraph: Locator;
     readonly acquireDeviceButton: Locator;
     readonly closeButton: Locator;
+    readonly ethereumGasLimit: Locator;
+    readonly headerFeeRate: Locator;
 
     constructor(private page: Page) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
@@ -42,6 +44,8 @@ export class DevicePrompt {
         this.headerParagraph = page.getByTestId('@modal/header-paragraph');
         this.acquireDeviceButton = this.page.getByTestId('@device-acquire');
         this.closeButton = this.page.getByTestId('@confirm-on-device/close-button');
+        this.ethereumGasLimit = this.page.getByTestId('@modal/ethereum/gas-limit');
+        this.headerFeeRate = this.page.getByTestId('@fee-rate');
     }
 
     @step()
@@ -72,6 +76,13 @@ export class DevicePrompt {
     async waitForPromptAndConfirm() {
         await this.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
+    }
+
+    @step()
+    async waitForPromptAndClick() {
+        await this.confirmOnDevicePromptIsShown();
+        const emulatorCenterCoordinates = { x: 125, y: 150 };
+        await TrezorUserEnvLinkProxy.clickEmu(emulatorCenterCoordinates);
     }
 
     @step()
@@ -116,13 +127,15 @@ export class DevicePrompt {
     async getDisplayContent() {
         const debugState = await TrezorUserEnvLinkProxy.getDebugState();
         const json = JSON.parse(debugState.tokens.join(''));
-        if (!json || !json.header || !json.content || !json.footer) {
+        if (!json || !json.header || !json.content) {
             throw new Error(
-                `Display content invalid, should contain header, content, footer: ${JSON.stringify(json)}`,
+                `Display content invalid, should contain header and content: ${JSON.stringify(json)}`,
             );
         }
         // The structure of the JSON differs between situations.
         // We will have to add more logic as we start validate more situations.
+        // Header may have optional subtitle
+        // Footer is optional completely
         const header = {
             title: json.header.title.text,
             ...(json.header.subtitle && { subtitle: json.header.subtitle.text }),
@@ -133,10 +146,12 @@ export class DevicePrompt {
                 `Expected at least one paragraph in display JSON, JSON: ${JSON.stringify(json.content.content.paragraphs)}`,
             );
         }
-        const body = json.content.content.paragraphs;
-        const footer = json.footer.instruction;
 
-        return { header, body, footer };
+        return {
+            header,
+            body: json.content.content.paragraphs,
+            ...(json.footer && { footer: json.footer.instruction }),
+        };
     }
 
     @step()

@@ -1,0 +1,142 @@
+[
+    {
+        "exchange": "changeherofr",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0.00018884",
+        "fee": "INCLUDED",
+        "min": 0.109018988394624,
+        "max": 30.283052331839997,
+        "rate": 0.0236056337359793,
+        "rateIdentificator": "51b374cd-40cd-495a-8d72-397ae0a05efe"
+    },
+    {
+        "exchange": "moonpayexchange",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.0080",
+        "receiveStringAmount": "0.00018",
+        "fee": "INCLUDED",
+        "min": 0.0074399999999999996,
+        "max": 56.743,
+        "rate": 0.02281988446828598,
+        "rateIdentificator": "5f45f520-c6bf-4306-9bc7-b61d3131bea3"
+    },
+    {
+        "exchange": "changenow",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0.0001756",
+        "fee": "UNKNOWN",
+        "min": 0.00103644,
+        "max": "NONE",
+        "rate": 0.02195
+    },
+    {
+        "exchange": "changenowfr",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0.00017479",
+        "fee": "INCLUDED",
+        "min": 0.00563268,
+        "max": 74.89642331822544,
+        "rate": 0.02184875,
+        "rateIdentificator": "qT8R6/J6QZfBEv78zdUKrzdGfNlTDc0bUGgXcvfsKQlO1NLOwa4eFTbyqK53jkT6bS/rYdGw4XndSRrTi00//1Xm4jWfn6vO4Qlpp96WqomajEJ+bG9vZsraps0pWxyTHPBIUm4OlQuXyxeIy65eExRAiT1vPCV4SRBiYL1ByBHXQnh77cDeRgQMm9aMKcpBN9kPc3qbOk6jXhXQHwTGVQ=="
+    },
+    {
+        "exchange": "lifi",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0.00017471",
+        "fee": "UNKNOWN",
+        "min": 0,
+        "max": "NONE",
+        "rate": 0.02183875,
+        "rateIdentificator": "a8735b34-0d7e-4cac-afe5-59766ea948c3:0",
+        "isDex": true,
+        "swapGasEstimate": 0.000365224055539876,
+        "swapSlippage": "1"
+    },
+    {
+        "exchange": "sideshift",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0.00017154",
+        "fee": "UNKNOWN",
+        "min": 0.0100858279692,
+        "max": 37.8597146,
+        "rate": 0.023566036092
+    },
+    {
+        "exchange": "letsexchange",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0",
+        "fee": "UNKNOWN",
+        "min": 0.06,
+        "max": 32000,
+        "rate": 0,
+        "rateIdentificator": "fbab46d1-f009-4065-b043-9bd1b2f7bed0"
+    },
+    {
+        "exchange": "letsexchangefr",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0",
+        "fee": "INCLUDED",
+        "min": 0.06,
+        "max": 32000,
+        "rate": 0,
+        "rateIdentificator": "6447ef57-9987-45c8-995e-1191d849f002"
+    },
+    {
+        "exchange": "godexexchange",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "exp": "zX7yEYpkWX/2ZPJs7bnJSVw67KpdScSv/Af0vrXNkZU=",
+        "sendStringAmount": "0.008",
+        "receiveStringAmount": "0",
+        "fee": "INCLUDED",
+        "min": 0.072,
+        "max": 32000,
+        "rate": 0,
+        "infoNote": "This rate may be subject to change. Select the offer to lock in a final rate."
+    },
+    {
+        "error": "Amount is less than minimal: 0.0083278393912560 eth",
+        "exchange": "changehero"
+    },
+    {
+        "error": "No response from exchange.",
+        "exchange": "changelly"
+    },
+    {
+        "error": "No response from exchange.",
+        "exchange": "changellyfr"
+    },
+    {
+        "error": "Amount too low. Minimum deposit amount: 0.008404824829.",
+        "exchange": "sideshiftfr",
+        "send": "ethereum",
+        "receive": "bitcoin",
+        "sendStringAmount": "0.008000000000000000",
+        "fee": "INCLUDED",
+        "min": 0.0100858279692,
+        "max": 37.8597146
+    }
+]

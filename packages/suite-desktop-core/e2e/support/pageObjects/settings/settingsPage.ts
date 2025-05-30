@@ -154,32 +154,20 @@ export class SettingsPage {
 
     @step()
     async changeTheme(theme: Theme) {
-        await this.selectDropdownOptionWithRetry(this.themeInput, this.themeInputOption(theme));
+        await this.page.selectDropdownOptionWithRetry(
+            this.themeInput,
+            this.themeInputOption(theme),
+        );
         await expect(this.themeInput).toHaveText(capitalizeFirstLetter(theme));
     }
 
     @step()
     async changeLanguage(language: Language) {
-        await this.selectDropdownOptionWithRetry(
+        await this.page.selectDropdownOptionWithRetry(
             this.languageInput,
             this.languageInputOption(language),
         );
         await expect(this.languageInput).toHaveText(languageMap[language]);
-    }
-
-    //Retry mechanism for settings dropdowns which tend to be flaky in automation
-    @step()
-    async selectDropdownOptionWithRetry(dropdown: Locator, option: Locator) {
-        await test.step('Select dropdown option with RETRY', async () => {
-            await dropdown.scrollIntoViewIfNeeded();
-            await expect(async () => {
-                if (!(await option.isVisible())) {
-                    await dropdown.click({ timeout: 2000 });
-                }
-                await expect(option).toBeVisible({ timeout: 2000 });
-                await option.click({ timeout: 2000 });
-            }).toPass({ timeout: 10_000 });
-        });
     }
 
     @step()

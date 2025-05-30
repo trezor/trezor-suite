@@ -1,4 +1,4 @@
-import { Page, expect, test } from '@playwright/test';
+import { Locator, Page, expect, test } from '@playwright/test';
 
 declare module '@playwright/test' {
     interface Page {
@@ -6,6 +6,7 @@ declare module '@playwright/test' {
 
         // Methods
         discoveryShouldFinish(): Promise<void>;
+        selectDropdownOptionWithRetry(dropdown: Locator, option: Locator): Promise<void>;
     }
 }
 
@@ -23,6 +24,20 @@ export const enhancePage = (page: Page): Page => {
                 timeout: 15_000,
             });
             await discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
+        });
+    };
+
+    //Retry mechanism for settings dropdowns which tend to be flaky in automation
+    page.selectDropdownOptionWithRetry = async function (dropdown: Locator, option: Locator) {
+        await test.step('Select dropdown option with RETRY', async () => {
+            await dropdown.scrollIntoViewIfNeeded();
+            await expect(async () => {
+                if (!(await option.isVisible())) {
+                    await dropdown.click({ timeout: 2000 });
+                }
+                await expect(option).toBeVisible({ timeout: 2000 });
+                await option.click({ timeout: 2000 });
+            }).toPass({ timeout: 10_000 });
         });
     };
 

@@ -125,3 +125,11 @@ export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) 
 
     return localizeNumber(fraction, 'en', 0, maxDecimals);
 };
+
+export const countDecimalPlaces = (value: string | number) => {
+    if (typeof value === 'string' && isNaN(Number(value))) {
+        throw new Error('Value is not a valid number string');
+    }
+
+    return value.toString().split('.')[1].length || 0;
+};

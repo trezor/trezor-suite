@@ -96,7 +96,10 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 formattedSendAmount,
             );
             await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(solanaFee);
-            await expect(devicePrompt).toDisplaySummary(formattedSendAmount, `${solanaFee} SOL`);
+            await expect(devicePrompt).toDisplaySolanaSummary(
+                formattedSendAmount,
+                `${solanaFee} SOL`,
+            );
 
             await devicePrompt.waitForFinalPromptAndConfirm();
         });

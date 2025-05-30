@@ -32,7 +32,7 @@ export const FeeRate = ({ feeRate, networkType, symbol, preserveDecimals }: FeeR
     })();
 
     return (
-        <span>
+        <span data-testid="@fee-rate">
             {fee}&nbsp;{getFeeUnits(networkType)}
         </span>
     );

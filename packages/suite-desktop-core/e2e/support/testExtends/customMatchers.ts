@@ -7,6 +7,9 @@ import { DevicePrompt } from '../pageObjects/devicePrompt';
 
 type LineFormats = 'fourTetragrams' | 'fullLine';
 
+const DISPLAY_CHAR_LIMIT = 18;
+const STRING_UP_TO_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT}}`, 'g');
+
 const compareTextAndNumber = async (
     locator: Locator,
     expectedValue: number,
@@ -58,15 +61,26 @@ const transformAddress = (address: string, lineFormat: LineFormats = 'fourTetrag
     // da8r2y
     // We want to evaluate format and existence of newlines in the address.
     const fourTetragramsOfAddress = /(\S+\s\S+\s\S+\s\S+)/g; //4 x 4 characters
-    const fullLineOfAddress = /.{18}/g; //18 characters
 
     if (lineFormat === 'fourTetragrams') {
         return addNewlinesToAddress(formatAddress(address), fourTetragramsOfAddress, ' \n');
     }
 
     if (lineFormat === 'fullLine') {
-        return addNewlinesToAddress(address, fullLineOfAddress, ' \n ');
+        return addNewlinesToAddress(address, STRING_UP_TO_DISPLAY_LIMIT, ' \n ');
     }
+};
+
+const splitStringByDisplayLimit = (text: string) => {
+    const splitLines = text.match(STRING_UP_TO_DISPLAY_LIMIT);
+    if (!splitLines) {
+        throw new Error(`Failed to split text into lines: "${text}"`);
+    }
+
+    // Add a newline item into array after each item except the last one
+    return splitLines.flatMap((line, index) =>
+        index < splitLines.length - 1 ? [line.trim(), '\n'] : [line.trim()],
+    );
 };
 
 export const expect = baseExpect.extend({
@@ -170,7 +184,11 @@ export const expect = baseExpect.extend({
         );
     },
 
-    async toDisplaySummary(devicePrompt: DevicePrompt, totalAmount: string, feeAmount: string) {
+    async toDisplaySolanaSummary(
+        devicePrompt: DevicePrompt,
+        totalAmount: string,
+        feeAmount: string,
+    ) {
         const expectedContent = {
             header: { title: 'Summary' },
             body: [['Amount:'], [totalAmount], [' '], ['Expected fee:'], [feeAmount]],
@@ -180,7 +198,58 @@ export const expect = baseExpect.extend({
         return await compareDisplayContent(
             devicePrompt,
             expectedContent,
-            'expect Summary to match',
+            'expect Solana Summary to match',
+        );
+    },
+
+    async toDisplayEthereumSummary(
+        devicePrompt: DevicePrompt,
+        totalAmount: string,
+        feeAmount: string,
+    ) {
+        const expectedContent = {
+            header: { title: 'Summary' },
+            body: [
+                ['Amount'],
+                [totalAmount],
+                [' '],
+                ['Maximum fee'],
+                splitStringByDisplayLimit(feeAmount),
+            ],
+            footer: 'Tap to continue',
+        };
+
+        return await compareDisplayContent(
+            devicePrompt,
+            expectedContent,
+            'expect Ethereum Summary to match',
+        );
+    },
+
+    async toDisplayEthereumFeeInfo(
+        devicePrompt: DevicePrompt,
+        gasLimit: string,
+        maxFeePerGas: string,
+        maxPriorityFeePerGas: string,
+    ) {
+        const expectedContent = {
+            header: { title: 'Fee info' },
+            body: [
+                ['Gas limit'],
+                [gasLimit],
+                [' '],
+                ['Max gas price'],
+                [maxFeePerGas],
+                [' '],
+                ['Priority fee'],
+                [maxPriorityFeePerGas],
+            ],
+        };
+
+        return await compareDisplayContent(
+            devicePrompt,
+            expectedContent,
+            'expect Ethereum Fee Info to match',
         );
     },
 
