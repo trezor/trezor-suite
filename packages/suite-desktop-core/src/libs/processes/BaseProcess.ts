@@ -29,15 +29,15 @@ const defaultOptions: Options = {
 } as const;
 
 export abstract class BaseProcess {
-    process: ChildProcess | null;
-    resourceName: string;
-    processName: string;
-    options: Options;
-    startupThrottle: TimerId | null;
-    supportedSystems = ['linux-arm64', 'linux-x64', 'mac-arm64', 'mac-x64', 'win-x64'];
-    stopped = false;
-    logger: ILogger;
-    logTopic: string;
+    protected process: ChildProcess | null;
+    private resourceName: string;
+    private processName: string;
+    private options: Options;
+    private startupThrottle: TimerId | null;
+    private supportedSystems = ['linux-arm64', 'linux-x64', 'mac-arm64', 'mac-x64', 'win-x64'];
+    private stopped = false;
+    protected logger: ILogger;
+    protected logTopic: string;
 
     /**
      * @param resourceName Resource folder name
@@ -258,12 +258,11 @@ export abstract class BaseProcess {
         }
     }
 
-    ///
-    isSystemSupported(system: string) {
+    private isSystemSupported(system: string) {
         return this.supportedSystems.includes(system);
     }
 
-    getPlatformInfo() {
+    private getPlatformInfo() {
         const { arch } = process;
         const platform = this.getPlatform();
         const ext = platform === 'win' ? '.exe' : '';
@@ -272,7 +271,7 @@ export abstract class BaseProcess {
         return { system, platform, arch, ext };
     }
 
-    getPlatform() {
+    private getPlatform() {
         switch (process.platform) {
             case 'darwin':
                 return 'mac';
