@@ -1,5 +1,5 @@
 import { Pressable } from 'react-native';
-import { AnimatedProps } from 'react-native-reanimated';
+import { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -21,10 +21,11 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 
-type TradeHistoryButtonProps = {
+import { selectIsAmountInputActive } from '../../selectors/commonSelectors';
+
+export type HistoryButtonProps = {
     tradeType: TradingType;
-    enteringAnimation: AnimatedProps<Record<never, unknown>>['entering'];
-    exitingAnimation: AnimatedProps<Record<never, unknown>>['exiting'];
+    isFormMountedRecently?: boolean;
 };
 
 export type NavigationProps = StackToStackCompositeNavigationProps<
@@ -47,18 +48,15 @@ const buttonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-export const HistoryButton = ({
-    tradeType,
-    enteringAnimation,
-    exitingAnimation,
-}: TradeHistoryButtonProps) => {
+export const HistoryButton = ({ tradeType, isFormMountedRecently }: HistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const hasTrades = useSelector((state: TradingRootState & AccountsRootState & DeviceRootState) =>
         selectDeviceHasTradingTradesOfTradeType(state, tradeType),
     );
+    const shouldHideButton = useSelector(selectIsAmountInputActive);
 
-    if (!hasTrades) {
+    if (!hasTrades || shouldHideButton) {
         return null;
     }
 
@@ -66,7 +64,11 @@ export const HistoryButton = ({
         navigation.navigate(TradingStackRoutes.TradingHistory, { tradeType });
 
     return (
-        <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
+        <AnimatedBox
+            entering={isFormMountedRecently ? undefined : FadeInDown}
+            exiting={FadeOutDown}
+            layout={isFormMountedRecently ? undefined : LinearTransition}
+        >
             <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
                 <HStack style={applyStyle(buttonStyle)}>
                     <Text variant="body" color="textSubdued">

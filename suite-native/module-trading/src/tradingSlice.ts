@@ -6,6 +6,7 @@ import {
     TradingBuyState as CommonTradingBuyState,
     TradingState as CommonTradingState,
     InvityServerEnvironment,
+    TradingType,
     initialState as commonInitialState,
     prepareTradingReducer,
 } from '@suite-common/trading';
@@ -22,6 +23,8 @@ export interface TradingState extends CommonTradingState {
     favouriteAssets: Record<CryptoId, true>;
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
+    isAmountInputActive: boolean;
+    activeTradingType: TradingType;
 }
 
 export type TradingRootState = {
@@ -36,6 +39,8 @@ export const initialState: TradingState = {
     favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
+    isAmountInputActive: false,
+    activeTradingType: 'buy',
 };
 
 export const tradingSlice = createSliceWithExtraDeps({
@@ -91,6 +96,12 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.buy.amountLimits = undefined;
             state.buy.quotesRequest = undefined;
         },
+        setIsAmountInputActive: (state, { payload }: PayloadAction<boolean>) => {
+            state.isAmountInputActive = payload;
+        },
+        setActiveTradingType: (state, { payload }: PayloadAction<TradingType>) => {
+            state.activeTradingType = payload;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
@@ -116,6 +127,8 @@ export const {
     clearTradeOrderIdToBeOpened,
     buyAssetChanged,
     buyFiatCurrencyChanged,
+    setIsAmountInputActive,
+    setActiveTradingType,
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();

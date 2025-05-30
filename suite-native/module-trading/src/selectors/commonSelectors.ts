@@ -40,3 +40,9 @@ export const selectTradeToBeOpened = (state: TradingRootState) => {
 
     return state.wallet.tradingNew.trades.find(trade => trade.data.orderId === orderId);
 };
+
+export const selectIsAmountInputActive = (state: TradingRootState) =>
+    state.wallet.tradingNew.isAmountInputActive;
+
+export const selectActiveTradingType = (state: TradingRootState) =>
+    state.wallet.tradingNew.activeTradingType;

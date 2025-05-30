@@ -17,6 +17,7 @@ import {
     initialState,
     removeTradeableAssetFromFavourites,
     setBuySelectedReceiveAccount,
+    setIsAmountInputActive,
     setTradeOrderIdToBeOpened,
     setTradingEnvironment,
     tradingSlice,
@@ -39,8 +40,14 @@ describe('tradingSlice', () => {
                 type: 'undefined_action',
             });
 
-            expect(state.favouriteAssets).toEqual({});
-            expect(state.tradingEnvironment).toBe('production');
+            expect(state).toEqual(
+                expect.objectContaining({
+                    favouriteAssets: {},
+                    tradingEnvironment: 'production',
+                    isAmountInputActive: false,
+                    activeTradingType: 'buy',
+                }),
+            );
         });
     });
 
@@ -331,6 +338,29 @@ describe('tradingSlice', () => {
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
             expect(state.buy.quotesRequest).toBeUndefined();
+        });
+    });
+
+    describe('setIsAmountInputActive', () => {
+        it('should set isAmountInputActive', () => {
+            const actions = [setIsAmountInputActive(true)];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.isAmountInputActive).toBe(true);
+        });
+    });
+
+    describe('setActiveTradingType', () => {
+        it('should set activeTradingType', () => {
+            const actions = [
+                tradingSlice.actions.setActiveTradingType('exchange'),
+                tradingSlice.actions.setActiveTradingType('sell'),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.activeTradingType).toBe('sell');
         });
     });
 });

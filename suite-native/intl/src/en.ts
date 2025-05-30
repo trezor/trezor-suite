@@ -1745,6 +1745,11 @@ export const en = {
             },
             balance: 'Balance:',
             providerOffer: 'Provider offer: {amount}',
+            tabs: {
+                buy: 'Buy',
+                sell: 'Sell',
+                exchange: 'Swap',
+            },
         },
         selectFiat: {
             title: 'You pay',
@@ -1898,6 +1903,7 @@ export const en = {
             serverOfflineDescription:
                 'Something is wrong on our end. Please, wait a minute or try again later.',
             serverOfflineRetry: 'Try again',
+            tradingTypeDisabledTitle: '{tradingType} disabled',
         },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',

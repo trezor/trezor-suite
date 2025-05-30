@@ -2,9 +2,6 @@ import { Dimensions } from 'react-native';
 
 import { BoxSkeleton, Card, HStack, VStack } from '@suite-native/atoms';
 
-import { BuyHeader } from './BuyHeader';
-import { Footer } from '../general/Footer';
-
 const SKELETON_LARGE_HEIGHT = 60;
 const SKELETON_SMALL_HEIGHT = 20;
 
@@ -40,8 +37,7 @@ const SkeletonLargeRow = ({ leftWidthPercentage, rightWidthPercentage }: Skeleto
 );
 
 export const BuyFormSkeleton = () => (
-    <VStack spacing="sp16" paddingTop="sp16">
-        <BuyHeader isFormMountedRecently={true} />
+    <VStack spacing="sp16">
         <Card>
             <VStack>
                 <SkeletonSmall widthPercentage={0.2} />
@@ -53,6 +49,5 @@ export const BuyFormSkeleton = () => (
         <Card>
             <SkeletonLargeRow leftWidthPercentage={0.35} rightWidthPercentage={0.35} />
         </Card>
-        <Footer />
     </VStack>
 );

@@ -6,7 +6,9 @@ jest.mock('../useMountedRecentlyFlag', () => jest.requireActual('../useMountedRe
 
 describe('useMountedRecentlyFlag', () => {
     const renderUseMountedRecentlyFlag = () =>
-        renderHookWithBasicProvider(() => useMountedRecentlyFlag());
+        renderHookWithBasicProvider(({ context }) => useMountedRecentlyFlag(context), {
+            initialProps: { context: 'context_1' },
+        });
 
     beforeEach(() => {
         jest.useFakeTimers();
@@ -24,6 +26,31 @@ describe('useMountedRecentlyFlag', () => {
 
     it('should be false after RECENT_DURATION time', () => {
         const { result } = renderUseMountedRecentlyFlag();
+
+        act(() => {
+            jest.advanceTimersByTime(RECENT_DURATION);
+        });
+
+        expect(result.current).toEqual(false);
+    });
+
+    it('should reset to true when context changes', () => {
+        const { result, rerender } = renderUseMountedRecentlyFlag();
+        act(() => {
+            jest.advanceTimersByTime(RECENT_DURATION);
+        });
+
+        rerender({ context: 'context_2' });
+
+        expect(result.current).toEqual(true);
+    });
+
+    it('should re-run timer on context change', () => {
+        const { result, rerender } = renderUseMountedRecentlyFlag();
+        act(() => {
+            jest.advanceTimersByTime(RECENT_DURATION);
+        });
+        rerender({ context: 'context_2' });
 
         act(() => {
             jest.advanceTimersByTime(RECENT_DURATION);

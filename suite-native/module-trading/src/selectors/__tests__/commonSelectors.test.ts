@@ -2,12 +2,15 @@ import { Action, Feature, Message } from '@suite-common/suite-types';
 import { InvityServerEnvironment } from '@suite-common/trading';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 
-import { initialState } from '../../tradingSlice';
+import { TradingRootState, initialState } from '../../tradingSlice';
 import {
+    selectActiveTradingType,
+    selectIsAmountInputActive,
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
+    selectTradeToBeOpened,
     selectTradingEnvironment,
 } from '../commonSelectors';
 
@@ -153,6 +156,56 @@ describe('commonSelectors', () => {
 
         it('should correctly select that trading is not enabled when buy is disabled (and other flags are not set)', () => {
             expect(selectIsTradingEnabled(getPreloadedState({ buy: false }))).toBe(false);
+        });
+    });
+
+    describe('selectTradeToBeOpened', () => {
+        const gerMockStateForTradeToBeOpened = (orderId: string | undefined) =>
+            ({
+                wallet: {
+                    tradingNew: {
+                        tradeOrderIdToBeOpened: orderId,
+                        trades: [{ data: { orderId: 'order1' } }, { data: { orderId: 'order2' } }],
+                    },
+                },
+            }) as unknown as TradingRootState;
+
+        it('should return undefined when "tradeOrderIdToBeOpened" is not specified', () => {
+            expect(
+                selectTradeToBeOpened(gerMockStateForTradeToBeOpened(undefined)),
+            ).toBeUndefined();
+        });
+
+        it('should return undefined when "tradeOrderIdToBeOpened" is not found', () => {
+            expect(
+                selectTradeToBeOpened(gerMockStateForTradeToBeOpened('non-existing-order')),
+            ).toBeUndefined();
+        });
+
+        it('should return trade with same orderId as "tradeOrderIdToBeOpened"', () => {
+            expect(selectTradeToBeOpened(gerMockStateForTradeToBeOpened('order1'))).toEqual({
+                data: { orderId: 'order1' },
+            });
+        });
+    });
+
+    describe('selectIsAmountInputActive', () => {
+        it('should correctly select trading.isAmountInputActive state', () => {
+            expect(
+                selectIsAmountInputActive({
+                    wallet: { tradingNew: { isAmountInputActive: true } as any },
+                }),
+            ).toBe(true);
+        });
+    });
+
+    describe('selectActiveTradingType', () => {
+        it('should correctly select trading.activeTradingType state', () => {
+            expect(
+                selectActiveTradingType({
+                    wallet: { tradingNew: { activeTradingType: 'exchange' } as any },
+                }),
+            ).toBe('exchange');
         });
     });
 });

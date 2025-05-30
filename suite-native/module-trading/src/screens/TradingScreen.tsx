@@ -1,30 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useNavigation } from '@react-navigation/native';
 
-import { Context } from '@suite-common/message-system';
 import { EventType, analytics } from '@suite-native/analytics';
+import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
-import { ContextMessage } from '@suite-native/message-system';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 
-import { BuyForm } from '../components/buy/BuyForm';
-import { BuyFormContextProvider } from '../components/buy/BuyFormContextProvider';
-import { BuyFormSkeleton } from '../components/buy/BuyFormSkeleton';
-import { NavigationProps } from '../components/general/HistoryButton';
-import { DeviceOffline } from '../components/general/offline/DeviceOffline';
-import { ServerOffline } from '../components/general/offline/ServerOffline';
-import { useBuyData } from '../hooks/buy/useBuyData';
-import { selectIsTradingBuyEnabled, selectTradeToBeOpened } from '../selectors/commonSelectors';
+import { ActiveTab } from '../components/general/ActiveTab';
+import { DeviceOffline } from '../components/general/Error/DeviceOffline';
+import { Footer } from '../components/general/Footer';
+import { Header } from '../components/general/Header/Header';
+import { HistoryButton, NavigationProps } from '../components/general/HistoryButton';
+import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
+import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
+import { useMountedRecentlyFlag } from '../hooks/general/useMountedRecentlyFlag';
+import {
+    selectActiveTradingType,
+    selectIsTradingEnabled,
+    selectTradeToBeOpened,
+} from '../selectors/commonSelectors';
 
 const TradingScreenContent = () => {
-    const [reloadOrdinal, setReloadOrdinal] = useState(0);
-    const { isLoading, lastLoadedTimestamp, isFullyLoaded } = useBuyData(reloadOrdinal);
     const { isInternetReachable } = useNetInfo();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
+    const activeTradingType = useSelector(selectActiveTradingType);
     const navigation = useNavigation<NavigationProps>();
+    const isScreenMountedRecently = useMountedRecentlyFlag(activeTradingType);
+    useActiveTradingTypeReaction();
 
     useEffect(() => {
         if (tradeToBeOpened) {
@@ -38,36 +43,23 @@ const TradingScreenContent = () => {
         }
     }, [tradeToBeOpened, navigation]);
 
-    const isLoadingFinished = !isLoading && lastLoadedTimestamp > 0;
-
-    const wasSkeletonDisplayed = useRef(!isLoadingFinished);
-
-    if (isInternetReachable === false) {
-        return <DeviceOffline />;
-    }
-
-    if (isLoadingFinished && !isFullyLoaded) {
-        return <ServerOffline onRetryPress={() => setReloadOrdinal(reloadOrdinal + 1)} />;
-    }
-
     return (
         <>
-            <ContextMessage context={Context.tradingBuy} />
-            {isFullyLoaded ? (
-                <BuyFormContextProvider>
-                    <BuyForm shouldAnimateEntering={wasSkeletonDisplayed.current} />
-                </BuyFormContextProvider>
-            ) : (
-                <BuyFormSkeleton />
-            )}
+            <TradingTypeAwareContextMessage />
+            <VStack spacing="sp16">
+                <Header isFormMountedRecently={isScreenMountedRecently} />
+                {isInternetReachable === false ? <DeviceOffline /> : <ActiveTab />}
+                <Footer isFormMountedRecently={isScreenMountedRecently} />
+                <HistoryButton tradeType="buy" isFormMountedRecently={isScreenMountedRecently} />
+            </VStack>
         </>
     );
 };
 
 export const TradingScreen = () => {
-    const isTradingBuyEnabled = useSelector(selectIsTradingBuyEnabled);
+    const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
-    if (!isTradingBuyEnabled) {
+    if (!isTradingEnabled) {
         return null;
     }
 
