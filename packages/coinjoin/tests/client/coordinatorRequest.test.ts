@@ -146,21 +146,18 @@ describe('http', () => {
         ).rejects.toThrow('Aborted by signal');
     });
 
-    it('successful', () =>
-        new Promise<void>(done => {
-            coordinatorRequest('input-registration', {}, { baseUrl }).then(resp => {
-                expect(resp).toMatchObject({ AliceId: expect.any(String) });
-            });
-            // without baseUrl
-            coordinatorRequest<any>(`status`, {}, { baseUrl }).then(resp => {
-                expect(resp.RoundStates.length).toEqual(1);
-            });
-            // without json response
-            coordinatorRequest('ready-to-sign', {}, { baseUrl }).then(resp => {
-                expect(resp).toEqual('');
-                done();
-            });
-        }));
+    it('successful', async () => {
+        const resp1 = await coordinatorRequest('input-registration', {}, { baseUrl });
+        expect(resp1).toMatchObject({ AliceId: expect.any(String) });
+
+        // Without baseUrl.
+        const resp2 = await coordinatorRequest<any>('status', {}, { baseUrl });
+        expect(resp2.RoundStates.length).toEqual(1);
+
+        // Without json response
+        const resp3 = await coordinatorRequest('ready-to-sign', {}, { baseUrl });
+        expect(resp3).toEqual('');
+    });
 
     it('with identity', async () => {
         const requestListener = jest.fn(req => {
