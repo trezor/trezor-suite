@@ -1063,8 +1063,8 @@ export const en = {
         walletBackupRecapScreen: {
             step1: {
                 callout: 'Using your wallet backup',
-                title: 'Store your wallet backup in a secure, private place',
-                step1: 'Realize your Trezor is lost, stolen, or damaged',
+                title: 'Regain access anytime',
+                step1: 'If your Trezor is lost, stolen, damaged, or you upgrade to a new one',
                 step2: 'Get a new Trezor',
                 step3: 'Enter your wallet backup',
                 step4: 'Regain access to your assets',
