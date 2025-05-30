@@ -3,7 +3,7 @@ import { deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { configureStore } from 'src/support/tests/configureStore';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 
 import fixtures, {
     DeviceSettingsFixtureState,
@@ -66,7 +66,9 @@ describe('DeviceSettings Actions', () => {
 
             if (f.result) {
                 if (f.result.actions) {
-                    expect(store.getActions()).toMatchObject(f.result.actions);
+                    expect(filterThunkActionTypes(store.getActions())).toMatchObject(
+                        f.result.actions,
+                    );
                 }
             }
         });

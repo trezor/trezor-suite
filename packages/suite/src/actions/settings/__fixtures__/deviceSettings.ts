@@ -7,6 +7,7 @@ import {
     ConnectDeviceSettings,
     deviceActions,
     prepareDeviceReducer,
+    wipeDeviceThunk,
 } from '@suite-common/wallet-core';
 import { Response } from '@trezor/connect';
 
@@ -45,7 +46,7 @@ const SUITE_SETTINGS: ConnectDeviceSettings = {
 const fixture: Feature[] = [
     {
         description: 'Wipe device',
-        action: () => deviceSettingsActions.wipeDevice(),
+        action: () => wipeDeviceThunk(),
         mocks: { success: true, payload: { message: 'Success' } },
         deviceChange,
         result: {
@@ -120,7 +121,7 @@ const fixture: Feature[] = [
                 ],
             },
         },
-        action: () => deviceSettingsActions.wipeDevice(),
+        action: () => wipeDeviceThunk(),
         mocks: { success: true, payload: { message: 'Success' } },
         deviceChange: getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' }),
         result: {
@@ -232,7 +233,7 @@ const fixture: Feature[] = [
     },
     {
         description: 'Wipe device failed',
-        action: () => deviceSettingsActions.wipeDevice(),
+        action: () => wipeDeviceThunk(),
         mocks: { success: false, payload: { error: 'fuuu' } },
         result: {
             actions: [

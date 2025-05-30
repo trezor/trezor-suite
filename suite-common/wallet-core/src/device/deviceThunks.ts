@@ -1,3 +1,4 @@
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -26,6 +27,7 @@ import TrezorConnect, {
     UI,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
+import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
@@ -517,5 +519,71 @@ export const passwordMismatchResetThunk = createThunk<void, { device: TrezorDevi
         dispatch(deviceActions.forgetDevice({ device, settings }));
         const newDevice = selectSelectedDevice(getState());
         dispatch(deviceActions.selectDevice(newDevice));
+    },
+);
+
+export const wipeDeviceThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/wipeDevice`,
+    async (_, { dispatch, getState, extra, rejectWithValue }) => {
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+        const isBootloaderMode = device.mode === 'bootloader';
+        const devices = selectDevices(getState());
+        // collect devices with old "device.id" to be removed (see description below)
+        const deviceInstances = getDeviceInstances(device, devices);
+
+        const result = await TrezorConnect.wipeDevice({
+            device: {
+                path: device.path,
+            },
+            // In bootloader mode we need the skip the final reload, otherwise we never get the resolution
+            skipFinalReload: isBootloaderMode,
+        });
+
+        if (
+            result.success ||
+            // This is an expected success for Bluetooth-connected devices
+            (device.bluetoothProps !== undefined && result.payload.code === 'Device_Disconnected')
+        ) {
+            // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
+            // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
+            // we need to retrieve device objects BEFORE and AFTER the wipe process.
+            // And call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
+            if (device.bluetoothProps !== undefined) {
+                dispatch(
+                    bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }),
+                );
+
+                const resultForget = await bluetoothIpc.forgetDevice(device.bluetoothProps.id);
+                if (!resultForget.success) {
+                    dispatch(
+                        bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval({
+                            needsManualRemoval: true,
+                        }),
+                    );
+                }
+            }
+            const newDevice = selectSelectedDevice(getState());
+            const newDevices = selectDevices(getState());
+            const settings = extra.selectors.selectSuiteSettings(getState());
+
+            deviceInstances.push(...getDeviceInstances(newDevice!, newDevices));
+            deviceInstances.forEach(d => {
+                dispatch(deviceActions.forgetDevice({ device: d, settings }));
+            });
+            dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
+
+            // Special case with webusb: Device after wipe changes device_id. With webusb transport, device_id is used as a path
+            // and thus as a descriptor for webusb. So, after the device is wiped, in the transport layer, the device is still paired
+            // through the old descriptor, but suite already works with a new one. It kinda works, but only until we try a new call,
+            // typically resetDevice when in onboarding - we get a device-disconnected error.
+            //
+            // Edit 1: disconnecting the device wiped from bootloader mode is also necessary.
+            // Edit 2: encountered libusb error with bridge 2.0.27. So let's enforce disconnecting for all devices.
+            dispatch(deviceActions.requestDeviceReconnect());
+        } else {
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            rejectWithValue(result.payload.error);
+        }
     },
 );

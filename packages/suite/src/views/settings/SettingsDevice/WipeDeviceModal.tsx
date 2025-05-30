@@ -1,12 +1,17 @@
 import { useState } from 'react';
 
+import { isFulfilled } from '@reduxjs/toolkit';
+
+import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { wipeDevice } from 'src/actions/settings/deviceSettingsActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { CheckItem, Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { selectRouterApp } from 'src/reducers/suite/routerReducer';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;
@@ -19,14 +24,27 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
 
     const { device, isLocked } = useDevice();
     const dispatch = useDispatch();
+    const appRoute = useSelector(selectRouterApp);
 
     const isBootloaderMode = isDeviceInBootloaderMode(device);
 
     const handleWipeDevice = async () => {
         setIsLoading(true);
-        await dispatch(wipeDevice());
+        const response = await dispatch(wipeDeviceThunk());
+
+        if (isFulfilled(response)) {
+            analytics.report({
+                type: EventType.SettingsDeviceWipe,
+            });
+            if (appRoute === 'settings') {
+                // redirect to the index to close the settings and show initial device setup
+                dispatch(routerActions.goto('suite-index'));
+            }
+        }
+
         setIsLoading(false);
     };
+
     const handleCancel = () => {
         setIsLoading(false);
         onCancel();

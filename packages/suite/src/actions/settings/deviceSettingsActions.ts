@@ -1,25 +1,16 @@
-import { bluetoothActions } from '@suite-common/bluetooth';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import * as routerActions from 'src/actions/suite/routerActions';
 import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import * as DEVICE from 'src/constants/suite/device';
+import { selectIsEntropyCheckEnabled } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
-
-import {
-    selectIsEntropyCheckEnabled,
-    selectSuiteSettings,
-} from '../../reducers/suite/suiteReducer';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -99,74 +90,6 @@ export const changeWipeCode =
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }
     };
-
-export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectSelectedDevice(getState());
-    if (!device) return;
-    const isBootloaderMode = device.mode === 'bootloader';
-    const devices = selectDevices(getState());
-    // collect devices with old "device.id" to be removed (see description below)
-    const deviceInstances = deviceUtils.getDeviceInstances(device, devices);
-
-    const result = await TrezorConnect.wipeDevice({
-        device: {
-            path: device.path,
-        },
-        // In bootloader mode we need the skip the final reload, otherwise we never get the resolution
-        skipFinalReload: isBootloaderMode,
-    });
-
-    if (
-        result.success ||
-        // This is an expected success for Bluetooth-connected devices
-        (device.bluetoothProps !== undefined && result.payload.code === 'Device_Disconnected')
-    ) {
-        // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
-        // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
-        // we need to retrieve device objects BEFORE and AFTER the wipe process.
-        // And call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
-        if (device.bluetoothProps !== undefined) {
-            dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
-
-            const resultForget = await bluetoothIpc.forgetDevice(device.bluetoothProps.id);
-            if (!resultForget.success) {
-                dispatch(
-                    bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval({
-                        needsManualRemoval: true,
-                    }),
-                );
-            }
-        }
-        const state = getState();
-        const newDevice = selectSelectedDevice(getState());
-        const newDevices = selectDevices(getState());
-        const settings = selectSuiteSettings(getState());
-
-        deviceInstances.push(...deviceUtils.getDeviceInstances(newDevice!, newDevices));
-        deviceInstances.forEach(d => {
-            dispatch(deviceActions.forgetDevice({ device: d, settings }));
-        });
-        dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
-        analytics.report({
-            type: EventType.SettingsDeviceWipe,
-        });
-
-        // Special case with webusb: Device after wipe changes device_id. With webusb transport, device_id is used as a path
-        // and thus as a descriptor for webusb. So, after the device is wiped, in the transport layer, the device is still paired
-        // through the old descriptor, but suite already works with a new one. It kinda works, but only until we try a new call,
-        // typically resetDevice when in onboarding - we get a device-disconnected error.
-        //
-        // Edit 1: disconnecting the device wiped from bootloader mode is also necessary.
-        // Edit 2: encountered libusb error with bridge 2.0.27. So let's enforce disconnecting for all devices.
-        dispatch(deviceActions.requestDeviceReconnect());
-        if (state.router.app === 'settings') {
-            // redirect to the index to close the settings and show initial device setup
-            dispatch(routerActions.goto('suite-index'));
-        }
-    } else {
-        dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
-    }
-};
 
 export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>

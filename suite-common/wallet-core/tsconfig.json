@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../bluetooth" },
         { "path": "../device-authenticity" },
         { "path": "../fiat-services" },
         { "path": "../redux-utils" },
@@ -24,6 +25,9 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/transport-bluetooth"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
