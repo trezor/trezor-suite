@@ -1577,7 +1577,7 @@
   "TR_SELECT_NUMBER_OF_WORDS": "Vyberte počet slov v záloze peněženky",
   "TR_SELECT_PASSPHRASE_SOURCE": "Vyberte, kam chcete zadat passphrase na zařízení {deviceLabel}.",
   "TR_SELECT_RECOVERY_METHOD": "Vyberte metodu obnovení",
-  "TR_SELECT_TOKEN": "Vyberte aktivum",
+  "TR_SELECT_TOKEN": "Vyberte token",
   "TR_SELECT_TREZOR": "Vyberte Trezor",
   "TR_SELECT_TREZOR_TO_CONTINUE": "Chcete-li pokračovat, vyberte svůj Trezor.",
   "TR_SELECT_TYPE": "Vyberte typ",

@@ -5617,7 +5617,7 @@ export default defineMessages({
     },
     DESTINATION_TAG_NOTE: {
         defaultMessage:
-            'Online exchanges require this to identify your account. Get your destination tag from your online exchange.',
+            'Online exchanges require this to identify your account. Get your memo/destination tag from your online exchange.',
         id: 'DESTINATION_TAG_NOTE',
     },
     DESTINATION_TAG_BANNER_SEND: {
@@ -5649,7 +5649,7 @@ export default defineMessages({
     },
     TIME_BOUNDS_IS_NOT_SET: {
         id: 'TIME_BOUNDS_IS_NOT_SET',
-        defaultMessage: 'No Restriction',
+        defaultMessage: 'No restriction',
     },
     DATA_ETH: {
         id: 'DATA_ETH',
@@ -5798,21 +5798,16 @@ export default defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     CUSTOM_PRIORITY_HIGHER_THAN_MAX: {
-        defaultMessage: 'Max priority fee per gas cannot be higher than Max fee per gas',
+        defaultMessage: "Max priority fee per gas can't be higher than Max fee per gas",
         id: 'CUSTOM_PRIORITY_HIGHER_THAN_MAX',
     },
     CUSTOM_MAX_PRIORITY_FEE_NOT_IN_RANGE: {
-        defaultMessage: 'Max priority fee per gas has to be at least {minPriorityFee}',
+        defaultMessage: 'Max priority fee per gas must be at least {minPriorityFee}',
         id: 'CUSTOM_MAX_PRIORITY_FEE_NOT_IN_RANGE',
     },
     CUSTOM_MAX_LOWER_THAN_PRIORITY: {
-        defaultMessage: 'Max fee per gas cannot be lower than Max priority fee per gas ',
+        defaultMessage: "Max fee per gas can't be lower than Max priority fee per gas",
         id: 'CUSTOM_MAX_LOWER_THAN_PRIORITY',
-    },
-    TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT: {
-        defaultMessage: "The custom base fee can't be set lower than the current network base fee.",
-        id: 'TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT',
-        description: 'TODO',
     },
     CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
         defaultMessage: 'Gas limit too low',
@@ -6418,10 +6413,6 @@ export default defineMessages({
         id: 'TR_BACKGROUND_DOWNLOAD',
         defaultMessage: 'Download in background',
     },
-    TR_MANAGE: {
-        id: 'TR_MANAGE',
-        defaultMessage: 'manage',
-    },
     TR_VERSION_HAS_BEEN_RELEASED: {
         id: 'TR_VERSION_HAS_BEEN_RELEASED',
         defaultMessage: 'Version {version} has been released',
@@ -6768,14 +6759,6 @@ export default defineMessages({
         id: 'TR_SEARCH_COLLECTIONS',
         defaultMessage: 'Search collections',
     },
-    TR_TOKENS_SEARCH_TOOLTIP: {
-        id: 'TR_TOKENS_SEARCH_TOOLTIP',
-        defaultMessage: 'Search by token, symbol, or contract address.',
-    },
-    TR_COLLECTIONS_SEARCH_TOOLTIP: {
-        id: 'TR_COLLECTIONS_SEARCH_TOOLTIP',
-        defaultMessage: 'Search by collection name, symbol, or contract address.',
-    },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
         defaultMessage: 'Search transactions',
@@ -6783,11 +6766,6 @@ export default defineMessages({
     TR_NO_SEARCH_RESULTS: {
         id: 'TR_NO_SEARCH_RESULTS',
         defaultMessage: 'No results for your search criterion',
-    },
-    TR_TRANSACTIONS_SEARCH_TOOLTIP: {
-        id: 'TR_TRANSACTIONS_SEARCH_TOOLTIP',
-        defaultMessage:
-            'Search by transaction ID, label or amount or use operators such as < > | & = !=.',
     },
     TR_TRANSACTIONS_SEARCH_PRO_TIP: {
         id: 'TR_TRANSACTIONS_SEARCH_PRO_TIP',
@@ -6915,10 +6893,6 @@ export default defineMessages({
     TR_SHOW_GRAPH: {
         id: 'TR_SHOW_GRAPH',
         defaultMessage: 'Show Graph',
-    },
-    TR_HIDE_GRAPH: {
-        id: 'TR_HIDE_GRAPH',
-        defaultMessage: 'Hide graph',
     },
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',
@@ -8040,17 +8014,6 @@ export default defineMessages({
         description: 'Coinjoin strategy item - fee amount',
         defaultMessage: 'Max mining fee',
     },
-    TR_TERMS_AND_PRIVACY_CONFIRMATION: {
-        id: 'TR_TERMS_AND_PRIVACY_CONFIRMATION',
-        description: 'Checkbox in coinjoin settings',
-        defaultMessage:
-            'I agree to the <trezor>Trezor Suite Terms</trezor> and <coordinator>zkSNACKs Coordinator Terms</coordinator>',
-    },
-    TR_CONFIRM_CONDITIONS: {
-        id: 'TR_CONFIRM_CONDITIONS',
-        description: 'Tooltip content for disabled button in coinjoin section',
-        defaultMessage: 'Confirm the conditions before you proceed.',
-    },
     TR_NOTHING_TO_ANONYMIZE: {
         id: 'TR_NOTHING_TO_ANONYMIZE',
         description: 'Tooltip content for disabled button in coinjoin section',
@@ -8787,7 +8750,7 @@ export default defineMessages({
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
-        defaultMessage: 'Go to the app or place where you originally got the address.',
+        defaultMessage: 'Go to the app or website where you originally got the address.',
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
@@ -9847,11 +9810,11 @@ export default defineMessages({
     },
     TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS: {
         id: 'TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS',
-        defaultMessage: 'Open Bluetooth Settings',
+        defaultMessage: 'Open Bluetooth settings',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS',
-        defaultMessage: 'Cannot open bluetooth settings. Please enable bluetooth manually.',
+        defaultMessage: 'Unable to open Bluetooth settings. Enable Bluetooth manually.',
     },
     TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS: {
         id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS',
