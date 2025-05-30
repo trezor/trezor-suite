@@ -143,7 +143,10 @@ export type DeviceOnboardingStackParamList = {
     };
     [DeviceOnboardingStackRoutes.RecoveryUnsupported]: undefined;
     [DeviceOnboardingStackRoutes.RecoveryInstructions]: undefined;
-    [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: undefined;
+    [DeviceOnboardingStackRoutes.WalletRecovery]: undefined;
+    [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: {
+        flowType: 'create' | 'recover';
+    };
     [DeviceOnboardingStackRoutes.WalletBackupRecap]: undefined;
     [DeviceOnboardingStackRoutes.CreatePin]: undefined;
 };
