@@ -5,8 +5,6 @@ import {
     Network,
     NetworkSymbol,
     NetworkType,
-    getMainnets,
-    getTestnets,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -18,28 +16,6 @@ export const orderedAccountTypes: AccountType[] = [
     'legacy',
     'ledger',
 ];
-
-// All supported coins for device discovery
-export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly NetworkSymbol[]> = {
-    mainnet: [
-        'btc',
-        'eth',
-        'pol',
-        'sol',
-        'bsc',
-        'ltc',
-        'etc',
-        'ada',
-        'xrp',
-        'bch',
-        'doge',
-        'zec',
-        'op',
-        'base',
-        'arb',
-    ],
-    testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp'],
-};
 
 export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];
 
@@ -59,13 +35,3 @@ export const filterTestnetNetworks = (
 
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
-
-export const getNativeMainnetSymbols = () =>
-    sortNetworks(
-        getMainnets().filter(({ symbol }) => networkSymbolsWhitelistMap.mainnet.includes(symbol)),
-    ).map(n => n.symbol);
-
-export const getNativeTestnetSymbols = () =>
-    sortNetworks(
-        getTestnets().filter(({ symbol }) => networkSymbolsWhitelistMap.testnet.includes(symbol)),
-    ).map(n => n.symbol);

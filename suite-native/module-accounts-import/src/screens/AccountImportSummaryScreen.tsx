@@ -6,7 +6,7 @@ import {
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { ErrorMessage } from '@suite-native/atoms';
-import { selectSupportedNetworkSymbols } from '@suite-native/discovery';
+import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
@@ -39,7 +39,7 @@ export const AccountImportSummaryScreen = ({
             networkSymbol,
         ),
     );
-    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
+    const supportedNetworks = useSelector(selectDiscoveryNetworkSymbols);
 
     const isAccountImportSupported =
         supportedNetworks.some(supportedSymbol => supportedSymbol === networkSymbol) ||

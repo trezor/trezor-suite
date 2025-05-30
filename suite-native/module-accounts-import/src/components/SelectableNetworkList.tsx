@@ -1,13 +1,14 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { HeaderedCard, VStack } from '@suite-native/atoms';
-import { getNativeMainnetSymbols } from '@suite-native/config';
-import { selectSupportedTestnetNetworkSymbols } from '@suite-native/discovery';
+import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import { selectAreTestnetsEnabled } from '@suite-native/settings';
+import { arrayPartition } from '@trezor/utils';
 
 type SelectableAssetListProps = {
     onSelectItem: (symbol: NetworkSymbol) => void;
@@ -32,9 +33,13 @@ const NetworkItemSection = ({
 );
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
-    const mainnetSymbols = getNativeMainnetSymbols();
-    const testnetSymbols = useSelector(selectSupportedTestnetNetworkSymbols);
+    const symbols = useSelector(selectDiscoveryNetworkSymbols);
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+
+    const [testnetSymbols, mainnetSymbols] = useMemo(
+        () => arrayPartition(symbols, isTestnet),
+        [symbols],
+    );
 
     return (
         <VStack spacing="sp24">

@@ -2,7 +2,12 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { type Network, type NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    getNetworkType,
+    networksCollection,
+} from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -10,12 +15,7 @@ import {
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import {
-    filterTestnetNetworks,
-    getNativeMainnetSymbols,
-    getNativeTestnetSymbols,
-    sortNetworks,
-} from '@suite-native/config';
+import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
@@ -57,9 +57,9 @@ const filterUnavailableNetworks = (
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState &
         SettingsSliceRootState &
-        FeatureFlagsRootState &
         AccountsRootState &
-        WalletSettingsRootState
+        WalletSettingsRootState &
+        FeatureFlagsRootState
 >();
 
 export const selectDiscoverySupportedNetworks = createMemoizedSelector(
@@ -67,13 +67,23 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
         selectDeviceSupportedNetworks,
         selectAreTestnetsEnabled,
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsStellarSupportEnabled),
     ],
-    (deviceNetworks, defaultAreTestnetsEnabled, forcedAreTestnetsEnabled) => {
+    (
+        deviceNetworks,
+        defaultAreTestnetsEnabled,
+        forcedAreTestnetsEnabled,
+        isStellarSupportEnabled,
+    ) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? defaultAreTestnetsEnabled;
 
         return pipe(
             deviceNetworks,
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
+            networkSymbols =>
+                networkSymbols.filter(
+                    symbol => isStellarSupportEnabled || getNetworkType(symbol) !== 'stellar',
+                ),
             filterUnavailableNetworks,
             sortNetworks,
             returnStableArrayIfEmpty,
@@ -87,21 +97,6 @@ export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
     ],
     supportedNetworks => returnStableArrayIfEmpty(supportedNetworks.map(n => n.symbol)),
-);
-
-export const selectSupportedTestnetNetworkSymbols = createMemoizedSelector(
-    [state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsRegtestEnabled)],
-    isRegtestEnabled =>
-        returnStableArrayIfEmpty(
-            isRegtestEnabled
-                ? [...getNativeTestnetSymbols(), 'regtest' as const]
-                : getNativeTestnetSymbols(),
-        ),
-);
-
-export const selectSupportedNetworkSymbols = createMemoizedSelector(
-    [selectSupportedTestnetNetworkSymbols],
-    testnets => returnStableArrayIfEmpty([...getNativeMainnetSymbols(), ...testnets]),
 );
 
 // this includes only networks supported by current device

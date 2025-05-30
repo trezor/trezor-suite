@@ -4,11 +4,11 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -39,6 +39,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
+        "@suite-native/test-utils": "workspace:*",
         "@suite-native/video-assets": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
