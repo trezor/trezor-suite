@@ -836,6 +836,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                 rent: misc?.rent,
                 solStakingAccounts: misc?.solStakingAccounts,
                 solEpoch: misc?.solEpoch,
+                accountInfo: misc?.accountInfo,
             },
             marker: undefined,
             stellarCursor: undefined,

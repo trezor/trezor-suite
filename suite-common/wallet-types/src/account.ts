@@ -6,6 +6,7 @@ import {
     StakingPool,
 } from '@trezor/blockchain-link-types/src/blockbook-api';
 import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
+import { ParsedAccountData } from '@trezor/blockchain-link-utils/src/solana-types';
 import { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
 
 export type MetadataItem = string;
@@ -76,6 +77,7 @@ type AccountNetworkSpecific =
               rent?: number;
               solStakingAccounts?: SolanaStakingAccount[];
               solEpoch?: number;
+              accountInfo?: ParsedAccountData;
           };
           marker: undefined;
           stellarCursor: undefined;
