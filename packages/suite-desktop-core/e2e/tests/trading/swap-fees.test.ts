@@ -3,6 +3,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { invityEndpoint, swapQuotesEthereumBTC, swapTradeEthereumBTC } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
+import { splitStringByDisplayLimit } from '../../support/testExtends/customMatchers';
 
 const sendAmount = '0.008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
@@ -64,7 +65,7 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
         });
 
         const { ethereumMaximumFee, errorMessageMaxCalculation } =
-            await tradingPage.fees.calculateEthereumMaxFee({
+            tradingPage.fees.calculateEthereumMaxFee({
                 gasLimit,
                 maxFeePerGas,
             });
@@ -82,10 +83,17 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
                 devicePrompt.cryptoAmountWithSymbolOf('fee'),
                 errorMessageMaxCalculation,
             ).toHaveText(`${ethereumMaximumFee} ETH`);
-            await expect(devicePrompt).toDisplayEthereumSummary(
-                formattedSendAmount,
-                `${ethereumMaximumFee} ETH`,
-            );
+            await expect(devicePrompt).toDisplayOnEmulator({
+                header: { title: 'Summary' },
+                body: [
+                    ['Amount'],
+                    [formattedSendAmount],
+                    [' '],
+                    ['Maximum fee'],
+                    splitStringByDisplayLimit(`${ethereumMaximumFee} ETH`),
+                ],
+                footer: 'Tap to continue',
+            });
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
@@ -93,11 +101,19 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
             await trezorUserEnvLink.clickEmu(burgerMenuCoordinates);
             const feeInfoCoordinates = { x: 125, y: 100 };
             await trezorUserEnvLink.clickEmu(feeInfoCoordinates);
-            await expect(devicePrompt).toDisplayEthereumFeeInfo(
-                `${gasLimit} units`,
-                `${maxFeePerGas} Gwei`,
-                `${maxPriorityFeePerGas} Gwei`,
-            );
+            await expect(devicePrompt).toDisplayOnEmulator({
+                header: { title: 'Fee info' },
+                body: [
+                    ['Gas limit'],
+                    [`${gasLimit} units`],
+                    [' '],
+                    ['Max gas price'],
+                    [`${maxFeePerGas} Gwei`],
+                    [' '],
+                    ['Priority fee'],
+                    [`${maxPriorityFeePerGas} Gwei`],
+                ],
+            });
         });
     });
 });

@@ -8,6 +8,7 @@ import {
 } from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 // In beforeEach, We set initial status to 'SENDING'
 const transactionStates = [
@@ -89,17 +90,29 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
             await tradingPage.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
-            await expect(devicePrompt).toDisplayRecipientAddress(sendAddress);
+            const transformedExpectedAddress = transformAddress(sendAddress, 'fullLine');
+            await expect(devicePrompt).toDisplayOnEmulator({
+                header: { title: 'Recipient' },
+                body: [transformedExpectedAddress],
+                footer: 'Tap to continue',
+            });
 
             await devicePrompt.waitForPromptAndConfirm();
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 formattedSendAmount,
             );
             await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(solanaFee);
-            await expect(devicePrompt).toDisplaySolanaSummary(
-                formattedSendAmount,
-                `${solanaFee} SOL`,
-            );
+            await expect(devicePrompt).toDisplayOnEmulator({
+                header: { title: 'Summary' },
+                body: [
+                    ['Amount:'],
+                    [formattedSendAmount],
+                    [' '],
+                    ['Expected fee:'],
+                    [`${solanaFee} SOL`],
+                ],
+                footer: 'Tap to continue',
+            });
 
             await devicePrompt.waitForFinalPromptAndConfirm();
         });
