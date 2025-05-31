@@ -101,7 +101,7 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
         store.setBridgeSettings({ ...store.getBridgeSettings(), newBridgeRollout });
     }
     const newBridgeRollout = store.getBridgeSettings().newBridgeRollout || 0;
-    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.1;
+    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 1;
     const legacyBridgeReasonRollout = newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
 
     return legacyBridgeReasonRollout;
