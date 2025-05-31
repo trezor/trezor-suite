@@ -1,5 +1,7 @@
 import type tls from 'tls';
 
+import type { ParsedAccountData } from '@trezor/blockchain-link-utils/src/solana-types';
+
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type {
     AddressAlias,
@@ -154,6 +156,7 @@ export interface Transaction {
     solanaSpecific?: {
         status: 'confirmed';
         stakeOperation?: { type: StakeType; amount: string };
+        accountInfo?: ParsedAccountData;
     };
     details: TransactionDetail;
     vsize?: number;
@@ -277,6 +280,7 @@ export interface AccountInfo {
         rent?: number; // The rent required for the account to opened
         solStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts
         solEpoch?: number; // Solana current epoch
+        accountInfo?: ParsedAccountData;
     };
     page?: {
         // blockbook and blockfrost
