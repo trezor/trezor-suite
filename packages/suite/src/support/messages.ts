@@ -238,7 +238,7 @@ export default defineMessages({
         id: 'TR_TRADING_DISABLED_DEFAULT',
     },
     TR_TRADING_TERMS_DONT_SHOW_AGAIN: {
-        defaultMessage: 'Don’t show me this again',
+        defaultMessage: 'Don’t show this again',
         id: 'TR_TRADING_TERMS_DONT_SHOW_AGAIN',
     },
     TR_TRADING_SWAP_MODAL_FOR_YOUR_SAFETY: {
@@ -3356,7 +3356,7 @@ export default defineMessages({
         id: 'TR_TRANSACTION_DETAILS',
     },
     TR_TRANSACTION_NOT_FOUND: {
-        defaultMessage: 'Transaction not found. Please try again later.',
+        defaultMessage: 'Transaction not found. Try again later.',
         id: 'TR_TRANSACTION_NOT_FOUND',
     },
     TR_TOKEN_ID_COLON: {
@@ -6778,7 +6778,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_PRO_TIP: {
         id: 'TR_TRANSACTIONS_SEARCH_PRO_TIP',
         defaultMessage:
-            '<strong>Pro Tip:</strong> Enhance your search by using logical operators like <span><, >, |, &, =, !=</span>',
+            '<strong>Pro tip:</strong> Enhance your search by using logical operators like <span><, >, |, &, =, !=</span>',
     },
     TR_TRANSACTIONS_SEARCH_TIP_1: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_1',
@@ -9093,11 +9093,11 @@ export default defineMessages({
     TR_STELLAR_FEE_DESC: {
         id: 'TR_STELLAR_FEE_DESC',
         defaultMessage:
-            "The maximum fee you're willing to pay for the transaction. You'll only pay what's necessary — typically the minimum fee during light network traffic. Higher fees help prioritize your transaction during network congestion.",
+            "The maximum fee you're willing to pay for the transaction. You'll only pay what's necessary—typically the minimum fee during light network traffic. Higher fees help prioritize your transaction during network congestion.",
     },
     TR_STELLAR_LIMIT_HISTORY_TITLE: {
         id: 'TR_STELLAR_LIMIT_HISTORY_TITLE',
-        defaultMessage: 'Transaction history limited to 12 months',
+        defaultMessage: 'Transaction history is limited to 12 months',
     },
     TR_STELLAR_LIMIT_HISTORY_DESCRIPTION: {
         id: 'TR_STELLAR_LIMIT_HISTORY_DESCRIPTION',
