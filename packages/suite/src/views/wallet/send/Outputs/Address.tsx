@@ -236,6 +236,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         text: translationString('TR_ADD_BITCOINCASH_PREFIX'),
                     },
                 };
+            case 'sol_account_type':
+                return {
+                    // TODO: add link to packages/urls/src/urls.ts when article is ready
+                    // learnMoreUrl: 'https://trezor.io',
+                };
             default:
                 return {};
         }
@@ -283,6 +288,23 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             bch_missing_prefix: (value: string) => {
                 if (symbol === 'bch' && !hasBitcoinCashAddressPrefix(value)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
+                }
+            },
+            sol_account_type: async (value: string) => {
+                if (networkType === 'solana') {
+                    const { payload, success } = await TrezorConnect.getAccountInfo({
+                        descriptor: value,
+                        coin: symbol,
+                        details: 'txs',
+                    });
+
+                    if (!success) {
+                        return translationString('RECIPIENT_IS_NOT_VALID');
+                    }
+
+                    if (payload?.misc?.accountInfo?.program) {
+                        return translationString('TR_SOL_ACCOUNT_TYPE');
+                    }
                 }
             },
             evmchecks: async (address: string) => {

@@ -5496,6 +5496,11 @@ export default defineMessages({
         defaultMessage: 'Convert to checksum',
         id: 'TR_CONVERT_TO_CHECKSUM_ADDRESS',
     },
+    TR_SOL_ACCOUNT_TYPE: {
+        defaultMessage:
+            'You are sending funds to a special system account (e.g. token or staking account).',
+        id: 'TR_SOL_ACCOUNT_TYPE',
+    },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: "Can't send to myself",
         id: 'RECIPIENT_CANNOT_SEND_TO_MYSELF',
