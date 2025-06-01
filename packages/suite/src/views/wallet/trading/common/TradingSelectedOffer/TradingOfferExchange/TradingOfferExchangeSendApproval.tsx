@@ -59,6 +59,9 @@ export const TradingOfferExchangeSendApproval = () => {
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
+    const [approvedQuote] = useState<ExchangeTrade | undefined>(
+        selectedQuote?.status === 'CONFIRM' ? selectedQuote : undefined,
+    );
 
     const { navigateToExchangeForm } = useTradingNavigation(account);
 
@@ -116,6 +119,8 @@ export const TradingOfferExchangeSendApproval = () => {
                 extraField: undefined,
                 trade: updatedSelectedQuote,
             });
+        } else {
+            dispatch(tradingExchangeActions.saveSelectedQuote(approvedQuote));
         }
     };
 
@@ -225,6 +230,7 @@ export const TradingOfferExchangeSendApproval = () => {
                                     isChecked={approvalType === 'MINIMAL'}
                                     onClick={() => selectApprovalValue('MINIMAL')}
                                     verticalAlignment="center"
+                                    isDisabled={isFormLoading}
                                 >
                                     <Column alignItems="flex-start">
                                         <Text typographyStyle="highlight">
@@ -245,6 +251,7 @@ export const TradingOfferExchangeSendApproval = () => {
                                     isChecked={approvalType === 'INFINITE'}
                                     onClick={() => selectApprovalValue('INFINITE')}
                                     verticalAlignment="center"
+                                    isDisabled={isFormLoading}
                                 >
                                     <Column alignItems="flex-start">
                                         <Text typographyStyle="highlight">
@@ -268,6 +275,7 @@ export const TradingOfferExchangeSendApproval = () => {
                                 isChecked={approvalType === 'APPROVED'}
                                 onClick={() => selectApprovalValue('APPROVED')}
                                 verticalAlignment="center"
+                                isDisabled={isFormLoading}
                             >
                                 <Column alignItems="flex-start">
                                     <Text typographyStyle="highlight">
@@ -295,6 +303,7 @@ export const TradingOfferExchangeSendApproval = () => {
                                 isChecked={approvalType === 'ZERO'}
                                 onClick={() => selectApprovalValue('ZERO')}
                                 verticalAlignment="center"
+                                isDisabled={isFormLoading}
                             >
                                 <Column alignItems="flex-start">
                                     <Text typographyStyle="highlight">
