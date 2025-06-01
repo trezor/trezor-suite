@@ -19,11 +19,11 @@ import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
-import { selectAccountByKey, selectAccounts } from './accountsSelectors';
+import { selectAccountByKey, selectAccounts } from './accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit, selectEnabledNetworks } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
-import { selectTransactions } from '../transactions/transactionsSelectors';
+import { selectTransactions } from '../transactions/transactionsReducer';
 
 export const disableAccountsThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,

@@ -31,15 +31,15 @@ import {
     stopDiscovery,
     updateDiscovery,
 } from './discoveryActions';
-import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
 import {
     selectDeviceDiscovery,
     selectDiscovery,
     selectDiscoveryByDeviceState,
-} from './discoverySelectors';
+} from './discoveryReducer';
+import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectAccounts } from '../accounts/accountsSelectors';
-import { selectDeviceByStaticSessionId } from '../device/deviceSelectors';
+import { selectAccounts } from '../accounts/accountsReducer';
+import { selectDeviceByStaticSessionId } from '../device/deviceReducer';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
