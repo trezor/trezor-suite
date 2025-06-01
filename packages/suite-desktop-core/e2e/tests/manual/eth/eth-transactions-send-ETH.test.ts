@@ -4,16 +4,6 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 // Transaction types
 // Send ETH
-// Send token
-// Token swap
-// Internal transaction
-// Stake BIP39 on T1
-// Unstake BIP39 on T1
-// Claim BIP39 on T1
-// Stake SLIP39 on CORE
-// Unstake SLIP39 on CORE
-// Claim SLIP39 on CORE
-// Send NFT and check change in Suite
 
 test.describe.skip('Eth transactions', { tag: ['@group=manual'] }, () => {
     test(
@@ -32,7 +22,7 @@ test.describe.skip('Eth transactions', { tag: ['@group=manual'] }, () => {
                     'Transaction history is present',
                     'Transaction history graph is rendered as expected',
                     'Select random transaction',
-                    'Transaction details are present',
+                    'Transaction details are present in both transaction history and transaction detail',
                     'Close transaction detail',
                     'Click receive button',
                     'Click on "Show full address" button',

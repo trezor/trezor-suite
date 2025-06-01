@@ -35,7 +35,7 @@ test.describe.skip('Cardano transactions', { tag: ['@group=manual'] }, () => {
                     '"Review & Send transaction" via Suite and device button',
                 ],
                 category: TestCategory.ADA,
-                priority: TestPriority.High,
+                priority: TestPriority.Medium,
                 stream: TestStream.Trends,
             }),
         },

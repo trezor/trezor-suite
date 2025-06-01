@@ -22,7 +22,7 @@ test.describe.skip('Cardano staking', { tag: ['@group=manual'] }, () => {
                     'Success notification is rendered in Trezor Suite',
                 ],
                 category: TestCategory.ADA,
-                priority: TestPriority.High,
+                priority: TestPriority.Medium,
                 stream: TestStream.Trends,
             }),
         },
