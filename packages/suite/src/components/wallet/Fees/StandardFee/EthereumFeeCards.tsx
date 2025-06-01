@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { formatDurationStrict } from '@suite-common/suite-utils';
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Badge, Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
@@ -23,10 +24,11 @@ export const EthereumFeeCards = ({
     isDirty,
     transactionInfo,
     feeInfo,
-    areFeesLoading,
 }: StandardFeeProps) => {
     const locale = useLocales();
     const isDebug = useSelector(selectIsDebugModeActive);
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state));
+
     const [cachedGasLimit, setCachedGasLimit] = useState<string | undefined>(undefined);
 
     useEffect(() => {

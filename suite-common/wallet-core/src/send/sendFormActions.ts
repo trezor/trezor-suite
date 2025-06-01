@@ -50,6 +50,11 @@ const sendRaw = createAction(`${SEND_MODULE_PREFIX}/sendRaw`, (payload: boolean)
 
 export const dispose = createAction(`${SEND_MODULE_PREFIX}/dispose`);
 
+const setAreFeesLoading = createAction(
+    `${SEND_MODULE_PREFIX}/setAreFeesLoading`,
+    (payload: { areFeesLoading: boolean }) => ({ payload }),
+);
+
 export const sendFormActions = {
     storeDraft,
     removeDraft,
@@ -58,4 +63,5 @@ export const sendFormActions = {
     discardTransaction,
     sendRaw,
     dispose,
+    setAreFeesLoading,
 };

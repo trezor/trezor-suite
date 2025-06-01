@@ -21,6 +21,7 @@ export type SendState = {
     precomposedForm?: FormState; // Used to pass the form state to the review modal. Holds similar data as drafts, but drafts are not used in RBF form.
     signedTx?: BlockbookTransaction;
     serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction).
+    areFeesLoading: boolean; // visual indication of fees being loaded, independent of the fees state
 };
 
 export const initialState: SendState = {
@@ -28,6 +29,7 @@ export const initialState: SendState = {
     precomposedTx: undefined,
     serializedTx: undefined,
     signedTx: undefined,
+    areFeesLoading: false,
 };
 
 export type SendRootState = {
@@ -92,5 +94,8 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             payload.forEach(account => {
                 delete state.drafts[account.key];
             });
+        })
+        .addCase(sendFormActions.setAreFeesLoading, (state, { payload: { areFeesLoading } }) => {
+            state.areFeesLoading = areFeesLoading;
         });
 });

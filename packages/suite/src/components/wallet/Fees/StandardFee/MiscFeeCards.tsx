@@ -1,7 +1,9 @@
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
 import { FiatValue, Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
@@ -13,8 +15,8 @@ export const MiscFeeCards = ({
     feeOptions,
     symbol,
     changeFeeLevel,
-    areFeesLoading,
 }: StandardFeeProps) => {
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state));
     if (!feeOptions.length) return null;
 
     const isSolanaNetwork = networkType === 'solana';

@@ -26,11 +26,11 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
+import { useRefetchFees } from 'src/hooks/wallet/useRefetchFees';
 import { Account } from 'src/types/wallet';
 
 import { CustomFee } from './CustomFee/CustomFee';
 import { StandardFee } from './StandardFee/StandardFee';
-import { useRefetchFees } from './useRefetchFees';
 
 export const getFeeLevelTranslationId = (label: FeeLevel['label']): TranslationKey =>
     (
@@ -156,7 +156,7 @@ export const Fees = <TFieldValues extends FormState>({
 
     const supportsCustomFee = networkType !== 'solana';
 
-    const { areFeesLoading } = useRefetchFees({ networkSymbol: symbol });
+    useRefetchFees({ networkSymbol: symbol });
 
     const feeLabelId = useMemo(() => {
         switch (networkType) {
@@ -228,7 +228,6 @@ export const Fees = <TFieldValues extends FormState>({
                     symbol={symbol}
                     changeFeeLevel={changeFeeLevel}
                     getValues={getValues}
-                    areFeesLoading={areFeesLoading}
                 />
             )}
             {isCustomFee && (

@@ -2,12 +2,13 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import { Banner, Button, Checkbox, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
-import { useDevice } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const Container = styled.div`
@@ -68,7 +69,7 @@ export const ReviewButton = () => {
         control,
         formState: { errors },
         online,
-        isLoading,
+        isLoading: isSendFormLoading,
         signTransaction,
         getValues,
         getDefaultValue,
@@ -81,6 +82,8 @@ export const ReviewButton = () => {
             toggleAnonymityWarning,
         },
     } = useSendFormContext();
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state));
+    const isLoading = isSendFormLoading || areFeesLoading;
 
     const options = useWatch({
         name: 'options',

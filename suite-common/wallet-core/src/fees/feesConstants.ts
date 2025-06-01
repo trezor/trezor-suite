@@ -1,1 +1,1 @@
-export const FEES_UPDATE_INTERVAL = 60_000; // [ms] interval to refetch estimated fees from backend
+export const FEES_UPDATE_INTERVAL_MILLISECONDS = 60_000; // interval to refetch estimated fees from backend

@@ -14,9 +14,9 @@ import { BlockchainEstimatedFeeLevel } from '@trezor/connect/src/types/api/block
 import { isNative } from '@trezor/env-utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
+import { selectFees } from './feesReducer';
 import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
 import { selectSelectedDevice } from '../device/deviceSelectors';
-import { selectFees } from '../fees/feesReducer';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 // Conditionally subscribe to blockchain backend

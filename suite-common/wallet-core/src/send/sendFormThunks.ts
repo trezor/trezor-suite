@@ -52,6 +52,7 @@ import {
     signRippleStellarSendFormTransactionThunk,
 } from './sendFormRippleStellarThunks';
 import {
+    selectAreFeesLoading,
     selectSendFormDrafts,
     selectSendPrecomposedTx,
     selectSendSerializedTx,
@@ -71,6 +72,7 @@ import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
 import { selectSelectedDevice } from '../device/deviceSelectors';
+import { updateFeeInfoThunk } from '../fees/feesThunks';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
@@ -604,5 +606,24 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         );
 
         return enhancedPrecomposedTransaction;
+    },
+);
+
+const FEE_UPDATE_DELAY_MILLISECONDS = 1000;
+/**
+ * Delay updateFeeInfoThunk with an arbitrary timeout, because backend request is usually very quick.
+ * This can be used to display loader for a bit longer, to visually draw users attention to the fees which are changing.
+ */
+export const delayedUpdateFeeInfoThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/delayedUpdateFeeInfoThunk`,
+    async ({ networkSymbol }: { networkSymbol: NetworkSymbol }, { dispatch, getState }) => {
+        if (selectAreFeesLoading(getState())) return;
+
+        dispatch(sendFormActions.setAreFeesLoading({ areFeesLoading: true }));
+        await Promise.all([
+            dispatch(updateFeeInfoThunk({ networkSymbol })),
+            new Promise(resolve => setTimeout(resolve, FEE_UPDATE_DELAY_MILLISECONDS)),
+        ]);
+        dispatch(sendFormActions.setAreFeesLoading({ areFeesLoading: false }));
     },
 );

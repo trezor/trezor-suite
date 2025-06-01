@@ -1,15 +1,22 @@
-import { useMemo } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Column, InfoItem } from '@trezor/components';
+import { Card, Column, InfoItem, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { ReviewButton } from './ReviewButton';
+
+type ChildOrSkeletonProps = PropsWithChildren<{ isLoading?: boolean }>;
+
+const ChildOrSkeleton = ({ children, isLoading }: ChildOrSkeletonProps) =>
+    isLoading ? <SkeletonRectangle animate={true} /> : children;
 
 const Container = styled.div`
     position: sticky;
@@ -22,6 +29,7 @@ export const TotalSent = () => {
         composedLevels,
         getValues,
     } = useSendFormContext();
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state));
 
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
@@ -52,39 +60,49 @@ export const TotalSent = () => {
                         variant="default"
                         typographyStyle="body"
                     >
-                        {hasTransactionInfo && (
-                            <FormattedCryptoAmount
-                                disableHiddenPlaceholder
-                                value={
-                                    tokenInfo
-                                        ? formatAmount(
-                                              transactionInfo.totalSpent,
-                                              tokenInfo.decimals,
-                                          )
-                                        : formatNetworkAmount(transactionInfo.totalSpent, symbol)
-                                }
-                                symbol={tokenInfo?.symbol ?? symbol}
-                                contractAddress={tokenInfo?.contract}
-                            />
-                        )}
+                        <ChildOrSkeleton isLoading={areFeesLoading}>
+                            {hasTransactionInfo && (
+                                <FormattedCryptoAmount
+                                    disableHiddenPlaceholder
+                                    value={
+                                        tokenInfo
+                                            ? formatAmount(
+                                                  transactionInfo.totalSpent,
+                                                  tokenInfo.decimals,
+                                              )
+                                            : formatNetworkAmount(
+                                                  transactionInfo.totalSpent,
+                                                  symbol,
+                                              )
+                                    }
+                                    symbol={tokenInfo?.symbol ?? symbol}
+                                    contractAddress={tokenInfo?.contract}
+                                />
+                            )}
+                        </ChildOrSkeleton>
                     </InfoItem>
 
                     <InfoItem label={<Translation id={feeLabelId} />} direction="row">
-                        {hasTransactionInfo &&
-                            (tokenInfo ? (
-                                <FormattedCryptoAmount
-                                    disableHiddenPlaceholder
-                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                    contractAddress={tokenInfo.contract}
-                                />
-                            ) : (
-                                <FiatValue
-                                    disableHiddenPlaceholder
-                                    amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
-                                    symbol={symbol}
-                                />
-                            ))}
+                        <ChildOrSkeleton isLoading={areFeesLoading}>
+                            {hasTransactionInfo &&
+                                (tokenInfo ? (
+                                    <FormattedCryptoAmount
+                                        disableHiddenPlaceholder
+                                        value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                        symbol={symbol}
+                                        contractAddress={tokenInfo.contract}
+                                    />
+                                ) : (
+                                    <FiatValue
+                                        disableHiddenPlaceholder
+                                        amount={formatNetworkAmount(
+                                            transactionInfo.totalSpent,
+                                            symbol,
+                                        )}
+                                        symbol={symbol}
+                                    />
+                                ))}
+                        </ChildOrSkeleton>
                     </InfoItem>
                 </Column>
                 <ReviewButton />
