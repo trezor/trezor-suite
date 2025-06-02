@@ -308,6 +308,19 @@ export class TradingPage {
     }
 
     @step()
+    async fillSellFormMinimumQuoteError(amount: string = '0.00000001', country: string = 'CZ') {
+        await this.selectCountryOfResidence(country);
+        await this.youPayCryptoInput.fill(amount);
+        await this.page.waitForRequest(invityEndpoint.sellQuotes);
+        await expect(
+            this.page.getByText('Not enough funds'),
+            'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
+        ).not.toBeVisible();
+
+        await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
+    }
+
+    @step()
     async fillSwapForm(params: {
         amount: string;
         sendCurrency: string;
