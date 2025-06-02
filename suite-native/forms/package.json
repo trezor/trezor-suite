@@ -14,9 +14,9 @@
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
-        "react": "18.2.0",
+        "react": "19.0.0",
         "react-hook-form": "^7.56.3",
-        "react-native": "0.76.9",
+        "react-native": "0.79.3",
         "yup": "^1.6.1"
     }
 }

@@ -26,10 +26,10 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "expo-linear-gradient": "^14.0.1",
-        "react": "18.2.0",
-        "react-native": "0.76.9",
-        "react-native-safe-area-context": "^4.14.0",
+        "expo-linear-gradient": "~14.1.4",
+        "react": "19.0.0",
+        "react-native": "0.79.3",
+        "react-native-safe-area-context": "5.4.0",
         "react-redux": "9.2.0"
     }
 }

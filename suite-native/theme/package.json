@@ -13,9 +13,9 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "jotai": "1.9.1",
-        "react": "18.2.0",
+        "jotai": "^2.12.5",
+        "react": "19.0.0",
         "react-fela": "^12.2.1",
-        "react-native": "0.76.9"
+        "react-native": "0.79.3"
     }
 }

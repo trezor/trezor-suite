@@ -27,10 +27,10 @@
         "react-intl": "^7.1.11"
     },
     "devDependencies": {
-        "@types/react": "18.2.55"
+        "@types/react": "^19.0.0"
     },
     "peerDependencies": {
-        "react": "18.2.0",
+        "react": "19.0.0",
         "react-error-boundary": "^6.0.0",
         "styled-components": "^6.1.17",
         "stylelint": "^16.19.0",

@@ -38,12 +38,12 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@types/semver": "^7.7.0",
-        "jotai": "1.9.1",
-        "lottie-react-native": "^7.1.0",
-        "react": "18.2.0",
-        "react-native": "0.76.9",
-        "react-native-reanimated": "^3.16.7",
-        "react-native-svg": "^15.9.0",
+        "jotai": "^2.12.5",
+        "lottie-react-native": "7.2.2",
+        "react": "19.0.0",
+        "react-native": "0.79.3",
+        "react-native-reanimated": "~3.17.4",
+        "react-native-svg": "15.11.2",
         "react-redux": "9.2.0",
         "semver": "^7.7.1"
     }

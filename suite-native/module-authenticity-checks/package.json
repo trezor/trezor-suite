@@ -19,8 +19,8 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "react": "18.2.0",
-        "react-native": "0.76.9",
+        "react": "19.0.0",
+        "react-native": "0.79.3",
         "react-redux": "9.2.0"
     }
 }

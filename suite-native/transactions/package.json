@@ -14,7 +14,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "2.8.2",
-        "@shopify/flash-list": "^1.7.2",
+        "@shopify/flash-list": "1.7.6",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -37,11 +37,11 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "18.2.0",
-        "react-native": "0.76.9",
-        "react-native-gesture-handler": "^2.21.0",
-        "react-native-reanimated": "^3.16.7",
-        "react-native-svg": "15.9.0",
+        "react": "19.0.0",
+        "react-native": "0.79.3",
+        "react-native-gesture-handler": "~2.24.0",
+        "react-native-reanimated": "~3.17.4",
+        "react-native-svg": "15.11.2",
         "react-redux": "9.2.0"
     }
 }
