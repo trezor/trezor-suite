@@ -14,6 +14,7 @@ const excluded = [
     URLS.HELP_CENTER_DRY_RUN_T3W1_URL,
     URLS.HELP_CENTER_PACKAGING_T3W1_URL,
     URLS.HELP_CENTER_FW_DOWNGRADE_T3W1_URL,
+    URLS.HELP_CENTER_XLM_URL,
 ];
 
 describe('Test that all external links are alive', () => {

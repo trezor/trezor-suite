@@ -1,7 +1,7 @@
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
-import { HELP_CENTER_XRP_URL, STELLAR_RESERVE_INFO_URL } from '@trezor/urls';
+import { HELP_CENTER_XLM_URL, HELP_CENTER_XRP_URL } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
@@ -19,7 +19,7 @@ export const ReserveBanner = ({ account }: ReserveBannerProps) => {
             learnMoreUrl = HELP_CENTER_XRP_URL;
             break;
         case 'stellar':
-            learnMoreUrl = STELLAR_RESERVE_INFO_URL;
+            learnMoreUrl = HELP_CENTER_XLM_URL;
             break;
         default:
             return null;

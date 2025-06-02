@@ -68,6 +68,7 @@ export const HELP_CENTER_PACKAGING_T3T1_URL: Url =
 export const HELP_CENTER_PACKAGING_T3W1_URL: Url =
     'https://trezor.io/learn/a/authenticate-trezor-safe-7';
 export const HELP_CENTER_XRP_URL: Url = 'https://trezor.io/learn/a/ripple-xrp-on-trezor-model-t';
+export const HELP_CENTER_XLM_URL: Url = 'https://trezor.io/learn/a/xlm-on-trezor-devices';
 export const HELP_CENTER_CASHADDR_URL: Url = 'https://trezor.io/learn/a/glossary#CashAddr';
 export const HELP_CENTER_QR_CODE_URL: Url =
     'https://trezor.io/learn/a/qr-codes-in-trezor-suite-app';
@@ -172,6 +173,3 @@ export const ESHOP_KEEP_METAL_MULTI_SHARE_URL: Url =
 export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://get.invity.io';
 
 export const UNINSTALL_BRIDGE_URL: Url = 'https://trezor.io/learn/a/what-is-trezor-bridge';
-
-export const STELLAR_RESERVE_INFO_URL: Url =
-    'https://developers.stellar.org/docs/learn/fundamentals/lumens#minimum-balance';
