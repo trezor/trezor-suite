@@ -617,7 +617,7 @@ const getEthereumRbfParams = (
 
     const { data, nonce, gasPrice, maxFeePerGas, maxPriorityFeePerGas } = tx.ethereumSpecific;
 
-    const ethereumData = data?.indexOf('0x') === 0 ? data.substring(2) : '';
+    const ethereumData = data ?? '';
 
     return {
         type: 'ethereum',

@@ -26,7 +26,6 @@ import {
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
-    getUnstakeAmountByEthereumDataHex,
     isPending,
     isSentTransaction,
     prepareEthereumTransaction,
@@ -147,14 +146,8 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
         const { account, network, feeInfo } = composeContext;
         const { ethereumDataHex } = formState;
-        const unstakeAmount = getUnstakeAmountByEthereumDataHex(ethereumDataHex);
 
-        const composedOutput = getExternalComposeOutput(
-            formState,
-            account,
-            network,
-            unstakeAmount || undefined,
-        );
+        const composedOutput = getExternalComposeOutput(formState, account, network);
 
         if (!composedOutput)
             return rejectWithValue({

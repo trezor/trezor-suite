@@ -108,8 +108,11 @@ export const isClaimTx = (signature: string | undefined) =>
 export const isStakeTypeTx = (signature: string | undefined) =>
     isStakeTx(signature) || isUnstakeTx(signature) || isClaimTx(signature);
 
-export const getSignatureByEthereumDataHex = (dataHex: string) => `0x${dataHex.slice(0, 8)}`;
+export const getSignatureByEthereumDataHex = (dataHex: string) => {
+    const cleanHex = dataHex.startsWith('0x') ? dataHex.slice(2) : dataHex;
 
+    return `0x${cleanHex.slice(0, 8)}`;
+};
 export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType | null => {
     if (!dataHex) return null;
     const signature = getSignatureByEthereumDataHex(dataHex);
