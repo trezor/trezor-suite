@@ -130,8 +130,8 @@ describe('encoding json -> protobuf -> json', () => {
                     data: f.in,
                     protocol: v1Protocol,
                 });
-
-                const chunks = createChunks(result, v1Protocol.getChunkHeader(result), 64);
+                const [, chunkHeader] = v1Protocol.getHeaders(result);
+                const chunks = createChunks(result, chunkHeader, 64);
                 // each protocol chunks are equal 64 bytes
                 chunks.forEach(chunk => {
                     expect(chunk.length).toEqual(64);

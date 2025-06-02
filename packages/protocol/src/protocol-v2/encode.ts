@@ -1,8 +1,8 @@
 import * as ERRORS from '../errors';
 import { HEADER_SIZE, MESSAGE_LEN_SIZE, MESSAGE_TYPE } from './constants';
-import { TransportProtocolEncode } from '../types';
+import { TransportProtocol } from '../types';
 
-export const getChunkHeader = (data: Buffer) => {
+const getChunkHeader = (data: Buffer) => {
     // data should have at least 1 control_byte + 2 bytes channel
     if (data.byteLength < HEADER_SIZE) {
         throw new Error(ERRORS.PROTOCOL_MALFORMED);
@@ -14,8 +14,14 @@ export const getChunkHeader = (data: Buffer) => {
     return header;
 };
 
+export const getHeaders: TransportProtocol['getHeaders'] = data => {
+    const chunkHeader = getChunkHeader(data);
+
+    return [data.subarray(0, HEADER_SIZE), chunkHeader];
+};
+
 // encode `protocol-thp` message
-export const encode: TransportProtocolEncode = (data, options) => {
+export const encode: TransportProtocol['encode'] = (data, options) => {
     if (options.messageType === MESSAGE_TYPE) {
         if (!options.header || options.header.byteLength !== HEADER_SIZE) {
             throw new Error(

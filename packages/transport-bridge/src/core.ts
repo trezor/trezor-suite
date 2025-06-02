@@ -67,10 +67,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         if (protocol.name === 'bridge') {
             const { messageType, payload } = protocolBridge.decode(buffer);
             encodedMessage = protocolV1.encode(payload, { messageType });
-            chunkHeader = protocolV1.getChunkHeader(encodedMessage);
+            [, chunkHeader] = protocolV1.getHeaders(encodedMessage);
         } else {
             encodedMessage = buffer;
-            chunkHeader = protocol.getChunkHeader(encodedMessage);
+            [, chunkHeader] = protocol.getHeaders(encodedMessage);
         }
 
         const chunks = createChunks(encodedMessage, chunkHeader, api.chunkSize);

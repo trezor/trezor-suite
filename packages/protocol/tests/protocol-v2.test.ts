@@ -1,4 +1,4 @@
-import { decode, encode, getChunkHeader } from '../src/protocol-v2';
+import { decode, encode, getHeaders } from '../src/protocol-v2';
 
 describe('protocol-v2', () => {
     it('encode/decode TrezorHostProtocolMessage', () => {
@@ -43,11 +43,12 @@ describe('protocol-v2', () => {
         expect(() => decode(Buffer.alloc(0))).toThrow('Malformed protocol format');
     });
 
-    it('getChunkHeader', () => {
-        expect(getChunkHeader(Buffer.from('0412380000', 'hex'))).toEqual(
+    it('getHeaders', () => {
+        expect(getHeaders(Buffer.from('0412380000', 'hex'))).toEqual([
+            Buffer.from('041238', 'hex'),
             Buffer.from('801238', 'hex'),
-        );
+        ]);
         // with error
-        expect(() => getChunkHeader(Buffer.alloc(0))).toThrow('Malformed protocol format');
+        expect(() => getHeaders(Buffer.alloc(0))).toThrow('Malformed protocol format');
     });
 });

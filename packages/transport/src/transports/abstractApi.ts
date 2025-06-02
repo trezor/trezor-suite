@@ -201,11 +201,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     data,
                     protocol,
                 });
-                const chunks = createChunks(
-                    bytes,
-                    protocol.getChunkHeader(bytes),
-                    this.api.chunkSize,
-                );
+                const [, chunkHeader] = protocol.getHeaders(bytes);
+                const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
                 const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
                 const sendResult = await sendChunks(chunks, apiWrite);
 
@@ -257,11 +254,9 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     data,
                     protocol,
                 });
-                const chunks = createChunks(
-                    bytes,
-                    protocol.getChunkHeader(bytes),
-                    this.api.chunkSize,
-                );
+                const [_, chunkHeader] = protocol.getHeaders(bytes);
+
+                const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
                 const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
                 const sendResult = await sendChunks(chunks, apiWrite);
 

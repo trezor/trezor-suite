@@ -26,5 +26,5 @@ export interface TransportProtocol {
     name: 'bridge' | 'v1' | 'v2';
     encode: TransportProtocolEncode;
     decode: TransportProtocolDecode;
-    getChunkHeader: (data: Buffer) => Buffer;
+    getHeaders: (data: Buffer) => [header: Buffer, chunkHeader: Buffer];
 }

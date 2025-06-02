@@ -1,6 +1,6 @@
 import * as ERRORS from '../errors';
 import { HEADER_SIZE, MESSAGE_LEN_SIZE, MESSAGE_TYPE } from './constants';
-import { getChunkHeader } from './encode';
+import { getHeaders } from './encode';
 import { TransportProtocolDecode } from '../types';
 
 // Parses raw input from Trezor and returns some information about the whole message
@@ -12,9 +12,11 @@ export const decode: TransportProtocolDecode = bytes => {
         throw new Error(ERRORS.PROTOCOL_MALFORMED);
     }
 
+    const [header, chunkHeader] = getHeaders(buffer);
+
     return {
-        header: buffer.subarray(0, HEADER_SIZE),
-        chunkHeader: getChunkHeader(buffer),
+        header,
+        chunkHeader,
         length: buffer.readUint16BE(HEADER_SIZE),
         messageType: MESSAGE_TYPE, // will be decoded by `protocol-thp`
         payload: buffer.subarray(HEADER_SIZE + MESSAGE_LEN_SIZE),

@@ -1,14 +1,22 @@
 import { HEADER_SIZE, MESSAGE_HEADER_BYTE, MESSAGE_MAGIC_HEADER_BYTE } from './constants';
-import { TransportProtocolEncode } from '../types';
+import { TransportProtocol } from '../types';
 
-export const getChunkHeader = (_data: Buffer) => {
-    const header = Buffer.alloc(1);
-    header.writeUInt8(MESSAGE_MAGIC_HEADER_BYTE);
+// header: 3f2323 `?##` and chunkHeader: 3f `?`
+export const getHeaders: TransportProtocol['getHeaders'] = () => {
+    const header = Buffer.alloc(3);
+    // 1 byte
+    header.writeUInt8(MESSAGE_MAGIC_HEADER_BYTE, 0);
+    // 2*1 byte
+    header.writeUInt8(MESSAGE_HEADER_BYTE, 1);
+    header.writeUInt8(MESSAGE_HEADER_BYTE, 2);
 
-    return header;
+    const chunkHeader = Buffer.alloc(1);
+    chunkHeader.writeUInt8(MESSAGE_MAGIC_HEADER_BYTE);
+
+    return [header, chunkHeader];
 };
 
-export const encode: TransportProtocolEncode = (data, options) => {
+export const encode: TransportProtocol['encode'] = (data, options) => {
     const { messageType } = options;
     if (typeof messageType === 'string') {
         throw new Error(`Unsupported message type ${messageType}`);
@@ -17,12 +25,8 @@ export const encode: TransportProtocolEncode = (data, options) => {
     const fullSize = HEADER_SIZE + data.length;
 
     const encodedBuffer = Buffer.alloc(fullSize);
-    // 1 byte
-    encodedBuffer.writeUInt8(MESSAGE_MAGIC_HEADER_BYTE, 0);
-
-    // 2*1 byte
-    encodedBuffer.writeUInt8(MESSAGE_HEADER_BYTE, 1);
-    encodedBuffer.writeUInt8(MESSAGE_HEADER_BYTE, 2);
+    const [header] = getHeaders(data);
+    header.copy(encodedBuffer);
 
     // 2 bytes
     encodedBuffer.writeUInt16BE(messageType, 3);
