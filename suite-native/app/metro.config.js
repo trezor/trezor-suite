@@ -28,6 +28,7 @@ const config = {
         }),
     },
     resolver: {
+        unstable_enablePackageExports: false,
         blockList: [/libDev/],
         extraNodeModules: {
             // modules needed for trezor-connect
