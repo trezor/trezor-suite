@@ -42,6 +42,30 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
 
     const success = '3f23230002000000060a046d656f77';
 
+    const read = () => {
+        const index = fixtures.findIndex(f => f.id === request);
+        if (index >= 0) {
+            const { data } = fixtures[index];
+            fixtures.splice(index, 1);
+
+            return response(data);
+        }
+
+        if (request === '0057' || request === '0006') {
+            // RebootToBootloader (57) > Success
+            // FirmwareErase (06) > Success
+            eventChangeListener([]); // dispatch disconnected device event
+
+            return response(success);
+        } else if (request === '0058') {
+            // GetFirmwareHash > FirmwareHash
+            return response('3f23230059000000160a14' + LATEST_RELEASE.firmware_revision);
+        }
+
+        // Success
+        return response(success);
+    };
+
     return {
         on: (evt: string, listener: any) => {
             if (evt === 'transport-interface-change') {
@@ -59,29 +83,8 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
 
             return Promise.resolve({ success: true });
         },
-        read: () => {
-            const index = fixtures.findIndex(f => f.id === request);
-            if (index >= 0) {
-                const { data } = fixtures[index];
-                fixtures.splice(index, 1);
-
-                return response(data);
-            }
-
-            if (request === '0057' || request === '0006') {
-                // RebootToBootloader (57) > Success
-                // FirmwareErase (06) > Success
-                eventChangeListener([]); // dispatch disconnected device event
-
-                return response(success);
-            } else if (request === '0058') {
-                // GetFirmwareHash > FirmwareHash
-                return response('3f23230059000000160a14' + LATEST_RELEASE.firmware_revision);
-            }
-
-            // Success
-            return response(success);
-        },
+        read,
+        readWithAttempts: () => () => read(),
     };
 };
 
