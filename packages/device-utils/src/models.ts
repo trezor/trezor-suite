@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal } from './';
 
 type ModelConfig = {
     name: string;

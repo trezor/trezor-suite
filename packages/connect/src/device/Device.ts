@@ -1,7 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 import { randomBytes } from 'crypto';
 
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, models } from '@trezor/device-utils';
 import { TransportProtocol, thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
@@ -26,7 +26,6 @@ import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
 import { getFirmwareStatus, getRelease, getReleaseInfo, getReleases } from '../data/firmwareInfo';
 import { getLanguage } from '../data/getLanguage';
-import { models } from '../data/models';
 import {
     DEVICE,
     DeviceButtonRequestPayload,

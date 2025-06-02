@@ -16,7 +16,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { models } from '@trezor/connect/src/data/models';
+import { models } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
