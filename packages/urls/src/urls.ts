@@ -67,7 +67,7 @@ export const HELP_CENTER_PACKAGING_T3T1_URL: Url =
     'https://trezor.io/learn/a/authenticate-trezor-safe-5';
 export const HELP_CENTER_PACKAGING_T3W1_URL: Url =
     'https://trezor.io/learn/a/authenticate-trezor-safe-7';
-export const HELP_CENTER_XRP_URL: Url = 'https://trezor.io/learn/a/ripple-xrp-on-trezor-model-t';
+export const HELP_CENTER_XRP_URL: Url = 'https://trezor.io/learn/a/xrp-on-trezor-devices';
 export const HELP_CENTER_XLM_URL: Url = 'https://trezor.io/learn/a/xlm-on-trezor-devices';
 export const HELP_CENTER_CASHADDR_URL: Url = 'https://trezor.io/learn/a/glossary#CashAddr';
 export const HELP_CENTER_QR_CODE_URL: Url =
