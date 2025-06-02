@@ -60,6 +60,7 @@ const getConnectDependenciesToRelease = async () => {
     // and remote greatest version is lower than the local one.
     await checkNonReleasedDependencies('connect');
     await checkNonReleasedDependencies('connect-web');
+    await checkNonReleasedDependencies('connect-mobile');
     await checkNonReleasedDependencies('connect-webextension');
     await checkNonReleasedDependencies('connect-plugin-stellar');
     await checkNonReleasedDependencies('connect-plugin-ethereum');
@@ -67,7 +68,7 @@ const getConnectDependenciesToRelease = async () => {
     // We do not want to include `connect`, `connect-web` and `connect-webextension` since we want
     // to release those separately and we always want to release them.
     const onlyDependenciesToRelease = nonReleaseDependencies.filter(item => {
-        return !['connect', 'connect-web', 'connect-webextension'].includes(item);
+        return !['connect', 'connect-web', 'connect-webextension', 'connect-mobile'].includes(item);
     });
 
     // We use `onlyDependenciesToRelease` to trigger NPM releases
