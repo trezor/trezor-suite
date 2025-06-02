@@ -36,8 +36,8 @@ import {
     selectDeviceById,
     selectDevices,
     selectSelectedDevice,
-} from './deviceReducer';
-import { selectAccountByKey } from '../accounts/accountsReducer';
+} from './deviceSelectors';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '../discovery/discoveryThunks';
 
 type SelectDeviceThunkParams = {

@@ -3,22 +3,19 @@ import { networksCollection } from '@suite-common/wallet-config';
 import { getFailedAccounts } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 
+import { AccountsRootState } from './accounts/accountsReducer';
 import {
-    AccountsRootState,
     selectAccounts,
     selectAccountsByDeviceState,
     selectIsDeviceAccountless,
-} from './accounts/accountsReducer';
+} from './accounts/accountsSelectors';
+import { DeviceRootState } from './device/deviceReducer';
+import { selectHasOnlyPortfolioDevice, selectSelectedDevice } from './device/deviceSelectors';
+import { DiscoveryRootState } from './discovery/discoveryReducer';
 import {
-    DeviceRootState,
-    selectHasOnlyPortfolioDevice,
-    selectSelectedDevice,
-} from './device/deviceReducer';
-import {
-    DiscoveryRootState,
     selectDiscoveryByDevicePath,
     selectHasRunningDiscovery,
-} from './discovery/discoveryReducer';
+} from './discovery/discoverySelectors';
 import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
 
 /*

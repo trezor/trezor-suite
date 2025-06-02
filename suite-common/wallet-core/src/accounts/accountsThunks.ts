@@ -18,11 +18,11 @@ import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
-import { selectAccountByKey } from './accountsReducer';
+import { selectAccountByKey } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
-import { selectTransactions } from '../transactions/transactionsReducer';
+import { selectTransactions } from '../transactions/transactionsSelectors';
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];

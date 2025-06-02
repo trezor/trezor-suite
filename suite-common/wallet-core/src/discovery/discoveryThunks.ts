@@ -20,7 +20,7 @@ import {
     isDiscoveryInProgress,
     selectDiscovery,
     selectDiscoveryByDevicePath,
-} from './discoveryReducer';
+} from './discoverySelectors';
 import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { deviceActions } from '../device/deviceActions';
 import {
@@ -28,7 +28,7 @@ import {
     selectDevices,
     selectPhysicalDevices,
     selectSelectedDevice,
-} from '../device/deviceReducer';
+} from '../device/deviceSelectors';
 import { selectDeviceThunk } from '../device/deviceThunks';
 import {
     selectAccountsToBeForgotten,
