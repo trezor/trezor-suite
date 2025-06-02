@@ -187,6 +187,7 @@ export class TrezordNode {
             str({
                 version: this.version,
                 protocolMessages: this.protocolMessages,
+                githash: 'not provided',
             }),
         );
     }
