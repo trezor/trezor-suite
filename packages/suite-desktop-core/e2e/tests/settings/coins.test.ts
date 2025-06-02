@@ -12,11 +12,11 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
     });
 
     test(
-        'go to wallet settings page, check BTC, activate all coins, deactivate all coins, set custom backend',
+        'go to wallet settings page, check BTC, activate few networks, deactivate them, set custom backend',
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that a user can navigate to the wallet settings page, check BTC, activate all coins, deactivate all coins, and set a custom backend.',
+                    'Verifies that a user can navigate to the wallet settings page, check BTC, activate few networks, deactivate them, and set a custom backend.',
                 category: TestCategory.Settings,
                 priority: TestPriority.Critical,
                 stream: TestStream.Foundation,
@@ -28,7 +28,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                 'eth',
                 'etc',
                 'xrp',
-                'xlm',
+                // 'xlm', add when removed from experimental features
                 'bch',
                 'doge',
                 'zec',
@@ -38,7 +38,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                 'tsep',
                 'thol',
                 'txrp',
-                'txlm',
+                // 'txlm', add when removed from experimental features
                 'tada',
                 'dsol',
             ];
