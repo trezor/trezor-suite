@@ -2,7 +2,7 @@ import { JSX, ReactNode, useCallback, useEffect, useMemo, useState } from 'react
 
 import styled from 'styled-components';
 
-import { CoreRequestMessage, POPUP, UI, UI_REQUEST } from '@trezor/connect';
+import { CoreRequestMessage, POPUP, UI } from '@trezor/connect';
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { OriginBoundState, storage } from '@trezor/connect-common';
 import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
@@ -13,9 +13,6 @@ import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
 import { InfoPanel } from './components/InfoPanel';
 import { Loader } from './components/Loader';
 import {
-    BackupNotification,
-    UseSuiteDesktopNotification,
-    FirmwareUpdateNotification,
     SuspiciousOriginNotification,
     UseSuiteDesktopNotification,
 } from './components/Notification';
@@ -138,11 +135,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
             );
         }
         messages.forEach(message => {
-            if (message?.type === UI_REQUEST.FIRMWARE_OUTDATED) {
-                notifications[message.type] = <FirmwareUpdateNotification key={message.type} />;
-            } else if (message?.type === UI_REQUEST.DEVICE_NEEDS_BACKUP) {
-                notifications[message.type] = <BackupNotification key={message.type} />;
-            } else if (message?.type === 'phishing-domain') {
+            if (message?.type === 'phishing-domain') {
                 notifications[message.type] = <SuspiciousOriginNotification key={message.type} />;
             }
 
