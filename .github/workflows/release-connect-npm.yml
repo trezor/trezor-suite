@@ -121,7 +121,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: ["connect", "connect-web", "connect-webextension"]
+        package: ["connect", "connect-web", "connect-webextension", "connect-mobile"]
     steps:
       - uses: actions/checkout@v4
         with:
