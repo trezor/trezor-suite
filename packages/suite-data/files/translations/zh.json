@@ -5,7 +5,7 @@
   "AMOUNT_IS_LESS_THAN_RESERVE": "收款人账户需要储备 {reserve} {displaySymbol} 才能激活",
   "AMOUNT_IS_MORE_THAN_RESERVE": "金额超过规定的储备（{reserve} {displaySymbol}）",
   "AMOUNT_IS_NOT_ENOUGH": "资金不足",
-  "AMOUNT_IS_NOT_INTEGER": "金额不是整数",
+  "AMOUNT_IS_NOT_INTEGER": "请输入一个整数",
   "AMOUNT_IS_NOT_IN_RANGE_DECIMALS": "最多允许 {decimals} 位小数",
   "AMOUNT_IS_NOT_SET": "金额未设置",
   "AMOUNT_IS_TOO_LOW": "金额过低",
