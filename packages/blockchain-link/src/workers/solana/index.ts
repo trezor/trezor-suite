@@ -56,7 +56,6 @@ import {
     transformTokenInfo,
 } from '@trezor/blockchain-link-utils/src/solana';
 import type {
-    ParsedAccountData,
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
 } from '@trezor/blockchain-link-utils/src/solana-types';
@@ -380,12 +379,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             .getAccountInfo(publicKey, { encoding: 'base64' })
             .send();
 
-        const { value: accountInfoJson } = await api.rpc
-            .getAccountInfo(publicKey, {
-                encoding: 'jsonParsed',
-            })
-            .send();
-
         const solEpoch = await getEpoch();
         const solStakingAccounts = await getSolanaStakingData(api?.rpc, publicKey, solEpoch);
 
@@ -393,7 +386,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             owner: accountInfo?.owner,
             solStakingAccounts,
             solEpoch,
-            ...(accountInfoJson ? { accountInfo: accountInfoJson.data as ParsedAccountData } : {}),
         };
 
         if (accountInfo) {

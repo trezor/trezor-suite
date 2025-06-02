@@ -2174,9 +2174,9 @@ export default defineMessages({
             "Address has no transaction history and isn't checksummed. Check that the address is correct.",
         id: 'TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED',
     },
-    TR_ETH_ADDRESS_CANT_VERIFY_HISTORY: {
+    TR_ADDRESS_CANT_VERIFY_HISTORY: {
         defaultMessage: 'Unable to verify address history. Check that the address is correct.',
-        id: 'TR_ETH_ADDRESS_CANT_VERIFY_HISTORY',
+        id: 'TR_ADDRESS_CANT_VERIFY_HISTORY',
     },
     TR_EVM_ADDRESS_IS_CONTRACT: {
         defaultMessage: "You're sending funds to a contract address.",

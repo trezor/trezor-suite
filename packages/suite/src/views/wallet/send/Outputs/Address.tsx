@@ -17,6 +17,10 @@ import {
     isBitcoinCashAddressUppercase,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
+import {
+    TOKEN_2022_PROGRAM_PUBLIC_KEY,
+    TOKEN_PROGRAM_PUBLIC_KEY,
+} from '@trezor/blockchain-link-utils/src/solana';
 import { Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
@@ -80,6 +84,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         watch,
         setDraftSaveRequest,
         trigger,
+        clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
     const { descriptor, networkType, symbol } = account;
@@ -238,8 +243,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 };
             case 'sol_account_type':
                 return {
-                    // TODO: add link to packages/urls/src/urls.ts when article is ready
-                    // learnMoreUrl: 'https://trezor.io',
+                    buttonProps: {
+                        onClick: () => {
+                            clearErrors(inputName);
+                            setValue(inputName, address, { shouldValidate: false });
+                            composeTransaction();
+                        },
+                        text: translationString('TR_I_UNDERSTAND_THE_RISK'),
+                    },
+                    learnMoreUrl: URLS.HELP_CENTER_SOLANA_HELP_URL,
                 };
             default:
                 return {};
@@ -292,17 +304,23 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             },
             sol_account_type: async (value: string) => {
                 if (networkType === 'solana') {
+                    if (!isOnline) {
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
+                    }
+
                     const { payload, success } = await TrezorConnect.getAccountInfo({
                         descriptor: value,
                         coin: symbol,
                         details: 'txs',
                     });
-
                     if (!success) {
-                        return translationString('RECIPIENT_IS_NOT_VALID');
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
-                    if (payload?.misc?.accountInfo?.program) {
+                    const isTokenAccount =
+                        payload?.misc?.owner === TOKEN_PROGRAM_PUBLIC_KEY ||
+                        payload?.misc?.owner === TOKEN_2022_PROGRAM_PUBLIC_KEY;
+                    if (isTokenAccount) {
                         return translationString('TR_SOL_ACCOUNT_TYPE');
                     }
                 }
@@ -310,7 +328,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             evmchecks: async (address: string) => {
                 if (networkType === 'ethereum') {
                     if (!isOnline) {
-                        return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
                     const params = {
                         descriptor: address,
@@ -319,7 +337,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     const result = await TrezorConnect.getAccountInfo(params);
 
                     if (!result.success) {
-                        return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
                     const { payload } = result;

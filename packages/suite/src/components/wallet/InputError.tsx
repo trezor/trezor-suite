@@ -21,7 +21,7 @@ export const InputError = ({ buttonProps, learnMoreUrl, message }: InputErrorPro
             {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} textWrap={false} />}
         </Row>
         {buttonProps?.text && (
-            <Button size="tiny" variant="tertiary" onClick={buttonProps.onClick}>
+            <Button size="tiny" variant="tertiary" onClick={buttonProps.onClick} textWrap={false}>
                 {buttonProps.text}
             </Button>
         )}
