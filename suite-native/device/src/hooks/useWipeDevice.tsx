@@ -1,7 +1,6 @@
-import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
@@ -9,22 +8,23 @@ import { setIsWipingDevice } from '@suite-native/device-authorization';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
     DeviceSettingsStackRoutes,
-    StackToTabCompositeProps,
+    RootStackRoutes,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 
-type NavigationProp = StackToTabCompositeProps<ParamListBase, string, ParamListBase>;
-
 export const useWipeDevice = () => {
     const dispatch = useDispatch();
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation();
     const device = useSelector(selectSelectedDevice);
 
-    const wipeDevice = useCallback(async () => {
+    const wipeDevice = async () => {
         if (!device) return;
         dispatch(setIsWipingDevice(true));
-        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
-            screen: WipeDeviceStackRoutes.ContinueOnTrezor,
+        navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
+            screen: DeviceSettingsStackRoutes.WipeDeviceStack,
+            params: {
+                screen: WipeDeviceStackRoutes.ContinueOnTrezor,
+            },
         });
 
         const response = await requestPrioritizedDeviceAccess({
@@ -32,15 +32,18 @@ export const useWipeDevice = () => {
         });
 
         if (response.success && isFulfilled(response.payload)) {
-            navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
-                screen: WipeDeviceStackRoutes.WipeDeviceLoadingScreen,
+            navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
+                screen: DeviceSettingsStackRoutes.WipeDeviceStack,
+                params: {
+                    screen: WipeDeviceStackRoutes.WipeDeviceLoadingScreen,
+                },
             });
         } else {
             if (navigation.canGoBack()) {
                 navigation.goBack();
             }
         }
-    }, [device, navigation, dispatch]);
+    };
 
     return { wipeDevice };
 };

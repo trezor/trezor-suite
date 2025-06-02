@@ -583,7 +583,8 @@ export const wipeDeviceThunk = createThunk(
             dispatch(deviceActions.requestDeviceReconnect());
         } else {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
-            rejectWithValue(result.payload.error);
+
+            return rejectWithValue(result.payload.error);
         }
     },
 );
