@@ -21,13 +21,11 @@ import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
-import { migrationCoinmarketToTrading } from 'src/storage/migrations/trading/migrationCoinmarketToTrading';
 import { migrateToV56 } from 'src/storage/migrations/versions/migrateToV56';
 import type { BlockbookUrl, CustomBackend } from 'src/types/wallet/backend';
 
 import { updateAll } from './utils';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
-import { migrateToV55 } from './versions/migrateToV55';
 
 type WalletWithBackends = {
     backends?: PartialRecord<NetworkSymbol, Omit<CustomBackend, 'coin'>>;
@@ -1263,8 +1261,6 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
         });
 
-        await migrationCoinmarketToTrading(db, oldVersion, newVersion, transaction);
-
         db.createObjectStore('security');
     }
 
@@ -1281,17 +1277,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         db.createObjectStore('connect');
     }
 
-    if (oldVersion < 55) {
-        await migrateToV55(db, oldVersion, newVersion, transaction);
-        db.createObjectStore('explorer');
-    }
+    // Note: 55 migration is merged into 56 migration
 
     if (oldVersion < 56) {
         await migrateToV56(db, oldVersion, newVersion, transaction);
-    }
-
-    if (oldVersion < 57) {
-        db.createObjectStore('thp');
-        db.createObjectStore('bluetooth');
     }
 };

@@ -1,9 +1,12 @@
 # Storage changelog
 
-## 55
+## 56 (25.6.1)
 
-- change `tradingTrades` - add `sendAccountKey` and `receiveAccountKey` to each buy, sell, and exchange trade
+- renamed from _coinmarketTrades_ to _tradingTrades_
+- updated from _coinmarket_ formDraft to _trading_
+- changed `tradingTrades` - add `sendAccountKey`, `receiveAccountKey`, `selectedAccountKey` to each buy, sell, and exchange trade
 - added `explorer` store for custom explorer configuration
+- created `thp` and `bluetooth` object store
 
 ## 54
 
@@ -16,7 +19,6 @@
 ## 52
 
 - Deprecated Vertcoin (VTC), Bitcoin Gold (BTG), Namecoin (NMC), DigiByte (DGB), and Dash (DASH) networks. Removed related transactions, accounts, and settings.
-- Renamed coinmarketTrades to tradingTrades
 - saved ripple network type txs are removed to be fetched again and obtain internal transfers and token transfer contract and standard
 - added `security.devicesWithFailedEntropyCheck`
 
