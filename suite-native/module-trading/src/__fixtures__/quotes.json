@@ -66,5 +66,22 @@
         "paymentMethodName": "Credit Card",
         "orderId": "order_id_3",
         "paymentId": "e709df77-ee9e-4d12-98c2-84004a19c546"
+    },
+    {
+        "fiatStringAmount": "10",
+        "fiatCurrency": "EUR",
+        "receiveCurrency": "bitcoin",
+        "receiveStringAmount": "0.0010001683607972866",
+        "rate": 9991.316675433,
+        "quoteId": "ff259797-6cbe-4fea-8330-5181353f64a0",
+        "exchange": "mercuryo",
+        "minFiat": 20,
+        "maxFiat": 1999.96,
+        "minCrypto": 0.002,
+        "maxCrypto": 0.20003,
+        "paymentMethod": "googlePay",
+        "paymentMethodName": "Google Pay",
+        "orderId": "order_id_4",
+        "paymentId": "1209df77-ee9e-4d12-98c2-84004a19c521"
     }
 ]

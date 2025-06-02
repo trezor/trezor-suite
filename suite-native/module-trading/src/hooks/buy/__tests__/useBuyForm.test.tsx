@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
@@ -347,27 +349,41 @@ describe('useBuyForm', () => {
     });
 
     describe('on quotes change', () => {
-        it('if no quote is selected should select 1st quote with creditCard payment method', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
+        it.each<[string, string]>([
+            ['ios', 'applePay'],
+            ['android', 'googlePay'],
+            ['web', 'creditCard'],
+        ])(
+            'if no quote is selected should select 1st quote with %s payment method based on %s',
+            async (platform, method) => {
+                jest.spyOn(Platform, 'select').mockImplementation(
+                    (option: any) => option[platform],
+                );
 
-            initFormAndQuotes(result.current, store);
+                const store = await getInitializedStore();
+                const { result } = await renderUseTradingBuyForm(store);
 
-            expect(result.current.getValues('quote')).toEqual(
-                expect.objectContaining({
-                    paymentMethod: 'creditCard',
-                    exchange: 'cexdirect',
-                }),
-            );
-        });
+                initFormAndQuotes(result.current, store);
 
-        it('if no quote is selected and creditCard method is not available should select 1st quote', async () => {
+                expect(result.current.getValues('quote')).toEqual(
+                    expect.objectContaining({
+                        paymentMethod: method,
+                    }),
+                );
+
+                jest.restoreAllMocks();
+            },
+        );
+
+        it('if no quote is selected and preferred method is not available should select 1st quote with credit card', async () => {
+            jest.spyOn(Platform, 'select').mockImplementation((option: any) => option['ios']);
             const store = await getInitializedStore();
             const { result } = await renderUseTradingBuyForm(store);
 
             act(() => {
                 result.current.setValue('fiatValue', '10');
                 result.current.setValue('asset', btcAsset);
+                // Only provide credit card quote
                 store.dispatch(tradingBuyActions.saveQuotes([quotes[0]] as BuyTrade[]));
             });
 
@@ -377,6 +393,7 @@ describe('useBuyForm', () => {
                     exchange: 'mercuryo',
                 }),
             );
+            jest.restoreAllMocks();
         });
 
         it('should set quote to undefined when no quotes are available', async () => {
@@ -530,7 +547,7 @@ describe('useBuyForm', () => {
 
         initFormAndQuotes(result.current, store);
 
-        expect(result.current.getValues('cryptoValue')).toEqual('50000');
+        expect(result.current.getValues('cryptoValue')).toEqual('100016.8');
     });
 
     describe('validations', () => {

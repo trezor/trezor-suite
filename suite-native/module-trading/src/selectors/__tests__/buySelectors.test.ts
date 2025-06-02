@@ -235,6 +235,7 @@ describe('buySelectors', () => {
                 expect.objectContaining({ orderId: 'order_id_0' }),
                 expect.objectContaining({ orderId: 'order_id_1' }),
                 expect.objectContaining({ orderId: 'order_id_3' }),
+                expect.objectContaining({ orderId: 'order_id_4' }),
             ]);
         });
 
@@ -265,6 +266,7 @@ describe('buySelectors', () => {
                 ).toEqual([
                     expect.objectContaining({ orderId: 'order_id_1' }),
                     expect.objectContaining({ orderId: 'order_id_3' }),
+                    expect.objectContaining({ orderId: 'order_id_4' }),
                 ]);
             });
         });
@@ -288,6 +290,10 @@ describe('buySelectors', () => {
                 expect.objectContaining({
                     paymentMethod: 'creditCard',
                     rate: 20000,
+                }),
+                expect.objectContaining({
+                    paymentMethod: 'googlePay',
+                    rate: 9991.316675433,
                 }),
             ]);
         });

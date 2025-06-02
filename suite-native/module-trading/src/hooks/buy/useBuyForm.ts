@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
+import { BuyCryptoPaymentMethod, BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -150,8 +151,23 @@ const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
             }
         }
 
+        const preferredPaymentMethod: BuyCryptoPaymentMethod = Platform.select({
+            ios: 'applePay',
+            android: 'googlePay',
+            default: 'creditCard',
+        });
+
         if (quoteCandidates.length === 0) {
-            quoteCandidates = quotes.filter(({ paymentMethod }) => paymentMethod === 'creditCard');
+            quoteCandidates = quotes.filter(
+                ({ paymentMethod }) => paymentMethod === preferredPaymentMethod,
+            );
+        }
+
+        const defaultPaymentMethod = 'creditCard';
+        if (quoteCandidates.length === 0) {
+            quoteCandidates = quotes.filter(
+                ({ paymentMethod }) => paymentMethod === defaultPaymentMethod,
+            );
         }
 
         if (quoteCandidates.length === 0) {
