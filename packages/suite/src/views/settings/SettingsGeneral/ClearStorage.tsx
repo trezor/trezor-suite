@@ -1,28 +1,14 @@
-import { desktopApi } from '@trezor/suite-desktop-api';
-
-import { goto } from 'src/actions/suite/routerActions';
-import { removeDatabase } from 'src/actions/suite/storageActions';
+import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
-import { reloadApp } from 'src/utils/suite/reload';
 
 export const ClearStorage = () => {
     const dispatch = useDispatch();
 
     const handleClick = async () => {
-        localStorage.clear();
-        dispatch(removeDatabase());
-        if (desktopApi.available) {
-            // Reset the desktop-specific store.
-            desktopApi.appAutoStart(false);
-            desktopApi.clearStore();
-        } else {
-            // redirect to / and reload the web
-            await dispatch(goto('suite-index'));
-        }
-        reloadApp();
+        await dispatch(resetSuiteAppThunk());
     };
 
     return (

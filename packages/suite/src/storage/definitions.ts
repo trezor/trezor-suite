@@ -21,6 +21,7 @@ import type {
     WalletSettings,
 } from '@suite-common/wallet-types';
 
+import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
@@ -35,6 +36,10 @@ export interface DBWalletAccountTransaction {
 }
 
 export interface SuiteDBSchema extends DBSchema {
+    bioAuth: {
+        key: 'bioAuth';
+        value: Pick<BioAuthState, 'bioAuthEnabled'>;
+    };
     txs: {
         key: string;
         value: DBWalletAccountTransaction;

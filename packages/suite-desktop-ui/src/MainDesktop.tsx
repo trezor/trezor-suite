@@ -36,11 +36,7 @@ import {
     useSelector,
 } from 'src/hooks/suite';
 import history from 'src/support/history';
-import {
-    bioAuthWindowBlur,
-    bioAuthWindowFocus,
-    desktopHandshake,
-} from 'src/actions/suite/suiteActions';
+import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
@@ -48,7 +44,6 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
-import { selectIsAppUiHidden, selectIsBioAuthValidationRequired } from 'src/reducers/desktop';
 import { useEffect, useRef } from 'react';
 import { requestBioAuthValidationThunk } from 'src/actions/suite/bioAuthThunks';
 import {
@@ -59,6 +54,9 @@ import {
     PageWrapper,
     Wrapper,
 } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
+import { selectIsAppUiHidden, selectIsBioAuthValidationRequired } from 'src/reducers/bioAuth';
+import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
+import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 
 const BioAuthOverlay = ({
     isBioAuthValidationRequired,
@@ -76,14 +74,25 @@ const BioAuthOverlay = ({
                         <MainContent>
                             <ContentWrapper>
                                 <Box>
-                                    <Text>Je to Píčovina!!</Text>
+                                    <Text>Je to ZAMČENY!!!!</Text>
                                     {isBioAuthValidationRequired && (
                                         <Button
+                                            variant="primary"
                                             onClick={() =>
                                                 dispatch(requestBioAuthValidationThunk())
                                             }
                                         >
                                             Request BIO Auth
+                                        </Button>
+                                    )}
+                                </Box>
+                                <Box>
+                                    {isBioAuthValidationRequired && (
+                                        <Button
+                                            variant="destructive"
+                                            onClick={() => dispatch(resetSuiteAppThunk())}
+                                        >
+                                            Reset app storage
                                         </Button>
                                     )}
                                 </Box>
@@ -105,11 +114,11 @@ const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const handleBlur = () => {
-            dispatch(bioAuthWindowBlur(new Date()));
+            dispatch(bioAuthActions.bioAuthWindowBlur(new Date().toISOString()));
         };
 
         const handleFocus = () => {
-            dispatch(bioAuthWindowFocus(new Date()));
+            dispatch(bioAuthActions.bioAuthWindowFocus(new Date().toISOString()));
         };
 
         window.addEventListener('blur', handleBlur);

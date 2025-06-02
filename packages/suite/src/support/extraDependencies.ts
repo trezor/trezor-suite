@@ -37,8 +37,8 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDevice } from '../actions/bluetooth/bluetoothEraseBondsThunk';
-import { METADATA, STORAGE } from '../actions/suite/constants';
 import * as suiteActions from '../actions/suite/suiteActions';
+import type { BioAuthState } from '../reducers/bioAuth';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 import { AppState, TrezorDevice } from '../types/suite';
 
@@ -106,9 +106,9 @@ export const extraDependencies: ExtraDependencies = {
         openModal: modalActions.openModal,
     },
     actionTypes: {
-        storageLoad: STORAGE.LOAD,
-        setDeviceMetadata: METADATA.SET_DEVICE_METADATA,
-        setDeviceMetadataPasswords: METADATA.SET_DEVICE_METADATA_PASSWORDS,
+        storageLoad: '@storage/load',
+        setDeviceMetadata: '@metadata/set-device-metadata',
+        setDeviceMetadataPasswords: '@metadata/set-device-metadata-passwords',
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
@@ -203,6 +203,19 @@ export const extraDependencies: ExtraDependencies = {
         },
         storageLoadWalletSettings: (state, { payload }: StorageLoadAction) =>
             payload.walletSettings || state,
+        storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
+            if (!payload?.bioAuth) return state;
+
+            // Only load the bioAuthEnabled property, ignore all other properties
+            if (payload.bioAuth.bioAuthEnabled !== undefined) {
+                return {
+                    ...state,
+                    bioAuthEnabled: payload.bioAuth.bioAuthEnabled,
+                };
+            }
+
+            return state;
+        },
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),

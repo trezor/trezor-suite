@@ -133,6 +133,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadFormDrafts: mockReducer('storageLoadFormDrafts'),
         storageLoadTokenManagement: mockReducer('storageLoadTokenManagement'),
         storageLoadWalletSettings: mockReducer('storageLoadWalletSettings'),
+        storageLoadBioAuth: mockReducer('storageLoadBioAuth'),
     },
     utils: {
         saveAs: (data, fileName) =>

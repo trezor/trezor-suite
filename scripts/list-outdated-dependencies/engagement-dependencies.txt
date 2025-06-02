@@ -68,3 +68,5 @@ vite
 vite-plugin-wasm
 vm-browserify
 zxcvbn
+passport-desktop
+node-loader

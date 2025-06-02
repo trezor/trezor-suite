@@ -12,7 +12,7 @@ import {
     selectBioAuthChangeNextValue,
     selectBioAuthEnabled,
     selectIsRequestingBioAuthChange,
-} from 'src/reducers/desktop';
+} from 'src/reducers/bioAuth';
 
 const PositionedSwitch = styled.div`
     align-self: center;

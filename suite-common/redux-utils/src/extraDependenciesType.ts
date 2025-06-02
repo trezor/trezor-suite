@@ -115,6 +115,7 @@ export type ExtraDependencies = {
         storageLoadFormDrafts: StorageLoadReducer;
         storageLoadTokenManagement: StorageLoadReducer;
         storageLoadWalletSettings: StorageLoadReducer;
+        storageLoadBioAuth: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;

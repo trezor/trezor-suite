@@ -6,15 +6,10 @@ import {
     selectBioAuthEnabled,
     selectIsBioAuthValidationRequested,
     selectIsRequestingBioAuthChange,
-} from 'src/reducers/desktop';
+} from 'src/reducers/bioAuth';
 
-import {
-    bioAuthValidated,
-    requestBioAuthChange,
-    requestBioAuthChangeEnd,
-    setBioAuthEnabled,
-    toggleBioAuthValidationRequested,
-} from './suiteActions';
+import { bioAuthActions } from './bioAuthActions';
+import * as storageActions from './storageActions';
 
 const BIO_AUTH_PREFIX = '@suite/bioAuth';
 
@@ -29,15 +24,17 @@ export const requestBioAuthChangeThunk = createThunk(
             return;
         }
 
-        dispatch(requestBioAuthChange(nextBioEnabled));
+        dispatch(bioAuthActions.requestBioAuthChange(nextBioEnabled));
 
         try {
             await desktopApi.validateBioAuth();
 
-            dispatch(setBioAuthEnabled(nextBioEnabled));
-            dispatch(bioAuthValidated(new Date()));
+            dispatch(bioAuthActions.setBioAuthEnabled(nextBioEnabled));
+            dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
+            // Persist bioAuthEnabled to storage
+            dispatch(storageActions.saveBioAuth());
         } catch (error) {
-            dispatch(bioAuthValidated(null));
+            dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
             dispatch(
                 notificationsActions.addToast({
@@ -46,7 +43,7 @@ export const requestBioAuthChangeThunk = createThunk(
                 }),
             );
         } finally {
-            dispatch(requestBioAuthChangeEnd());
+            dispatch(bioAuthActions.requestBioAuthChangeEnd());
         }
     },
 );
@@ -60,12 +57,12 @@ export const requestBioAuthValidationThunk = createThunk(
             return;
         }
 
-        dispatch(toggleBioAuthValidationRequested(true));
+        dispatch(bioAuthActions.toggleBioAuthValidationRequested(true));
         try {
             await desktopApi.validateBioAuth();
-            dispatch(bioAuthValidated(new Date()));
+            dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
         } catch (error) {
-            dispatch(bioAuthValidated(null));
+            dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
             dispatch(
                 notificationsActions.addToast({
@@ -74,7 +71,7 @@ export const requestBioAuthValidationThunk = createThunk(
                 }),
             );
         } finally {
-            dispatch(toggleBioAuthValidationRequested(false));
+            dispatch(bioAuthActions.toggleBioAuthValidationRequested(false));
         }
     },
 );

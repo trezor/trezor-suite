@@ -114,6 +114,10 @@ jobs:
           yarn install --immutable
           yarn message-system-sign-config
 
+      - name: Download Windows packages
+        run: |
+          bash packages/suite-desktop-core/scripts/download-win-packages.sh
+
       - name: Build libs
         run: |
           yarn workspace @trezor/suite-data build:lib

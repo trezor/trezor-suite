@@ -18,6 +18,7 @@ import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
+import { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
 import type { MetadataAction } from 'src/actions/suite/metadataActions';
@@ -107,7 +108,8 @@ export type Action =
     | BluetoothAction
     | BluetoothActionDesktop
     | ThpAction
-    | GeolocationAction;
+    | GeolocationAction
+    | BioAuthAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 

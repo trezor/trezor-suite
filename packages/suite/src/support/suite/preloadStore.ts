@@ -48,6 +48,7 @@ export const preloadStore = async () => {
         security,
         connect,
         explorer,
+        bioAuth,
     ] = await Promise.all([
         db.getItemByPK('suiteSettings', 'suite'),
         db.getItemsExtended('devices'),
@@ -71,6 +72,7 @@ export const preloadStore = async () => {
         db.getItemByPK('security', 'security'),
         db.getItemByPK('connect', 'connect'),
         db.getItemsExtended('explorer'),
+        db.getItemByPK('bioAuth', 'bioAuth'),
     ]);
 
     return {
@@ -96,6 +98,7 @@ export const preloadStore = async () => {
             coinjoinDebugSettings,
             tokenManagement,
             security,
+            bioAuth,
             connect,
             explorer,
         },

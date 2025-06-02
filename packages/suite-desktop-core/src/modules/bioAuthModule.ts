@@ -1,4 +1,7 @@
 import { systemPreferences } from 'electron';
+import { Passport, VerificationResult } from 'passport-desktop';
+
+import { isMacOs, isWindows } from '@trezor/env-utils';
 
 import { ipcMain } from '../typed-electron';
 
@@ -11,12 +14,38 @@ type BioAuthModule = (dependencies: Dependencies) => {
 
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
-const load = ({ mainWindowProxy }: Dependencies) => {
+const loadWin = ({ mainWindowProxy }: Dependencies) => {
+    ipcMain.on('bio-auth/request', async () => {
+        if (!Passport.available()) {
+            console.error('bioAuth', 'WIN: Passport is not available');
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validation-failure');
+
+            return;
+        }
+
+        try {
+            const verificationResult = await Passport.requestVerification('Verify your identity');
+
+            if (verificationResult !== VerificationResult.Verified) {
+                throw new Error('WIN: bioAuth validation failed');
+            }
+
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated');
+
+            return;
+        } catch (error) {
+            console.error('WIN: bioAuth validation failed', error);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validation-failure');
+        }
+    });
+};
+
+const loadMac = ({ mainWindowProxy }: Dependencies) => {
     ipcMain.on('bio-auth/request', async () => {
         try {
             await systemPreferences.canPromptTouchID();
         } catch (error) {
-            console.error('bioAuth', 'canPromptTouchID failed', error);
+            console.error('MAC: bioAuth canPromptTouchID failed', error);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validation-failure');
 
             return;
@@ -27,7 +56,7 @@ const load = ({ mainWindowProxy }: Dependencies) => {
 
             return;
         } catch (error) {
-            console.error('bioAuth validation failed', error);
+            console.error('MAC: bioAuth validation failed', error);
             mainWindowProxy.getInstance()?.webContents.send('bio-auth/validation-failure');
         }
     });
@@ -42,7 +71,14 @@ export const initBioAuthModule: BioAuthModule = dependencies => {
         logger.info('bioAuth', 'Loading');
 
         loaded = true;
-        load(dependencies);
+
+        if (isMacOs()) {
+            loadMac(dependencies);
+        }
+
+        if (isWindows()) {
+            loadWin(dependencies);
+        }
     };
 
     const onQuit = () => {

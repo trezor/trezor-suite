@@ -108,6 +108,10 @@ const config: webpack.Configuration = {
                     },
                 },
             },
+            {
+                test: /\.node$/,
+                loader: 'node-loader',
+            },
         ],
     },
     resolve: {

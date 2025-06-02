@@ -28,13 +28,6 @@ export type SuiteAction =
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
-    | { type: typeof SUITE.SET_BIO_AUTH_ENABLED; payload: boolean }
-    | { type: typeof SUITE.REQUEST_BIO_AUTH_CHANGE; payload: boolean }
-    | { type: typeof SUITE.REQUEST_BIO_AUTH_CHANGE_END }
-    | { type: typeof SUITE.TOGGLE_BIO_AUTH_VALIDATION_REQUESTED; payload: boolean }
-    | { type: typeof SUITE.REQUEST_BIO_AUTH_VALIDATED; payload: Date | null }
-    | { type: typeof SUITE.BIO_AUTH_WINDOW_BLUR; payload: Date }
-    | { type: typeof SUITE.BIO_AUTH_WINDOW_FOCUS; payload: Date }
     | { type: typeof requestAuthConfirm.type }
     | {
           type: typeof SUITE.SET_LANGUAGE;
@@ -116,39 +109,7 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     payload,
 });
 
-export const setBioAuthEnabled = (payload: boolean): SuiteAction => ({
-    type: SUITE.SET_BIO_AUTH_ENABLED,
-    payload,
-});
-
-export const requestBioAuthChange = (nextValue: boolean): SuiteAction => ({
-    type: SUITE.REQUEST_BIO_AUTH_CHANGE,
-    payload: nextValue,
-});
-
-export const requestBioAuthChangeEnd = (): SuiteAction => ({
-    type: SUITE.REQUEST_BIO_AUTH_CHANGE_END,
-});
-
-export const bioAuthValidated = (timestamp: Date | null): SuiteAction => ({
-    type: SUITE.REQUEST_BIO_AUTH_VALIDATED,
-    payload: timestamp,
-});
-
-export const bioAuthWindowBlur = (timestamp: Date): SuiteAction => ({
-    type: SUITE.BIO_AUTH_WINDOW_BLUR,
-    payload: timestamp,
-});
-
-export const bioAuthWindowFocus = (timestamp: Date): SuiteAction => ({
-    type: SUITE.BIO_AUTH_WINDOW_FOCUS,
-    payload: timestamp,
-});
-
-export const toggleBioAuthValidationRequested = (requested: boolean): SuiteAction => ({
-    type: SUITE.TOGGLE_BIO_AUTH_VALIDATION_REQUESTED,
-    payload: requested,
-});
+// Bio auth related actions have been moved to bioAuthActions.ts
 
 export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);
 

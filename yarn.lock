@@ -12756,6 +12756,7 @@ __metadata:
     css-loader: "npm:^6.10.0"
     css-minimizer-webpack-plugin: "npm:^7.0.2"
     html-webpack-plugin: "npm:^5.6.3"
+    node-loader: "npm:^2.1.0"
     raw-loader: "npm:^4.0.2"
     react-refresh: "npm:^0.17.0"
     stream-browserify: "npm:^3.0.0"
@@ -12863,6 +12864,7 @@ __metadata:
     jest-diff: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
     openpgp: "npm:^6.1.1"
+    passport-desktop: "npm:^0.1.2"
     systeminformation: "npm:^5.25.11"
     terser-webpack-plugin: "npm:^5.3.14"
     tsx: "npm:^4.19.3"
@@ -12910,6 +12912,7 @@ __metadata:
     blake-hash: "npm:^2.0.0"
     electron: "npm:35.1.2"
     electron-builder: "npm:26.0.3"
+    passport-desktop: "npm:^0.1.2"
     usb: "npm:^2.15.0"
   languageName: unknown
   linkType: soft
@@ -29858,7 +29861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.0":
+"loader-utils@npm:^2.0.0, loader-utils@npm:^2.0.3":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
@@ -33308,6 +33311,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-loader@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "node-loader@npm:2.1.0"
+  dependencies:
+    loader-utils: "npm:^2.0.3"
+  peerDependencies:
+    webpack: ^5.0.0
+  checksum: 10/d2f20b1e0f946055fcbbf365c3927ffecfff9aee3b5cc2d71e45229ca27010267d3d6fdea04dcb7c0bc7ce9b87878105b8c1d15c05065c813b5c8ec5ef1fb4d1
+  languageName: node
+  linkType: hard
+
 "node-machine-id@npm:1.1.12":
   version: 1.1.12
   resolution: "node-machine-id@npm:1.1.12"
@@ -34310,6 +34324,35 @@ __metadata:
     no-case: "npm:^3.0.4"
     tslib: "npm:^2.0.3"
   checksum: 10/ba98bfd595fc91ef3d30f4243b1aee2f6ec41c53b4546bfa3039487c367abaa182471dcfc830a1f9e1a0df00c14a370514fa2b3a1aacc68b15a460c31116873e
+  languageName: node
+  linkType: hard
+
+"passport-desktop-win32-ia32-msvc@npm:0.1.2":
+  version: 0.1.2
+  resolution: "passport-desktop-win32-ia32-msvc@npm:0.1.2"
+  conditions: os=win32 & cpu=ia32
+  languageName: node
+  linkType: hard
+
+"passport-desktop-win32-x64-msvc@npm:0.1.2":
+  version: 0.1.2
+  resolution: "passport-desktop-win32-x64-msvc@npm:0.1.2"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"passport-desktop@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "passport-desktop@npm:0.1.2"
+  dependencies:
+    passport-desktop-win32-ia32-msvc: "npm:0.1.2"
+    passport-desktop-win32-x64-msvc: "npm:0.1.2"
+  dependenciesMeta:
+    passport-desktop-win32-ia32-msvc:
+      optional: true
+    passport-desktop-win32-x64-msvc:
+      optional: true
+  checksum: 10/1898c46b4dd8a9a32fcd82abf6862c61da9551ba00f4c42bc53c7059394b72ebd94bdc3f11ed92e1a5afcffb611482c74ad8468eed36a1459a41a7be9243c436
   languageName: node
   linkType: hard
 

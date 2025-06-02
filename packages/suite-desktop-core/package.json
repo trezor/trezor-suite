@@ -49,6 +49,7 @@
         "electron-store": "8.2.0",
         "electron-updater": "6.6.4",
         "openpgp": "^6.1.1",
+        "passport-desktop": "^0.1.2",
         "systeminformation": "^5.25.11",
         "ws": "^8.18.0"
     },

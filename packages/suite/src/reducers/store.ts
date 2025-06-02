@@ -33,6 +33,7 @@ import backupReducers from 'src/reducers/backup';
 import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { desktopReducer } from './desktop';
+import { prepareBioAuthReducer } from './bioAuth';
 import { extraDependencies } from '../support/extraDependencies';
 import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
 import { geolocationReducer } from '@suite-common/geolocation';
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
     firmware: firmwareReducer,
     backup: backupReducers,
     desktop: desktopReducer,
+    bioAuth: prepareBioAuthReducer(extraDependencies),
     tokenDefinitions: tokenDefinitionsReducer,
     bluetooth: bluetoothReducer,
     thp: thpReducer,
