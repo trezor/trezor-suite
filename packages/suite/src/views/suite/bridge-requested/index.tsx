@@ -10,6 +10,8 @@ import { Metadata, Translation } from 'src/components/suite';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 
+import { ErrorPage } from '../ErrorPage';
+
 /**
  * This component renders only in desktop version - as an explanation why suite-desktop app was opened using a deeplink from suite-web
  */
@@ -30,7 +32,11 @@ export const BridgeRequested = () => {
 
     if (!isDesktop()) {
         // this component doesn't make sense for web.
-        return null;
+        return (
+            <Modal>
+                <ErrorPage />
+            </Modal>
+        );
     }
 
     if (confirmGoToWallet) {
