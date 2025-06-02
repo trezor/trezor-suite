@@ -18,7 +18,7 @@ export const useTradingInitializer = ({
 
     const checkQuotesTimer = useCallback(
         (callback: () => Promise<void>) => {
-            if (!isLoading) return;
+            if (isLoading) return;
 
             if (!timer.isLoading && !timer.isStopped) {
                 if (timer.resetCount >= 40) {
