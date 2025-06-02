@@ -11,14 +11,14 @@ import {
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const DeviceTrezorHostProtocolPair = () => {
-    const { isLocked } = useDevice();
+    const { isLocked, device } = useDevice();
     const dispatch = useDispatch();
 
     const isDeviceLocked = isLocked();
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(acquireDevice());
+        dispatch(acquireDevice({ requestedDevice: device }));
     };
 
     const ctaButton = (

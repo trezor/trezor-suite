@@ -1,5 +1,5 @@
 import { Column, FlexProps, InfoSegments, Row, Text } from '@trezor/components';
-import { models } from '@trezor/connect/src/data/models'; // Todo: solve this import issue
+import { models } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

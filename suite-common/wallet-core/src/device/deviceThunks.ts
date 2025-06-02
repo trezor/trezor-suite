@@ -44,8 +44,6 @@ import {
 } from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '../discovery/discoveryThunks';
-import { connectThpDeviceThunk } from '../thp/connectThpDeviceThunk';
-import { thpActions } from '../thp/thpActions';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;

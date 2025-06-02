@@ -6,18 +6,19 @@ import { Button, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
-import { useDispatch, useSelector } from '../../hooks/suite';
+import { useDevice, useDispatch, useSelector } from '../../hooks/suite';
 import { Translation } from '../suite/Translation';
 
 export const ThpPairingFailedModal = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const { device } = useDevice();
     const dispatch = useDispatch();
     const lastThpCode = useSelector(state => state.thp.lastThpCode);
 
     const handleRetry = () => {
         setIsLoading(true);
         // Re-try is simply acquiring the device again which triggers the THP flow
-        dispatch(acquireDevice());
+        dispatch(acquireDevice({ requestedDevice: device }));
     };
 
     const onCancel = () => {
