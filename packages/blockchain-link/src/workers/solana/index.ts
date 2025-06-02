@@ -1,5 +1,6 @@
 import {
     AccountInfoBase,
+    Address,
     ClusterUrl,
     RpcMainnet,
     RpcSubscriptionsMainnet,
@@ -295,6 +296,21 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         } as const;
     }
 
+    // token account's owner is the wallet
+    const getATAOwnerAddress = async (address: Address) => {
+        const { value: accountInfo } = await api.rpc
+            .getAccountInfo(address, {
+                encoding: 'jsonParsed',
+            })
+            .send();
+
+        if (!accountInfo?.data || 'parsed' in accountInfo.data === false) {
+            return address;
+        }
+
+        return (accountInfo.data.parsed?.info as { owner?: string })?.owner ?? address;
+    };
+
     const getTransactionPage = async (
         txIds: Signature[],
         tokenAccountsInfos: SolanaTokenAccountInfo[],
@@ -302,11 +318,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         if (txIds.length === 0) {
             return [];
         }
+
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
         const tokenMetadata = await request.getTokenMetadata();
 
-        return transactionsPage
+        const page = transactionsPage
             .filter(isValidTransaction)
             .map(tx =>
                 solanaUtils.transformTransaction(
@@ -317,6 +334,34 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                 ),
             )
             .filter((tx): tx is Transaction => !!tx);
+
+        const transactions: Transaction[] = await Promise.all(
+            page.map(async tx => {
+                const tokens = await Promise.all(
+                    tx.tokens.map(async transfer => {
+                        // token account address is derived from the wallet address who is owner of that account
+                        const from =
+                            transfer.from !== payload.descriptor
+                                ? await getATAOwnerAddress(address(transfer.from))
+                                : transfer.from;
+                        const to =
+                            transfer.to !== payload.descriptor
+                                ? await getATAOwnerAddress(address(transfer.to))
+                                : transfer.to;
+
+                        return {
+                            ...transfer,
+                            from,
+                            to,
+                        };
+                    }),
+                );
+
+                return { ...tx, tokens };
+            }),
+        );
+
+        return transactions;
     };
 
     const getTokenAccountsForProgram = (programPublicKey: string) =>
