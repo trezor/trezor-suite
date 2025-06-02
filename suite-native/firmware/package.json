@@ -13,7 +13,7 @@
     "dependencies": {
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "2.8.2",
-        "@shopify/react-native-skia": "^1.11.6",
+        "@shopify/react-native-skia": "^2.0.5",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -22,9 +22,9 @@
         "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles": "workspace:*",
         "expo-keep-awake": "14.0.3",
-        "react": "18.2.0",
-        "react-native": "0.76.9",
-        "react-native-reanimated": "^3.16.7",
+        "react": "19.0.0",
+        "react-native": "0.79.3",
+        "react-native-reanimated": "~3.17.4",
         "react-redux": "9.2.0"
     }
 }

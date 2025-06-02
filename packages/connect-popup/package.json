@@ -27,7 +27,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "eth-phishing-detect": "^1.2.0",
-        "react-dom": "18.2.0"
+        "react-dom": "19.0.0"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.27.1",
@@ -40,7 +40,7 @@
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@types/react": "18.2.55",
+        "@types/react": "^19.0.0",
         "babel-loader": "^10.0.0",
         "copy-webpack-plugin": "^13.0.0",
         "html-webpack-plugin": "^5.6.3",
@@ -55,7 +55,7 @@
         "xvfb-maybe": "^0.2.1"
     },
     "peerDependencies": {
-        "react": "18.2.0",
+        "react": "19.0.0",
         "styled-components": "^6.1.17",
         "stylelint": "^16.19.0",
         "stylelint-config-standard": "^38.0.0"

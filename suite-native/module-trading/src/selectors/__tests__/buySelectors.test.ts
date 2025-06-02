@@ -1,3 +1,12 @@
+jest.mock('react-native', () => ({
+    Platform: {
+        OS: 'ios',
+        select: jest.fn(specifics => specifics.ios ?? specifics.default),
+    },
+}));
+
+import { Platform } from 'react-native';
+
 import { BuyTrade, CryptoId } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
@@ -247,15 +256,17 @@ describe('buySelectors', () => {
 
         describe('on android device', () => {
             beforeAll(() => {
-                jest.mock('react-native/Libraries/Utilities/Platform', () => ({
-                    OS: 'android',
-                    select: (specifics: Record<'ios' | 'android' | 'default', unknown>) =>
-                        specifics.android ?? specifics.default,
-                }));
+                Platform.OS = 'android';
+                (Platform.select as jest.Mock).mockImplementation(
+                    specifics => specifics.android ?? specifics.default,
+                );
             });
 
             afterAll(() => {
-                jest.unmock('react-native/Libraries/Utilities/Platform');
+                Platform.OS = 'ios';
+                (Platform.select as jest.Mock).mockImplementation(
+                    specifics => specifics.ios ?? specifics.default,
+                );
             });
 
             it('should ignore applePay', () => {

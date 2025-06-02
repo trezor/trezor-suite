@@ -155,7 +155,7 @@ const getPlugins = (): ExpoPlugins => {
                 organization: 'satoshilabs',
             },
         ],
-        'expo-secure-store',
+        ['expo-secure-store'],
     ];
 
     if (process.env.EXPO_PUBLIC_BLUETOOTH_ENABLED) {
@@ -285,5 +285,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 projectId,
             },
         },
+        newArchEnabled: false,
     };
 };

@@ -12,6 +12,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
         "@suite-native/config": "workspace:*",
-        "react": "18.2.0"
+        "react": "19.0.0"
     }
 }

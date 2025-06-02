@@ -17,7 +17,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "lodash": "^4.17.21",
-        "react": "18.2.0",
+        "react": "19.0.0",
         "react-redux": "9.2.0",
         "redux": "^5.0.1",
         "reselect": "5.1.1"
