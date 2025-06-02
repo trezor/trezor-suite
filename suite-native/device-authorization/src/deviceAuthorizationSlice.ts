@@ -84,9 +84,6 @@ export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
 export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.hasDeviceRequestedPassphrase;
 
-export const selectDeviceRequestedAuthorization = (state: DeviceAuthorizationRootState) =>
-    selectDeviceRequestedPassphrase(state) || selectDeviceRequestedPin(state);
-
 export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.inputPassphraseOnDevice;
 
