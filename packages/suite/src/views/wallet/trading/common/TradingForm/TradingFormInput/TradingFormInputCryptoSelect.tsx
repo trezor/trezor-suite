@@ -13,6 +13,7 @@ import {
     cryptoIdToNetwork,
     isCryptoIdForNativeToken,
     parseCryptoId,
+    selectTradingLoadingAndTimestamp,
     tradingActions,
     useTradingInfo,
 } from '@suite-common/trading';
@@ -29,7 +30,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     SelectAssetOptionProps,
@@ -96,6 +97,8 @@ export const TradingFormInputCryptoSelect = <
     const [activeTab, setActiveTab] = useState<Network | null>(null);
     const [search, setSearch] = useState('');
     const { translationString } = useTranslation();
+
+    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
     const sendCryptoSelectValue = isTradingExchangeContext(context)
         ? context.getValues()?.sendCryptoSelect?.value
@@ -256,7 +259,8 @@ export const TradingFormInputCryptoSelect = <
                         data-testid={dataTestId ?? '@trading/form/select-crypto'}
                         isClearable={false}
                         isMenuOpen={false}
-                        isDisabled={isDisabled}
+                        isDisabled={isDisabled || isLoading}
+                        isLoading={isLoading}
                     />
                 )}
             />

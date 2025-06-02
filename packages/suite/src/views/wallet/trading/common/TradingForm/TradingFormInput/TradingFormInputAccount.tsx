@@ -3,12 +3,17 @@ import { createFilter } from 'react-select';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import type { TradingExchangeFormProps, TradingSellFormProps } from '@suite-common/trading';
+import {
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
+    selectTradingLoadingAndTimestamp,
+} from '@suite-common/trading';
 import { Row, Select, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -37,6 +42,8 @@ export const TradingFormInputAccount = <
     } = useTradingFormContext<TradingTradeSellExchangeType>();
     const optionGroups = useTradingBuildAccountGroups(type);
 
+    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+
     const { control, getValues } = methods;
     const selectedOption = getValues(accountSelectName) as
         | TradingAccountOptionsGroupOptionProps
@@ -53,6 +60,8 @@ export const TradingFormInputAccount = <
             render={({ field: { value } }) => (
                 <Select
                     value={value}
+                    isDisabled={isLoading}
+                    isLoading={isLoading}
                     labelLeft={label && <Translation id={label} />}
                     options={optionGroups}
                     onChange={async (selected: TradingAccountOptionsGroupOptionProps) => {

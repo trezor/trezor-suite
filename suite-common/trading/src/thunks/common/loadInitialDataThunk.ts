@@ -60,7 +60,6 @@ export const loadInitialDataThunk = createThunk(
 
             if (isDifferentAccount || !buyInfo) {
                 const buyInfoData = await dispatch(buyThunks.loadInfoThunk()).unwrap();
-
                 dispatch(tradingBuyActions.saveBuyInfo(buyInfoData));
             }
 

@@ -1,18 +1,5 @@
-import {
-    ComponentProps,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
-import ReactSelect, {
-    Props as ReactSelectProps,
-    SelectInstance,
-    StylesConfig,
-    components as reactSelectComponents,
-} from 'react-select';
+import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
 
 import styled, { CSSObject, DefaultTheme, css, useTheme } from 'styled-components';
 
@@ -26,6 +13,11 @@ import {
     zIndices,
 } from '@trezor/theme';
 
+import { FrameProps } from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
+import { useElevation } from '../../ElevationContext/ElevationContext';
+import { DROPDOWN_MENU, menuStyle } from '../../Menu/menuStyle';
+import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     FormCell,
     FormCellProps,
@@ -43,11 +35,6 @@ import {
 } from './customComponents';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { useOnKeyDown } from './useOnKeyDown';
-import { FrameProps } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
-import { useElevation } from '../../ElevationContext/ElevationContext';
-import { DROPDOWN_MENU, menuStyle } from '../../Menu/menuStyle';
-import { Spinner } from '../../loaders/Spinner/Spinner';
 
 const reactSelectClassNamePrefix = 'react-select';
 
@@ -303,25 +290,6 @@ export type SelectProps = KeyPressScrollProps &
         'data-testid'?: string;
     };
 
-type MenuProps = ComponentProps<typeof reactSelectComponents.Menu> & {
-    selectRef: React.RefObject<SelectInstance<Option, boolean>>;
-    scrollIndex?: number;
-};
-
-const Menu = ({ selectRef, scrollIndex, ...rest }: MenuProps) => {
-    useEffect(() => {
-        if (scrollIndex) {
-            const menuList = selectRef.current?.menuListRef;
-            const option = menuList?.children[scrollIndex];
-            option?.scrollIntoView({ behavior: 'instant' });
-        }
-    }, [selectRef, scrollIndex]);
-
-    return <reactSelectComponents.Menu {...rest} />;
-};
-
-const OPTION_INDEX_NAME = 'optionIndex';
-
 export const Select = ({
     isClean = false,
     label,
@@ -346,34 +314,14 @@ export const Select = ({
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled } = formCellProps;
     const isRenderedInModal = menuPortalTarget !== null;
-    const [scrollIndex, setScrollIndex] = useState<number>(0);
 
-    const isGrouped =
-        Array.isArray(rest.options) && rest.options.some(opt => 'label' in opt && 'options' in opt);
-
-    const indexedOptions = useMemo(() => {
-        if (isGrouped) {
-            return rest.options?.map((group, index) => ({
-                ...group,
-                options: group.options.map((option: Option) => ({
-                    ...option,
-                    [OPTION_INDEX_NAME]: index,
-                })),
-            }));
-        }
-
-        return rest.options?.map((option, index) => ({ ...option, [OPTION_INDEX_NAME]: index }));
-    }, [rest.options, isGrouped]);
+    const [selectedOption, setSelectedOption] = useState<Option | undefined>(rest.value);
 
     const handleOnChange = useCallback<Required<ReactSelectProps<Option>>['onChange']>(
         (value, { action }) => {
             if (value) {
-                const optionIndex = value[OPTION_INDEX_NAME] as number;
-                const option = { ...value };
-                delete option[OPTION_INDEX_NAME];
-
-                onChange?.(option as Option, selectRef.current);
-                setScrollIndex(optionIndex);
+                onChange?.(value, selectRef.current);
+                setSelectedOption(value);
 
                 if (!isMenuOpen && action === 'select-option') {
                     selectRef.current?.blur();
@@ -383,11 +331,6 @@ export const Select = ({
             return null;
         },
         [onChange, isMenuOpen],
-    );
-
-    const MenuWithProps = useCallback(
-        (props: any) => <Menu {...props} selectRef={selectRef} scrollIndex={scrollIndex} />,
-        [selectRef, scrollIndex],
     );
 
     /**
@@ -401,13 +344,12 @@ export const Select = ({
                 <Control {...controlProps} data-testid={dataTest} />
             ),
             Option: (optionProps: OptionComponentProps) => (
-                <Option {...optionProps} data-testid={dataTest} />
+                <Option {...optionProps} data-testid={dataTest} selectedOption={selectedOption} />
             ),
             GroupHeading,
-            Menu: MenuWithProps,
             ...components,
         }),
-        [components, dataTest, MenuWithProps],
+        [components, dataTest, selectedOption],
     );
 
     return (
@@ -442,7 +384,6 @@ export const Select = ({
                     placeholder={placeholder || ''}
                     {...rest}
                     components={memoizedComponents}
-                    options={indexedOptions}
                 />
 
                 {isLoading && (
