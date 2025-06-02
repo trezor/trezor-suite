@@ -124,7 +124,7 @@ export const CardStepperItem = ({
                                 colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
                                 onPress={onPressSecondaryButton}
                             >
-                                {primaryButtonText}
+                                {secondaryButtonText}
                             </Button>
                             <Button
                                 size="small"
@@ -132,7 +132,7 @@ export const CardStepperItem = ({
                                 colorScheme={buttonsColorSchemeMap[buttonsActionType].primary}
                                 onPress={onPressConfirmButton}
                             >
-                                {secondaryButtonText}
+                                {primaryButtonText}
                             </Button>
                         </HStack>
                     </AnimatedVStack>

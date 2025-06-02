@@ -55,8 +55,8 @@ export const WipeDeviceScreen = () => {
                 </Text>
                 <CardStepper
                     onFinish={wipeDevice}
-                    primaryButtonText={<Translation id="generic.buttons.goBack" />}
-                    secondaryButtonText={<Translation id="generic.buttons.understand" />}
+                    secondaryButtonText={<Translation id="generic.buttons.goBack" />}
+                    primaryButtonText={<Translation id="generic.buttons.understand" />}
                     buttonsActionType="destructive"
                     onPressSecondaryButton={handleSecondaryButtonPress}
                     stepToContentMap={cardStepperContentMap}
