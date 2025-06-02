@@ -90,7 +90,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
-        "@walletconnect/react-native-compat": "^2.18.1",
+        "@walletconnect/react-native-compat": "^2.20.3",
         "@whatwg-node/events": "0.1.2",
         "abortcontroller-polyfill": "1.7.6",
         "buffer": "^6.0.3",

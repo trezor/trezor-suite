@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
-        "@reown/walletkit": "^1.2.1",
+        "@reown/walletkit": "^1.2.5",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -19,8 +19,8 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@walletconnect/core": "^2.18.1",
-        "@walletconnect/utils": "^2.18.1",
+        "@walletconnect/core": "^2.20.3",
+        "@walletconnect/utils": "^2.20.3",
         "bs58": "^6.0.0"
     }
 }
