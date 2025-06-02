@@ -1,11 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
-import { GroupBase } from 'react-select';
+import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { TrezorDevice } from '@suite-common/suite-types';
-import { AccountType, NetworkType } from '@suite-common/wallet-config';
-import { selectAccounts, selectDevices } from '@suite-common/wallet-core';
+import { selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
@@ -18,6 +15,7 @@ import {
     Banner,
     Card,
     Column,
+    ElevationUp,
     IconCircle,
     Modal,
     Option,
@@ -32,7 +30,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { AccountLabel, Translation, WalletLabeling } from 'src/components/suite';
+import { AccountLabel, Translation } from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
@@ -49,24 +47,31 @@ interface WalletConnectProposalModalProps {
     eventId: number;
 }
 
-interface AccountGroup extends GroupBase<Account> {
-    options: Account[];
-    label: string;
-    device: TrezorDevice;
-    accountType: AccountType;
-    networkType: NetworkType;
-}
-
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
     const dispatch = useDispatch();
     const pendingProposal = useSelector(selectPendingProposal);
-    const accounts = useSelector(selectAccounts);
+    const accounts = useSelector(selectVisibleSortedDeviceAccounts);
     const accountLabels = useSelector(selectAccountLabels);
-    const devices = useSelector(selectDevices);
-    const [selectedDefaultAccounts, setSelectedDefaultAccounts] = useState<Account[]>([]);
+    const selectableAccounts = useMemo<Account[]>(
+        () =>
+            pendingProposal?.networks
+                .filter(network => network.status === 'active')
+                .flatMap(network =>
+                    accounts.filter(account => account.symbol === network.symbol),
+                ) ?? [],
+        [accounts, pendingProposal?.networks],
+    );
+    const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
+        selectableAccounts[0] || null,
+    );
 
     const handleAccept = () => {
-        dispatch(sessionProposalApproveThunk({ eventId, selectedDefaultAccounts }));
+        dispatch(
+            sessionProposalApproveThunk({
+                eventId,
+                selectedDefaultAccount,
+            }),
+        );
         dispatch(onCancel());
     };
     const handleReject = () => {
@@ -76,70 +81,6 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const handleGoToCoinSettings = async () => {
         await dispatch(onCancel());
         dispatch(goto('settings-coins'));
-    };
-    const handleSelectAccount = (account: Account) => {
-        setSelectedDefaultAccounts(prev => {
-            const newAccounts = prev.filter(prevAccount => prevAccount.symbol !== account.symbol);
-
-            return [...newAccounts, account];
-        });
-    };
-
-    const orderedAccounts = useMemo(
-        () =>
-            [...accounts]
-                .filter(account => account.visible)
-                .map(account => ({
-                    ...account,
-                    accountLabel: accountLabels[account.key],
-                }))
-                .sort((a, b) => {
-                    if (a.deviceState !== b.deviceState) {
-                        return a.deviceState.localeCompare(b.deviceState);
-                    }
-                    if (a.accountType !== b.accountType) {
-                        // normal first
-                        if (a.accountType === 'normal' && b.accountType !== 'normal') return -1;
-                        if (a.accountType !== 'normal' && b.accountType === 'normal') return 1;
-
-                        return a.accountType.localeCompare(b.accountType);
-                    }
-
-                    return a.index - b.index;
-                }),
-        [accounts, accountLabels],
-    );
-    useEffect(() => {
-        const newDefaultAccounts = pendingProposal?.networks
-            .filter(network => network.status === 'active')
-            .map(network => orderedAccounts.find(account => account.symbol === network.symbol))
-            .filter(Boolean) as Account[];
-        setSelectedDefaultAccounts(newDefaultAccounts);
-    }, [orderedAccounts, pendingProposal?.networks]);
-
-    const buildAccountOptionGroups = (network: PendingConnectionProposalNetwork) => {
-        const groups: AccountGroup[] = [];
-        orderedAccounts
-            .filter(account => account.symbol === network.symbol)
-            .forEach(account => {
-                const device = devices.find(d => d.state?.staticSessionId === account.deviceState);
-                if (!device) return;
-                const label = `${account.deviceState}-${account.accountType}`;
-                const group = groups.find(g => g.label === label);
-                if (group) {
-                    group.options.push(account);
-                } else {
-                    groups.push({
-                        label,
-                        device,
-                        accountType: account.accountType,
-                        networkType: account.networkType,
-                        options: [account],
-                    });
-                }
-            });
-
-        return groups;
     };
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {
@@ -251,63 +192,55 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                                 size={24}
                                             />
                                         )}
-                                        {network.status === 'active' &&
-                                        network.namespaceId.startsWith('solana') ? (
-                                            <Select
-                                                isSearchable={false}
-                                                isClearable={false}
-                                                isClean
-                                                menuFitContent
-                                                size="small"
-                                                value={selectedDefaultAccounts.find(
-                                                    account => account.symbol === network.symbol,
-                                                )}
-                                                options={buildAccountOptionGroups(network)}
-                                                formatGroupLabel={(data: GroupBase<Account>) => (
-                                                    <Row gap={spacings.xs}>
-                                                        <WalletLabeling
-                                                            device={(data as AccountGroup).device}
-                                                            shouldUseDeviceLabel
-                                                        />
-                                                        <AccountTypeBadge
-                                                            accountType={
-                                                                (data as AccountGroup).accountType
-                                                            }
-                                                            networkType={
-                                                                (data as AccountGroup).networkType
-                                                            }
-                                                            size="small"
-                                                            onElevation
-                                                        />
-                                                    </Row>
-                                                )}
-                                                formatOptionLabel={(account: Account) => (
-                                                    <AccountLabel
-                                                        key={account.descriptor}
-                                                        accountLabel={account.accountLabel}
-                                                        accountType={account.accountType}
-                                                        networkType={account.networkType}
-                                                        symbol={account.symbol}
-                                                        index={account.index}
-                                                        path={account.path}
-                                                    />
-                                                )}
-                                                onChange={(option: Option) =>
-                                                    handleSelectAccount(option)
-                                                }
-                                            />
-                                        ) : (
-                                            <Text>
-                                                {network.name}
-                                                {network.required && (
-                                                    <Text variant="destructive">*</Text>
-                                                )}
-                                            </Text>
-                                        )}
+                                        <Text>
+                                            {network.name}
+                                            {network.required && (
+                                                <Text variant="destructive">*</Text>
+                                            )}
+                                        </Text>
                                     </NetworkItemWrapper>
                                 </Tooltip>
                             ))}
                     </Row>
+                </Card>
+
+                <Text>
+                    <Translation id="TR_DEFAULT_ACCOUNT" />
+                </Text>
+                <Card paddingType="none">
+                    {/* Wrapped to keep consistent styling */}
+                    <ElevationUp>
+                        <Select
+                            isSearchable={false}
+                            isClearable={false}
+                            size="large"
+                            value={selectedDefaultAccount}
+                            options={selectableAccounts}
+                            formatOptionLabel={(account: Account) => (
+                                <Row gap={spacings.xs}>
+                                    {account.symbol && (
+                                        <CoinLogo type="token" symbol={account.symbol} size={24} />
+                                    )}
+                                    <AccountLabel
+                                        key={account.descriptor}
+                                        accountLabel={accountLabels[account.key]}
+                                        accountType={account.accountType}
+                                        networkType={account.networkType}
+                                        symbol={account.symbol}
+                                        index={account.index}
+                                        path={account.path}
+                                    />
+                                    <AccountTypeBadge
+                                        accountType={account.accountType}
+                                        networkType={account.networkType}
+                                        size="small"
+                                        onElevation
+                                    />
+                                </Row>
+                            )}
+                            onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                        />
+                    </ElevationUp>
                 </Card>
 
                 {(requiredNetworksNotActivated || noNetworksActivated) && (

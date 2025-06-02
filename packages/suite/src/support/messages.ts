@@ -10024,4 +10024,12 @@ export default defineMessages({
         id: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
         defaultMessage: 'Use WalletConnect to connect your Trezor to Ethereum dApps.',
     },
+    TR_SWITCH_ACCOUNT: {
+        id: 'TR_SWITCH_ACCOUNT',
+        defaultMessage: 'Switch account',
+    },
+    TR_DEFAULT_ACCOUNT: {
+        id: 'TR_DEFAULT_ACCOUNT',
+        defaultMessage: 'Default account',
+    },
 } as const);

@@ -20,14 +20,26 @@ export const getAdapterByNetwork = (networkType: string) =>
 
 export const getAllMethods = () => adapters.flatMap(adapter => adapter.methods);
 
-export const getNamespaces = (accounts: Account[]) =>
-    adapters
-        .map(adapter => adapter.getNamespace(accounts))
+export const getNamespaces = (accounts: Account[]) => {
+    const accountsDeduped: Account[] = [];
+    accounts.forEach(account => {
+        if (
+            !accountsDeduped.some(
+                a => a.descriptor === account.descriptor && a.symbol === account.symbol,
+            )
+        ) {
+            accountsDeduped.push(account);
+        }
+    });
+
+    return adapters
+        .map(adapter => adapter.getNamespace(accountsDeduped))
         .reduce((acc, val) => {
             Object.assign(acc, val);
 
             return acc;
         }, {});
+};
 
 export const processNamespaces = (
     accounts: Account[],

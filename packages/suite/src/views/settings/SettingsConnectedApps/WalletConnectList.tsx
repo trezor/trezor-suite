@@ -2,15 +2,15 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { networksCollection } from '@suite-common/wallet-config';
-import { selectSessions, walletConnectDisconnectThunk } from '@suite-common/walletconnect';
 import {
-    PendingConnectionProposalNetwork,
-    WalletConnectSession,
-} from '@suite-common/walletconnect/src/walletConnectTypes';
+    getSessionNetworks,
+    selectSessions,
+    walletConnectDisconnectThunk,
+} from '@suite-common/walletconnect';
 import { Badge, Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
+import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -39,32 +39,6 @@ export const WalletConnectList = () => {
             </Column>
         );
     }
-
-    const getNetworks = (session: WalletConnectSession) => {
-        const networks: Pick<PendingConnectionProposalNetwork, 'symbol' | 'name'>[] = [];
-        // EVMs
-        session.namespaces.eip155?.chains?.forEach(chain => {
-            const supported = networksCollection.find(nc => chain === `eip155:${nc.chainId}`);
-            if (supported) {
-                networks.push({
-                    symbol: supported?.symbol,
-                    name: supported?.name ?? `Unknown (${chain})`,
-                });
-            }
-        });
-        // Solana
-        if (session.namespaces.solana?.chains?.length) {
-            const supported = networksCollection.find(nc => nc.symbol === 'sol');
-            if (supported) {
-                networks.push({
-                    symbol: supported.symbol,
-                    name: supported.name,
-                });
-            }
-        }
-
-        return networks;
-    };
 
     return (
         <Card paddingType="none">
@@ -112,7 +86,7 @@ export const WalletConnectList = () => {
                             </Row>
 
                             <Text variant="tertiary">
-                                {getNetworks(session)
+                                {getSessionNetworks(session)
                                     .map(network => network.name)
                                     .join(', ')}
                             </Text>
@@ -128,6 +102,18 @@ export const WalletConnectList = () => {
                                         dispatch(
                                             walletConnectDisconnectThunk({
                                                 topic: session.topic,
+                                            }),
+                                        );
+                                    },
+                                },
+                                {
+                                    icon: 'arrowsClockwise',
+                                    label: <Translation id="TR_SWITCH_ACCOUNT" />,
+                                    onClick: () => {
+                                        dispatch(
+                                            modalActions.openModal({
+                                                type: 'walletconnect-switch-account',
+                                                sessionTopic: session.topic,
                                             }),
                                         );
                                     },

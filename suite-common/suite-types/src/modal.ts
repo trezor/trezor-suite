@@ -198,6 +198,10 @@ export type UserContextPayload =
           eventId: number;
       }
     | {
+          type: 'walletconnect-switch-account';
+          sessionTopic: string;
+      }
+    | {
           type: 'trading-dca';
           device: TrezorDevice;
       }

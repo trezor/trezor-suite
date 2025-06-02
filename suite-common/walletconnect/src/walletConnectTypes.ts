@@ -48,6 +48,7 @@ export interface WalletConnectSession {
             verifyUrl?: string;
         };
     };
+    lastAccount?: Account;
 }
 
 export interface PendingConnectionProposalNetwork {

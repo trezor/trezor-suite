@@ -58,6 +58,7 @@ import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { TradingDCAModal } from './TradingDCAModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
+import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
@@ -218,6 +219,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ConnectPermissionsModal />;
         case 'walletconnect-proposal':
             return <WalletConnectProposalModal eventId={payload.eventId} />;
+        case 'walletconnect-switch-account':
+            return <WalletConnectSwitchAccountModal sessionTopic={payload.sessionTopic} />;
         case 'trading-dca':
             return <TradingDCAModal device={payload.device} onCancel={onCancel} />;
         case 'connect-address-confirmation':

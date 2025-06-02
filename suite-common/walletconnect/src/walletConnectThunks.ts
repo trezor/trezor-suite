@@ -16,12 +16,7 @@ import { selectSelectedDevice, selectVisibleSortedDeviceAccounts } from '@suite-
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import {
-    getAdapterByMethod,
-    getAdapterByNetwork,
-    getNamespaces,
-    processNamespaces,
-} from './adapters';
+import { getAdapterByMethod, getNamespaces, processNamespaces } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
 import { selectPendingProposal } from './walletConnectReducer';
@@ -172,15 +167,66 @@ export const sessionRequestThunk = createThunk<
     }
 });
 
+// Selected Account was switched in Suite
+export const switchSelectedAccountThunk = createThunk<
+    void,
+    { account: Account; sessionTopic: string }
+>(
+    `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
+    async ({ account, sessionTopic }, { getState }) => {
+        const accounts = selectVisibleSortedDeviceAccounts(getState());
+        const updatedNamespaces = getNamespaces([account, ...accounts]);
+        const network = getNetwork(account.symbol);
+        if (!network) {
+            return console.warn(`No network found for account symbol ${account.symbol}`);
+        }
+        const sessions = await walletKit.getActiveSessions();
+        const session = sessions[sessionTopic];
+        if (!session) {
+            return console.warn(`Session with topic ${sessionTopic} not found`);
+        }
+        await walletKit.updateSession({
+            topic: sessionTopic,
+            namespaces: updatedNamespaces,
+        });
+        const namespace = account.networkType === 'solana' ? 'solana' : 'eip155';
+        const { chains } = session.namespaces[namespace];
+        if (!chains) {
+            return console.warn(`No chains found for namespace ${namespace}`);
+        }
+
+        for (const chainId of chains) {
+            if (network.chainId) {
+                await walletKit.emitSessionEvent({
+                    topic: sessionTopic,
+                    event: {
+                        name: 'chainChanged',
+                        data: network.chainId,
+                    },
+                    chainId,
+                });
+            }
+            await walletKit.emitSessionEvent({
+                topic: sessionTopic,
+                event: {
+                    name: 'accountsChanged',
+                    data: [...updatedNamespaces[namespace].accounts],
+                },
+                chainId,
+            });
+        }
+    },
+);
+
 export const sessionProposalApproveThunk = createThunk<
     void,
     {
         eventId: number;
-        selectedDefaultAccounts?: Account[];
+        selectedDefaultAccount?: Account | null;
     }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalApproveThunk`,
-    async ({ eventId, selectedDefaultAccounts }, { dispatch, getState }) => {
+    async ({ eventId, selectedDefaultAccount }, { dispatch, getState }) => {
         try {
             const pendingProposal = selectPendingProposal(getState());
             if (
@@ -192,17 +238,10 @@ export const sessionProposalApproveThunk = createThunk<
             }
 
             const accounts = selectVisibleSortedDeviceAccounts(getState());
-            const accountsInPreferentialOrder = [...(selectedDefaultAccounts || [])];
-            accounts.forEach(account => {
-                if (
-                    !accountsInPreferentialOrder.some(
-                        a => a.descriptor === account.descriptor && a.symbol === account.symbol,
-                    )
-                ) {
-                    accountsInPreferentialOrder.push(account);
-                }
-            });
-            const supportedNamespaces = getNamespaces(accountsInPreferentialOrder);
+            const supportedNamespaces = getNamespaces([
+                ...(selectedDefaultAccount ? [selectedDefaultAccount] : []),
+                ...accounts,
+            ]);
             const approvedNamespaces = buildApprovedNamespaces({
                 proposal: pendingProposal.params,
                 supportedNamespaces,
@@ -224,12 +263,28 @@ export const sessionProposalApproveThunk = createThunk<
                 namespaces: approvedNamespaces,
             });
 
-            dispatch(
-                walletConnectActions.saveSession({
-                    ...session,
-                    validation: pendingProposal.validation,
-                }),
-            );
+            if (selectedDefaultAccount) {
+                dispatch(
+                    switchSelectedAccountThunk({
+                        account: selectedDefaultAccount,
+                        sessionTopic: session.topic,
+                    }),
+                );
+                dispatch(
+                    walletConnectActions.saveSession({
+                        ...session,
+                        validation: pendingProposal.validation,
+                        lastAccount: selectedDefaultAccount,
+                    }),
+                );
+            } else {
+                dispatch(
+                    walletConnectActions.saveSession({
+                        ...session,
+                        validation: pendingProposal.validation,
+                    }),
+                );
+            }
             analytics.report({
                 type: EventType.WalletConnectProposalApproved,
                 payload: {
@@ -269,73 +324,6 @@ export const sessionProposalRejectThunk = createThunk<
         },
     });*/
 });
-
-// Selected Account was switched in Suite
-export const switchSelectedAccountThunk = createThunk<void, { account: Account }>(
-    `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
-    async ({ account }, { getState }) => {
-        const accounts = selectVisibleSortedDeviceAccounts(getState());
-        const network = getNetwork(account.symbol);
-        if (!network) return;
-        const sessions = await walletKit.getActiveSessions();
-        const updatedNamespaces = getNamespaces([account, ...accounts]);
-        const chainId = getAdapterByNetwork(network.networkType)?.getChainId(network)?.[0];
-        if (!chainId) return;
-
-        for (const topic in sessions) {
-            const session = sessions[topic];
-            for (const namespace in session.namespaces) {
-                if (namespace === 'eip155' && network.chainId) {
-                    walletKit.emitSessionEvent({
-                        topic,
-                        event: {
-                            name: 'chainChanged',
-                            data: network.chainId,
-                        },
-                        chainId,
-                    });
-                }
-                walletKit.emitSessionEvent({
-                    topic,
-                    event: {
-                        name: 'accountsChanged',
-                        data: [...updatedNamespaces[namespace].accounts],
-                    },
-                    chainId,
-                });
-            }
-        }
-    },
-);
-
-// Account was created or removed in Suite
-export const updateAccountsThunk = createThunk(
-    `${WALLETCONNECT_MODULE}/updateAccountsThunk`,
-    async (_, { getState }) => {
-        const accounts = selectVisibleSortedDeviceAccounts(getState());
-        const sessions = await walletKit.getActiveSessions();
-        const updatedNamespaces = getNamespaces(accounts);
-        for (const topic in sessions) {
-            const { namespaces: oldNamespaces } = sessions[topic];
-            const namespaces = Object.keys(oldNamespaces).reduce(
-                (acc, key) => {
-                    acc[key] = {
-                        ...oldNamespaces[key],
-                        accounts: updatedNamespaces[key as any]?.accounts ?? [],
-                        chains: updatedNamespaces[key as any]?.chains ?? [],
-                    };
-
-                    return acc;
-                },
-                { ...oldNamespaces },
-            );
-            await walletKit.updateSession({
-                topic,
-                namespaces,
-            });
-        }
-    },
-);
 
 export const walletConnectInitThunk = createThunk(
     `${WALLETCONNECT_MODULE}/walletConnectInitThunk`,
