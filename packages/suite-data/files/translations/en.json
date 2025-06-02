@@ -974,6 +974,8 @@
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Add an NFT section to EVM-based chain accounts, allowing you to view NFTs. Sending NFTs isn't currently supported.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Migrate Dropbox passwords",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION": "Use this utility to retrieve passwords stored on Dropbox and secured by Trezor. Designed for former users of the Trezor Password Manager Chrome extension.",
+  "TR_EXPERIMENTAL_STELLAR_SUPPORT": "Support for the Stellar network",
+  "TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION": "Include the Stellar network in coin settings",
   "TR_EXPERIMENTAL_TOR_EXTERNAL": "Tor external",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION": "Connect to Tor daemon running on port 9050, rather than using the one bundled with Trezor Suite.",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor external port",

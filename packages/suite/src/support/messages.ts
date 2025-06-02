@@ -5056,11 +5056,11 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_STELLAR_SUPPORT: {
         id: 'TR_EXPERIMENTAL_STELLAR_SUPPORT',
-        defaultMessage: 'Support for Stellar network',
+        defaultMessage: 'Support for the Stellar network',
     },
     TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION',
-        defaultMessage: 'Allows to enable Stellar network in the coin settings',
+        defaultMessage: 'Include the Stellar network in coin settings',
     },
     TR_GO_TO_EXP_FEATURE: {
         id: 'TR_GO_TO_EXP_FEATURE',
