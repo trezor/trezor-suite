@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Icon } from '@trezor/components';
-import { SUITE_BACKUP_URL, SUITE_FIRMWARE_URL, SUITE_BRIDGE_DEEPLINK } from '@trezor/urls';
+import { SUITE_BRIDGE_DEEPLINK } from '@trezor/urls';
 
 const NotificationBox = styled.div`
     background-color: ${({ color }) => color};
@@ -109,28 +109,6 @@ const Notification = ({ header, body, cta, variant }: NotificationProps) => {
         </NotificationBox>
     );
 };
-
-export const FirmwareUpdateNotification = () => (
-    <Notification
-        variant="warning"
-        header="New firmware update available"
-        body="A new firmware update is available for your Trezor device. Update now
-for the latest features."
-        cta={{ desc: 'Update my firmware', url: SUITE_FIRMWARE_URL }}
-    />
-);
-
-export const BackupNotification = () => (
-    <Notification
-        variant="warning"
-        header="Your Trezor is not backed up"
-        body=""
-        cta={{
-            desc: 'Create a backup in 3 minutes',
-            url: SUITE_BACKUP_URL,
-        }}
-    />
-);
 
 export const UseSuiteDesktopNotification = () => (
     <Notification
