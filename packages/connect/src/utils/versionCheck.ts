@@ -2,7 +2,7 @@ import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { ConnectSettings } from '../types/settings';
 
-export const isConnectOutdated = (settings?: ConnectSettings) => {
+export const isConnectOutdated = (settings?: ConnectSettings): false | 'error' | 'warning' => {
     // web only for now
     if (settings?.env !== 'web') return false;
 
