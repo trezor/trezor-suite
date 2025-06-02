@@ -203,9 +203,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     protocol,
                     thpState,
                 });
-                const [, chunkHeader] = protocol.getHeaders(bytes);
+                const [header, chunkHeader] = protocol.getHeaders(bytes);
                 const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
                 const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
+                const apiRead = this.api.readWithAttempts(path, { signal });
+
                 const sendResult = await sendChunks(chunks, apiWrite);
 
                 if (!sendResult.success) {
@@ -216,7 +218,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 const readResult = await receiveAndParse(
                     this.messages,
-                    () => this.api.read(path, signal),
+                    () => apiRead([header, chunkHeader]),
                     protocol,
                 );
 
@@ -293,9 +295,13 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const { path } = getPathBySessionResponse.payload;
 
                 const protocol = customProtocol || v1Protocol;
+                const apiRead = this.api.readWithAttempts(path, { signal });
+
+                // generate default headers
+                const expectedHeaders = protocol.getHeaders(Buffer.alloc(this.api.chunkSize));
                 const message = await receiveAndParse(
                     this.messages,
-                    () => this.api.read(path, signal),
+                    () => apiRead(expectedHeaders),
                     protocol,
                     thpState,
                 );

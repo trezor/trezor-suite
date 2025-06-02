@@ -97,7 +97,11 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: readUtil protocol ${protocol.name}`);
         try {
             const receiveProtocol = protocol.name === 'bridge' ? protocolV1 : protocol;
-            const res = await receiveUtil(() => api.read(path, signal), receiveProtocol);
+            const apiRead = api.readWithAttempts(path, { signal });
+
+            // generate default headers
+            const expectedHeaders = receiveProtocol.getHeaders(Buffer.alloc(api.chunkSize));
+            const res = await receiveUtil(() => apiRead(expectedHeaders), receiveProtocol);
             if (!res.success) return res;
             const { messageType, payload } = res.payload;
             logger?.debug(

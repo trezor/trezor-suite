@@ -152,7 +152,7 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (unreadable device)', async () => {
         const transport = createTestTransport({
-            read: () =>
+            readWithAttempts: () =>
                 Promise.resolve({
                     success: true,
                     payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
@@ -277,7 +277,7 @@ describe('DeviceList', () => {
     it('FIRMWARE_VERSION_CHANGED event', async () => {
         let readCount = 0;
         const transport = createTestTransport({
-            read: () => {
+            readWithAttempts: () => () => {
                 let res = '';
                 if (readCount === 0) {
                     // cancel response

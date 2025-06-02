@@ -11,8 +11,15 @@ class TestTransport extends AbstractApiTransport {
 }
 
 // mock of navigator.usb
-const createTransportApi = (override = {}) =>
-    ({
+const createTransportApi = (override = {}) => {
+    const read = () =>
+        Promise.resolve({
+            success: true,
+            payload: Buffer.from('3f232300110000000c1002180020006000aa010154', 'hex'), // partial proto.Features
+            // payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
+        });
+
+    return {
         chunkSize: 0,
         enumerate: () => Promise.resolve({ success: true, payload: [{ path: '1' }] }),
         on: () => {},
@@ -20,16 +27,13 @@ const createTransportApi = (override = {}) =>
         openDevice: (path: string) => Promise.resolve({ success: true, payload: [{ path }] }),
         closeDevice: () => Promise.resolve({ success: true }),
         write: () => Promise.resolve({ success: true }),
-        read: () =>
-            Promise.resolve({
-                success: true,
-                payload: Buffer.from('3f232300110000000c1002180020006000aa010154', 'hex'), // partial proto.Features
-                // payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
-            }),
+        read,
+        readWithAttempts: () => () => read(),
         listen: () => {},
         dispose: () => {},
         ...override,
-    }) as unknown as UsbApi;
+    } as unknown as UsbApi;
+};
 
 export const createTestTransport = (apiMethods = {}) =>
     new TestTransport({
