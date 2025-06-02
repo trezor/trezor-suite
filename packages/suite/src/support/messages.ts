@@ -10086,7 +10086,7 @@ export default defineMessages({
     TR_BRIDGE_TIP_AUTOSTART: {
         id: 'TR_BRIDGE_TIP_AUTOSTART',
         defaultMessage:
-            'Tip: Enable the auto-start feature and have Trezor Bridge always running in the background.',
+            'Tip: Enable the auto-start and allow Trezor Suite to runing the background to enable smooth interaction with 3rd party apps.',
     },
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
