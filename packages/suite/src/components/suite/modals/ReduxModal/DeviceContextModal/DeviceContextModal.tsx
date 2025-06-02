@@ -16,6 +16,7 @@ import {
     TransactionReviewModal,
 } from 'src/components/suite/modals';
 import { useSelector } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import messages from 'src/support/messages';
 
 import type { ReduxModalProps } from '../ReduxModal';
@@ -28,6 +29,7 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectSelectedDevice);
     const intl = useIntl();
+    const selectedAccount = useSelector(selectSelectedAccount);
 
     if (!device) return null;
 
@@ -66,7 +68,6 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_RecoveryHomepage':
         case 'ButtonRequest_MnemonicWordCount':
         case 'ButtonRequest_MnemonicInput':
-        case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for T2T1, weird but true
         case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for T1B1
         case 'ButtonRequest_WipeDevice':
@@ -74,6 +75,15 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
             return <ConfirmActionModal device={device} />;
+        case 'ButtonRequest_ProtectCall': {
+            // This is a special case for T1B1 devices (Stellar).
+            // See https://github.com/trezor/trezor-firmware/issues/5120
+            if (selectedAccount?.networkType === 'stellar') {
+                return <TransactionReviewModal type="sign-transaction" />;
+            } else {
+                return <ConfirmActionModal device={device} />;
+            }
+        }
         case 'ButtonRequest_Address':
             return data?.type === 'address' ? (
                 <ConfirmAddressModal
