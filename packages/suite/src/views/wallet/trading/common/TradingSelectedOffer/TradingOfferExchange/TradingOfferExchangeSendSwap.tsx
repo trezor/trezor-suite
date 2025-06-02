@@ -13,11 +13,9 @@ import {
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Button,
-    Card,
     CollapsibleBox,
     Column,
     Divider,
-    ElevationContext,
     InfoItem,
     Input,
     Row,
@@ -227,84 +225,78 @@ export const TradingOfferExchangeSendSwap = () => {
                 <TxAddress txAddress={dexTx.to} shouldChunk />
             </InfoItem>
 
-            <Card
-                fillType="default"
-                margin={{ vertical: spacings.md }}
-                heading={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />}
-            >
-                <ElevationContext baseElevation={0}>
-                    <Column gap={spacings.lg}>
-                        <InfoItem
-                            label={
-                                <Tooltip
-                                    content={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />}
-                                    hasIcon
-                                >
-                                    <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE" />
-                                </Tooltip>
-                            }
-                            margin={{ bottom: spacings.xxs }}
-                        >
-                            <Row gap={spacings.sm} margin={{ top: spacings.xxs }}>
-                                <SelectBar
-                                    selectedOption={selectedSlippage}
-                                    options={slippageOptions}
-                                    onChange={changeSlippage}
-                                    isFullWidth
-                                />
-                                {slippage === CUSTOM_SLIPPAGE && (
-                                    <Input
-                                        value={customSlippage}
-                                        size="small"
-                                        inputState={customSlippageError && 'error'}
-                                        name="CustomSlippage"
-                                        data-testid="CustomSlippage"
-                                        onChange={changeCustomSlippage}
-                                        width={100}
-                                        align="center"
-                                        // eslint-disable-next-line jsx-a11y/no-autofocus
-                                        autoFocus
-                                    />
-                                )}
-                            </Row>
-                            {customSlippageError?.message ? (
-                                <BottomText
-                                    inputState={customSlippageError && 'error'}
-                                    iconName="warningCircle"
-                                >
-                                    <Translation id={customSlippageError?.message} />
-                                </BottomText>
-                            ) : null}
-                        </InfoItem>
-
-                        <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />}>
-                            <FormattedCryptoAmount
-                                value={receiveStringAmount}
-                                symbol={receiveCoinSymbol}
-                                contractAddress={receiveContractAddress}
+            <CollapsibleBox heading={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />}>
+                <Column gap={spacings.lg}>
+                    <InfoItem
+                        label={
+                            <Tooltip
+                                content={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />}
+                                hasIcon
+                            >
+                                <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE" />
+                            </Tooltip>
+                        }
+                        margin={{ bottom: spacings.xxs }}
+                    >
+                        <Row gap={spacings.sm} margin={{ top: spacings.xxs }}>
+                            <SelectBar
+                                selectedOption={selectedSlippage}
+                                options={slippageOptions}
+                                onChange={changeSlippage}
+                                isFullWidth
                             />
-                        </InfoItem>
+                            {slippage === CUSTOM_SLIPPAGE && (
+                                <Input
+                                    value={customSlippage}
+                                    size="small"
+                                    inputState={customSlippageError && 'error'}
+                                    name="CustomSlippage"
+                                    data-testid="CustomSlippage"
+                                    onChange={changeCustomSlippage}
+                                    width={100}
+                                    align="center"
+                                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                                    autoFocus
+                                />
+                            )}
+                        </Row>
+                        {customSlippageError?.message ? (
+                            <BottomText
+                                inputState={customSlippageError && 'error'}
+                                iconName="warningCircle"
+                            >
+                                <Translation id={customSlippageError?.message} />
+                            </BottomText>
+                        ) : null}
+                    </InfoItem>
 
-                        <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />}>
-                            {`-${formatCryptoAmountAsAmount(
-                                (Number(selectedQuote.swapSlippage) / 100) *
-                                    Number(receiveStringAmount),
-                                Number(receiveStringAmount),
-                                decimals,
-                            )} ${receiveDisplaySymbol}`}
-                        </InfoItem>
+                    <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />}>
+                        <FormattedCryptoAmount
+                            value={receiveStringAmount}
+                            symbol={receiveCoinSymbol}
+                            contractAddress={receiveContractAddress}
+                        />
+                    </InfoItem>
 
-                        <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}>
-                            {`${formatCryptoAmountAsAmount(
-                                ((100 - Number(selectedQuote.swapSlippage)) / 100) *
-                                    Number(receiveStringAmount),
+                    <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />}>
+                        {`-${formatCryptoAmountAsAmount(
+                            (Number(selectedQuote.swapSlippage) / 100) *
                                 Number(receiveStringAmount),
-                                decimals,
-                            )} ${receiveDisplaySymbol}`}
-                        </InfoItem>
-                    </Column>
-                </ElevationContext>
-            </Card>
+                            Number(receiveStringAmount),
+                            decimals,
+                        )} ${receiveDisplaySymbol}`}
+                    </InfoItem>
+
+                    <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}>
+                        {`${formatCryptoAmountAsAmount(
+                            ((100 - Number(selectedQuote.swapSlippage)) / 100) *
+                                Number(receiveStringAmount),
+                            Number(receiveStringAmount),
+                            decimals,
+                        )} ${receiveDisplaySymbol}`}
+                    </InfoItem>
+                </Column>
+            </CollapsibleBox>
 
             <CollapsibleBox heading={<Translation id="TR_EXCHANGE_SWAP_DATA" />}>
                 <BreakableValue>{dexTx.data}</BreakableValue>
