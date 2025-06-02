@@ -26,7 +26,7 @@ export const mapPaddingTypeToPadding = ({ paddingType }: PaddingMapArgs): Paddin
     const paddingMap: Record<PaddingType, Padding | undefined> = {
         none: undefined,
         tiny: { vertical: spacings.xxxs, horizontal: spacings.xxs },
-        small: { vertical: spacings.xs, horizontal: spacings.sm },
+        small: { vertical: spacings.sm, horizontal: spacings.md },
         normal: { vertical: spacings.md, horizontal: spacings.lg },
         large: { vertical: spacings.lg, horizontal: spacings.xl },
     };
