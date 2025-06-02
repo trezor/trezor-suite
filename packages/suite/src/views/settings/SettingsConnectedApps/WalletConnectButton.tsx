@@ -14,11 +14,14 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
     const dispatch = useDispatch();
     const [connectionUrl, setConnectionUrl] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const { translationString } = useTranslation();
 
-    const handleConnect = () => {
-        dispatch(walletConnectPairThunk({ uri: connectionUrl }));
+    const handleConnect = async () => {
+        setLoading(true);
         setConnectionUrl(''); // Clear input after attempt
+        await dispatch(walletConnectPairThunk({ uri: connectionUrl }));
+        setLoading(false);
         setModalOpened(false);
     };
     const handleOpen = () => {
@@ -38,7 +41,11 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
                         size="small"
                         bottomContent={
                             <>
-                                <Modal.Button onClick={handleConnect} isDisabled={!connectionUrl}>
+                                <Modal.Button
+                                    onClick={handleConnect}
+                                    isDisabled={!connectionUrl}
+                                    isLoading={isLoading}
+                                >
                                     <Translation id="TR_CONNECT" />
                                 </Modal.Button>
                                 <Modal.Button variant="tertiary" onClick={onCancel}>
