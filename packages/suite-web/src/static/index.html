@@ -13,7 +13,7 @@
             http-equiv="onion-location"
             content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
         />
-        <% } %>
+        <% } %> <% if(isCrowdinEnabled) { %>
         <script type="text/javascript">
             if (localStorage.getItem('translation_mode') === 'true') {
                 console.warn('INJECTING CROWDIN IN-CONTEXT');
@@ -30,7 +30,9 @@
                 script.setAttribute('src', '//cdn.crowdin.com/jipt/jipt.js');
                 document.head.prepend(script);
             }
-
+        </script>
+        <% } %>
+        <script type="text/javascript">
             // set favicon according to current system theme
             function si(event) {
                 var isDM = event.matches; // isDarkMode

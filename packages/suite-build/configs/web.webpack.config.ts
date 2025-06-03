@@ -62,6 +62,7 @@ const config: webpack.Configuration = {
                     templateParameters: {
                         assetPrefix,
                         isOnionLocation: FLAGS.ONION_LOCATION_META,
+                        isCrowdinEnabled: FLAGS.CROWDIN_IN_ENABLED,
                     },
                     inject: 'body' as const,
                     scriptLoading: 'blocking' as const,
