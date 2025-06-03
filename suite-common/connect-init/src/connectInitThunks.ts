@@ -13,7 +13,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
-import { isDesktop, isNative } from '@trezor/env-utils';
+import { isDesktop } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
 import { getSynchronize } from '@trezor/utils';
 
@@ -136,38 +136,6 @@ export const connectInitThunk = createThunk<
 
     cardanoConnectPatch(getEnabledNetworks);
 
-    // suite-web                                               connect (explorer)                           webusb sync
-    // ======================================================  ====================                         ====================
-    // localhost:8000                                          localhost:8088                               NO
-    // https://dev.suite.sldev.cz/suite-web/develop/web/       https://dev.suite.sldev.cz/connect/develop/  YES - connect
-    // suite.trezor.io/web                                     connect.trezor.io/9(x.y)/                    YES - connect
-
-    let _sessionsBackgroundUrl: string | null = null;
-
-    if (typeof window !== 'undefined' && !isNative()) {
-        if (window.location.origin.includes('localhost')) {
-            _sessionsBackgroundUrl = null;
-        } else if (window.location.origin.endsWith('dev.suite.sldev.cz')) {
-            // we are expecting accompanying connect build at specified location
-            const assetPrefixArr = (process.env.ASSET_PREFIX || '').split('/').filter(Boolean);
-            const relevantSegments = assetPrefixArr
-                .map((segment, index) => {
-                    const first = index === 0;
-                    const last = index === assetPrefixArr.length - 1;
-                    if (segment === 'suite-web' && first) return 'connect';
-                    if (segment === 'web' && last) return null;
-
-                    return segment;
-                })
-                .filter(Boolean);
-
-            _sessionsBackgroundUrl = `${window.location.origin}/${relevantSegments.join('/')}/workers/sessions-background-sharedworker.js`;
-        } else {
-            _sessionsBackgroundUrl =
-                'https://connect.trezor.io/9/workers/sessions-background-sharedworker.js';
-        }
-    }
-
     const binFilesBaseUrl = isDesktop()
         ? extra.selectors.selectDesktopBinDir(getState())
         : DATA_URL;
@@ -179,7 +147,6 @@ export const connectInitThunk = createThunk<
             binFilesBaseUrl,
             pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             transports,
-            _sessionsBackgroundUrl,
             debug: showConnectLogs,
         });
     } catch (error) {
