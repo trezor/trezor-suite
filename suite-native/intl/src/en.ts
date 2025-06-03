@@ -1060,6 +1060,29 @@ export const en = {
                 holdToConfirmButton: 'Hold to start',
             },
         },
+        walletCreationScreen: {
+            title: 'Continue on your Trezor',
+            backupWarning:
+                'Never store your wallet backup anywhere digital—no photos, clouds, USBs, or emails.',
+            accordion1: {
+                title: 'Understand your wallet backup',
+                content:
+                    'A wallet backup is a list of words (called a share) which allows you to recover access to your assets if your Trezor hardware wallet is lost, stolen, or damaged.\n\nYou can also use it to move your assets to a new hardware wallet.',
+            },
+            accordion2: {
+                title: 'Write down your words',
+                content:
+                    'Get a good pen and your wallet backup card from your Trezor’s packaging.\n\nWrite down the words in the exact order shown on your Trezor. The sequence of words is important to get right.\n\nVerify each word before proceeding to the next.',
+            },
+            accordion3: {
+                title: 'Check & confirm',
+                content:
+                    "After writing your wallet backup, you'll verify it's correct. Your Trezor will display a random selection of words along with their correct positions.\n\nCompare them to your wallet backup card and select the matching word for each position.",
+            },
+        },
+        walletCreatedSuccessScreen: {
+            successLabel: 'All good!',
+        },
         walletBackupRecapScreen: {
             step1: {
                 callout: 'Using your wallet backup',
@@ -1083,30 +1106,6 @@ export const en = {
                 title: 'No one can recover your wallet backup—not even Trezor Support',
                 holdToConfirmButton: 'Hold to continue',
             },
-        },
-
-        walletCreationScreen: {
-            title: 'Continue on your Trezor',
-            backupWarning:
-                'Never store your wallet backup anywhere digital—no photos, clouds, USBs, or emails.',
-            accordion1: {
-                title: 'Understand your wallet backup',
-                content:
-                    'A wallet backup is a list of words (called a share) which allows you to recover access to your assets if your Trezor hardware wallet is lost, stolen, or damaged.\n\nYou can also use it to move your assets to a new hardware wallet.',
-            },
-            accordion2: {
-                title: 'Write down your words',
-                content:
-                    'Get a good pen and your wallet backup card from your Trezor’s packaging.\n\nWrite down the words in the exact order shown on your Trezor. The sequence of words is important to get right.\n\nVerify each word before proceeding to the next.',
-            },
-            accordion3: {
-                title: 'Check & confirm',
-                content:
-                    "After writing your wallet backup, you'll verify it's correct. Your Trezor will display a random selection of words along with their correct positions.\n\nCompare them to your wallet backup card and select the matching word for each position.",
-            },
-        },
-        walletCreatedSuccessScreen: {
-            successLabel: 'All good!',
         },
         recoveryUnsupportedScreen: {
             title: 'For recovery, continue to web application.',
@@ -1166,6 +1165,16 @@ export const en = {
                     content:
                         'Your Trezor will ask how many words are in your wallet backup—select 20. Pick one share and enter all 20 words in order. Repeat with additional shares until you reach your threshold.',
                 },
+            },
+        },
+        walletRecoveryRecapScreen: {
+            step1: {
+                callout: 'Keep your wallet backup safe',
+                title: 'Make sure to return your wallet backup to a secure, private place',
+            },
+            step2: {
+                callout: 'Protecting your wallet backup',
+                title: 'No one can recover your wallet backup—not even Trezor Support',
             },
         },
 

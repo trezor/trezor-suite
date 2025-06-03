@@ -24,6 +24,7 @@ import { WalletBackupRecapScreen } from '../screens/WalletBackupRecapScreen';
 import { WalletBackupTutorialScreen } from '../screens/WalletBackupTutorialScreen';
 import { WalletCreatedSuccessScreen } from '../screens/WalletCreatedSuccessScreen';
 import { WalletCreationScreen } from '../screens/WalletCreationScreen';
+import { WalletRecoveryRecapScreen } from '../screens/WalletRecoveryRecapScreen';
 import { WalletRecoveryScreen } from '../screens/WalletRecoveryScreen';
 
 export const DeviceOnboardingStack = createNativeStackNavigator<DeviceOnboardingStackParamList>();
@@ -116,6 +117,10 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.WalletRecovery}
             component={WalletRecoveryScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.WalletRecoveryRecap}
+            component={WalletRecoveryRecapScreen}
         />
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.CreatePin}

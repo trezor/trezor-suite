@@ -8,7 +8,6 @@ import {
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
 
 const NAVIGATION_TIMEOUT = 3000;
 const ANIMATION_END_FRAME = 305;
@@ -22,7 +21,6 @@ export const WalletCreatedSuccessScreen = ({
 >) => {
     const { flowType } = route.params;
     const textOpacity = useSharedValue(0);
-    const { showToast } = useToast();
 
     const handleAnimationEnd = () => {
         textOpacity.value = withTiming(1);
@@ -30,11 +28,7 @@ export const WalletCreatedSuccessScreen = ({
             if (flowType === 'create') {
                 navigation.navigate(DeviceOnboardingStackRoutes.WalletBackupRecap);
             } else {
-                // TODO: https://github.com/trezor/trezor-suite/issues/18401
-                showToast({
-                    message: 'TODO: implement recovery recap screen',
-                    variant: 'warning',
-                });
+                navigation.navigate(DeviceOnboardingStackRoutes.WalletRecoveryRecap);
             }
         }, NAVIGATION_TIMEOUT);
     };

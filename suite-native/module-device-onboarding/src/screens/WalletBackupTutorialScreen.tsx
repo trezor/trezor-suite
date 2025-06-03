@@ -38,11 +38,16 @@ export const WalletBackupTutorialScreen = () => {
 
     const navigation = useNavigation<NavigationProps>();
 
+    const handlePressBack = () => {
+        // Skip loader screen and navigate back to the create or recover crossroads.
+        navigation.pop(2);
+    };
+
     return (
         <Screen
             header={
                 <SwipeableWalkthroughScreenHeader
-                    onPressBack={() => navigation.pop(2)}
+                    onPressBack={handlePressBack}
                     currentStepIndex={currentStepIndex}
                 />
             }

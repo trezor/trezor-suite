@@ -148,6 +148,7 @@ export type DeviceOnboardingStackParamList = {
         flowType: 'create' | 'recover';
     };
     [DeviceOnboardingStackRoutes.WalletBackupRecap]: undefined;
+    [DeviceOnboardingStackRoutes.WalletRecoveryRecap]: undefined;
     [DeviceOnboardingStackRoutes.CreatePin]: undefined;
 };
 
