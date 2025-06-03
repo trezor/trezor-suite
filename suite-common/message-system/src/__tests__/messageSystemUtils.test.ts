@@ -12,23 +12,21 @@ describe('Message system utils', () => {
         });
     });
 
-    describe('validateDurationCompatibility', () => {
-        fixtures.validateDurationCompatibility.forEach(f => {
+    describe('isDurationCompatible', () => {
+        fixtures.isDurationCompatible.forEach(f => {
             it(f.description, () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => Date.parse(f.currentDate));
 
-                expect(messageSystem.validateDurationCompatibility(f.durationCondition)).toEqual(
-                    f.result,
-                );
+                expect(messageSystem.isDurationCompatible(f.durationCondition)).toEqual(f.result);
             });
         });
     });
 
-    describe('validateSettingsCompatibility', () => {
-        fixtures.validateSettingsCompatibility.forEach(f => {
+    describe('areSettingsCompatible', () => {
+        fixtures.areSettingsCompatible.forEach(f => {
             it(f.description, () => {
                 expect(
-                    messageSystem.validateSettingsCompatibility(
+                    messageSystem.areSettingsCompatible(
                         f.settingsCondition,
                         // @ts-expect-error
                         f.currentSettings,
@@ -38,17 +36,17 @@ describe('Message system utils', () => {
         });
     });
 
-    describe('validateVersionCompatibility', () => {
-        fixtures.validateVersionCompatibility.forEach(f => {
+    describe('isVersionCompatible', () => {
+        fixtures.isVersionCompatible.forEach(f => {
             it(f.description, () => {
-                expect(
-                    messageSystem.validateVersionCompatibility(f.condition, f.type, f.version),
-                ).toEqual(f.result);
+                expect(messageSystem.isVersionCompatible(f.condition, f.type, f.version)).toEqual(
+                    f.result,
+                );
             });
         });
     });
 
-    describe('validateEnvironmentCompatibility', () => {
+    describe('isEnvironmentCompatible', () => {
         const OLD_ENV = { ...process.env };
 
         afterEach(() => {
@@ -56,12 +54,12 @@ describe('Message system utils', () => {
             process.env = OLD_ENV;
         });
 
-        fixtures.validateEnvironmentCompatibility.forEach(f => {
+        fixtures.isEnvironmentCompatible.forEach(f => {
             it(f.description, () => {
                 process.env.COMMITHASH = f.commitHash;
 
                 expect(
-                    messageSystem.validateEnvironmentCompatibility(
+                    messageSystem.isEnvironmentCompatible(
                         f.condition,
                         // @ts-expect-error
                         f.type,
@@ -73,11 +71,11 @@ describe('Message system utils', () => {
         });
     });
 
-    describe('validateTransportCompatibility', () => {
-        fixtures.validateTransportCompatibility.forEach(f => {
+    describe('isTransportCompatible', () => {
+        fixtures.isTransportCompatible.forEach(f => {
             it(f.description, () => {
                 expect(
-                    messageSystem.validateTransportCompatibility(
+                    messageSystem.isTransportCompatible(
                         f.transportCondition,
                         // @ts-expect-error
                         f.transports,
@@ -87,12 +85,23 @@ describe('Message system utils', () => {
         });
     });
 
-    describe('validateDeviceCompatibility', () => {
-        fixtures.validateDeviceCompatibility.forEach(f => {
+    describe('isDeviceCompatible', () => {
+        fixtures.isDeviceCompatible.forEach(f => {
             it(f.description, () => {
                 expect(
                     // @ts-expect-error
-                    messageSystem.validateDeviceCompatibility(f.deviceConditions, f.device),
+                    messageSystem.isDeviceCompatible(f.deviceConditions, f.device),
+                ).toEqual(f.result);
+            });
+        });
+    });
+
+    describe('isCountryCodeCompatible', () => {
+        fixtures.isCountryCodeCompatible.forEach(f => {
+            it(f.description, () => {
+                expect(
+                    // @ts-expect-error
+                    messageSystem.isCountryCodeCompatible(f.allowedCountryCodes, f.countryCode),
                 ).toEqual(f.result);
             });
         });
