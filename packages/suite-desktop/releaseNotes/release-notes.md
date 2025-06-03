@@ -1,14 +1,14 @@
 ### 🚀 New features
 
-- Users can now set a custom blockchain explorer in place of the default Blockbook, offering more flexibility and personalization.
+- Added support for Stellar (XLM) network, which can be accessed via Experimental features.
+- WalletConnect integration is now available via Experimental features, allowing you to connect Suite to popular dApps.
+- You can now connect Trezor to third-party apps via TrezorConnect within Suite, a safe environment.
 
 ### 🎨 Improvements
 
-- Bitcoin fee rate calculation has been enhanced for greater accuracy.
-- The "Bump fee" action has been renamed to "Speed up" for improved clarity and consistency.
-- Solana staking UX has been refined with updated epoch-related copy (_3 days_ → _2 days_) to reflect accurate timing.
-- The onboarding flow for Bitcoin-only firmware has been simplified by removing the coins page, streamlining the setup experience.
-- Various small UI improvements have been made, including a fix for dust calculation, contributing to overall polish and reliability.
+- Bitcoin send form now refreshes fee rates every 60 seconds and includes a manual refresh option to avoid using outdated fees.
+- Fonts for addresses and public keys in Suite now match those on Trezor devices to reduce visual discrepancies.
+- The transactions export menu has been improved with clarified filters and support for .csv, .pdf, and .json formats.
 
 ### 🔧 Bug fixes
 
