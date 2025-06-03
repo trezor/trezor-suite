@@ -12,6 +12,7 @@ import {
 import { OnUpgradeFunc } from '@trezor/suite-storage';
 
 import { SuiteDBSchema } from 'src/storage/definitions';
+import { DBWalletAccountTransactionCompatible } from 'src/storage/migrations';
 
 import { updateAll } from '../utils';
 
@@ -187,4 +188,24 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
     // 5. add thp and bluetooth object stores
     db.createObjectStore('thp');
     db.createObjectStore('bluetooth');
+
+    // 6. refetch solana txs
+    const accountsToUpdate = ['sol', 'dsol'];
+
+    await updateAll<'txs', DBWalletAccountTransactionCompatible>(transaction, 'txs', tx => {
+        if (accountsToUpdate.includes(tx.tx.symbol)) {
+            return null;
+        }
+
+        return tx;
+    });
+
+    // force to fetch solana network transactions again
+    await updateAll(transaction, 'accounts', account => {
+        if (accountsToUpdate.includes(account.symbol)) {
+            account.history = { total: 0, unconfirmed: 0, tokens: 0 };
+
+            return account;
+        }
+    });
 };

@@ -7,6 +7,7 @@
 - changed `tradingTrades` - add `sendAccountKey`, `receiveAccountKey`, `selectedAccountKey` to each buy, sell, and exchange trade
 - added `explorer` store for custom explorer configuration
 - created `thp` and `bluetooth` object store
+- remove saved solana txs to force refetch
 
 ## 54
 

@@ -31,7 +31,7 @@ type WalletWithBackends = {
     backends?: PartialRecord<NetworkSymbol, Omit<CustomBackend, 'coin'>>;
 };
 
-type DBWalletAccountTransactionCompatible = {
+export type DBWalletAccountTransactionCompatible = {
     order: DBWalletAccountTransaction['order'];
     tx: DBWalletAccountTransaction['tx'] & { totalSpent: string };
 };
