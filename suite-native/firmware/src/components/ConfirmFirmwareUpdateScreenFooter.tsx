@@ -1,12 +1,7 @@
 import { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    DeviceRootState,
-    DiscoveryRootState,
-    selectDevicePath,
-    selectDiscoveryByDevicePath,
-} from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -28,12 +23,7 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
 
-    const devicePath = useSelector(selectDevicePath);
-
-    const isDiscoveryRunning = useSelector(
-        (state: DiscoveryRootState & DeviceRootState) =>
-            selectDiscoveryByDevicePath(state, devicePath)?.status === 'progress',
-    );
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     const handleShowSeedBottomSheet = useCallback(() => {

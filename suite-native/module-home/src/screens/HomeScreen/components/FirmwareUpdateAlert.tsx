@@ -6,13 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import {
-    DeviceRootState,
-    DiscoveryRootState,
     selectDeviceId,
-    selectDevicePath,
     selectDeviceReleaseInfo,
     selectDeviceUpdateFirmwareVersion,
-    selectDiscoveryByDevicePath,
+    selectHasRunningDiscovery,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
     selectIsPortfolioTrackerDevice,
@@ -59,11 +56,7 @@ export const FirmwareUpdateAlert = () => {
     const deviceId = useSelector(selectDeviceId);
     const isConnected = useSelector(selectIsDeviceConnected);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
-    const devicePath = useSelector(selectDevicePath);
-    const isDiscoveryRunning = useSelector(
-        (state: DiscoveryRootState & DeviceRootState) =>
-            selectDiscoveryByDevicePath(state, devicePath)?.status === 'progress',
-    );
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
     const setCloseState = useSetAtom(closeStateAtom);

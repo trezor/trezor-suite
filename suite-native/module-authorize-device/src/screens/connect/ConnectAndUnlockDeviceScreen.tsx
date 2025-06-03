@@ -24,8 +24,6 @@ export const ConnectAndUnlockDeviceScreen = ({
     AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
     RootStackParamList
 >) => {
-    // const dispatch = useDispatch();
-
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isFocused = useIsFocused();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);

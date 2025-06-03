@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import { selectDeviceAuthFailed } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
-// import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -37,7 +36,6 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     const [containerHeight, setContainerHeight] = useState(0);
     const animatedHeight = useSharedValue(0);
 
-    // const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
 
     const openLink = useOpenLink();
