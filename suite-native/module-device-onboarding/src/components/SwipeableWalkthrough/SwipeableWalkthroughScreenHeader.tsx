@@ -1,16 +1,23 @@
+import { useCallback, useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useTheme } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 
 import { Box, IconButton } from '@suite-native/atoms';
 import { ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 type SwipeableWalkthroughScreenHeaderProps = {
+    currentStepIndex: SharedValue<number>;
+    CustomBackButton?: typeof SwipeableWalkthroughBackButton;
+    onPressBack: () => void;
+};
+
+type SwipeableWalkthroughBackButtonProps = {
     onPressBack: () => void;
     currentStepIndex: SharedValue<number>;
-    CustomBackButton?: React.ComponentType<SwipeableWalkthroughScreenHeaderProps>;
 };
 
 const ANIMATION_DURATION = 800;
@@ -37,7 +44,7 @@ const statusBarStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
 const SwipeableWalkthroughBackButton = ({
     onPressBack,
     currentStepIndex,
-}: SwipeableWalkthroughScreenHeaderProps) => {
+}: SwipeableWalkthroughBackButtonProps) => {
     const animatedButtonStyle = useAnimatedStyle(() => ({
         transform: [
             {
@@ -63,9 +70,9 @@ const SwipeableWalkthroughBackButton = ({
 };
 
 export const SwipeableWalkthroughScreenHeader = ({
-    onPressBack,
     currentStepIndex,
     CustomBackButton,
+    onPressBack,
 }: SwipeableWalkthroughScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
@@ -74,7 +81,29 @@ export const SwipeableWalkthroughScreenHeader = ({
         dark,
     } = useTheme();
 
+    const navigation = useNavigation();
+
     const BackButton = CustomBackButton || SwipeableWalkthroughBackButton;
+
+    const handlePressBackButton = useCallback(() => {
+        if (currentStepIndex.value === 0) {
+            onPressBack();
+        } else {
+            currentStepIndex.value -= 1;
+        }
+    }, [currentStepIndex, onPressBack]);
+
+    useEffect(() => {
+        // Override default navigation GO_BACK action to align it with the UI back button behavior.
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            if (e.data.action.type === 'GO_BACK') {
+                e.preventDefault();
+                handlePressBackButton();
+            }
+        });
+
+        return unsubscribe;
+    }, [handlePressBackButton, navigation]);
 
     return (
         <>
@@ -88,7 +117,10 @@ export const SwipeableWalkthroughScreenHeader = ({
             <Box style={applyStyle(screenHeaderContainerStyle)}>
                 <ScreenHeader
                     leftIcon={
-                        <BackButton currentStepIndex={currentStepIndex} onPressBack={onPressBack} />
+                        <BackButton
+                            currentStepIndex={currentStepIndex}
+                            onPressBack={handlePressBackButton}
+                        />
                     }
                 />
             </Box>

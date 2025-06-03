@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -38,32 +38,11 @@ export const WalletBackupTutorialScreen = () => {
 
     const navigation = useNavigation<NavigationProps>();
 
-    const handlePressBackButton = useCallback(() => {
-        if (currentStepIndex.value === 0) {
-            // Skip loader screen and navigate back to the create or recover crossroads.
-            navigation.pop(2);
-        } else {
-            currentStepIndex.value -= 1;
-        }
-    }, [navigation, currentStepIndex]);
-
-    useEffect(() => {
-        // Override default navigation GO_BACK action to align it with the UI back button behavior.
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            if (e.data.action.type === 'GO_BACK') {
-                e.preventDefault();
-                handlePressBackButton();
-            }
-        });
-
-        return unsubscribe;
-    }, [handlePressBackButton, navigation]);
-
     return (
         <Screen
             header={
                 <SwipeableWalkthroughScreenHeader
-                    onPressBack={handlePressBackButton}
+                    onPressBack={() => navigation.pop(2)}
                     currentStepIndex={currentStepIndex}
                 />
             }

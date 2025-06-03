@@ -6,9 +6,9 @@ import { Translation } from '@suite-native/intl';
 
 import { Underline } from './Underline';
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
-import { WalletBackupRecapStepContent } from './WalletBackupRecapStepContent';
+import { WalletRecapStepContent } from '../WalletRecapStepContent';
 import { WALLET_BACKUP_RECAP_STEPS } from './presets';
-import { SwipeableWalkthroughStep } from '../SwipeableWalkthrough/SwipeableWalkthroughStep';
+import { SwipeableWalkthroughStep } from '../../SwipeableWalkthrough/SwipeableWalkthroughStep';
 
 const CURRENT_STEP_INDEX = 1;
 
@@ -25,7 +25,7 @@ export const WalletBackupRecapStep2 = ({
             totalSteps={WALLET_BACKUP_RECAP_STEPS}
             currentStepIndex={currentStepIndex}
         >
-            <WalletBackupRecapStepContent>
+            <WalletRecapStepContent>
                 <VStack spacing="sp12" alignItems="center">
                     <Text variant="highlight" color="textSecondaryHighlight" textAlign="center">
                         <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.callout" />
@@ -42,7 +42,7 @@ export const WalletBackupRecapStep2 = ({
                         </Text>
                     </Box>
                 </VStack>
-            </WalletBackupRecapStepContent>
+            </WalletRecapStepContent>
         </SwipeableWalkthroughStep>
     );
 };

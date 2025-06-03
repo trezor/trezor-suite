@@ -9,10 +9,10 @@ import {
 } from '@suite-native/navigation';
 
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
-import { WalletBackupRecapStepContent } from './WalletBackupRecapStepContent';
+import { WalletRecapStepContent } from '../WalletRecapStepContent';
 import { WALLET_BACKUP_RECAP_STEPS } from './presets';
-import { HoldToConfirmButton } from '../SwipeableWalkthrough/HoldToConfirmButton';
-import { SwipeableWalkthroughStep } from '../SwipeableWalkthrough/SwipeableWalkthroughStep';
+import { HoldToConfirmButton } from '../../SwipeableWalkthrough/HoldToConfirmButton';
+import { SwipeableWalkthroughStep } from '../../SwipeableWalkthrough/SwipeableWalkthroughStep';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
@@ -40,7 +40,7 @@ export const WalletBackupRecapStep4 = ({
                 />
             }
         >
-            <WalletBackupRecapStepContent
+            <WalletRecapStepContent
                 callout={
                     <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step4.callout" />
                 }

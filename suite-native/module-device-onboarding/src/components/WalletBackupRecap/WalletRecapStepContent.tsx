@@ -5,7 +5,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnboardingStepHeader } from '../OnboardingStepHeader';
 
-type WalletBackupRecapStepContentProps = {
+type WalletRecapStepContentProps = {
     title?: ReactNode;
     callout?: ReactNode;
     children?: ReactNode;
@@ -15,11 +15,11 @@ const innerContainerStyle = prepareNativeStyle(utils => ({
     bottom: utils.spacings.sp16,
 }));
 
-export const WalletBackupRecapStepContent = ({
+export const WalletRecapStepContent = ({
     title,
     callout,
     children,
-}: WalletBackupRecapStepContentProps) => {
+}: WalletRecapStepContentProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (

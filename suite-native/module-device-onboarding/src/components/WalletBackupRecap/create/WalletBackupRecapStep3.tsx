@@ -1,9 +1,9 @@
 import { Translation } from '@suite-native/intl';
 
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
-import { WalletBackupRecapStepContent } from './WalletBackupRecapStepContent';
+import { WalletRecapStepContent } from '../WalletRecapStepContent';
 import { WALLET_BACKUP_RECAP_STEPS } from './presets';
-import { SwipeableWalkthroughStep } from '../SwipeableWalkthrough/SwipeableWalkthroughStep';
+import { SwipeableWalkthroughStep } from '../../SwipeableWalkthrough/SwipeableWalkthroughStep';
 
 export const WalletBackupRecapStep3 = ({
     currentStepIndex,
@@ -13,7 +13,7 @@ export const WalletBackupRecapStep3 = ({
         currentStepIndex={currentStepIndex}
         stepId="walletBackupRecapStep3"
     >
-        <WalletBackupRecapStepContent
+        <WalletRecapStepContent
             callout={
                 <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step3.callout" />
             }
