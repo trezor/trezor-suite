@@ -6,7 +6,7 @@ import {
     StakeAccountRewards,
     StakeRootState,
     fetchEverstakeRewards,
-    selectStakingRewards,
+    selectStakingRewardsHistory,
 } from '@suite-common/wallet-core';
 import { useDebounce } from '@trezor/react-utils';
 
@@ -16,7 +16,9 @@ const PAGE_SIZE_DEFAULT = 10;
 
 export const useSolanaRewards = (account: Account) => {
     const { data, isLoading } =
-        useSelector((state: StakeRootState) => selectStakingRewards(state, account.symbol)) || {};
+        useSelector((state: StakeRootState) =>
+            selectStakingRewardsHistory(state, account.symbol),
+        ) || {};
 
     const { rewards } = data ?? {};
     const selectedAccountRewards = rewards?.[account.descriptor];

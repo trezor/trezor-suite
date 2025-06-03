@@ -7,6 +7,7 @@ import {
     getSolanaStakingSymbols,
     getStakingSymbols,
     isSupportedSolStakingNetworkSymbol,
+    isTestnet,
 } from '@suite-common/wallet-utils';
 import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -24,6 +25,7 @@ import {
     EverstakeEndpointType,
     EverstakeRewardsEndpointType,
     StakeRewardsByAccount,
+    TotalStakeRewardsByAccount,
     ValidatorsQueue,
 } from './stakeTypes';
 import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsSelectors';
@@ -78,33 +80,49 @@ export const fetchEverstakeData = createThunk<
     }
 });
 
-export const fetchEverstakeAssetData = createThunk<
-    { apy: number },
+export const fetchEverstakeStakingInfo = createThunk<
+    { apy: number; totalRewards: TotalStakeRewardsByAccount },
     {
         symbol: SupportedSolanaNetworkSymbols;
         endpointType: EverstakeAssetEndpointType;
+        address: string;
     },
     { rejectValue: string }
 >(
     `${STAKE_MODULE}/fetchEverstakeAssetData`,
     async (params, { fulfillWithValue, rejectWithValue }) => {
-        const { symbol, endpointType } = params;
+        const { symbol, endpointType, address } = params;
+
+        const isSolanaMainnet = !isTestnet(symbol);
+
+        if (!isSolanaMainnet) return rejectWithValue('Only Solana mainnet is supported.');
 
         const endpointSuffix = EVERSTAKE_ASSET_ENDPOINT_TYPES[endpointType];
         const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[symbol];
         const endpointParams = isSupportedSolStakingNetworkSymbol(symbol) ? `name=solana` : '';
 
         try {
-            const response = await fetch(`${endpointPrefix}/${endpointSuffix}?${endpointParams}`);
-
-            if (!response.ok) {
-                throw Error(response.statusText);
+            const assetResponse = await fetch(
+                `${endpointPrefix}/${endpointSuffix}?${endpointParams}`,
+            );
+            if (!assetResponse.ok) {
+                throw Error(assetResponse.statusText);
             }
+            const assetData = await assetResponse.json();
 
-            const data = await response.json();
+            const rewardsResponse = await fetch(
+                `${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}/total?validator=${EVERSTAKE_VALIDATOR}`,
+            );
+            if (!rewardsResponse.ok) {
+                throw Error(rewardsResponse.statusText);
+            }
+            const rewardsData = await rewardsResponse.json();
 
             return fulfillWithValue({
-                apy: data.blockchain.apr,
+                apy: Number(assetData?.blockchain?.apr),
+                totalRewards: {
+                    [address]: rewardsData?.rewards?.toString(),
+                },
             });
         } catch (error) {
             return rejectWithValue(error.toString());
@@ -155,9 +173,12 @@ export const fetchEverstakeRewards = createThunk<
 
 export const initStakeDataThunk = createThunk(
     `${STAKE_MODULE}/initStakeDataThunk`,
-    (_, { getState, dispatch }) => {
+    (_, { getState, dispatch, extra }) => {
         //because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
         const accountsNetworks = selectAllNetworkSymbolsOfVisibleAccounts(getState());
+        const { account } = extra.selectors.selectSelectedAccount(getState());
+        const address = account?.descriptor;
+
         //also join with enabled networks in case account was not yet discovered, but network is already enabled
         const enabledNetworks = selectEnabledNetworks(getState());
         const mergedNetworks = [...new Set([...accountsNetworks, ...enabledNetworks])];
@@ -182,7 +203,11 @@ export const initStakeDataThunk = createThunk(
 
                         if (shouldRefetch) {
                             if (isSupportedSolStakingNetworkSymbol(symbol)) {
-                                return dispatch(fetchEverstakeAssetData({ symbol, endpointType }));
+                                if (!address) return null;
+
+                                return dispatch(
+                                    fetchEverstakeStakingInfo({ symbol, endpointType, address }),
+                                );
                             }
 
                             return dispatch(fetchEverstakeData({ symbol, endpointType }));

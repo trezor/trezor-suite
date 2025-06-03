@@ -4,8 +4,12 @@ import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-c
 import { cloneObject } from '@trezor/utils';
 
 import { stakeActions } from './stakeActions';
-import { fetchEverstakeAssetData, fetchEverstakeData, fetchEverstakeRewards } from './stakeThunks';
-import { StakeRewardsByAccount, ValidatorsQueue } from './stakeTypes';
+import {
+    fetchEverstakeData,
+    fetchEverstakeRewards,
+    fetchEverstakeStakingInfo,
+} from './stakeThunks';
+import { StakeRewardsByAccount, TotalStakeRewardsByAccount, ValidatorsQueue } from './stakeTypes';
 import { SerializedTx } from '../send/sendFormTypes';
 
 export interface StakeState {
@@ -30,11 +34,11 @@ export interface StakeState {
                 lastSuccessfulFetchTimestamp: Timestamp;
                 data: ValidatorsQueue;
             };
-            getAssets?: {
+            stakingInfo?: {
                 error: boolean | string;
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
-                data: { apy?: number };
+                data: { apy?: number; totalRewards?: TotalStakeRewardsByAccount };
             };
             stakingRewards?: {
                 error: boolean | string;
@@ -132,13 +136,13 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                 };
             }
         })
-        .addCase(fetchEverstakeAssetData.pending, (state, action) => {
+        .addCase(fetchEverstakeStakingInfo.pending, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
             if (!state.data[symbol]?.[endpointType]) {
                 state.data[symbol] = {
                     ...state.data[symbol],
-                    getAssets: {
+                    stakingInfo: {
                         error: false,
                         isLoading: true,
                         lastSuccessfulFetchTimestamp: 0 as Timestamp,
@@ -147,7 +151,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                 };
             }
         })
-        .addCase(fetchEverstakeAssetData.fulfilled, (state, action) => {
+        .addCase(fetchEverstakeStakingInfo.fulfilled, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
             const data = state.data[symbol];
@@ -161,7 +165,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                 };
             }
         })
-        .addCase(fetchEverstakeAssetData.rejected, (state, action) => {
+        .addCase(fetchEverstakeStakingInfo.rejected, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
             const data = state.data[symbol];

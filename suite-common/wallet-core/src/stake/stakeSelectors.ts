@@ -7,7 +7,7 @@ import { StakeRootState } from './stakeReducer';
 export const selectEverstakeData = (
     state: StakeRootState,
     symbol: NetworkSymbol,
-    endpointType: 'poolStats' | 'validatorsQueue' | 'getAssets',
+    endpointType: 'poolStats' | 'validatorsQueue' | 'stakingInfo',
 ) => state.wallet.stake?.data?.[symbol]?.[endpointType];
 
 export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSymbol) => {
@@ -18,7 +18,7 @@ export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSy
     }
 
     if (isSupportedSolStakingNetworkSymbol(symbol)) {
-        return data?.[symbol]?.getAssets?.data?.apy || BACKUP_SOL_APY;
+        return data?.[symbol]?.stakingInfo?.data?.apy || BACKUP_SOL_APY;
     }
 
     return data?.[symbol]?.poolStats?.data.ethApy || BACKUP_ETH_APY;
@@ -48,10 +48,22 @@ export const selectValidatorsQueue = (state: StakeRootState, symbol?: NetworkSym
     return state.wallet.stake?.data?.[symbol]?.validatorsQueue;
 };
 
-export const selectStakingRewards = (state: StakeRootState, symbol?: NetworkSymbol) => {
+export const selectStakingRewardsHistory = (state: StakeRootState, symbol?: NetworkSymbol) => {
     if (!symbol) {
         return undefined;
     }
 
     return state.wallet.stake?.data?.[symbol]?.stakingRewards;
+};
+
+export const selectStakingTotalRewards = (
+    state: StakeRootState,
+    symbol?: NetworkSymbol,
+    descriptor?: string,
+) => {
+    if (!symbol || !descriptor) {
+        return undefined;
+    }
+
+    return state.wallet.stake?.data?.[symbol]?.stakingInfo?.data?.totalRewards?.[descriptor];
 };

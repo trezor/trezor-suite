@@ -22,7 +22,7 @@ export const EVERSTAKE_ENDPOINT_TYPES = {
 };
 
 export enum EverstakeAssetEndpointType {
-    GetAssets = 'getAssets',
+    StakingInfo = 'stakingInfo',
 }
 
 export enum EverstakeRewardsEndpointType {
@@ -30,7 +30,7 @@ export enum EverstakeRewardsEndpointType {
 }
 
 export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
-    [EverstakeAssetEndpointType.GetAssets]: 'chain',
+    [EverstakeAssetEndpointType.StakingInfo]: 'chain',
 };
 
 export interface ValidatorsQueue {
@@ -109,4 +109,8 @@ export type StakeAccountRewards = {
 
 export type StakeRewardsByAccount = {
     [address: string]: StakeAccountRewards[];
+};
+
+export type TotalStakeRewardsByAccount = {
+    [address: string]: string;
 };

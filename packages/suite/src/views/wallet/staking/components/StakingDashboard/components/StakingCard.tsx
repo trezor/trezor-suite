@@ -1,8 +1,11 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import {
-    calculateSolanaStakingReward,
+    StakeRootState,
+    selectAccountStakeTransactions,
+    selectStakingTotalRewards,
+} from '@suite-common/wallet-core';
+import {
+    formatNetworkAmount,
     getStakingAccountCurrentStatus,
     getStakingDataForNetwork,
     isPending,
@@ -69,17 +72,20 @@ type StakingCardProps = {
     isValidatorsQueueLoading?: boolean;
     daysToAddToPool?: number;
     daysToUnstake?: number;
-    apy?: number;
 };
 
 export const StakingCard = ({
     isValidatorsQueueLoading,
     daysToAddToPool,
     daysToUnstake,
-    apy,
 }: StakingCardProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
     const { isBelowLaptop } = useLayoutSize();
+
+    const solanaTotalRewards =
+        useSelector((state: StakeRootState) =>
+            selectStakingTotalRewards(state, selectedAccount?.symbol, selectedAccount?.descriptor),
+        ) ?? '0';
 
     const {
         isStakingDisabled,
@@ -163,7 +169,7 @@ export const StakingCard = ({
         return null;
     }
 
-    const solReward = calculateSolanaStakingReward(depositedBalance, apy?.toString());
+    const solReward = formatNetworkAmount(solanaTotalRewards, selectedAccount.symbol);
 
     const stakingReward = selectedAccount.networkType === 'solana' ? solReward : restakedReward;
     const isEthereumNetwork = selectedAccount.networkType === 'ethereum';
@@ -198,16 +204,7 @@ export const StakingCard = ({
                     <Item
                         label={
                             <Row gap={spacings.xs}>
-                                <Translation
-                                    id={
-                                        selectedAccount.networkType === 'solana'
-                                            ? 'TR_STAKE_EXPECTED_REWARDS'
-                                            : 'TR_STAKE_REWARDS'
-                                    }
-                                    values={{
-                                        count: SOLANA_EPOCH_DAYS,
-                                    }}
-                                />
+                                <Translation id="TR_STAKE_REWARDS" />
                                 <Tooltip
                                     maxWidth={250}
                                     content={

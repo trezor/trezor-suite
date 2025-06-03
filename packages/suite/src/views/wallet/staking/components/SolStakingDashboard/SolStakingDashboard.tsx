@@ -77,7 +77,6 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                                     isValidatorsQueueLoading={undefined}
                                     daysToAddToPool={SOLANA_EPOCH_DAYS}
                                     daysToUnstake={SOLANA_EPOCH_DAYS}
-                                    apy={apy}
                                 />
                             </Column>
                         </DashboardSection>
