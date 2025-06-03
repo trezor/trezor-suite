@@ -1,3 +1,11 @@
+# 1.4.0
+
+- npm-prerelease: @trezor/blockchain-link-utils 1.4.0-beta.1 (a8c0bd5e29)
+- fix(blockchain-link): display fee on the Stellar tx list page. (d155f356d6)
+- feat(blockchain-link): Add support for Stellar testnet. (2509e54ab4)
+- chore: update solana libs (f58d9b6e44)
+- feat(blockchain-link): Add basic support for Stellar. (48b5ca0b38)
+
 # 1.3.5
 
 - npm-prerelease: @trezor/blockchain-link-utils 1.3.5-beta.1 (c55a427303)
