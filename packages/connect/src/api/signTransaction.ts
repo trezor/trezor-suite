@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { bip32 } from '@trezor/utxo-lib';
 
 import { ERRORS, PROTO } from '../constants';
 import {
@@ -283,6 +284,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
     async run() {
         const { device, params } = this;
+        const { coinInfo, unlockPath } = params;
         const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
         const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));
 
@@ -290,6 +292,34 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             await device.getCommands().preauthorize(true);
         } else if (params.unlockPath) {
             await device.getCommands().unlockPath(params.unlockPath);
+        }
+
+        const nodes: bip32.BIP32Interface[] = [];
+        // check outputs scripts
+        for (let i = 0; i < params.outputs.length; i++) {
+            const output = params.outputs[i];
+            const address_n = output.address_n;
+
+            if (!address_n) {
+                console.warn('TODO: missing addressn');
+                continue;
+            }
+
+            if (address_n.length === 5) {
+                const response = await this.device
+                    .getCommands()
+                    .getHDNode({ address_n: address_n.slice(0, 4) }, { coinInfo, unlockPath });
+                const node = bip32.fromBase58(response.xpub, coinInfo.network);
+
+                nodes.push(node.derive(address_n[address_n.length - 1]));
+            } else {
+                // custom address_n
+                const response = await device
+                    .getCommands()
+                    .getHDNode({ address_n }, { coinInfo, unlockPath });
+
+                nodes.push(bip32.fromBase58(response.xpub, coinInfo.network));
+            }
         }
 
         const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
@@ -306,21 +336,20 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
         if (params.options.decred_staking_ticket) {
-            await verifyTicketTx(
-                device.getCommands().getHDNode,
+            verifyTicketTx(
+                nodes,
                 params.inputs,
                 params.outputs,
                 response.serializedTx,
                 params.coinInfo,
             );
         } else {
-            bitcoinTx = await verifyTx(
-                device.getCommands().getHDNode,
+            bitcoinTx = verifyTx(
+                nodes,
                 params.inputs,
                 params.outputs,
                 response.serializedTx,
                 params.coinInfo,
-                params.unlockPath,
             );
 
             if (bitcoinTx.hasWitnesses()) {

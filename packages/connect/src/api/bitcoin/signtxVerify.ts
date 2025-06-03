@@ -8,38 +8,12 @@ import {
 } from '@trezor/utxo-lib';
 
 import { ERRORS, PROTO } from '../../constants';
-import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { BitcoinNetworkInfo } from '../../types';
 
-type GetHDNode = ReturnType<typeof DeviceCommands>['getHDNode'];
-
-const derivePubKeyHash = async (
-    getHDNode: GetHDNode,
-    address_n: number[],
-    coinInfo: BitcoinNetworkInfo,
-    unlockPath?: PROTO.UnlockPath,
-) => {
-    // regular bip44 output
-    if (address_n.length === 5) {
-        const response = await getHDNode(
-            { address_n: address_n.slice(0, 4) },
-            { coinInfo, unlockPath },
-        );
-        const node = bip32.fromBase58(response.xpub, coinInfo.network);
-
-        return node.derive(address_n[address_n.length - 1]);
-    }
-    // custom address_n
-    const response = await getHDNode({ address_n }, { coinInfo, unlockPath });
-
-    return bip32.fromBase58(response.xpub, coinInfo.network);
-};
-
 const deriveOutputScript = async (
-    getHDNode: GetHDNode,
+    node: bip32.BIP32Interface,
     output: PROTO.TxOutputType,
     coinInfo: BitcoinNetworkInfo,
-    unlockPath?: PROTO.UnlockPath,
 ) => {
     // skip multisig output check, not implemented yet
     // TODO: implement it
@@ -61,7 +35,6 @@ const deriveOutputScript = async (
         );
     }
 
-    const node = await derivePubKeyHash(getHDNode, output.address_n, coinInfo, unlockPath);
     const payment = { hash: node.identifier, network: coinInfo.network };
 
     if (output.script_type === 'PAYTOADDRESS') {
@@ -103,13 +76,12 @@ const deriveOutputScript = async (
     );
 };
 
-export const verifyTx = async (
-    getHDNode: GetHDNode,
+export const verifyTx = (
+    pubKeyHashes: bip32.BIP32Interface[],
     inputs: PROTO.TxInputType[],
     outputs: PROTO.TxOutputType[],
     serializedTx: string,
     coinInfo: BitcoinNetworkInfo,
-    unlockPath?: PROTO.UnlockPath,
 ) => {
     // deserialize signed transaction
     const bitcoinTx = BitcoinJsTransaction.fromHex(serializedTx, { network: coinInfo.network });
@@ -137,7 +109,7 @@ export const verifyTx = async (
             }
         }
 
-        const scriptA = await deriveOutputScript(getHDNode, outputs[i], coinInfo, unlockPath);
+        const scriptA = deriveOutputScript(pubKeyHashes[i], outputs[i], coinInfo);
         if (scriptA && scriptA.compare(scriptB) !== 0) {
             throw ERRORS.TypedError('Runtime', `verifyTx: Output ${i} scripts differ`);
         }
@@ -146,8 +118,8 @@ export const verifyTx = async (
     return bitcoinTx;
 };
 
-export const verifyTicketTx = async (
-    getHDNode: GetHDNode,
+export const verifyTicketTx = (
+    pubKeyHashes: bip32.BIP32Interface[],
     inputs: PROTO.TxInputType[],
     outputs: PROTO.TxOutputType[],
     serializedTx: string,
@@ -175,6 +147,8 @@ export const verifyTicketTx = async (
     for (let i = 0; i < outputs.length; i++) {
         const scriptB = bitcoinTx.outs[i].script;
         const output = outputs[i];
+        const node = pubKeyHashes[i];
+
         let scriptA;
         if (i === 0) {
             const { amount } = output;
@@ -203,7 +177,6 @@ export const verifyTicketTx = async (
                 );
             }
 
-            const node = await derivePubKeyHash(getHDNode, output.address_n, coinInfo);
             scriptA = BitcoinJsPayments.sstxcommitment({
                 hash: node.identifier,
                 amount: output.amount.toString(),
