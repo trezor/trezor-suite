@@ -1,3 +1,9 @@
+# 1.4.0
+
+- npm-prerelease: @trezor/blockchain-link-types 1.4.0-beta.1 (1009fe288d)
+- fix(blockchain-link): display fee on the Stellar tx list page. (d155f356d6)
+- feat(blockchain-link): Add basic support for Stellar. (48b5ca0b38)
+
 # 1.3.5
 
 - npm-prerelease: @trezor/blockchain-link-types 1.3.5-beta.2 (003b282c48)
