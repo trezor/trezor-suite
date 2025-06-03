@@ -1,3 +1,9 @@
+# 1.4.0
+
+- npm-prerelease: @trezor/protobuf 1.4.0-beta.1 (731bca229d)
+- feat(protobuf): update protobuf messages (07e13c1f50)
+- chore(protobuf): update protobuf definitions (b97fae5cf5)
+
 # 1.3.5
 
 - npm-prerelease: @trezor/protobuf 1.3.5-beta.1 (884f7764d8)
