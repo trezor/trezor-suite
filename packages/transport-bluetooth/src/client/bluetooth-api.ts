@@ -90,8 +90,11 @@ export class BluetoothApi extends AbstractApi {
     }
 
     write(path: string, buffer: Buffer) {
+        const chunk = Buffer.alloc(this.chunkSize);
+        buffer.copy(chunk);
+
         return this.api
-            .send('write', [path, Array.from(buffer)])
+            .send('write', [path, Array.from(chunk)])
             .then(() => this.success(undefined))
             .catch(e => this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
     }

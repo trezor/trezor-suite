@@ -68,7 +68,17 @@ export class UdpApi extends AbstractApi {
             };
             signal?.addEventListener('abort', listener);
 
-            this.interface.send(buffer, Number.parseInt(port, 10), hostname, err => {
+            let chunk;
+            if (buffer.toString('utf-8') === 'PINGPING') {
+                // PINGPING is expected to be 8 bytes
+                chunk = buffer;
+            } else {
+                // other messages are expected to be 64 bytes
+                chunk = Buffer.alloc(this.chunkSize);
+                buffer.copy(chunk);
+            }
+
+            this.interface.send(chunk, Number.parseInt(port, 10), hostname, err => {
                 signal?.removeEventListener('abort', listener);
 
                 if (signal?.aborted) {

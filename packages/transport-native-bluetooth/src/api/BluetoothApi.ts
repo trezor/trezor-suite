@@ -96,7 +96,10 @@ export class BluetoothApi extends AbstractApi {
         }
 
         try {
-            const base64Chunk = buffer.toString('base64');
+            const chunk = Buffer.alloc(this.chunkSize);
+            buffer.copy(chunk);
+
+            const base64Chunk = chunk.toString('base64');
             await bluetoothManager.write(path, base64Chunk);
 
             return this.success(undefined);
