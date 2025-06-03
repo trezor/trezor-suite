@@ -99,6 +99,12 @@ export class DeviceCurrentSession implements TypedCallProvider {
         expectedType: Messages.MessageKey | Messages.MessageKey[],
         msg: Messages.MessagePayload = {},
     ) {
+        if (!this.device.features.session_id && type !== 'Initialize' && type !== 'GetFeatures') {
+            throw ERRORS.TypedError(
+                'Runtime',
+                `typedCall: Device not initialized when calling ${type}. call Initialize first`,
+            );
+        }
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg);
