@@ -4,6 +4,7 @@ import { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/devi
 import { versionUtils } from '@trezor/utils';
 
 import type { Features, IntermediaryVersion, ReleaseInfo, StrictFeatures } from '../types';
+import { httpRequest } from '../utils/assets';
 import {
     filterSafeListByBootloader,
     filterSafeListByFirmware,
@@ -27,6 +28,21 @@ export const parseFirmwareReleases = (json: any, deviceModel: DeviceModelInterna
 };
 
 export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel] || [];
+
+export const getOnlineReleases = async (internalModel: DeviceModelInternal) => {
+    const url = `https://data.trezor.io/firmware/${internalModel.toLowerCase()}/releases.json`;
+
+    const response = await httpRequest(url, 'json', {
+        signal: AbortSignal.timeout(10000),
+        skipLocalForceDownload: true,
+    });
+
+    if (isValidReleases(response)) {
+        return response;
+    }
+
+    return [] as FirmwareRelease[];
+};
 
 const getChangelog = (releases2: FirmwareRelease[], features: StrictFeatures) => {
     // releases are already filtered, so they can be considered "safe".

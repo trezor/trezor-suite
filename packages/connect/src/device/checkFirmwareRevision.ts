@@ -1,9 +1,9 @@
-import type { FirmwareRelease, VersionArray } from '@trezor/device-utils';
+import type { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
 import { serializeError, versionUtils } from '@trezor/utils';
 
 import { PROTO } from '../constants';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
-import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
+import { getOnlineReleases } from '../data/firmwareInfo';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 import { HttpRequestError } from '../utils/assets-browser';
 
@@ -28,14 +28,14 @@ const isOfflineError = (e: unknown): boolean => {
 
 type GetOnlineReleaseMetadataParams = {
     firmwareVersion: VersionArray;
-    internalModel: string;
+    internalModel: DeviceModelInternal;
 };
 
 const getOnlineReleaseMetadata = async ({
     firmwareVersion,
     internalModel,
 }: GetOnlineReleaseMetadataParams): Promise<FirmwareRelease | undefined> => {
-    const onlineReleases = await downloadReleasesMetadata({ internal_model: internalModel });
+    const onlineReleases = await getOnlineReleases(internalModel);
 
     return onlineReleases.find(onlineRelease =>
         versionUtils.isEqual(onlineRelease.version, firmwareVersion),
