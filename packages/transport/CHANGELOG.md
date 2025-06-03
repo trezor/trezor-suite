@@ -1,3 +1,8 @@
+# 1.5.0
+
+- npm-prerelease: @trezor/transport 1.5.0-beta.1 (203205104e)
+- chore: update babel libs (680cc6ba9d)
+
 # 1.4.5
 
 - npm-prerelease: @trezor/transport 1.4.5-beta.1 (079ee83fc4)
