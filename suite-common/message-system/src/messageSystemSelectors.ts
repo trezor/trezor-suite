@@ -74,8 +74,8 @@ export const selectContextMessageContent = createMemoizedSelector(
         (_state, _domain, language: string) => language,
     ],
     (activeContextMessages, domain, language) => {
-        const message = activeContextMessages.find(
-            activeContextMessage => activeContextMessage.context?.domain === domain,
+        const message = activeContextMessages.find(({ context }) =>
+            [context?.domain].flat().includes(domain),
         );
         if (!message) return undefined;
 
