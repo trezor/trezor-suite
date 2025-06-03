@@ -1,3 +1,12 @@
+# 2.5.0
+
+- npm-prerelease: @trezor/blockchain-link 2.5.0-beta.1 (2ef0ddfd38)
+- feat(blockchain-link): Add support for Stellar testnet. (2509e54ab4)
+- chore: update solana libs (f58d9b6e44)
+- chore: pin webpack to 5.98.0 until dynamic import urls are resolved (3c05b2639d)
+- chore: update webpack deps (2c97fedec2)
+- feat(blockchain-link): Add basic support for Stellar. (48b5ca0b38)
+
 # 2.4.5
 
 - npm-prerelease: @trezor/blockchain-link 2.4.5-beta.1 (ce9a8c061f)
