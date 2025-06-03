@@ -21,6 +21,19 @@ const blacklist: Record<string, string[] | true> = {
     Features: true,
 };
 
+const allowedCallsBeforeInitialize: Messages.MessageKey[] = [
+    // Preventive Cancel
+    'Cancel',
+    // At the beginning of each call either Initialize or GetFeatures is called.
+    'Initialize',
+    'GetFeatures',
+    // After one of the two above there might be optionally some of these
+    'GetFirmwareHash',
+    'ChangeLanguage',
+    'DataChunkAck',
+    // There are other, which are allowed by firmware (ApplySettings,...) but we do not use them this way in connect.
+];
+
 const filterForLog = (type: string, msg: any) =>
     blacklist[type] === true
         ? '(redacted...)'
@@ -89,6 +102,12 @@ export class DeviceCurrentSession implements TypedCallProvider {
         expectedType: Messages.MessageKey | Messages.MessageKey[],
         msg: Messages.MessagePayload = {},
     ) {
+        if (!allowedCallsBeforeInitialize.includes(type) && !this.device?.features?.session_id) {
+            console.error(
+                'Runtime',
+                `typedCall: Device not initialized when calling ${type}. call Initialize first`,
+            );
+        }
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg);
