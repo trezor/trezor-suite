@@ -2,7 +2,8 @@ import { createThunk } from '@suite-common/redux-utils/';
 import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+// TODO thp-post-fixes
+// import TrezorConnect from '@trezor/connect';
 
 import { THP_PREFIX } from './thpActions';
 
@@ -15,7 +16,12 @@ export const startThpAutoconnectThunk = createThunk<void, void, void>(
             return;
         }
 
-        const response = await TrezorConnect.thpGetCredentials({ device });
+        // TODO thp-post-fixes
+        // const response = await TrezorConnect.thpGetCredentials({ device });
+        const response: any = await Promise.resolve({
+            success: false,
+            payload: { error: 'Implement TrezorConnect.thpGetCredentials' },
+        });
 
         console.log('response', response);
 
