@@ -70,7 +70,7 @@ const findAccountForTrade = (
 
 export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
     db,
-    _oldVersion,
+    oldVersion,
     _newVersion,
     transaction,
 ) => {
@@ -191,6 +191,11 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
 
     // 6. refetch solana txs
     const accountsToUpdate = ['sol', 'dsol'];
+
+    // refetch also evm txs for version 52+
+    if (oldVersion >= 52) {
+        accountsToUpdate.push(...['eth', 'pol', 'bsc', 'base', 'arb', 'op', 'thol', 'tsep']);
+    }
 
     await updateAll<'txs', DBWalletAccountTransactionCompatible>(transaction, 'txs', tx => {
         if (accountsToUpdate.includes(tx.tx.symbol)) {

@@ -8,6 +8,7 @@
 - added `explorer` store for custom explorer configuration
 - created `thp` and `bluetooth` object store
 - remove saved solana txs to force refetch
+- remove saved evm txs to force refetch due to bug in migration v52
 
 ## 54
 
@@ -20,7 +21,7 @@
 ## 52
 
 - Deprecated Vertcoin (VTC), Bitcoin Gold (BTG), Namecoin (NMC), DigiByte (DGB), and Dash (DASH) networks. Removed related transactions, accounts, and settings.
-- saved ripple network type txs are removed to be fetched again and obtain internal transfers and token transfer contract and standard
+- saved ripple network type txs are removed to be fetched again
 - added `security.devicesWithFailedEntropyCheck`
 
 ## 51

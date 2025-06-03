@@ -1247,7 +1247,6 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (accountsToUpdate.includes(tx.tx.symbol)) {
                 return null;
             }
-            tx.tx.internalTransfers = [];
 
             return tx;
         });
