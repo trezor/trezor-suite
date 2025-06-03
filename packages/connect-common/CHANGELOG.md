@@ -1,3 +1,9 @@
+# 0.4.0
+
+- npm-prerelease: @trezor/connect-common 0.4.0-beta.1 (cde234d2e1)
+- feat(connect): Add support for Stellar testnet. (4231425ad7)
+- feat(connect): Add basic support for Stellar. (180265b522)
+
 # 0.3.5
 
 - npm-prerelease: @trezor/connect-common 0.3.5-beta.1 (518cb2a22d)
