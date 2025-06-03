@@ -69,7 +69,7 @@ jobs:
       - name: Extract suite desktop version
         id: extract-version
         run: |
-          echo "VERSION=$(jq -r .suiteVersion packages/suite/package.json)" >> $GITHUB_ENV
+          echo "VERSION=$(jq -r .suiteVersion packages/suite/package.json)" >> $GITHUB_OUTPUT
 
       - name: Sync suite-desktop latest
         run: |
