@@ -6,7 +6,6 @@
 
 ### 🎨 Improvements
 
-- Bitcoin send form now refreshes fee rates every 60 seconds and includes a manual refresh option to avoid using outdated fees.
 - Fonts for addresses and public keys in Suite now match those on Trezor devices to reduce visual discrepancies.
 - The transactions export menu has been improved with clarified filters and support for .csv, .pdf, and .json formats.
 
