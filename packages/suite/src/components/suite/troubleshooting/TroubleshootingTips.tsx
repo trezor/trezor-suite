@@ -7,10 +7,13 @@ import {
     ElevationContext,
     ElevationDown,
     ElevationUp,
+    Flex,
     IconName,
     Row,
     SelectBar,
     Text,
+    useMediaQuery,
+    variables,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -81,14 +84,20 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
             </Row>
         ) : null;
 
+    const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
+
     return (
         <Column gap={spacings.xxxxl} alignItems="center">
             {cta && (
                 <Card width="auto">
-                    <Row gap={spacings.md}>
+                    <Flex
+                        direction={isMobile ? 'column' : 'row'}
+                        gap={spacings.md}
+                        alignItems="center"
+                    >
                         {ctaLabel ?? label}
                         {cta}
-                    </Row>
+                    </Flex>
                 </Card>
             )}
 
@@ -107,7 +116,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                     <Collapsible.Content>
                         <ElevationContext baseElevation={-1}>
                             <ElevationDown>
-                                <Card paddingType="tiny" width="656px">
+                                <Card paddingType="tiny" maxWidth="656px">
                                     <Column
                                         gap={spacings.sm}
                                         padding={

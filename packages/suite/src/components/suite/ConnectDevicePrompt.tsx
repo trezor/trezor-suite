@@ -11,7 +11,14 @@ import {
     variables,
 } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+    typography,
+} from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
@@ -19,15 +26,22 @@ import type { PrerequisiteType } from 'src/types/suite';
 
 const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     display: flex;
-    height: 122px;
     min-height: 122px;
-    width: 360px;
-    border-radius: 61px;
+    max-width: 360px;
+
     padding: 10px;
     background: ${mapElevationToBackground};
     border: 1px solid ${mapElevationToBorder};
     align-items: center;
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    gap: ${spacingsPx.xs};
+    flex-direction: column;
+    margin: 0;
+    border-radius: ${borders.radii.lg};
+    ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
+        flex-direction: row;
+        border-radius: 61px;
+    }
 `;
 
 const ImageWrapper = styled.div`
@@ -45,11 +59,12 @@ const Checkmark = styled.div`
 const Text = styled.div`
     display: flex;
     flex-direction: column;
-    margin: 0 32px;
     text-align: center;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: 20px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.titleSmall}
+
+    ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
+        margin: 0 ${spacingsPx.xl} 0 ${spacingsPx.xs};
+    }
 
     button {
         margin-top: 10px;
