@@ -1,5 +1,6 @@
 import { Reducer, combineReducers } from '@reduxjs/toolkit';
 
+import { geolocationReducer } from '@suite-common/geolocation';
 import { messageSystemActions, prepareMessageSystemReducer } from '@suite-common/message-system';
 import * as messageSystemUtils from '@suite-common/message-system/src/messageSystemUtils';
 import { configureMockStore } from '@suite-common/test-utils';
@@ -36,6 +37,9 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
+    geolocation: {
+        countryCode: null,
+    },
 });
 
 const reducer = combineReducers({
@@ -43,6 +47,7 @@ const reducer = combineReducers({
     messageSystem: messageSystemReducer,
     suite: suiteReducer,
     device: deviceReducer,
+    geolocation: geolocationReducer,
 });
 
 type State = ReturnType<typeof getInitialState>;

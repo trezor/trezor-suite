@@ -36,6 +36,7 @@
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/intl-types": "workspace:*",
         "@suite-common/logger": "workspace:*",

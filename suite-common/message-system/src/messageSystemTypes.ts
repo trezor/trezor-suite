@@ -1,5 +1,4 @@
 import { Category, ExperimentsItem, MessageSystem } from '@suite-common/suite-types';
-import { CountryCode } from '@suite-common/trading';
 
 export type MessageState = { [key in Category]: boolean };
 
@@ -12,7 +11,6 @@ export type MessageSystemState = {
         [key: string]: MessageState;
     };
     validExperiments: string[];
-    countryCode: CountryCode | null;
 };
 
 export type MessageSystemRootState = {

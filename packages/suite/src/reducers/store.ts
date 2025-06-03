@@ -37,6 +37,7 @@ import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
 import { DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
 import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
+import { geolocationReducer } from '@suite-common/geolocation';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -55,6 +56,7 @@ const rootReducer = combineReducers({
     tokenDefinitions: tokenDefinitionsReducer,
     bluetooth: bluetoothReducer,
     thp: thpReducer,
+    geolocation: geolocationReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

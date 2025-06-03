@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { CountryCode, TradingType } from '@suite-common/trading';
+import type { TradingType } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -62,7 +62,6 @@ export type SuiteAction =
           symbol: keyof EvmSettings['explanationBannerClosed'];
       }
     | { type: typeof SUITE.DISMISSED_TRADING_TERMS; tradingType: TradingType }
-    | { type: typeof SUITE.SET_COUNTRY_CODE; payload: CountryCode }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
           type: typeof SUITE.SET_THEME;
@@ -165,11 +164,6 @@ export const setIsCoinsFilterVisible = (payload: {
 export const setDismissedTradingTerms = (tradingType: TradingType): SuiteAction => ({
     type: SUITE.DISMISSED_TRADING_TERMS,
     tradingType,
-});
-
-export const setCountryCode = (countryCode: CountryCode): SuiteAction => ({
-    type: SUITE.SET_COUNTRY_CODE,
-    payload: countryCode,
 });
 
 /**

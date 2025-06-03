@@ -1,11 +1,11 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { selectCountryCode } from '@suite-common/geolocation';
 import {
     categorizeMessages,
     getValidExperimentIds,
     getValidMessages,
     messageSystemActions,
-    selectCountryCode,
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';

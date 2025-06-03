@@ -38,4 +38,3 @@ export const REQUEST_DEVICE_RECONNECT = '@suite/request-device-reconnect';
 export const SET_EXPERIMENTAL_FEATURES = '@suite/set-experimental-features';
 export const SET_SIDEBAR_WIDTH = '@suite/set-sidebar-width';
 export const SET_IS_COINS_FILTER_VISIBLE = '@suite/set-is-coins-filter-visible';
-export const SET_COUNTRY_CODE = '@suite/set-country-code';

@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/geolocation"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {

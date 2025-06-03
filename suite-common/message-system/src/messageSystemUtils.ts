@@ -1,5 +1,6 @@
 import * as semver from 'semver';
 
+import type { CountryCode } from '@suite-common/geolocation';
 import type {
     Condition,
     Device,
@@ -12,7 +13,6 @@ import type {
     TrezorDevice,
     Version,
 } from '@suite-common/suite-types';
-import type { CountryCode } from '@suite-common/trading';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
 import {

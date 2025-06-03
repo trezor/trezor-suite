@@ -1,3 +1,4 @@
+import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
 import {
     categorizeMessages,
     getValidExperimentIds,
@@ -9,7 +10,7 @@ import { changeNetworks, deviceActions, selectSelectedDevice } from '@suite-comm
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { selectActiveTransports, selectCountryCode } from 'src/reducers/suite/suiteReducer';
+import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 // actions which can affect message system messages
@@ -20,7 +21,7 @@ const actions = [
     changeNetworks.type,
     TRANSPORT.START,
     DEVICE.CONNECT,
-    SUITE.SET_COUNTRY_CODE,
+    geolocationActions.setCountryCode.type,
 ];
 
 const messageSystemMiddleware = createMiddleware(async (action, { next, dispatch, getState }) => {

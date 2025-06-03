@@ -1,22 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { CountryCode } from '@suite-common/trading';
 import { GEOLOCATION_API_URL } from '@trezor/urls';
 
-import { setCountryCode } from 'src/actions/suite/suiteActions';
-
-const GEOLOCATION_PREFIX = '@suite/geolocation';
+import { CountryCode } from './countries';
+import { GEOLOCATION_PREFIX, geolocationActions } from './geolocationReducer';
 
 type GeolocationResponse = {
     country: string;
-};
-
-export const shouldFetchCountryCode = (routeName: string | undefined) => {
-    if (!routeName) return false;
-
-    const isTradingRoute = routeName.includes('wallet-trading');
-    const isStakingRoute = routeName.includes('staking');
-
-    return isTradingRoute || isStakingRoute;
 };
 
 export const fetchCountryCodeThunk = createThunk<void, void, void>(
@@ -27,8 +16,9 @@ export const fetchCountryCodeThunk = createThunk<void, void, void>(
             const data = (await response.json()) as GeolocationResponse;
 
             if (typeof data?.country === 'string') {
-                const code = data.country.trim().toUpperCase() as unknown as CountryCode;
-                dispatch(setCountryCode(code));
+                const countryCode = data.country.trim().toUpperCase() as unknown as CountryCode;
+
+                dispatch(geolocationActions.setCountryCode(countryCode));
             }
         } catch {
             // silently fail

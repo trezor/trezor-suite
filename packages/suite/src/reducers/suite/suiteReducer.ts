@@ -1,8 +1,9 @@
 import { produce } from 'immer';
 
+import type { CountryCode } from '@suite-common/geolocation';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import type { CountryCode, InvityServerEnvironment, TradingType } from '@suite-common/trading';
+import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
@@ -308,9 +309,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     [action.tradingType]: true,
                 };
                 break;
-            case SUITE.SET_COUNTRY_CODE:
-                draft.countryCode = action.payload;
-                break;
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
                 break;
@@ -522,8 +520,6 @@ export const selectIsFirmwareHashCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareHash;
 export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareRevision;
-
-export const selectCountryCode = (state: SuiteRootState) => state.suite.countryCode;
 
 /**
  * Get firmware revision check error, or null if check was successful / skipped.
