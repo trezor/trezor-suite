@@ -21,10 +21,6 @@ const stakingItemStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp8,
 }));
 
-const stakingCardStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.sp16,
-}));
-
 const stakingWrapperStyle = prepareNativeStyle(utils => ({
     display: 'flex',
     flexDirection: 'row',
@@ -75,7 +71,7 @@ export const StakingBalancesOverviewCard = ({
 
     return (
         <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
-            <Card style={applyStyle(stakingCardStyle)}>
+            <Card>
                 <Box style={applyStyle(stakingWrapperStyle)}>
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>

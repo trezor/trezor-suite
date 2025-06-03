@@ -6,6 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { StakeClaimableCard } from './StakeClaimableCard';
 import { StakePendingCard } from './StakePendingCard';
 import { StakingBalancesOverviewCard } from './StakingBalancesOverviewCard';
 import { StakingUnavailableBottomSheet } from './StakingUnavailableBottomSheet';
@@ -14,6 +15,7 @@ const sectionStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp8,
     paddingVertical: utils.spacings.sp24,
     flex: 1,
+    gap: utils.spacings.sp16,
 }));
 
 const linkStyle = prepareNativeStyle(() => ({
@@ -45,12 +47,17 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
                 handleToggleBottomSheet={handleToggleBottomSheet}
             />
 
+            <StakeClaimableCard
+                accountKey={accountKey}
+                handleToggleBottomSheet={handleToggleBottomSheet}
+            />
+
             <StakingBalancesOverviewCard
                 accountKey={accountKey}
                 handleToggleBottomSheet={handleToggleBottomSheet}
             />
 
-            <Box marginTop="sp32" alignItems="center">
+            <Box marginTop="sp16" alignItems="center">
                 {/* TODO: replace with new icon once we have new package ready */}
                 {/* <Icon name="desktop" color="textSubdued" size="extraLarge" /> */}
 

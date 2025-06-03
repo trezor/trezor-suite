@@ -107,3 +107,24 @@ export const selectSolanaTotalStakePendingByAccountKey = (
 
     return stakingInfo.solPendingStakeBalance;
 };
+
+export const selectSolanaClaimableAmountByAccountKey = (
+    state: AccountsRootState,
+    accountKey: string,
+) => {
+    const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
+    if (!stakingInfo) {
+        return '0';
+    }
+
+    return stakingInfo.solClaimableBalance;
+};
+
+export const selectSolanaCanClaimByAccountKey = (state: AccountsRootState, accountKey: string) => {
+    const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
+    if (!stakingInfo) {
+        return false;
+    }
+
+    return stakingInfo.canClaimSol;
+};

@@ -6,6 +6,8 @@ import {
     selectExpectedRewardsForEpoch,
     selectSolStakingAccountsInfoByAccountKey,
     selectSolanaAPYByAccountKey,
+    selectSolanaCanClaimByAccountKey,
+    selectSolanaClaimableAmountByAccountKey,
     selectSolanaIsStakePendingByAccountKey,
     selectSolanaStakedBalanceByAccountKey,
     selectSolanaTotalStakePendingByAccountKey,
@@ -64,6 +66,26 @@ const solAccountWithActivatingStaking: Account = {
             },
         ],
         solEpoch: 2,
+    },
+} as unknown as Account;
+
+const solAccountWithDeactivatedStaking: Account = {
+    symbol: 'sol',
+    accountLabel: 'SOL Account #4',
+    deviceState: staticStateString,
+    addresses: undefined,
+    key: 'sol4',
+    visible: true,
+    networkType: 'solana',
+    misc: {
+        solStakingAccounts: [
+            {
+                status: 'deactivated',
+                stake: BigInt('3000000000'),
+                rentExemptReserve: BigInt('30'),
+            },
+        ],
+        solEpoch: 3,
     },
 } as unknown as Account;
 
@@ -386,6 +408,90 @@ describe('selectors', () => {
                     'sol1',
                 ),
             ).toEqual('0');
+        });
+    });
+
+    describe('selectSolanaClaimableAmountByAccountKey', () => {
+        it('should return "0" for account without claimable stake', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithStaking],
+            });
+
+            const result = selectSolanaClaimableAmountByAccountKey(testState as any, 'sol1');
+
+            expect(result).toBe('0');
+        });
+
+        it('should return claimable balance for account with deactivated stake', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithDeactivatedStaking],
+            });
+
+            const result = selectSolanaClaimableAmountByAccountKey(testState as any, 'sol4');
+
+            expect(result).toBe('3');
+        });
+
+        it('should return "0" for account without staking', () => {
+            const testState = getTestState({
+                accounts: [solAccountNoStaking],
+            });
+
+            const result = selectSolanaClaimableAmountByAccountKey(testState as any, 'sol2');
+
+            expect(result).toBe('0');
+        });
+
+        it('should return "0" for non-existent account', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithStaking],
+            });
+
+            const result = selectSolanaClaimableAmountByAccountKey(testState, 'non-existent');
+
+            expect(result).toBe('0');
+        });
+    });
+
+    describe('selectSolanaCanClaimByAccountKey', () => {
+        it('should return false for account without claimable stake', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithStaking],
+            });
+
+            const result = selectSolanaCanClaimByAccountKey(testState as any, 'sol1');
+
+            expect(result).toBe(false);
+        });
+
+        it('should return true for account with deactivated stake', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithDeactivatedStaking],
+            });
+
+            const result = selectSolanaCanClaimByAccountKey(testState as any, 'sol4');
+
+            expect(result).toBe(true);
+        });
+
+        it('should return false for account without staking', () => {
+            const testState = getTestState({
+                accounts: [solAccountNoStaking],
+            });
+
+            const result = selectSolanaCanClaimByAccountKey(testState as any, 'sol2');
+
+            expect(result).toBe(false);
+        });
+
+        it('should return false for non-existent account', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithStaking],
+            });
+
+            const result = selectSolanaCanClaimByAccountKey(testState as any, 'non-existent');
+
+            expect(result).toBe(false);
         });
     });
 });

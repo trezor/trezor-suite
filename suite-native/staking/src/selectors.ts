@@ -13,6 +13,8 @@ import { exhaustive } from '@trezor/type-utils';
 
 import {
     selectEthereumAccountHasStaking,
+    selectEthereumCanClaimByAccountKey,
+    selectEthereumClaimableAmountByAccountKey,
     selectEthereumIsStakeConfirmingByAccountKey,
     selectEthereumIsStakePendingByAccountKey,
     selectEthereumRewardsBalanceByAccountKey,
@@ -22,6 +24,8 @@ import {
 } from './ethereumStakingSelectors';
 import {
     selectExpectedRewardsForEpoch,
+    selectSolanaCanClaimByAccountKey,
+    selectSolanaClaimableAmountByAccountKey,
     selectSolanaIsStakePendingByAccountKey,
     selectSolanaStakedBalanceByAccountKey,
     selectSolanaTotalStakePendingByAccountKey,
@@ -230,6 +234,52 @@ export const selectTotalStakePendingByAccountKey = (
         case 'dsol':
         case 'sol':
             return selectSolanaTotalStakePendingByAccountKey(state, accountKey);
+        default:
+            return exhaustive(symbol);
+    }
+};
+
+export const selectClaimableAmountByAccountKey = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
+        return '0';
+    }
+
+    switch (symbol) {
+        case 'eth':
+        case 'thol':
+        case 'tsep':
+            return selectEthereumClaimableAmountByAccountKey(state, accountKey);
+        case 'dsol':
+        case 'sol':
+            return selectSolanaClaimableAmountByAccountKey(state, accountKey);
+        default:
+            return exhaustive(symbol);
+    }
+};
+
+export const selectCanClaimByAccountKey = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
+        return false;
+    }
+
+    switch (symbol) {
+        case 'eth':
+        case 'thol':
+        case 'tsep':
+            return selectEthereumCanClaimByAccountKey(state, accountKey);
+        case 'dsol':
+        case 'sol':
+            return selectSolanaCanClaimByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }

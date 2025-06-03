@@ -1718,6 +1718,9 @@ export const en = {
             transactionPending: 'Transaction pending',
             unknownStatus: 'Unknown status',
         },
+        claimableCard: {
+            claimable: 'Claimable',
+        },
         stakingBottomSheet: {
             title: 'To manage your staked funds, please use Trezor Suite for desktop.',
             description: 'We currently support staking as view-only in Trezor Suite Lite.',
