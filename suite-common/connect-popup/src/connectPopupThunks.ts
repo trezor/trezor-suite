@@ -1,5 +1,6 @@
 import { AsyncThunkAction } from '@reduxjs/toolkit';
 
+import { EventType, analytics } from '@suite-common/analytics';
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
@@ -134,13 +135,13 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch(connectPopupActions.finishCall());
             }
 
-            /*analytics.report({
+            analytics.report({
                 type: EventType.ConnectPopupCall,
                 payload: {
                     method,
                     origin: source.origin,
                 },
-            });*/
+            });
 
             return response;
         } catch (error) {
@@ -151,14 +152,14 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch(connectPopupActions.setError(serializeError(error)));
             }
 
-            /*analytics.report({
+            analytics.report({
                 type: EventType.ConnectPopupError,
                 payload: {
                     method,
                     origin: source.origin,
                     error: error?.code,
                 },
-            });*/
+            });
 
             return {
                 success: false,
