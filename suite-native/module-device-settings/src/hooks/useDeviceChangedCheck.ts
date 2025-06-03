@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { selectIsWipingDevice } from '@suite-native/device-authorization';
 import {
     AppTabsRoutes,
     DeviceSettingsStackParamList,
@@ -26,14 +25,15 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 // he will be prompted to connect Trezor. This hook prevents usage of incorrect device.
 export const useDeviceChangedCheck = () => {
     const device = useSelector(selectSelectedDevice);
-    const isWipingDevice = useSelector(selectIsWipingDevice);
     const navigation = useNavigation<NavigationProps>();
     const initialDeviceIdRef = useRef<string | null>(null);
+    const hasDeviceBeenConnected = useRef<boolean>(false);
 
     useEffect(() => {
         // Store the initial device ID when the component mounts
         if (initialDeviceIdRef.current === null && device?.id) {
             initialDeviceIdRef.current = device.id;
+            hasDeviceBeenConnected.current = device.connected;
 
             return;
         }
@@ -43,7 +43,8 @@ export const useDeviceChangedCheck = () => {
             initialDeviceIdRef.current &&
             device?.id &&
             initialDeviceIdRef.current !== device.id &&
-            !isWipingDevice
+            !hasDeviceBeenConnected.current &&
+            !device.connected
         ) {
             TrezorConnect.cancel();
             navigation.navigate(RootStackRoutes.AppTabs, {
@@ -53,5 +54,5 @@ export const useDeviceChangedCheck = () => {
                 },
             });
         }
-    }, [device?.id, navigation, isWipingDevice]);
+    }, [device?.id, navigation, device?.connected]);
 };
