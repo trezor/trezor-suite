@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.6.0-beta.1
+# 9.6.0
 
 Starting with Connect version 9.6.0, we are introducing a new integration with Trezor Suite. The new flow is designed to provide a more seamless and user-friendly experience for users interacting with Trezor devices.
 To learn more, please take a look at the full [New Connect flow in Trezor Suite](https://connect.trezor.io/9.6.0-beta.1/guides/new-connect-flow-in-trezor-suite/) article.
