@@ -6,7 +6,6 @@ export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
     IsStellarSupportEnabled: 'isStellarSupportEnabled',
-    IsRegtestEnabled: 'isRegtestEnabled',
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
     IsDeviceOnboardingRecoveryEnabled: 'isDeviceOnboardingRecoveryEnabled',
@@ -32,7 +31,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
     [FeatureFlag.IsStellarSupportEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_STELLAR_SUPPORT_ENABLED === 'true',
-    [FeatureFlag.IsRegtestEnabled]: process.env.EXPO_PUBLIC_FF_IS_REGTEST_ENABLED === 'true',
     [FeatureFlag.IsConnectPopupEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true',
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
@@ -51,7 +49,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsCardanoSendEnabled,
     FeatureFlag.IsStellarSupportEnabled,
-    FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsConnectPopupEnabled,
     FeatureFlag.IsDeviceOnboardingRecoveryEnabled,
     FeatureFlag.IsWalletConnectEnabled,

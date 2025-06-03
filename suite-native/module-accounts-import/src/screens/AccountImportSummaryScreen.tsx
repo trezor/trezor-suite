@@ -7,7 +7,6 @@ import {
 } from '@suite-common/wallet-core';
 import { ErrorMessage } from '@suite-native/atoms';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackParamList,
@@ -29,7 +28,6 @@ export const AccountImportSummaryScreen = ({
 >) => {
     const { accountInfo, networkSymbol } = route.params;
 
-    const isRegtestEnabled = useFeatureFlag(FeatureFlag.IsRegtestEnabled);
     useHandleHardwareBackNavigation();
 
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
@@ -41,9 +39,9 @@ export const AccountImportSummaryScreen = ({
     );
     const supportedNetworks = useSelector(selectDiscoveryNetworkSymbols);
 
-    const isAccountImportSupported =
-        supportedNetworks.some(supportedSymbol => supportedSymbol === networkSymbol) ||
-        (networkSymbol === 'regtest' && isRegtestEnabled);
+    const isAccountImportSupported = supportedNetworks.some(
+        supportedSymbol => supportedSymbol === networkSymbol,
+    );
 
     if (!isAccountImportSupported) {
         return (

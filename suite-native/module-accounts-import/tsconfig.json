@@ -32,7 +32,6 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../discovery" },
-        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../icons" },
