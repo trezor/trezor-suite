@@ -73,5 +73,3 @@ export const selectSendFormReviewButtonRequestsCount = (
 
     return isCardano ? sendFormReviewRequest.length - 1 : sendFormReviewRequest.length;
 };
-
-export const selectAreFeesLoading = (state: SendRootState) => state.wallet.send.areFeesLoading;

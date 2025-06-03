@@ -1,11 +1,10 @@
-import { ReactNode } from 'react';
+import React from 'react';
 
 import {
     Box,
     Column,
     RadioCard,
     Row,
-    SkeletonRectangle,
     TOOLTIP_DELAY_NORMAL,
     Text,
     Tooltip,
@@ -18,12 +17,11 @@ type FeeCardProps = {
     value: FeeLevel['label'];
     isSelected: boolean;
     changeFeeLevel: (level: FeeLevel['label']) => void;
-    topLeftChild: ReactNode;
-    topRightChild?: ReactNode;
-    bottomLeftChild: ReactNode;
-    bottomRightChild: ReactNode;
-    tooltipContent?: ReactNode;
-    isLoading?: boolean;
+    topLeftChild: React.ReactNode;
+    topRightChild?: React.ReactNode;
+    bottomLeftChild: React.ReactNode;
+    bottomRightChild: React.ReactNode;
+    tooltipContent?: React.ReactNode;
     'data-testid'?: string;
 };
 
@@ -36,7 +34,6 @@ export const FeeCard = ({
     bottomLeftChild,
     bottomRightChild,
     tooltipContent,
-    isLoading,
     'data-testid': dataTestId,
 }: FeeCardProps) => (
     <Box data-testid={dataTestId} minWidth={FEE_CARD_MIN_WIDTH}>
@@ -46,15 +43,13 @@ export const FeeCard = ({
                     <Row justifyContent="space-between">
                         <Text typographyStyle="highlight">{topLeftChild}</Text>
                         <Text variant="tertiary" typographyStyle="hint">
-                            {isLoading ? <SkeletonRectangle animate={true} /> : topRightChild}
+                            {topRightChild}
                         </Text>
                     </Row>
                     <Row justifyContent="space-between" height={24}>
-                        <Text>
-                            {isLoading ? <SkeletonRectangle animate={true} /> : bottomLeftChild}
-                        </Text>
+                        <Text>{bottomLeftChild}</Text>
                         <Text variant="tertiary" typographyStyle="hint">
-                            {isLoading ? <SkeletonRectangle animate={true} /> : bottomRightChild}
+                            {bottomRightChild}
                         </Text>
                     </Row>
                 </Column>
