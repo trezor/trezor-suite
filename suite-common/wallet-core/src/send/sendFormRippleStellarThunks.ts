@@ -283,6 +283,12 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             // It would be better if we could use `@trezor/connect-plugin-stellar`.
             // const transformedTransaction = transformTransaction(selectedAccount.path, transaction);
             const transformedTransaction = {
+                device: {
+                    path: device.path,
+                    instance: device.instance,
+                    state: device.state,
+                },
+                useEmptyPassphrase: device.useEmptyPassphrase,
                 path: selectedAccount.path,
                 networkPassphrase: transaction.networkPassphrase,
                 transaction: {
@@ -298,6 +304,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     },
                     operations: [operation],
                 },
+                chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             };
             response = await TrezorConnect.stellarSignTransaction(transformedTransaction);
 
