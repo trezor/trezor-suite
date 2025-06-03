@@ -150,9 +150,9 @@ jobs:
       - name: Extract suite desktop version
         id: extract-version
         run: |
-          echo "VERSION=$(jq -r .suiteVersion packages/suite/package.json)" >> $GITHUB_ENV
+          echo "VERSION=$(jq -r .suiteVersion packages/suite/package.json)" >> $GITHUB_OUTPUT
 
-      - name: Upload suite-desktop to staging-data.trezor.io latest
+      - name: Upload suite-desktop to staging-data.trezor.io latest and version folder
         run: |
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/latest
           aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://staging-data.trezor.io/suite/releases/desktop/v${{ steps.extract-version.outputs.VERSION }}/

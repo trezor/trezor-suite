@@ -144,8 +144,9 @@ while IFS= read -r line; do
       done
 
       if ((power > 0)); then
-        size_decimal=$(echo "scale=2; $size / (1024 ^ $power)" | bc)
-        formatted_size="$size_decimal ${units[$power]}"
+        # Calculate size in the appropriate unit without using bc
+        size_in_unit=$((size / (1024 ** power)))
+        formatted_size="$size_in_unit ${units[$power]}"
       else
         formatted_size="$size ${units[$power]}"
       fi
