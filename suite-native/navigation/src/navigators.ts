@@ -267,6 +267,9 @@ export type RootStackParamList = {
     [RootStackRoutes.CoinEnablingInit]: undefined;
     [RootStackRoutes.ConnectPopup]: undefined;
     [RootStackRoutes.WalletConnectSessionPopup]: undefined;
+    [RootStackRoutes.WalletConnectSwitchAccount]: {
+        sessionTopic: string;
+    };
     [RootStackRoutes.WalletConnectPair]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.BackupFailedModal]: undefined;

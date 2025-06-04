@@ -420,8 +420,14 @@ export const en = {
             scanQR: 'Scan WalletConnect QR',
             addConnection: 'Add connection',
             activeConnections: 'Active connections',
-            noActiveConnections: 'No active connections',
+            noConnectedApps: 'No connected apps',
+            noConnectedAppsDescription:
+                'Use your Trezor with third-party apps and wallets to manage your assets.',
             disconnect: 'Disconnect',
+            switchAccount: 'Switch account',
+            app: 'App',
+            requestedNetworks: 'Requested networks',
+            selectedAccount: 'Selected account',
             serviceStatus: {
                 verified: 'Verified',
                 unknown: 'Unknown',
@@ -433,6 +439,10 @@ export const en = {
                 isScam: 'The request was detected as a scam and was blocked automatically.',
                 unableToVerify:
                     'We were unable to verify the request authenticity. Please make sure you trust the source.',
+                requiredNetworksNotActivated:
+                    'Some required networks are inactive. Activate them for full app compatibility.',
+                noNetworksActivated:
+                    'To connect to the app, activate at least one supported network in settings.',
             },
         },
     },

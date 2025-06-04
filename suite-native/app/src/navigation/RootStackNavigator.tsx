@@ -15,6 +15,7 @@ import {
     ConnectPopupScreen,
     WalletConnectPairScreen,
     WalletConnectSessionPopupScreen,
+    WalletConnectSwitchAccountScreen,
 } from '@suite-native/module-connect-popup';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import {
@@ -92,6 +93,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.WalletConnectSessionPopup}
                 component={WalletConnectSessionPopupScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.WalletConnectSwitchAccount}
+                component={WalletConnectSwitchAccountScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.WalletConnectPair}
