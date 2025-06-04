@@ -161,7 +161,7 @@ describe('commonSelectors', () => {
     });
 
     describe('selectTradeToBeOpened', () => {
-        const gerMockStateForTradeToBeOpened = (orderId: string | undefined) =>
+        const getMockStateForTradeToBeOpened = (orderId: string | undefined) =>
             ({
                 wallet: {
                     tradingNew: {
@@ -173,18 +173,18 @@ describe('commonSelectors', () => {
 
         it('should return undefined when "tradeOrderIdToBeOpened" is not specified', () => {
             expect(
-                selectTradeToBeOpened(gerMockStateForTradeToBeOpened(undefined)),
+                selectTradeToBeOpened(getMockStateForTradeToBeOpened(undefined)),
             ).toBeUndefined();
         });
 
         it('should return undefined when "tradeOrderIdToBeOpened" is not found', () => {
             expect(
-                selectTradeToBeOpened(gerMockStateForTradeToBeOpened('non-existing-order')),
+                selectTradeToBeOpened(getMockStateForTradeToBeOpened('non-existing-order')),
             ).toBeUndefined();
         });
 
         it('should return trade with same orderId as "tradeOrderIdToBeOpened"', () => {
-            expect(selectTradeToBeOpened(gerMockStateForTradeToBeOpened('order1'))).toEqual({
+            expect(selectTradeToBeOpened(getMockStateForTradeToBeOpened('order1'))).toEqual({
                 data: { orderId: 'order1' },
             });
         });
