@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
+import { NativeSpacing } from '@trezor/theme';
 
 type SettingsSectionProps = {
     title: ReactNode;
@@ -10,6 +11,7 @@ type SettingsSectionProps = {
     rightIconName?: IconName;
     onRightIconPress?: () => void;
     subtitle?: string;
+    spacing?: NativeSpacing;
 };
 
 export const SettingsSection = ({
@@ -18,6 +20,7 @@ export const SettingsSection = ({
     children,
     rightIconName,
     onRightIconPress,
+    spacing = 'sp24',
 }: SettingsSectionProps) => (
     <Box>
         <Box
@@ -42,7 +45,7 @@ export const SettingsSection = ({
             )}
         </Box>
         <Card>
-            <VStack spacing="sp24">{children}</VStack>
+            <VStack spacing={spacing}>{children}</VStack>
         </Card>
     </Box>
 );

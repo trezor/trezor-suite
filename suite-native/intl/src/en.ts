@@ -413,7 +413,12 @@ export const en = {
                 'An external app is trying to connect to your Trezor Suite. Make sure you trust the source!',
             connect: 'Connect',
             pairingUrl: 'Enter pairing URL',
-            scanQR: 'Scan QR code',
+            provideConnectionString: 'Provide connection string',
+            provideConnectionStringDescription:
+                'You can manually add a connection here by pasting the WalletConnect string.',
+            connectionStringPlaceholder: 'Connection string...',
+            scanQR: 'Scan WalletConnect QR',
+            addConnection: 'Add connection',
             activeConnections: 'Active connections',
             noActiveConnections: 'No active connections',
             disconnect: 'Disconnect',
@@ -680,10 +685,6 @@ export const en = {
                     title: 'Advanced',
                     subtitle: 'Expert features for power users ',
                 },
-                walletConnect: {
-                    title: 'WalletConnect',
-                    subtitle: 'Use external apps using the WalletConnect protocol',
-                },
             },
             support: {
                 title: 'Support',
@@ -693,6 +694,14 @@ export const en = {
                 },
                 about: {
                     title: 'About ',
+                },
+            },
+            connections: {
+                title: 'Connections',
+                walletConnect: {
+                    title: 'WalletConnect',
+                    subtitle: 'Use external apps using the WalletConnect protocol',
+                    add: 'Add WalletConnect connection',
                 },
             },
         },

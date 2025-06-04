@@ -21,7 +21,6 @@ import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
-    const isWalletConnectEnabled = useFeatureFlag(FeatureFlag.IsWalletConnectEnabled);
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
@@ -80,17 +79,6 @@ export const FeaturesSettings = () => {
                         onPress={() => navigateTo(SettingsStackRoutes.SettingsDeviceChecks)}
                     />
                 </>
-            )}
-            {isWalletConnectEnabled && (
-                <SettingsSectionItem
-                    iconName="plugs"
-                    title={<Translation id="moduleSettings.items.features.walletConnect.title" />}
-                    subtitle={
-                        <Translation id="moduleSettings.items.features.walletConnect.subtitle" />
-                    }
-                    onPress={() => navigation.navigate(RootStackRoutes.WalletConnectPair)}
-                    testID="@settings/wallet-connect"
-                />
             )}
         </SettingsSection>
     );

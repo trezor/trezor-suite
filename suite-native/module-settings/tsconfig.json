@@ -30,6 +30,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../storage" },

@@ -1,3 +1,4 @@
+export * from './components/WalletConnectPairBottomSheet';
 export * from './screens/ConnectPopupScreen';
 export * from './screens/WalletConnectSessionPopupScreen';
 export * from './screens/WalletConnectPairScreen';
