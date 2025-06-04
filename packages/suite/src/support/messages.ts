@@ -5492,13 +5492,13 @@ export default defineMessages({
         defaultMessage: 'Unsupported address format.',
         id: 'TR_UNSUPPORTED_ADDRESS_FORMAT',
     },
-    TR_CONVERT_TO_LOWERCASE: {
-        defaultMessage: 'Convert to lowercase',
-        id: 'TR_CONVERT_TO_LOWERCASE',
+    TR_CONVERTED_TO_LOWERCASE: {
+        defaultMessage: 'Converted to lowercase',
+        id: 'TR_CONVERTED_TO_LOWERCASE',
     },
-    TR_ADD_BITCOINCASH_PREFIX: {
-        defaultMessage: 'Add "bitcoincash:" prefix',
-        id: 'TR_ADD_BITCOINCASH_PREFIX',
+    TR_ADDED_BITCOINCASH_PREFIX: {
+        defaultMessage: "Prefix 'bitcoincash:' added. Make sure this is a Bitcoin Cash address.",
+        id: 'TR_ADDED_BITCOINCASH_PREFIX',
     },
     TR_CONVERT_TO_CHECKSUM_ADDRESS: {
         defaultMessage: 'Convert to checksum',

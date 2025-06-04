@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import styled from 'styled-components';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -9,7 +8,6 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
-    getInputState,
     hasBitcoinCashAddressPrefix,
     isAddressDeprecated,
     isAddressValid,
@@ -17,7 +15,7 @@ import {
     isBitcoinCashAddressUppercase,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
-import { Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
+import { Box, Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -39,33 +37,19 @@ import { captureSentryMessage } from 'src/utils/suite/sentry';
 
 import { Translation } from '../../../../components/suite/Translation';
 
-const Container = styled.div`
-    position: relative;
-`;
-
-const Text = styled.span`
-    display: flex;
-    align-items: center;
-
-    > div {
-        margin-left: 4px;
-    }
-`;
-
-const MetadataLabelingWrapper = styled.div`
-    max-width: 200px;
-`;
-interface AddressProps {
+type AddressProps = {
     outputId: number;
     outputsCount: number;
     output: Partial<Output>;
-}
+};
 
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] =
         useState<ReturnType<typeof isAddressDeprecated>>(undefined);
     const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
+    const [autocorrectMessage, setAutocorrectMessage] = useState<string | undefined>();
     const contractAddressWarningDismissed = useRef(false);
+    const autocorrectTimeout = useRef<NodeJS.Timeout | null>(null);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -104,12 +88,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         contractAddressWarningDismissed.current = false;
     }, [address]);
 
-    const getInputErrorState = () => {
-        if (hasAddressChecksummed && !addressError) {
+    const getInputState = () => {
+        if (addressError) {
+            return 'error';
+        }
+
+        if (hasAddressChecksummed) {
             return 'default';
         }
-        if (addressError) {
-            return getInputState(addressError);
+
+        if (autocorrectMessage) {
+            return 'warning';
         }
 
         return undefined;
@@ -212,39 +201,32 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
 
                 return {};
-            case 'uppercase':
-                return {
-                    buttonProps: {
-                        onClick: () => {
-                            setValue(inputName, address.toLowerCase(), {
-                                shouldValidate: true,
-                            });
-                            composeTransaction();
-                        },
-                        text: translationString('TR_CONVERT_TO_LOWERCASE'),
-                    },
-                };
-            case 'bch_missing_prefix':
-                return {
-                    buttonProps: {
-                        onClick: () => {
-                            setValue(inputName, 'bitcoincash:' + address, {
-                                shouldValidate: true,
-                            });
-                            composeTransaction();
-                        },
-                        text: translationString('TR_ADD_BITCOINCASH_PREFIX'),
-                    },
-                };
             default:
                 return {};
         }
+    };
+
+    const setAutocorrectMessageWithTimeout = (message: string) => {
+        setAutocorrectMessage(message);
+
+        if (autocorrectTimeout.current) {
+            clearTimeout(autocorrectTimeout.current);
+        }
+
+        autocorrectTimeout.current = setTimeout(() => {
+            setAutocorrectMessage(undefined);
+        }, 3000);
     };
 
     const { ref: inputRef, ...inputField } = register(inputName, {
         onChange: () => {
             composeTransaction(amountInputName);
             setHasAddressChecksummed(false);
+            setAutocorrectMessage(undefined);
+
+            if (autocorrectTimeout.current) {
+                clearTimeout(autocorrectTimeout.current);
+            }
         },
         required: translationString('RECIPIENT_IS_NOT_SET'),
         validate: {
@@ -262,7 +244,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     (networkType === 'bitcoin' && isBech32AddressUppercase(value)) ||
                     (symbol === 'bch' && isBitcoinCashAddressUppercase(value))
                 ) {
-                    return translationString('RECIPIENT_IS_NOT_VALID');
+                    setValue(inputName, value.toLowerCase(), { shouldValidate: true });
+                    composeTransaction();
+                    setAutocorrectMessageWithTimeout(
+                        translationString('TR_CONVERTED_TO_LOWERCASE'),
+                    );
+
+                    return true;
                 }
             },
             valid: (value: string) => {
@@ -282,7 +270,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             },
             bch_missing_prefix: (value: string) => {
                 if (symbol === 'bch' && !hasBitcoinCashAddressPrefix(value)) {
-                    return translationString('RECIPIENT_IS_NOT_VALID');
+                    setValue(inputName, 'bitcoincash:' + value, {
+                        shouldValidate: true,
+                    });
+                    setAutocorrectMessageWithTimeout(
+                        translationString('TR_ADDED_BITCOINCASH_PREFIX'),
+                    );
+                    composeTransaction();
+
+                    return true;
                 }
             },
             evmchecks: async (address: string) => {
@@ -347,10 +343,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         address: addressValue,
         knownOnly: true,
     });
-    const addressBottomText = isAddressWithLabel ? addressLabelComponent : null;
 
     const getBottomText = () => {
-        if (hasAddressChecksummed && !addressError) {
+        if (addressError) {
+            return <InputError message={addressError.message} {...getInputErrorProps()} />;
+        }
+
+        if (hasAddressChecksummed) {
             return (
                 <Row width="100%" justifyContent="flex-start" gap={spacings.xs}>
                     <Translation
@@ -371,102 +370,101 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 </Row>
             );
         }
-        if (addressError) {
-            return <InputError message={addressError.message} {...getInputErrorProps()} />;
+
+        if (autocorrectMessage) {
+            return autocorrectMessage;
         }
 
-        return addressBottomText;
+        return isAddressWithLabel ? addressLabelComponent : null;
     };
 
     const getBottomTextIconComponent = () => {
-        if (hasAddressChecksummed && !addressError) {
+        if (addressError) {
+            return <Icon name="warningCircle" size="medium" variant="destructive" />;
+        }
+
+        if (hasAddressChecksummed) {
             return <Icon name="check" size="medium" variant="disabled" />;
+        }
+
+        if (autocorrectMessage) {
+            return <Icon name="warningCircle" size="medium" variant="warning" />;
         }
 
         if (isAddressWithLabel) {
             return <CoinLogo symbol={symbol} size={16} />;
         }
 
-        if (addressError) {
-            return <Icon name="warningCircle" size="medium" variant="destructive" />;
-        }
-
         return undefined;
     };
 
     return (
-        <Container>
-            <Input
-                inputState={getInputErrorState()}
-                innerAddon={
-                    metadataEnabled && broadcastEnabled ? (
-                        <MetadataLabelingWrapper>
-                            <MetadataLabeling
-                                defaultVisibleValue=""
-                                payload={{
-                                    type: 'outputLabel',
-                                    entityKey: account.key,
-                                    // txid is not known at this moment. metadata is only saved
-                                    // along with other sendForm data and processed in sendFormActions.
-                                    txid: 'will-be-replaced',
-                                    outputIndex: outputId,
-                                    defaultValue: `${outputId}`,
-                                    value: label,
-                                }}
-                                onSubmit={(value: string | undefined) => {
-                                    setValue(`outputs.${outputId}.label`, value || '');
-                                    setDraftSaveRequest(true);
-                                }}
-                                visible
-                            />
-                        </MetadataLabelingWrapper>
-                    ) : undefined
-                }
-                label={
-                    <Text>
-                        <Translation id="RECIPIENT_ADDRESS" />
-                    </Text>
-                }
-                labelHoverRight={
-                    <Button variant="tertiary" size="tiny" icon="qrCode" onClick={handleQrClick}>
-                        <Translation id="RECIPIENT_SCAN" />
-                    </Button>
-                }
-                labelLeft={
-                    <p>
-                        <Translation
-                            id={
-                                outputsCount > 1
-                                    ? 'TR_SEND_RECIPIENT_ADDRESS'
-                                    : 'TR_SEND_ADDRESS_SECTION'
-                            }
-                            values={{ index: recipientId }}
-                        />
-                    </p>
-                }
-                labelRight={
-                    outputsCount > 1 ? (
-                        <IconButton
-                            icon="x"
-                            size="tiny"
-                            variant="tertiary"
-                            data-testid={`outputs.${outputId}.remove`}
-                            onClick={() => {
-                                removeOutput(outputId);
-                                // compose by first Output
-                                composeTransaction();
+        <Input
+            inputState={getInputState()}
+            innerAddon={
+                metadataEnabled && broadcastEnabled ? (
+                    <Box maxWidth={200}>
+                        <MetadataLabeling
+                            defaultVisibleValue=""
+                            payload={{
+                                type: 'outputLabel',
+                                entityKey: account.key,
+                                // txid is not known at this moment. metadata is only saved
+                                // along with other sendForm data and processed in sendFormActions.
+                                txid: 'will-be-replaced',
+                                outputIndex: outputId,
+                                defaultValue: `${outputId}`,
+                                value: label,
                             }}
+                            onSubmit={(value: string | undefined) => {
+                                setValue(`outputs.${outputId}.label`, value || '');
+                                setDraftSaveRequest(true);
+                            }}
+                            visible
                         />
-                    ) : undefined
-                }
-                bottomText={getBottomText()}
-                bottomTextIconComponent={getBottomTextIconComponent()}
-                data-testid={inputName}
-                defaultValue={addressValue}
-                maxLength={formInputsMaxLength.address}
-                innerRef={inputRef}
-                {...inputField}
-            />
-        </Container>
+                    </Box>
+                ) : undefined
+            }
+            label={<Translation id="RECIPIENT_ADDRESS" />}
+            labelHoverRight={
+                <Button variant="tertiary" size="tiny" icon="qrCode" onClick={handleQrClick}>
+                    <Translation id="RECIPIENT_SCAN" />
+                </Button>
+            }
+            labelLeft={
+                <p>
+                    <Translation
+                        id={
+                            outputsCount > 1
+                                ? 'TR_SEND_RECIPIENT_ADDRESS'
+                                : 'TR_SEND_ADDRESS_SECTION'
+                        }
+                        values={{ index: recipientId }}
+                    />
+                </p>
+            }
+            labelRight={
+                outputsCount > 1 ? (
+                    <IconButton
+                        icon="x"
+                        size="tiny"
+                        variant="tertiary"
+                        data-testid={`outputs.${outputId}.remove`}
+                        onClick={() => {
+                            removeOutput(outputId);
+                            // compose by first Output
+                            composeTransaction();
+                        }}
+                    />
+                ) : undefined
+            }
+            bottomText={getBottomText()}
+            bottomTextIconComponent={getBottomTextIconComponent()}
+            data-testid={inputName}
+            defaultValue={addressValue}
+            maxLength={formInputsMaxLength.address}
+            innerRef={inputRef}
+            {...inputField}
+        />
     );
 };
