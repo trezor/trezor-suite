@@ -2081,6 +2081,10 @@ export default defineMessages({
         description: 'Prompt to user to connect his device.',
         id: 'TR_CONNECT_YOUR_DEVICE',
     },
+    TR_CONNECT_VIA_BLUETOOTH: {
+        defaultMessage: 'Connect via Bluetooth',
+        id: 'TR_CONNECT_VIA_BLUETOOTH',
+    },
     TR_RECONNECT_YOUR_DEVICE: {
         defaultMessage: 'Reconnect your Trezor',
         description: 'Prompt to user to reconnect his device.',
@@ -9864,6 +9868,129 @@ export default defineMessages({
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR: {
         defaultMessage: 'Unpair',
         id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR',
+    },
+    TR_BLUETOOTH_VERSION_NOT_COMPATIBLE: {
+        id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE',
+        defaultMessage: 'Incompatible Bluetooth version',
+    },
+    TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1: {
+        id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1',
+        defaultMessage: 'Bluetooth version not supported',
+    },
+    TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE2: {
+        id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE2',
+        defaultMessage:
+            'Your computer’s Bluetooth version doesn’t support Trezor Suite. Use a cable or an adapter that supports Bluetooth 5.0 or higher.',
+    },
+    TR_BLUETOOTH_TURNED_OFF: {
+        id: 'TR_BLUETOOTH_TURNED_OFF',
+        defaultMessage: 'Bluetooth is turned off',
+    },
+    TR_BLUETOOTH_SETTINGS: {
+        id: 'TR_BLUETOOTH_SETTINGS',
+        defaultMessage: 'Open System Settings',
+    },
+    TR_BLUETOOTH_TURN_ON_BLUETOOTH: {
+        id: 'TR_BLUETOOTH_TURN_ON_BLUETOOTH',
+        defaultMessage: 'Turn on Bluetooth',
+    },
+    TR_BLUETOOTH_TURNED_OFF_TEXT: {
+        id: 'TR_BLUETOOTH_TURNED_OFF_TEXT',
+        defaultMessage:
+            'Bluetooth is currently turned off on this computer. Go to System Settings > Bluetooth and turn on Bluetooth.',
+    },
+    TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS: {
+        id: 'TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS',
+        defaultMessage: 'Open permissions settings',
+    },
+    TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS: {
+        id: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
+        defaultMessage: 'Allow bluetooth permissions',
+    },
+    TR_BLUETOOTH_OR_CONNECT_VIA_CABLE: {
+        id: 'TR_BLUETOOTH_OR_CONNECT_VIA_CABLE',
+        defaultMessage: 'Allow bluetooth permissions',
+    },
+    TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS: {
+        id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS',
+        defaultMessage:
+            'Cannot open permission settings. Go to Settings/Privacy and security/Bluetooth.',
+    },
+    TR_BLUETOOTH_CONNECT: {
+        id: 'TR_BLUETOOTH_CONNECT',
+        defaultMessage: 'Connect',
+    },
+    TR_BLUETOOTH_CONNECTED: {
+        id: 'TR_BLUETOOTH_CONNECTED',
+        defaultMessage: 'Connected',
+    },
+    TR_BLUETOOTH_CONNECTING: {
+        id: 'TR_BLUETOOTH_CONNECTING',
+        defaultMessage: 'Connecting',
+    },
+    TR_BLUETOOTH_DISCONNECT: {
+        id: 'TR_BLUETOOTH_DISCONNECT',
+        defaultMessage: 'Disconnect',
+    },
+    TR_BLUETOOTH_DISCONNECTED_BUT_WAITING: {
+        id: 'TR_BLUETOOTH_DISCONNECTED_BUT_WAITING',
+        defaultMessage: 'Waiting',
+    },
+    TR_BLUETOOTH_TRY_AGAIN: {
+        id: 'TR_BLUETOOTH_TRY_AGAIN',
+        defaultMessage: 'Try again',
+    },
+    TR_BLUETOOTH_PAIRING: {
+        id: 'TR_BLUETOOTH_PAIRING',
+        defaultMessage: 'Pairing',
+    },
+    TR_BLUETOOTH_PAIRED: {
+        id: 'TR_BLUETOOTH_PAIRED',
+        defaultMessage: 'Paired',
+    },
+    TR_BLUETOOTH_SCANNING: {
+        id: 'TR_BLUETOOTH_SCANNING',
+        defaultMessage: 'Scanning',
+    },
+    TR_BLUETOOTH_CANCELLING: {
+        id: 'TR_BLUETOOTH_CANCELLING',
+        defaultMessage: 'Cancelling',
+    },
+    TR_BLUETOOTH_PAIRING_FAILED: {
+        id: 'TR_BLUETOOTH_PAIRING_FAILED',
+        defaultMessage: 'Pairing failed',
+    },
+    TR_BLUETOOTH_PIN_CODE: {
+        id: 'TR_BLUETOOTH_PIN_CODE',
+        defaultMessage: 'Bluetooth pairing code',
+    },
+    TR_BLUETOOTH_PIN_CODE_DONT_MATCH: {
+        id: 'TR_BLUETOOTH_PIN_CODE_DONT_MATCH',
+        defaultMessage: "Codes don't match?",
+    },
+    TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN: {
+        id: 'TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN',
+        defaultMessage: 'Check tips & try again',
+    },
+    TR_BLUETOOTH_X_TREZORS_FOUND: {
+        id: 'TR_BLUETOOTH_X_TREZORS_FOUND',
+        defaultMessage: '{number} Trezors Found',
+    },
+    TR_BLUETOOTH_NO_TREZOR_FOUND: {
+        id: 'TR_BLUETOOTH_NO_TREZOR_FOUND',
+        defaultMessage: 'No Trezor Found',
+    },
+    TR_BLUETOOTH_SCAN_AGAIN: {
+        id: 'TR_BLUETOOTH_SCAN_AGAIN',
+        defaultMessage: 'Scan again',
+    },
+    TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR: {
+        id: 'TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR',
+        defaultMessage: 'Not the Trezor you’re looking for?',
+    },
+    TR_BLUETOOTH_GHOST_DEVICE: {
+        id: 'TR_BLUETOOTH_GHOST_DEVICE',
+        defaultMessage: 'Trezor not found. Remove it and create a new connection.',
     },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
