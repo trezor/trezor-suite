@@ -1,6 +1,7 @@
 import { ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { fetchAndUpdateAccountThunk } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { exchangeThunks } from '../';
@@ -55,6 +56,7 @@ export const watchTradeApprovalThunk = createThunk(
         };
 
         dispatch(tradingExchangeActions.saveSelectedQuote(updatedSelectedQuote));
+        await dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
 
         if (!updatedSelectedQuote.dexTx || !updatedSelectedQuote.receiveAddress) {
             return;

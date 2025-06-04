@@ -1,74 +1,44 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
-import { createDeferred } from '@trezor/utils';
+import { Discovery, DiscoveryStatus, Timestamp } from '@suite-common/wallet-types';
+import { DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
-import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
-
-export type DiscoveryState = Discovery[];
 
 export type DiscoveryRootState = {
     wallet: {
-        discovery: DiscoveryState;
+        discovery: Discovery;
     };
 };
 
-const initialState: DiscoveryState = [];
+const initialState: Discovery = {};
 
-const update = (draft: DiscoveryState, payload: PartialDiscovery, resolve?: boolean) => {
-    const index = draft.findIndex(f => f.deviceState === payload.deviceState);
-    if (index >= 0) {
-        const dfd = discoveryRunningStateLocks[draft[index].deviceState];
-        draft[index] = {
-            ...draft[index],
-            ...payload,
-        };
-        if (resolve && dfd) {
-            dfd.resolve();
-            delete discoveryRunningStateLocks[draft[index].deviceState];
-        }
-        if (!payload.error) {
-            delete draft[index].error;
-        }
+const update = (draft: Discovery, payload: { status: DiscoveryStatus; path: DeviceUniquePath }) => {
+    if (!draft[payload.path]) {
+        return;
     }
+    draft[payload.path] = {
+        ...draft[payload.path],
+        ...payload.status,
+    };
 };
 
 export const prepareDiscoveryReducer = createReducerWithExtraDeps(
     initialState,
-    (builder, extra) => {
-        builder
-            .addCase(discoveryActions.createDiscovery, (state, { payload }) => {
-                const index = state.findIndex(d => d.deviceState === payload.deviceState);
-                if (index < 0) {
-                    state.push(payload);
-                }
-            })
-            .addCase(discoveryActions.startDiscovery, (state, { payload }) => {
-                update(state, payload);
-                const index = state.findIndex(f => f.deviceState === payload.deviceState);
-                if (index >= 0) {
-                    discoveryRunningStateLocks[state[index].deviceState] = createDeferred();
-                }
-            })
-            .addCase(discoveryActions.removeDiscovery, (state, { payload }) => {
-                const index = state.findIndex(f => f.deviceState === payload);
-                state.splice(index, 1);
-            })
-            .addCase(discoveryActions.updateDiscovery, (state, { payload }) => {
-                update(state, payload);
-            })
-            .addCase(discoveryActions.interruptDiscovery, (state, { payload }) => {
-                update(state, payload);
-            })
-            .addCase(discoveryActions.completeDiscovery, (state, { payload }) => {
-                update(state, payload, true);
-            })
-            .addCase(discoveryActions.stopDiscovery, (state, { payload }) => {
-                update(state, payload, true);
-            })
-            .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                extra.reducers.storageLoadDiscovery,
-            );
+    (builder, _extra) => {
+        builder.addCase(discoveryActions.startDiscovery, (state, { payload }) => {
+            state[payload.path] = {
+                status: 'starting',
+                isAddingHiddenWallet: payload.isAddingHiddenWallet,
+                isAddingExistingWallet: payload.isAddingExistingWallet,
+                startTimestamp: Date.now() as Timestamp,
+            };
+        });
+        builder.addCase(discoveryActions.updateDiscovery, (state, { payload }) => {
+            update(state, payload);
+        });
+
+        builder.addCase(discoveryActions.deleteDiscovery, (state, { payload }) => {
+            delete state[payload.path];
+        });
     },
 );

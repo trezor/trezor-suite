@@ -114,7 +114,7 @@ export const NeedsAttentionBanner = ({
             case 'used-in-other-window':
             case 'was-used-in-other-window':
             case 'unacquired':
-                dispatch(acquireDevice(device));
+                dispatch(acquireDevice({ requestedDevice: device }));
                 break;
 
             default:

@@ -8,7 +8,10 @@ import { Options } from '../messageSystemUtils';
 
 const { getDeviceFeatures, getConnectDevice, getMessageSystemConfig } = testMocks;
 
-const defaultOptions: Options = { settings: { tor: false, enabledNetworks: ['btc'] } };
+const defaultOptions: Options = {
+    settings: { tor: false, enabledNetworks: ['btc'] },
+    countryCode: 'US',
+};
 const defaultTransportsOption: TransportInfo = {
     type: 'BridgeTransport',
     apiType: 'usb',
@@ -51,9 +54,9 @@ export const createVersionRange = [
     },
 ];
 
-export const validateDurationCompatibility = [
+export const isDurationCompatible = [
     {
-        description: 'validateDurationCompatibility case 1',
+        description: 'isDurationCompatible case 1',
         durationCondition: {
             from: '2021-03-01T12:10:00.000Z',
             to: '2022-03-01T12:10:00.000Z',
@@ -62,7 +65,7 @@ export const validateDurationCompatibility = [
         result: true,
     },
     {
-        description: 'validateDurationCompatibility case 2',
+        description: 'isDurationCompatible case 2',
         durationCondition: {
             from: '2021-03-01T12:10:00.000Z',
             to: '2022-03-01T12:10:00.000Z',
@@ -71,7 +74,7 @@ export const validateDurationCompatibility = [
         result: false,
     },
     {
-        description: 'validateDurationCompatibility case 3',
+        description: 'isDurationCompatible case 3',
         durationCondition: {
             from: '2021-03-01T12:09:00.000Z',
             to: '2022-03-01T12:10:00.000Z',
@@ -80,7 +83,7 @@ export const validateDurationCompatibility = [
         result: true,
     },
     {
-        description: 'validateDurationCompatibility case 4',
+        description: 'isDurationCompatible case 4',
         durationCondition: {
             from: '2021-03-01T12:09:00.000Z',
             to: '2022-03-01T12:10:00.000Z',
@@ -89,7 +92,7 @@ export const validateDurationCompatibility = [
         result: false,
     },
     {
-        description: 'validateDurationCompatibility case 5',
+        description: 'isDurationCompatible case 5',
         durationCondition: {
             from: '2021-03-01T12:09:00.000Z',
             to: '2022-03-01T12:10:00.000Z',
@@ -99,57 +102,57 @@ export const validateDurationCompatibility = [
     },
 ];
 
-export const validateSettingsCompatibility = [
+export const areSettingsCompatible = [
     {
-        description: 'validateSettingsCompatibility case 1',
+        description: 'areSettingsCompatible case 1',
         settingsCondition: [{ ltc: true }],
         currentSettings: { tor: false, enabledNetworks: ['ltc'] },
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 2',
+        description: 'areSettingsCompatible case 2',
         settingsCondition: [{ ltc: true }],
         currentSettings: { tor: true, enabledNetworks: [] },
         result: false,
     },
     {
-        description: 'validateSettingsCompatibility case 3',
+        description: 'areSettingsCompatible case 3',
         settingsCondition: [{ ltc: false }],
         currentSettings: { tor: false, enabledNetworks: ['ltc'] },
         result: false,
     },
     {
-        description: 'validateSettingsCompatibility case 4',
+        description: 'areSettingsCompatible case 4',
         settingsCondition: [{ ltc: false }],
         currentSettings: { tor: true, enabledNetworks: [] },
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 5',
+        description: 'areSettingsCompatible case 5',
         settingsCondition: [{}],
         currentSettings: { tor: false, enabledNetworks: ['ltc'] },
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 6',
+        description: 'areSettingsCompatible case 6',
         settingsCondition: [{}],
         currentSettings: { tor: true, enabledNetworks: [] },
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 7',
+        description: 'areSettingsCompatible case 7',
         settingsCondition: [{ tor: true }],
         currentSettings: { tor: true, enabledNetworks: ['ltc'] },
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 8',
+        description: 'areSettingsCompatible case 8',
         settingsCondition: [{ tor: false }],
         currentSettings: { tor: false, enabledNetworks: ['ltc', 'btc'] },
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 9',
+        description: 'areSettingsCompatible case 9',
         settingsCondition: [
             { tor: true, btc: false },
             { tor: false, ltc: true },
@@ -158,13 +161,13 @@ export const validateSettingsCompatibility = [
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 10',
+        description: 'areSettingsCompatible case 10',
         settingsCondition: [{ tor: true, btc: false }, { tor: true }],
         currentSettings: { tor: true, enabledNetworks: [] },
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 11',
+        description: 'areSettingsCompatible case 11',
         settingsCondition: [
             { tor: true, ltc: true },
             { tor: false, ltc: false },
@@ -173,7 +176,7 @@ export const validateSettingsCompatibility = [
         result: true,
     },
     {
-        description: 'validateSettingsCompatibility case 12',
+        description: 'areSettingsCompatible case 12',
         settingsCondition: [
             { tor: true, ltc: true },
             { tor: false, ltc: false, btc: true },
@@ -184,9 +187,9 @@ export const validateSettingsCompatibility = [
     },
 ];
 
-export const validateVersionCompatibility = [
+export const isVersionCompatible = [
     {
-        description: 'os validateVersionCompatibility case 1',
+        description: 'os isVersionCompatible case 1',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -200,7 +203,7 @@ export const validateVersionCompatibility = [
         result: true,
     },
     {
-        description: 'os validateVersionCompatibility case 2',
+        description: 'os isVersionCompatible case 2',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -214,7 +217,7 @@ export const validateVersionCompatibility = [
         result: true,
     },
     {
-        description: 'os validateVersionCompatibility case 3',
+        description: 'os isVersionCompatible case 3',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -228,7 +231,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'os validateVersionCompatibility case 4',
+        description: 'os isVersionCompatible case 4',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -242,7 +245,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'os validateVersionCompatibility case 5',
+        description: 'os isVersionCompatible case 5',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -256,7 +259,7 @@ export const validateVersionCompatibility = [
         result: true,
     },
     {
-        description: 'os validateVersionCompatibility case 6',
+        description: 'os isVersionCompatible case 6',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -270,7 +273,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'os validateVersionCompatibility case 7',
+        description: 'os isVersionCompatible case 7',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -284,7 +287,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'os validateVersionCompatibility case 8',
+        description: 'os isVersionCompatible case 8',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -298,7 +301,7 @@ export const validateVersionCompatibility = [
         result: true,
     },
     {
-        description: 'os validateVersionCompatibility case 9',
+        description: 'os isVersionCompatible case 9',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -312,7 +315,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'os validateVersionCompatibility case 10',
+        description: 'os isVersionCompatible case 10',
         condition: {
             windows: '*',
             linux: '<=15.2',
@@ -326,7 +329,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'browser validateVersionCompatibility case 1',
+        description: 'browser isVersionCompatible case 1',
         condition: {
             chrome: '~14',
             firefox: 'v2',
@@ -337,7 +340,7 @@ export const validateVersionCompatibility = [
         result: true,
     },
     {
-        description: 'browser validateVersionCompatibility case 2',
+        description: 'browser isVersionCompatible case 2',
         condition: {
             chrome: '~14',
             firefox: 'v2',
@@ -348,7 +351,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'browser validateVersionCompatibility case 3',
+        description: 'browser isVersionCompatible case 3',
         condition: {
             chrome: '~14',
             firefox: 'v2',
@@ -359,7 +362,7 @@ export const validateVersionCompatibility = [
         result: false,
     },
     {
-        description: 'browser validateVersionCompatibility case 4',
+        description: 'browser isVersionCompatible case 4',
         condition: {
             chrome: '~14',
             firefox: 'v2',
@@ -370,7 +373,7 @@ export const validateVersionCompatibility = [
         result: true,
     },
     {
-        description: 'browser validateVersionCompatibility case 5',
+        description: 'browser isVersionCompatible case 5',
         condition: {
             chrome: '~14',
             firefox: 'v2',
@@ -381,7 +384,7 @@ export const validateVersionCompatibility = [
         result: true,
     },
     {
-        description: 'browser validateVersionCompatibility case 6',
+        description: 'browser isVersionCompatible case 6',
         condition: {
             chrome: '~14',
             firefox: 'v2',
@@ -393,9 +396,9 @@ export const validateVersionCompatibility = [
     },
 ];
 
-export const validateEnvironmentCompatibility = [
+export const isEnvironmentCompatible = [
     {
-        description: 'validateEnvironmentCompatibility case 1',
+        description: 'isEnvironmentCompatible case 1',
         condition: {
             web: '',
             desktop: '0',
@@ -406,7 +409,7 @@ export const validateEnvironmentCompatibility = [
         result: true,
     },
     {
-        description: 'validateEnvironmentCompatibility case 2',
+        description: 'isEnvironmentCompatible case 2',
         condition: {
             web: '',
             desktop: '0',
@@ -417,7 +420,7 @@ export const validateEnvironmentCompatibility = [
         result: false,
     },
     {
-        description: 'validateEnvironmentCompatibility case 3',
+        description: 'isEnvironmentCompatible case 3',
         condition: {
             web: '',
             desktop: '0',
@@ -429,7 +432,7 @@ export const validateEnvironmentCompatibility = [
         result: true,
     },
     {
-        description: 'validateEnvironmentCompatibility case 4',
+        description: 'isEnvironmentCompatible case 4',
         condition: {
             web: '',
             desktop: '0',
@@ -440,7 +443,7 @@ export const validateEnvironmentCompatibility = [
         result: false,
     },
     {
-        description: 'validateEnvironmentCompatibility case 5',
+        description: 'isEnvironmentCompatible case 5',
         condition: {
             web: '*',
             desktop: '!',
@@ -453,7 +456,7 @@ export const validateEnvironmentCompatibility = [
         result: true,
     },
     {
-        description: 'validateEnvironmentCompatibility case 6',
+        description: 'isEnvironmentCompatible case 6',
         condition: {
             web: '*',
             desktop: '!',
@@ -466,7 +469,7 @@ export const validateEnvironmentCompatibility = [
         result: false,
     },
     {
-        description: 'validateEnvironmentCompatibility case 7',
+        description: 'isEnvironmentCompatible case 7',
         condition: {
             web: '*',
             desktop: '!',
@@ -480,9 +483,9 @@ export const validateEnvironmentCompatibility = [
     },
 ];
 
-export const validateTransportCompatibility = [
+export const isTransportCompatible = [
     {
-        description: 'validateTransportCompatibility case 1',
+        description: 'isTransportCompatible case 1',
         transportCondition: {
             bridge: ['2.0.27', '2.0.28'],
             webusbplugin: '*',
@@ -491,7 +494,7 @@ export const validateTransportCompatibility = [
         result: true,
     },
     {
-        description: 'validateTransportCompatibility case 2',
+        description: 'isTransportCompatible case 2',
         transportCondition: {
             bridge: ['2.0.27', '2.0.28'],
             webusbplugin: '*',
@@ -500,7 +503,7 @@ export const validateTransportCompatibility = [
         result: false,
     },
     {
-        description: 'validateTransportCompatibility case 3',
+        description: 'isTransportCompatible case 3',
         transportCondition: {
             bridge: '*',
             webusbplugin: '*',
@@ -509,7 +512,7 @@ export const validateTransportCompatibility = [
         result: true,
     },
     {
-        description: 'validateTransportCompatibility case 4',
+        description: 'isTransportCompatible case 4',
         transportCondition: {
             bridge: ['2.0.27', '2.0.28'],
             webusbplugin: '*',
@@ -518,7 +521,7 @@ export const validateTransportCompatibility = [
         result: false,
     },
     {
-        description: 'validateTransportCompatibility case 5',
+        description: 'isTransportCompatible case 5',
         transportCondition: {
             bridge: '2',
             webusbplugin: '*',
@@ -527,7 +530,7 @@ export const validateTransportCompatibility = [
         result: true,
     },
     {
-        description: 'validateTransportCompatibility case 6',
+        description: 'isTransportCompatible case 6',
         transportCondition: {
             bridge: '2',
             webusbplugin: '*',
@@ -536,7 +539,7 @@ export const validateTransportCompatibility = [
         result: false,
     },
     {
-        description: 'validateTransportCompatibility case 7',
+        description: 'isTransportCompatible case 7',
         transportCondition: {
             bridge: '2',
             webusbplugin: '*',
@@ -545,7 +548,7 @@ export const validateTransportCompatibility = [
         result: false,
     },
     {
-        description: 'validateTransportCompatibility case 8',
+        description: 'isTransportCompatible case 8',
         transportCondition: {
             bridge: '2',
             webusbplugin: '2',
@@ -554,7 +557,7 @@ export const validateTransportCompatibility = [
         result: true,
     },
     {
-        description: 'validateTransportCompatibility case 9',
+        description: 'isTransportCompatible case 9',
         transportCondition: {
             bridge: '2',
             webusbplugin: '1.9.2',
@@ -563,7 +566,7 @@ export const validateTransportCompatibility = [
         result: false,
     },
     {
-        description: 'validateTransportCompatibility case 10',
+        description: 'isTransportCompatible case 10',
         transportCondition: {
             bridge: '2.0.31',
             webusbplugin: '*',
@@ -576,9 +579,9 @@ export const validateTransportCompatibility = [
     },
 ];
 
-export const validateDeviceCompatibility = [
+export const isDeviceCompatible = [
     {
-        description: 'validateDeviceCompatibility case 1',
+        description: 'isDeviceCompatible case 1',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -605,7 +608,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 2',
+        description: 'isDeviceCompatible case 2',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -640,7 +643,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 3',
+        description: 'isDeviceCompatible case 3',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -667,7 +670,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 4',
+        description: 'isDeviceCompatible case 4',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -694,7 +697,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 5',
+        description: 'isDeviceCompatible case 5',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -721,7 +724,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 6',
+        description: 'isDeviceCompatible case 6',
         deviceConditions: [],
         device: {
             features: {
@@ -738,7 +741,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 7',
+        description: 'isDeviceCompatible case 7',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -753,13 +756,13 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 8',
+        description: 'isDeviceCompatible case 8',
         deviceConditions: [],
         device: undefined,
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 9',
+        description: 'isDeviceCompatible case 9',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -786,7 +789,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 10',
+        description: 'isDeviceCompatible case 10',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -813,7 +816,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 11',
+        description: 'isDeviceCompatible case 11',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -840,7 +843,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 12',
+        description: 'isDeviceCompatible case 12',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -867,7 +870,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 13',
+        description: 'isDeviceCompatible case 13',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -894,7 +897,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 14',
+        description: 'isDeviceCompatible case 14',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -921,7 +924,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 15',
+        description: 'isDeviceCompatible case 15',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -948,7 +951,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 16',
+        description: 'isDeviceCompatible case 16',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -975,7 +978,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 17',
+        description: 'isDeviceCompatible case 17',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -1002,7 +1005,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 18',
+        description: 'isDeviceCompatible case 18',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -1029,7 +1032,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 19',
+        description: 'isDeviceCompatible case 19',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -1056,7 +1059,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 20',
+        description: 'isDeviceCompatible case 20',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -1084,7 +1087,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 21',
+        description: 'isDeviceCompatible case 21',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -1114,7 +1117,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 22',
+        description: 'isDeviceCompatible case 22',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -1144,7 +1147,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 23',
+        description: 'isDeviceCompatible case 23',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2T1,
@@ -1174,7 +1177,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 24',
+        description: 'isDeviceCompatible case 24',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2B1,
@@ -1204,7 +1207,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 25',
+        description: 'isDeviceCompatible case 25',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T2B1,
@@ -1231,7 +1234,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 26',
+        description: 'isDeviceCompatible case 26',
         deviceConditions: [
             {
                 model: 'T',
@@ -1266,7 +1269,7 @@ export const validateDeviceCompatibility = [
         result: true,
     },
     {
-        description: 'validateDeviceCompatibility case 27',
+        description: 'isDeviceCompatible case 27',
         deviceConditions: [
             {
                 model: '1',
@@ -1293,7 +1296,7 @@ export const validateDeviceCompatibility = [
         result: false,
     },
     {
-        description: 'validateDeviceCompatibility case 26',
+        description: 'isDeviceCompatible case 26',
         deviceConditions: [
             {
                 model: DeviceModelInternal.T1B1,
@@ -1317,6 +1320,27 @@ export const validateDeviceCompatibility = [
             },
             firmwareType: FirmwareType.Regular,
         },
+        result: false,
+    },
+];
+
+export const isCountryCodeCompatible = [
+    {
+        description: 'isCountryCodeCompatible case 1',
+        allowedCountryCodes: ['US', 'CA'],
+        countryCode: 'US',
+        result: true,
+    },
+    {
+        description: 'isCountryCodeCompatible case 2',
+        allowedCountryCodes: ['US', 'CA'],
+        countryCode: 'CA',
+        result: true,
+    },
+    {
+        description: 'isCountryCodeCompatible case 3',
+        allowedCountryCodes: ['US', 'CA'],
+        countryCode: 'CZ',
         result: false,
     },
 ];
@@ -1428,7 +1452,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: [] } },
+        options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
         result: [getMessageSystemConfig().actions[1].message],
     },
     {
@@ -1451,7 +1475,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: [] } },
+        options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
         result: [],
     },
     {
@@ -1585,7 +1609,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: [] } },
+        options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
         result: [],
     },
     {
@@ -1603,7 +1627,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: ['btc'] } },
+        options: { settings: { tor: false, enabledNetworks: ['btc'] }, countryCode: 'US' },
         result: [getMessageSystemConfig().actions[1].message],
     },
     {
@@ -1627,6 +1651,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             transports: [{ ...defaultTransportsOption, version: '2.3.4' }],
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1651,6 +1676,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             transports: [{ ...defaultTransportsOption, version: '2.3.4' }],
+            countryCode: 'US',
         },
         result: [],
     },
@@ -1689,6 +1715,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1719,6 +1746,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: [],
     },
@@ -1753,6 +1781,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                     capabilities: ['Capability_Bitcoin'],
                 }),
             },
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1787,6 +1816,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                     capabilities: ['Capability_Bitcoin_like'],
                 }),
             },
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1803,6 +1833,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             settings: { tor: true, enabledNetworks: ['btc'] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: getMessageSystemConfig().actions.map(action => action.message),
     },
@@ -1843,6 +1874,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                     patch_version: 4,
                 }),
             },
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1860,6 +1892,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             settings: { tor: true, enabledNetworks: ['btc'] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: getMessageSystemConfig().actions.map(action => action.message),
     },
@@ -1877,6 +1910,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             settings: { tor: true, enabledNetworks: ['btc'] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
+            countryCode: 'US',
         },
         result: [getMessageSystemConfig().actions[1].message],
     },

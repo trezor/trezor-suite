@@ -5,12 +5,14 @@ import * as Device from 'expo-device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import {
-    selectDeviceDiscovery,
     selectDevices,
+    selectDiscoveryForSelectedDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
+import { isBluetoothEnabled } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
+import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -18,8 +20,12 @@ const deviceType = Device.isDevice ? 'device' : 'emulator';
 
 const transportsPerDeviceType = {
     device: Platform.select({
-        ios: ['BridgeTransport'],
-        android: [NativeUsbTransport],
+        ios: isBluetoothEnabled
+            ? ['BridgeTransport', NativeBluetoothTransport]
+            : ['BridgeTransport'],
+        android: isBluetoothEnabled
+            ? [NativeUsbTransport, NativeBluetoothTransport]
+            : [NativeUsbTransport],
     }),
     emulator: ['BridgeTransport'],
 } as const;
@@ -31,7 +37,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectDevices,
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
-        selectDeviceDiscovery,
+        selectDiscoveryForSelectedDevice,
         selectDebugSettings: () => ({
             transports,
         }),

@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { ButtonRequest, ThpSuiteCredentials, TrezorDevice } from '@suite-common/suite-types';
 import { WalletType } from '@suite-common/wallet-types';
-import { DEVICE, Device } from '@trezor/connect';
+import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -16,6 +16,11 @@ const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectAction
     payload,
 }));
 
+const createDeviceInstance = createAction(
+    `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
+    (payload: { device: TrezorDevice }) => ({ payload }),
+);
+
 const connectUnacquiredDevice = createAction(
     DEVICE.CONNECT_UNACQUIRED,
     (payload: DeviceConnectActionPayload) => ({ payload }),
@@ -25,6 +30,24 @@ const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device | TrezorDevi
     payload,
 }));
 
+const setDeviceState = createAction(
+    `${DEVICE_MODULE_PREFIX}/set-device-state`,
+    (payload: {
+        device: TrezorDevice;
+        state: DeviceState & { staticSessionId: StaticSessionId };
+        useEmptyPassphrase: boolean;
+    }) => ({
+        payload,
+    }),
+);
+
+const addAuthorizedDevice = createAction(
+    `${DEVICE_MODULE_PREFIX}/addAuthorizedDevice`,
+    (payload: { device: TrezorDevice }) => ({
+        payload,
+    }),
+);
+
 const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice) => ({
     payload,
 }));
@@ -32,11 +55,6 @@ const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice)
 const updatePassphraseMode = createAction(
     `${DEVICE_MODULE_PREFIX}/updatePassphraseMode`,
     (payload: { device: TrezorDevice; hidden: boolean; alwaysOnDevice?: boolean }) => ({ payload }),
-);
-
-const receiveAuthConfirm = createAction(
-    `${DEVICE_MODULE_PREFIX}/receiveAuthConfirm`,
-    (payload: { device: TrezorDevice; success: boolean }) => ({ payload }),
 );
 
 const rememberDevice = createAction(
@@ -106,12 +124,14 @@ const setThpCredentials = createAction(
 
 export const deviceActions = {
     connectDevice,
+    createDeviceInstance,
     connectUnacquiredDevice,
     deviceChanged,
+    setDeviceState,
+    addAuthorizedDevice,
     deviceDisconnect,
     dismissFirmwareAuthenticityCheck,
     updatePassphraseMode,
-    receiveAuthConfirm,
     rememberDevice,
     setTemporaryRememberedDevice,
     forgetDevice,

@@ -66,7 +66,10 @@ export const baseInputStyle = css<BaseInputProps>`
     ${typography.body}
     transition: border-color 0.1s;
     outline: none;
-    font-variant-numeric: slashed-zero tabular-nums;
+    font-feature-settings:
+        'tnum' 1,
+        'zero' 1,
+        'ss03' 1;
 
     &::placeholder {
         color: ${({ theme }) => theme.textSubdued};

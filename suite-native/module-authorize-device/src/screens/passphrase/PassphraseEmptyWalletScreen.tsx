@@ -1,8 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    cancelDiscoveryThunk,
+    deviceActions,
+    runDiscoveryThunk,
+    selectSelectedDevice,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
     Box,
@@ -14,14 +18,7 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
-import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    StackToTabCompositeProps,
-} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
@@ -33,12 +30,6 @@ const cardStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp16,
 }));
 
-type NavigationProp = StackToTabCompositeProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList
->;
-
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -47,17 +38,24 @@ export const PassphraseEmptyWalletScreen = () => {
 
     const device = useSelector(selectSelectedDevice);
 
-    const navigation = useNavigation<NavigationProp>();
-
     const handleTryAgain = () => {
-        navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseForm);
-        dispatch(
-            deviceActions.removeButtonRequests({
-                device,
-                buttonRequestCode: 'ButtonRequest_Other',
-            }),
-        );
-        dispatch(retryPassphraseAuthenticationThunk());
+        if (device) {
+            dispatch(cancelDiscoveryThunk(device));
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    device,
+                    buttonRequestCode: 'ButtonRequest_Other',
+                }),
+            );
+            dispatch(
+                startDiscoveryThunk({
+                    device,
+                    isAddingHiddenWallet: true,
+                    isAddingExistingWallet: false,
+                }),
+            );
+            dispatch(runDiscoveryThunk(device));
+        }
         analytics.report({ type: EventType.PassphraseTryAgain });
     };
 

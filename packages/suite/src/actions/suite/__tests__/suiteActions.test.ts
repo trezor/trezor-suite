@@ -6,9 +6,6 @@ import { testMocks } from '@suite-common/test-utils';
 import {
     ConnectDeviceSettings,
     acquireDevice,
-    authConfirm,
-    authorizeDeviceThunk,
-    createDeviceInstanceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
@@ -16,10 +13,6 @@ import {
     observeSelectedDevice,
     prepareDeviceReducer,
     selectDeviceThunk,
-    selectDevices,
-    selectDevicesCount,
-    selectSelectedDevice,
-    switchDuplicatedDevice,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
@@ -228,7 +221,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
-            await store.dispatch(acquireDevice(f.requestedDevice));
+            await store.dispatch(acquireDevice({ requestedDevice: f.requestedDevice }));
             // we are not interested in thunk state here
             const expectedActions = filterThunkActionTypes(
                 discardMockedConnectInitActions(store.getActions()),
@@ -239,78 +232,6 @@ describe('Suite Actions', () => {
                 const action = expectedActions.pop();
                 expect(action?.type).toEqual(f.result);
             }
-        });
-    });
-
-    fixtures.authorizeDeviceActions.forEach(f => {
-        it(`authorizeDevice: ${f.description}`, async () => {
-            setTrezorConnectFixtures(f.getDeviceState);
-            const state = getInitialState(undefined, {
-                selectedDevice: f.suiteState?.selectedDevice,
-                devices: f.devicesState ?? [],
-            });
-            const store = initStore(state);
-            await store.dispatch(authorizeDeviceThunk());
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = store.getActions().pop();
-                expect(action?.type).toEqual(f.result);
-                if (f.deviceReducerResult) {
-                    const devices = selectDevices(store.getState());
-                    devices.forEach((d, i) => {
-                        const dev = f.deviceReducerResult[i];
-                        expect(d.state).toEqual(dev.state);
-                        expect(d.instance).toEqual(dev.instance);
-                        expect(d.useEmptyPassphrase).toEqual(dev.useEmptyPassphrase);
-                    });
-                }
-            }
-        });
-    });
-
-    fixtures.authConfirm.forEach(f => {
-        it(`authConfirm: ${f.description}`, async () => {
-            setTrezorConnectFixtures(f.getDeviceState);
-            const state = getInitialState(undefined, f.state);
-            const store = initStore(state);
-            await store.dispatch(authConfirm());
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
-                expect(action).toMatchObject(f.result);
-            }
-        });
-    });
-
-    fixtures.createDeviceInstance.forEach(f => {
-        it(`createDeviceInstance: ${f.description}`, async () => {
-            setTrezorConnectFixtures(f.applySettings);
-            const state = getInitialState(undefined, f.state.device);
-            const store = initStore(state);
-            await store.dispatch(
-                createDeviceInstanceThunk({
-                    device: f.state.device.selectedDevice,
-                    useEmptyPassphrase: false,
-                }),
-            );
-            const action = store.getActions().pop();
-            expect(action?.type).toEqual(f.result);
-        });
-    });
-
-    fixtures.switchDuplicatedDevice.forEach(f => {
-        it(`createDeviceInstance: ${f.description}`, async () => {
-            const state = getInitialState(undefined, f.state.device);
-            const store = initStore(state);
-            await store.dispatch(
-                switchDuplicatedDevice({ device: f.device, duplicate: f.duplicate }),
-            );
-            const device = selectSelectedDevice(store.getState());
-            const devicesCount = selectDevicesCount(store.getState());
-            expect(device).toEqual(f.result.selected);
-            expect(devicesCount).toEqual(f.result.devices.length);
         });
     });
 

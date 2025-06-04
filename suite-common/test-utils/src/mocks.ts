@@ -304,9 +304,9 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
     ...t,
 });
 
-// Mocked @trezor/suite-analytics package used in various tests
+// Mocked @suite-common/analytics package used in various tests
 const getAnalytics = () => {
-    const originalModule = jest.requireActual('@trezor/suite-analytics');
+    const originalModule = jest.requireActual('@suite-common/analytics');
 
     return {
         __esModule: true, // this property makes it work

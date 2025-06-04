@@ -1,17 +1,16 @@
-import { Dimensions } from 'react-native';
-
-import { Text, VStack } from '@suite-native/atoms';
+import { Button, Text, VStack } from '@suite-native/atoms';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-const ANIMATION_HEIGHT = Dimensions.get('screen').height * 0.6;
+const ANIMATION_HEIGHT = getScreenHeight() * 0.6;
 
-const screenContentStyle = prepareNativeStyle(utils => ({
+const screenContentStyle = prepareNativeStyle(({ spacings }) => ({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: utils.spacings.sp40,
+    paddingTop: spacings.sp24,
 }));
 
 const animationStyle = prepareNativeStyle(() => ({
@@ -20,14 +19,32 @@ const animationStyle = prepareNativeStyle(() => ({
     width: '100%',
 }));
 
-export const ConnectAndUnlockDeviceScreenContent = () => {
+type ConnectAndUnlockDeviceScreenContentProps = {
+    onConnectViaBluetooth?: () => void; // TODO: Can we make mandatory?
+};
+
+export const ConnectAndUnlockDeviceScreenContent = ({
+    onConnectViaBluetooth,
+}: ConnectAndUnlockDeviceScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <VStack style={applyStyle(screenContentStyle)}>
-            <Text variant="titleMedium" textAlign="center">
-                <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
-            </Text>
+            <VStack spacing="sp32">
+                <Text variant="titleMedium" textAlign="center">
+                    <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
+                </Text>
+                {onConnectViaBluetooth && (
+                    <Button
+                        size="small"
+                        colorScheme="tertiaryElevation0"
+                        viewLeft="bluetooth"
+                        onPress={onConnectViaBluetooth}
+                    >
+                        <Translation id="moduleConnectDevice.connectAndUnlockScreen.connectViaBluetoothButton" />
+                    </Button>
+                )}
+            </VStack>
             <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
         </VStack>
     );

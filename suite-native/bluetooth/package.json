@@ -1,0 +1,33 @@
+{
+    "name": "@suite-native/bluetooth",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@react-navigation/native": "6.1.18",
+        "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/bluetooth": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/device-mutex": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/storage": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "@trezor/transport-native-bluetooth": "workspace:*",
+        "expo-constants": "17.0.3",
+        "react": "18.2.0",
+        "react-native": "0.76.1",
+        "react-native-permissions": "5.2.5",
+        "react-native-reanimated": "^3.16.7",
+        "react-native-restart": "0.0.27",
+        "react-redux": "9.2.0"
+    }
+}

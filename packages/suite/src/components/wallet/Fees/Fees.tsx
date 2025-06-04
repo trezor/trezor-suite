@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
     Control,
     FieldErrors,
@@ -13,6 +13,7 @@ import { useTheme } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import {
     FeeInfo,
     FormState,
@@ -26,7 +27,7 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
-import { useRefetchFees } from 'src/hooks/wallet/useRefetchFees';
+import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
 import { CustomFee } from './CustomFee/CustomFee';
@@ -143,6 +144,7 @@ export const Fees = <TFieldValues extends FormState>({
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, register, setValue, trigger } = props as unknown as UseFormReturn<FormState>;
     const theme = useTheme();
+    const dispatch = useDispatch();
 
     const selectedOption = getValues('selectedFee') || 'normal';
     const isCustomFee = selectedOption === 'custom';
@@ -156,7 +158,9 @@ export const Fees = <TFieldValues extends FormState>({
 
     const supportsCustomFee = networkType !== 'solana';
 
-    useRefetchFees({ networkSymbol: symbol });
+    useEffect(() => {
+        dispatch(updateFeeInfoThunk({ networkSymbol: symbol }));
+    }, [dispatch, symbol]);
 
     const feeLabelId = useMemo(() => {
         switch (networkType) {

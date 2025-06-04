@@ -1,3 +1,4 @@
+import { useBluetoothAdapter } from '@suite-native/bluetooth';
 import {
     useDetectDeviceError,
     useHandleDeviceConnection,
@@ -17,6 +18,8 @@ export const useGlobalHooks = () => {
     useConnectPopupNavigation();
 
     useCoinEnablingInitialCheck();
+
+    useBluetoothAdapter();
 
     useHandleDeviceConnection();
     useDetectDeviceError();

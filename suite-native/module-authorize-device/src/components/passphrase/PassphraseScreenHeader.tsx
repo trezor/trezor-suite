@@ -3,13 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    selectIsCreatingNewPassphraseWallet,
-} from '@suite-native/device-authorization';
+import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -33,6 +31,7 @@ type NavigationProp = StackToTabCompositeProps<
 export const PassphraseScreenHeader = () => {
     const navigation = useNavigation<NavigationProp>();
     const route = useRoute();
+    const device = useSelector(selectSelectedDevice);
 
     const dispatch = useDispatch();
 
@@ -54,8 +53,10 @@ export const PassphraseScreenHeader = () => {
             payload: { screen: route.name },
         });
 
-        dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-    }, [dispatch, navigation, route.name]);
+        if (device) {
+            dispatch(cancelDiscoveryThunk(device));
+        }
+    }, [dispatch, navigation, route.name, device]);
 
     const handleCancel = useCallback(() => {
         if (isCreatingNewWalletInstance) {

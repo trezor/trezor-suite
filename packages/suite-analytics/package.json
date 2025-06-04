@@ -10,6 +10,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/analytics": "workspace:*"
+        "@suite-common/analytics": "workspace:*"
     }
 }

@@ -14,7 +14,9 @@ import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { CSSColor, Color, borders } from '@trezor/theme';
 
-import { useDevice, useDiscovery } from '../../../../../../../hooks/suite';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+
+import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import { QuickActionButton } from '../QuickActionButton';
 import { UpdateIconGroup } from './UpdateIconGroup';
 import { UpdateTooltip } from './UpdateTooltip';
@@ -164,8 +166,7 @@ export const UpdateStatusActionBarIcon = ({
     const theme = useTheme();
 
     const { updateStatus, updateStatusDevice, updateStatusSuite } = useUpdateStatus();
-    const { getDiscoveryStatus } = useDiscovery();
-    const discoveryStatus = getDiscoveryStatus();
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
     const { device } = useDevice();

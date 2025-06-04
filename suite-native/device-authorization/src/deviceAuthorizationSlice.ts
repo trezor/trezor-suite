@@ -1,31 +1,19 @@
-import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
-    AuthorizeDeviceError,
-    CreateDeviceInstanceError,
-    authorizeDeviceThunk,
-    createDeviceInstanceThunk,
+    DeviceRootState,
+    DiscoveryRootState,
+    selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import {
-    VerifyPassphraseOnEmptyWalletError,
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    retryPassphraseAuthenticationThunk,
-    verifyPassphraseOnEmptyWalletThunk,
-} from './passphraseThunks';
 import { isPinButtonRequestCode } from './utils';
 
 export type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
     hasDeviceRequestedPassphrase: boolean;
-    passphraseError:
-        | AuthorizeDeviceError
-        | CreateDeviceInstanceError
-        | VerifyPassphraseOnEmptyWalletError
-        | null;
-    isVerifyingPassphraseOnEmptyWallet: boolean;
-    isCreatingNewWalletInstance: boolean;
+    checkPassphraseOnDevice: boolean;
+    inputPassphraseOnDevice: boolean;
 };
 
 type DeviceAuthorizationRootState = {
@@ -35,23 +23,19 @@ type DeviceAuthorizationRootState = {
 export const deviceAuthorizationInitialState: DeviceAuthorizationState = {
     hasDeviceRequestedPin: false,
     hasDeviceRequestedPassphrase: false,
-    passphraseError: null,
-    isVerifyingPassphraseOnEmptyWallet: false,
-    isCreatingNewWalletInstance: false,
+    checkPassphraseOnDevice: false,
+    inputPassphraseOnDevice: false,
 };
 
 export const deviceAuthorizationSlice = createSlice({
     name: 'deviceAuthorization',
     initialState: deviceAuthorizationInitialState,
     reducers: {
-        resetError: state => {
-            state.passphraseError = null;
+        setCheckPassphraseOnDevice: (state, action: PayloadAction<boolean>) => {
+            state.checkPassphraseOnDevice = action.payload;
         },
-        finishPassphraseFlow: state => {
-            state.hasDeviceRequestedPassphrase = false;
-            state.passphraseError = null;
-            state.isCreatingNewWalletInstance = false;
-            state.isVerifyingPassphraseOnEmptyWallet = false;
+        setInputPassphraseOnDevice: (state, action: PayloadAction<boolean>) => {
+            state.inputPassphraseOnDevice = action.payload;
         },
     },
     extraReducers: builder => {
@@ -73,55 +57,24 @@ export const deviceAuthorizationSlice = createSlice({
                 // @ts-expect-error Actions are not typed properly
                 if (action.payload.code !== 'ButtonRequest_Other') {
                     state.hasDeviceRequestedPassphrase = false;
+                } else {
+                    state.checkPassphraseOnDevice = true;
+                }
+
+                // @ts-expect-error Actions are not typed properly
+                if (action.payload.code === 'ButtonRequest_Address') {
+                    state.inputPassphraseOnDevice = false;
                 }
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.hasDeviceRequestedPin = false;
-                if (!state.isCreatingNewWalletInstance) {
-                    state.hasDeviceRequestedPassphrase = false;
-                }
-            })
-            .addCase(verifyPassphraseOnEmptyWalletThunk.pending.type, state => {
-                state.isVerifyingPassphraseOnEmptyWallet = true;
-            })
-            .addCase(cancelPassphraseAndSelectStandardDeviceThunk.pending.type, state => {
-                state.isCreatingNewWalletInstance = false;
                 state.hasDeviceRequestedPassphrase = false;
-                state.passphraseError = null;
+                state.checkPassphraseOnDevice = false;
+                state.inputPassphraseOnDevice = false;
             })
-            .addCase(retryPassphraseAuthenticationThunk.pending, state => {
-                state.passphraseError = null;
-            })
-            .addCase(createDeviceInstanceThunk.pending, state => {
-                state.isCreatingNewWalletInstance = true;
-                state.passphraseError = null;
-            })
-            .addCase(verifyPassphraseOnEmptyWalletThunk.fulfilled, state => {
-                state.isVerifyingPassphraseOnEmptyWallet = false;
-                state.isCreatingNewWalletInstance = false;
-            })
-            .addCase(verifyPassphraseOnEmptyWalletThunk.rejected, (state, action) => {
-                if (action.payload) {
-                    state.passphraseError = action.payload;
-                } else {
-                    state.isVerifyingPassphraseOnEmptyWallet = false;
-                    state.isCreatingNewWalletInstance = false;
-                }
-            })
-            .addMatcher(
-                isAnyOf(authorizeDeviceThunk.rejected, createDeviceInstanceThunk.rejected),
-                (state, { payload }) => {
-                    if (
-                        payload?.error === 'passphrase-duplicate' ||
-                        payload?.error === 'passphrase-enabling-cancelled' ||
-                        payload?.error === 'auth-failed'
-                    ) {
-                        state.passphraseError = payload;
-                        state.isCreatingNewWalletInstance = false;
-                        state.hasDeviceRequestedPassphrase = false;
-                    }
-                },
-            );
+            .addCase(UI.REQUEST_PASSPHRASE_ON_DEVICE, state => {
+                state.inputPassphraseOnDevice = true;
+            });
     },
 });
 
@@ -131,32 +84,109 @@ export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
 export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.hasDeviceRequestedPassphrase;
 
-export const selectDeviceRequestedAuthorization = (state: DeviceAuthorizationRootState) =>
-    selectDeviceRequestedPassphrase(state) || selectDeviceRequestedPin(state);
+export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.inputPassphraseOnDevice;
 
-export const selectPassphraseError = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.passphraseError;
+export const selectCheckPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.checkPassphraseOnDevice;
 
-export const selectHasAuthFailed = (state: DeviceAuthorizationRootState) =>
-    selectPassphraseError(state)?.error === 'auth-failed';
+export const selectPassphraseError = (
+    state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationState,
+) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
-export const selectPassphraseDuplicateError = (state: DeviceAuthorizationRootState) =>
-    selectPassphraseError(state)?.error === 'passphrase-duplicate'
-        ? (state.deviceAuthorization.passphraseError as AuthorizeDeviceError)
+    if (!discovery || !discovery.isAddingHiddenWallet) {
+        return null;
+    }
+
+    switch (discovery.status) {
+        case 'failed':
+            return 'action-failed';
+        case 'cancelled':
+            return 'action-cancelled';
+        case 'passphrase-mismatch':
+            return 'passphrase-mismatch';
+        default:
+            return null;
+    }
+};
+
+export const selectPassphraseDuplicateStaticSessionId = (
+    state: DiscoveryRootState & DeviceRootState,
+) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+
+    return discovery?.status === 'passphrase-duplicate'
+        ? discovery.duplicateDeviceStaticSessionId
         : null;
+};
 
-export const selectHasVerificationCancelledError = (state: DeviceAuthorizationRootState) =>
-    selectPassphraseError(state)?.error === 'action-cancelled';
+export const selectHasVerificationCancelledError = (
+    state: DiscoveryRootState & DeviceRootState,
+) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
-export const selectHasPassphraseMismatchError = (state: DeviceAuthorizationRootState) =>
-    selectPassphraseError(state)?.error === 'passphrase-mismatch';
+    return discovery?.status === 'cancelled';
+};
 
-export const selectIsVerifyingPassphraseOnEmptyWallet = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.isVerifyingPassphraseOnEmptyWallet;
+export const selectHasPassphraseMismatchError = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
-export const selectIsCreatingNewPassphraseWallet = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.isCreatingNewWalletInstance;
+    return discovery?.status === 'passphrase-mismatch';
+};
 
-export const { resetError, finishPassphraseFlow } = deviceAuthorizationSlice.actions;
+export const selectIsCreatingNewPassphraseWallet = (
+    state: DiscoveryRootState & DeviceRootState,
+) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+
+    return discovery?.isAddingHiddenWallet;
+};
+
+export const isPassphraseDeviceLoadingDone = (
+    state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationRootState,
+) => {
+    if (!state.device.selectedDevice?.state) {
+        return false;
+    }
+
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+
+    if (!discovery || !discovery.isAddingHiddenWallet) {
+        return false;
+    }
+
+    return !state.deviceAuthorization.hasDeviceRequestedPassphrase;
+};
+
+export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+
+    if (!discovery || !discovery.isAddingHiddenWallet) {
+        return null;
+    }
+
+    switch (discovery.status) {
+        case 'confirm-empty-passphrase':
+            return false;
+        case 'complete':
+            return true;
+        default:
+            return null;
+    }
+};
+
+export const selectDiscoveryCompleted = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+
+    if (!discovery || !discovery.isAddingHiddenWallet) {
+        return null;
+    }
+
+    return discovery.status === 'complete';
+};
+
+export const { setCheckPassphraseOnDevice, setInputPassphraseOnDevice } =
+    deviceAuthorizationSlice.actions;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;

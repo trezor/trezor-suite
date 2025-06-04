@@ -62,7 +62,7 @@ export const FirmwareModal = ({
 
     const handleClose = () => {
         if (device?.status !== 'available') {
-            dispatch(acquireDevice(device));
+            dispatch(acquireDevice({ requestedDevice: device }));
         }
         dispatch(modalActions.onCancel());
         dispatch(closeModalApp());

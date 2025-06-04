@@ -5,11 +5,10 @@ import {
     getFirstDeviceInstance,
     getNewInstanceNumber,
     getSelectedDevice,
-    isDeviceAcquired,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { AccountKey, WalletType } from '@suite-common/wallet-types';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     getAddressType,
     getDerivationType,
@@ -23,7 +22,7 @@ import TrezorConnect, {
     Response as ConnectResponse,
     DEVICE,
     Device,
-    DeviceState,
+    StaticSessionId,
     UI,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
@@ -32,8 +31,14 @@ import { isChanged } from '@trezor/utils';
 
 import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
-import { selectDeviceById, selectDevices, selectSelectedDevice } from './deviceSelectors';
+import {
+    selectDeviceByBaseStaticSessionId,
+    selectDeviceById,
+    selectDevices,
+    selectSelectedDevice,
+} from './deviceSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
+import { cancelDiscoveryThunk, startDiscoveryThunk } from '../discovery/discoveryThunks';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -125,12 +130,15 @@ export const createDeviceInstanceThunk = createThunk<
 
         const devices = selectDevices(getState());
 
+        const newDeviceInstance: TrezorDevice = {
+            ...device,
+            useEmptyPassphrase,
+            instance: getNewInstanceNumber(devices, device),
+        };
+        dispatch(deviceActions.createDeviceInstance({ device: newDeviceInstance }));
+
         return fulfillWithValue({
-            device: {
-                ...device,
-                useEmptyPassphrase,
-                instance: getNewInstanceNumber(devices, device),
-            },
+            device: newDeviceInstance,
         });
     },
 );
@@ -221,10 +229,10 @@ export const forgetDisconnectedDevices = createThunk(
 /**
  * Called from `suiteMiddleware`
  * Keep `suite` reducer synchronized with `devices` reducer
- * @param {Action} action
  */
 export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
     const devices = selectDevices(getState());
+
     const selectedDevice = selectSelectedDevice(getState());
 
     if (!selectedDevice) return false;
@@ -247,8 +255,17 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
  */
 export const acquireDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/acquireDevice`,
-    async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
-        const device = requestedDevice || selectSelectedDevice(getState());
+    async (
+        {
+            requestedDevice,
+            startDiscovery,
+        }: {
+            requestedDevice?: TrezorDevice | null;
+            startDiscovery?: boolean;
+        },
+        { dispatch, getState },
+    ) => {
+        const device = requestedDevice ?? selectSelectedDevice(getState());
 
         if (!device) return;
 
@@ -266,206 +283,39 @@ export const acquireDevice = createThunk(
                 }),
             );
         }
-    },
-);
 
-/**
- * Called from `discoveryMiddleware`
- * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
- */
-type AuthorizeDeviceParams = { shouldIgnoreDeviceState: boolean } | undefined;
-export type AuthorizeDeviceError = {
-    error: 'no-device' | 'device-not-ready' | 'auth-failed' | 'passphrase-duplicate';
-    device?: TrezorDevice;
-    duplicate?: TrezorDevice;
-};
-type AuthorizeDeviceSuccess = { device: TrezorDevice; state: DeviceState };
-
-export const authorizeDeviceThunk = createThunk<
-    AuthorizeDeviceSuccess,
-    AuthorizeDeviceParams,
-    { rejectValue: AuthorizeDeviceError }
->(
-    `${DEVICE_MODULE_PREFIX}/authorizeDevice`,
-    async (
-        { shouldIgnoreDeviceState } = {
-            shouldIgnoreDeviceState: false,
-        },
-        { dispatch, getState, extra, rejectWithValue },
-    ) => {
-        const {
-            actions: { openModal },
-        } = extra;
-
-        const device = selectSelectedDevice(getState());
-
-        if (!device) return rejectWithValue({ error: 'no-device' });
-
-        const isDeviceReady =
-            device.connected &&
-            isDeviceAcquired(device) &&
-            // Should ignore device state serves as a variant to call "reauthorize" device. For example in passphrase mode
-            // mobile has retry button which starts passphrase flow on the same device instance to override device state.
-            (!device.state?.staticSessionId || shouldIgnoreDeviceState) &&
-            device.mode === 'normal' &&
-            device.firmware !== 'required';
-
-        if (!isDeviceReady) return rejectWithValue({ error: 'device-not-ready', device });
-
-        const deviceParams: Parameters<typeof TrezorConnect.getDeviceState>[0] = {
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: undefined,
-            },
-            keepSession: true,
-            useEmptyPassphrase: device.useEmptyPassphrase,
-        };
-
-        const response = await TrezorConnect.getDeviceState(deviceParams);
-
-        if (response.success) {
-            const { state, _state } = response.payload;
-            const s = state.split(':')[0];
-            const devices = selectDevices(getState());
-            const duplicate = devices?.find(
-                d =>
-                    d.state?.staticSessionId &&
-                    d.state.staticSessionId.split(':')[0] === s &&
-                    d.instance !== device.instance,
-            );
-            // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
-            const freshDeviceData = getSelectedDevice(device, devices);
-
-            if (duplicate) {
-                const isStandardWallet = freshDeviceData!.useEmptyPassphrase;
-
-                if (isStandardWallet) {
-                    // if currently selected device uses empty passphrase
-                    // make sure that founded duplicate will also use empty passphrase
-                    dispatch(
-                        deviceActions.updatePassphraseMode({ device: duplicate, hidden: false }),
-                    );
-                    // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
-                    dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
-                }
-
-                dispatch(openModal({ type: 'passphrase-duplicate', device, duplicate }));
-
-                return rejectWithValue({
-                    error: 'passphrase-duplicate',
-                    device,
-                    duplicate,
-                });
-            }
-
-            return { device: freshDeviceData as TrezorDevice, state: _state };
-        }
-
-        if (
-            response.payload.error === 'enter-passphrase-cancel' ||
-            response.payload.error === 'enter-passphrase-back'
-        ) {
-            const settings = extra.selectors.selectSuiteSettings(getState());
-            dispatch(deviceActions.forgetDevice({ device, settings }));
-
-            const newDevice = selectSelectedDevice(getState());
-            dispatch(deviceActions.selectDevice(newDevice));
-            if (response.payload.error === 'enter-passphrase-back') {
-                dispatch(extra.thunks.openSwitchDeviceDialog());
-            }
-
-            return rejectWithValue({
-                error: 'auth-failed',
-                device: device as TrezorDevice,
-            });
-        }
-
-        dispatch(
-            notificationsActions.addToast({
-                type: 'auth-failed',
-                error: response.payload.error,
-            }),
-        );
-
-        return rejectWithValue({
-            error: 'auth-failed',
-            device: device as TrezorDevice,
-        });
-    },
-);
-
-/**
- * Called from `suiteMiddleware`
- */
-export const authConfirm = createThunk(
-    `${DEVICE_MODULE_PREFIX}/authConfirm`,
-    async (_, { dispatch, getState, extra }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return false;
-
-        const response = await TrezorConnect.getDeviceState({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: undefined,
-            },
-            keepSession: false,
-        });
-
-        if (!response.success) {
-            // handle error passed from Passphrase modal
-            if (
-                response.payload.error === 'auth-confirm-cancel' ||
-                response.payload.error === 'auth-confirm-retry'
-            ) {
-                const settings = extra.selectors.selectSuiteSettings(getState());
-
-                // forget previous empty wallet
-                dispatch(deviceActions.forgetDevice({ device, settings }));
-
-                if (response.payload.error === 'auth-confirm-retry' && device.type === 'acquired') {
-                    dispatch(
-                        extra.thunks.addWalletThunk({ walletType: WalletType.PASSPHRASE, device }),
-                    );
-                }
-
-                return;
-            }
+        if (startDiscovery) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'auth-confirm-error',
-                    error: response.payload.error,
+                startDiscoveryThunk({
+                    device,
                 }),
             );
-
-            dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
-
-            return;
         }
-
-        if (response.payload.state !== device.state?.staticSessionId) {
-            dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
-            dispatch(extra.actions.openModal({ type: 'passphrase-mismatch-warning' }));
-
-            return;
-        }
-
-        dispatch(deviceActions.receiveAuthConfirm({ device, success: true }));
     },
 );
 
 export const switchDuplicatedDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/switchDuplicatedDevice`,
-    async (
-        { device, duplicate }: { device: TrezorDevice; duplicate: TrezorDevice },
-        { dispatch, getState, extra },
-    ) => {
+    async (passphraseDuplicateStaticSessionId: StaticSessionId, { dispatch, getState, extra }) => {
         const {
             actions: { onModalCancel },
         } = extra;
         // close modal
         dispatch(onModalCancel());
+
+        const device = selectDeviceByBaseStaticSessionId(
+            getState(),
+            passphraseDuplicateStaticSessionId,
+        );
+
+        if (!device) {
+            console.error('switchDuplicatedDevice: Device not found');
+
+            return;
+        }
+
+        dispatch(cancelDiscoveryThunk(device));
+
         // release session from authorizeDevice
         await TrezorConnect.getFeatures({
             device,
@@ -473,13 +323,7 @@ export const switchDuplicatedDevice = createThunk(
         });
 
         // switch to existing wallet
-        // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
-        // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
-        await dispatch(selectDeviceThunk({ device: duplicate }));
-
-        // remove stateless instance
-        const settings = extra.selectors.selectSuiteSettings(getState());
-        dispatch(deviceActions.forgetDevice({ device, settings }));
+        dispatch(selectDeviceThunk({ device }));
     },
 );
 
@@ -500,6 +344,7 @@ export const initDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
     (_, { dispatch, getState }) => {
         const devices = selectDevices(getState());
+
         const device = selectSelectedDevice(getState());
 
         if (!device && devices && devices[0]) {
@@ -524,10 +369,12 @@ export const createImportedDeviceThunk = createThunk<
     { rejectValue: { error: 'already-created' } }
 >(
     `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
-    (_, { getState, rejectWithValue, fulfillWithValue }) => {
+    (_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
         const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
         if (device) return rejectWithValue({ error: 'already-created' });
+
+        dispatch(deviceActions.createDeviceInstance({ device: portfolioTrackerDevice }));
 
         return fulfillWithValue({ device: portfolioTrackerDevice });
     },
@@ -668,7 +515,6 @@ export const passwordMismatchResetThunk = createThunk<void, { device: TrezorDevi
         const settings = extra.selectors.selectSuiteSettings(getState());
 
         dispatch(deviceActions.forgetDevice({ device, settings }));
-
         const newDevice = selectSelectedDevice(getState());
         dispatch(deviceActions.selectDevice(newDevice));
     },

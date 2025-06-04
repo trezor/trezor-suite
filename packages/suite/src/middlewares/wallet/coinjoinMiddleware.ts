@@ -122,6 +122,7 @@ export const coinjoinMiddleware =
             }
         }
 
+        // todo: startDiscovery is now fired under different context
         if (isAnyOf(discoveryActions.startDiscovery, blockchainActions.synced)(action)) {
             const state = api.getState();
             const symbol =

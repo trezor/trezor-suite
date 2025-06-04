@@ -62,7 +62,7 @@ export const WalletList = ({ onSelectDevice }: WalletListProps) => {
 
                 return (
                     <WalletItem
-                        key={device.state.staticSessionId}
+                        key={`${device.path}-${device.state.staticSessionId}`}
                         deviceState={device.state}
                         isSelectable={isSelectable}
                         onPress={() => onSelectDevice(device)}

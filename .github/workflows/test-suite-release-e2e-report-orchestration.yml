@@ -5,12 +5,19 @@ name: "[Test] Release Suite Report orchestration"
 on:
   workflow_dispatch:
 
+concurrency:
+  group: orchestration-${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: false
+
 jobs:
   call-test-suite-manual-release:
     uses: ./.github/workflows/test-suite-manual-release.yml
+    secrets: inherit
 
   call-test-suite-desktop-e2e-release:
     uses: ./.github/workflows/test-suite-desktop-e2e-release.yml
+    secrets: inherit
 
   call-test-suite-web-e2e-release:
     uses: ./.github/workflows/test-suite-web-e2e-release.yml
+    secrets: inherit

@@ -1,10 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     accountsActions,
     discoveryActions,
-    selectDeviceDiscovery,
+    selectDiscoveryForSelectedDevice,
     transactionsActions,
 } from '@suite-common/wallet-core';
 
@@ -34,9 +33,9 @@ const graphMiddleware =
             const { account, transactions } = action.payload;
 
             // don't run during discovery and on unconfirmed txs
-            const discovery = selectDeviceDiscovery(api.getState());
+            const discovery = selectDiscoveryForSelectedDevice(api.getState());
             if (
-                discovery?.status === DiscoveryStatus.COMPLETED &&
+                discovery?.status === 'complete' &&
                 transactions.some(t => (t.blockHeight ?? 0) > 0)
             ) {
                 api.dispatch(
@@ -47,14 +46,11 @@ const graphMiddleware =
             }
         }
 
-        switch (action.type) {
-            case discoveryActions.completeDiscovery.type:
-                api.dispatch(
-                    graphActions.updateGraphData(currentAccounts, { newAccountsOnly: true }),
-                );
-                break;
-            default:
-                break;
+        if (
+            action.type === discoveryActions.updateDiscovery.type &&
+            action.payload.status.status === 'complete'
+        ) {
+            api.dispatch(graphActions.updateGraphData(currentAccounts, { newAccountsOnly: true }));
         }
 
         return action;

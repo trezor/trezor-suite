@@ -59,6 +59,7 @@ const Spacer = styled.div`
 export type PassphraseTypeCardProps = {
     title?: ReactNode;
     description?: ReactNode;
+    deviceLoading?: boolean;
     submitLabel: ReactNode;
     type: WalletType;
     offerPassphraseOnDevice?: boolean;
@@ -89,6 +90,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
         learnMoreTooltipAppendTo,
         title,
         description,
+        deviceLoading,
         singleColModal,
         submitLabel: submitLabelProp,
         offerPassphraseOnDevice,
@@ -155,6 +157,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
             )}
             <Item>
                 <PassphraseTypeCardContent
+                    deviceLoading={deviceLoading}
                     submitLabel={submitLabel}
                     submitVariant={nonAsciiChars && !isBip39 ? 'warning' : 'primary'}
                     value={value}

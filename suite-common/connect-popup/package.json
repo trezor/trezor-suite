@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
+        "@suite-common/analytics": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",

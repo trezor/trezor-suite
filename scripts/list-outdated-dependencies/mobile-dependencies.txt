@@ -30,6 +30,7 @@ expo-atlas
 expo-build-properties
 expo-camera
 expo-clipboard
+expo-constants
 expo-crypto
 expo-dev-client
 expo-device
@@ -66,10 +67,12 @@ metro
 node-gyp
 react-fela
 react-native
+react-native-ble-plx
 react-native-edge-to-edge
 react-native-gesture-handler
 react-native-keyboard-controller
 react-native-mmkv
+react-native-permissions
 react-native-quick-crypto
 react-native-reanimated
 react-native-restart

@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../analytics" },
         { "path": "../connect-popup" },
         { "path": "../redux-utils" },
         { "path": "../wallet-config" },

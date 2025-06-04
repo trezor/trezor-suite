@@ -97,6 +97,7 @@ const constructOldFlow = ({
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
+    const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
 
     const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
@@ -154,6 +155,34 @@ const constructOldFlow = ({
                         value: o.amount,
                     });
                 }
+            }
+        });
+    } else if (isStellar) {
+        outputs.push(
+            {
+                type: 'signing-with',
+                value: account.descriptor,
+            },
+            {
+                type: 'destination-tag',
+                value: precomposedForm.destinationTag || '',
+            },
+            {
+                type: 'timebounds',
+                value: '',
+            },
+        );
+        precomposedTx.outputs.forEach(o => {
+            if (typeof o.address === 'string') {
+                outputs.push(
+                    { type: 'address', value: o.address },
+                    {
+                        type: 'amount',
+                        value: o.amount.toString(),
+                        token: precomposedTx.token,
+                    },
+                );
+                outputs.push();
             }
         });
     } else {

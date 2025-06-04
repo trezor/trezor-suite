@@ -8,13 +8,13 @@ export * from './atomWithUnecryptedStorage';
 export * from './migrations/account/v2';
 export * from './migrations/account/v3';
 export * from './migrations/device/v2';
-export * from './migrations/discovery/v2';
-export * from './migrations/discovery/v3';
 export * from './migrations/wallet/transactions/v2';
 export * from './migrations/wallet/accounts/v2';
 export * from './migrations/wallet/accounts/v3';
 export * from './migrations/wallet/transactions/v3';
+export * from './migrations/walletSettings/v1';
 
+export * from './transforms/bluetoothTransforms';
 export * from './transforms/deviceTransforms';
 export * from './transforms/walletTransforms';
 export * from './transforms/utils';

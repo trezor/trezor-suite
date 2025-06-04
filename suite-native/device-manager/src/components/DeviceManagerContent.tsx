@@ -7,7 +7,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceThunk,
-    selectHasDeviceDiscovery,
+    selectHasRunningDiscovery,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -46,7 +46,7 @@ export const DeviceManagerContent = () => {
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const device = useSelector(selectSelectedDevice);
     const { setIsDeviceManagerVisible } = useDeviceManager();
 

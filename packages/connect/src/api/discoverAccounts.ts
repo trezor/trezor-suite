@@ -258,7 +258,15 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                       : await blockchain.getAccountUtxo(descriptor);
 
                 this.updateProgress(accountKey, index + 1, info.empty);
-                this.sendProgress({ ...info, descriptor, ...descRest, utxo, ...accountKey, index });
+                this.sendProgress({
+                    ...info,
+                    descriptor,
+                    ...descRest,
+                    utxo,
+                    ...accountKey,
+                    index,
+                    backendType: request.coinInfo.blockchainLink?.type,
+                });
 
                 if (info.empty) {
                     await descPromise.catch(() => {});

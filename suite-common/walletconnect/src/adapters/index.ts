@@ -1,12 +1,14 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import type { ProposalTypes } from '@walletconnect/types';
+
 import { Account } from '@suite-common/wallet-types';
 
 import { ethereumAdapter } from './ethereum';
-import { WalletConnectAdapter, WalletConnectNamespace } from '../walletConnectTypes';
+import { solanaAdapter } from './solana';
+import { PendingConnectionProposalNetwork, WalletConnectAdapter } from '../walletConnectTypes';
 
 export const adapters: WalletConnectAdapter[] = [
     ethereumAdapter,
-    // TODO: solanaAdapter
+    solanaAdapter,
     // TODO: bitcoinAdapter
 ];
 
@@ -19,28 +21,32 @@ export const getAdapterByNetwork = (networkType: string) =>
 export const getAllMethods = () => adapters.flatMap(adapter => adapter.methods);
 
 export const getNamespaces = (accounts: Account[]) => {
-    const eip155 = {
-        chains: [],
-        accounts: [],
-        methods: getAllMethods(),
-        events: ['accountsChanged', 'chainChanged'],
-    } as WalletConnectNamespace;
-
+    const accountsDeduped: Account[] = [];
     accounts.forEach(account => {
-        const network = getNetwork(account.symbol);
-        const { chainId, networkType } = network;
-
-        if (!account.visible || !getAdapterByNetwork(networkType)) return;
-
-        const walletConnectChainId = `eip155:${chainId}`;
-        if (!eip155.chains.includes(walletConnectChainId)) {
-            eip155.chains.push(walletConnectChainId);
-        }
-        const accountId = `${walletConnectChainId}:${account.descriptor}`;
-        if (!eip155.accounts.includes(accountId)) {
-            eip155.accounts.push(accountId);
+        if (
+            !accountsDeduped.some(
+                a => a.descriptor === account.descriptor && a.symbol === account.symbol,
+            )
+        ) {
+            accountsDeduped.push(account);
         }
     });
 
-    return { eip155 };
+    return adapters
+        .map(adapter => adapter.getNamespace(accountsDeduped))
+        .reduce((acc, val) => {
+            Object.assign(acc, val);
+
+            return acc;
+        }, {});
 };
+
+export const processNamespaces = (
+    accounts: Account[],
+    networks: PendingConnectionProposalNetwork[],
+    namespaces: ProposalTypes.RequiredNamespaces,
+    required: boolean,
+) =>
+    adapters.forEach(adapter =>
+        adapter.processNamespaces(accounts, networks, namespaces, required),
+    );

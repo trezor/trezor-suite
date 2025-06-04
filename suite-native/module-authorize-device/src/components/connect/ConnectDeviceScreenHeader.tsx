@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -7,7 +7,6 @@ import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
     selectDeviceRequestedPin,
     selectIsCreatingNewPassphraseWallet,
 } from '@suite-native/device-authorization';
@@ -39,16 +38,15 @@ export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
     onCancelNavigationTarget,
 }: ConnectDeviceScreenHeaderProps) => {
-    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
 
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
+    const isAddingHiddenWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const handleCancel = useCallback(() => {
-        if (hasDiscovery) {
+        if (hasDiscovery && !isAddingHiddenWallet) {
             if (hasDeviceRequestedPin) {
                 // Do not allow to cancel PIN entry while discovery is in progress
                 showAlert({
@@ -66,12 +64,7 @@ export const ConnectDeviceScreenHeader = ({
                 });
             }
         } else {
-            // Remove unauthorized passphrase device if it was created before prompting the PIN.
-            if (isCreatingNewWalletInstance) {
-                dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-            }
-
-            if (hasDeviceRequestedPin) {
+            if (hasDeviceRequestedPin || isAddingHiddenWallet) {
                 TrezorConnect.cancel('pin-cancelled');
             }
 
@@ -86,14 +79,13 @@ export const ConnectDeviceScreenHeader = ({
             }
         }
     }, [
-        dispatch,
-        hideAlert,
         hasDiscovery,
-        navigation,
-        showAlert,
-        isCreatingNewWalletInstance,
+        isAddingHiddenWallet,
         hasDeviceRequestedPin,
+        showAlert,
+        hideAlert,
         onCancelNavigationTarget,
+        navigation,
     ]);
 
     useHandleHardwareBackNavigation(handleCancel);

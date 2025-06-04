@@ -105,7 +105,6 @@ runs:
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         RELEASE_BUILD: ${{ inputs.release-build }}
-        RUN_REPORTER: ${{ inputs.run-reporter }}
       run: |
         if [[ -z "${{ inputs.base-url }}" ]]; then
           BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
@@ -114,16 +113,27 @@ runs:
         fi
         export BASE_URL
         echo "Using BASE_URL: $BASE_URL"
+  
+        if [[ "${{ inputs.run-reporter }}" == "true" ]]; then
+          REPORTER_OPT="--reporter=./e2e/support/reporters/gitHubReporter.ts"
+        else
+          REPORTER_OPT=""
+        fi
 
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
-        yarn workspace @trezor/suite-desktop-core test:orchestrated:e2e:${{ inputs.project }} --pwc-cancel-after-failures ${{ inputs.fail-fast }} --forbid-only --grep="${{ inputs.additional-grep }}"
+        yarn workspace @trezor/suite-desktop-core test:orchestrated:e2e:${{ inputs.project }} \
+          --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
+          --forbid-only \
+          $REPORTER_OPT \
+          --grep="${{ inputs.additional-grep }}"
 
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}
       uses: ./.github/actions/upload-test-logs
       with:
         test-group: ${{ inputs.test-group }}
+        project: ${{ inputs.project }}
 
     - name: Docker Compose Down
       shell: bash

@@ -49,8 +49,8 @@ export const TREZOR_CONNECT_BACKENDS = [
 
 export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
 
-type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];
-type NonStandardBackendType = (typeof NON_STANDARD_BACKENDS)[number];
+export type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];
+export type NonStandardBackendType = (typeof NON_STANDARD_BACKENDS)[number];
 export type BackendType = TrezorConnectBackendType | NonStandardBackendType;
 
 export type NetworkFeature =

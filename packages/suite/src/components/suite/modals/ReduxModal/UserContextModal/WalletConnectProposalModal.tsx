@@ -1,5 +1,9 @@
+import { useMemo, useState } from 'react';
+
 import styled from 'styled-components';
 
+import { selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
@@ -11,9 +15,12 @@ import {
     Banner,
     Card,
     Column,
+    ElevationUp,
     IconCircle,
     Modal,
+    Option,
     Row,
+    Select,
     Text,
     Tooltip,
 } from '@trezor/components';
@@ -23,8 +30,10 @@ import { spacings, spacingsPx } from '@trezor/theme';
 
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
+import { AccountLabel, Translation } from 'src/components/suite';
+import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
@@ -41,9 +50,28 @@ interface WalletConnectProposalModalProps {
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
     const dispatch = useDispatch();
     const pendingProposal = useSelector(selectPendingProposal);
+    const accounts = useSelector(selectVisibleSortedDeviceAccounts);
+    const accountLabels = useSelector(selectAccountLabels);
+    const selectableAccounts = useMemo<Account[]>(
+        () =>
+            pendingProposal?.networks
+                .filter(network => network.status === 'active')
+                .flatMap(network =>
+                    accounts.filter(account => account.symbol === network.symbol),
+                ) ?? [],
+        [accounts, pendingProposal?.networks],
+    );
+    const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
+        selectableAccounts[0] || null,
+    );
 
     const handleAccept = () => {
-        dispatch(sessionProposalApproveThunk({ eventId }));
+        dispatch(
+            sessionProposalApproveThunk({
+                eventId,
+                selectedDefaultAccount,
+            }),
+        );
         dispatch(onCancel());
     };
     const handleReject = () => {
@@ -174,6 +202,45 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                 </Tooltip>
                             ))}
                     </Row>
+                </Card>
+
+                <Text>
+                    <Translation id="TR_DEFAULT_ACCOUNT" />
+                </Text>
+                <Card paddingType="none">
+                    {/* Wrapped to keep consistent styling */}
+                    <ElevationUp>
+                        <Select
+                            isSearchable={false}
+                            isClearable={false}
+                            size="large"
+                            value={selectedDefaultAccount}
+                            options={selectableAccounts}
+                            formatOptionLabel={(account: Account) => (
+                                <Row gap={spacings.xs}>
+                                    {account.symbol && (
+                                        <CoinLogo type="token" symbol={account.symbol} size={24} />
+                                    )}
+                                    <AccountLabel
+                                        key={account.descriptor}
+                                        accountLabel={accountLabels[account.key]}
+                                        accountType={account.accountType}
+                                        networkType={account.networkType}
+                                        symbol={account.symbol}
+                                        index={account.index}
+                                        path={account.path}
+                                    />
+                                    <AccountTypeBadge
+                                        accountType={account.accountType}
+                                        networkType={account.networkType}
+                                        size="small"
+                                        onElevation
+                                    />
+                                </Row>
+                            )}
+                            onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                        />
+                    </ElevationUp>
                 </Card>
 
                 {(requiredNetworksNotActivated || noNetworksActivated) && (

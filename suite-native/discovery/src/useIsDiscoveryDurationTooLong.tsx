@@ -1,28 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import {
+    selectDiscoveryForSelectedDevice,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { IntervalId } from '@trezor/type-utils';
-
-import { selectDiscoveryInfo } from './discoveryConfigSlice';
 
 const DISCOVERY_LENGTH_CHECK_INTERVAL = 1_000;
 const DISCOVERY_DURATION_THRESHOLD = 50_000;
 
 export const useIsDiscoveryDurationTooLong = () => {
-    const discoveryInfo = useSelector(selectDiscoveryInfo);
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const discovery = useSelector(selectDiscoveryForSelectedDevice);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const [loadingTakesLongerThanExpected, setLoadingTakesLongerThanExpected] = useState(false);
 
     useEffect(() => {
         let interval: IntervalId;
-        if (hasDiscovery && discoveryInfo?.startTimestamp) {
+        const startTimestamp = discovery?.startTimestamp;
+        if (isDiscoveryRunning && startTimestamp !== undefined) {
             interval = setInterval(() => {
-                if (
-                    performance.now() - discoveryInfo.startTimestamp >
-                    DISCOVERY_DURATION_THRESHOLD
-                ) {
+                if (Date.now() - startTimestamp > DISCOVERY_DURATION_THRESHOLD) {
                     setLoadingTakesLongerThanExpected(true);
                     clearInterval(interval);
                 }
@@ -36,7 +35,7 @@ export const useIsDiscoveryDurationTooLong = () => {
                 clearInterval(interval);
             }
         };
-    }, [hasDiscovery, discoveryInfo]);
+    }, [discovery, isDiscoveryRunning]);
 
     return loadingTakesLongerThanExpected;
 };

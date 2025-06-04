@@ -16,6 +16,7 @@ import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
+import { BluetoothCard } from '../components/BluetoothCard';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
@@ -46,7 +47,12 @@ export const DevUtilsScreen = () => {
                                 See Component Demo
                             </Button>
                         )}
-                        <FeatureFlags />
+                    </VStack>
+                </Card>
+                <FeatureFlags />
+                <BluetoothCard />
+                <Card>
+                    <VStack spacing="sp16">
                         {isDevelopOrDebugEnv() && (
                             <>
                                 <RenderingUtils />
@@ -62,8 +68,8 @@ export const DevUtilsScreen = () => {
                         >
                             Throw Sentry error
                         </Button>
-                        <Button colorScheme="redElevation0" onPress={clearStorage}>
-                            Wipe all data
+                        <Button colorScheme="redBold" onPress={clearStorage}>
+                            💥 Wipe all data
                         </Button>
                     </VStack>
                 </Card>

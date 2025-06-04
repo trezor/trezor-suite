@@ -1,5 +1,4 @@
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { accountsActions } from './accountsActions';
 import { fetchAndUpdateAccountThunk } from './accountsThunks';
@@ -14,8 +13,7 @@ export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps(
 
         if (
             accountsActions.updateSelectedAccount.match(action) &&
-            action.payload.status === 'loaded' &&
-            action.payload.discovery.status === DiscoveryStatus.COMPLETED
+            action.payload.status === 'loaded'
         ) {
             const accountKey = action.payload.account.key;
             const updatedAt = action.payload.account.ts || 0; // safety, old versions of Suite does not have this attribute

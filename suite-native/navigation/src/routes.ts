@@ -55,6 +55,7 @@ export enum DeviceOnboardingStackRoutes {
     WalletCreatedSuccess = 'WalletCreatedSuccess',
     RecoveryUnsupported = 'RecoveryUnsupported',
     RecoveryInstructions = 'RecoveryInstructions',
+    WalletRecovery = 'WalletRecovery',
     CreatePin = 'CreatePin',
 }
 
@@ -93,17 +94,23 @@ export enum WipeDeviceStackRoutes {
 
 export enum AuthorizeDeviceStackRoutes {
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    ConnectBluetoothDevice = 'ConnectBluetoothDevice',
     PinMatrix = 'PinMatrix',
     ConnectingDevice = 'ConnectingDevice',
 
     PassphraseForm = 'PassphraseForm',
     PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     PassphraseLoading = 'PassphraseLoading',
+    PassphraseRedirecting = 'PassphraseRedirecting',
+    PassphraseDuplicateAlert = 'PassphraseDuplicateAlert',
+    PassphraseMismatchAlert = 'PassphraseMismatchAlert',
+    PassphraseConfirmFeatureUnlockOnTrezor = 'PassphraseConfirmFeatureUnlockOnTrezor',
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
     PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
+    PassphraseStackNavigator = 'PassphraseStackNavigator',
 }
 
 export enum DevUtilsStackRoutes {

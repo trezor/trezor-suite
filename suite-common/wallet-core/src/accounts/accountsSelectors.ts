@@ -9,19 +9,10 @@ import { DeviceState, StaticSessionId } from '@trezor/connect';
 import { formattedAccountTypeMap } from './accountsConstants';
 import { AccountsRootState } from './accountsReducer';
 import { DeviceRootState } from '../device/deviceReducer';
-import {
-    selectDeviceState,
-    selectHasOnlyPortfolioDevice,
-    selectSelectedDevice,
-} from '../device/deviceSelectors';
-import { DiscoveryRootState } from '../discovery/discoveryReducer';
-import {
-    selectHasDeviceDiscovery,
-    selectIsDeviceDiscoveryActive,
-} from '../discovery/discoverySelectors';
+import { selectSelectedDevice } from '../device/deviceSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
-    AccountsRootState & DeviceRootState & DiscoveryRootState
+    AccountsRootState & DeviceRootState
 >();
 
 const EMPTY_STABLE_ACCOUNTS_ARRAY: Account[] = [];
@@ -343,27 +334,6 @@ export const selectAccountsSymbols = createMemoizedSelector([selectAccounts], ac
 export const selectIsDeviceAccountless = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
     accounts => accounts.length === 0,
-);
-
-export const selectIsDiscoveredDeviceAccountless = createMemoizedSelector(
-    [selectIsDeviceAccountless, selectIsDeviceDiscoveryActive],
-    (isAccountless, isDiscoveryActive) => isAccountless && !isDiscoveryActive,
-);
-
-export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
-    [selectIsDiscoveredDeviceAccountless, selectHasOnlyPortfolioDevice],
-    (isDiscoveredAccountless, hasOnlyPortfolio) => isDiscoveredAccountless && hasOnlyPortfolio,
-);
-
-export const selectIsDeviceNotEmpty = createMemoizedSelector(
-    [selectNonEmptyDeviceAccounts, selectHasDeviceDiscovery, selectDeviceState],
-    (nonEmptyAccounts, hasDiscovery, deviceState) => {
-        const isNotEmpty = nonEmptyAccounts.length > 0;
-        if (isNotEmpty) return true;
-        if (hasDiscovery || !deviceState) return null;
-
-        return isNotEmpty;
-    },
 );
 
 export const selectSolStakingAccounts = createMemoizedSelector([selectAccountByKey], account => {

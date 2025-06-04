@@ -58,7 +58,9 @@ export const selectSendFormReviewButtonRequestsCount = (
             code === 'ButtonRequest_SignTx' ||
             isCardano ||
             (isEthereum && code === 'ButtonRequest_Other') ||
-            (isStellar && code === 'ButtonRequest_Other'),
+            // This is a special case for T1B1 devices (Stellar).
+            // See https://github.com/trezor/trezor-firmware/issues/5120
+            (isStellar && (code === 'ButtonRequest_Other' || code === 'ButtonRequest_ProtectCall')),
     );
 
     // While confirming decrease amount in RBF, 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount).
@@ -71,5 +73,3 @@ export const selectSendFormReviewButtonRequestsCount = (
 
     return isCardano ? sendFormReviewRequest.length - 1 : sendFormReviewRequest.length;
 };
-
-export const selectAreFeesLoading = (state: SendRootState) => state.wallet.send.areFeesLoading;

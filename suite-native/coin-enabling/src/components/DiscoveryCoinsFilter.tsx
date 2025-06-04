@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { restartDiscoveryThunk } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import {
-    applyDiscoveryChangesThunk,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoverySupportedNetworks,
 } from '@suite-native/discovery';
@@ -32,7 +32,7 @@ export const DiscoveryCoinsFilter = ({
             () =>
                 // run on leaving the screen
                 () =>
-                    dispatch(applyDiscoveryChangesThunk()),
+                    dispatch(restartDiscoveryThunk()),
             [dispatch],
         ),
     );

@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import {
+    selectHasRunningDiscovery,
     selectIsDeviceConnectedAndAuthorized,
-    selectIsDeviceDiscoveryActive,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Box, Button, ErrorMessage, IconButton, Loader, Text, VStack } from '@suite-native/atoms';
@@ -24,7 +24,7 @@ export const ConnectPopupScreen = () => {
     const deviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const validDevice = deviceConnectedAndAuthorized && !isPortfolioTrackerDevice;
-    const discoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const discoveryActive = useSelector(selectHasRunningDiscovery);
     const popupCall = useSelector(selectConnectPopupCall);
     const [showDebug, setShowDebug] = useState<boolean>(false);
 

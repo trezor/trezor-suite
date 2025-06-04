@@ -12,6 +12,7 @@ import type {
     TrezorDevice,
     Version,
 } from '@suite-common/suite-types';
+import type { CountryCode } from '@suite-common/trading';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
 import {
@@ -64,6 +65,7 @@ export type Options = {
     settings: CurrentSettings;
     transports?: TransportInfo[];
     device?: TrezorDevice;
+    countryCode: CountryCode | null;
 };
 
 /**
@@ -88,7 +90,7 @@ export const createVersionRange = (versions: Version | undefined): string | null
 const transformVersionToSemverFormat = (version: string | undefined): string =>
     semver.valid(semver.coerce(version)) || '';
 
-export const validateDurationCompatibility = (durationCondition: Duration): boolean => {
+export const isDurationCompatible = (durationCondition: Duration): boolean => {
     const currentDate = Date.now();
 
     const from = Date.parse(durationCondition.from);
@@ -97,7 +99,7 @@ export const validateDurationCompatibility = (durationCondition: Duration): bool
     return from <= currentDate && currentDate <= to;
 };
 
-export const validateVersionCompatibility = (
+export const isVersionCompatible = (
     condition: { [key: string]: Version | undefined },
     type: string,
     version: string,
@@ -111,7 +113,7 @@ export const validateVersionCompatibility = (
     return semver.satisfies(version, conditionVersion);
 };
 
-export const validateSettingsCompatibility = (
+export const areSettingsCompatible = (
     settingsCondition: Settings[],
     currentSettings: CurrentSettings,
 ): boolean => {
@@ -129,7 +131,7 @@ export const validateSettingsCompatibility = (
     );
 };
 
-export const validateTransportCompatibility = (
+export const isTransportCompatible = (
     transportCondition: Transport,
     transports: TransportInfo[],
 ): boolean =>
@@ -144,14 +146,9 @@ export const validateTransportCompatibility = (
 
             return [t];
         })
-        .some(({ type, version }) =>
-            validateVersionCompatibility(transportCondition, type, version),
-        );
+        .some(({ type, version }) => isVersionCompatible(transportCondition, type, version));
 
-export const validateDeviceCompatibility = (
-    deviceConditions: Device[],
-    device?: TrezorDevice,
-): boolean => {
+export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDevice): boolean => {
     // if device conditions are empty, then device should be empty
     if (!deviceConditions.length) {
         return !device;
@@ -191,7 +188,7 @@ export const validateDeviceCompatibility = (
     });
 };
 
-export const validateEnvironmentCompatibility = (
+export const isEnvironmentCompatible = (
     environmentCondition: Environment,
     environment: EnvironmentType,
     suiteVersion: string,
@@ -200,8 +197,21 @@ export const validateEnvironmentCompatibility = (
     const { revision, desktop, web, mobile } = environmentCondition;
 
     return (
-        validateVersionCompatibility({ desktop, web, mobile }, environment, suiteVersion) &&
+        isVersionCompatible({ desktop, web, mobile }, environment, suiteVersion) &&
         (revision === commitHash || revision === '*' || revision === undefined)
+    );
+};
+
+export const isCountryCodeCompatible = (
+    allowedCountryCodes: CountryCode[],
+    userCountryCode: CountryCode,
+): boolean => {
+    if (!allowedCountryCodes.length) {
+        return true;
+    }
+
+    return allowedCountryCodes.some(
+        location => location.toUpperCase() === userCountryCode.toUpperCase(),
     );
 };
 
@@ -228,7 +238,7 @@ export const getEnvData = async (): Promise<EnvData> => ({
 });
 
 export const validateConditions = (condition: Condition, options: Options, envData: EnvData) => {
-    const { device, transports = [], settings } = options;
+    const { device, transports = [], settings, countryCode } = options;
 
     const {
         duration: durationCondition,
@@ -238,15 +248,16 @@ export const validateConditions = (condition: Condition, options: Options, envDa
         transport: transportCondition,
         settings: settingsCondition,
         devices: deviceCondition,
+        countryCodes: countryCodeCondition,
     } = condition;
 
-    if (durationCondition && !validateDurationCompatibility(durationCondition)) {
+    if (durationCondition && !isDurationCompatible(durationCondition)) {
         return false;
     }
 
     if (
         environmentCondition &&
-        !validateEnvironmentCompatibility(
+        !isEnvironmentCompatible(
             environmentCondition,
             envData.environment,
             envData.suiteVersion,
@@ -256,30 +267,34 @@ export const validateConditions = (condition: Condition, options: Options, envDa
         return false;
     }
 
-    if (
-        osCondition &&
-        !validateVersionCompatibility(osCondition, envData.osName, envData.osVersion)
-    ) {
+    if (osCondition && !isVersionCompatible(osCondition, envData.osName, envData.osVersion)) {
         return false;
     }
 
     if (
         envData.environment === 'web' &&
         browserCondition &&
-        !validateVersionCompatibility(browserCondition, envData.browserName, envData.browserVersion)
+        !isVersionCompatible(browserCondition, envData.browserName, envData.browserVersion)
     ) {
         return false;
     }
 
-    if (settingsCondition && !validateSettingsCompatibility(settingsCondition, settings)) {
+    if (settingsCondition && !areSettingsCompatible(settingsCondition, settings)) {
         return false;
     }
 
-    if (transportCondition && !validateTransportCompatibility(transportCondition, transports)) {
+    if (transportCondition && !isTransportCompatible(transportCondition, transports)) {
         return false;
     }
 
-    if (deviceCondition && !validateDeviceCompatibility(deviceCondition, device)) {
+    if (deviceCondition && !isDeviceCompatible(deviceCondition, device)) {
+        return false;
+    }
+
+    if (
+        countryCodeCondition &&
+        (!countryCode || !isCountryCodeCompatible(countryCodeCondition, countryCode))
+    ) {
         return false;
     }
 

@@ -4,6 +4,10 @@ inputs:
   test-group:
     description: "Test group name for log file naming"
     required: true
+  project:
+    description: "Playwright project name. (web|desktop)"
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -18,7 +22,7 @@ runs:
     - name: Upload Trezor-user-env and Regtest logs
       uses: actions/upload-artifact@v4
       with:
-        name: emulator-logs-${{ inputs.test-group }}
+        name: emulator-logs-${{ inputs.project }}-${{ inputs.test-group }}
         path: |
           trezor-user-env-debugging.log
           tenv-emulator-bridge-debugging.log

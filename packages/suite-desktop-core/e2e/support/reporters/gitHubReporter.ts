@@ -107,6 +107,7 @@ class GitHubReporter implements Reporter, LoggingFunctions {
     // Initializes the reporter when test run begins, creates a GitHub project if it doesn't exist
     // eslint-disable-next-line require-await
     async onBegin() {
+        this.log('GitHub reporter started. Initializing GitHub client...');
         this.initState = InitializationState.IN_PROGRESS;
         const initPromise = (async () => {
             try {

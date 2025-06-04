@@ -1,12 +1,13 @@
 import { networks } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     accountsActions,
     blockchainActions,
     deviceActions,
     discoveryActions,
     feesActions,
-    selectDeviceDiscovery,
+    selectDeviceAccounts,
+    selectDiscoveryForSelectedDevice,
+    selectEnabledNetworks,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -17,9 +18,10 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
+// move to selector!!!!
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
-
+    const accounts = selectDeviceAccounts(state);
     // waiting for device
     if (!device) {
         return {
@@ -36,16 +38,17 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     }
 
     // waiting for discovery
-    const discovery = selectDeviceDiscovery(state);
-    if (!device.state || !discovery) {
+    const discovery = selectDiscoveryForSelectedDevice(state);
+
+    if (!device.state) {
         return {
             status: 'loading',
             loader: 'auth',
         };
     }
 
-    // account cannot exists since there are no selected networks in settings/wallet
-    if (discovery.networks.length === 0) {
+    // account cannot exist since there are no discovered accounts (maybe no networks enabled)
+    if (accounts.length === 0) {
         return {
             status: 'exception',
             loader: 'discovery-empty',
@@ -60,42 +63,40 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             : {
                   accountIndex: 0,
                   accountType: 'normal' as const,
-                  symbol: discovery.networks[0],
+                  symbol: accounts[0]?.symbol || 'btc',
               };
 
     const network = networks[params.symbol];
 
     // account cannot exists since requested network is not selected in settings/wallet
-    if (!discovery.networks.find(n => n === network.symbol)) {
+    const enabledNetworks = selectEnabledNetworks(state);
+    if (!enabledNetworks.includes(network.symbol)) {
         return {
             status: 'exception',
             loader: 'account-not-enabled',
             network,
-            discovery,
             params,
         };
     }
 
-    const failed = discovery.failed.find(
+    const matchedFailed = (discovery?.failed ?? []).find(
         f =>
             f.symbol === network.symbol &&
             f.index === params.accountIndex &&
             f.accountType === params.accountType,
     );
     // discovery for requested network failed
-    if (failed) {
+    if (matchedFailed) {
         return {
             status: 'exception',
             loader: 'account-not-loaded',
             network,
-            discovery,
             params,
         };
     }
 
     // get selected account
     const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
-
     // account does exist
     if (account && account.visible) {
         if (account.backendType === 'coinjoin') {
@@ -112,7 +113,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
                     status: 'exception',
                     loader: 'account-not-loaded',
                     network,
-                    discovery,
                     params,
                 };
             }
@@ -123,24 +123,22 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             status: 'loaded',
             account,
             network,
-            discovery,
             params,
         };
     }
 
     // account doesn't exist (yet?) checking why...
     // discovery is still running
-    if (discovery.error) {
+    if (discovery?.status === 'failed') {
         return {
             status: 'exception',
             loader: 'discovery-error',
             network,
-            discovery,
             params,
         };
     }
 
-    if (discovery.status !== DiscoveryStatus.COMPLETED) {
+    if (discovery?.status === 'progress') {
         return {
             status: 'loading',
             loader: 'account-loading',
@@ -152,7 +150,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         status: 'exception',
         loader: 'account-not-exists',
         network,
-        discovery,
         params,
     };
 };
@@ -173,13 +170,7 @@ const actions = [
     blockchainActions.setBackend.type,
     blockchainActions.synced.type,
     blockchainActions.connected.type,
-    discoveryActions.stopDiscovery.type,
-    discoveryActions.interruptDiscovery.type,
-    discoveryActions.createDiscovery.type,
-    discoveryActions.startDiscovery.type,
     discoveryActions.updateDiscovery.type,
-    discoveryActions.removeDiscovery.type,
-    discoveryActions.completeDiscovery.type,
     feesActions.updateFee.type,
     feesActions.removeFee.type,
 ];
@@ -212,15 +203,6 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
             'utxo',
             'status',
             'syncing',
-        ],
-        discovery: [
-            'status',
-            'index',
-            // 'accountIndex',
-            // 'interrupted',
-            // 'completed',
-            // 'waitingForBlockchain',
-            // 'waitingForDevice',
         ],
     });
 

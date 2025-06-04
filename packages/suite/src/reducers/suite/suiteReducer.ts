@@ -2,11 +2,10 @@ import { produce } from 'immer';
 
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
+import type { CountryCode, InvityServerEnvironment, TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
-    discoveryActions,
     selectIsEntropyCheckFailed,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -137,6 +136,7 @@ export interface SuiteState {
     flags: Flags;
     evmSettings: EvmSettings;
     dismissedTradingTerms: Partial<Record<TradingType, boolean>>;
+    countryCode: CountryCode | null;
     prefillFields: PrefillFields;
     settings: SuiteSettings;
 }
@@ -183,6 +183,7 @@ const initialState: SuiteState = {
         sendForm: '',
         transactionHistory: '',
     },
+    countryCode: null,
     settings: {
         theme: {
             variant: 'light',
@@ -307,6 +308,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     [action.tradingType]: true,
                 };
                 break;
+            case SUITE.SET_COUNTRY_CODE:
+                draft.countryCode = action.payload;
+                break;
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
                 break;
@@ -401,15 +405,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.LOCK_ROUTER:
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
-                break;
-
-            case discoveryActions.startDiscovery.type:
-                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, true);
-                break;
-
-            case discoveryActions.completeDiscovery.type:
-            case discoveryActions.stopDiscovery.type:
-                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
 
             // no default
@@ -527,6 +522,8 @@ export const selectIsFirmwareHashCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareHash;
 export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareRevision;
+
+export const selectCountryCode = (state: SuiteRootState) => state.suite.countryCode;
 
 /**
  * Get firmware revision check error, or null if check was successful / skipped.

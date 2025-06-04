@@ -5,6 +5,7 @@ import {
     getValidExperimentIds,
     getValidMessages,
     messageSystemActions,
+    selectCountryCode,
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
@@ -28,6 +29,7 @@ export const messageSystemMiddleware = createMiddleware(
             const config = selectMessageSystemConfig(getState());
             const device = selectSelectedDevice(getState());
             const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
+            const countryCode = selectCountryCode(getState());
 
             const validationParams = {
                 device,
@@ -35,6 +37,7 @@ export const messageSystemMiddleware = createMiddleware(
                     tor: false, // not supported in suite-native
                     enabledNetworks,
                 },
+                countryCode,
             };
             const [validMessages, validExperimentIds] = await Promise.all([
                 getValidMessages(config, validationParams),

@@ -3,29 +3,26 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { A, pipe } from '@mobily/ts-belt';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
-import { isRejected } from '@reduxjs/toolkit';
 
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
-    getNetwork,
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
-    LIMIT,
     accountsActions,
     selectDeviceAccounts,
+    selectDiscoveryForSelectedDevice,
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
 import {
-    addAndDiscoverNetworkAccountThunk,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
@@ -81,6 +78,8 @@ export const accountTypeTranslationKeys: Record<
     },
 };
 
+const LIMIT = 10; // or maybe find another place to put it if needed
+
 export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
@@ -93,6 +92,7 @@ export const useAddCoinAccount = () => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const enabledDiscoveryNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
+    const discovery = useSelector(selectDiscoveryForSelectedDevice);
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
 
@@ -291,7 +291,7 @@ export const useAddCoinAccount = () => {
         }
     };
 
-    const addCoinAccount = async ({
+    const addCoinAccount = ({
         symbol,
         flowType,
         accountType = NORMAL_ACCOUNT_TYPE,
@@ -324,33 +324,29 @@ export const useAddCoinAccount = () => {
             return;
         }
 
-        const network = getNetwork(symbol);
-
-        //If the account already exists, but is invisible, make it visible
+        // the account should already exist, but be invisible, so make it visible
         if (firstHiddenEmptyAccount) {
             dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
+            navigateToSuccessorScreen({
+                flowType,
+                symbol,
+                accountType,
+                accountIndex: firstHiddenEmptyAccount.index ?? accounts.length,
+            });
+
+            return;
         }
 
-        navigateToSuccessorScreen({
-            flowType,
-            symbol,
-            accountType,
-            accountIndex: firstHiddenEmptyAccount?.index ?? accounts.length,
-        });
-
-        const newAccountResult = await dispatch(
-            addAndDiscoverNetworkAccountThunk({
-                network,
-                accountType,
-                deviceState: device.state.staticSessionId!,
-            }),
+        // or the account discovery might have failed
+        const nextAccountIndex = accounts.length;
+        const failedAccount = discovery?.failed?.find(
+            f =>
+                f.symbol === symbol &&
+                f.accountType === accountType &&
+                f.index === nextAccountIndex,
         );
-
-        if (
-            !firstHiddenEmptyAccount && // Do not show error if we are just making the first hidden empty account visible
-            isRejected(newAccountResult)
-        ) {
-            navigateToFailureScreen({ flowType, errorString: newAccountResult.payload });
+        if (failedAccount !== undefined) {
+            navigateToFailureScreen({ flowType, errorString: failedAccount.error });
         }
     };
 
@@ -400,8 +396,9 @@ export const useAddCoinAccount = () => {
     const handleAccountTypeConfirmation = async (flowType: AddCoinFlowType) => {
         if (networkSymbolWithTypeToBeAdded) {
             clearNetworkWithTypeToBeAdded();
+            // TODO why timeout?
             await new Promise(resolve => setTimeout(resolve, 100));
-            await addCoinAccount({
+            addCoinAccount({
                 symbol: networkSymbolWithTypeToBeAdded[0],
                 accountType: networkSymbolWithTypeToBeAdded[1],
                 flowType,

@@ -1,11 +1,11 @@
 import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
+import { changeCoinVisibility } from '../../src/settings/walletSettingsThunks';
 
 export const walletSettingsFixtures = [
     {
         description: 'Btc should be visible as a default if no initial state provided',
         initialState: undefined,
-        action: () =>
-            walletSettingsActions.changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
+        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
         result: {
             enabledNetworks: ['btc', 'ltc'],
         },
@@ -13,8 +13,7 @@ export const walletSettingsFixtures = [
     {
         description: 'Enable already enabled network',
         initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () =>
-            walletSettingsActions.changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
+        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
         result: {
             enabledNetworks: ['btc', 'ltc'],
         },
@@ -22,8 +21,7 @@ export const walletSettingsFixtures = [
     {
         description: 'Disable already enabled network',
         initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () =>
-            walletSettingsActions.changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: false }),
+        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: false }),
         result: {
             enabledNetworks: ['btc'],
         },

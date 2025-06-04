@@ -27,8 +27,8 @@ import {
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
 import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banner-flags';
+import { bluetoothSlice } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
-import { discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
@@ -36,16 +36,15 @@ import { sendFormSlice } from '@suite-native/module-send';
 import { tradingSlice } from '@suite-native/module-trading';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
+    bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
-    discoveryStopPersistTransform,
     initMmkvStorage,
     migrateAccountBnbToBsc,
     migrateAccountLabel,
     migrateAccountsDeprecateNetworks,
     migrateDeviceState,
-    migrateDiscoveryDeprecateNetworks,
-    migrateEnabledDiscoveryNetworkSymbols,
+    migrateDiscoveryConfigToWalletSettings,
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
@@ -72,6 +71,7 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -119,12 +119,17 @@ export const prepareRootReducers = async () => {
                 key: 'discoveryConfig',
                 storage: await initMmkvStorage(),
             })) as any;
-            if (appSettings && discoveryConfig)
+            if (appSettings && discoveryConfig) {
+                const enabledNetworks = migrateDiscoveryConfigToWalletSettings(
+                    discoveryConfig.enabledDiscoveryNetworkSymbols,
+                );
+
                 return {
                     localCurrency: appSettings.fiatCurrencyCode,
-                    enabledNetworks: discoveryConfig.enabledDiscoveryNetworkSymbols,
+                    enabledNetworks,
                     bitcoinAmountUnit: appSettings.bitcoinUnits,
                 };
+            }
         },
     });
 
@@ -200,45 +205,6 @@ export const prepareRootReducers = async () => {
         },
     });
 
-    const discoveryConfigPersistedReducer = await preparePersistReducer({
-        reducer: discoveryConfigReducer,
-        persistedKeys: [],
-        key: 'discoveryConfig',
-        version: 3,
-        migrations: {
-            2: (oldState: any) => {
-                if (!oldState.enabledDiscoveryNetworkSymbols) return oldState;
-
-                const { enabledDiscoveryNetworkSymbols } = oldState;
-                const migrateNetworkSymbols = migrateEnabledDiscoveryNetworkSymbols(
-                    enabledDiscoveryNetworkSymbols,
-                );
-                const migratedState = {
-                    ...oldState,
-                    enabledDiscoveryNetworkSymbols: migrateNetworkSymbols,
-                };
-
-                return migratedState;
-            },
-            3: (oldState: any) => {
-                if (!oldState.enabledDiscoveryNetworkSymbols) return oldState;
-
-                const { enabledDiscoveryNetworkSymbols } = oldState;
-                const migratedNetworkSymbols = migrateDiscoveryDeprecateNetworks(
-                    enabledDiscoveryNetworkSymbols,
-                );
-                const migratedState = {
-                    ...oldState,
-                    enabledDiscoveryNetworkSymbols: migratedNetworkSymbols,
-                };
-
-                return migratedState;
-            },
-        },
-        transforms: [discoveryStopPersistTransform],
-        // kept for backward compatibility, but not persisted anymore
-    });
-
     const featureFlagsPersistedReducer = await preparePersistReducer({
         reducer: featureFlagsReducer,
         persistedKeys: featureFlagsPersistedKeys,
@@ -260,6 +226,14 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const bluetoothPersistedReducer = await preparePersistReducer({
+        reducer: bluetoothReducer,
+        persistedKeys: ['knownDevices'],
+        key: 'bluetooth',
+        version: 1,
+        transforms: [bluetoothPersistTransform],
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             app: appReducer,
@@ -275,11 +249,11 @@ export const prepareRootReducers = async () => {
             nativeFirmware: nativeFirmwareReducer,
             logs: logsSlice.reducer,
             notifications: notificationsReducer,
-            discoveryConfig: discoveryConfigPersistedReducer,
             messageSystem: messageSystemPersistedReducer,
             tokenDefinitions: tokenDefinitionsReducer,
             connectPopup: connectPopupReducer,
             walletConnect: walletConnectReducer,
+            bluetooth: bluetoothPersistedReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

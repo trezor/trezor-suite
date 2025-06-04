@@ -128,7 +128,6 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
                     await expect(page.getByTestId('@modal')).toBeVisible();
                     await page.getByTestId(`@settings/wallet/network/${coin.symbol}`).click();
                     await page.getByTestId('@add-account').click();
-                    await page.discoveryShouldFinish();
 
                     const numberOfAccountsAfter = await page
                         .getByTestId('@account-menu/normal/group')

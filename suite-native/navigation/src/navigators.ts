@@ -143,7 +143,10 @@ export type DeviceOnboardingStackParamList = {
     };
     [DeviceOnboardingStackRoutes.RecoveryUnsupported]: undefined;
     [DeviceOnboardingStackRoutes.RecoveryInstructions]: undefined;
-    [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: undefined;
+    [DeviceOnboardingStackRoutes.WalletRecovery]: undefined;
+    [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: {
+        flowType: 'create' | 'recover';
+    };
     [DeviceOnboardingStackRoutes.WalletBackupRecap]: undefined;
     [DeviceOnboardingStackRoutes.CreatePin]: undefined;
 };
@@ -219,13 +222,18 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]:
         | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
         | undefined;
+    [AuthorizeDeviceStackRoutes.ConnectBluetoothDevice]: undefined;
     [AuthorizeDeviceStackRoutes.PinMatrix]: undefined;
     [AuthorizeDeviceStackRoutes.ConnectingDevice]: undefined;
 
     [AuthorizeDeviceStackRoutes.PassphraseForm]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseLoading]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseRedirecting]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseDuplicateAlert]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseConfirmFeatureUnlockOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEmptyWallet]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseMismatchAlert]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice]: undefined;

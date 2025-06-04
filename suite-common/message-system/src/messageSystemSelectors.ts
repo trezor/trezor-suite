@@ -22,6 +22,8 @@ export const selectMessageSystemTimestamp = (state: MessageSystemRootState) =>
 export const selectMessageSystemCurrentSequence = (state: MessageSystemRootState) =>
     state.messageSystem.currentSequence;
 
+export const selectCountryCode = (state: MessageSystemRootState) => state.messageSystem.countryCode;
+
 const comparePriority = (a: Message, b: Message) => b.priority - a.priority;
 
 const makeSelectActiveMessagesByCategory = (category: Category) =>
@@ -72,8 +74,8 @@ export const selectContextMessageContent = createMemoizedSelector(
         (_state, _domain, language: string) => language,
     ],
     (activeContextMessages, domain, language) => {
-        const message = activeContextMessages.find(
-            activeContextMessage => activeContextMessage.context?.domain === domain,
+        const message = activeContextMessages.find(({ context }) =>
+            [context?.domain].flat().includes(domain),
         );
         if (!message) return undefined;
 

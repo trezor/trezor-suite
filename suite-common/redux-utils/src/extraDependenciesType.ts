@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,
@@ -54,7 +54,6 @@ export type ExtraDependencies = {
             >;
         }>;
         openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
-        addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType; device: AcquiredDevice }>;
     };
     selectors: {
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
@@ -70,7 +69,7 @@ export type ExtraDependencies = {
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
-        selectDeviceDiscovery: SuiteCompatibleSelector<Discovery | undefined>;
+        selectDiscoveryForSelectedDevice: SuiteCompatibleSelector<Discovery | undefined>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
@@ -109,7 +108,6 @@ export type ExtraDependencies = {
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
         storageLoadHistoricRates: StorageLoadReducer;
-        storageLoadDiscovery: StorageLoadReducer;
         setDeviceMetadataReducer: BaseReducer;
         setDeviceMetadataPasswordsReducer: BaseReducer;
         storageLoadDevices: StorageLoadReducer;

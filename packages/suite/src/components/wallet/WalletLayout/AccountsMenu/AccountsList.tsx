@@ -18,6 +18,7 @@ import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
@@ -77,24 +78,22 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const accounts = useSelector(selectAccounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
+    const { discovery } = useDiscovery();
     const accountLabels = useSelector(selectAccountLabels);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isSidebarCollapsed = useIsSidebarCollapsed();
-    const { discovery, getDiscoveryStatus } = useDiscovery();
     const { coinFilter, searchString } = useAccountSearch();
-    const discoveryStatus = getDiscoveryStatus();
-
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
-    if (!device || !discovery) {
+    if (!device) {
         return null;
     }
 
-    const failed = getFailedAccounts(discovery);
+    const staticSessionId = device.state?.staticSessionId;
+    const failed = getFailedAccounts(staticSessionId, discovery);
 
-    const list = sortByCoin(
-        accounts.filter(a => a.deviceState === device.state?.staticSessionId).concat(failed),
-    );
+    const list = sortByCoin(accounts.filter(a => a.deviceState === staticSessionId)).concat(failed);
     const filteredAccounts =
         searchString || coinFilter
             ? list.filter(account => {
@@ -147,7 +146,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
             accounts,
             onItemClick,
             coinjoinIsPreloading,
-            discoveryInProgress,
+            discoveryInProgress: false,
             type,
         };
 

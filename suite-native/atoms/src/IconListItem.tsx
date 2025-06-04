@@ -50,6 +50,7 @@ type IconListItemProps = {
 
 type IconListTextItemProps = IconListItemProps & {
     textVariant?: NativeTypographyStyle;
+    textColor?: Color;
 };
 
 export const IconListItem = ({
@@ -73,9 +74,12 @@ export const IconListItem = ({
 export const IconListTextItem = ({
     children,
     textVariant = 'hint',
+    textColor,
     ...rest
 }: IconListTextItemProps) => (
     <IconListItem {...rest}>
-        <Text variant={textVariant}>{children}</Text>
+        <Text variant={textVariant} color={textColor}>
+            {children}
+        </Text>
     </IconListItem>
 );

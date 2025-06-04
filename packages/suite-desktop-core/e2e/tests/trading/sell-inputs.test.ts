@@ -30,7 +30,8 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
 
         await test.step('Check limits for BTC input', async () => {
             await test.step('Below minimum', async () => {
-                await tradingPage.youPayCryptoInput.fill('0.00000001');
+                await tradingPage.fillSellFormMinimumQuoteError();
+
                 await expect
                     .soft(tradingPage.cryptoInputBottomText)
                     .toHaveText(/Minimum is 0\.\d+( BTC)?/, { timeout: 15_000 });

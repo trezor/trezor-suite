@@ -188,6 +188,7 @@ export const TransactionReviewOutputElement = ({
                                             </Text>
                                         }
                                         direction="row"
+                                        verticalAlignment="start"
                                     >
                                         <Text
                                             as="div"

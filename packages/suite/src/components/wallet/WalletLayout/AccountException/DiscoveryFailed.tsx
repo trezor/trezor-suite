@@ -11,13 +11,15 @@ import { useDiscovery, useDispatch } from 'src/hooks/suite';
 export const DiscoveryFailed = () => {
     const dispatch = useDispatch();
     const { discovery } = useDiscovery();
+    const description =
+        discovery !== undefined && discovery.status === 'failed' ? discovery.error : undefined;
 
     const handleClick = () => dispatch(restartDiscoveryThunk());
 
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
-            description={discovery && discovery.error ? discovery.error : undefined}
+            description={description}
             iconName="warning"
             iconVariant="warning"
             actions={[

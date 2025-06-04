@@ -1,15 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { discoveryActions } from '@suite-common/wallet-core';
-import { StaticSessionId } from '@trezor/connect';
 
-import {
-    REDACTED_REPLACEMENT,
-    redactAccount,
-    redactAction,
-    redactDevice,
-    redactDiscovery,
-} from 'src/utils/suite/logsUtils';
+import { REDACTED_REPLACEMENT, redactAccount, redactDevice } from 'src/utils/suite/logsUtils';
 
 describe('logsUtils', () => {
     const account = testMocks.getWalletAccount({
@@ -19,11 +10,6 @@ describe('logsUtils', () => {
         symbol: 'btc',
     });
     const device = testMocks.getSuiteDevice();
-    const discovery = {
-        deviceState:
-            'n3G5TV6d5D8nMjWTDUdjLmyFv5LtycJxT6@1945380BFC121301C978931C:1' as StaticSessionId,
-        status: DiscoveryStatus.COMPLETED,
-    };
 
     describe('redactAccount', () => {
         it('should redact sensitive fields on account', () => {
@@ -58,31 +44,6 @@ describe('logsUtils', () => {
                     session_id: REDACTED_REPLACEMENT,
                     label: REDACTED_REPLACEMENT,
                 },
-            });
-        });
-    });
-
-    describe('redactDiscovery', () => {
-        it('should redact sensitive fields from discovery', () => {
-            expect(redactDiscovery(discovery)).toEqual({
-                ...discovery,
-                deviceState: REDACTED_REPLACEMENT,
-            });
-        });
-    });
-
-    describe('redactAction', () => {
-        it('should redact sensitive fields from discovery', () => {
-            expect(
-                redactAction({
-                    datetime: 'Fri, 01 Jul 2022 10:07:17 GMT',
-                    type: discoveryActions.completeDiscovery.type,
-                    payload: discovery,
-                }),
-            ).toEqual({
-                datetime: 'Fri, 01 Jul 2022 10:07:17 GMT',
-                type: discoveryActions.completeDiscovery.type,
-                payload: { ...discovery, deviceState: REDACTED_REPLACEMENT },
             });
         });
     });

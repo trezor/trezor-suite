@@ -1,5 +1,12 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+export type BluetoothAdapterStatus =
+    | 'unknown'
+    | 'enabled'
+    | 'disabled'
+    | 'permission-denied'
+    | 'not-compatible';
+
 export type BluetoothScanStatus = 'idle' | 'running' | 'error';
 
 export enum BluetoothFilterPolicy {
@@ -40,10 +47,3 @@ export type BluetoothDeviceCommon = {
 };
 
 export type DeviceBluetoothConnectionStatusType = DeviceBluetoothConnectionStatus['type'];
-
-export type BluetoothAdapterStatus =
-    | 'unknown'
-    | 'enabled'
-    | 'disabled'
-    | 'permission-denied'
-    | 'not-compatible';

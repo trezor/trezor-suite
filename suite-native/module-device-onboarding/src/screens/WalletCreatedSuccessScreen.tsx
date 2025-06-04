@@ -1,34 +1,41 @@
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { useNavigation } from '@react-navigation/core';
-
 import { AnimatedText, Box, Spinner, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    StackProps,
 } from '@suite-native/navigation';
-
-type NavigationProps = StackToStackCompositeNavigationProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.WalletCreatedSuccess,
-    RootStackParamList
->;
+import { useToast } from '@suite-native/toasts';
 
 const NAVIGATION_TIMEOUT = 3000;
 const ANIMATION_END_FRAME = 305;
 
-export const WalletCreatedSuccessScreen = () => {
+export const WalletCreatedSuccessScreen = ({
+    navigation,
+    route,
+}: StackProps<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.WalletCreatedSuccess
+>) => {
+    const { flowType } = route.params;
     const textOpacity = useSharedValue(0);
-    const navigation = useNavigation<NavigationProps>();
+    const { showToast } = useToast();
 
     const handleAnimationEnd = () => {
         textOpacity.value = withTiming(1);
         setTimeout(() => {
-            navigation.navigate(DeviceOnboardingStackRoutes.WalletBackupRecap);
+            if (flowType === 'create') {
+                navigation.navigate(DeviceOnboardingStackRoutes.WalletBackupRecap);
+            } else {
+                // TODO: https://github.com/trezor/trezor-suite/issues/18401
+                showToast({
+                    message: 'TODO: implement recovery recap screen',
+                    variant: 'warning',
+                });
+            }
         }, NAVIGATION_TIMEOUT);
     };
 

@@ -4,10 +4,8 @@ import { analyticsActions } from '@suite-common/analytics';
 import { addLog } from '@suite-common/logger';
 import {
     WALLET_SETTINGS,
-    authorizeDeviceThunk,
     changeNetworks,
     deviceActions,
-    discoveryActions,
     setLocalCurrency,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
@@ -53,19 +51,6 @@ const log =
             }
         }
 
-        if (authorizeDeviceThunk.fulfilled.match(action)) {
-            api.dispatch(
-                addLog({
-                    type: 'authorizeDeviceThunk.fulfilled',
-                    payload: {
-                        device: action.payload.device,
-                        firmwareRelease: undefined,
-                        unavailableCapabilities: undefined,
-                    },
-                }),
-            );
-        }
-
         switch (action.type) {
             case SUITE.SET_LANGUAGE:
             case SUITE.SET_THEME:
@@ -108,7 +93,6 @@ const log =
                 break;
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
-            case discoveryActions.completeDiscovery.type:
             case deviceActions.updateSelectedDevice.type:
             case deviceActions.rememberDevice.type:
                 api.dispatch(

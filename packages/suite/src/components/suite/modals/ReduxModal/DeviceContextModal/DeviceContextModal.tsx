@@ -1,6 +1,9 @@
 import { useIntl } from 'react-intl';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectIsDiscoveryAuthConfirmationRequired,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -16,6 +19,7 @@ import {
     TransactionReviewModal,
 } from 'src/components/suite/modals';
 import { useSelector } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import messages from 'src/support/messages';
 
 import type { ReduxModalProps } from '../ReduxModal';
@@ -28,10 +32,18 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectSelectedDevice);
     const intl = useIntl();
+    const selectedAccount = useSelector(selectSelectedAccount);
+
+    const confirmEmptyPassphrase = useSelector(state =>
+        selectIsDiscoveryAuthConfirmationRequired(state, device?.path),
+    );
 
     if (!device) return null;
-
     const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+
+    if (confirmEmptyPassphrase) {
+        return <PassphraseModal device={device} />;
+    }
 
     switch (windowType) {
         // T1B1 firmware
@@ -40,9 +52,6 @@ export const DeviceContextModal = ({
         // T1B1 firmware
         case UI.INVALID_PIN:
             return <PinInvalidModal device={device} />;
-        // Passphrase on host
-        case UI.REQUEST_PASSPHRASE:
-            return <PassphraseModal device={device} />;
         // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
@@ -66,7 +75,6 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_RecoveryHomepage':
         case 'ButtonRequest_MnemonicWordCount':
         case 'ButtonRequest_MnemonicInput':
-        case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for T2T1, weird but true
         case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for T1B1
         case 'ButtonRequest_WipeDevice':
@@ -74,6 +82,15 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
             return <ConfirmActionModal device={device} />;
+        case 'ButtonRequest_ProtectCall': {
+            // This is a special case for T1B1 devices (Stellar).
+            // See https://github.com/trezor/trezor-firmware/issues/5120
+            if (selectedAccount?.networkType === 'stellar') {
+                return <TransactionReviewModal type="sign-transaction" />;
+            } else {
+                return <ConfirmActionModal device={device} />;
+            }
+        }
         case 'ButtonRequest_Address':
             return data?.type === 'address' ? (
                 <ConfirmAddressModal

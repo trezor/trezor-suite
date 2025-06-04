@@ -31,18 +31,18 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     connectingDeviceIds: string[];
 };
 
-export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() => {
-    const initialState: BluetoothState<T> = {
-        isBluetoothListOpen: false,
-        adapterStatus: 'unknown',
-        scanStatus: 'idle',
-        nearbyDevices: null,
-        knownDevices: [] as T[],
-        unpairedDeviceNeedsManualOsRemoval: false,
-        connectingDeviceIds: [],
-    };
+export const prepareInitialState = <T extends BluetoothDeviceCommon>(): BluetoothState<T> => ({
+    isBluetoothListOpen: false,
+    adapterStatus: 'unknown',
+    scanStatus: 'idle',
+    nearbyDevices: null,
+    knownDevices: [] as T[],
+    unpairedDeviceNeedsManualOsRemoval: false,
+    connectingDeviceIds: [],
+});
 
-    return createReducerWithExtraDeps<BluetoothState<T>>(initialState, (builder, extra) =>
+export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
+    createReducerWithExtraDeps<BluetoothState<T>>(prepareInitialState<T>(), (builder, extra) =>
         builder
             .addCase(bluetoothActions.adapterEventAction, (state, { payload: { status } }) => {
                 state.adapterStatus = status;
@@ -176,4 +176,3 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 },
             ),
     );
-};

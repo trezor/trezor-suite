@@ -4,7 +4,6 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
     accountsActions,
-    authorizeDeviceThunk,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
     deviceActions,
@@ -30,10 +29,7 @@ import { isDeviceEventAction } from '../utils';
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
-            authorizeDeviceThunk.fulfilled,
-            authorizeDeviceThunk.rejected,
             deviceActions.selectDevice,
-            deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,
             deviceActions.addButtonRequest,
             deviceActions.removeButtonRequests,

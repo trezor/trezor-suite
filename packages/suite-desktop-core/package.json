@@ -16,7 +16,7 @@
         "test:e2e:update-snapshots": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --grep @snapshot --update-snapshots",
         "test:orchestrated:e2e:desktop": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop",
         "test:orchestrated:e2e:web": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web",
-        "github:report:manual": "RUN_REPORTER=manual yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=manual",
+        "github:report:manual": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=manual --reporter=./e2e/support/reporters/gitHubReporter.ts",
         "github:create:project": "tsx ./e2e/support/reporters/scriptCreateProject.ts"
     },
     "dependencies": {

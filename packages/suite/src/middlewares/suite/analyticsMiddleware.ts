@@ -6,7 +6,6 @@ import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {
     WALLET_SETTINGS,
-    authorizeDeviceThunk,
     deviceActions,
     discoveryActions,
     selectDevices,
@@ -58,13 +57,6 @@ const analyticsMiddleware =
 
         const state = api.getState();
 
-        if (authorizeDeviceThunk.fulfilled.match(action)) {
-            analytics.report({
-                type: EventType.SelectWalletType,
-                payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
-            });
-        }
-
         if (isAnyOf(firmwareUpdate.fulfilled, firmwareUpdate.rejected)(action)) {
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
 
@@ -86,6 +78,12 @@ const analyticsMiddleware =
         }
 
         switch (action.type) {
+            case deviceActions.addAuthorizedDevice.type:
+                analytics.report({
+                    type: EventType.SelectWalletType,
+                    payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
+                });
+                break;
             case SUITE.READY:
                 // reporting can start when analytics is properly initialized and enabled
                 // it is done async because some UAParser queries are async
@@ -149,7 +147,10 @@ const analyticsMiddleware =
             case DEVICE.DISCONNECT:
                 analytics.report({ type: EventType.DeviceDisconnect });
                 break;
-            case discoveryActions.completeDiscovery.type: {
+            // report when discovery finishes
+            case discoveryActions.updateDiscovery.type: {
+                if (action.payload.status.status !== 'complete') return;
+
                 const accumulateAccountCountBySymbolAndType = (
                     acc: { [key: string]: number },
                     { symbol, accountType }: Account,

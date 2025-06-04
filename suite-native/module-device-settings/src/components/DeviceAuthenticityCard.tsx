@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Button, CardWithIconLayout, IconListTextItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -23,7 +23,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const DeviceAuthenticityCard = () => {
     const navigation = useNavigation<NavigationProp>();
-    const isDiscoveryRunning = useSelector(selectIsDeviceDiscoveryActive);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { showAlert } = useAlert();
 

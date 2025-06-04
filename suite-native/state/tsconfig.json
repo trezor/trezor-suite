@@ -30,6 +30,7 @@
         },
         { "path": "../banner-flags" },
         { "path": "../blockchain" },
+        { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },
@@ -42,6 +43,9 @@
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },
+        {
+            "path": "../../packages/transport-native-bluetooth"
+        },
         {
             "path": "../../packages/transport-native-usb"
         },

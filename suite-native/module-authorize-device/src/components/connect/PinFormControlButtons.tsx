@@ -7,12 +7,12 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { authorizeDeviceThunk, selectDeviceAuthFailed } from '@suite-common/wallet-core';
+import { selectDeviceAuthFailed } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+// import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -37,7 +37,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     const [containerHeight, setContainerHeight] = useState(0);
     const animatedHeight = useSharedValue(0);
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
 
     const openLink = useOpenLink();
@@ -78,9 +78,9 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
             onPressPrimaryButton: () => {
                 if (hasDeviceAuthFailed) {
                     // Ask for new PIN entry after 3 wrong attempts.
-                    requestPrioritizedDeviceAccess({
-                        deviceCallback: () => dispatch(authorizeDeviceThunk()),
-                    });
+                    // requestPrioritizedDeviceAccess({
+                    //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
+                    // });
                 }
             },
             secondaryButtonTitle: (
@@ -90,7 +90,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                 openLink(PIN_HELP_URL);
             },
         });
-    }, [dispatch, hasDeviceAuthFailed, openLink, reset, showAlert]);
+    }, [hasDeviceAuthFailed, openLink, reset, showAlert]);
 
     useEffect(() => {
         // After third wrong PIN, UI.INVALID_PIN is no more reported

@@ -7,7 +7,7 @@ import { useScrollShadow } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
@@ -32,13 +32,11 @@ const ScrollContainer = styled.div`
 export const AccountsMenu = () => {
     const device = useSelector(selectSelectedDevice);
 
-    const { discovery } = useDiscovery();
-
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow();
     const isSidebarCollapsed = useIsSidebarCollapsed();
 
-    if (!device || !discovery) {
+    if (!device) {
         if (isSidebarCollapsed) return <Wrapper />;
 
         return (
@@ -52,7 +50,7 @@ export const AccountsMenu = () => {
 
     return (
         <Wrapper>
-            <AccountsMenuHeader discovery={discovery} />
+            <AccountsMenuHeader />
             <ShadowContainer>
                 <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
                 <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>

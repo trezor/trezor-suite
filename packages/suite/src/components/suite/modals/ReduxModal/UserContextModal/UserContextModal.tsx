@@ -29,7 +29,6 @@ import {
     ImportTransactionModal,
     MetadataProviderModal,
     MoreRoundsNeededModal,
-    PassphraseDuplicateModal,
     PinMismatchModal,
     QrScannerModal,
     RequestEnableTorModal,
@@ -50,7 +49,6 @@ import type { AcquiredDevice } from 'src/types/suite';
 import type { ReduxModalProps } from '../ReduxModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
-import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
@@ -58,6 +56,7 @@ import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { TradingDCAModal } from './TradingDCAModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
+import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
@@ -102,10 +101,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <QrScannerModal decision={payload.decision} onCancel={onCancel} />;
         case 'transaction-detail':
             return <TxDetailModal {...payload} onCancel={onCancel} />;
-        case 'passphrase-duplicate':
-            return (
-                <PassphraseDuplicateModal device={payload.device} duplicate={payload.duplicate} />
-            );
         case 'review-transaction':
             return <TransactionReviewModal {...payload} />;
         case 'review-transaction-rbf-previous-transaction-mined-error':
@@ -212,12 +207,12 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             );
         case 'unhide-token':
             return <UnhideTokenModal onCancel={onCancel} address={payload.address} />;
-        case 'passphrase-mismatch-warning':
-            return <PassphraseMismatchModal onCancel={onCancel} />;
         case 'connect-popup':
             return <ConnectPermissionsModal />;
         case 'walletconnect-proposal':
             return <WalletConnectProposalModal eventId={payload.eventId} />;
+        case 'walletconnect-switch-account':
+            return <WalletConnectSwitchAccountModal sessionTopic={payload.sessionTopic} />;
         case 'trading-dca':
             return <TradingDCAModal device={payload.device} onCancel={onCancel} />;
         case 'connect-address-confirmation':

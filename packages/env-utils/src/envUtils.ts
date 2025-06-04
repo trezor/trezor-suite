@@ -151,6 +151,7 @@ export const getJWSPublicKey = (use: JWSPublicKeyUse) => {
 
     return isCodesignBuild() ? firmwareConfigPublicKey.codesign : firmwareConfigPublicKey.dev;
 };
+
 export const envUtils: EnvUtils = {
     isWeb,
     isDesktop,

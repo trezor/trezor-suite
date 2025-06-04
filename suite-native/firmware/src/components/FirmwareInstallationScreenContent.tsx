@@ -10,20 +10,15 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { authorizeDeviceThunk } from '@suite-common/wallet-core';
 import { Badge, Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage, setTemporaryRememberedDeviceThunk } from '@suite-native/device';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { MayBeStuckedBottomSheet } from '../components/MayBeStuckedBottomSheet';
-import {
-    UpdateProgressIndicator,
-    UpdateProgressIndicatorStatus,
-} from '../components/UpdateProgressIndicator';
+import { MayBeStuckedBottomSheet } from './MayBeStuckedBottomSheet';
+import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 
@@ -104,14 +99,14 @@ export const FirmwareInstallationScreenContent = ({
         };
     }, [dispatch, isTemporaryRememeberAllowed, resetReducer, setIsFirmwareInstallationRunning]);
 
-    const handleFirmwareUpdateFinished = useCallback(async () => {
-        await requestPrioritizedDeviceAccess({
-            deviceCallback: () => dispatch(authorizeDeviceThunk()),
-        });
+    const handleFirmwareUpdateFinished = useCallback(() => {
+        console.warn(
+            'FirmwareInstallationScreenContent: handleFirmwareUpdateFinished = authorize device thunk need to be replaced here',
+        );
 
         setIsFirmwareInstallationRunning(false);
         onFirmwareInstallationSuccess();
-    }, [dispatch, onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
+    }, [onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
 
     const handleCancel = useCallback(() => {
         navigation.goBack();

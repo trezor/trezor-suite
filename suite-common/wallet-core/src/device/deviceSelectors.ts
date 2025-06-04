@@ -19,10 +19,24 @@ import { DeviceRootState } from './deviceReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
-// Basic state selectors (no need to wrap in createMemoizedSelector)
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
+export const selectSelectedDeviceBySelector = createMemoizedSelector(
+    [selectSelectedDevice, selectDevices],
+    (selectedDevice, devices) => {
+        const deviceId = selectedDevice?.id;
+        const devicePath = selectedDevice?.path;
+        const deviceInstance = selectedDevice?.instance ?? selectedDevice?.walletNumber;
+
+        return devices.find(
+            device =>
+                device.id === deviceId &&
+                device.path === devicePath &&
+                (device.instance === deviceInstance || device.walletNumber === deviceInstance),
+        );
+    },
+);
 
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(
@@ -128,6 +142,16 @@ export const selectIsDeviceConnected = createMemoizedSelector(
     device => !!device?.connected,
 );
 
+export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device?.bluetoothProps,
+);
+
+export const selectDeviceBluetoothId = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.bluetoothProps?.id,
+);
+
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
     [selectSelectedDevice, selectIsDeviceInitialized],
     (device, isDeviceInitialized) => device && !isDeviceInitialized,
@@ -165,6 +189,14 @@ export const selectDeviceByState = createMemoizedSelector(
 export const selectDeviceByStaticSessionId = createMemoizedSelector(
     [selectDevices, (_state, staticSessionId: StaticSessionId) => staticSessionId],
     (devices, staticSessionId) => devices.find(d => d.state?.staticSessionId === staticSessionId),
+);
+
+export const selectDeviceByBaseStaticSessionId = createMemoizedSelector(
+    [selectDevices, (_state, staticSessionId: StaticSessionId) => staticSessionId],
+    (devices, staticSessionId) =>
+        devices.find(
+            d => d.state?.staticSessionId?.split(':')[0] === staticSessionId.split(':')[0],
+        ),
 );
 
 export const selectDeviceUnavailableCapabilities = createMemoizedSelector(

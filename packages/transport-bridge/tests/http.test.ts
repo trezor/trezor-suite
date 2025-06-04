@@ -138,7 +138,7 @@ describe('http', () => {
             if (!response.success) {
                 throw new Error(response.error + ' ' + response.message);
             }
-            expect(response.payload).toEqual({
+            expect(response.payload).toMatchObject({
                 version: trezordNode.version,
                 protocolMessages: true,
             });
@@ -154,7 +154,7 @@ describe('http', () => {
             if (!response.success) {
                 throw new Error(response.error + ' ' + response.message);
             }
-            expect(response.payload).toEqual({
+            expect(response.payload).toMatchObject({
                 version: trezordNode.version,
                 protocolMessages: false,
             });
@@ -490,7 +490,7 @@ describe('http', () => {
             if (!response.success) {
                 throw new Error(response.error);
             }
-            expect(response.payload).toEqual({
+            expect(response.payload).toMatchObject({
                 version: trezordNode.version,
                 protocolMessages: true,
             });

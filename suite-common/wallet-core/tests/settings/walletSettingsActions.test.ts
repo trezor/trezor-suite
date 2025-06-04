@@ -17,7 +17,7 @@ const initStore = (state: any) =>
         preloadedState: { wallet: { settings: state } },
     });
 
-jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
+jest.doMock('@suite-common/analytics', () => testMocks.getAnalytics());
 
 describe('walletSettings Actions', () => {
     walletSettingsFixtures.forEach(f => {

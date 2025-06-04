@@ -30,6 +30,7 @@ export type { Icon } from './iconTypes';
 export type { CustomBackend } from './backend';
 export type { TickerId } from 'src/types/wallet/fiatRates';
 export type { Discovery } from '@suite-common/wallet-types';
+
 export type DiscoveryStatusType =
     | {
           status: 'loading';
@@ -37,12 +38,7 @@ export type DiscoveryStatusType =
       }
     | {
           status: 'exception';
-          type:
-              | 'auth-failed'
-              | 'auth-confirm-failed'
-              | 'discovery-empty'
-              | 'discovery-failed'
-              | 'device-unavailable';
+          type: 'discovery-empty' | 'discovery-failed' | 'device-unavailable';
       };
 export type {
     Account,

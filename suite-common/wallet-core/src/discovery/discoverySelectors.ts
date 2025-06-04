@@ -1,5 +1,5 @@
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { DeviceUniquePath } from '@trezor/connect';
 
 import { DiscoveryRootState } from './discoveryReducer';
 import { DeviceRootState } from '../device/deviceReducer';
@@ -7,44 +7,39 @@ import { selectSelectedDevice } from '../device/deviceSelectors';
 
 export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.discovery;
 
-// Get discovery process for deviceState.
-export const selectDiscoveryByDeviceState = (
-    state: DiscoveryRootState,
-    deviceState: DeviceState | StaticSessionId | undefined | null,
-) =>
-    deviceState
-        ? state.wallet.discovery.find(d =>
-              typeof deviceState === 'string'
-                  ? d.deviceState === deviceState
-                  : d.deviceState === deviceState.staticSessionId,
-          )
-        : undefined;
+export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>
+    path !== undefined ? state.wallet.discovery[path] : undefined;
 
-export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
+export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & DeviceRootState) => {
     const selectedDevice = selectSelectedDevice(state);
 
-    return selectDiscoveryByDeviceState(state, selectedDevice?.state?.staticSessionId);
+    return selectDiscoveryByDevicePath(state, selectedDevice?.path);
 };
 
-export const selectIsDiscoveryActiveByDeviceState = (
-    state: DiscoveryRootState & DeviceRootState,
-    deviceState: DeviceState | StaticSessionId | undefined | null,
-) => {
-    const discovery = selectDiscoveryByDeviceState(state, deviceState);
-
-    if (!discovery) return false;
+export function isDiscoveryInProgress(
+    discovery?: DiscoveryStatus,
+): discovery is Exclude<
+    DiscoveryStatus,
+    { status: 'complete' } | { status: 'failed' } | { status: 'cancelled' }
+> {
+    if (!discovery) {
+        return false;
+    }
 
     return (
-        discovery.status === DiscoveryStatus.RUNNING ||
-        discovery.status === DiscoveryStatus.STOPPING
+        discovery.status !== 'complete' &&
+        discovery.status !== 'failed' &&
+        discovery.status !== 'cancelled'
     );
+}
+export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryForSelectedDevice(state);
+
+    return isDiscoveryInProgress(discovery);
 };
 
-export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDeviceDiscovery(state);
-
-    return selectIsDiscoveryActiveByDeviceState(state, discovery?.deviceState);
-};
+// TODO remove reexport
+export const selectHasDeviceDiscovery = selectHasRunningDiscovery;
 
 /**
  * Helper selector called from components
@@ -52,16 +47,5 @@ export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & Device
  */
 export const selectIsDiscoveryAuthConfirmationRequired = (
     state: DiscoveryRootState & DeviceRootState,
-) => {
-    const discovery = selectDeviceDiscovery(state);
-
-    return (
-        discovery &&
-        discovery.authConfirm &&
-        (discovery.status < DiscoveryStatus.STOPPING ||
-            discovery.status === DiscoveryStatus.COMPLETED)
-    );
-};
-
-export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
-    !!selectDeviceDiscovery(state);
+    path?: DeviceUniquePath,
+) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';

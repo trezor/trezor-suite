@@ -1,30 +1,83 @@
-import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
+import {
+    cancelDiscoveryThunk,
+    runDiscoveryThunk,
+    selectDeviceThunk,
+    selectDevices,
+    selectDiscovery,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
-    duplicate: TrezorDevice;
+    isExistingWallet: boolean;
+    discovery: Extract<DiscoveryStatus, { status: 'passphrase-duplicate' }>;
 };
 
-export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplicateModalProps) => {
-    const dispatch = useDispatch();
+export const PassphraseDuplicateModal = ({
+    discovery,
+    device, // <- currently selected device
+    isExistingWallet,
+}: PassphraseDuplicateModalProps) => {
     const { isLocked } = useDevice();
+    const dispatch = useDispatch();
+    const discoveries = useSelector(selectDiscovery);
 
     const isDeviceLocked = isLocked();
+    const devices = useSelector(selectDevices);
 
-    const handleSwitchDevice = () => dispatch(switchDuplicatedDevice({ device, duplicate }));
-    const handleAuthorizeDevice = () => dispatch(authorizeDeviceThunk());
+    const duplicateDevice = devices
+        .filter(d => d.state?.staticSessionId)
+        .find(
+            d =>
+                d.state!.staticSessionId?.split(':')[0] ===
+                discovery.duplicateDeviceStaticSessionId.split(':')[0],
+        );
+    const switchToDuplicateWallet = () => {
+        // if the last selected device is the same as the duplicate passphrase, do nothing, otherwise select it
+        if (duplicateDevice) {
+            dispatch(selectDeviceThunk({ device: duplicateDevice }));
+        }
+        dispatch(cancelDiscoveryThunk(device));
+    };
+
+    const onTryDifferentPassphrase = () => {
+        dispatch(cancelDiscoveryThunk(device));
+        dispatch(
+            startDiscoveryThunk({
+                device,
+                isAddingHiddenWallet: true,
+                isAddingExistingWallet: isExistingWallet,
+            }),
+        );
+    };
+
+    const onBack = () => {
+        dispatch(cancelDiscoveryThunk(device));
+        dispatch(
+            startDiscoveryThunk({
+                device,
+                ...discovery,
+            }),
+        );
+
+        const nextDiscovery = discoveries?.[device.path];
+        if (!nextDiscovery) return;
+
+        dispatch(runDiscoveryThunk(device));
+    };
 
     return (
         <SwitchDeviceModal>
-            <CardWithDevice device={device} isFullHeaderVisible={false}>
+            <CardWithDevice device={device} isFullHeaderVisible={false} onBackButtonClick={onBack}>
                 <Column gap={spacings.xs} margin={{ top: spacings.xxs }}>
                     <H3 data-testid="@passphrase-duplicate-header">
                         <Translation id="TR_WALLET_DUPLICATE_TITLE" />
@@ -41,7 +94,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                         >
                             <Button
                                 variant="primary"
-                                onClick={handleSwitchDevice}
+                                onClick={switchToDuplicateWallet}
                                 isDisabled={isDeviceLocked}
                                 isFullWidth
                             >
@@ -56,7 +109,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                         >
                             <Button
                                 variant="tertiary"
-                                onClick={handleAuthorizeDevice}
+                                onClick={onTryDifferentPassphrase}
                                 isDisabled={isDeviceLocked}
                                 isFullWidth
                             >

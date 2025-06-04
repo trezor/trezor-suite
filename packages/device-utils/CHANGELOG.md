@@ -1,3 +1,7 @@
+# 1.1.0
+
+- npm-prerelease: @trezor/device-utils 1.1.0-beta.1 (ae6a53931b)
+
 # 1.0.3
 
 - npm-prerelease: @trezor/device-utils 1.0.3-beta.1 (698a6f0191)

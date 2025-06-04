@@ -68,19 +68,6 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 remove(state, action.payload);
             })
             .addCase(accountsActions.createAccount, (state, action) => {
-                const account = {
-                    ...action.payload,
-                    // remove "transactions" field, they are stored in "transactionReducer"
-                    history: enhanceHistory(action.payload.history),
-                };
-                if (isAccountInCollection(account, state)) {
-                    console.warn('Prevented duplicate account in accountsReducer: ', account);
-
-                    return;
-                }
-                state.push(account);
-            })
-            .addCase(accountsActions.createIndexLabeledAccount, (state, action) => {
                 const { deviceState, symbol, accountType } = action.payload;
                 const matchingNetworkAndTypeAccounts = state.filter(
                     account =>
@@ -91,13 +78,20 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
                 const indexOfPreviousAccount = matchingNetworkAndTypeAccounts.length;
                 const networkName = networks[symbol].name;
-                const accountLabel = `${networkName} #${indexOfPreviousAccount + 1}`;
+                const accountLabel =
+                    action.payload.accountLabel ?? `${networkName} #${indexOfPreviousAccount + 1}`;
 
                 const account = {
                     ...action.payload,
                     accountLabel,
+                    // remove "transactions" field, they are stored in "transactionReducer"
                     history: enhanceHistory(action.payload.history),
                 };
+                if (isAccountInCollection(account, state)) {
+                    console.warn('Prevented duplicate account in accountsReducer: ', account);
+
+                    return;
+                }
                 state.push(account);
             })
             .addCase(accountsActions.updateAccount, (state, action) => {

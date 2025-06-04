@@ -3,7 +3,7 @@ import { isArrayMember } from '@trezor/utils';
 class Regional {
     readonly UNKNOWN_COUNTRY = 'unknown';
 
-    countries: [string, string][] = [
+    countries = [
         [this.UNKNOWN_COUNTRY, `🌍 Worldwide`],
         ['AD', '🇦🇩 Andorra'],
         ['AE', '🇦🇪 United Arab Emirates'],
@@ -254,7 +254,7 @@ class Regional {
         ['ZA', '🇿🇦 South Africa'],
         ['ZM', '🇿🇲 Zambia'],
         ['ZW', '🇿🇼 Zimbabwe'],
-    ];
+    ] as const;
 
     countriesMap = new Map<string, string>(this.countries);
 
@@ -309,6 +309,12 @@ class Regional {
     }
 }
 
-type EEACountryCodes = (typeof regional.EEACountryCodes)[number];
-
 export const regional = new Regional();
+
+export type EEACountryCodes = (typeof regional.EEACountryCodes)[number];
+
+export type OriginalCountryCode = (typeof regional.countries)[number][0];
+
+// Add Cloudflare-specific codes "XX" (no country data) and "T1" (Tor network).
+// See: https://developers.cloudflare.com/fundamentals/reference/http-headers/#cf-ipcountry
+export type CountryCode = Exclude<OriginalCountryCode, 'unknown'> | 'XX' | 'T1';

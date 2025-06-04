@@ -5,11 +5,9 @@ import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import {
     WALLET_SETTINGS,
     accountsActions,
-    authorizeDeviceThunk,
     blockchainActions,
     changeNetworks,
     deviceActions,
-    discoveryActions,
     setLocalCurrency,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
@@ -52,12 +50,10 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.NOT_AVAILABLE,
     DESKTOP_UPDATE.READY,
     MODAL.CLOSE,
-    authorizeDeviceThunk.fulfilled.type,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,
     accountsActions.updateAccount.type,
-    discoveryActions.completeDiscovery.type,
     deviceActions.updateSelectedDevice.type,
     deviceActions.rememberDevice.type,
     METADATA.ADD_PROVIDER,

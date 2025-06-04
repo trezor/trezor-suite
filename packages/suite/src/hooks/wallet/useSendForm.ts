@@ -74,6 +74,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
     return {
         account,
         network,
+
         localCurrencyOption,
         online: props.online,
         metadataEnabled: props.metadataEnabled,
@@ -319,7 +320,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         state.network.decimals,
     ]);
 
-    // load draft from reducer and reset current form values, this should be only called once on mount
+    // load draft from reducer
     useEffect(() => {
         const loadDraftValues = async () => {
             const storedState = await dispatch(getSendFormDraftThunk()).unwrap();
@@ -334,9 +335,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             }
         };
         loadDraftValues();
-        // composeDraft is excluded because its reference changes with each feeInfo update.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, getLoadedValues, reset]);
+    }, [dispatch, getLoadedValues, reset, composeDraft]);
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -349,14 +348,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         if (!draft.current) return;
         composeDraft(draft.current);
         draft.current = undefined;
-        // composeDraft is excluded because its reference changes with each feeInfo update.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [draft]);
-
-    // update composedLevels when feeInfo changes
-    useEffect(() => {
-        composeDraft(getValues());
-    }, [composeDraft, getValues]);
+    }, [draft, composeDraft]);
 
     // handle draftSaveRequest
     useEffect(() => {

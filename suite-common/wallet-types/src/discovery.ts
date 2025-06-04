@@ -1,35 +1,66 @@
 import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { StaticSessionId } from '@trezor/connect';
-import { ObjectValues } from '@trezor/type-utils';
+import type { DeviceUniquePath } from '@trezor/connect';
+import { BundleProgress, StaticSessionId } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
-export interface Discovery {
-    deviceState: StaticSessionId;
-    authConfirm: boolean;
+export type FailedAccount = {
+    symbol: NetworkSymbol;
     index: number;
-    total: number;
-    loaded: number;
-    bundleSize: number;
-    status: ObjectValues<typeof DiscoveryStatus>;
-    // coins which failed to load
-    failed: {
-        symbol: NetworkSymbol;
-        index: number;
-        accountType: NonNullable<AccountType>;
-        error: string;
-        fwException?: string;
-    }[];
-    networks: NetworkSymbol[];
-    error?: string;
-    errorCode?: string | number;
-    // Array of account types which should be discovered for given device.
-    // It will be set during discovery process if cardano network is enabled.
-    availableCardanoDerivations?: ('normal' | 'legacy' | 'ledger')[];
-}
+    accountType: NonNullable<AccountType>;
+    error: string;
+    fwException?: string;
+};
+type CommonDiscoveryStatus = {
+    isAddingHiddenWallet?: boolean; // to control visibility of special loader
+    isAddingExistingWallet?: boolean; // to control visibility of special loader
+    emptyWallet?: boolean;
+    failed?: FailedAccount[];
+    passphraseOnDevice?: boolean;
+    startTimestamp?: number;
+};
 
-export type PartialDiscovery = { deviceState: StaticSessionId } & Partial<Discovery>;
+export type DiscoveryStatus = CommonDiscoveryStatus &
+    (
+        | {
+              status: 'starting';
+          }
+        | {
+              status: 'enter-passphrase';
+          }
+        | {
+              status: 'passphrase-enable-on-device';
+          }
+        | {
+              status: 'passphrase-duplicate';
+              duplicateDeviceStaticSessionId: StaticSessionId;
+          }
+        | {
+              status: 'passphrase-mismatch';
+          }
+        | {
+              status: 'cancelled';
+          }
+        | {
+              status: 'progress';
+              total: BundleProgress<any>['payload']['total'];
+              progress: BundleProgress<any>['payload']['progress'];
+          }
+        | {
+              status: 'confirm-empty-passphrase';
+              //   accountsToBeCreated: Account[];
+          }
+        | {
+              status: 'complete';
+          }
+        | {
+              status: 'failed';
+              error?: string;
+              errorCode?: 'Method_InvalidParameter' | (string & {});
+          }
+    );
+
+export type Discovery = Record<DeviceUniquePath, DiscoveryStatus>;
 
 export type DiscoveryItem = {
     // @trezor/connect
@@ -45,6 +76,5 @@ export type DiscoveryItem = {
     // wallet
     index: number;
     accountType: Account['accountType'];
-    networkType: Account['networkType'];
     derivationType?: 0 | 1 | 2;
 } & AccountBackendSpecific;

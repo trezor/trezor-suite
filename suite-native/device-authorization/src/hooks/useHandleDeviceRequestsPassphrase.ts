@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDeviceState } from '@suite-common/wallet-core';
+import {
+    DiscoveryRootState,
+    selectDiscoveryByDevicePath,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -11,12 +15,10 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import TrezorConnect, { UI } from '@trezor/connect';
 
 import {
     selectDeviceRequestedPassphrase,
-    selectIsCreatingNewPassphraseWallet,
-    selectIsVerifyingPassphraseOnEmptyWallet,
+    selectInputPassphraseOnDevice,
 } from '../deviceAuthorizationSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -28,37 +30,24 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const useHandleDeviceRequestsPassphrase = () => {
     const navigation = useNavigation<NavigationProp>();
 
-    const deviceState = useSelector(selectDeviceState);
-    const deviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
-    const isVerifyingPassphraseOnEmptyWallet = useSelector(
-        selectIsVerifyingPassphraseOnEmptyWallet,
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const discovery = useSelector((state: DiscoveryRootState) =>
+        selectDiscoveryByDevicePath(state, selectedDevice?.path),
     );
-    const isCreatingNewWallet = useSelector(selectIsCreatingNewPassphraseWallet);
+    const deviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
+    const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
 
     const handleRequestPassphrase = useCallback(() => {
-        // If the passphrase request was while verifying empty passphrase wallet, we handle it separately in the screen
-        if (!isVerifyingPassphraseOnEmptyWallet && !deviceState?.staticSessionId) {
-            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
-            });
-        }
+        // NOTE: if the passphrase flow IS NOT in the beginning skip these calls
+        if (discovery?.isAddingHiddenWallet) return;
 
         // Feature requests passphrase
-        if (
-            !isVerifyingPassphraseOnEmptyWallet &&
-            !isCreatingNewWallet &&
-            deviceState?.staticSessionId
-        ) {
+        if (selectedDevice?.state?.staticSessionId) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm,
             });
         }
-    }, [
-        deviceState?.staticSessionId,
-        isCreatingNewWallet,
-        isVerifyingPassphraseOnEmptyWallet,
-        navigation,
-    ]);
+    }, [discovery?.isAddingHiddenWallet, selectedDevice?.state?.staticSessionId, navigation]);
 
     useEffect(() => {
         if (deviceRequestedPassphrase) {
@@ -71,9 +60,8 @@ export const useHandleDeviceRequestsPassphrase = () => {
     }, [navigation]);
 
     useEffect(() => {
-        TrezorConnect.on(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRequestPassphraseOnDevice);
-
-        return () =>
-            TrezorConnect.off(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRequestPassphraseOnDevice);
-    }, [handleRequestPassphraseOnDevice]);
+        if (inputPassphraseOnDevice) {
+            handleRequestPassphraseOnDevice();
+        }
+    }, [inputPassphraseOnDevice, handleRequestPassphraseOnDevice]);
 };

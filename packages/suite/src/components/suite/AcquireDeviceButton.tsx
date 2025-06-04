@@ -20,7 +20,7 @@ export const AcquireDeviceButton = ({ className, onClick }: AcquireButtonProps) 
 
     const handleClick: MouseEventHandler = e => {
         onClick?.(e);
-        dispatch(acquireDevice());
+        dispatch(acquireDevice({}));
     };
 
     return (

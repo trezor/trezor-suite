@@ -1,7 +1,7 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { BluetoothState } from './bluetoothReducer';
-import { BluetoothDeviceCommon } from './types';
+import { BluetoothDeviceCommon, BluetoothFilterPolicy } from './types';
 
 export type WithBluetoothState<T extends BluetoothDeviceCommon> = {
     bluetooth: BluetoothState<T>;
@@ -46,8 +46,9 @@ export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
 
             knownDevices.forEach(knownDevice => map.set(knownDevice.id, knownDevice));
 
-            const nearbyDevicesCopy = [...(nearbyDevices ?? [])];
-
+            const nearbyDevicesCopy = (nearbyDevices ?? []).filter(
+                d => d.manufacturerData.filterPolicy === BluetoothFilterPolicy.UNFILTERED,
+            );
             nearbyDevicesCopy.forEach(nearbyDevice => {
                 map.delete(nearbyDevice.id); // Delete and re-add to change the order, replace would keep original order
                 map.set(nearbyDevice.id, nearbyDevice);

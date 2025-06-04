@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
+    isPassphraseDeviceLoadingDone,
     selectIsCreatingNewPassphraseWallet,
-    useHandlePassphraseMismatch,
+    setInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
@@ -24,6 +24,7 @@ import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
+import { PassphraseMismatchAlert } from '../../components/passphrase/PassphraseMismatchAlert';
 import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
@@ -44,8 +45,9 @@ export const PassphraseEnterOnTrezorScreen = () => {
     const dispatch = useDispatch();
 
     const { applyStyle } = useNativeStyles();
+    const device = useSelector(selectSelectedDevice);
 
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const isDeviceAuthorizationDone = useSelector(isPassphraseDeviceLoadingDone);
 
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
@@ -56,17 +58,19 @@ export const PassphraseEnterOnTrezorScreen = () => {
     // on success, this hook will close the stack and go back
     useRedirectOnPassphraseCompletion();
 
-    useHandlePassphraseMismatch();
-
     useEffect(() => {
-        if (hasDiscovery) {
+        if (isDeviceAuthorizationDone) {
             navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseLoading);
         }
-    }, [hasDiscovery, navigation]);
+    }, [isDeviceAuthorizationDone, navigation]);
 
     const handleCancel = () => {
         if (isCreatingNewWalletInstance) {
-            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+            if (device) {
+                dispatch(cancelDiscoveryThunk(device));
+            }
+            navigateToInitialScreen();
+            dispatch(setInputPassphraseOnDevice(false));
         } else {
             analytics.report({
                 type: EventType.PassphraseExit,
@@ -109,6 +113,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
                     </Box>
                 </VStack>
             </Card>
+            <PassphraseMismatchAlert />
         </PassphraseContentScreenWrapper>
     );
 };

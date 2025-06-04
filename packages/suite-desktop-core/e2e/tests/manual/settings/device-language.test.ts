@@ -28,7 +28,7 @@ test.describe.skip('Device language', { tag: ['@group=manual'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that a user can change the language on a Trezor device during a firmware upgrade.',
+                    'Verifies that a user can upgrade device firmware when device translation is installed.',
                 prerequisites: [
                     'Seeded Trezor device with transactions (eg. with "all" seed)',
                     'Connected Trezor Suite',
