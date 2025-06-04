@@ -1,0 +1,19 @@
+{
+    "receiveAddress": "0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C",
+    "sendAddress": "3Q6aWPMVrnuZudtTPbpqTusN2gg4me4NZn",
+    "orderId": "17f87e8dd8845ab048a5",
+    "quoteId": "453633bc-8316-49b9-8110-0e63c2a41c54",
+    "status": "CONFIRM",
+    "statusUrl": "https://sideshift.ai/orders/17f87e8dd8845ab048a5",
+    "exchange": "sideshiftfr",
+    "send": "bitcoin",
+    "receive": "ethereum",
+    "exp": "K19R8pOfPMTplZQu/FZfkXdeXXCPZXM/qnrcFJtgNcM=",
+    "sendStringAmount": "0.00040000",
+    "receiveStringAmount": "0.01550949",
+    "fee": "INCLUDED",
+    "min": 0.000056927999999999994,
+    "max": 0.9488991,
+    "rate": 38.773725,
+    "rateIdentificator": "09e32e86-087c-4983-8606-92067855d444"
+}
