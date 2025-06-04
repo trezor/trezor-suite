@@ -22,6 +22,7 @@ import { FeatureFlags } from '../components/FeatureFlags';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { TestnetsToggle } from '../components/TestnetsToggle';
+import { TradingDeeplinks } from '../components/TradingDeeplinks';
 import { TradingEnvironmentSelect } from '../components/TradingEnvironmentSelect';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -79,6 +80,7 @@ export const DevUtilsScreen = () => {
                 <Card>
                     <Text variant="highlight">Trading</Text>
                     <TradingEnvironmentSelect />
+                    <TradingDeeplinks />
                 </Card>
                 <MessageSystemInfo />
             </VStack>
