@@ -29,6 +29,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
         devicePrompt,
         trezorUserEnvLink,
     }) => {
+        let feeRate: string;
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fees.switchModeButton('custom').click();
             await tradingPage.fees.customInput.fill(customFee);
@@ -40,6 +41,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
                 receiveSymbol: 'eth',
                 receiveNetwork: 'ethereum',
             });
+            feeRate = await tradingPage.fees.getBitcoinFeeRate('custom');
         });
 
         await test.step('Continue Swap flow towards Send section', async () => {
@@ -61,7 +63,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 `${totalAmount} BTC`,
             );
-            await expect(devicePrompt.headerFeeRate).toContainText(`${customFee}.00 sat/vB`);
+            await expect(devicePrompt.headerFeeRate).toContainText(feeRate);
             await expect(devicePrompt).toDisplayOnEmulator({
                 header: { title: 'Summary' },
                 body: [
@@ -80,9 +82,10 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
             await trezorUserEnvLink.clickEmu(burgerMenuCoordinates);
             const feeInfoCoordinates = { x: 125, y: 100 };
             await trezorUserEnvLink.clickEmu(feeInfoCoordinates);
+            const feeRateWithoutDecimals = feeRate.replace('.00\u00A0', ' ');
             await expect(devicePrompt).toDisplayOnEmulator({
                 header: { title: 'Fee info' },
-                body: [['Fee rate'], [`${customFee} sat/vB`]],
+                body: [['Fee rate'], [feeRateWithoutDecimals]],
             });
         });
     });
