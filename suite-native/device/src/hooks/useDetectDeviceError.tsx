@@ -31,7 +31,6 @@ import { captureSentryException } from '@suite-native/sentry';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
-import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
 import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceModalAppendix';
 import { UninitializedDeviceModalAppendix } from '../components/UninitializedDeviceModalAppendix';
@@ -217,31 +216,15 @@ export const useDetectDeviceError = () => {
             !wasDeviceEjectedByUser &&
             isOnboardingFinished
         ) {
-            showAlert({
-                title: <Translation id="moduleDevice.bootloaderModal.title" />,
-                description: <Translation id="moduleDevice.bootloaderModal.description" />,
-                pictogramVariant: 'critical',
-                primaryButtonVariant: 'tertiaryElevation1',
-                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
-                appendix: <BootloaderModalAppendix />,
-                onPressPrimaryButton: () => {
-                    handleDisconnect();
-                    analytics.report({
-                        type: EventType.UnsupportedDevice,
-                        payload: { deviceState: 'bootloaderMode' },
-                    });
-                },
-                testID: '@device/errors/alert/bootloader',
-            });
+            navigation.navigate(RootStackRoutes.BootloaderMode);
         }
     }, [
+        hasDeviceFirmwareInstalled,
         isDeviceInBootloader,
         isFirmwareInstallationRunning,
         isOnboardingFinished,
-        hasDeviceFirmwareInstalled,
+        navigation,
         wasDeviceEjectedByUser,
-        showAlert,
-        handleDisconnect,
     ]);
 
     useEffect(() => {

@@ -299,6 +299,7 @@ export type RootStackParamList = {
         source?: { uri?: string; html?: string };
         orderId?: string;
     };
+    [RootStackRoutes.BootloaderMode]: undefined;
 };
 
 export type TradingStackParamList = {
