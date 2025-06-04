@@ -23,6 +23,7 @@ export enum RootStackRoutes {
     DeviceCompromisedModal = 'DeviceCompromisedModal',
     BackupFailedModal = 'BackupFailedModal',
     TradingWebView = 'TradingWebView',
+    BootloaderMode = 'BootloaderMode',
 }
 
 export enum AppTabsRoutes {
