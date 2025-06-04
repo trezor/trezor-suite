@@ -1,9 +1,7 @@
 import { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable } from 'react-native';
 import {
     SharedValue,
-    measure,
-    useAnimatedRef,
     useAnimatedStyle,
     useDerivedValue,
     withTiming,
@@ -16,6 +14,7 @@ import { AnimatedBox, Box } from '../Box';
 import { Divider } from '../Divider';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
+import { AccordionContent } from './AccordionContent';
 
 export type AccordionItemProps = {
     currentIndexOpened: SharedValue<number | null>;
@@ -25,13 +24,6 @@ export type AccordionItemProps = {
     index: number;
     isDividerDisplayed?: boolean;
 };
-
-const contentWrapperStyle = prepareNativeStyle(() => ({
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    maxWidth: '100%',
-}));
 
 const contentStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp8,
@@ -58,15 +50,7 @@ export const AccordionItem = ({
 }: AccordionItemProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const animatedRef = useAnimatedRef<View>();
-
     const isOpened = useDerivedValue(() => currentIndexOpened.value === index);
-
-    const animatedHeightStyle = useAnimatedStyle(() => ({
-        height: withTiming(isOpened.value ? Number(measure(animatedRef)?.height ?? 0) : 0, {
-            duration: ANIMATION_DURATION,
-        }),
-    }));
 
     const animatedChevronStyle = useAnimatedStyle(() => ({
         transform: [
@@ -99,17 +83,9 @@ export const AccordionItem = ({
                     </AnimatedBox>
                 </HStack>
                 <Box>
-                    <AnimatedBox style={animatedHeightStyle}>
-                        <View style={applyStyle(contentWrapperStyle)}>
-                            <View
-                                ref={animatedRef}
-                                collapsable={false}
-                                style={applyStyle(contentStyle)}
-                            >
-                                {content}
-                            </View>
-                        </View>
-                    </AnimatedBox>
+                    <AccordionContent isOpened={isOpened} style={applyStyle(contentStyle)}>
+                        {content}
+                    </AccordionContent>
                 </Box>
             </VStack>
             {isDividerDisplayed && <Divider style={applyStyle(dividerStyle)} />}
