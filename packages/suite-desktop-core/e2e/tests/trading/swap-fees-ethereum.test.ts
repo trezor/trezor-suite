@@ -107,10 +107,10 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
                     ['Gas limit'],
                     [`${gasLimit} units`],
                     [' '],
-                    ['Max gas price'],
+                    ['Max fee per gas'],
                     [`${maxFeePerGas} Gwei`],
                     [' '],
-                    ['Priority fee'],
+                    ['Max priority fee'],
                     [`${maxPriorityFeePerGas} Gwei`],
                 ],
             });

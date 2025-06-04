@@ -108,7 +108,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                     ['Amount:'],
                     [formattedSendAmount],
                     [' '],
-                    ['Expected fee:'],
+                    ['Transaction fee:'],
                     [`${solanaFee} SOL`],
                 ],
                 footer: 'Tap to continue',
