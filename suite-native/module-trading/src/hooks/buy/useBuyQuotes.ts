@@ -18,7 +18,7 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { useDebounce } from '@trezor/react-utils';
 
 import { selectValidTradingBuyQuotesNative } from '../../selectors/buySelectors';
-import { clearBuyState, clearQuotesAndQuotesRequest } from '../../tradingSlice';
+import { tradingActions } from '../../tradingSlice';
 import { BuyFormType } from '../../types/buy';
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/general/quotesUtils';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
@@ -125,7 +125,7 @@ const useBuyQuotesInvalidator = (
     // make sure no stale quotes are present when form is invalid
     useEffect(() => {
         if (shouldInvalidateQuotes) {
-            dispatch(clearQuotesAndQuotesRequest());
+            dispatch(tradingActions.clearQuotesAndQuotesRequest());
         }
     }, [shouldInvalidateQuotes, dispatch]);
 
@@ -137,7 +137,7 @@ const useBuyQuotesInvalidator = (
                 quotesPromiseRef.current.abort('Component unmounted');
             }
             // clear whole buy state including quotes
-            dispatch(clearBuyState());
+            dispatch(tradingActions.clearBuyState());
             // debounce should be handled by useDebounce, no need to clear it here
         },
         [dispatch, quotesPromiseRef],

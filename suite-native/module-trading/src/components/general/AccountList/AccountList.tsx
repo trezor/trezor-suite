@@ -26,7 +26,7 @@ import {
 } from '../../../hooks/general/useReceiveAccountsListData';
 import { useSectionList } from '../../../hooks/general/useSectionList';
 import { selectBuySelectedReceiveAccount } from '../../../selectors/buySelectors';
-import { setBuySelectedReceiveAccount } from '../../../tradingSlice';
+import { tradingActions } from '../../../tradingSlice';
 import { ReceiveAccount } from '../../../types/general';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -74,7 +74,9 @@ export const AccountList = ({
         }) ?? [];
 
     const onItemSelect = (receiveAccount: ReceiveAccount) => {
-        dispatch(setBuySelectedReceiveAccount({ selectedReceiveAccount: receiveAccount }));
+        dispatch(
+            tradingActions.setBuySelectedReceiveAccount({ selectedReceiveAccount: receiveAccount }),
+        );
         const hasAddresses = receiveAccount.account.addresses;
         if (receiveAccount.account && hasAddresses) {
             onSetPickerMode('address');

@@ -119,20 +119,6 @@ export const tradingSlice = createSliceWithExtraDeps({
     },
 });
 
-export const {
-    setBuySelectedReceiveAccount,
-    addTradeableAssetToFavourites,
-    removeTradeableAssetFromFavourites,
-    setTradingEnvironment,
-    clearBuyState,
-    clearQuotesAndQuotesRequest,
-    setTradeOrderIdToBeOpened,
-    clearTradeOrderIdToBeOpened,
-    buyAssetChanged,
-    buyFiatCurrencyChanged,
-    setIsAmountInputActive,
-    setActiveTradingType,
-    clearActiveTradingType,
-} = tradingSlice.actions;
+export const tradingActions = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();

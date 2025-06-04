@@ -27,7 +27,7 @@ import {
 } from '../components/history/TradeHistoryListItem/TradeHistoryListItem';
 import { useBottomSheetControls } from '../hooks/general/useBottomSheetControls';
 import { selectTradeToBeOpened } from '../selectors/commonSelectors';
-import { clearTradeOrderIdToBeOpened } from '../tradingSlice';
+import { tradingActions } from '../tradingSlice';
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
@@ -68,7 +68,7 @@ export const TradingHistoryScreen = () => {
         // if there was trade to be opened, open it right away and clear the tradeOrderIdToBeOpened
         if (tradeToBeOpened) {
             handleSelectedTrade(tradeToBeOpened);
-            dispatch(clearTradeOrderIdToBeOpened());
+            dispatch(tradingActions.clearTradeOrderIdToBeOpened());
         }
     }, [tradeToBeOpened, handleSelectedTrade, dispatch]);
 

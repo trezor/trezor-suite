@@ -3,7 +3,7 @@ import { CryptoId } from 'invity-api';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { btcAsset } from '../../__fixtures__/tradeableAssets';
-import { TradingState, addTradeableAssetToFavourites, tradingSlice } from '../../tradingSlice';
+import { TradingState, tradingActions, tradingSlice } from '../../tradingSlice';
 import { TradeableAsset } from '../../types/general';
 import {
     selectIsTradingFavouriteAsset,
@@ -17,7 +17,10 @@ describe('favouritesSelectors', () => {
 
     beforeEach(() => {
         tradingReducer = tradingSlice.prepareReducer(extraDependenciesMock);
-        state = tradingReducer(undefined, addTradeableAssetToFavourites(btcAsset.cryptoId));
+        state = tradingReducer(
+            undefined,
+            tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
+        );
     });
 
     it('selectTradingFavouriteAssets should return favourites assets map', () => {

@@ -21,7 +21,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
-import { setTradeOrderIdToBeOpened } from '../tradingSlice';
+import { tradingActions } from '../tradingSlice';
 import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
 
 type RouteProps = StackProps<RootStackParamList, RootStackRoutes.TradingWebView>['route'];
@@ -59,7 +59,7 @@ export const TradingWebViewScreen = () => {
             const urlString = url ?? '';
             if (doesUrlContainCloseCallbackUrl(urlString, closeCallbackUrl)) {
                 if (orderId) {
-                    dispatch(setTradeOrderIdToBeOpened(orderId));
+                    dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
                 }
                 navigation.goBack();
 

@@ -20,11 +20,7 @@ import { PROTO } from '@trezor/connect';
 import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import {
-    buyAssetChanged,
-    buyFiatCurrencyChanged,
-    setBuySelectedReceiveAccount,
-} from '../../../tradingSlice';
+import { tradingActions } from '../../../tradingSlice';
 import { BuyFormType } from '../../../types/buy';
 import { TradeableAsset } from '../../../types/general';
 import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
@@ -77,7 +73,7 @@ describe('useBuyForm', () => {
 
         act(() => {
             store.dispatch(
-                setBuySelectedReceiveAccount({
+                tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: { account: { key: 'btc2' } as Account },
                 }),
             );
@@ -104,7 +100,7 @@ describe('useBuyForm', () => {
 
             act(() => {
                 store.dispatch(
-                    setBuySelectedReceiveAccount({
+                    tradingActions.setBuySelectedReceiveAccount({
                         selectedReceiveAccount: {
                             account: { key: 'btc2', descriptor: 'descriptor_btc2' } as Account,
                         },
@@ -123,7 +119,7 @@ describe('useBuyForm', () => {
 
             act(() => {
                 store.dispatch(
-                    setBuySelectedReceiveAccount({
+                    tradingActions.setBuySelectedReceiveAccount({
                         selectedReceiveAccount: {
                             account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
                         },
@@ -133,7 +129,7 @@ describe('useBuyForm', () => {
 
             act(() => {
                 store.dispatch(
-                    setBuySelectedReceiveAccount({
+                    tradingActions.setBuySelectedReceiveAccount({
                         selectedReceiveAccount: {
                             account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
                             address: { address: 'TEST_BTC_ADDRESS' } as Address,
@@ -153,7 +149,7 @@ describe('useBuyForm', () => {
 
             act(() => {
                 store.dispatch(
-                    setBuySelectedReceiveAccount({
+                    tradingActions.setBuySelectedReceiveAccount({
                         selectedReceiveAccount: {
                             account: { key: 'btc1', descriptor: '' } as Account,
                         },
@@ -173,7 +169,7 @@ describe('useBuyForm', () => {
 
             act(() => {
                 store.dispatch(
-                    setBuySelectedReceiveAccount({
+                    tradingActions.setBuySelectedReceiveAccount({
                         selectedReceiveAccount: {
                             account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
                         },
@@ -183,7 +179,7 @@ describe('useBuyForm', () => {
 
             act(() => {
                 store.dispatch(
-                    setBuySelectedReceiveAccount({
+                    tradingActions.setBuySelectedReceiveAccount({
                         selectedReceiveAccount: {
                             account: { key: 'btc1' } as Account,
                         },
@@ -193,7 +189,7 @@ describe('useBuyForm', () => {
 
             act(() => {
                 store.dispatch(
-                    setBuySelectedReceiveAccount({
+                    tradingActions.setBuySelectedReceiveAccount({
                         selectedReceiveAccount: undefined,
                     }),
                 );
@@ -214,7 +210,7 @@ describe('useBuyForm', () => {
         });
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(buyAssetChanged());
+        expect(dispatchSpy).toHaveBeenCalledWith(tradingActions.buyAssetChanged());
     });
 
     it('should not clear selected account when asset is set to undefined', async () => {
@@ -223,7 +219,7 @@ describe('useBuyForm', () => {
 
         act(() => {
             store.dispatch(
-                setBuySelectedReceiveAccount({
+                tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: { account: { key: 'btc2' } as Account },
                 }),
             );
@@ -280,7 +276,7 @@ describe('useBuyForm', () => {
         });
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(buyFiatCurrencyChanged());
+        expect(dispatchSpy).toHaveBeenCalledWith(tradingActions.buyFiatCurrencyChanged());
     });
 
     it('should clear cryptoValue when user edits fiatValue', async () => {

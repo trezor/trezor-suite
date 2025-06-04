@@ -8,7 +8,7 @@ import { useTranslate } from '@suite-native/intl';
 
 import { HeaderTab } from './HeaderTab';
 import { selectActiveTradingType } from '../../../selectors/commonSelectors';
-import { setActiveTradingType } from '../../../tradingSlice';
+import { tradingActions } from '../../../tradingSlice';
 
 const useSelectedTab = () => {
     const dispatch = useDispatch();
@@ -16,7 +16,7 @@ const useSelectedTab = () => {
 
     const setActiveTab = useCallback(
         (tab: TradingType) => {
-            dispatch(setActiveTradingType(tab));
+            dispatch(tradingActions.setActiveTradingType(tab));
         },
         [dispatch],
     );

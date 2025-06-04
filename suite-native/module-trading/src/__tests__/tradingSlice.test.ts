@@ -8,20 +8,7 @@ import { deviceActions } from '@suite-common/wallet-core';
 import { getBtcAccount } from '../__fixtures__/account';
 import quotes from '../__fixtures__/quotes.json';
 import { adaAsset, btcAsset, usdcAsset } from '../__fixtures__/tradeableAssets';
-import {
-    TradingState,
-    addTradeableAssetToFavourites,
-    buyAssetChanged,
-    buyFiatCurrencyChanged,
-    clearTradeOrderIdToBeOpened,
-    initialState,
-    removeTradeableAssetFromFavourites,
-    setBuySelectedReceiveAccount,
-    setIsAmountInputActive,
-    setTradeOrderIdToBeOpened,
-    setTradingEnvironment,
-    tradingSlice,
-} from '../tradingSlice';
+import { TradingState, initialState, tradingActions, tradingSlice } from '../tradingSlice';
 
 describe('tradingSlice', () => {
     let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
@@ -56,7 +43,7 @@ describe('tradingSlice', () => {
             const receiveAccount = { account: getBtcAccount(), address: undefined };
             const state = tradingReducer(
                 undefined,
-                setBuySelectedReceiveAccount({
+                tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: receiveAccount,
                 }),
             );
@@ -66,10 +53,10 @@ describe('tradingSlice', () => {
 
         it('setBuySelectedReceiveAccount should set and clear selectedReceiveAccount', () => {
             const actions = [
-                setBuySelectedReceiveAccount({
+                tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
                 }),
-                setBuySelectedReceiveAccount({
+                tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: undefined,
                 }),
             ];
@@ -81,9 +68,9 @@ describe('tradingSlice', () => {
         describe('favouriteAssets', () => {
             it('addTradeableAssetToFavourites should add asset to favourites', () => {
                 const actions = [
-                    addTradeableAssetToFavourites(btcAsset.cryptoId),
-                    addTradeableAssetToFavourites(usdcAsset.cryptoId),
-                    addTradeableAssetToFavourites(adaAsset.cryptoId),
+                    tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
+                    tradingActions.addTradeableAssetToFavourites(usdcAsset.cryptoId),
+                    tradingActions.addTradeableAssetToFavourites(adaAsset.cryptoId),
                 ];
                 const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
@@ -100,14 +87,14 @@ describe('tradingSlice', () => {
                 beforeEach(() => {
                     prevState = tradingReducer(
                         undefined,
-                        addTradeableAssetToFavourites(btcAsset.cryptoId),
+                        tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
                     );
                 });
 
                 it('addTradeableAssetToFavourites should not add same asset twice', () => {
                     const state = tradingReducer(
                         prevState,
-                        addTradeableAssetToFavourites(btcAsset.cryptoId),
+                        tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
                     );
 
                     expect(state.favouriteAssets).toEqual({
@@ -118,7 +105,7 @@ describe('tradingSlice', () => {
                 it('removeTradeableAssetFromFavourites should remove asset from favourites', () => {
                     const state = tradingReducer(
                         prevState,
-                        removeTradeableAssetFromFavourites(btcAsset.cryptoId),
+                        tradingActions.removeTradeableAssetFromFavourites(btcAsset.cryptoId),
                     );
 
                     expect(state.favouriteAssets).toEqual({});
@@ -135,7 +122,7 @@ describe('tradingSlice', () => {
         });
 
         it('setTradingEnvironment should set trading environment and clear buy state', () => {
-            const state = tradingReducer(undefined, setTradingEnvironment('dev'));
+            const state = tradingReducer(undefined, tradingActions.setTradingEnvironment('dev'));
 
             expect(state.tradingEnvironment).toBe('dev');
             expect(state.buy).toEqual({
@@ -227,7 +214,10 @@ describe('tradingSlice', () => {
         });
 
         it('setTradeOrderIdToBeOpened should set tradeOrderIdToBeOpened', () => {
-            const state = tradingReducer(undefined, setTradeOrderIdToBeOpened('orderId'));
+            const state = tradingReducer(
+                undefined,
+                tradingActions.setTradeOrderIdToBeOpened('orderId'),
+            );
 
             expect(state.tradeOrderIdToBeOpened).toBe('orderId');
         });
@@ -235,7 +225,10 @@ describe('tradingSlice', () => {
 
     describe('clearTradeOrderIdToBeOpened', () => {
         it('should clear tradeOrderIdToBeOpened', () => {
-            const actions = [setTradeOrderIdToBeOpened('orderId'), clearTradeOrderIdToBeOpened()];
+            const actions = [
+                tradingActions.setTradeOrderIdToBeOpened('orderId'),
+                tradingActions.clearTradeOrderIdToBeOpened(),
+            ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
@@ -246,7 +239,7 @@ describe('tradingSlice', () => {
     describe('@suite/device/selectDevice', () => {
         it('should clear selectedReceiveAccount', () => {
             const actions = [
-                setBuySelectedReceiveAccount({
+                tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
                 }),
                 deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
@@ -261,10 +254,10 @@ describe('tradingSlice', () => {
     describe('buyAssetChanged', () => {
         it('should clear selectedReceiveAccount', () => {
             const actions = [
-                setBuySelectedReceiveAccount({
+                tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
                 }),
-                buyAssetChanged(),
+                tradingActions.buyAssetChanged(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
@@ -281,7 +274,7 @@ describe('tradingSlice', () => {
                     maxFiat: '1000',
                     minCrypto: '0.0001',
                 }),
-                buyAssetChanged(),
+                tradingActions.buyAssetChanged(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
@@ -297,7 +290,7 @@ describe('tradingSlice', () => {
                     fiatCurrency: 'czk',
                     country: 'CZ',
                 }),
-                buyAssetChanged(),
+                tradingActions.buyAssetChanged(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
@@ -316,7 +309,7 @@ describe('tradingSlice', () => {
                     maxFiat: '1000',
                     minCrypto: '0.0001',
                 }),
-                buyFiatCurrencyChanged(),
+                tradingActions.buyFiatCurrencyChanged(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
@@ -332,7 +325,7 @@ describe('tradingSlice', () => {
                     fiatCurrency: 'czk',
                     country: 'CZ',
                 }),
-                buyAssetChanged(),
+                tradingActions.buyAssetChanged(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
@@ -343,7 +336,7 @@ describe('tradingSlice', () => {
 
     describe('setIsAmountInputActive', () => {
         it('should set isAmountInputActive', () => {
-            const actions = [setIsAmountInputActive(true)];
+            const actions = [tradingActions.setIsAmountInputActive(true)];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 

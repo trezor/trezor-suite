@@ -13,11 +13,7 @@ import { TradeableAsset } from '../../../types/general';
 import { NetworkBadge } from '../NetworkBadge';
 import { NetworkSymbolExtendedFormatter } from '../NetworkSymbolExtendedFormatter';
 import { FavouriteIcon } from './FavouriteIcon';
-import {
-    TradingRootState,
-    addTradeableAssetToFavourites,
-    removeTradeableAssetFromFavourites,
-} from '../../../tradingSlice';
+import { TradingRootState, tradingActions } from '../../../tradingSlice';
 
 export type TradeableAssetListItemProps = {
     asset: TradeableAsset;
@@ -49,9 +45,9 @@ export const TradeableAssetListItem = ({ asset, onPress }: TradeableAssetListIte
 
     const onFavouritePress = () => {
         if (isFavourite) {
-            dispatch(removeTradeableAssetFromFavourites(asset.cryptoId));
+            dispatch(tradingActions.removeTradeableAssetFromFavourites(asset.cryptoId));
         } else {
-            dispatch(addTradeableAssetToFavourites(asset.cryptoId));
+            dispatch(tradingActions.addTradeableAssetToFavourites(asset.cryptoId));
         }
     };
 

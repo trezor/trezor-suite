@@ -7,7 +7,7 @@ import { TradingType } from '@suite-common/trading';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 
 import { selectEnabledTradingTypes } from '../../selectors/commonSelectors';
-import { clearActiveTradingType, setActiveTradingType } from '../../tradingSlice';
+import { tradingActions } from '../../tradingSlice';
 
 export const useActiveTradingTypeReaction = () => {
     const dispatch = useDispatch();
@@ -24,10 +24,10 @@ export const useActiveTradingTypeReaction = () => {
             activeTradingType = enabledTradingTypes[0];
         }
 
-        dispatch(setActiveTradingType(activeTradingType));
+        dispatch(tradingActions.setActiveTradingType(activeTradingType));
 
         return () => {
-            dispatch(clearActiveTradingType());
+            dispatch(tradingActions.clearActiveTradingType());
         };
     }, [enabledTradingTypes, dispatch, tradingType]);
 };

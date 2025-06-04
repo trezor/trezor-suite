@@ -13,7 +13,7 @@ import { BuyPaymentCard } from './BuyPaymentCard';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
-import { setIsAmountInputActive } from '../../tradingSlice';
+import { tradingActions } from '../../tradingSlice';
 
 type BuyFormProps = {
     shouldAnimateEntering?: boolean;
@@ -82,7 +82,7 @@ export const BuyForm = ({ shouldAnimateEntering }: BuyFormProps) => {
     const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive);
 
     useEffect(() => {
-        dispatch(setIsAmountInputActive(isAmountInputActiveDebounced));
+        dispatch(tradingActions.setIsAmountInputActive(isAmountInputActiveDebounced));
     }, [dispatch, isAmountInputActiveDebounced]);
 
     return (
