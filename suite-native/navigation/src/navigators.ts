@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
 
 import { BackupType } from '@suite-common/suite-types';
+import { TradingType } from '@suite-common/trading';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountKey,
@@ -280,7 +281,7 @@ export type RootStackParamList = {
 };
 
 export type TradingStackParamList = {
-    [TradingStackRoutes.Trading]: undefined;
+    [TradingStackRoutes.Trading]: { tradingType?: TradingType };
     [TradingStackRoutes.ReceiveAccounts]: { symbol: NetworkSymbol };
-    [TradingStackRoutes.TradingHistory]: { tradeType: 'buy' | 'sell' | 'exchange' };
+    [TradingStackRoutes.TradingHistory]: { tradeType: TradingType };
 };

@@ -5,6 +5,7 @@ import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { TradingRootState, initialState } from '../../tradingSlice';
 import {
     selectActiveTradingType,
+    selectEnabledTradingTypes,
     selectIsAmountInputActive,
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
@@ -206,6 +207,26 @@ describe('commonSelectors', () => {
                     wallet: { tradingNew: { activeTradingType: 'exchange' } as any },
                 }),
             ).toBe('exchange');
+        });
+    });
+
+    describe('selectEnabledTradingTypes', () => {
+        it.each([
+            [{ buy: true, exchange: true, sell: true }, ['buy', 'exchange', 'sell']],
+            [{ buy: false, exchange: true, sell: true }, ['exchange', 'sell']],
+            [{ buy: false, exchange: false, sell: false }, []],
+        ])(
+            'should return order array of allowed tradingTypes, case %#',
+            (flags, expectedReturn) => {
+                expect(selectEnabledTradingTypes(getPreloadedState(flags))).toEqual(expectedReturn);
+            },
+        );
+
+        it('should be stable', () => {
+            const flags = { buy: true, exchange: true, sell: true };
+            const firstCall = selectEnabledTradingTypes(getPreloadedState(flags));
+            const secondCall = selectEnabledTradingTypes(getPreloadedState(flags));
+            expect(firstCall).toBe(secondCall);
         });
     });
 });

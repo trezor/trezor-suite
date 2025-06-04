@@ -3,6 +3,8 @@ import {
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { TradingType } from '@suite-common/trading';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
@@ -10,6 +12,10 @@ import {
 } from '@suite-native/feature-flags';
 
 import { TradingRootState } from '../tradingSlice';
+
+const createFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
+    MessageSystemRootState & FeatureFlagsRootState
+>();
 
 export const selectTradingEnvironment = (state: TradingRootState) =>
     state.wallet.tradingNew.tradingEnvironment;
@@ -32,6 +38,25 @@ export const selectIsTradingEnabled = (state: MessageSystemRootState & FeatureFl
     selectIsTradingBuyEnabled(state) ||
     selectIsTradingExchangeEnabled(state) ||
     selectIsTradingSellEnabled(state);
+
+export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
+    [selectIsTradingBuyEnabled, selectIsTradingExchangeEnabled, selectIsTradingSellEnabled],
+    (isTradingBuyEnabled, isTradingExchangeEnabled, isTradingSellEnabled) => {
+        const enabledTypes: TradingType[] = [];
+
+        if (isTradingBuyEnabled) {
+            enabledTypes.push('buy');
+        }
+        if (isTradingExchangeEnabled) {
+            enabledTypes.push('exchange');
+        }
+        if (isTradingSellEnabled) {
+            enabledTypes.push('sell');
+        }
+
+        return enabledTypes;
+    },
+);
 
 // trade for opening in detail
 export const selectTradeToBeOpened = (state: TradingRootState) => {
