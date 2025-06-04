@@ -141,6 +141,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             path: address_n,
             serializedPath: getSerializedPath(address_n),
             address: response.address,
+            mac: response.mac,
         };
     }
 

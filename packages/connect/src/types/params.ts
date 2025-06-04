@@ -94,6 +94,7 @@ export interface Address {
     address: string;
     path: number[];
     serializedPath: string;
+    mac?: string;
 }
 
 // Common fields for all *.getPublicKey methods
