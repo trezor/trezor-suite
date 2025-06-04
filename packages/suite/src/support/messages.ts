@@ -2081,6 +2081,10 @@ export default defineMessages({
         description: 'Prompt to user to connect his device.',
         id: 'TR_CONNECT_YOUR_DEVICE',
     },
+    TR_CONNECT_VIA_BLUETOOTH: {
+        defaultMessage: 'Connect via Bluetooth',
+        id: 'TR_CONNECT_VIA_BLUETOOTH',
+    },
     TR_RECONNECT_YOUR_DEVICE: {
         defaultMessage: 'Reconnect your Trezor',
         description: 'Prompt to user to reconnect his device.',
@@ -2226,9 +2230,21 @@ export default defineMessages({
         defaultMessage: 'Trezor is not readable.',
         id: 'TR_NEEDS_ATTENTION_UNREADABLE',
     },
+    TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED: {
+        defaultMessage: 'Secure connection not set up',
+        id: 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED',
+    },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {
         defaultMessage: 'Failed to communicate with your Trezor',
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
+    },
+    TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING: {
+        defaultMessage: 'Trezor Safe 7 detected',
+        id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
+    },
+    TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION: {
+        defaultMessage: 'Continue to THP pairing',
+        id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION',
     },
     TR_UDEV_DOWNLOAD_TITLE: {
         defaultMessage: 'Download udev rules',
@@ -3281,6 +3297,108 @@ export default defineMessages({
     TR_SOLVE_ISSUE: {
         defaultMessage: 'Refresh',
         id: 'TR_SOLVE_ISSUE',
+    },
+    TR_THP_RESET_CREDENTIALS_SUCCESS: {
+        defaultMessage: 'Trezor Host Protocol credentials has been reset. RECONNECT THE DEVICE',
+        id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
+    },
+    TR_THP_PAIR: {
+        defaultMessage: 'Pair',
+        id: 'TR_THP_PAIR',
+    },
+    TR_THP_ENTER_ONE_TIME_CODE: {
+        id: 'TR_THP_ENTER_ONE_TIME_CODE',
+        defaultMessage: 'Enter one-time security code',
+    },
+    TR_THP_INCORRECT_SECURITY_CODE: {
+        id: 'TR_THP_INCORRECT_SECURITY_CODE',
+        defaultMessage: 'Incorrect security code. Please try again with a new code.',
+    },
+    TR_THP_GET_NEW_CODE: {
+        id: 'TR_THP_GET_NEW_CODE',
+        defaultMessage: 'Get new code',
+    },
+    TR_THP_VERIFICATION_FAILED: {
+        id: 'TR_THP_VERIFICATION_FAILED',
+        defaultMessage: 'Verification failed',
+    },
+    TR_THP_VERIFICATION_FAILED_DESCRIPTION: {
+        id: 'TR_THP_VERIFICATION_FAILED_DESCRIPTION',
+        defaultMessage: 'The one-time security code you entered is incorrect. Please try again.',
+    },
+    TR_THP_CHECK_TREZOR_FOR_CODE: {
+        id: 'TR_THP_CHECK_TREZOR_FOR_CODE',
+        defaultMessage: 'Check your Trezor for the code.',
+    },
+    TR_THP_CREATE_SECURE_CONNECTION: {
+        id: 'TR_THP_CREATE_SECURE_CONNECTION',
+        defaultMessage: 'Create secure connection',
+    },
+    TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION: {
+        id: 'TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION',
+        defaultMessage: 'Trezor Suite will create a secure connection to your Trezor.',
+    },
+    TR_DO_NOT_ASK_ME_AGAIN: {
+        id: 'TR_DO_NOT_ASK_ME_AGAIN',
+        defaultMessage: "Don't ask me again",
+    },
+    TR_THP_SECURELY_CONNECT_WITH_TREZOR: {
+        id: 'TR_THP_SECURELY_CONNECT_WITH_TREZOR',
+        defaultMessage: 'Securely connect with your Trezor',
+    },
+    TR_THP_CONFIRM_ON_NEXT_STEP: {
+        id: 'TR_THP_CONFIRM_ON_NEXT_STEP',
+        defaultMessage: 'Confirm on next step',
+    },
+    TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR: {
+        id: 'TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR',
+        defaultMessage: 'Securely connect automatically with your Trezor',
+    },
+    TR_THP_CONFIRM_SECURE_CONNECTION: {
+        id: 'TR_THP_CONFIRM_SECURE_CONNECTION',
+        defaultMessage: 'Confirm secure connection',
+    },
+    TR_THP_SETTINGS_AUTO_CONNECT: {
+        id: 'TR_THP_SETTINGS_AUTO_CONNECT',
+        defaultMessage: 'Auto-connect',
+    },
+    TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION: {
+        id: 'TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION',
+        defaultMessage:
+            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it-no need confirm every time.',
+    },
+    TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
+        id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
+        defaultMessage: 'Save time with auto-connect',
+    },
+    TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION: {
+        id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION',
+        defaultMessage:
+            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it—no need to confirm every time.',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT',
+        defaultMessage: 'Turn on auto-connect',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS',
+        defaultMessage: 'No thanks',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS',
+        defaultMessage: 'Skip confirmation on trusted computers',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_1: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_1',
+        defaultMessage: 'Let Trezor Suite connect to your Trezor automatically when it’s connected',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_2: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_2',
+        defaultMessage: 'Skip repeated confirmations',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_3: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_3',
+        defaultMessage: 'Stay fully secure',
     },
     TR_SOUTH: {
         defaultMessage: 'South',
@@ -9864,6 +9982,129 @@ export default defineMessages({
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR: {
         defaultMessage: 'Unpair',
         id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR',
+    },
+    TR_BLUETOOTH_VERSION_NOT_COMPATIBLE: {
+        id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE',
+        defaultMessage: 'Incompatible Bluetooth version',
+    },
+    TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1: {
+        id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1',
+        defaultMessage: 'Bluetooth version not supported',
+    },
+    TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE2: {
+        id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE2',
+        defaultMessage:
+            'Your computer’s Bluetooth version doesn’t support Trezor Suite. Use a cable or an adapter that supports Bluetooth 5.0 or higher.',
+    },
+    TR_BLUETOOTH_TURNED_OFF: {
+        id: 'TR_BLUETOOTH_TURNED_OFF',
+        defaultMessage: 'Bluetooth is turned off',
+    },
+    TR_BLUETOOTH_SETTINGS: {
+        id: 'TR_BLUETOOTH_SETTINGS',
+        defaultMessage: 'Open System Settings',
+    },
+    TR_BLUETOOTH_TURN_ON_BLUETOOTH: {
+        id: 'TR_BLUETOOTH_TURN_ON_BLUETOOTH',
+        defaultMessage: 'Turn on Bluetooth',
+    },
+    TR_BLUETOOTH_TURNED_OFF_TEXT: {
+        id: 'TR_BLUETOOTH_TURNED_OFF_TEXT',
+        defaultMessage:
+            'Bluetooth is currently turned off on this computer. Go to System Settings > Bluetooth and turn on Bluetooth.',
+    },
+    TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS: {
+        id: 'TR_BLUETOOTH_OPEN_PERMISSIONS_SETTINGS',
+        defaultMessage: 'Open permissions settings',
+    },
+    TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS: {
+        id: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
+        defaultMessage: 'Allow bluetooth permissions',
+    },
+    TR_BLUETOOTH_OR_CONNECT_VIA_CABLE: {
+        id: 'TR_BLUETOOTH_OR_CONNECT_VIA_CABLE',
+        defaultMessage: 'Allow bluetooth permissions',
+    },
+    TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS: {
+        id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS',
+        defaultMessage:
+            'Cannot open permission settings. Go to Settings/Privacy and security/Bluetooth.',
+    },
+    TR_BLUETOOTH_CONNECT: {
+        id: 'TR_BLUETOOTH_CONNECT',
+        defaultMessage: 'Connect',
+    },
+    TR_BLUETOOTH_CONNECTED: {
+        id: 'TR_BLUETOOTH_CONNECTED',
+        defaultMessage: 'Connected',
+    },
+    TR_BLUETOOTH_CONNECTING: {
+        id: 'TR_BLUETOOTH_CONNECTING',
+        defaultMessage: 'Connecting',
+    },
+    TR_BLUETOOTH_DISCONNECT: {
+        id: 'TR_BLUETOOTH_DISCONNECT',
+        defaultMessage: 'Disconnect',
+    },
+    TR_BLUETOOTH_DISCONNECTED_BUT_WAITING: {
+        id: 'TR_BLUETOOTH_DISCONNECTED_BUT_WAITING',
+        defaultMessage: 'Waiting',
+    },
+    TR_BLUETOOTH_TRY_AGAIN: {
+        id: 'TR_BLUETOOTH_TRY_AGAIN',
+        defaultMessage: 'Try again',
+    },
+    TR_BLUETOOTH_PAIRING: {
+        id: 'TR_BLUETOOTH_PAIRING',
+        defaultMessage: 'Pairing',
+    },
+    TR_BLUETOOTH_PAIRED: {
+        id: 'TR_BLUETOOTH_PAIRED',
+        defaultMessage: 'Paired',
+    },
+    TR_BLUETOOTH_SCANNING: {
+        id: 'TR_BLUETOOTH_SCANNING',
+        defaultMessage: 'Scanning',
+    },
+    TR_BLUETOOTH_CANCELLING: {
+        id: 'TR_BLUETOOTH_CANCELLING',
+        defaultMessage: 'Cancelling',
+    },
+    TR_BLUETOOTH_PAIRING_FAILED: {
+        id: 'TR_BLUETOOTH_PAIRING_FAILED',
+        defaultMessage: 'Pairing failed',
+    },
+    TR_BLUETOOTH_PIN_CODE: {
+        id: 'TR_BLUETOOTH_PIN_CODE',
+        defaultMessage: 'Bluetooth pairing code',
+    },
+    TR_BLUETOOTH_PIN_CODE_DONT_MATCH: {
+        id: 'TR_BLUETOOTH_PIN_CODE_DONT_MATCH',
+        defaultMessage: "Codes don't match?",
+    },
+    TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN: {
+        id: 'TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN',
+        defaultMessage: 'Check tips & try again',
+    },
+    TR_BLUETOOTH_X_TREZORS_FOUND: {
+        id: 'TR_BLUETOOTH_X_TREZORS_FOUND',
+        defaultMessage: '{number} Trezors Found',
+    },
+    TR_BLUETOOTH_NO_TREZOR_FOUND: {
+        id: 'TR_BLUETOOTH_NO_TREZOR_FOUND',
+        defaultMessage: 'No Trezor Found',
+    },
+    TR_BLUETOOTH_SCAN_AGAIN: {
+        id: 'TR_BLUETOOTH_SCAN_AGAIN',
+        defaultMessage: 'Scan again',
+    },
+    TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR: {
+        id: 'TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR',
+        defaultMessage: 'Not the Trezor you’re looking for?',
+    },
+    TR_BLUETOOTH_GHOST_DEVICE: {
+        id: 'TR_BLUETOOTH_GHOST_DEVICE',
+        defaultMessage: 'Trezor not found. Remove it and create a new connection.',
     },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',

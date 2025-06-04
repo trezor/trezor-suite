@@ -17,6 +17,7 @@ import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
+import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
 import { Tor } from './Tor';
@@ -94,6 +95,9 @@ export const SettingsDebug = () => {
                     <ShowBluetoothDebugInfo />
                 </SettingsSection>
             )}
+            <SettingsSection title="Trezor Host Protocol">
+                <ResetThpCredentials />
+            </SettingsSection>
             <SettingsSection title="TrezorConnect">
                 <TrezorConnectLogs />
             </SettingsSection>

@@ -31,13 +31,19 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
     if (device.type === 'unacquired' && device?.transportSessionOwner)
         return 'device-used-elsewhere';
 
+    // Unacquired device with Trezor Host Protocol properties means
+    // that the user must perform the Trezor Host Protocol paring
+    if (device.type === 'unacquired' && device.thp?.properties !== undefined) {
+        return 'device-unacquired-requires-thp';
+    }
+
     // device features cannot be read, device is probably used in another window
     if (device.type === 'unacquired') return 'device-unacquired';
 
     // Webusb unreadable device (HID)
     if (device.type === 'unreadable') return 'device-unreadable';
 
-    // device features unknown (this shouldn't happened tho)
+    // device features unknown (this shouldn't happen tho)
     if (!device.features) return 'device-unknown';
 
     // device in seedless mode, check it before checking firmware
@@ -73,6 +79,7 @@ export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[
             'transport-bridge',
             'device-disconnected',
             'device-unacquired',
+            'device-unacquired-requires-thp',
             'device-unreadable',
             'device-unknown',
             'device-seedless',

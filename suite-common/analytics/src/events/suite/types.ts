@@ -476,6 +476,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsDeviceChangeThpAutoconnect;
+          payload: {
+              action: 'disable-autoconnect' | 'enable-autoconnect';
+          };
+      }
+    | {
           type: EventType.SettingsDeviceCheckSeed;
           status: 'finished' | 'error';
           error?: string;

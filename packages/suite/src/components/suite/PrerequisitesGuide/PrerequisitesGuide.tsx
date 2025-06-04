@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { bluetoothActions, selectIsBluetoothListOpen } from '@suite-common/bluetooth';
 import {
     deviceNeedsAttention,
     getStatus,
@@ -32,12 +33,14 @@ import { DeviceInitialize } from './DeviceInitialize';
 import { DeviceNoFirmware } from './DeviceNoFirmware';
 import { DeviceRecoveryMode } from './DeviceRecoveryMode';
 import { DeviceSeedless } from './DeviceSeedless';
+import { DeviceTrezorHostProtocolPair } from './DeviceTrezorHostProtocolPair';
 import { DeviceUnknown } from './DeviceUnknown';
 import { DeviceUnreadable } from './DeviceUnreadable';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { Transport } from './Transport';
+import { BluetoothConnect } from '../bluetooth/BluetoothConnect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,11 +53,11 @@ const BottomAnimatedContainer = styled(motion.div)`
     display: flex;
 `;
 
-const Bluetooth = () => (
+const Bluetooth = ({ children }: any) => (
     <ElevationContext baseElevation={-1}>
         {/* Here we need to draw the inner card with elevation -1 (custom design) */}
         <ElevationDown>
-            <Flex width={470}>Here will be the Bluetooth connection dialog</Flex>
+            <Flex width={470}>{children}</Flex>
         </ElevationDown>
     </ElevationContext>
 );
@@ -82,6 +85,8 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                     return <DeviceConnect setIsBluetoothConnectOpen={setIsBluetoothConnectOpen} />;
                 case 'device-unacquired':
                     return <DeviceAcquire />;
+                case 'device-unacquired-requires-thp':
+                    return <DeviceTrezorHostProtocolPair />;
                 case 'device-used-elsewhere':
                     return <DeviceUsedElsewhere />;
                 case 'device-unreadable':
@@ -152,12 +157,19 @@ interface PrerequisitesGuideProps {
 }
 
 export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
-    const [isBluetoothConnectOpen, setIsBluetoothConnectOpen] = useState(false);
+    const isBluetoothConnectOpen = useSelector(selectIsBluetoothListOpen);
+    const dispatch = useDispatch();
+
+    const setIsBluetoothConnectOpen = () => {
+        dispatch(bluetoothActions.setBluetoothListOpen({ isOpen: true }));
+    };
 
     return (
         <Wrapper>
             {isBluetoothConnectOpen ? (
-                <Bluetooth />
+                <Bluetooth>
+                    <BluetoothConnect uiMode="spatial" />
+                </Bluetooth>
             ) : (
                 <NonBluetooth
                     allowSwitchDevice={allowSwitchDevice}
