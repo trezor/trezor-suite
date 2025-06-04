@@ -1,22 +1,34 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useSetAtom } from 'jotai';
 
 import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
+    DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
+    RootStackParamList,
     RootStackRoutes,
+    WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 
 import { wasDeviceOnboardingCancelledAtom } from '../deviceAtoms';
 
+type NavigationProps = CompositeNavigationProp<
+    NativeStackNavigationProp<WipeDeviceStackParamList, WipeDeviceStackRoutes.WipeDevice>,
+    CompositeNavigationProp<
+        NativeStackNavigationProp<DeviceSettingsStackParamList>,
+        NativeStackNavigationProp<RootStackParamList>
+    >
+>;
+
 export const useWipeDevice = () => {
     const dispatch = useDispatch();
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProps>();
     const device = useSelector(selectSelectedDevice);
     const setWasDeviceOnboardingCancelled = useSetAtom(wasDeviceOnboardingCancelledAtom);
 
@@ -27,11 +39,10 @@ export const useWipeDevice = () => {
         // not wanted here. We want to treat it differently since it was wiped so user goes to onboarding through homescreen.
         setWasDeviceOnboardingCancelled(true);
 
-        // @ts-expect-error
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
             screen: DeviceSettingsStackRoutes.WipeDeviceStack,
             params: {
-                screen: WipeDeviceStackRoutes.ContinueOnTrezor,
+                screen: WipeDeviceStackRoutes.WipeDevice,
             },
         });
 
@@ -40,7 +51,6 @@ export const useWipeDevice = () => {
         });
 
         if (response.success && isFulfilled(response.payload)) {
-            // @ts-expect-error
             navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
                 screen: DeviceSettingsStackRoutes.WipeDeviceStack,
                 params: {

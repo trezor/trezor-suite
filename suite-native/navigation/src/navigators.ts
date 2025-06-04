@@ -200,7 +200,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceSettingsStackRoutes.FirmwareInstallation]: undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
-    [DeviceSettingsStackRoutes.WipeDeviceStack]: undefined;
+    [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
 };
 
 export type DevicePinProtectionStackParamList = {
