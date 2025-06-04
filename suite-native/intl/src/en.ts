@@ -933,6 +933,13 @@ export const en = {
             title: 'Set your Trezor’s PIN',
             subtitle:
                 'Use your PIN to unlock your Trezor when\nconnecting it to a phone or computer.',
+            cancelAlert: {
+                title: 'Are you sure you want to cancel PIN setup?',
+                description:
+                    'We strongly recommend setting a PIN for your Trezor to prevent unauthorized access.',
+                cancelButton: 'Yes, cancel',
+                retryButton: 'No, set PIN',
+            },
         },
         walletBackupSheet: {
             title: 'Wallet backup type',

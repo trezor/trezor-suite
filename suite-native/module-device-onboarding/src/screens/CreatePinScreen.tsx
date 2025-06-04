@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -5,10 +6,11 @@ import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
 import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Image, TitleHeader } from '@suite-native/atoms';
 import { usePinAction } from '@suite-native/device';
-import { Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { deviceImageMap } from '@suite-native/module-authorize-device';
 import {
     AppTabsRoutes,
@@ -58,8 +60,9 @@ export const CreatePinScreen = () => {
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const { applyStyle } = useNativeStyles();
     const onboardingAnalytics = useAtomValue(onboardingAnalyticsAtom);
+    const { showAlert, hideAlert } = useAlert();
 
-    const handlePinCreated = () => {
+    const handlePinCreated = useCallback(() => {
         if (hasBitcoinOnlyFirmware || isCoinEnablingInitFinished) {
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
@@ -83,11 +86,45 @@ export const CreatePinScreen = () => {
                 ...onboardingAnalytics,
             },
         });
-    };
+    }, [
+        deviceModel,
+        hasBitcoinOnlyFirmware,
+        isCoinEnablingInitFinished,
+        navigation,
+        onboardingAnalytics,
+    ]);
+
+    const handlePinCanceled = useCallback(
+        (_: TxKeyPath, tryAgainAction: () => void) => {
+            showAlert({
+                title: (
+                    <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.title" />
+                ),
+                description: (
+                    <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.description" />
+                ),
+                primaryButtonTitle: (
+                    <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.cancelButton" />
+                ),
+                primaryButtonVariant: 'redBold',
+                secondaryButtonTitle: (
+                    <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.retryButton" />
+                ),
+                secondaryButtonVariant: 'redElevation0',
+                onPressSecondaryButton: tryAgainAction,
+                onPressPrimaryButton: () => {
+                    hideAlert();
+                    handlePinCreated();
+                },
+            });
+        },
+        [showAlert, hideAlert, handlePinCreated],
+    );
 
     usePinAction({
         type: 'enable',
         onSuccess: handlePinCreated,
+        onError: handlePinCanceled,
     });
 
     const onCancel = () => {
