@@ -1,5 +1,5 @@
 import { WalletKit, WalletKitTypes } from '@reown/walletkit';
-import { WalletKit as WalletKitClient } from '@reown/walletkit/dist/types/client';
+import type { WalletKit as WalletKitClient } from '@reown/walletkit/dist/types/client';
 import { Core } from '@walletconnect/core';
 import {
     buildApprovedNamespaces,

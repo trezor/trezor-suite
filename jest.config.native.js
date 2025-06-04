@@ -39,5 +39,6 @@ module.exports = {
         '<rootDir>/../../suite-native/atoms/src/jestSetup.jsx',
         '<rootDir>/../../suite-native/analytics/src/jest.setup.ts',
         '<rootDir>/../../suite-native/module-trading/src/jest.setup.tsx',
+        '<rootDir>/../../suite-native/module-connect-popup/src/jest.setup.ts',
     ],
 };
