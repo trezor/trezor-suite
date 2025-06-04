@@ -5,11 +5,10 @@ import styled from 'styled-components';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Note, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
-import { DeviceModelInternal, getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
 import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
@@ -64,8 +63,6 @@ const EmphasizedText = styled.b`
 
 interface GetDescriptionProps {
     required: boolean;
-    standaloneFwUpdate: boolean;
-    reinstall: boolean;
     targetType: FirmwareType;
     shouldSwitchFirmwareType?: boolean;
     isBitcoinOnlyAvailable?: boolean;
@@ -73,8 +70,6 @@ interface GetDescriptionProps {
 
 const getDescription = ({
     required,
-    standaloneFwUpdate,
-    reinstall,
     targetType,
     shouldSwitchFirmwareType,
     isBitcoinOnlyAvailable,
@@ -91,12 +86,6 @@ const getDescription = ({
 
     if (required) {
         return 'TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED';
-    }
-
-    if (standaloneFwUpdate) {
-        return reinstall
-            ? 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION'
-            : 'TR_FIRMWARE_NEW_FW_DESCRIPTION';
     }
 
     return 'TR_ONBOARDING_NEW_FW_DESCRIPTION';
@@ -120,13 +109,11 @@ interface FirmwareInitialProps {
     shouldSwitchFirmwareType?: boolean;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
-    standaloneFwUpdate?: boolean;
     onClose?: () => void;
 }
 
 export const FirmwareInitial = ({
     shouldSwitchFirmwareType = false,
-    standaloneFwUpdate = false,
     onClose,
 }: FirmwareInitialProps) => {
     const { device } = useDevice();
@@ -163,13 +150,6 @@ export const FirmwareInitial = ({
     const targetType = bitcoinOnlyOffer ? FirmwareType.BitcoinOnly : targetFirmwareType;
     // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
     const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
-    const currentFwVersion = getFirmwareVersion(device);
-    const availableFwVersion = getFwUpdateVersion(device);
-    const hasLatestAvailableFw = !!(
-        availableFwVersion &&
-        currentFwVersion &&
-        availableFwVersion === currentFwVersion
-    );
 
     const installFirmware = (firmwareType: FirmwareType) => {
         firmwareUpdate({ firmwareType });
@@ -254,7 +234,7 @@ export const FirmwareInitial = ({
                 />
             ),
         };
-    } else if (device.mode === 'bootloader' && !standaloneFwUpdate) {
+    } else if (device.mode === 'bootloader') {
         // We can check if device.mode is bootloader only after checking that firmware !== none (condition above)
         // because device without firmware always reports that it is in bootloader mode.
         //
@@ -263,11 +243,7 @@ export const FirmwareInitial = ({
         // But for standalone FW update we need to allow bootloader mode directly, because
         // the device could be stucked in bootloader (e.g. wrong intermediary FW installation).
         return <PrerequisitesGuide />;
-    } else if (
-        device.firmware === 'required' ||
-        device.firmware === 'outdated' ||
-        standaloneFwUpdate
-    ) {
+    } else if (device.firmware === 'required' || device.firmware === 'outdated') {
         const warningTranslationValues: ExtendedMessageDescriptor['values'] = {
             b: chunks => <EmphasizedText>{chunks}</EmphasizedText>,
         };
@@ -303,8 +279,6 @@ export const FirmwareInitial = ({
                          *   so it should not be used here.
                          */
                         required: device.firmware === 'required',
-                        standaloneFwUpdate,
-                        reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
                         targetType,
                         shouldSwitchFirmwareType,
                         isBitcoinOnlyAvailable,
@@ -352,9 +326,7 @@ export const FirmwareInitial = ({
                 </FirmwareButtonsRow>
             ),
             outerActions:
-                device.firmware === 'outdated' &&
-                !standaloneFwUpdate &&
-                !isFirmwareInstallationMandatory ? (
+                device.firmware === 'outdated' && !isFirmwareInstallationMandatory ? (
                     <OnboardingButtonSkip
                         onClick={() => {
                             setShowSkipConfirmation(true);
@@ -380,9 +352,7 @@ export const FirmwareInitial = ({
                     description={content.description}
                     innerActions={content.innerActions}
                     outerActions={content.outerActions}
-                    disableConfirmWrapper={!!standaloneFwUpdate}
                     isActionAbortable={false}
-                    nested={!!standaloneFwUpdate}
                 >
                     {content.body}
                 </OnboardingStepBox>
