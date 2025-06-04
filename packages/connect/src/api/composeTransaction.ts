@@ -2,11 +2,7 @@
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
-import {
-    type ComposeOutput,
-    type TransactionInputOutputSortingStrategy,
-    bip32,
-} from '@trezor/utxo-lib';
+import { type ComposeOutput, type TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
@@ -420,37 +416,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
         });
 
-        const nodes: bip32.BIP32Interface[] = [];
-        // check outputs scripts
-        for (let i = 0; i < this.params.outputs.length; i++) {
-            const output = this.params.outputs[i];
-            const address_n = output.address_n;
-
-            if (!address_n) {
-                console.warn('TODO: missing addressn');
-                continue;
-            }
-
-            if (address_n.length === 5) {
-                const response = await this.device.getCommands().getHDNode(
-                    { address_n: address_n.slice(0, 4) },
-                    // todo: unlock_path?
-                    { coinInfo },
-                );
-                const node = bip32.fromBase58(response.xpub, coinInfo.network);
-
-                nodes.push(node.derive(address_n[address_n.length - 1]));
-            } else {
-                // custom address_n
-                const response = await this.device
-                    .getCommands()
-                    .getHDNode({ address_n }, { coinInfo });
-
-                nodes.push(bip32.fromBase58(response.xpub, coinInfo.network));
-            }
-        }
-
-        await verifyTx(nodes, inputs, outputs, response.serializedTx, coinInfo);
+        await verifyTx([], inputs, outputs, response.serializedTx, coinInfo);
 
         if (this.params.push) {
             const blockchain = await this.getBlockchain();

@@ -294,7 +294,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             await device.getCommands().unlockPath(params.unlockPath);
         }
 
-        const nodes: bip32.BIP32Interface[] = [];
+        const nodes: (bip32.BIP32Interface | undefined)[] = [];
         // check outputs scripts
         for (let i = 0; i < params.outputs.length; i++) {
             const output = params.outputs[i];
@@ -302,6 +302,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
             if (!address_n) {
                 console.warn('TODO: missing addressn');
+                nodes.push(undefined);
                 continue;
             }
 

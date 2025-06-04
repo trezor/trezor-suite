@@ -10,11 +10,15 @@ import {
 import { ERRORS, PROTO } from '../../constants';
 import type { BitcoinNetworkInfo } from '../../types';
 
-const deriveOutputScript = async (
-    node: bip32.BIP32Interface,
-    output: PROTO.TxOutputType,
-    coinInfo: BitcoinNetworkInfo,
-) => {
+const deriveOutputScript = ({
+    node,
+    output,
+    coinInfo,
+}: {
+    node?: bip32.BIP32Interface;
+    output: PROTO.TxOutputType;
+    coinInfo: BitcoinNetworkInfo;
+}) => {
     // skip multisig output check, not implemented yet
     // TODO: implement it
     if ('multisig' in output) return;
@@ -28,7 +32,7 @@ const deriveOutputScript = async (
         return BitcoinJsAddress.toOutputScript(output.address, coinInfo.network);
     }
 
-    if (!output.address_n) {
+    if (!output.address_n || !node) {
         throw ERRORS.TypedError(
             'Runtime',
             'deriveOutputScript: Neither address or address_n is set',
@@ -77,7 +81,7 @@ const deriveOutputScript = async (
 };
 
 export const verifyTx = (
-    pubKeyHashes: bip32.BIP32Interface[],
+    nodes: (bip32.BIP32Interface | undefined)[],
     inputs: PROTO.TxInputType[],
     outputs: PROTO.TxOutputType[],
     serializedTx: string,
@@ -109,7 +113,11 @@ export const verifyTx = (
             }
         }
 
-        const scriptA = deriveOutputScript(pubKeyHashes[i], outputs[i], coinInfo);
+        const scriptA = deriveOutputScript({
+            node: nodes[i],
+            output: outputs[i],
+            coinInfo,
+        });
         if (scriptA && scriptA.compare(scriptB) !== 0) {
             throw ERRORS.TypedError('Runtime', `verifyTx: Output ${i} scripts differ`);
         }
@@ -119,7 +127,7 @@ export const verifyTx = (
 };
 
 export const verifyTicketTx = (
-    pubKeyHashes: bip32.BIP32Interface[],
+    nodes: (bip32.BIP32Interface | undefined)[],
     inputs: PROTO.TxInputType[],
     outputs: PROTO.TxOutputType[],
     serializedTx: string,
@@ -147,7 +155,7 @@ export const verifyTicketTx = (
     for (let i = 0; i < outputs.length; i++) {
         const scriptB = bitcoinTx.outs[i].script;
         const output = outputs[i];
-        const node = pubKeyHashes[i];
+        const node = nodes[i];
 
         let scriptA;
         if (i === 0) {
@@ -170,7 +178,7 @@ export const verifyTicketTx = (
                     `verifyTicketTx: Output 1 should not have address.`,
                 );
             }
-            if (!output.address_n) {
+            if (!output.address_n || !node) {
                 throw ERRORS.TypedError(
                     'Runtime',
                     `verifyTicketTx: Output 1 should have address_n.`,
