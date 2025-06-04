@@ -27,6 +27,8 @@ export const useDeviceChangedCheck = () => {
     const device = useSelector(selectSelectedDevice);
     const navigation = useNavigation<NavigationProps>();
     const initialDeviceIdRef = useRef<string | null>(null);
+    // Important for device wipe. Device ID changes for wiped device, but if it was connected,
+    // we know the device was wiped, thus we want to prevent the navigation call.
     const hasDeviceBeenConnected = useRef<boolean>(false);
 
     useEffect(() => {
@@ -38,13 +40,12 @@ export const useDeviceChangedCheck = () => {
             return;
         }
 
-        // When device is wiped, the device ID changes and we shouldn't trigger this.
         if (
             initialDeviceIdRef.current &&
             device?.id &&
             initialDeviceIdRef.current !== device.id &&
             !hasDeviceBeenConnected.current &&
-            !device.connected
+            device.connected
         ) {
             TrezorConnect.cancel();
             navigation.navigate(RootStackRoutes.AppTabs, {

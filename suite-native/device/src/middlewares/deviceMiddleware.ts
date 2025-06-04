@@ -15,7 +15,6 @@ import {
     selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { setIsWipingDevice } from '@suite-native/device-authorization';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { DEVICE } from '@trezor/connect';
@@ -82,11 +81,6 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
         switch (action.type) {
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED: {
-                // When device is wiped, we set isWipingDevice to true to avoid navigating to device onboarding.
-                // This is a UX edge case which requires a special handling.
-                // That flag is reset on app restart or when new device is connected.
-                dispatch(setIsWipingDevice(false));
-
                 if (isUsbDeviceConnectFeatureEnabled) {
                     dispatch(selectDeviceThunk(action.payload));
                 }

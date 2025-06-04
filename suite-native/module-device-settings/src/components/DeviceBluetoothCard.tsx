@@ -6,14 +6,14 @@ import { useBluetoothDevice, useBluetoothSettings } from '@suite-native/bluetoot
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
-    DeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.DeviceSettings
+    DeviceSettingsStackRoutes.DeviceSettings
 >;
 
 export const DeviceBluetoothCard = () => {
@@ -25,7 +25,7 @@ export const DeviceBluetoothCard = () => {
     const { openBluetoothSettings } = useBluetoothSettings();
 
     const unpairTrezor = async () => {
-        navigation.navigate(DeviceStackRoutes.ContinueOnTrezor);
+        navigation.navigate(DeviceSettingsStackRoutes.ContinueOnTrezor);
         await unpairBluetoothDevice({
             onSuccess: () => {
                 showToast({

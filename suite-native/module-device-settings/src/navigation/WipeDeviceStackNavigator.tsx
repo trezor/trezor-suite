@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import {
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
@@ -14,7 +17,11 @@ import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
 const WipeDeviceStack = createNativeStackNavigator<WipeDeviceStackParamList>();
 
 export const WipeDeviceStackNavigator = () => {
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+
     useDeviceConnectionGuard();
+
+    if (!isDeviceConnected) return;
 
     return (
         <WipeDeviceStack.Navigator
