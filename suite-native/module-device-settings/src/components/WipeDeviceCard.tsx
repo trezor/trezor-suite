@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Button, CardWithIconLayout, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -15,6 +18,7 @@ type NavigationProp = StackNavigationProps<
 
 export const WipeDeviceCard = () => {
     const navigation = useNavigation<NavigationProp>();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const handleRedirect = () => {
         navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
@@ -30,7 +34,13 @@ export const WipeDeviceCard = () => {
                     <Translation id="moduleDeviceSettings.wipeDevice.content" />
                 </Text>
                 <Box flex={1}>
-                    <Button size="small" colorScheme="redBold" onPress={handleRedirect}>
+                    <Button
+                        size="small"
+                        colorScheme="redBold"
+                        onPress={handleRedirect}
+                        isDisabled={isDiscoveryRunning}
+                        isLoading={isDiscoveryRunning}
+                    >
                         <Translation id="moduleDeviceSettings.wipeDevice.buttonTitle" />
                     </Button>
                 </Box>
