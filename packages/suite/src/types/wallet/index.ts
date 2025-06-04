@@ -34,7 +34,7 @@ export type { Discovery } from '@suite-common/wallet-types';
 export type DiscoveryStatusType =
     | {
           status: 'loading';
-          type: 'waiting-for-device' | 'auth' | 'auth-confirm' | 'discovery';
+          type: 'waiting-for-device' | 'auth' | 'discovery';
       }
     | {
           status: 'exception';

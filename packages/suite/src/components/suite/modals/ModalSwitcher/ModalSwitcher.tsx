@@ -1,6 +1,5 @@
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
-import { DiscoveryLoader } from './DiscoveryLoader';
 import { ForegroundAppModal } from './ForegroundAppModal';
 import { UnpairedBluetoothDeviceNeedsManualOsRemovalModal } from '../../bluetooth/UnpairedBluetoothDeviceNeedsManualOsRemovalModal';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
@@ -11,8 +10,6 @@ const Inner = ({ modal }: { modal: ModalParams }) => {
     switch (modal.type) {
         case 'redux-modal':
             return <ReduxModal {...modal.payload} />;
-        case 'discovery-loading':
-            return <DiscoveryLoader />;
         default:
             return null;
     }

@@ -155,6 +155,9 @@ const createOnBundleProgressHandler = (
     deviceStaticSessionId: StaticSessionId,
     dispatch: any,
     getState: any,
+    progressHooks: {
+        onNonFirstNonEmptyAccountDiscovered?: () => void;
+    } = {},
 ) => {
     let encounteredNonEmptyAccount = false;
     // we do not create empty accounts right away, but store the progress events for later
@@ -189,16 +192,30 @@ const createOnBundleProgressHandler = (
             return;
         }
 
+        const hasLoadedAnyNonEmptyAccount =
+            'balance' in event.response &&
+            !isNaN(Number(event.response.balance)) &&
+            Number(event.response.balance) > 0;
+
         dispatch(
             discoveryActions.updateDiscovery(
                 {
                     status: 'progress',
                     total: event.total,
                     progress: event.progress,
+                    hasLoadedAnyNonEmptyAccount,
                 },
                 devicePath,
             ),
         );
+
+        if (
+            discovery.status === 'progress' &&
+            !discovery.hasLoadedAnyNonEmptyAccount &&
+            hasLoadedAnyNonEmptyAccount
+        ) {
+            progressHooks.onNonFirstNonEmptyAccountDiscovered?.();
+        }
 
         if (isProgressEventOk(event)) {
             // all encountered accounts were empty, so create all of the delayed empty accounts (and also the latest event)
@@ -419,6 +436,19 @@ export const runDiscoveryThunk = createThunk(
                 deviceStateResponse.payload._state.staticSessionId,
                 dispatch,
                 getState,
+                {
+                    onNonFirstNonEmptyAccountDiscovered: () => {
+                        if (isAddingHiddenWallet) {
+                            dispatch(
+                                applyDeviceStatesThunk({
+                                    newDeviceState: deviceStateResponse.payload._state,
+                                    isAddingHiddenWallet,
+                                    devicePath: passedDevice.path,
+                                }),
+                            );
+                        }
+                    },
+                },
             );
 
             TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);

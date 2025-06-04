@@ -33,19 +33,6 @@ const getDiscoveryStatus = ({
     }
 
     if (discovery) {
-        if (discovery.status === 'progress' && discovery.isAddingHiddenWallet)
-            return {
-                status: 'loading',
-                // type: 'discovery',
-                type: 'auth-confirm',
-            };
-
-        if (discovery.status === 'confirm-empty-passphrase')
-            return {
-                status: 'loading',
-                type: 'auth-confirm',
-            };
-
         if (walletSettings.enabledNetworks.length === 0)
             return {
                 status: 'exception',
