@@ -246,6 +246,10 @@ const fixture: Feature[] = [
                         id: expect.any(Number),
                     },
                 } satisfies ReturnType<typeof notificationsActions.addToast>,
+                {
+                    type: wipeDeviceThunk.rejected.type,
+                    payload: 'fuuu',
+                },
             ],
         },
         initialState: {},
