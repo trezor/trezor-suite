@@ -65,7 +65,16 @@ describe('useActiveTradingTypeReaction', () => {
         (mockUseRouteParams as any) = undefined;
         const store = await initStore();
 
-        await expect(() => renderUseActiveTradingTypeReaction(store)).not.toThrow();
+        expect(() => renderUseActiveTradingTypeReaction(store)).not.toThrow();
+    });
+
+    it('should clear activeTradingType on unmount', async () => {
+        const store = await initStore();
+        const { unmount } = await renderUseActiveTradingTypeReaction(store);
+
+        unmount();
+
+        expect(selectActiveTradingType(store.getState())).toBeUndefined();
     });
 
     describe('with trading type specified by navigation params', () => {

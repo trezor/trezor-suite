@@ -6,7 +6,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { selectActiveTradingType } from '../../selectors/commonSelectors';
 
-const useTradingTypeAwareContext = (): ContextDomain => {
+const useTradingTypeAwareContext = (): ContextDomain | undefined => {
     const activeType = useSelector(selectActiveTradingType);
 
     switch (activeType) {
@@ -19,6 +19,9 @@ const useTradingTypeAwareContext = (): ContextDomain => {
         case 'sell':
             return Context.tradingSell;
 
+        case undefined:
+            return undefined;
+
         default:
             return exhaustive(activeType);
     }
@@ -26,6 +29,10 @@ const useTradingTypeAwareContext = (): ContextDomain => {
 
 export const TradingTypeAwareContextMessage = () => {
     const context = useTradingTypeAwareContext();
+
+    if (!context) {
+        return null;
+    }
 
     return <ContextMessage context={context} />;
 };

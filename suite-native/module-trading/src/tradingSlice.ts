@@ -24,7 +24,7 @@ export interface TradingState extends CommonTradingState {
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
     isAmountInputActive: boolean;
-    activeTradingType: TradingType;
+    activeTradingType: TradingType | undefined;
 }
 
 export type TradingRootState = {
@@ -40,7 +40,7 @@ export const initialState: TradingState = {
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
     isAmountInputActive: false,
-    activeTradingType: 'buy',
+    activeTradingType: undefined,
 };
 
 export const tradingSlice = createSliceWithExtraDeps({
@@ -102,6 +102,9 @@ export const tradingSlice = createSliceWithExtraDeps({
         setActiveTradingType: (state, { payload }: PayloadAction<TradingType>) => {
             state.activeTradingType = payload;
         },
+        clearActiveTradingType: state => {
+            state.activeTradingType = undefined;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
@@ -129,6 +132,7 @@ export const {
     buyFiatCurrencyChanged,
     setIsAmountInputActive,
     setActiveTradingType,
+    clearActiveTradingType,
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();

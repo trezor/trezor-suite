@@ -43,6 +43,10 @@ const TradingScreenContent = () => {
         }
     }, [tradeToBeOpened, navigation]);
 
+    if (!activeTradingType) {
+        return null;
+    }
+
     return (
         <>
             <TradingTypeAwareContextMessage />

@@ -23,7 +23,7 @@ jest.mock('@suite-common/message-system', () => {
 });
 
 describe('TradingTypeAwareContextMessage', () => {
-    const getPreloadedState = (activeTradingType: TradingType): PreloadedState => ({
+    const getPreloadedState = (activeTradingType: TradingType | undefined): PreloadedState => ({
         wallet: {
             tradingNew: {
                 activeTradingType,
@@ -48,4 +48,10 @@ describe('TradingTypeAwareContextMessage', () => {
             expect(getByText(expectedMessage)).toBeOnTheScreen();
         },
     );
+
+    it('should render nothing when trading type is not specified', async () => {
+        const { toJSON } = await renderTradingTypeAwareContextMessage(getPreloadedState(undefined));
+
+        expect(toJSON()).toBeNull();
+    });
 });

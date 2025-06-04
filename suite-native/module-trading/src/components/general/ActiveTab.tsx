@@ -20,6 +20,9 @@ export const ActiveTab = () => {
             // Sell is not implemented yet
             return null;
 
+        case undefined:
+            return null;
+
         default:
             exhaustive(activeTab);
     }

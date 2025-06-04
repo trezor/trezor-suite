@@ -45,7 +45,7 @@ describe('tradingSlice', () => {
                     favouriteAssets: {},
                     tradingEnvironment: 'production',
                     isAmountInputActive: false,
-                    activeTradingType: 'buy',
+                    activeTradingType: undefined,
                 }),
             );
         });
@@ -351,8 +351,8 @@ describe('tradingSlice', () => {
         });
     });
 
-    describe('setActiveTradingType', () => {
-        it('should set activeTradingType', () => {
+    describe('activeTradingType', () => {
+        it('setActiveTradingType should set activeTradingType', () => {
             const actions = [
                 tradingSlice.actions.setActiveTradingType('exchange'),
                 tradingSlice.actions.setActiveTradingType('sell'),
@@ -361,6 +361,17 @@ describe('tradingSlice', () => {
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
             expect(state.activeTradingType).toBe('sell');
+        });
+
+        it('clearActiveTradingType should should set activeTradingType to undefined', () => {
+            const actions = [
+                tradingSlice.actions.setActiveTradingType('exchange'),
+                tradingSlice.actions.clearActiveTradingType(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.activeTradingType).toBe(undefined);
         });
     });
 });
