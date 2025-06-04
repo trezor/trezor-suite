@@ -9,6 +9,7 @@ import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     StackNavigationProps,
+    WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<
@@ -21,7 +22,9 @@ export const WipeDeviceCard = () => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const handleRedirect = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
+        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
+            screen: WipeDeviceStackRoutes.WipeDevice,
+        });
     };
 
     return (

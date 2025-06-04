@@ -42,7 +42,7 @@ export const useWipeDevice = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
             screen: DeviceSettingsStackRoutes.WipeDeviceStack,
             params: {
-                screen: WipeDeviceStackRoutes.WipeDevice,
+                screen: WipeDeviceStackRoutes.ContinueOnTrezor,
             },
         });
 
