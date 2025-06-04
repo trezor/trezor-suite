@@ -2,13 +2,13 @@ import { ReactNode } from 'react';
 
 import { Card, PictogramTitleHeader, Text, VStack } from '@suite-native/atoms';
 
-export type OfflineCardProps = {
+export type WarningCardProps = {
     title: ReactNode;
     description?: ReactNode;
     children?: ReactNode;
 };
 
-export const OfflineCard = ({ title, description, children }: OfflineCardProps) => (
+export const WarningCard = ({ title, description, children }: WarningCardProps) => (
     <Card>
         <VStack spacing="sp24" paddingVertical="sp8">
             <PictogramTitleHeader

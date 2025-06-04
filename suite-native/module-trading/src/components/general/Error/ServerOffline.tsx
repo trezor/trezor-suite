@@ -1,14 +1,14 @@
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { OfflineCard } from './OfflineCard';
+import { WarningCard } from './WarningCard';
 
 export type ServerOfflineProps = {
     onRetryPress: () => void;
 };
 
 export const ServerOffline = ({ onRetryPress }: ServerOfflineProps) => (
-    <OfflineCard
+    <WarningCard
         title={<Translation id="moduleTrading.error.serverOfflineTitle" />}
         description={<Translation id="moduleTrading.error.serverOfflineDescription" />}
     >
@@ -19,5 +19,5 @@ export const ServerOffline = ({ onRetryPress }: ServerOfflineProps) => (
         >
             <Translation id="moduleTrading.error.serverOfflineRetry" />
         </Button>
-    </OfflineCard>
+    </WarningCard>
 );

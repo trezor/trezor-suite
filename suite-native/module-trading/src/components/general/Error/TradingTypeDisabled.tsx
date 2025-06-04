@@ -2,7 +2,7 @@ import { TradingType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 
-import { OfflineCard } from './OfflineCard';
+import { WarningCard } from './WarningCard';
 
 export type TradingTypeDisabledProps = {
     tradingType: TradingType;
@@ -37,5 +37,5 @@ const useTitle = (tradingType: TradingType) => {
 export const TradingTypeDisabled = ({ tradingType }: TradingTypeDisabledProps) => {
     const title = useTitle(tradingType);
 
-    return <OfflineCard title={title} />;
+    return <WarningCard title={title} />;
 };

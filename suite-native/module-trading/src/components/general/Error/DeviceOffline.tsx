@@ -1,9 +1,9 @@
 import { Translation } from '@suite-native/intl';
 
-import { OfflineCard } from './OfflineCard';
+import { WarningCard } from './WarningCard';
 
 export const DeviceOffline = () => (
-    <OfflineCard
+    <WarningCard
         title={<Translation id="moduleTrading.error.deviceOfflineTitle" />}
         description={<Translation id="moduleTrading.error.deviceOfflineDescription" />}
     />

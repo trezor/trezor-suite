@@ -6,8 +6,8 @@ import { BuyFormContextProvider } from './BuyFormContextProvider';
 import { BuyFormSkeleton } from './BuyFormSkeleton';
 import { useBuyData } from '../../hooks/buy/useBuyData';
 import { selectIsTradingBuyEnabled } from '../../selectors/commonSelectors';
-import { ServerOffline } from '../general/offline/ServerOffline';
-import { TradingTypeDisabled } from '../general/offline/TradingTypeDisabled';
+import { ServerOffline } from '../general/Error/ServerOffline';
+import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
 const BuyTabEnabled = () => {
     const [reloadOrdinal, setReloadOrdinal] = useState(0);

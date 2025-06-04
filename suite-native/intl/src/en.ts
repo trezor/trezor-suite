@@ -1904,6 +1904,15 @@ export const en = {
                 'Something is wrong on our end. Please, wait a minute or try again later.',
             serverOfflineRetry: 'Try again',
             tradingTypeDisabledTitle: '{tradingType} disabled',
+            viewOnlyWalletTitle: 'View-only wallet',
+            viewOnlyWalletDescription:
+                'Selling & swapping are disabled. Connect your device to enable full functionality.',
+            portfolioTrackerTitle: 'Portfolio Tracker',
+            portfolioTrackerDescription:
+                'Selling & swapping are disabled. Connect your device to enable full functionality.',
+            btcOnlyFirmwareTitle: 'Bitcoin-only firmware',
+            btcOnlyFirmwareDescription:
+                'Swapping is unavailable with Bitcoin-only firmware. To enable, switch to universal firmware.',
         },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
