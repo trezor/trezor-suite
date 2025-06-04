@@ -2,7 +2,12 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '@trezor/urls';
+import {
+    EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
+    HELP_CENTER_TOR_URL,
+    HELP_CENTER_XLM_URL,
+    Url,
+} from '@trezor/urls';
 
 import { Dispatch } from '../../types/suite';
 
@@ -65,5 +70,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'stellar-support': {
         title: 'TR_EXPERIMENTAL_STELLAR_SUPPORT',
         description: 'TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION',
+        knowledgeBaseUrl: HELP_CENTER_XLM_URL,
     },
 };
