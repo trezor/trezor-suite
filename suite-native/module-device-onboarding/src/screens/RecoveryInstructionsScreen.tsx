@@ -1,3 +1,5 @@
+import { useSetAtom } from 'jotai';
+
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -8,6 +10,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 
+import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { RecoveryCardSvg } from '../assets/RecoveryCardSvg';
 import { OnboardingStepHeader } from '../components/OnboardingStepHeader';
 import { RecoveryInstructionsBottomSheet } from '../components/RecoveryInstructionsBottomSheet';
@@ -18,14 +21,22 @@ export const RecoveryInstructionsScreen = ({
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.RecoveryInstructions
 >) => {
+    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
+
     const handleContinueButtonPress = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.WalletRecovery);
     };
 
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const handleGoBack = () => {
+        updateOnboardingAnalytics({
+            recoveryStepBack: true,
+        });
+        navigation.goBack();
+    };
 
     return (
-        <Screen header={<ScreenHeader />}>
+        <Screen header={<ScreenHeader closeAction={handleGoBack} />}>
             <VStack paddingTop="sp16" spacing="sp32" justifyContent="space-between" flex={1}>
                 <OnboardingStepHeader
                     callout={

@@ -509,11 +509,7 @@ export type SuiteNativeAnalyticsEvent =
               seed: 'create' | 'recovery';
               firmware: 'install' | 'update' | 'skip' | 'up-to-date';
               seedType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
-
-              // TODO: https://github.com/trezor/trezor-suite/issues/18570
-              // not supported yet:
-              //   recoveryType: 'standard' | 'advanced';
-              //   recoveryStepBack: boolean;
+              recoveryStepBack: boolean;
           }>;
       }
     | {

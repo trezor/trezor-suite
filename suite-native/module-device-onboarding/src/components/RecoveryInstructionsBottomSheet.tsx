@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
+import { useSetAtom } from 'jotai';
 
 import {
     BottomSheetModal,
@@ -21,6 +22,8 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
+import { updateOnboardingAnalyticsAtom } from '../../atoms';
+
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads,
@@ -33,6 +36,7 @@ const RECOVERY_ISSUES_LINK =
 export const RecoveryInstructionsBottomSheet = forwardRef<BottomSheetModalMethods>(
     (_props, ref) => {
         const navigation = useNavigation<NavigationProps>();
+        const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
         const openLink = useOpenLink();
 
@@ -43,6 +47,10 @@ export const RecoveryInstructionsBottomSheet = forwardRef<BottomSheetModalMethod
         const handleSetUpPress = () => {
             navigation.pop();
             navigation.navigate(DeviceOnboardingStackRoutes.CreateWalletLoading);
+            updateOnboardingAnalytics({
+                recoveryStepBack: true,
+                seed: 'create',
+            });
         };
 
         return (
