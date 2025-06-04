@@ -65,12 +65,12 @@ export const PassphraseEnterOnTrezorScreen = () => {
     }, [isDeviceAuthorizationDone, navigation]);
 
     const handleCancel = () => {
+        dispatch(setInputPassphraseOnDevice(false));
         if (isCreatingNewWalletInstance) {
             if (device) {
                 dispatch(cancelDiscoveryThunk(device));
             }
             navigateToInitialScreen();
-            dispatch(setInputPassphraseOnDevice(false));
         } else {
             analytics.report({
                 type: EventType.PassphraseExit,
