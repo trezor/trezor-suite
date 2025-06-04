@@ -9574,9 +9574,9 @@ __metadata:
   resolution: "@suite-common/thp@workspace:suite-common/thp"
   dependencies:
     "@reduxjs/toolkit": "npm:2.8.2"
-    "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/protocol": "workspace:*"
   languageName: unknown
   linkType: soft
 
