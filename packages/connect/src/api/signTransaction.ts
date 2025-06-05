@@ -315,10 +315,17 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             return response;
         }
 
+        const getHDNode = (address_n: number[]) =>
+            device
+                .getCommands()
+                .getHDNode(
+                    { address_n },
+                    { coinInfo: params.coinInfo, unlockPath: params.unlockPath },
+                );
         let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
         if (params.options.decred_staking_ticket) {
             await verifyTicketTx(
-                device.getCommands().getHDNode,
+                getHDNode,
                 params.inputs,
                 params.outputs,
                 response.serializedTx,
@@ -326,12 +333,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             );
         } else {
             bitcoinTx = await verifyTx(
-                device.getCommands().getHDNode,
+                getHDNode,
                 params.inputs,
                 params.outputs,
                 response.serializedTx,
                 params.coinInfo,
-                params.unlockPath,
             );
 
             if (bitcoinTx.hasWitnesses()) {
