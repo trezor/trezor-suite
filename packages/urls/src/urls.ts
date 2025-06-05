@@ -175,3 +175,4 @@ export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://get.invity.io';
 export const UNINSTALL_BRIDGE_URL: Url = 'https://trezor.io/learn/a/what-is-trezor-bridge';
 
 export const GEOLOCATION_API_URL = 'https://services.trezor.io/get-country/';
+export const IMAGE_PROXY_API_URL = 'https://services.trezor.io/image-proxy/';
