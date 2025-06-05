@@ -1,10 +1,3 @@
-const legacyResults = [
-    {
-        rules: ['!T3B1', '!T3T1', '!T3W1'],
-        success: false,
-    },
-];
-
 export default {
     method: 'getAddress',
     setup: {
@@ -90,28 +83,6 @@ export default {
             result: {
                 address: 'bitcoincash:qzqxk2q6rhy3j9fnnc00m08g4n5dm827xv2dmtjzzp',
             },
-        },
-        {
-            description: 'Decred first address',
-            params: {
-                path: "m/44'/42'/0'/0/0",
-                coin: 'dcr',
-            },
-            result: {
-                address: 'DsbjnfJrnL1orxJBCN8Kf39NjMwEktdfdWy',
-            },
-            legacyResults,
-        },
-        {
-            description: 'Decred Testnet first address',
-            params: {
-                path: "m/44'/1'/0'/0/0",
-                coin: 'tdcr',
-            },
-            result: {
-                address: 'TsRQTRqf5TdEfqsnJ1gcQEDvPP363cEjr4B',
-            },
-            legacyResults,
         },
         {
             description: 'Regtest P2PKH first address',

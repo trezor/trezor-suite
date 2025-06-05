@@ -59,7 +59,6 @@ export interface TransactionOptions {
     version_group_id?: number;
     timestamp?: number;
     branch_id?: number;
-    decred_staking_ticket?: boolean;
     amount_unit?: PROTO.AmountUnit;
     serialize?: boolean;
     coinjoin_request?: PROTO.CoinJoinRequest;
@@ -88,7 +87,6 @@ export interface SignTransaction {
     overwintered?: boolean;
     versionGroupId?: number;
     branchId?: number;
-    decredStakingTicket?: boolean;
     push?: boolean;
     preauthorized?: boolean;
     amountUnit?: PROTO.AmountUnit;

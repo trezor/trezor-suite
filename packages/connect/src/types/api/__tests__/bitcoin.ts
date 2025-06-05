@@ -324,7 +324,6 @@ export const signTransaction = async (api: TrezorConnect) => {
                             m: 0,
                         },
                         amount: '1',
-                        decred_tree: 1,
                         witness: 'w',
                         ownership_proof: 'ownership_proof',
                         commitment_data: 'commitment_data',
