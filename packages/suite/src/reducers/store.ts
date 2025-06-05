@@ -15,7 +15,6 @@ import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
 import { prepareThpReducer } from '@suite-common/thp';
 import { accountsActions } from '@suite-common/wallet-core';
 
@@ -35,14 +34,13 @@ import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
-import { DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
 import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
 import { geolocationReducer } from '@suite-common/geolocation';
+import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
-const bluetoothReducer =
-    prepareBluetoothReducerCreator<DesktopBluetoothDevice>()(extraDependencies);
+const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
 const rootReducer = combineReducers({

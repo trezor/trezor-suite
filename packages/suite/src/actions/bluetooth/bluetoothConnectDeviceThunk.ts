@@ -1,8 +1,14 @@
-import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
+import { BLUETOOTH_PREFIX } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { Device } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
+
+import {
+    setBluetoothListOpen,
+    startConnectingBluetoothDevice,
+    stopConnectingBluetoothDevice,
+} from './desktopBluetoothReducer';
 
 type BluetoothConnectDeviceThunkResult = {
     success: boolean;
@@ -15,7 +21,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
 >(
     `${BLUETOOTH_PREFIX}/bluetoothConnectDeviceThunk`,
     async ({ deviceId }, { fulfillWithValue, dispatch }) => {
-        dispatch(bluetoothActions.startConnectingBluetoothDevice({ deviceId }));
+        dispatch(startConnectingBluetoothDevice({ deviceId }));
 
         const result = await bluetoothIpc.connectDevice(deviceId);
 
@@ -30,7 +36,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 }),
             );
 
-            dispatch(bluetoothActions.stopConnectingBluetoothDevice({ deviceId }));
+            dispatch(stopConnectingBluetoothDevice({ deviceId }));
 
             return fulfillWithValue({ success: result.success });
         }
@@ -54,8 +60,8 @@ export const bluetoothConnectDeviceThunk = createThunk<
             TrezorConnect.on('device-disconnect', closeViewAfterConnection);
         });
 
-        dispatch(bluetoothActions.stopConnectingBluetoothDevice({ deviceId }));
-        dispatch(bluetoothActions.setBluetoothListOpen({ isOpen: false }));
+        dispatch(stopConnectingBluetoothDevice({ deviceId }));
+        dispatch(setBluetoothListOpen({ isOpen: false }));
 
         return fulfillWithValue({ success: result.success });
     },

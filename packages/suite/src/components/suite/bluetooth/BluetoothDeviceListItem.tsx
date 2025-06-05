@@ -3,7 +3,6 @@ import { useState } from 'react';
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,
-    selectConnectingDevices,
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
@@ -12,6 +11,7 @@ import { spacings } from '@trezor/theme';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 import { Translation, TranslationKey } from '../Translation';
 

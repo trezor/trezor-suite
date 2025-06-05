@@ -8,7 +8,6 @@ import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothD
 import { BluetoothAdapterStatus, BluetoothDeviceCommon, BluetoothScanStatus } from './types';
 
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
-    isBluetoothListOpen: boolean;
     adapterStatus: BluetoothAdapterStatus;
     scanStatus: BluetoothScanStatus;
     nearbyDevices: null | T[]; // Must be sorted, the newest last. Null = we haven't received first update yet
@@ -16,29 +15,13 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     // This will be persisted. Those are devices we believed that are paired
     // (because we already successfully paired them in the Suite) in the Operating System
     knownDevices: T[];
-
-    // Flag to display some extra info (Modal) to instruct the user to remove
-    // the device from the OS settings manually
-    unpairedDeviceNeedsManualOsRemoval: boolean;
-
-    // When we get an update that KnownDevice appeared, we start auto-connecting to it.
-    // But there may be other updates before the connection is done, and we want to skip them
-    // during the connection process.
-    //
-    // This indicates that suite initiated connection to the device. In contrast with:
-    // { type: 'connecting' } in the DeviceBluetoothConnectionStatus which indicates
-    // the state of the Bluetooth connection itself.
-    connectingDeviceIds: string[];
 };
 
 export const prepareInitialState = <T extends BluetoothDeviceCommon>(): BluetoothState<T> => ({
-    isBluetoothListOpen: false,
     adapterStatus: 'unknown',
     scanStatus: 'idle',
     nearbyDevices: null,
     knownDevices: [] as T[],
-    unpairedDeviceNeedsManualOsRemoval: false,
-    connectingDeviceIds: [],
 });
 
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
@@ -111,29 +94,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     }
                 }
             })
-            .addCase(
-                bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval,
-                (state, { payload: { needsManualRemoval } }) => {
-                    state.unpairedDeviceNeedsManualOsRemoval = needsManualRemoval;
-                },
-            )
-            .addCase(
-                bluetoothActions.startConnectingBluetoothDevice,
-                (state, { payload: { deviceId } }) => {
-                    state.connectingDeviceIds.push(deviceId);
-                },
-            )
-            .addCase(
-                bluetoothActions.stopConnectingBluetoothDevice,
-                (state, { payload: { deviceId } }) => {
-                    state.connectingDeviceIds = state.connectingDeviceIds.filter(
-                        id => id !== deviceId,
-                    );
-                },
-            )
-            .addCase(bluetoothActions.setBluetoothListOpen, (state, { payload: { isOpen } }) => {
-                state.isBluetoothListOpen = isOpen;
-            })
+
             .addMatcher(
                 action =>
                     action.type === deviceActions.connectDevice.type ||

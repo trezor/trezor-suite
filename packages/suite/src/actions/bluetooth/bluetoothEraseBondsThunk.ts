@@ -5,6 +5,8 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
+import { setBluetoothDeviceNeedsManualOsRemoval } from './desktopBluetoothReducer';
+
 type UnpairCurrentBondParams = {
     bluetoothId: string;
 };
@@ -19,7 +21,7 @@ export const forgetBluetoothDevice = createThunk(
         const resultForget = await bluetoothIpc.forgetDevice(device.bluetoothProps.id);
         if (!resultForget.success) {
             dispatch(
-                bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval({
+                setBluetoothDeviceNeedsManualOsRemoval({
                     needsManualRemoval: true,
                 }),
             );
