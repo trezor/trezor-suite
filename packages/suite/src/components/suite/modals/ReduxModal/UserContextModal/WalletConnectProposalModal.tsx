@@ -16,7 +16,6 @@ import {
     Card,
     Column,
     ElevationUp,
-    IconCircle,
     Modal,
     Option,
     Row,
@@ -32,6 +31,7 @@ import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { AccountLabel, Translation } from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
@@ -133,12 +133,10 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 </Text>
                 <Card>
                     <Row gap={spacings.md}>
-                        <IconCircle
-                            name="walletConnect"
+                        <ConnectAppIcon
+                            src={pendingProposal.params.proposer.metadata.icons[0]}
                             size={spacings.xxxxl}
-                            paddingType="large"
-                            variant="tertiary"
-                            hasBorder={false}
+                            type="walletConnect"
                         />
 
                         <Column gap={spacings.xxs}>

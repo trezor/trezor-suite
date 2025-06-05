@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
-import { Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
+import { Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -61,13 +62,7 @@ export const ConnectPermissions = () => {
                         padding={spacings.md}
                         data-testid={`@settings/connect-apps/${index}`}
                     >
-                        <IconCircle
-                            name="plugs"
-                            size={spacings.xxl}
-                            paddingType="small"
-                            variant="tertiary"
-                            hasBorder={false}
-                        />
+                        <ConnectAppIcon src={app.manifest?.appIcon} />
 
                         <Column flex="1">
                             <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">

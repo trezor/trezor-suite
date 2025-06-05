@@ -1,31 +1,19 @@
-import { useState } from 'react';
-
-import styled from 'styled-components';
-
 import {
     getSessionNetworks,
     selectSessions,
     walletConnectDisconnectThunk,
 } from '@suite-common/walletconnect';
-import { Badge, Card, Column, Dropdown, H3, IconCircle, Row, Text } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Badge, Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
+import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const AppIconImage = styled.img`
-    width: ${spacingsPx.xxl};
-    height: ${spacingsPx.xxl};
-    border-radius: ${spacingsPx.md};
-    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-`;
 
 export const WalletConnectList = () => {
     const dispatch = useDispatch();
     const sessions = useSelector(selectSessions);
-    // TODO: we need some sort of proxy to load images from 3rd parties securely
-    const [fallbackIcon, setFallbackIcon] = useState(true);
 
     if (sessions.length === 0) {
         return (
@@ -50,20 +38,7 @@ export const WalletConnectList = () => {
                         padding={spacings.md}
                         data-testid={`@settings/walletconnect-apps/${index}`}
                     >
-                        {fallbackIcon ? (
-                            <IconCircle
-                                name="walletConnect"
-                                size={spacings.xxl}
-                                paddingType="small"
-                                variant="tertiary"
-                                hasBorder={false}
-                            />
-                        ) : (
-                            <AppIconImage
-                                src={session.peer.metadata.icons[0]}
-                                onError={() => setFallbackIcon(true)}
-                            />
-                        )}
+                        <ConnectAppIcon src={session.peer.metadata.icons[0]} type="walletConnect" />
                         <Column flex="1">
                             <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">
                                 <Text>{session.peer.metadata.name}</Text>
