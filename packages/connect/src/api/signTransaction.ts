@@ -324,13 +324,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         if (params.options.decred_staking_ticket) {
             await verifyTicketTx(
                 response.serializedTx,
-                { inputs, outputs, coinInfo },
+                { inputs, outputs, network: coinInfo.network },
                 { getHDNode },
             );
         } else {
             bitcoinTx = await verifyTx(
                 response.serializedTx,
-                { inputs, outputs, coinInfo },
+                { inputs, outputs, network: coinInfo.network },
                 { getHDNode },
             );
             if (bitcoinTx.hasWitnesses()) {
