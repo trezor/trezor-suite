@@ -151,7 +151,8 @@ export const useDetectDeviceError = () => {
             !isFirmwareInstallationRunning &&
             !wasDeviceEjectedByUser &&
             !isUnacquiredDevice &&
-            !deviceError
+            !deviceError &&
+            !isDeviceInBootloader
         ) {
             if (hasDeviceFirmwareInstalled) {
                 showAlert({
@@ -206,6 +207,7 @@ export const useDetectDeviceError = () => {
         deviceError,
         handleDisconnect,
         isDeviceSetupSupported,
+        isDeviceInBootloader,
     ]);
 
     useEffect(() => {

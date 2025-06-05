@@ -7,7 +7,7 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { cardStepperContentMap } from '../constants';
 
-export const WipeDeviceScreen = () => {
+export const FactoryResetScreen = () => {
     const navigation = useNavigation();
     const { wipeDevice } = useWipeDevice();
 
@@ -21,10 +21,10 @@ export const WipeDeviceScreen = () => {
         <Screen header={<ScreenHeader closeActionType="close" />}>
             <VStack>
                 <Text variant="titleMedium">
-                    <Translation id="moduleDeviceSettings.wipeDevice.title" />
+                    <Translation id="moduleDeviceSettings.wipeDevice.factoryResetScreen.title" />
                 </Text>
                 <Text variant="body" color="textSubdued">
-                    <Translation id="moduleDeviceSettings.wipeDevice.subtitle" />
+                    <Translation id="moduleDeviceSettings.wipeDevice.factoryResetScreen.description" />
                 </Text>
                 <CardStepper
                     onFinish={wipeDevice}

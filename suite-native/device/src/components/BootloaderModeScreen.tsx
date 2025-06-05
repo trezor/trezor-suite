@@ -1,25 +1,22 @@
+import { useEffect } from 'react';
+
+import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { Button, Card, Pictogram, Text, TextDivider, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
-import { Screen } from '@suite-native/navigation';
+import {
+    AuthorizeDeviceStackRoutes,
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    WipeDeviceStackParamList,
+    WipeDeviceStackRoutes,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-// showAlert({
-//     title: <Translation id="moduleDevice.bootloaderModal.title" />,
-//     description: <Translation id="moduleDevice.bootloaderModal.description" />,
-//     pictogramVariant: 'critical',
-//     primaryButtonVariant: 'tertiaryElevation1',
-//     primaryButtonTitle: <Translation id="generic.buttons.eject" />,
-//     appendix: <BootloaderModalAppendix />,
-//     onPressPrimaryButton: () => {
-//         handleDisconnect();
-//         analytics.report({
-//             type: EventType.UnsupportedDevice,
-//             payload: { deviceState: 'bootloaderMode' },
-//         });
-//     },
-//     testID: '@device/errors/alert/bootloader',
-// });
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -30,8 +27,43 @@ const contentWrapperStyle = prepareNativeStyle(() => ({
     alignSelf: 'center',
 }));
 
+type NavigationProps = CompositeNavigationProp<
+    NativeStackNavigationProp<WipeDeviceStackParamList, WipeDeviceStackRoutes.WipeDevice>,
+    CompositeNavigationProp<
+        NativeStackNavigationProp<DeviceSettingsStackParamList>,
+        NativeStackNavigationProp<RootStackParamList>
+    >
+>;
+
 export const BootloaderModeScreen = () => {
     const { applyStyle } = useNativeStyles();
+    const navigation = useNavigation<NavigationProps>();
+
+    const handleRedirectToFactoryReset = () => {
+        navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
+            screen: DeviceSettingsStackRoutes.WipeDeviceStack,
+            params: {
+                screen: WipeDeviceStackRoutes.FactoryReset,
+            },
+        });
+    };
+
+    const handleNavigateToConnectAndUnlock = () => {
+        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+        });
+    };
+
+    useEffect(() => {
+        // Navigating back from the bootloader screen would get the user back to homescreen in incorrect state, so we'll avoid it by this.
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            if (e.data.action.type === 'GO_BACK') {
+                e.preventDefault();
+            }
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
@@ -51,7 +83,7 @@ export const BootloaderModeScreen = () => {
                             <Translation id="moduleDevice.bootloaderScreen.factoryResetCard.description" />
                         </Text>
                         <VStack style={applyStyle(buttonWrapperStyle)}>
-                            <Button colorScheme="redBold">
+                            <Button colorScheme="redBold" onPress={handleRedirectToFactoryReset}>
                                 <Translation id="moduleDevice.bootloaderScreen.factoryResetCard.buttonTitle" />
                             </Button>
                         </VStack>
@@ -70,7 +102,7 @@ export const BootloaderModeScreen = () => {
                         <Translation id="moduleDevice.bootloaderScreen.reconnectCard.description" />
                     </Text>
                     <VStack style={applyStyle(buttonWrapperStyle)}>
-                        <Button colorScheme="blueBold">
+                        <Button colorScheme="blueBold" onPress={handleNavigateToConnectAndUnlock}>
                             <Translation id="moduleDevice.bootloaderScreen.reconnectCard.buttonTitle" />
                         </Button>
                     </VStack>

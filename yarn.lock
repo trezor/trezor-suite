@@ -10368,6 +10368,7 @@ __metadata:
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/firmware": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
