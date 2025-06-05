@@ -1812,7 +1812,7 @@
   "TR_STAKE_STAKED_AND_EARNING": "Staked & receiving rewards",
   "TR_STAKE_STAKE_MORE": "Stake more",
   "TR_STAKE_STAKING_IN_A_NUTSHELL": "Staking in a nutshell",
-  "TR_STAKE_STAKING_IS": "Staking involves temporarily locking your Ethereum assets to support the blockchain's operation. In return, you'll receive additional Ethereum as a reward.",
+  "TR_STAKE_STAKING_IS": "Staking involves temporarily locking your {symbol} assets to support the blockchain's operation. In return, you'll receive additional {symbol} as a reward.",
   "TR_STAKE_STAKING_PROCESS": "Staking process",
   "TR_STAKE_START_STAKING": "Start staking",
   "TR_STAKE_TIME_TO_CLAIM": "Time to claim",
