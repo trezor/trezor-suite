@@ -1,13 +1,13 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Image, ImageKey, ImageProps } from '@trezor/components';
 import { Device } from '@trezor/connect';
 
-interface DeviceConfirmImageProps extends Omit<ImageProps, 'image'> {
-    device: Device | TrezorDevice;
-}
+type DeviceConfirmImageProps = Omit<ImageProps, 'image'> & {
+    device: Pick<Device, 'features' | 'thp'>;
+};
 
 export const DeviceConfirmImage = ({ device }: DeviceConfirmImageProps) => {
-    const deviceModelInternal = device.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     if (!deviceModelInternal) {
         return null;

@@ -83,6 +83,7 @@ export enum EventType {
 
     SettingsDeviceCheckSeed = 'settings/device/check-seed',
     SettingsDeviceChangePinProtection = 'settings/device/change-pin-protection',
+    SettingsDeviceChangeThpAutoconnect = 'settings/device/change-thp-autoconnect',
     SettingsDeviceChangePin = 'settings/device/change-pin',
     SettingsDeviceSetupWipeCode = 'settings/device/setup-wipe-code',
     SettingsDeviceChangeWipeCode = 'settings/device/change-wipe-code',

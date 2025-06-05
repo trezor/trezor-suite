@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { ButtonRequest, ThpSuiteCredentials, TrezorDevice } from '@suite-common/suite-types';
 import { WalletType } from '@suite-common/wallet-types';
-import { DEVICE, Device, DeviceState, StaticSessionId } from '@trezor/connect';
+import { DEVICE, Device, DeviceState, StaticSessionId, ThpSettings } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -120,6 +120,18 @@ const setThpCredentials = createAction(
     }),
 );
 
+const setDeviceThpAutoConnect = createAction(
+    `${DEVICE_MODULE_PREFIX}/setDeviceThpAutoConnect`,
+    (payload: { thpAutoConnect: boolean }) => ({ payload }),
+);
+
+const resetThpCredentials = createAction(
+    `${DEVICE_MODULE_PREFIX}/resetThpCredentials`,
+    ({ credentials }: { credentials: ThpSettings['knownCredentials'] }) => ({
+        payload: { credentials },
+    }),
+);
+
 export const deviceActions = {
     connectDevice,
     createDeviceInstance,
@@ -140,4 +152,6 @@ export const deviceActions = {
     removeButtonRequests,
     setEntropyCheckFail,
     setThpCredentials,
+    setDeviceThpAutoConnect,
+    resetThpCredentials,
 };

@@ -311,6 +311,8 @@ export const NotificationRenderer = ({
             return error(render, notification, 'TR_NOT_ENOUGH_FUNDS');
         case 'could-not-parse-csv':
             return error(render, notification, 'TR_COULD_NOT_PARSE');
+        case 'thp-credentials-reset':
+            return success(render, notification, 'TR_THP_RESET_CREDENTIALS_SUCCESS');
 
         default:
             return exhaustive(type);

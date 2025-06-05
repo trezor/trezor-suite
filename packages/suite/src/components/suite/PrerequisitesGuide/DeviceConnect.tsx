@@ -1,14 +1,12 @@
 import { ReactNode } from 'react';
 
+import { selectConnectingDevices } from '@suite-common/bluetooth';
 import { Button } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import { Translation, TroubleshootingTips, WebUsbButton } from 'src/components/suite';
 import {
-    TROUBLESHOOTING_TIP_BLUETOOTH_CABLE,
-    TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE,
-    TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY,
-    TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS,
+    TROUBLESHOOTING_ALL_BLUETOOTH_TIPS,
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
@@ -31,6 +29,7 @@ type DeviceConnectProps = {
 export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps) => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
+    const autoConnectingDeviceIds = useSelector(selectConnectingDevices);
 
     const cableItem: TroubleshootingTipsItem[] = isWebUsbTransport
         ? [
@@ -55,12 +54,15 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
         }
 
         if (isBluetoothEnabled && isDesktop()) {
+            const isAutoConnecting = autoConnectingDeviceIds.length > 0;
+
             return (
                 <Button
                     onClick={() => setIsBluetoothConnectOpen(true)}
                     icon="bluetooth"
                     variant="tertiary"
                     size="small"
+                    isLoading={isAutoConnecting}
                 >
                     <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
                 </Button>
@@ -71,20 +73,16 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
     };
 
     if (isBluetoothEnabled && isDesktop()) {
-        const bluetoothItems: TroubleshootingTipsItem[] = [
-            TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY,
-            TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE,
-            TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS,
-            TROUBLESHOOTING_TIP_BLUETOOTH_CABLE,
-        ];
-
         return (
             <TroubleshootingTipsWithSections
                 label={<Translation id="TR_CONNECTION_TYPE" />}
                 ctaLabel={<Translation id="TR_TREZOR_SAFE_7" />}
                 items={{
                     cable: { items: cableItem, label: <Translation id="TR_CABLE" /> },
-                    bluetooth: { items: bluetoothItems, label: <Translation id="TR_BLUETOOTH" /> },
+                    bluetooth: {
+                        items: TROUBLESHOOTING_ALL_BLUETOOTH_TIPS,
+                        label: <Translation id="TR_BLUETOOTH" />,
+                    },
                 }}
                 defaultSection="cable"
                 cta={getCallToActionButton()}

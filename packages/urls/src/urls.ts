@@ -137,6 +137,7 @@ export const HELP_CENTER_CANCEL_TRANSACTION: Url =
 // TODO: update this link when the article is ready
 export const HELP_CENTER_SOL_SEND: Url =
     'https://trezor.io/learn/a/solana-sol-on-trezor-safe-5-trezor-safe-3-and-trezor-model-t';
+export const HELP_TREZOR_HOST_PROTOCOL: Url = 'https://trezor.io/'; // Todo: add the proper link once we have the article
 
 export const INVITY_URL: Url = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES: Url = 'https://blog.invity.io/schedule-of-fees';

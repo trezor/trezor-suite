@@ -1,4 +1,5 @@
 export { PinModal } from './ReduxModal/DeviceContextModal/PinModal';
+export { ThpConnectionModal } from '../../thp/ThpConnectionModal';
 export { PinInvalidModal } from './ReduxModal/DeviceContextModal/PinInvalidModal';
 export { PinMismatchModal } from './ReduxModal/UserContextModal/PinMismatchModal';
 export { PassphraseModal } from './ReduxModal/DeviceContextModal/PassphraseModal';

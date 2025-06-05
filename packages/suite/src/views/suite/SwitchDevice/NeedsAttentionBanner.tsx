@@ -17,6 +17,7 @@ const getDeviceResolveStatusCTAMessage = (
         case 'bootloader':
             return 'TR_SELECT_DEVICE_SHORT';
         case 'initialize':
+        case 'unacquired-thp-required':
             return 'TR_CONTINUE_SETUP';
         default:
             return 'TR_SOLVE_ISSUE';
@@ -45,6 +46,8 @@ const getDeviceNeedsAttentionMessage = (
             return 'TR_NEEDS_ATTENTION_UNAVAILABLE';
         case 'unreadable':
             return 'TR_NEEDS_ATTENTION_UNREADABLE';
+        case 'unacquired-thp-required':
+            return 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED';
 
         case 'connected':
         case 'disconnected':
@@ -114,6 +117,10 @@ export const NeedsAttentionBanner = ({
             case 'used-in-other-window':
             case 'was-used-in-other-window':
             case 'unacquired':
+                dispatch(acquireDevice({ requestedDevice: device }));
+                break;
+            case 'unacquired-thp-required':
+                onCancel?.(false);
                 dispatch(acquireDevice({ requestedDevice: device }));
                 break;
 

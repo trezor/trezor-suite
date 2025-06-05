@@ -32,6 +32,7 @@ export const SettingsAnchor = {
     FirmwareType: '@device-settings/firmware-type',
     FirmwareLanguage: '@device-settings/firmware-language',
     PinProtection: '@device-settings/pin-protection',
+    ThpAutoconnect: '@device-settings/thp-autoconnect',
     ChangePin: '@device-settings/change-pin',
     WipeCode: '@device-settings/wipe-code',
     Passphrase: '@device-settings/passphrase',
