@@ -322,10 +322,17 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 .getHDNode({ address_n }, { coinInfo, unlockPath: params.unlockPath });
         let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
         if (params.options.decred_staking_ticket) {
-            await verifyTicketTx(getHDNode, inputs, outputs, response.serializedTx, coinInfo);
+            await verifyTicketTx(
+                response.serializedTx,
+                { inputs, outputs, coinInfo },
+                { getHDNode },
+            );
         } else {
-            bitcoinTx = await verifyTx(getHDNode, inputs, outputs, response.serializedTx, coinInfo);
-
+            bitcoinTx = await verifyTx(
+                response.serializedTx,
+                { inputs, outputs, coinInfo },
+                { getHDNode },
+            );
             if (bitcoinTx.hasWitnesses()) {
                 response.witnesses = bitcoinTx.ins.map((_, i) =>
                     bitcoinTx?.getWitness(i)?.toString('hex'),
