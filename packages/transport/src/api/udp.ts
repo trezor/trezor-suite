@@ -12,6 +12,9 @@ import * as ERRORS from '../errors';
 import { DescriptorApiLevel, PathInternal } from '../types';
 import { readMessageBuffer } from '../utils/readMessageBuffer';
 
+const PING = Buffer.from('PINGPING');
+const PONG = Buffer.from('PONGPONG');
+
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
 
@@ -30,7 +33,7 @@ export class UdpApi extends AbstractApi {
         this.readBuffer = readMessageBuffer();
 
         const onMessage = (message: Buffer, info: UDP.RemoteInfo) => {
-            if (message.toString() === 'PONGPONG') {
+            if (message.compare(PONG) === 0) {
                 return;
             }
 
@@ -69,7 +72,7 @@ export class UdpApi extends AbstractApi {
             signal?.addEventListener('abort', listener);
 
             let chunk;
-            if (buffer.toString('utf-8') === 'PINGPING') {
+            if (buffer.compare(PING) === 0) {
                 // PINGPING is expected to be 8 bytes
                 chunk = buffer;
             } else {
@@ -106,7 +109,7 @@ export class UdpApi extends AbstractApi {
     }
 
     private async ping(path: string, signal?: AbortSignal) {
-        await this.write(path, Buffer.from('PINGPING'), signal);
+        await this.write(path, PING, signal);
         if (signal?.aborted) {
             throw new Error(ERRORS.ABORTED_BY_SIGNAL);
         }
@@ -125,7 +128,7 @@ export class UdpApi extends AbstractApi {
                 onClear();
             };
             const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
-                if (message.toString() === 'PONGPONG') {
+                if (message.compare(PONG) === 0) {
                     resolve(true);
                     onClear();
                 }
