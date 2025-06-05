@@ -35,7 +35,6 @@ import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
-const EXPECTED_CANCELLATION_CODES = [USER_UI_CANCEL_CODE, ...DEVICE_CANCELLATION_CODES];
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
 type ProgressOkEvent = BundleProgress<DiscoverAccountsProgressOk>['payload'];
@@ -64,21 +63,9 @@ function assertStaticSessionId(
     }
 }
 
-const canDiscoveryContinue = (discovery?: DiscoveryStatus) => {
-    if (!discovery) {
-        console.error('Discovery aborted: no discovery found');
-
-        return false;
-    }
-
-    if (!isDiscoveryInProgress(discovery)) {
-        console.error('Discovery aborted: discovery not in progress');
-
-        return false;
-    }
-
-    return true;
-};
+// discovery could have been deleted, or cancelled ín the meantime
+const canDiscoveryContinue = (discovery?: DiscoveryStatus) =>
+    discovery && isDiscoveryInProgress(discovery);
 
 /**
  * If metadata are enabled in settings but metadata master key does not exist for this device state,
@@ -304,6 +291,43 @@ const completeDiscoveryThunk = createThunk(
     },
 );
 
+type ApplyDeviceStateErrorThunkProps = {
+    error: string | undefined;
+    code: string | undefined;
+    devicePath: DeviceUniquePath;
+};
+export const applyDeviceStateErrorThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/applyDeviceStateError`,
+    ({ error, code, devicePath }: ApplyDeviceStateErrorThunkProps, { dispatch, getState }) => {
+        // means that `cancelDiscoveryThunk` has been called and device returned code:Method_Cancel and this specific `error`
+        if (error === USER_UI_CANCEL_CODE) return;
+
+        if (code !== undefined && DEVICE_CANCELLATION_CODES.includes(code)) {
+            const cancelledDiscovery = selectDiscoveryByDevicePath(getState(), devicePath);
+
+            // The device itself might trigger cancellation, so we need to sync the discovery state
+            if (cancelledDiscovery && cancelledDiscovery.status !== 'cancelled') {
+                dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, devicePath));
+            }
+
+            return;
+        }
+
+        // The error is not from deliberate cancellation, so we mark the discovery as failed
+        dispatch(
+            discoveryActions.updateDiscovery(
+                {
+                    status: 'failed',
+                    failed: [], // no failed accounts yet,
+                    error,
+                    errorCode: code,
+                },
+                devicePath,
+            ),
+        );
+    },
+);
+
 export const runDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (passedDevice: TrezorDevice, { dispatch, getState }): Promise<void> => {
@@ -373,51 +397,7 @@ export const runDiscoveryThunk = createThunk(
 
             if (!deviceStateResponse.success) {
                 const { error, code } = deviceStateResponse.payload;
-
-                if (USER_UI_CANCEL_CODE === error) {
-                    // NOTE: the discovery must be in cancelled state here
-                    // addd a runtime check?
-                    console.warn(
-                        'startDiscoveryThunk: TrezorConnect.getDeviceState (1) cancelled by user click, discovery in cancelled state',
-                    );
-
-                    return;
-                }
-
-                // NOTE: mark the discovery as failed if the error is not a user cancellation cancellation
-                if (
-                    !EXPECTED_CANCELLATION_CODES.includes(String(deviceStateResponse.payload.code))
-                ) {
-                    dispatch(
-                        discoveryActions.updateDiscovery(
-                            {
-                                status: 'failed',
-                                failed: [], // no failed accounts yet,
-                                error: deviceStateResponse.payload.error,
-                                errorCode: deviceStateResponse.payload.code,
-                            },
-                            device.path,
-                        ),
-                    );
-                }
-
-                if (DEVICE_CANCELLATION_CODES.includes(String(deviceStateResponse.payload.code))) {
-                    const cancelledDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
-
-                    // NOTE: the device might trigger cancellation
-                    if (cancelledDiscovery && cancelledDiscovery.status !== 'cancelled') {
-                        dispatch(
-                            discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path),
-                        );
-                    }
-
-                    console.warn(
-                        'startDiscoveryThunk: TrezorConnect.getDeviceState (1) cancelled by user with code: ',
-                        deviceStateResponse.payload.code,
-                    );
-                }
-
-                console.error('Unexpected TrezorConnect.getDeviceState error', error, code);
+                dispatch(applyDeviceStateErrorThunk({ error, code, devicePath: device.path }));
 
                 return;
             }
@@ -578,58 +558,9 @@ export const runDiscoveryThunk = createThunk(
             if (!canDiscoveryContinue(selectDiscoveryByDevicePath(getState(), device.path))) return;
 
             if (!getDeviceState2Res.success) {
-                // error, device disconnected, whatever, todo: handle
+                const { error, code } = getDeviceState2Res.payload;
+                dispatch(applyDeviceStateErrorThunk({ error, code, devicePath: device.path }));
 
-                if (USER_UI_CANCEL_CODE === getDeviceState2Res.payload.error) {
-                    // NOTE: the discovery must be in cancelled state here
-                    // addd a runtime check?
-                    console.warn(
-                        'startDiscoveryThunk: TrezorConnect.getDeviceState (1) cancelled by user click, discovery in cancelled state',
-                    );
-
-                    return;
-                }
-                // NOTE ERROR HANDLING COPIED FROM ABOVE, NEEDS TO BE PROPERLY REUSED!
-
-                // NOTE: mark the discovery as failed if the error is not a user cancellation cancellation
-                if (
-                    !EXPECTED_CANCELLATION_CODES.includes(String(getDeviceState2Res.payload.code))
-                ) {
-                    dispatch(
-                        discoveryActions.updateDiscovery(
-                            {
-                                status: 'failed',
-                                failed: [], // no failed accounts yet,
-                                error: getDeviceState2Res.payload.error,
-                                errorCode: getDeviceState2Res.payload.code,
-                            },
-                            device.path,
-                        ),
-                    );
-                }
-
-                if (DEVICE_CANCELLATION_CODES.includes(String(getDeviceState2Res.payload.code))) {
-                    const cancelledDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
-
-                    // NOTE: the device might trigger cancellation
-                    if (cancelledDiscovery && cancelledDiscovery.status !== 'cancelled') {
-                        dispatch(
-                            discoveryActions.updateDiscovery(
-                                {
-                                    status: 'cancelled',
-                                },
-                                device.path,
-                            ),
-                        );
-                    }
-
-                    console.warn(
-                        'startDiscoveryThunk: TrezorConnect.getDeviceState (1) cancelled by user with code: ',
-                        getDeviceState2Res.payload.code,
-                    );
-                }
-
-                // at this point it can only be USER_UI_CANCEL_CODE
                 return;
             }
 
