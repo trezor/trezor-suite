@@ -1,4 +1,4 @@
-import { Locator, Request, expect as baseExpect } from '@playwright/test';
+import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
 import { diff } from 'jest-diff';
 import { isEqual } from 'lodash';
 
@@ -35,6 +35,7 @@ const compareDisplayContent = async (
     expectedContent: any,
     errorMessage: string,
 ) => {
+    await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
     const content = await devicePrompt.getDisplayContent();
 
     return {

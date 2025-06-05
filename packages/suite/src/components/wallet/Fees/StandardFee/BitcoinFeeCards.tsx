@@ -67,7 +67,7 @@ export const BitcoinFeeCards = ({
                         }
                         topRightChild={getTimeEstimate(fee)}
                         bottomLeftChild={
-                            <span data-testid={`@fee-card/${fee.value}-fait-amount`}>
+                            <span data-testid={`@fee-card/${fee.value}-fiat-amount`}>
                                 <FiatValue
                                     disableHiddenPlaceholder
                                     amount={fee?.networkAmount ?? ''}

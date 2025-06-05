@@ -1,20 +1,18 @@
 import { Locator, Page, Response } from '@playwright/test';
 
-import { step } from '../../common';
+import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { solanaUrlPattern } from '../../mocks/tradingMock';
 import { expect } from '../../testExtends/customMatchers';
 
-export type FeeTypes = 'economy' | 'normal' | 'high';
+export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
 
 export class Fees {
     readonly switchModeButton = (feeMode: 'normal' | 'custom') =>
         this.page.getByTestId(`select-bar/${feeMode}`);
-    readonly bitcoinCard = (feeType: FeeTypes) =>
-        this.page.getByTestId(`@fee-card/${feeType}-card`);
-    readonly bitcoinValue = (feeType: FeeTypes) =>
-        this.page.getByTestId(`@fee-card/${feeType}-fait-amount`);
-    readonly bitcoinRate = (feeType: FeeTypes) =>
-        this.page.getByTestId(`@fee-card/${feeType}-rate`);
+    readonly card = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-card`);
+    readonly valueOnCard = (feeType: FeeTypes) =>
+        this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
+    readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
     readonly customInput: Locator;
     readonly customAmount: Locator;
     readonly customFiatAmount: Locator;
@@ -83,9 +81,17 @@ export class Fees {
     @step()
     async expectBitcoinFeeCalculated() {
         const feePattern = /[≈~]\s*\$\s*\d+\.\d+/;
-        await expect(this.bitcoinValue('economy')).toHaveText(feePattern);
-        await expect(this.bitcoinValue('normal')).toHaveText(feePattern);
-        await expect(this.bitcoinValue('high')).toHaveText(feePattern);
+        await expect(this.valueOnCard('economy')).toHaveText(feePattern);
+        await expect(this.valueOnCard('normal')).toHaveText(feePattern);
+        await expect(this.valueOnCard('high')).toHaveText(feePattern);
+    }
+
+    @step()
+    async expectEthereumFeeCalculated() {
+        const feePattern = /\d+\.\d+\s*Gwei/;
+        await expect(this.rateOnCard('low')).toHaveText(feePattern);
+        await expect(this.rateOnCard('normal')).toHaveText(feePattern);
+        await expect(this.rateOnCard('high')).toHaveText(feePattern);
     }
 
     @step()
@@ -97,7 +103,7 @@ export class Fees {
 
         if (type !== 'custom') {
             await this.expectBitcoinFeeCalculated();
-            feeRateText = await this.bitcoinRate(type).textContent();
+            feeRateText = await this.rateOnCard(type).textContent();
         } else {
             feeRateText = (await this.customInput.inputValue()) + suffixForCustomFee;
         }
@@ -148,5 +154,13 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         }
 
         return match.groups.value;
+    }
+
+    @step()
+    async openFeeInfoOnEmulator() {
+        const burgerMenuCoordinates = { x: 200, y: 20 };
+        await TrezorUserEnvLinkProxy.clickEmu(burgerMenuCoordinates);
+        const feeInfoCoordinates = { x: 125, y: 100 };
+        await TrezorUserEnvLinkProxy.clickEmu(feeInfoCoordinates);
     }
 }

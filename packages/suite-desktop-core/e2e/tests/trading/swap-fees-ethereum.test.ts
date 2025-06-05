@@ -35,11 +35,7 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
         },
     );
 
-    test('Swap custom fees for Ethereum', async ({
-        tradingPage,
-        devicePrompt,
-        trezorUserEnvLink,
-    }) => {
+    test('Swap custom fees for Ethereum', async ({ tradingPage, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fees.switchModeButton('custom').click();
             await tradingPage.fees.ethereumFeeLimit.fill(gasLimit);
@@ -97,10 +93,7 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            const burgerMenuCoordinates = { x: 200, y: 20 };
-            await trezorUserEnvLink.clickEmu(burgerMenuCoordinates);
-            const feeInfoCoordinates = { x: 125, y: 100 };
-            await trezorUserEnvLink.clickEmu(feeInfoCoordinates);
+            await tradingPage.fees.openFeeInfoOnEmulator();
             await expect(devicePrompt).toDisplayOnEmulator({
                 header: { title: 'Fee info' },
                 body: [

@@ -24,11 +24,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
         },
     );
 
-    test('Swap custom fees for Bitcoin', async ({
-        tradingPage,
-        devicePrompt,
-        trezorUserEnvLink,
-    }) => {
+    test('Swap custom fees for Bitcoin', async ({ tradingPage, devicePrompt }) => {
         let feeRate: string;
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fees.switchModeButton('custom').click();
@@ -78,10 +74,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            const burgerMenuCoordinates = { x: 200, y: 20 };
-            await trezorUserEnvLink.clickEmu(burgerMenuCoordinates);
-            const feeInfoCoordinates = { x: 125, y: 100 };
-            await trezorUserEnvLink.clickEmu(feeInfoCoordinates);
+            await tradingPage.fees.openFeeInfoOnEmulator();
             const feeRateWithoutDecimals = feeRate.replace('.00\u00A0', ' ');
             await expect(devicePrompt).toDisplayOnEmulator({
                 header: { title: 'Fee info' },

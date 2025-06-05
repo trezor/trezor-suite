@@ -54,6 +54,7 @@ export const EthereumFeeCards = ({
             <FeeCardsWrapper data-testid="@wallet/fee-details">
                 {feeOptions.map(fee => (
                     <FeeCard
+                        data-testid={`@fee-card/${fee.value}-card`}
                         value={fee.value}
                         key={fee.value}
                         isSelected={selectedLevel.label === fee.value}
@@ -65,19 +66,23 @@ export const EthereumFeeCards = ({
                         }
                         topRightChild={getTimeEstimate(fee)}
                         bottomLeftChild={
-                            <FiatValue
-                                disableHiddenPlaceholder
-                                amount={fee.networkAmount || ''}
-                                symbol={symbol}
-                                showApproximationIndicator
-                            />
+                            <span data-testid={`@fee-card/${fee.value}-fiat-amount`}>
+                                <FiatValue
+                                    disableHiddenPlaceholder
+                                    amount={fee.networkAmount || ''}
+                                    symbol={symbol}
+                                    showApproximationIndicator
+                                />
+                            </span>
                         }
                         bottomRightChild={
-                            <FeeRate
-                                feeRate={isEip1559(fee) ? fee.maxFeePerGas : fee.feePerUnit}
-                                networkType={networkType}
-                                symbol={symbol}
-                            />
+                            <span data-testid={`@fee-card/${fee.value}-rate`}>
+                                <FeeRate
+                                    feeRate={isEip1559(fee) ? fee.maxFeePerGas : fee.feePerUnit}
+                                    networkType={networkType}
+                                    symbol={symbol}
+                                />
+                            </span>
                         }
                         tooltipContent={
                             isDebug && isEip1559(fee) ? (
