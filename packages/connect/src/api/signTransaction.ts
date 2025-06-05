@@ -294,6 +294,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
     async run() {
         const { device, params } = this;
+        const { inputs, outputs, coinInfo } = params;
         const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
         const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));
 
@@ -318,27 +319,12 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const getHDNode = (address_n: number[]) =>
             device
                 .getCommands()
-                .getHDNode(
-                    { address_n },
-                    { coinInfo: params.coinInfo, unlockPath: params.unlockPath },
-                );
+                .getHDNode({ address_n }, { coinInfo, unlockPath: params.unlockPath });
         let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
         if (params.options.decred_staking_ticket) {
-            await verifyTicketTx(
-                getHDNode,
-                params.inputs,
-                params.outputs,
-                response.serializedTx,
-                params.coinInfo,
-            );
+            await verifyTicketTx(getHDNode, inputs, outputs, response.serializedTx, coinInfo);
         } else {
-            bitcoinTx = await verifyTx(
-                getHDNode,
-                params.inputs,
-                params.outputs,
-                response.serializedTx,
-                params.coinInfo,
-            );
+            bitcoinTx = await verifyTx(getHDNode, inputs, outputs, response.serializedTx, coinInfo);
 
             if (bitcoinTx.hasWitnesses()) {
                 response.witnesses = bitcoinTx.ins.map((_, i) =>
@@ -350,19 +336,15 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         if (bitcoinTx && params.addresses) {
             response.signedTransaction = createPendingTransaction(bitcoinTx, {
                 addresses: params.addresses,
-                inputs: params.inputs,
-                outputs: params.outputs,
+                inputs,
+                outputs,
             });
         }
 
         if (params.push) {
             // validate backend
-            isBackendSupported(params.coinInfo);
-            const blockchain = await initBlockchain(
-                params.coinInfo,
-                this.postMessage,
-                params.identity,
-            );
+            isBackendSupported(coinInfo);
+            const blockchain = await initBlockchain(coinInfo, this.postMessage, params.identity);
             const txid = await blockchain.pushTransaction(response.serializedTx);
 
             return {
