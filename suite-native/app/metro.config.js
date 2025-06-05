@@ -37,6 +37,7 @@ const config = {
             https: nodejs.https,
             http: nodejs.http,
             zlib: nodejs.zlib,
+            vm: nodejs.vm,
         },
         sourceExts,
         resolveRequest: (context, moduleName, platform) => {

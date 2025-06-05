@@ -48,6 +48,7 @@ const config: webpack.Configuration = {
             // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
             crypto: require.resolve('crypto-browserify'),
             stream: require.resolve('stream-browserify'),
+            vm: require.resolve('vm-browserify'),
             // Not required
             child_process: false,
             fs: false,
