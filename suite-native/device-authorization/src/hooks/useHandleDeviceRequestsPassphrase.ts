@@ -56,8 +56,11 @@ export const useHandleDeviceRequestsPassphrase = () => {
     }, [deviceRequestedPassphrase, handleRequestPassphrase]);
 
     const handleRequestPassphraseOnDevice = useCallback(() => {
+        // NOTE: if the passphrase flow IS NOT in the beginning skip these calls
+        if (discovery?.isAddingHiddenWallet) return;
+
         navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor);
-    }, [navigation]);
+    }, [discovery?.isAddingHiddenWallet, navigation]);
 
     useEffect(() => {
         if (inputPassphraseOnDevice) {
