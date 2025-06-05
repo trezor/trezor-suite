@@ -94,6 +94,17 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);
         const outputs = validateTrezorOutputs(payload.outputs, coinInfo);
 
+        /**
+         * Used to sign the transaction according to SLIP-24.
+         * The `payment_req_index` is the index of the PaymentRequest containing this output.
+         * Currently, `paymentRequests` are used only for trading, and there is a maximum of one PaymentRequests per transaction, therefore payment_req_index = 0.
+         */
+        if (payload.paymentRequests && payload.paymentRequests.length > 0) {
+            outputs.forEach(output => {
+                output.payment_req_index = 0;
+            });
+        }
+
         if (payload.refTxs && payload.account?.transactions) {
             console.warn(
                 'two sources of referential transactions were passed. payload.refTxs have precedence',
@@ -128,7 +139,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         this.params = {
             inputs,
             outputs,
-            paymentRequests: payload.paymentRequests || [],
+            paymentRequests: payload.paymentRequests ?? [],
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
             options: {

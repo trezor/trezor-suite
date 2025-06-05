@@ -27,7 +27,7 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect, { Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { PROTO, Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
 import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
 import { exhaustive } from '@trezor/type-utils';
 import { cloneObject } from '@trezor/utils';
@@ -400,18 +400,21 @@ type CoinSpecificSignResponse = ActionsFromAsyncThunk<
     | typeof signSolanaSendFormTransactionThunk
 >;
 
+type SignTransactionThunkParams = {
+    formState: FormState;
+    precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
+    selectedAccount: Account;
+    paymentRequests?: PROTO.TxAckPaymentRequest[];
+};
+
 export const signTransactionThunk = createThunk<
     { serializedTx: string; signedTx?: BlockbookTransaction },
-    {
-        formState: FormState;
-        precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
-        selectedAccount: Account;
-    },
+    SignTransactionThunkParams,
     { rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined }
 >(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount },
+        { formState, precomposedTransaction, selectedAccount, paymentRequests },
         { dispatch, rejectWithValue, extra, getState },
     ) => {
         const {
@@ -452,7 +455,12 @@ export const signTransactionThunk = createThunk<
                 device,
             };
             if (networkType === 'bitcoin') {
-                response = await dispatch(signBitcoinSendFormTransactionThunk(thunkArguments));
+                response = await dispatch(
+                    signBitcoinSendFormTransactionThunk({
+                        ...thunkArguments,
+                        paymentRequests,
+                    }),
+                );
             } else if (networkType === 'ethereum') {
                 response = await dispatch(signEthereumSendFormTransactionThunk(thunkArguments));
             } else if (networkType === 'solana') {

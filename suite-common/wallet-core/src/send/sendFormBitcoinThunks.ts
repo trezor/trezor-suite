@@ -248,7 +248,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, device },
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, extra, rejectWithValue },
     ) => {
         const {
@@ -342,6 +342,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             coin: selectedAccount.symbol,
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             ...signEnhancement,
+            paymentRequests,
         };
 
         const response = await TrezorConnect.signTransaction(signPayload);

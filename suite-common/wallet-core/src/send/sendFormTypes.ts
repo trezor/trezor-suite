@@ -8,7 +8,7 @@ import {
     PrecomposedTransactionFinal,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { ERRORS as CONNECT_ERRORS, TokenInfo, Unsuccessful } from '@trezor/connect';
+import { ERRORS as CONNECT_ERRORS, PROTO, TokenInfo, Unsuccessful } from '@trezor/connect';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 
@@ -44,6 +44,7 @@ export type SignTransactionThunkArguments = {
     precomposedTransaction: PrecomposedTransactionFinal;
     selectedAccount: Account;
     device: TrezorDevice;
+    paymentRequests?: PROTO.TxAckPaymentRequest[];
 };
 
 export type ComposeFeeLevelsError = {

@@ -21,6 +21,7 @@ import {
     PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
+import { PROTO } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { getSynchronize } from '@trezor/utils';
 
@@ -191,6 +192,7 @@ type SignAndPushSendFormTransactionThunkParams = {
     formState: FormState;
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     selectedAccount?: Account;
+    paymentRequests?: PROTO.TxAckPaymentRequest[];
 };
 
 export const signAndPushSendFormTransactionThunk = createThunk(
@@ -200,6 +202,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             formState,
             precomposedTransaction,
             selectedAccount,
+            paymentRequests,
         }: SignAndPushSendFormTransactionThunkParams,
         { dispatch, getState },
     ) => {
@@ -231,6 +234,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
                 formState,
                 precomposedTransaction: enhancedPrecomposedTransaction,
                 selectedAccount,
+                paymentRequests,
             }),
         );
 
