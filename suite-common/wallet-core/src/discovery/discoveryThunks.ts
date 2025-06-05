@@ -773,9 +773,10 @@ export const submitPassphrase = createThunk(
 export const cancelDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/cancel`,
     (device: TrezorDevice, { dispatch }) => {
+        // cancel with a custom error code so we can distinguish it from device cancellation
         TrezorConnect.cancel(USER_UI_CANCEL_CODE);
 
-        dispatch(discoveryActions.deleteDiscovery(device.path));
+        dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
     },
 );
 
