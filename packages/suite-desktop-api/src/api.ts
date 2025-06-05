@@ -129,7 +129,7 @@ export interface InvokeChannels {
     'system/open-settings': (settings: string) => InvokeResult;
 
     // bio auth
-    'bio-auth/request': () => void;
+    'bio-auth/authenticate': () => InvokeResult;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;

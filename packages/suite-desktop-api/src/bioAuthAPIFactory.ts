@@ -15,24 +15,26 @@ export const createBioAuthAPI = <R extends StrictIpcRenderer<any, IpcRendererEve
     if (!ipcRenderer) return createBioAuthAPI(ipcRendererFallback);
 
     return {
-        validateBioAuth: () => {
-            const resultPromise = new Promise<boolean>((resolve, reject) => {
-                ipcRenderer.on('bio-auth/validated', () => {
-                    resolve(true);
+        validateBioAuth: async () => {
+            try {
+                // Use Promise.race to implement timeout
+                const authPromise = ipcRenderer.invoke('bio-auth/authenticate');
+                const timeoutPromise = new Promise<never>((_, reject) => {
+                    setTimeout(() => reject(new Error('timeout')), BIO_AUTH_TIMEOUT);
                 });
 
-                ipcRenderer.on('bio-auth/validation-failure', () => {
-                    reject(false);
-                });
+                const result = await Promise.race([authPromise, timeoutPromise]);
 
-                setTimeout(() => {
-                    reject(new Error('timeout'));
-                }, BIO_AUTH_TIMEOUT);
-            });
+                if (!result || !result.success) {
+                    throw new Error(result?.error || 'Authentication failed');
+                }
 
-            ipcRenderer.send('bio-auth/request');
+                return true;
+            } catch (error) {
+                console.error('Bio authentication failed:', error);
 
-            return resultPromise;
+                return Promise.reject(false);
+            }
         },
     };
 };
