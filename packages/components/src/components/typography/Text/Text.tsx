@@ -47,10 +47,10 @@ export type TextVariant = (typeof textVariants)[number];
 type ExclusiveColorOrVariant =
     | { variant?: TextVariant; color?: undefined }
     | {
-          variant?: undefined;
-          /** @deprecated Use only is case of absolute desperation. Prefer using `variant`. */
-          color?: string;
-      };
+        variant?: undefined;
+        /** @deprecated Use only is case of absolute desperation. Prefer using `variant`. */
+        color?: string;
+    };
 
 const variantColorMap: Record<TextVariant, Color> = {
     default: 'textDefault',
@@ -79,6 +79,7 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
 type StyledTextProps = ExclusiveColorOrVariant & {
     $isMonospaced?: boolean;
     $isHighlighted?: boolean;
+    $isUrl?: boolean;
 } & TransientProps<AllowedFrameProps & AllowedTextTextProps>;
 
 const StyledText = styled.span<StyledTextProps>`
@@ -100,6 +101,13 @@ const StyledText = styled.span<StyledTextProps>`
             box-decoration-break: clone;
         `}
 
+    ${({ $isUrl }) =>
+        $isUrl &&
+        css`
+            work-break: break-all;
+            overflow-wrap: anywhere;
+        `}
+
     ${withTextProps}
     ${withFrameProps}
 `;
@@ -109,6 +117,7 @@ export type TextProps = {
     className?: string;
     isMonospaced?: boolean;
     isHighlighted?: boolean;
+    isUrl?: boolean;
     as?: string;
     onClick?: () => void;
     'data-testid'?: string;
@@ -127,6 +136,7 @@ export const Text = ({
     onClick,
     isMonospaced,
     isHighlighted,
+    isUrl,
     role,
     ...rest
 }: TextProps) => {
@@ -142,6 +152,7 @@ export const Text = ({
             data-testid={dataTest}
             $isMonospaced={isMonospaced}
             $isHighlighted={isHighlighted}
+            $isUrl={isUrl}
             role={role}
             {...textProps}
             {...frameProps}
