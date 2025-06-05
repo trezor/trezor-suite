@@ -138,6 +138,7 @@ export const config: webpack.Configuration = {
         new webpack.DefinePlugin({
             'process.env.VERSION': JSON.stringify(version),
             'process.env.COMMIT_HASH': JSON.stringify(commitHash),
+            'process.env.ASSET_PREFIX': JSON.stringify(process.env.ASSET_PREFIX),
         }),
     ],
 
