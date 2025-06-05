@@ -64,13 +64,10 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         };
 
         bluetoothIpc.on('adapter-event', status => {
-            console.warn('adapter-event', status);
             dispatch(bluetoothActions.adapterEventAction({ status }));
         });
 
         bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
-            console.warn('device-list-update', nearbyDevicesIpc);
-
             const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
 
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
@@ -87,7 +84,6 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         });
 
         bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
-            console.warn('device-update', deviceIpc);
             const device = fromBluetoothDevice(deviceIpc);
 
             dispatch(bluetoothActions.deviceUpdateAction({ device }));
