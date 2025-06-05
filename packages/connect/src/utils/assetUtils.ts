@@ -4,8 +4,8 @@ import { isArrayMember } from '@trezor/utils';
 const isDeviceModel = (model: string): model is DeviceModelInternal =>
     isArrayMember(model, Object.values(DeviceModelInternal));
 
-export const firmwareAssets: Record<DeviceModelInternal, NodeRequire> = {
-    [DeviceModelInternal.UNKNOWN]: {} as NodeRequire,
+export const firmwareAssets: Record<DeviceModelInternal, NodeJS.Require> = {
+    [DeviceModelInternal.UNKNOWN]: {} as NodeJS.Require,
     [DeviceModelInternal.T1B1]: require('@trezor/connect-common/files/firmware/t1b1/releases.json'),
     [DeviceModelInternal.T2T1]: require('@trezor/connect-common/files/firmware/t2t1/releases.json'),
     [DeviceModelInternal.T2B1]: require('@trezor/connect-common/files/firmware/t2b1/releases.json'),
