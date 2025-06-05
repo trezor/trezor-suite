@@ -157,6 +157,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
                     perPage={itemsPerPage}
                     totalItems={totalItems}
                     onPageSelected={onPageSelected}
+                    explicitNavigation
                 />
             )}
         </DashboardSection>

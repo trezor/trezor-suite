@@ -33,7 +33,6 @@ interface TransactionListProps {
     symbol: WalletAccountTransaction['symbol'];
     isLoading?: boolean;
     account: Account;
-    isPagingLimited?: boolean;
     customTotalItems?: number;
     customNoTransactions?: ReactNode;
     isExportable?: boolean;
@@ -47,7 +46,6 @@ export const TransactionList = ({
     isLoading,
     account,
     symbol,
-    isPagingLimited,
     customNoTransactions,
     customTotalItems,
     onPageRequested,
@@ -204,13 +202,13 @@ export const TransactionList = ({
 
             {showPagination && (
                 <Pagination
-                    isPageListLimited={Boolean(isPagingLimited)}
                     hasPages={!isRippleOrStellar}
                     currentPage={currentPage}
                     isLastPage={isLastRippleOrStellarPage}
                     perPage={perPage}
                     totalItems={totalItems}
                     onPageSelected={onPageSelected}
+                    explicitNavigation
                 />
             )}
         </DashboardSection>

@@ -6886,6 +6886,10 @@ export default defineMessages({
         id: 'TR_PAGINATION_OLDER',
         defaultMessage: 'Older',
     },
+    TR_PAGINATION_GO: {
+        id: 'TR_PAGINATION_GO',
+        defaultMessage: 'Go',
+    },
     TR_TXID: {
         id: 'TR_TXID',
         defaultMessage: 'TX ID',
