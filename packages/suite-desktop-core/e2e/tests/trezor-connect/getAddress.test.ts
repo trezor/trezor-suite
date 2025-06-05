@@ -2,7 +2,7 @@ import TrezorConnect from '@trezor/connect-web';
 
 import { expect, test } from '../../support/fixtures';
 
-test.describe('TrezorConnect.getAddress', { tag: ['@group=suite', '@desktopOnly'] }, () => {
+test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
