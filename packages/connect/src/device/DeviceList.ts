@@ -83,10 +83,7 @@ export const assertDeviceListConnected: (
     }
 };
 
-type ConstructorParams = Pick<
-    ConnectSettings,
-    'priority' | 'debug' | '_sessionsBackgroundUrl' | 'manifest'
-> & {
+type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | 'manifest'> & {
     messages: Record<string, any>;
 };
 type InitParams = Pick<
@@ -129,13 +126,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getConnectedTransports().map(getTransportInfo);
     }
 
-    constructor({
-        messages,
-        priority,
-        debug,
-        _sessionsBackgroundUrl,
-        manifest,
-    }: ConstructorParams) {
+    constructor({ messages, priority, debug, manifest }: ConstructorParams) {
         super();
 
         const transportLogger = initLog('@trezor/transport', debug);
@@ -145,7 +136,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.updateTransports = createTransportList({
             messages,
             logger: transportLogger,
-            sessionsBackgroundUrl: _sessionsBackgroundUrl,
             id: manifest?.appName || manifest?.appUrl || 'unknown app',
         });
     }
