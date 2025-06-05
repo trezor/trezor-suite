@@ -104,10 +104,7 @@ const waitForReconnectedDevice = async (
             try {
                 registerEvents(reconnectedDevice);
                 // todo: it keeps printing warning "Previous call is still running" on reconnect from bl to normal
-                await reconnectedDevice.run(undefined, {
-                    skipFirmwareChecks: true,
-                    skipLanguageChecks: true,
-                });
+                await reconnectedDevice.tryToGetFeatures(false);
             } catch {
                 // empty
             }

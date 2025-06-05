@@ -332,6 +332,66 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.releasePromise;
     }
 
+    async doChecks() {
+        await this.checkFirmwareHashWithRetries();
+        await this.checkFirmwareRevisionWithRetries();
+
+        if (
+            this.features?.language &&
+            !this.features.language_version_matches &&
+            this.atLeast('2.7.0')
+        ) {
+            _log.info('language version mismatch. silently updating...');
+
+            try {
+                await this.changeLanguage({ language: this.features.language });
+            } catch (err) {
+                _log.error('change language failed silently', err);
+            }
+        }
+    }
+
+    async tryToGetFeatures(withChecks = true) {
+        if (this.releasePromise) {
+            await this.releasePromise;
+        }
+
+        // acquire session
+        await this.acquire();
+
+        const isNative = DataManager.getSettings('env') === 'react-native';
+        const cancelTimeout = isNative ? GET_FEATURES_TIMEOUT_REACT_NATIVE : CANCEL_TIMEOUT;
+
+        // note 1: clear communication with the device using Cancel message. This causes any remaining messages in its transport stack to get flushed.
+        //         this case may happen when communication with the device was abruptly interrupted by unloading connect unexpectedly (example window reload)
+        // note 2: this problem should not occur for the upcoming trezor host protocol, so we limit this to v1 and bridge protocols
+        // note 3: in 99% of cases we send this message unnecessarily. as @Szymon pointed out, it might be better to catch this call and repeat it.
+        // note 4: this case can happen also in the 'if' branch. 1] reload app, 2], browser doesn't fire release in time, 3] you get unacquired device, 4] you click
+        //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
+        // note 5: ad note 4. it is not so problematic anymore since cleanup on dispose has been improved in https://github.com/trezor/trezor-suite/pull/16930
+        // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
+        if (
+            ['v1', 'bridge'].includes(this.protocol.name) &&
+            ![0, 2].includes(this.transportDescriptorType) // ignore model 1 hid or webusb bootloader mode
+        ) {
+            _log.debug('sending a preventive cancel on the first encounter with the device');
+
+            await Promise.race([
+                this.getCurrentSession().cancelCall(),
+                new Promise((_, reject) => setTimeout(reject, cancelTimeout)),
+            ]).catch(() => this.acquire());
+        }
+
+        await this.getFeatures();
+
+        if (withChecks) {
+            this.doChecks();
+        }
+
+        // release session
+        await this.release();
+    }
+
     // call only once, right after device creation
     async handshake(delay?: number) {
         if (delay) {
@@ -343,9 +403,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
             } else {
                 try {
-                    await this.run();
+                    await this.tryToGetFeatures();
                 } catch (error) {
-                    _log.warn(`device.run error.message: ${error.message}, code: ${error.code}`);
+                    _log.warn(
+                        `Device.handshake error.message: ${error.message}, code: ${error.code}`,
+                    );
 
                     if (
                         error.code === 'Device_NotFound' ||
@@ -410,8 +472,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.emitLifecycle(DEVICE.CHANGED);
     }
 
-    // TODO empty fn variant can be split/removed
-    run(fn?: () => Promise<void>, options: RunOptions = {}) {
+    run(fn: () => Promise<void>, options: RunOptions = {}) {
         if (this.runPromise) {
             _log.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
@@ -481,7 +542,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private async _runInner<X>(
-        fn: (() => Promise<X>) | undefined,
+        fn: () => Promise<X>,
         options: RunOptions,
         abortSignal: AbortSignal,
     ): Promise<void> {
@@ -502,73 +563,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const { staticSessionId, deriveCardano } = this.getState() || {};
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
-            // update features
-            try {
-                if (fn) {
-                    await this.initialize(!!options.useCardanoDerivation);
-                } else {
-                    const isNative = DataManager.getSettings('env') === 'react-native';
-                    const cancelTimeout = isNative
-                        ? GET_FEATURES_TIMEOUT_REACT_NATIVE
-                        : CANCEL_TIMEOUT;
-
-                    // note 1: clear communication with the device using Cancel message. This causes any remaining messages in its transport stack to get flushed.
-                    //         this case may happen when communication with the device was abruptly interrupted by unloading connect unexpectedly (example window reload)
-                    // note 2: this problem should not occur for the upcoming trezor host protocol, so we limit this to v1 and bridge protocols
-                    // note 3: in 99% of cases we send this message unnecessarily. as @Szymon pointed out, it might be better to catch this call and repeat it.
-                    // note 4: this case can happen also in the 'if' branch. 1] reload app, 2], browser doesn't fire release in time, 3] you get unacquired device, 4] you click
-                    //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
-                    // note 5: ad note 4. it is not so problematic anymore since cleanup on dispose has been improved in https://github.com/trezor/trezor-suite/pull/16930
-                    // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
-                    if (
-                        ['v1', 'bridge'].includes(this.protocol.name) &&
-                        ![0, 2].includes(this.transportDescriptorType) // ignore model 1 hid or webusb bootloader mode
-                    ) {
-                        _log.debug(
-                            'sending a preventive cancel on the first encounter with the device',
-                        );
-
-                        await Promise.race([
-                            this.getCurrentSession().cancelCall(),
-                            new Promise((_, reject) => setTimeout(reject, cancelTimeout)),
-                        ]).catch(() => this.acquire());
-                    }
-
-                    await this.getFeatures();
-                }
-            } catch (error) {
-                _log.warn('Device._runInner error: ', error.message);
-
-                return Promise.reject(
-                    ERRORS.TypedError(
-                        'Device_InitializeFailed',
-                        `Initialize failed: ${error.message}${
-                            error.code ? `, code: ${error.code}` : ''
-                        }`,
-                    ),
-                );
-            }
+            await this.initialize(!!options.useCardanoDerivation);
         }
 
-        if (!options.skipFirmwareChecks) {
-            await this.checkFirmwareHashWithRetries();
-            await this.checkFirmwareRevisionWithRetries();
-        }
-
-        if (
-            !options.skipLanguageChecks &&
-            this.features?.language &&
-            !this.features.language_version_matches &&
-            this.atLeast('2.7.0')
-        ) {
-            _log.info('language version mismatch. silently updating...');
-
-            try {
-                await this.changeLanguage({ language: this.features.language });
-            } catch (err) {
-                _log.error('change language failed silently', err);
-            }
-        }
+        await this.doChecks();
 
         // if keepSession is set do not release device
         // until method with keepSession: false will be called
@@ -577,13 +575,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         // call inner function
-        if (fn) {
-            await fn();
+        await fn();
 
-            // reload features
-            if (!options.skipFinalReload) {
-                await this.getFeatures();
-            }
+        // reload features
+        if (!options.skipFinalReload) {
+            await this.getFeatures();
         }
 
         if (
