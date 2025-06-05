@@ -4,6 +4,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import {
     selectBioAuthEnabled,
+    selectIsBioAuthAvailableStateKnown,
     selectIsBioAuthValidationRequested,
     selectIsRequestingBioAuthChange,
 } from 'src/reducers/bioAuth';
@@ -73,5 +74,17 @@ export const requestBioAuthValidationThunk = createThunk(
         } finally {
             dispatch(bioAuthActions.toggleBioAuthValidationRequested(false));
         }
+    },
+);
+
+export const checkBioAuthAvailableThunk = createThunk(
+    `${BIO_AUTH_PREFIX}/checkBioAuthAvailableThunk`,
+    async (_, { dispatch, getState }) => {
+        if (selectIsBioAuthAvailableStateKnown(getState())) {
+            return;
+        }
+
+        const isAvailable = await desktopApi.isBioAuthAvailable();
+        dispatch(bioAuthActions.setBioAuthAvailable(isAvailable));
     },
 );

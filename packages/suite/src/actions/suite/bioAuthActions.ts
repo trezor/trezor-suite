@@ -38,10 +38,15 @@ const toggleBioAuthValidationRequested = createAction(
     }),
 );
 
+const setBioAuthAvailable = createAction(BIOAUTH.SET_BIO_AUTH_AVAILABLE, (payload: boolean) => ({
+    payload,
+}));
+
 export const bioAuthActions = {
     setBioAuthEnabled,
     requestBioAuthChange,
     requestBioAuthChangeEnd,
+    setBioAuthAvailable,
     bioAuthValidated,
     bioAuthWindowBlur,
     bioAuthWindowFocus,

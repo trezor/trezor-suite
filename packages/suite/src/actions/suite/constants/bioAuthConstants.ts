@@ -5,3 +5,4 @@ export const REQUEST_BIO_AUTH_VALIDATED = '@bioAuth/request-bio-auth-validated';
 export const BIO_AUTH_WINDOW_BLUR = '@bioAuth/bio-auth-window-blur';
 export const BIO_AUTH_WINDOW_FOCUS = '@bioAuth/bio-auth-window-focus';
 export const TOGGLE_BIO_AUTH_VALIDATION_REQUESTED = '@bioAuth/toggle-bio-auth-validation-requested';
+export const SET_BIO_AUTH_AVAILABLE = '@bioAuth/set-bio-auth-available';

@@ -130,6 +130,7 @@ export interface InvokeChannels {
 
     // bio auth
     'bio-auth/authenticate': () => InvokeResult;
+    'bio-auth/is-available': () => InvokeResult<boolean>;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;

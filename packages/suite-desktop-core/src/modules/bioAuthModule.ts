@@ -22,7 +22,7 @@ const loadWin = () => {
         }
 
         try {
-            const verificationResult = await Passport.requestVerification('Verify your identity');
+            const verificationResult = await Passport.requestVerification(PROMPT_REASON);
 
             if (verificationResult !== VerificationResult.Verified) {
                 throw new Error('WIN: bioAuth validation failed');
@@ -31,6 +31,21 @@ const loadWin = () => {
             return { success: true };
         } catch (error) {
             console.error('WIN: bioAuth validation failed', error);
+
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error',
+            };
+        }
+    });
+
+    electronIpcMain.handle('bio-auth/is-available', () => {
+        try {
+            const available = Passport.available();
+
+            return { success: true, payload: available };
+        } catch (error) {
+            console.error('WIN: bioAuth isAvailable failed', error);
 
             return {
                 success: false,
@@ -67,6 +82,21 @@ const loadMac = () => {
             };
         }
     });
+
+    electronIpcMain.handle('bio-auth/is-available', async () => {
+        try {
+            const canPromptTouchID = await systemPreferences.canPromptTouchID();
+
+            return { success: true, payload: canPromptTouchID };
+        } catch (error) {
+            console.error('MAC: bioAuth isAvailable failed', error);
+
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'TouchID not available',
+            };
+        }
+    });
 };
 
 export const initBioAuthModule: BioAuthModule = _dependencies => {
@@ -92,6 +122,7 @@ export const initBioAuthModule: BioAuthModule = _dependencies => {
         const { logger } = global;
         logger.info('bioAuth', 'Stopping (app quit)');
         electronIpcMain.removeHandler('bio-auth/authenticate');
+        electronIpcMain.removeHandler('bio-auth/is-available');
         loaded = false;
     };
 

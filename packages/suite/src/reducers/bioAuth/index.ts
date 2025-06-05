@@ -12,6 +12,7 @@ export interface BioAuthState {
     bioAuthValidationInProgress: boolean;
     bioAuthValidationRequested: boolean;
     windowBlurred: boolean;
+    bioAuthAvailable: boolean | null;
 }
 
 export const bioAuthPersistedWhitelist = ['bioAuthEnabled'];
@@ -28,6 +29,7 @@ const initialState: BioAuthState = {
     bioAuthValidationInProgress: false,
     bioAuthValidationRequested: false,
     windowBlurred: false,
+    bioAuthAvailable: null,
 };
 
 const isBlurredTooLong = ({
@@ -88,6 +90,9 @@ export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
             })
             .addCase(bioAuthActions.toggleBioAuthValidationRequested, (state, action) => {
                 state.bioAuthValidationRequested = action.payload;
+            })
+            .addCase(bioAuthActions.setBioAuthAvailable, (state, action) => {
+                state.bioAuthAvailable = action.payload;
             });
     },
 );
@@ -145,3 +150,9 @@ export const selectIsAppUiHidden = (state: BioAuthRootState) => {
 
 export const selectIsWindowFocused = (state: BioAuthRootState) =>
     !selectBioAuthState(state).windowBlurred;
+
+export const selectIsBioAuthAvailableStateKnown = (state: BioAuthRootState) =>
+    selectBioAuthState(state).bioAuthAvailable !== null;
+
+export const selectIsBioAuthAvailable = (state: BioAuthRootState) =>
+    Boolean(selectBioAuthState(state).bioAuthAvailable);

@@ -8595,6 +8595,18 @@ export default defineMessages({
         description: 'Coinjoin account navigation button tooltip during discovery',
         defaultMessage: 'Unavailable while loading',
     },
+    TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP: {
+        id: 'TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP',
+        description:
+            'The tooltip content to tell users that the bio auth availability state is available',
+        defaultMessage: 'Checking if biometric authentication is available.',
+    },
+    TR_BIO_AUTH_UNAVAILABLE_TOOLTIP: {
+        id: 'TR_BIO_AUTH_UNAVAILABLE_TOOLTIP',
+        description:
+            "The tooltip content to tell the user why he can't turn on biometric authentication",
+        defaultMessage: 'Biometric authentication is not available on your device.',
+    },
     TR_VIEW_ALL: {
         id: 'TR_VIEW_ALL',
         description: 'Button opening changelog',
