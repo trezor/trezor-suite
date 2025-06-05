@@ -152,6 +152,7 @@ export const init =
                 email: 'info@trezor.io',
                 appUrl: '@trezor/connect-explorer',
                 appName: 'Trezor Connect Explorer',
+                appIcon: 'https://trezor.io/favicon/apple-touch-icon.png',
             },
             trustedHost: false,
             connectSrc: window.__TREZOR_CONNECT_SRC,
