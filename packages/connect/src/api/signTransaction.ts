@@ -68,7 +68,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'overwintered', type: 'boolean' },
             { name: 'versionGroupId', type: 'number' },
             { name: 'branchId', type: 'number' },
-            { name: 'decredStakingTicket', type: 'boolean' },
             { name: 'push', type: 'boolean' },
             { name: 'preauthorized', type: 'boolean' },
             { name: 'amountUnit', type: ['number', 'string'] },
@@ -166,7 +165,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 overwintered: payload.overwintered,
                 version_group_id: payload.versionGroupId,
                 branch_id: payload.branchId,
-                decred_staking_ticket: payload.decredStakingTicket,
                 amount_unit: payload.amountUnit,
                 serialize: payload.serialize,
                 coinjoin_request: payload.coinjoinRequest,
@@ -346,21 +344,16 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             return response;
         }
 
-        let bitcoinTx: ReturnType<typeof verifyTx> | undefined;
-        if (params.options.decred_staking_ticket) {
-            // do nothing, tx verification removed for the sake of simplicity
-        } else {
-            bitcoinTx = verifyTx(response.serializedTx, {
-                inputs,
-                outputs,
-                outputScripts,
-                network: coinInfo.network,
-            });
-            if (bitcoinTx.hasWitnesses()) {
-                response.witnesses = bitcoinTx.ins.map((_, i) =>
-                    bitcoinTx?.getWitness(i)?.toString('hex'),
-                );
-            }
+        const bitcoinTx = verifyTx(response.serializedTx, {
+            inputs,
+            outputs,
+            outputScripts,
+            network: coinInfo.network,
+        });
+        if (bitcoinTx.hasWitnesses()) {
+            response.witnesses = bitcoinTx.ins.map((_, i) =>
+                bitcoinTx?.getWitness(i)?.toString('hex'),
+            );
         }
 
         if (bitcoinTx && params.addresses) {

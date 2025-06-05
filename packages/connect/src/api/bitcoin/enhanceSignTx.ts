@@ -31,42 +31,6 @@ export const enhanceSignTx = (
             }
         }
     }
-    // komodo
-    if (coinInfo.shortcut === 'KMD') {
-        if (typeof options.overwintered !== 'boolean') {
-            options.overwintered = true;
-        }
-        if (typeof options.version !== 'number') {
-            options.version = 4;
-        }
-        if (typeof options.version_group_id !== 'number') {
-            options.version_group_id = 0x892f2085;
-        }
-        if (typeof options.branch_id !== 'number') {
-            options.branch_id = 0x76b809bb;
-        }
-    }
-    // koto
-    if (coinInfo.shortcut === 'KOTO') {
-        if (typeof options.overwintered !== 'boolean') {
-            options.overwintered = true;
-        }
-        if (typeof options.version !== 'number') {
-            options.version = 4;
-        }
-        if (typeof options.version_group_id !== 'number') {
-            options.version_group_id = 0x892f2085;
-        }
-        if (typeof options.branch_id !== 'number') {
-            options.branch_id = 0x2bb40e60;
-        }
-    }
-    // peercoin
-    if (coinInfo.shortcut === 'PPC' || coinInfo.shortcut === 'tPPC') {
-        if (typeof options.timestamp !== 'number') {
-            options.timestamp = Math.round(new Date().getTime() / 1000);
-        }
-    }
 
     return options;
 };

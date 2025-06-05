@@ -139,7 +139,6 @@ const transformOrigTransaction = (
             script_type: getScriptType(currentInput.address_n),
             multisig: undefined, // TODO
             amount: currentInput.amount,
-            decred_tree: undefined, // TODO
             witness: tx.getWitness(i)?.toString('hex'),
             ownership_proof: undefined, // TODO
             commitment_data: undefined, // TODO
@@ -340,12 +339,10 @@ export const validateReferencedTransactions = ({
                 prev_index: input.prev_index,
                 script_sig: input.script_sig,
                 sequence: input.sequence,
-                decred_tree: input.decred_tree,
             })),
             bin_outputs: tx.bin_outputs.map(output => ({
                 amount: output.amount,
                 script_pubkey: output.script_pubkey,
-                decred_script_version: output.decred_script_version,
             })),
         };
     });

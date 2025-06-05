@@ -55,10 +55,10 @@ export const paramDescriptions = {
         'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).\n' +
         "> If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.\n" +
         '> Since Firmware 2.3.0/1.9.0 referenced transactions are required.\n' +
-        '> Zcash and Komodo refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.',
+        '> Zcash refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.',
     locktime: '',
     version: 'transaction version,',
-    expiry: 'only for Decred and Zcash,',
+    expiry: 'only for Zcash,',
     versionGroupId: 'only for Zcash, nVersionGroupId when overwintered is set,',
     overwintered: 'only for Zcash',
     timestamp: 'only for Capricoin, transaction timestamp,',
