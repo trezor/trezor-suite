@@ -421,7 +421,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const getHDNode = (address_n: number[]) =>
             device.getCommands().getHDNode({ address_n }, { coinInfo: params.coinInfo });
 
-        await verifyTx(getHDNode, inputs, outputs, response.serializedTx, coinInfo);
+        await verifyTx(response.serializedTx, { inputs, outputs, coinInfo }, { getHDNode });
 
         if (params.push) {
             const blockchain = await this.getBlockchain();

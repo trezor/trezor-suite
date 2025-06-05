@@ -101,12 +101,18 @@ const deriveOutputScript = async (
 };
 
 export const verifyTx = async (
-    getHDNode: GetHDNode,
-    inputs: PROTO.TxInputType[],
-    outputs: PROTO.TxOutputType[],
     serializedTx: string,
-    coinInfo: BitcoinNetworkInfo,
+    params: {
+        inputs: PROTO.TxInputType[];
+        outputs: PROTO.TxOutputType[];
+        coinInfo: BitcoinNetworkInfo;
+    },
+    context: {
+        getHDNode: GetHDNode;
+    },
 ) => {
+    const { inputs, outputs, coinInfo } = params;
+    const { getHDNode } = context;
     // deserialize signed transaction
     const bitcoinTx = BitcoinJsTransaction.fromHex(serializedTx, { network: coinInfo.network });
 
@@ -143,12 +149,19 @@ export const verifyTx = async (
 };
 
 export const verifyTicketTx = async (
-    getHDNode: GetHDNode,
-    inputs: PROTO.TxInputType[],
-    outputs: PROTO.TxOutputType[],
     serializedTx: string,
-    coinInfo: BitcoinNetworkInfo,
+    params: {
+        inputs: PROTO.TxInputType[];
+        outputs: PROTO.TxOutputType[];
+        coinInfo: BitcoinNetworkInfo;
+    },
+    context: {
+        getHDNode: GetHDNode;
+    },
 ) => {
+    const { inputs, outputs, coinInfo } = params;
+    const { getHDNode } = context;
+
     // deserialize signed transaction
     const bitcoinTx = BitcoinJsTransaction.fromHex(serializedTx, { network: coinInfo.network });
 
