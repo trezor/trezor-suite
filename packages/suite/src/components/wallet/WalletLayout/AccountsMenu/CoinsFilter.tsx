@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
@@ -6,7 +8,8 @@ import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components'
 import { CoinLogo } from '@trezor/product-components';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { useAccountSearch } from 'src/hooks/suite';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
+
 
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 
@@ -46,6 +49,22 @@ const Container = styled.div`
 export const CoinsFilter = () => {
     const { coinFilter, setCoinFilter } = useAccountSearch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
+
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    useEffect(() => {
+        // reset the coinFilter if users selects an account that does not match the current coinFilter
+        if (
+            selectedAccount.status !== 'none' &&
+            coinFilter !== undefined &&
+            selectedAccount.network?.symbol !== coinFilter
+        ) {
+            console.log(selectedAccount)
+            setCoinFilter(undefined);
+        }
+        // we intentionally omit coinFilter from dependencies to avoid resetting user selection.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedAccount, setCoinFilter]);
 
     const coinAnimcationConfig: MotionProps = {
         initial: {
