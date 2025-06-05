@@ -134,22 +134,7 @@ while IFS= read -r line; do
     if ((size == 0)); then
       formatted_size="0 B"
     else
-      units=("B" "KB" "MB" "GB" "TB")
-      power=0
-      size_num=$size
-
-      while ((size_num >= 1024 && power < 4)); do
-        size_num=$((size_num / 1024))
-        ((power++))
-      done
-
-      if ((power > 0)); then
-        # Calculate size in the appropriate unit without using bc
-        size_in_unit=$((size / (1024 ** power)))
-        formatted_size="$size_in_unit ${units[$power]}"
-      else
-        formatted_size="$size ${units[$power]}"
-      fi
+      formatted_size=$(numfmt --to=iec-i --suffix=B --format="%.1f" "$size")
     fi
 
     printf "        <tr>\n            <td class=\"file\"><a href=\"%s\">%s</a></td>\n            <td class=\"size\">%s</td>\n        </tr>\n" "$filename" "$filename" "$formatted_size" >>"$TEMP_FILE"
