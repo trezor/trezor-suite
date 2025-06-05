@@ -156,6 +156,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
     };
 
     return {
+        maxUrlLength: 2048,
         type: currentValues.type,
         urls: currentValues.urls,
         input,
