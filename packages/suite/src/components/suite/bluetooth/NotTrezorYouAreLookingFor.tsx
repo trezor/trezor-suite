@@ -1,17 +1,10 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
-import { Collapsible, Flex, Icon, Link, Row, Text } from '@trezor/components';
+import { Collapsible, Flex, Link, Row, Text } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';
 
 import { BluetoothTips } from './BluetoothTips';
 import { Translation } from '../Translation';
-
-const Toggle = styled.div`
-    transition: opacity 0.15s;
-    cursor: pointer;
-`;
 
 type NotTrezorYouAreLookingForProps = {
     onReScanClick: () => void;
@@ -24,15 +17,13 @@ export const NotTrezorYouAreLookingFor = ({ onReScanClick }: NotTrezorYouAreLook
         <Collapsible isOpen={showTips}>
             <Collapsible.Toggle>
                 <Row justifyContent="center" flex="1" margin={{ bottom: spacings.xs }}>
-                    <Row onClick={() => setShowTips(!showTips)} gap={spacings.xs}>
+                    <Row onClick={() => setShowTips(prev => !prev)} gap={spacings.xs}>
                         <Link typographyStyle="hint" variant="underline">
                             <Text variant="tertiary">
                                 <Translation id="TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR" />
                             </Text>
                         </Link>
-                        <Toggle>
-                            <Icon name={showTips ? 'caretUp' : 'caretDown'} variant="tertiary" />
-                        </Toggle>
+                        <Collapsible.ToggleIcon isOpen={showTips} />
                     </Row>
                 </Row>
             </Collapsible.Toggle>

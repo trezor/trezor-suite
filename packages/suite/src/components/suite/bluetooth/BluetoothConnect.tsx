@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
     bluetoothActions,
@@ -13,6 +13,7 @@ import { BluetoothLoading } from './BluetoothLoading';
 import { BluetoothPairingPin } from './BluetoothPairingPin';
 import { BluetoothScanningList } from './BluetoothScanningList';
 import { BluetoothSelectedDevice } from './BluetoothSelectedDevice';
+import { BluetoothConnectUiMode } from './bluetoothTypes';
 import { BluetoothDeniedForSuite } from './errors/BluetoothDeniedForSuite';
 import { BluetoothNotEnabled } from './errors/BluetoothNotEnabled';
 import { BluetoothVersionNotCompatible } from './errors/BluetoothVersionNotCompatible';
@@ -28,7 +29,7 @@ const SCAN_TIMEOUT = 30_000;
 const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS = 30;
 
 type BluetoothConnectProps = {
-    uiMode: 'spatial' | 'card';
+    uiMode: BluetoothConnectUiMode;
 };
 
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
@@ -38,19 +39,20 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
 
     const [waitingForFirstUpdate, setWaitingForFirstUpdate] = useState<boolean>(true);
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
-    const [scannerTimerId, setScannerTimerId] = useState<TimerId | null>(null);
+
+    const scannerTimerId = useRef<TimerId | null>(null);
 
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const allDevices = useSelector(selectAllDevices);
     const knownDevices = useSelector(selectKnownDevices);
     const nearbyDevices = useSelector(selectNearbyDevices);
 
-    const lasUpdatedBoundaryTimestamp =
+    const lastUpdatedBoundaryTimestamp =
         Date.now() / 1000 - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS;
 
     const devices = allDevices.filter(it => {
         const isDeviceUnresponsiveForTooLong =
-            it.lastUpdatedTimestamp < lasUpdatedBoundaryTimestamp;
+            it.lastUpdatedTimestamp < lastUpdatedBoundaryTimestamp;
 
         if (isDeviceUnresponsiveForTooLong) {
             // If the device is connected or paired (it may have been paired in the OS system directly)
@@ -59,7 +61,7 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
             return (
                 it.connected ||
                 it.paired ||
-                knownDevices.find(knownDevice => knownDevice.id === it.id) !== undefined
+                knownDevices.some(knownDevice => knownDevice.id === it.id)
             );
         }
 
@@ -79,34 +81,35 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
         };
     }, [dispatch]);
 
-    const clearScamTimer = useCallback(() => {
-        if (scannerTimerId !== null) {
-            clearTimeout(scannerTimerId);
+    const clearScanTimer = useCallback(() => {
+        if (scannerTimerId.current !== null) {
+            clearTimeout(scannerTimerId.current);
         }
-    }, [scannerTimerId]);
+    }, []);
 
     useEffect(() => {
-        // Intentionally no `clearScamTimer`, this is first run and if we use this we would create infinite re-render
-        const timerId = setTimeout(() => {
+        scannerTimerId.current = setTimeout(() => {
             dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
 
-        setScannerTimerId(timerId);
-    }, [dispatch]);
+        return clearScanTimer;
+    }, [dispatch, clearScanTimer]);
 
     useEffect(() => {
         if (devices.length > 0) {
-            clearScamTimer();
+            clearScanTimer();
             dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }
-    }, [devices, dispatch, clearScamTimer]);
+    }, [devices, dispatch, clearScanTimer]);
 
     // When we have some knownDevices, it may happen that we get empty nearbyDevices first and then,
-    // in split second we get the update and there are some nearbyDevices present.
+    // in split second, we get the update and there are some nearbyDevices present.
     // Device in knownDevices but not in the nearbyDevices is recognized as to-be-deleted,
     // and ui flickers. This small loading is here to hide that.
     useEffect(() => {
-        setTimeout(() => setWaitingForFirstUpdate(false), 100);
+        const timeoutHandle = setTimeout(() => setWaitingForFirstUpdate(false), 100);
+
+        return () => clearTimeout(timeoutHandle);
     }, [setWaitingForFirstUpdate]);
 
     const onClose = () => {
@@ -117,11 +120,10 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
         setSelectedDeviceId(null);
         dispatch(bluetoothActions.scanStatusAction({ status: 'running' }));
 
-        clearScamTimer();
-        const timerId = setTimeout(() => {
+        clearScanTimer();
+        scannerTimerId.current = setTimeout(() => {
             dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
-        setScannerTimerId(timerId);
     };
 
     if (bluetoothAdapterStatus === 'disabled') {

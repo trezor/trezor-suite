@@ -5,11 +5,12 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from '../../Translation';
 import { BluetoothDialogCard } from '../BluetoothDialogCard';
+import { BluetoothConnectUiMode } from '../bluetoothTypes';
 
 type BluetoothErrorDialog = {
     header: ReactNode;
     children: ReactNode;
-    uiMode: 'spatial' | 'card';
+    uiMode: BluetoothConnectUiMode;
     buttons?: ReactNode;
 };
 

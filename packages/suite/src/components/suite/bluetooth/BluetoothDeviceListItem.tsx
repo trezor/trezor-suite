@@ -28,30 +28,71 @@ const labelMap: Record<DeviceBluetoothConnectionStatusType, TranslationKey | nul
 const LOADING_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'connecting'];
 const DISABLED_STATUSES: DeviceBluetoothConnectionStatusType[] = ['pairing', 'connecting'];
 
-type BluetoothDeviceItemProps = {
+type GhostDeviceActionButtonProps = {
     device: DesktopBluetoothDevice;
-    onConnect: (deviceId: string) => Promise<void>;
+    isConnectingDevice: boolean;
+    isLoading: boolean;
 };
 
-export const BluetoothDeviceListItem = ({ device, onConnect }: BluetoothDeviceItemProps) => {
+const GhostDeviceActionButton = ({
+    device,
+    isLoading,
+    isConnectingDevice,
+}: GhostDeviceActionButtonProps) => {
     const dispatch = useDispatch();
-
-    const nearbyDevices = useSelector(selectNearbyDevices);
-    const isNearbyDevice = (nearbyDevices ?? []).find(
-        nearbyDevice => nearbyDevice.id === device.id,
-    );
-    const knownDevices = useSelector(selectKnownDevices);
-    const isKnownDevice = knownDevices.find(knownDevice => knownDevice.id === device.id);
-
-    const connectingDevicesIds = useSelector(selectConnectingDevices);
-    const isConnectingDevice = connectingDevicesIds.includes(device.id);
-
-    const [isLoading, setIsLoading] = useState(false);
+    const handleDelete = () => {
+        dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
+    };
 
     const isDisabled =
         DISABLED_STATUSES.includes(device.connectionStatus.type) || isConnectingDevice;
 
+    return (
+        <Button
+            variant="warning"
+            size="small"
+            margin={{ vertical: spacings.xxs }}
+            isDisabled={isDisabled}
+            isLoading={isLoading}
+            onClick={handleDelete}
+        >
+            <Translation id="TR_REMOVE" />
+        </Button>
+    );
+};
+
+type ActionButtonProps = {
+    isGhostDevice: boolean;
+    device: DesktopBluetoothDevice;
+    onConnect: (deviceId: string) => Promise<void>;
+};
+
+const ActionButton = ({ isGhostDevice, device, onConnect }: ActionButtonProps) => {
+    const [isLoadingLocal, setIsLoadingLocal] = useState(false);
+
+    const connectingDevicesIds = useSelector(selectConnectingDevices);
+    const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
+
     const isGlobalLoading = LOADING_STATUSES.includes(device.connectionStatus.type);
+    const isLoading = isLoadingLocal || isGlobalLoading;
+    const buttonLabel =
+        labelMap[isSuiteTryingToConnectToDevice ? 'connecting' : device.connectionStatus.type];
+
+    if (buttonLabel === null) {
+        return null;
+    }
+
+    if (isGhostDevice) {
+        return (
+            <Row gap={spacings.xs}>
+                <GhostDeviceActionButton
+                    device={device}
+                    isLoading={isLoading}
+                    isConnectingDevice={isSuiteTryingToConnectToDevice}
+                />
+            </Row>
+        );
+    }
 
     const onClickMap: Record<
         DeviceBluetoothConnectionStatusType,
@@ -66,19 +107,42 @@ export const BluetoothDeviceListItem = ({ device, onConnect }: BluetoothDeviceIt
         pairing: undefined,
     };
 
-    const handleOnclick = onClickMap[device.connectionStatus.type];
+    const onClickAction = onClickMap[device.connectionStatus.type];
 
     const handleOnClick = async () => {
-        setIsLoading(true);
-        await handleOnclick?.();
-        setIsLoading(false);
+        setIsLoadingLocal(true);
+        await onClickAction?.();
+        setIsLoadingLocal(false);
     };
 
-    const handleDelete = () => {
-        dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
-    };
+    return (
+        <Row gap={spacings.xs}>
+            <Button
+                variant="primary"
+                size="small"
+                margin={{ vertical: spacings.xxs }}
+                isDisabled={onClickAction === undefined}
+                isLoading={isLoading}
+                onClick={handleOnClick}
+            >
+                <Translation id={buttonLabel} />
+            </Button>
+        </Row>
+    );
+};
 
-    const buttonLabel = labelMap[isConnectingDevice ? 'connecting' : device.connectionStatus.type];
+type BluetoothDeviceItemProps = {
+    device: DesktopBluetoothDevice;
+    onConnect: (deviceId: string) => Promise<void>;
+};
+
+export const BluetoothDeviceListItem = ({ device, onConnect }: BluetoothDeviceItemProps) => {
+    const nearbyDevices = useSelector(selectNearbyDevices);
+    const isNearbyDevice = (nearbyDevices ?? []).some(
+        nearbyDevice => nearbyDevice.id === device.id,
+    );
+    const knownDevices = useSelector(selectKnownDevices);
+    const isKnownDevice = knownDevices.some(knownDevice => knownDevice.id === device.id);
 
     const isGhostDevice = isKnownDevice && !isNearbyDevice;
 
@@ -87,33 +151,12 @@ export const BluetoothDeviceListItem = ({ device, onConnect }: BluetoothDeviceIt
             <Column gap={spacings.xs}>
                 <Row gap={spacings.md} alignItems="center">
                     <BluetoothDeviceComponent device={device} flex="1" />
-                    {buttonLabel !== null ? (
-                        <Row gap={spacings.xs}>
-                            {isGhostDevice ? (
-                                <Button
-                                    variant="warning"
-                                    size="small"
-                                    margin={{ vertical: spacings.xxs }}
-                                    isDisabled={isDisabled || handleOnclick === undefined}
-                                    isLoading={isLoading || isGlobalLoading}
-                                    onClick={handleDelete}
-                                >
-                                    <Translation id="TR_REMOVE" />
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant="primary"
-                                    size="small"
-                                    margin={{ vertical: spacings.xxs }}
-                                    isDisabled={isDisabled || handleOnclick === undefined}
-                                    isLoading={isLoading || isGlobalLoading}
-                                    onClick={handleOnClick}
-                                >
-                                    <Translation id={buttonLabel} />
-                                </Button>
-                            )}
-                        </Row>
-                    ) : null}
+
+                    <ActionButton
+                        isGhostDevice={isGhostDevice}
+                        device={device}
+                        onConnect={onConnect}
+                    />
                 </Row>
                 {isGhostDevice && (
                     <Banner variant="warning">

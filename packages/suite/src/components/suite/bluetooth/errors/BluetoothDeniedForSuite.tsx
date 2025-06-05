@@ -5,10 +5,11 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { BluetoothErrorDialog } from './BluetoothErrorDialog';
 import { Translation } from '../../Translation';
+import { BluetoothConnectUiMode } from '../bluetoothTypes';
 
 type BluetoothDeniedForSuiteProps = {
     onCancel: () => void;
-    uiMode: 'spatial' | 'card';
+    uiMode: BluetoothConnectUiMode;
 };
 
 export const BluetoothDeniedForSuite = ({ onCancel, uiMode }: BluetoothDeniedForSuiteProps) => {

@@ -2,10 +2,11 @@ import { Button, Text } from '@trezor/components';
 
 import { BluetoothErrorDialog } from './BluetoothErrorDialog';
 import { Translation } from '../../Translation';
+import { BluetoothConnectUiMode } from '../bluetoothTypes';
 
 type BluetoothVersionNotCompatibleProps = {
     onCancel: () => void;
-    uiMode: 'spatial' | 'card';
+    uiMode: BluetoothConnectUiMode;
 };
 
 export const BluetoothVersionNotCompatible = ({

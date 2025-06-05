@@ -11,10 +11,7 @@ type BluetoothScanHeaderProps = {
 };
 
 export const BluetoothDialogHeader = ({ children, onClose }: BluetoothScanHeaderProps) => (
-    <Row
-        justifyContent="space-between"
-        margin={{ top: spacings.sm, left: spacings.lg, right: spacings.lg }}
-    >
+    <Row justifyContent="space-between" margin={{ top: spacings.sm, horizontal: spacings.lg }}>
         <Row gap={spacings.lg}>{children}</Row>
         {onClose && (
             <Button size="tiny" variant="tertiary" onClick={onClose}>

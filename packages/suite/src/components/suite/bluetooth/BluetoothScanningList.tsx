@@ -9,10 +9,11 @@ import { BluetoothTips } from './BluetoothTips';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
 import { Translation } from '../Translation';
+import { BluetoothConnectUiMode } from './bluetoothTypes';
 
 type BluetoothScanningListProps = {
     devices: DesktopBluetoothDevice[];
-    uiMode: 'spatial' | 'card';
+    uiMode: BluetoothConnectUiMode;
     onConnect: (deviceId: string) => Promise<void>;
     onClose: () => void;
     onReScanClick: () => void;
@@ -37,12 +38,7 @@ export const BluetoothScanningList = ({
             header={<Translation id="TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN" />}
         />
     ) : (
-        <BluetoothDeviceList
-            isDisabled={false}
-            onConnect={onConnect}
-            deviceList={devices}
-            isScanning={isScanning}
-        />
+        <BluetoothDeviceList onConnect={onConnect} deviceList={devices} isScanning={isScanning} />
     );
 
     return (

@@ -19,7 +19,6 @@ type BluetoothDeviceListProps = {
     deviceList: DesktopBluetoothDevice[];
     onConnect: (deviceId: string) => Promise<void>;
     isScanning: boolean;
-    isDisabled: boolean;
 };
 
 export const BluetoothDeviceList = ({

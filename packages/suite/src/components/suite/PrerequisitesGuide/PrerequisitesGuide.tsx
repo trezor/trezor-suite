@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { bluetoothActions, selectIsBluetoothListOpen } from '@suite-common/bluetooth';
 import {
     deviceNeedsAttention,
     getStatus,
@@ -38,6 +39,7 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { Transport } from './Transport';
+import { BluetoothConnect } from '../bluetooth/BluetoothConnect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,11 +52,11 @@ const BottomAnimatedContainer = styled(motion.div)`
     display: flex;
 `;
 
-const Bluetooth = () => (
+const BluetoothWrapper = ({ children }: PropsWithChildren) => (
     <ElevationContext baseElevation={-1}>
         {/* Here we need to draw the inner card with elevation -1 (custom design) */}
         <ElevationDown>
-            <Flex width={470}>Here will be the Bluetooth connection dialog</Flex>
+            <Flex width={470}>{children}</Flex>
         </ElevationDown>
     </ElevationContext>
 );
@@ -152,12 +154,19 @@ interface PrerequisitesGuideProps {
 }
 
 export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
-    const [isBluetoothConnectOpen, setIsBluetoothConnectOpen] = useState(false);
+    const isBluetoothConnectOpen = useSelector(selectIsBluetoothListOpen);
+    const dispatch = useDispatch();
+
+    const setIsBluetoothConnectOpen = () => {
+        dispatch(bluetoothActions.setBluetoothListOpen({ isOpen: true }));
+    };
 
     return (
         <Wrapper>
             {isBluetoothConnectOpen ? (
-                <Bluetooth />
+                <BluetoothWrapper>
+                    <BluetoothConnect uiMode="spatial" />
+                </BluetoothWrapper>
             ) : (
                 <NonBluetooth
                     allowSwitchDevice={allowSwitchDevice}

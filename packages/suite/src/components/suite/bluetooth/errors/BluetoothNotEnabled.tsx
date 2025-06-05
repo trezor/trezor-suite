@@ -6,10 +6,11 @@ import { spacings } from '@trezor/theme';
 
 import { BluetoothErrorDialog } from './BluetoothErrorDialog';
 import { Translation } from '../../Translation';
+import { BluetoothConnectUiMode } from '../bluetoothTypes';
 
 type BluetoothNotEnabledProps = {
     onCancel: () => void;
-    uiMode: 'spatial' | 'card';
+    uiMode: BluetoothConnectUiMode;
 };
 
 export const BluetoothNotEnabled = ({ onCancel, uiMode }: BluetoothNotEnabledProps) => {

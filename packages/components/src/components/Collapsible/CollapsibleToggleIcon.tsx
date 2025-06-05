@@ -13,7 +13,7 @@ const IconWrapper = styled.div<{ $isCollapsed?: boolean }>`
 
 type ToggleProps = {
     isOpen: boolean;
-    size: IconProps['size'];
+    size?: IconProps['size'];
     iconName?: IconName;
     'data-testid'?: string;
 };
