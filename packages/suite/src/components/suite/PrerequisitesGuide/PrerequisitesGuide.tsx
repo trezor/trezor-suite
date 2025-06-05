@@ -3,7 +3,6 @@ import { PropsWithChildren, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { bluetoothActions, selectIsBluetoothListOpen } from '@suite-common/bluetooth';
 import {
     deviceNeedsAttention,
     getStatus,
@@ -40,6 +39,8 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { Transport } from './Transport';
+import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
+import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { BluetoothConnect } from '../bluetooth/BluetoothConnect';
 
 const Wrapper = styled.div`
@@ -161,7 +162,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
     const dispatch = useDispatch();
 
     const setIsBluetoothConnectOpen = () => {
-        dispatch(bluetoothActions.setBluetoothListOpen({ isOpen: true }));
+        dispatch(setBluetoothListOpen({ isOpen: true }));
     };
 
     return (

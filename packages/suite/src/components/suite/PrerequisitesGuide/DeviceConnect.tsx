@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 
-import { selectConnectingDevices } from '@suite-common/bluetooth';
 import { Button } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -15,6 +14,7 @@ import {
     TROUBLESHOOTING_TIP_USB,
 } from 'src/components/suite/troubleshooting/tips';
 
+import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from '../../../hooks/suite';
 import { selectHasTransportOfType, selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 import {

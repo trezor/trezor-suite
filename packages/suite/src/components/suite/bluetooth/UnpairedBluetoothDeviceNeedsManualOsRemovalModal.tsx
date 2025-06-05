@@ -1,15 +1,13 @@
 import { useState } from 'react';
 
-import {
-    bluetoothActions,
-    selectUnpairedDeviceNeedsManualOsRemoval,
-} from '@suite-common/bluetooth';
 import { Banner, H3, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
+import { setBluetoothDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothReducer';
+import { selectUnpairedDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
 export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
@@ -27,9 +25,7 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
     };
 
     const onCancel = () => {
-        dispatch(
-            bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: false }),
-        );
+        dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: false }));
     };
 
     if (!wasBluetoothDeviceWiped) {

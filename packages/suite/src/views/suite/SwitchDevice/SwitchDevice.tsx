@@ -1,4 +1,3 @@
-import { bluetoothActions, selectIsBluetoothListOpen } from '@suite-common/bluetooth';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Button, Column, Icon, Row, Text } from '@trezor/components';
@@ -9,6 +8,8 @@ import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
+import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
+import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { BluetoothConnect } from '../../../components/suite/bluetooth/BluetoothConnect';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
@@ -26,7 +27,7 @@ export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
     });
 
     const openBluetoothList = () => {
-        dispatch(bluetoothActions.setBluetoothListOpen({ isOpen: true }));
+        dispatch(setBluetoothListOpen({ isOpen: true }));
     };
 
     return (

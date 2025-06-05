@@ -30,6 +30,8 @@ import type { WindowAction } from 'src/actions/suite/windowActions';
 import type { AppState } from 'src/reducers/store';
 import type { WalletAction } from 'src/types/wallet';
 
+import { bluetoothSlice } from '../../actions/bluetooth/desktopBluetoothReducer';
+
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
 export type { AppState } from 'src/reducers/store';
@@ -71,6 +73,9 @@ type DeviceAuthenticityAction = ReturnType<
     (typeof deviceAuthenticityActions)[keyof typeof deviceAuthenticityActions]
 >;
 type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoothActions]>;
+type BluetoothActionDesktop = ReturnType<
+    (typeof bluetoothSlice.actions)[keyof typeof bluetoothSlice.actions]
+>;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 
@@ -100,6 +105,7 @@ export type Action =
     | DeviceAuthenticityAction
     | ReturnType<typeof addLog>
     | BluetoothAction
+    | BluetoothActionDesktop
     | ThpAction
     | GeolocationAction;
 

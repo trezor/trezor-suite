@@ -15,9 +15,6 @@ export {
     selectAdapterStatus,
     selectScanStatus,
     selectNearbyDevices,
-    selectUnpairedDeviceNeedsManualOsRemoval,
-    selectConnectingDevices,
-    selectIsBluetoothListOpen,
 } from './bluetoothSelectors';
 
 export { parseManufacturerData, serializeManufacturerData } from './manufacturerDataUtils';

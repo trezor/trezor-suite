@@ -12,13 +12,10 @@ const manufacturerData: BluetoothManufacturerData = {
 };
 
 const initialState: BluetoothState<BluetoothDeviceCommon> = {
-    isBluetoothListOpen: false,
     adapterStatus: 'unknown',
     scanStatus: 'idle',
     nearbyDevices: [],
     knownDevices: [],
-    unpairedDeviceNeedsManualOsRemoval: false,
-    connectingDeviceIds: [],
 };
 
 const pairingDeviceStateA: BluetoothDeviceCommon = {

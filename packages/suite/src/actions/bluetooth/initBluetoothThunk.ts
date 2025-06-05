@@ -1,9 +1,4 @@
-import {
-    BLUETOOTH_PREFIX,
-    bluetoothActions,
-    selectConnectingDevices,
-    selectKnownDevices,
-} from '@suite-common/bluetooth';
+import { BLUETOOTH_PREFIX, bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils/';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
@@ -15,6 +10,7 @@ import {
 } from './DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
+import { selectConnectingDevices } from './desktopBluetoothSelectors';
 import { remapKnownDevicesForLinux } from './remapKnownDevicesForLinux';
 import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
@@ -51,8 +47,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
         const attemptDeviceConnect = async ({ device }: { device: DesktopBluetoothDevice }) => {
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
-            const autoConnectingDevices =
-                selectConnectingDevices<DesktopBluetoothDevice>(getState());
+            const autoConnectingDevices = selectConnectingDevices(getState());
 
             if (
                 !device.connected &&

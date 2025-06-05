@@ -22,6 +22,7 @@ import { bluetoothConnectDeviceThunk } from '../../../actions/bluetooth/bluetoot
 import { bluetoothDisconnectDeviceThunk } from '../../../actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { bluetoothStartScanningThunk } from '../../../actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from '../../../actions/bluetooth/bluetoothStopScanningThunk';
+import { setBluetoothListOpen } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import { closeModalApp } from '../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
@@ -113,7 +114,7 @@ export const BluetoothConnect = ({ uiMode }: BluetoothConnectProps) => {
     }, [setWaitingForFirstUpdate]);
 
     const onClose = () => {
-        dispatch(bluetoothActions.setBluetoothListOpen({ isOpen: false }));
+        dispatch(setBluetoothListOpen({ isOpen: false }));
     };
 
     const onReScanClick = () => {

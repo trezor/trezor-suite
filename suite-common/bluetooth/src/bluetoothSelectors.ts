@@ -14,21 +14,9 @@ export const selectAdapterStatus = <T extends BluetoothDeviceCommon>(
 export const selectKnownDevices = <T extends BluetoothDeviceCommon>(state: WithBluetoothState<T>) =>
     state.bluetooth.knownDevices;
 
-export const selectConnectingDevices = <T extends BluetoothDeviceCommon>(
-    state: WithBluetoothState<T>,
-) => state.bluetooth.connectingDeviceIds;
-
 export const selectNearbyDevices = <T extends BluetoothDeviceCommon>(
     state: WithBluetoothState<T>,
 ) => state.bluetooth.nearbyDevices;
-
-export const selectUnpairedDeviceNeedsManualOsRemoval = <T extends BluetoothDeviceCommon>(
-    state: WithBluetoothState<T>,
-) => state.bluetooth.unpairedDeviceNeedsManualOsRemoval;
-
-export const selectIsBluetoothListOpen = <T extends BluetoothDeviceCommon>(
-    state: WithBluetoothState<T>,
-) => state.bluetooth.isBluetoothListOpen;
 
 /**
  * We need to have generic `createWeakMapSelector.withTypes` so we need to wrap it into Higher Order Function,

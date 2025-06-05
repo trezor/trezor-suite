@@ -9,8 +9,9 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import * as DEVICE from 'src/constants/suite/device';
-import { selectIsEntropyCheckEnabled } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
+
+import { selectIsEntropyCheckEnabled } from '../../reducers/suite/suiteReducer';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
