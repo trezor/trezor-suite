@@ -1186,6 +1186,7 @@ export const icons = {
     funnel: require('../assets/funnel.svg'),
     funnelFilled: require('../assets/funnelFilled.svg'),
     funnelSimple: require('../assets/funnelSimple.svg'),
+    funnelSimpleActive: require('../assets/funnelSimpleActive.svg'),
     funnelSimpleFilled: require('../assets/funnelSimpleFilled.svg'),
     gameController: require('../assets/gameController.svg'),
     gameControllerFilled: require('../assets/gameControllerFilled.svg'),

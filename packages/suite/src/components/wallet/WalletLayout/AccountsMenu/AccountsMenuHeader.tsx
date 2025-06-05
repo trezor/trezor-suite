@@ -16,12 +16,14 @@ import { AddAccountButton } from './AddAccountButton';
 import { CoinsFilter } from './CoinsFilter';
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 import { setIsCoinsFilterVisible } from '../../../../actions/suite/suiteActions';
-import { useDiscovery, useDispatch, useSelector } from '../../../../hooks/suite';
+import { useAccountSearch, useDiscovery, useDispatch, useSelector } from '../../../../hooks/suite';
 import { Translation } from '../../../suite';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 
 export const AccountsMenuHeader = () => {
+    const { coinFilter } = useAccountSearch();
+    
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(state => state.wallet.accounts);
     const { discovery } = useDiscovery();
@@ -70,7 +72,7 @@ export const AccountsMenuHeader = () => {
                                         <TextButton
                                             size="small"
                                             variant={isCoinsFilterVisible ? 'primary' : 'tertiary'}
-                                            icon="funnelSimple"
+                                            icon={coinFilter ? 'funnelSimpleActive' : 'funnelSimple'}
                                             onClick={toggleCoinsFilter}
                                             data-testid="@account-menu/filter-accounts"
                                         />
