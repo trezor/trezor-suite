@@ -53,6 +53,12 @@ export const useRedirectOnPassphraseCompletion = () => {
     ]);
 
     useEffect(() => {
+        if (hasPassphraseError) {
+            navigateToInitialScreen();
+        }
+    }, [hasPassphraseError, navigateToInitialScreen]);
+
+    useEffect(() => {
         // User has canceled the authorization process on device (authorizeDeviceThunk rejects with auth-failed error)
         if (hasVerificationCancelledError && device) {
             analytics.report({
