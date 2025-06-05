@@ -7,12 +7,12 @@ import {
     selectDeviceByState,
     selectHasOnlyEmptyPortfolioTracker,
 } from '@suite-common/wallet-core';
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
 
-import { ConnectionDot } from './ConnectionDot';
+import { DeviceConnectionStatus } from './DeviceConnectionStatus';
 
 export type SimpleDeviceItemContentProps = {
     deviceState: TrezorDevice['state'] | undefined;
@@ -73,21 +73,7 @@ export const SimpleDeviceItemContent = React.memo(
                         </Text>
                     )}
                     {isConnectionStateVisible && (
-                        <HStack alignItems="center" spacing="sp8">
-                            <ConnectionDot isConnected={deviceIsConnected} />
-                            <Text
-                                variant="hint"
-                                color={deviceIsConnected ? 'textSecondaryHighlight' : 'textSubdued'}
-                            >
-                                <Translation
-                                    id={
-                                        deviceIsConnected
-                                            ? 'deviceManager.status.connected'
-                                            : 'deviceManager.status.disconnected'
-                                    }
-                                />
-                            </Text>
-                        </HStack>
+                        <DeviceConnectionStatus isConnected={deviceIsConnected} />
                     )}
                 </Box>
             </>

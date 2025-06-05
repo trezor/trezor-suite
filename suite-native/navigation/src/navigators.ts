@@ -219,6 +219,7 @@ export type WipeDeviceStackParamList = {
     [WipeDeviceStackRoutes.WipeDevice]: undefined;
     [WipeDeviceStackRoutes.ContinueOnTrezor]: undefined;
     [WipeDeviceStackRoutes.WipeDeviceLoadingScreen]: undefined;
+    [WipeDeviceStackRoutes.FactoryReset]: undefined;
 };
 
 export type DeviceNameStackParamList = {

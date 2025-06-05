@@ -106,6 +106,7 @@ export enum WipeDeviceStackRoutes {
     WipeDevice = 'WipeDevice',
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
+    FactoryReset = 'FactoryReset',
 }
 
 export enum DeviceNameStackRoutes {

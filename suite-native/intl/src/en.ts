@@ -666,6 +666,10 @@ export const en = {
             loadingSuccessScreen: {
                 title: 'Device wiped',
             },
+            factoryResetScreen: {
+                title: 'Factory reset',
+                description: 'This will reset all of your device’s data. Proceed with caution.',
+            },
         },
         bluetooth: {
             title: 'Bluetooth',
@@ -1516,6 +1520,7 @@ export const en = {
             portfolioTracker: 'Track your coins without Trezor',
             connected: 'Connected',
             disconnected: 'Disconnected',
+            bootloader: 'Bootloader mode',
         },
         syncCoinsButton: {
             syncMyCoins: 'Sync my coins',
