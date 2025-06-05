@@ -37,9 +37,7 @@ const TradingScreenContent = () => {
                 type: EventType.TradingSuccess,
                 payload: { type: tradeToBeOpened.tradeType },
             });
-            navigation.navigate(TradingStackRoutes.TradingHistory, {
-                tradeType: tradeToBeOpened.tradeType,
-            });
+            navigation.navigate(TradingStackRoutes.TradingHistory);
         }
     }, [tradeToBeOpened, navigation]);
 
@@ -54,7 +52,7 @@ const TradingScreenContent = () => {
                 <Header isFormMountedRecently={isScreenMountedRecently} />
                 {isInternetReachable === false ? <DeviceOffline /> : <ActiveTab />}
                 <Footer isFormMountedRecently={isScreenMountedRecently} />
-                <HistoryButton tradeType="buy" isFormMountedRecently={isScreenMountedRecently} />
+                <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
             </VStack>
         </>
     );

@@ -590,7 +590,6 @@ describe('tradingSelectors', () => {
 
     it('selectDeviceHasTradingTradesOfTradeType should return correctly whether there is a trade', () => {
         expect(selectDeviceHasTradingTrades(state)).toBe(true);
-        
     });
 
     it('selectTradingTradeByOrderId should find trade for correct orderId', () => {

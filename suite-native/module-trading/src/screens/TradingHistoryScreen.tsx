@@ -2,22 +2,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import {
     TradingRootState,
     TradingTransaction,
-    selectDeviceTradingTradesByTradeTypeOrderedByDate,
+    selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
-import {
-    Screen,
-    ScreenHeader,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TradeDetailSheet } from '../components/history/TradeDetailSheet/TradeDetailSheet';
@@ -38,9 +32,6 @@ const contentContainerStyle = prepareNativeStyle<{
 const keyExtractor = (item: TradingTransaction) => `${item.key ?? ''}`;
 
 export const TradingHistoryScreen = () => {
-    const {
-        params: { tradeType },
-    } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>>();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const dispatch = useDispatch();
@@ -49,7 +40,7 @@ export const TradingHistoryScreen = () => {
     const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const trades = useSelector((state: TradingRootState & AccountsRootState & DeviceRootState) =>
-        selectDeviceTradingTradesByTradeTypeOrderedByDate(state, tradeType),
+        selectDeviceTradingTradesOrderedByDate(state),
     );
 
     const handleSelectedTrade = useCallback(

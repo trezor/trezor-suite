@@ -2,13 +2,12 @@ import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-
 
 import { HistoryButton } from '../HistoryButton';
 
-let mockSelectDeviceHasTradingTradesOfTradeTypeReturn: boolean;
+let mockSelectDeviceHasTradingTradesReturn: boolean;
 let mockNavigate: jest.Mock;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
-    selectDeviceHasTradingTradesOfTradeType: () =>
-        mockSelectDeviceHasTradingTradesOfTradeTypeReturn,
+    selectDeviceHasTradingTrades: () => mockSelectDeviceHasTradingTradesReturn,
 }));
 
 jest.mock('@react-navigation/native', () => ({
@@ -20,12 +19,12 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('HistoryButton', () => {
     const renderHistoryButton = (preloadedState: PreloadedState) =>
-        renderWithStoreProviderAsync(<HistoryButton tradeType="buy" />, {
+        renderWithStoreProviderAsync(<HistoryButton />, {
             preloadedState,
         });
 
     it('should render nothing where no trades are available', async () => {
-        mockSelectDeviceHasTradingTradesOfTradeTypeReturn = false;
+        mockSelectDeviceHasTradingTradesReturn = false;
         const { toJSON } = await renderHistoryButton({});
 
         expect(toJSON()).toBeNull();
@@ -33,7 +32,7 @@ describe('HistoryButton', () => {
 
     describe('with trades available', () => {
         beforeEach(() => {
-            mockSelectDeviceHasTradingTradesOfTradeTypeReturn = true;
+            mockSelectDeviceHasTradingTradesReturn = true;
             mockNavigate = jest.fn();
         });
 
@@ -60,9 +59,7 @@ describe('HistoryButton', () => {
 
             fireEvent.press(getByText('Trade history'));
 
-            expect(mockNavigate).toHaveBeenCalledWith('TradingHistory', {
-                tradeType: 'buy',
-            });
+            expect(mockNavigate).toHaveBeenCalledWith('TradingHistory');
         });
     });
 });

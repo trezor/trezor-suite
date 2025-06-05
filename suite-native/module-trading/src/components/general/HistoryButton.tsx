@@ -4,11 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    TradingRootState,
-    TradingType,
-    selectDeviceHasTradingTradesOfTradeType,
-} from '@suite-common/trading';
+import { TradingRootState, selectDeviceHasTradingTrades } from '@suite-common/trading';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -24,7 +20,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 import { selectIsAmountInputActive } from '../../selectors/commonSelectors';
 
 export type HistoryButtonProps = {
-    tradeType: TradingType;
     isFormMountedRecently?: boolean;
 };
 
@@ -48,11 +43,11 @@ const buttonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-export const HistoryButton = ({ tradeType, isFormMountedRecently }: HistoryButtonProps) => {
+export const HistoryButton = ({ isFormMountedRecently }: HistoryButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const hasTrades = useSelector((state: TradingRootState & AccountsRootState & DeviceRootState) =>
-        selectDeviceHasTradingTradesOfTradeType(state, tradeType),
+        selectDeviceHasTradingTrades(state),
     );
     const shouldHideButton = useSelector(selectIsAmountInputActive);
 
@@ -60,8 +55,7 @@ export const HistoryButton = ({ tradeType, isFormMountedRecently }: HistoryButto
         return null;
     }
 
-    const handleOnPress = () =>
-        navigation.navigate(TradingStackRoutes.TradingHistory, { tradeType });
+    const handleOnPress = () => navigation.navigate(TradingStackRoutes.TradingHistory);
 
     return (
         <AnimatedBox
