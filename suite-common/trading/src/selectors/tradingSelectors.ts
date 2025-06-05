@@ -301,14 +301,9 @@ export const selectTradingTradesForSelectedDevice = createMemoizedSelector(
 
 export const selectDeviceTradingTrades: (
     state: TradingRootState & AccountsRootState & DeviceRootState,
-    tradeType: TradingType,
 ) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
-    [
-        state => selectDeviceAccounts(state),
-        selectTradingTrades,
-        (_, tradeType: TradingType) => tradeType,
-    ],
-    (accounts, trades, tradeType) => {
+    [state => selectDeviceAccounts(state), selectTradingTrades],
+    (accounts, trades) => {
         const accountKeys = new Set(accounts.map(({ key }) => key));
 
         return returnStableArrayIfEmpty(
@@ -316,32 +311,22 @@ export const selectDeviceTradingTrades: (
                 const tradeKey =
                     'selectedAccountKey' in trade ? trade.selectedAccountKey : trade.sendAccountKey;
 
-                return tradeKey && accountKeys.has(tradeKey) && trade.tradeType === tradeType;
+                return tradeKey && accountKeys.has(tradeKey);
             }),
         );
     },
 );
 
-export const selectDeviceTradingTradesByTradeType: (
+export const selectDeviceTradingTradesOrderedByDate: (
     state: TradingRootState & AccountsRootState & DeviceRootState,
-    tradeType: TradingType,
 ) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
-    [selectDeviceTradingTrades, (_, tradeType: TradingType) => tradeType],
-    (trades, tradeType) => returnStableArrayIfEmpty(trades.filter(t => t.tradeType === tradeType)),
-);
-
-export const selectDeviceTradingTradesByTradeTypeOrderedByDate: (
-    state: TradingRootState & AccountsRootState & DeviceRootState,
-    tradeType: TradingType,
-) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
-    [selectDeviceTradingTradesByTradeType],
+    [selectDeviceTradingTrades],
     trades => trades.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
 );
 
-export const selectDeviceHasTradingTradesOfTradeType = (
+export const selectDeviceHasTradingTrades = (
     state: TradingRootState & AccountsRootState & DeviceRootState,
-    tradeType: TradingType,
-) => selectDeviceTradingTradesByTradeType(state, tradeType).length > 0;
+) => selectDeviceTradingTrades(state).length > 0;
 
 export const selectTradingTradeByOrderId = (state: TradingRootState, orderId: string | undefined) =>
     selectTradingTrades(state).find(t => orderId && t.data.orderId === orderId);

@@ -27,9 +27,8 @@ import {
     TradingRootState,
     selectBestBuyQuoteByPaymentMethod,
     selectBuyQuotesByPaymentMethod,
-    selectDeviceHasTradingTradesOfTradeType,
-    selectDeviceTradingTradesByTradeType,
-    selectDeviceTradingTradesByTradeTypeOrderedByDate,
+    selectDeviceHasTradingTrades,
+    selectDeviceTradingTradesOrderedByDate,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingActiveSection,
@@ -569,43 +568,29 @@ describe('tradingSelectors', () => {
         expect(selectTradingTrades(state)).toBe(state.wallet.tradingNew.trades);
     });
 
-    it('selectDeviceTradingTradesByTradeType should return only data for relevant tradeType', () => {
-        expect(
-            selectDeviceTradingTradesByTradeType(state, 'buy').map(t => t.data.orderId),
-        ).toStrictEqual(['orderId1', 'orderId2', 'orderId3']);
-
-        expect(
-            selectDeviceTradingTradesByTradeType(state, 'exchange').map(t => t.data.orderId),
-        ).toStrictEqual(['orderId4', 'orderId5']);
-    });
-
-    describe('selectDeviceTradingTradesByTradeTypeOrderedByDate', () => {
+    describe('selectDeviceTradingTradesOrderedByDate', () => {
         it('should return trades ordered by date in descending order', () => {
-            const result = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+            const result = selectDeviceTradingTradesOrderedByDate(state);
 
-            expect(result).toHaveLength(3);
-            expect(result[0].data.orderId).toBe('orderId3');
-            expect(result[1].data.orderId).toBe('orderId2');
-            expect(result[2].data.orderId).toBe('orderId1');
-        });
-
-        it('should return empty array for trade type with no trades', () => {
-            const result = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'sell');
-
-            expect(result).toHaveLength(0);
+            expect(result).toHaveLength(5);
+            expect(result[0].data.orderId).toBe('orderId4');
+            expect(result[1].data.orderId).toBe('orderId3');
+            expect(result[2].data.orderId).toBe('orderId2');
+            expect(result[3].data.orderId).toBe('orderId1');
+            expect(result[4].data.orderId).toBe('orderId5');
         });
 
         it('should be stable', () => {
-            const first = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'buy');
-            const second = selectDeviceTradingTradesByTradeTypeOrderedByDate(state, 'buy');
+            const first = selectDeviceTradingTradesOrderedByDate(state);
+            const second = selectDeviceTradingTradesOrderedByDate(state);
 
             expect(first).toBe(second);
         });
     });
 
     it('selectDeviceHasTradingTradesOfTradeType should return correctly whether there is a trade', () => {
-        expect(selectDeviceHasTradingTradesOfTradeType(state, 'buy')).toBe(true);
-        expect(selectDeviceHasTradingTradesOfTradeType(state, 'sell')).toBe(false);
+        expect(selectDeviceHasTradingTrades(state)).toBe(true);
+        
     });
 
     it('selectTradingTradeByOrderId should find trade for correct orderId', () => {
