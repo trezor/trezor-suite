@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ComposeTransaction.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
@@ -11,6 +12,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 import {
     TransactionComposer,
+    deriveOutputScript,
     enhanceSignTx,
     getReferencedTransactions,
     inputToTrezor,
@@ -404,6 +406,13 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                 .then(transformReferencedTransactions);
         }
 
+        const getHDNode = (address_n: number[]) =>
+            device.getCommands().getHDNode({ address_n }, { coinInfo: params.coinInfo });
+
+        const outputScripts = await promiseAllSequence(
+            outputs.map(output => () => deriveOutputScript(getHDNode, output, coinInfo.network)),
+        );
+
         const signTxMethod = !device.unavailableCapabilities.replaceTransaction
             ? signTx
             : signTxLegacy;
@@ -418,14 +427,12 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
         });
 
-        const getHDNode = (address_n: number[]) =>
-            device.getCommands().getHDNode({ address_n }, { coinInfo: params.coinInfo });
-
-        await verifyTx(
-            response.serializedTx,
-            { inputs, outputs, network: coinInfo.network },
-            { getHDNode },
-        );
+        verifyTx(response.serializedTx, {
+            inputs,
+            outputs,
+            outputScripts,
+            network: coinInfo.network,
+        });
 
         if (params.push) {
             const blockchain = await this.getBlockchain();
