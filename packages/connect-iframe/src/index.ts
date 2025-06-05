@@ -139,6 +139,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             type: EventType.AppReady,
             payload: {
                 version: settings?.version,
+                npmVersion: settings?.npmVersion,
                 origin: settings?.origin,
                 referrerAppName: settings?.manifest?.appName,
                 referrerApp: settings?.manifest?.appUrl,

@@ -23,6 +23,7 @@ export type ConnectAnalyticsEvent =
           type: EventType.AppReady;
           payload: {
               version?: string;
+              npmVersion?: string;
               origin?: string;
               referrerAppName?: string;
               referrerApp?: string;
