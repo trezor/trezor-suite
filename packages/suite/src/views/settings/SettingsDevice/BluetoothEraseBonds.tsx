@@ -25,7 +25,7 @@ export const BluetoothEraseBonds = ({ isDeviceLocked }: BluetoothEraseBondsProps
 
     const onEraseClick = async () => {
         setInProgress(true);
-        await dispatch(bluetoothEraseBondsThunk({ device }));
+        await dispatch(bluetoothEraseBondsThunk());
         setInProgress(false);
     };
 

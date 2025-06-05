@@ -54,6 +54,7 @@ export type ExtraDependencies = {
             >;
         }>;
         openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
+        forgetBluetoothDevice: SuiteCompatibleThunk<void>;
     };
     selectors: {
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;

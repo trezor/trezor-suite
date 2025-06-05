@@ -32,7 +32,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/transport-bluetooth": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",

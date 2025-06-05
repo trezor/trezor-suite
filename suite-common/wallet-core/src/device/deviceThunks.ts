@@ -27,7 +27,6 @@ import TrezorConnect, {
     UI,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
@@ -553,15 +552,7 @@ export const wipeDeviceThunk = createThunk(
                 dispatch(
                     bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }),
                 );
-
-                const resultForget = await bluetoothIpc.forgetDevice(device.bluetoothProps.id);
-                if (!resultForget.success) {
-                    dispatch(
-                        bluetoothActions.setBluetoothDeviceNeedsManualOsRemoval({
-                            needsManualRemoval: true,
-                        }),
-                    );
-                }
+                dispatch(extra.thunks.forgetBluetoothDevice());
             }
             const newDevice = selectSelectedDevice(getState());
             const newDevices = selectDevices(getState());

@@ -65,6 +65,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         findLabelsToBeMovedOrDeleted: mockThunk('findLabelsToBeMovedOrDeleted'),
         moveLabelsForRbfAction: mockThunk('moveLabelsForRbfAction'),
         openSwitchDeviceDialog: mockThunk('openSwitchDeviceDialog'),
+        forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
     },
     selectors: {
         selectDevices: mockSelector('selectDevices', []),
