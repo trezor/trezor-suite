@@ -11,8 +11,10 @@ import { parseFirmwareReleaseConfig, parseFirmwareReleases } from './firmwareInf
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
-type AssetCollection = { [key: string]: Record<string, any> };
-
+type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
+type AssetCollection = {
+    [K in AssetKeys]?: Record<string, any>;
+};
 export class DataManager {
     static assets: AssetCollection = {};
 
@@ -47,7 +49,7 @@ export class DataManager {
 
         // parse firmware definitions
         for (const model in DeviceModelInternal) {
-            const firmwareKey = `firmware-${model.toLowerCase()}`;
+            const firmwareKey: `firmware-${string}` = `firmware-${model.toLowerCase()}`;
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
             const modelReleases = this.assets[firmwareKey] as FirmwareRelease[];
             // Check if the firmware data exists for this model
