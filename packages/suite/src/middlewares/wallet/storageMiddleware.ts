@@ -6,6 +6,7 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
+import { thpActions } from '@suite-common/thp';
 import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { tradingActions } from '@suite-common/trading';
@@ -228,6 +229,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (
                 deviceActions.setThpCredentials.match(action) ||
                 deviceActions.connectDevice.match(action) || // To save the `connectionCounter`
+                thpActions.removeCredentials.match(action) ||
                 action.type === 'device-thp_credentials_changed'
             ) {
                 api.dispatch(storageActions.saveThpCredentials());

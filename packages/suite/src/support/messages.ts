@@ -2234,9 +2234,21 @@ export default defineMessages({
         defaultMessage: 'Trezor is not readable.',
         id: 'TR_NEEDS_ATTENTION_UNREADABLE',
     },
+    TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED: {
+        defaultMessage: 'Secure connection not set up',
+        id: 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED',
+    },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {
         defaultMessage: 'Failed to communicate with your Trezor',
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
+    },
+    TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING: {
+        defaultMessage: 'Trezor Safe 7 detected',
+        id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
+    },
+    TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION: {
+        defaultMessage: 'Continue to THP pairing',
+        id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION',
     },
     TR_UDEV_DOWNLOAD_TITLE: {
         defaultMessage: 'Download udev rules',
@@ -3289,6 +3301,108 @@ export default defineMessages({
     TR_SOLVE_ISSUE: {
         defaultMessage: 'Refresh',
         id: 'TR_SOLVE_ISSUE',
+    },
+    TR_THP_RESET_CREDENTIALS_SUCCESS: {
+        defaultMessage: 'Trezor Host Protocol credentials has been reset. RECONNECT THE DEVICE',
+        id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
+    },
+    TR_THP_PAIR: {
+        defaultMessage: 'Pair',
+        id: 'TR_THP_PAIR',
+    },
+    TR_THP_ENTER_ONE_TIME_CODE: {
+        id: 'TR_THP_ENTER_ONE_TIME_CODE',
+        defaultMessage: 'Enter one-time security code',
+    },
+    TR_THP_INCORRECT_SECURITY_CODE: {
+        id: 'TR_THP_INCORRECT_SECURITY_CODE',
+        defaultMessage: 'Incorrect security code. Please try again with a new code.',
+    },
+    TR_THP_GET_NEW_CODE: {
+        id: 'TR_THP_GET_NEW_CODE',
+        defaultMessage: 'Get new code',
+    },
+    TR_THP_VERIFICATION_FAILED: {
+        id: 'TR_THP_VERIFICATION_FAILED',
+        defaultMessage: 'Verification failed',
+    },
+    TR_THP_VERIFICATION_FAILED_DESCRIPTION: {
+        id: 'TR_THP_VERIFICATION_FAILED_DESCRIPTION',
+        defaultMessage: 'The one-time security code you entered is incorrect. Please try again.',
+    },
+    TR_THP_CHECK_TREZOR_FOR_CODE: {
+        id: 'TR_THP_CHECK_TREZOR_FOR_CODE',
+        defaultMessage: 'Check your Trezor for the code.',
+    },
+    TR_THP_CREATE_SECURE_CONNECTION: {
+        id: 'TR_THP_CREATE_SECURE_CONNECTION',
+        defaultMessage: 'Create secure connection',
+    },
+    TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION: {
+        id: 'TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION',
+        defaultMessage: 'Trezor Suite will create a secure connection to your Trezor.',
+    },
+    TR_DO_NOT_ASK_ME_AGAIN: {
+        id: 'TR_DO_NOT_ASK_ME_AGAIN',
+        defaultMessage: "Don't ask me again",
+    },
+    TR_THP_SECURELY_CONNECT_WITH_TREZOR: {
+        id: 'TR_THP_SECURELY_CONNECT_WITH_TREZOR',
+        defaultMessage: 'Securely connect with your Trezor',
+    },
+    TR_THP_CONFIRM_ON_NEXT_STEP: {
+        id: 'TR_THP_CONFIRM_ON_NEXT_STEP',
+        defaultMessage: 'Confirm on next step',
+    },
+    TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR: {
+        id: 'TR_THP_SECURELY_AUTOCONNECT_WITH_TREZOR',
+        defaultMessage: 'Securely connect automatically with your Trezor',
+    },
+    TR_THP_CONFIRM_SECURE_CONNECTION: {
+        id: 'TR_THP_CONFIRM_SECURE_CONNECTION',
+        defaultMessage: 'Confirm secure connection',
+    },
+    TR_THP_SETTINGS_AUTO_CONNECT: {
+        id: 'TR_THP_SETTINGS_AUTO_CONNECT',
+        defaultMessage: 'Auto-connect',
+    },
+    TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION: {
+        id: 'TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION',
+        defaultMessage:
+            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it-no need confirm every time.',
+    },
+    TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
+        id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
+        defaultMessage: 'Save time with auto-connect',
+    },
+    TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION: {
+        id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION',
+        defaultMessage:
+            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it—no need to confirm every time.',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT',
+        defaultMessage: 'Turn on auto-connect',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS',
+        defaultMessage: 'No thanks',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS',
+        defaultMessage: 'Skip confirmation on trusted computers',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_1: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_1',
+        defaultMessage: 'Let Trezor Suite connect to your Trezor automatically when it’s connected',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_2: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_2',
+        defaultMessage: 'Skip repeated confirmations',
+    },
+    TR_THP_TURN_ON_AUTO_CONNECT_LIST_3: {
+        id: 'TR_THP_TURN_ON_AUTO_CONNECT_LIST_3',
+        defaultMessage: 'Stay fully secure',
     },
     TR_SOUTH: {
         defaultMessage: 'South',

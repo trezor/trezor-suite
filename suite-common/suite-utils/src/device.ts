@@ -60,6 +60,10 @@ export const getStatus = (device: TrezorDevice) => {
         return 'connected';
     }
 
+    if (device.type === 'unacquired' && device.thp?.properties !== undefined) {
+        return 'unacquired-thp-required';
+    }
+
     if (device.type === 'unacquired') {
         return 'unacquired';
     }
@@ -94,6 +98,7 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boole
         case 'unacquired':
         case 'firmware-required':
         case 'unreadable':
+        case 'unacquired-thp-required':
             return true;
 
         case 'disconnected':
@@ -116,6 +121,7 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceSta
     switch (deviceStatus) {
         case 'bootloader':
         case 'initialize':
+        case 'unacquired-thp-required':
             return false;
         default:
             return true;
@@ -448,3 +454,10 @@ export const isDeviceWithButtons = (
 
 export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
     isArrayMember(action.type, Object.values(DEVICE));
+
+export const getDeviceInternalModel = (device: Pick<Device, 'features' | 'thp'>) =>
+    device.features?.internal_model ??
+    (device.thp?.properties?.internal_model as DeviceModelInternal);
+
+export const getDeviceColorVariant = (device: Pick<Device, 'features' | 'thp'>) =>
+    device.features?.unit_color ?? device.thp?.properties?.model_variant;

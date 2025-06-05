@@ -1,6 +1,10 @@
+import { useCallback, useEffect } from 'react';
+
 import { useFirmwareInstallation } from '@suite-common/firmware';
+import { selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
 import {
@@ -15,18 +19,29 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 import { FirmwareInstallation } from './FirmwareInstallation';
+import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
+import { ThpPairingFailedStep } from './ThpPairingFailedStep';
+import { ThpPairingStartStep } from './ThpPairingStartStep';
+import { ThpPairingStep } from './ThpPairingStep';
 
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const { status, error, resetReducer, firmwareUpdate, targetType } = useFirmwareInstallation();
+    const thpStep = useSelector(selectThpStep);
 
     const install = () => firmwareUpdate({ firmwareType: targetType });
-    const goToNextStepAndResetReducer = () => {
+    const goToNextStepAndResetReducer = useCallback(() => {
         goToNextStep();
         resetReducer();
-    };
+    }, [goToNextStep, resetReducer]);
+
+    useEffect(() => {
+        if (status === 'done' && device?.thp?.properties !== undefined) {
+            goToNextStepAndResetReducer();
+        }
+    }, [status, goToNextStepAndResetReducer, device]);
 
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
@@ -107,17 +122,51 @@ export const FirmwareStep = () => {
         return <PrerequisitesGuide />;
     }
 
+    if (thpStep !== null) {
+        if (device === undefined) {
+            return null;
+        }
+
+        switch (thpStep) {
+            case 'BeforeConnectionInfo':
+                return <ThpPairingStartStep />;
+            case 'ConfirmOnlyConnection':
+            case 'ConfirmConnectionBeforePairing':
+                return <ThpPairingConfirmStep device={device} />;
+            case 'CodeEntry':
+                return <ThpPairingStep />;
+
+            // Auto-connect not relevant for Onboarding Firmware Installation.
+            // 1) We don't want to ask user for autoconnect during FW installation.
+            // 2) It shall never happen anyway, onboarding is the 1st connection.
+            case 'AutoconnectInfo':
+            case 'Autoconnect':
+                return null;
+
+            case 'CodeInvalid':
+                return <ThpPairingFailedStep />;
+
+            default:
+                exhaustive(thpStep);
+        }
+    }
+
     switch (status) {
         // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
         case 'initial':
             return <FirmwareInitial />;
         case 'started': // called from firmwareUpdate()
-        case 'done':
+        case 'done': // This is shown only for NON-THP devices, THP device goes directly to the next step after successful THP pairing
             return (
                 <FirmwareInstallation install={install} onSuccess={goToNextStepAndResetReducer} />
             );
+
+        // This step does not make sense in onboarding; when installing firmware
+        // for the first time, there is no seed to be backed up before the firmware update.
+        case 'check-seed':
+            return null;
+
         default:
-            // 'ensure' type completeness
-            throw new Error(`state "${status}" is not handled here`);
+            return exhaustive(status);
     }
 };

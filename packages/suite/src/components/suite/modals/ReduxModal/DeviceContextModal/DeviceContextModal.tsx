@@ -52,6 +52,7 @@ export const DeviceContextModal = ({
         // T1B1 firmware
         case UI.INVALID_PIN:
             return <PinInvalidModal device={device} />;
+
         // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':

@@ -128,28 +128,28 @@ export const TROUBLESHOOTING_TIP_CLOSE_ALL_TABS: TroubleshootingTipsItem = {
     ),
 };
 
-export const TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY: TroubleshootingTipsItem = {
+const TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY: TroubleshootingTipsItem = {
     key: 'bluetooth-proximity',
     heading: <Translation id="TR_BLUETOOTH_TIP_PROXIMITY_HEADER" />,
     description: <Translation id="TR_BLUETOOTH_TIP_PROXIMITY_TEXT" />,
     icon: 'desktop',
 };
 
-export const TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE: TroubleshootingTipsItem = {
+const TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE: TroubleshootingTipsItem = {
     key: 'bluetooth-pairing-mode',
     heading: <Translation id="TR_BLUETOOTH_TIP_PARING_MODE_HEADER" />,
     description: <Translation id="TR_BLUETOOTH_TIP_PARING_MODE_TEXT" />,
     icon: 'bluetooth',
 };
 
-export const TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS: TroubleshootingTipsItem = {
+const TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS: TroubleshootingTipsItem = {
     key: 'bluetooth-settings',
     heading: <Translation id="TR_BLUETOOTH_TIP_SETTINGS_HEADER" />,
     description: <BluetoothSettingsDescription />,
     icon: 'gear',
 };
 
-export const TROUBLESHOOTING_TIP_BLUETOOTH_CABLE: TroubleshootingTipsItem = {
+const TROUBLESHOOTING_TIP_BLUETOOTH_CABLE: TroubleshootingTipsItem = {
     key: 'bluetooth-cable',
     heading: <Translation id="TR_BLUETOOTH_TIP_CABLE_HEADER" />,
     description: <Translation id="TR_BLUETOOTH_TIP_CABLE_TEXT" />,

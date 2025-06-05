@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-import { ConnectedDeviceStatus } from '@suite-common/suite-utils';
+import { ConnectedDeviceStatus, getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     ElevationUp,
     Icon,
@@ -24,6 +24,8 @@ import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
 import type { PrerequisiteType } from 'src/types/suite';
 
+import { TranslationKey } from './Translation';
+
 const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     display: flex;
     min-height: 122px;
@@ -38,6 +40,7 @@ const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     flex-direction: column;
     margin: 0;
     border-radius: ${borders.radii.lg};
+
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
         flex-direction: row;
         border-radius: 61px;
@@ -60,8 +63,8 @@ const Text = styled.div`
     display: flex;
     flex-direction: column;
     text-align: center;
-    ${typography.titleSmall}
 
+    ${typography.titleSmall}
     ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
         margin: 0 ${spacingsPx.xl} 0 ${spacingsPx.xs};
     }
@@ -93,34 +96,53 @@ const getWarningMessage = ({
     }
 };
 
+type GetMessageIdParams = {
+    connected: boolean;
+    deviceStatus: ConnectedDeviceStatus | null;
+    showWarning: boolean;
+    prerequisite?: PrerequisiteType;
+};
+
 const getMessageId = ({
     connected,
     deviceStatus,
     showWarning,
     prerequisite,
-}: {
-    connected: boolean;
-    deviceStatus: ConnectedDeviceStatus | null;
-    showWarning: boolean;
-    prerequisite?: PrerequisiteType;
-}) => {
-    switch (prerequisite) {
-        case 'transport-bridge':
-            return isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT';
-        case 'device-bootloader':
-            return 'TR_DEVICE_CONNECTED_BOOTLOADER';
-        case 'device-used-elsewhere':
-            return 'TR_DEVICE_CONNECTED_UNACQUIRED';
-        case 'device-unacquired':
-            return 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT';
-        default: {
-            if (connected) {
-                return getWarningMessage({ deviceStatus, showWarning });
-            }
-
-            return 'TR_CONNECT_YOUR_DEVICE';
+}: GetMessageIdParams): TranslationKey => {
+    const getDefaultKey = (): TranslationKey => {
+        if (connected) {
+            return getWarningMessage({ deviceStatus, showWarning });
         }
+
+        return 'TR_CONNECT_YOUR_DEVICE';
+    };
+
+    const defaultKey = getDefaultKey();
+
+    if (prerequisite === undefined) {
+        return defaultKey;
     }
+
+    const map: Record<PrerequisiteType, TranslationKey> = {
+        'transport-bridge': isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT',
+        'device-bootloader': 'TR_DEVICE_CONNECTED_BOOTLOADER',
+        'device-used-elsewhere': 'TR_DEVICE_CONNECTED_UNACQUIRED',
+        'device-unacquired': 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
+        'device-unacquired-requires-thp': 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
+
+        'device-disconnect-required': defaultKey,
+        'device-disconnected': defaultKey,
+        'device-initialize': defaultKey,
+        'device-recovery-mode': defaultKey,
+        'device-seedless': defaultKey,
+        'device-unknown': defaultKey,
+        'device-unreadable': defaultKey,
+        'firmware-missing': defaultKey,
+        'firmware-required': defaultKey,
+        'multi-share-backup-in-progress': defaultKey,
+    };
+
+    return map[prerequisite];
 };
 
 interface ConnectDevicePromptProps {
@@ -145,7 +167,9 @@ const ConnectImage = ({
             <StyledLottieAnimation
                 $elevation={elevation}
                 type="CONNECT"
-                deviceModelInternal={device?.features?.internal_model}
+                deviceModelInternal={
+                    device !== undefined ? getDeviceInternalModel(device) : undefined
+                }
                 loop={!connected}
                 shape="CIRCLE"
                 size={100}

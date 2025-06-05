@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { IconButton, IconName, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -48,7 +49,7 @@ export const DeviceHeader = ({
     const selectedDevice = useSelector(selectSelectedDevice);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const isDeviceConnected = selectedDevice?.connected === true;
-    const deviceModelInternal = device.features?.internal_model;
+    const deviceModelInternal = getDeviceInternalModel(device);
 
     const onHeaderClick = () => {
         if (isFullHeaderVisible && onCancel) {

@@ -10,6 +10,7 @@
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
+        { "path": "../thp" },
         { "path": "../toast-notifications" },
         { "path": "../token-definitions" },
         { "path": "../wallet-config" },

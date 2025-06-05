@@ -31,7 +31,7 @@ const determineIfDeviceWillBeWiped = (
 ) => {
     const deviceModelInternal = device?.features?.internal_model;
     const deviceIsInitializedOrInBootloader = device?.mode !== 'initialize';
-    // Changing vendor header always results in device wipe. T1B1 and T2T1 have the same vendor header for bitcoin-only and universal firmware.
+    // Changing the vendor header always results in device wipe. T1B1 and T2T1 have the same vendor header for bitcoin-only and universal firmware.
     const installationWillChangeFirmwareVendorHeader =
         !!shouldSwitchFirmwareType &&
         deviceModelInternal !== undefined &&
@@ -76,46 +76,57 @@ export const useFirmwareInstallation = (
         firmware.uiEvent.payload.method === 'manual';
 
     const showReconnectPrompt =
+        // For some magic reason, the `ButtonRequest_Other` is present in FW after THP pairing;
+        // This causes the UI to show the reconnect prompt, despite we are already done.
+        firmware.status !== 'done' &&
         // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow,
         // T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
-        (firmware.uiEvent?.type === DEVICE.BUTTON &&
+        ((firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code &&
             ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(
                 firmware.uiEvent.payload.code,
             )) ||
-        showManualReconnectPrompt;
+            showManualReconnectPrompt);
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
         originalDevice,
         !!shouldSwitchFirmwareType,
     );
 
+    const isThpConfirmationRequested = [
+        'thp_pairing_request',
+        'thp_connection_request',
+        'thp_autoconnect_credential_request',
+    ].includes(firmware.status);
+
     const confirmOnDevice =
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
         // after ReconnectDevicePrompt is closed and user selects the option to install firmware while in bootloader.
-        // Also in case the device is PIN-locked at the start of the process.
+        // Also, in case the device is PIN-locked at the start of the process.
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code !== undefined &&
             ['ButtonRequest_FirmwareUpdate', 'ButtonRequest_PinEntry'].includes(
                 firmware.uiEvent.payload.code,
             )) ||
         // Show the confirmation pill right after ReconnectDevicePrompt is closed while using the "wait" or "manual" method,
-        // before user selects the option to install firmware while in bootloader
+        // before the user selects the option to install firmware while in bootloader
         // When a PIN-protected device reconnects to normal mode after installation, PIN is requested and the pill is shown.
         // There is a false positive in case such device is wiped (including PIN) during custom installation.
         (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
             (firmware.uiEvent.payload.target === 'bootloader' ||
                 (firmware.uiEvent.payload.target === 'normal' &&
                     originalDevice?.features?.pin_protection &&
-                    !deviceWillBeWiped)));
+                    !deviceWillBeWiped))) ||
+        isThpConfirmationRequested;
 
     const showConfirmationPill =
-        !showReconnectPrompt &&
-        !!firmware.uiEvent &&
-        !(
-            firmware.uiEvent.type === UI.FIRMWARE_PROGRESS &&
-            firmware.uiEvent.payload.operation === 'downloading'
-        );
+        (!showReconnectPrompt &&
+            !!firmware.uiEvent &&
+            !(
+                firmware.uiEvent.type === UI.FIRMWARE_PROGRESS &&
+                firmware.uiEvent.payload.operation === 'downloading'
+            )) ||
+        isThpConfirmationRequested;
 
     const updateStatus = useMemo<FirmwareOperationStatus>(() => {
         if (firmware.status === 'done') {

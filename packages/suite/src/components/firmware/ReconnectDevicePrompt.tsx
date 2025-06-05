@@ -67,9 +67,11 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const { showManualReconnectPrompt, status, uiEvent } = useFirmwareInstallation();
     const { device } = useDevice();
+    const eventDevice =
+        uiEvent && uiEvent.type === DEVICE.BUTTON ? uiEvent.payload.device : undefined;
 
     const isManualRebootRequired =
-        // Automatic reboot not supported:
+        // Automatic reboot isn't supported:
         showManualReconnectPrompt ||
         // Automatic reboot cancelled or device disconnected:
         status === 'error';
@@ -121,14 +123,14 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         }
 
         // internal_model cannot be read from features while in bootloader mode.
-        const deviceModelFromEvent = uiEvent?.payload.device.features?.internal_model;
+        const deviceModelFromEvent = eventDevice?.features?.internal_model;
 
         if (deviceModelFromEvent === undefined) {
             // Fallback. This should never happen.
             return 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON';
         }
 
-        const deviceFwVersion = getFirmwareVersion(uiEvent?.payload.device);
+        const deviceFwVersion = getFirmwareVersion(eventDevice);
         const switchToBootloaderMap: Record<DeviceModelInternal, TranslationKey> = {
             // just to have something, I assume new models will have touch screen
             [DeviceModelInternal.UNKNOWN]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
@@ -172,7 +174,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 {!isRebootDone && (
                     <Column margin={{ bottom: spacings.md }} alignItems="center">
                         <RebootDeviceGraphics
-                            device={uiEvent?.payload.device}
+                            device={eventDevice}
                             isManualRebootRequired={isManualRebootRequired}
                         />
                     </Column>

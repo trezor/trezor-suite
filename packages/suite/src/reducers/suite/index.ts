@@ -18,7 +18,7 @@ import suite from './suiteReducer';
 import window from './windowReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
-// Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
+// Type annotation as a workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const device = prepareDeviceReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
