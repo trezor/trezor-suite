@@ -24,7 +24,7 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
-import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
@@ -63,7 +63,6 @@ export const AssetRow = memo(
         const { symbol } = network;
         const dispatch = useDispatch();
         const theme = useTheme();
-        const { setCoinFilter, setSearchString } = useAccountSearch();
 
         const handleRowClick = () => {
             dispatch(
@@ -75,9 +74,6 @@ export const AssetRow = memo(
                     },
                 }),
             );
-            // activate coin filter and reset account search string
-            setCoinFilter(symbol);
-            setSearchString(undefined);
         };
         const coinDefinitions = useSelector(state => selectCoinDefinitions(state, network.symbol));
         const stakingAccountsForAsset = stakingAccounts.filter(
