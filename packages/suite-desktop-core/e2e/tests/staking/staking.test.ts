@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('ETH staking', { tag: ['@group=wallet'] }, () => {
+test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
@@ -23,6 +23,7 @@ test.describe('ETH staking', { tag: ['@group=wallet'] }, () => {
 
             await dashboardPage.dashboardMenuButton.click();
             await page.discoveryShouldFinish();
+            await page.pause();
         },
     );
 
