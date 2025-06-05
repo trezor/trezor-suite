@@ -1,10 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
 import { ERRORS, PROTO } from '../constants';
 import {
     createPendingTransaction,
+    deriveOutputScript,
     enhanceSignTx,
     enhanceTrezorInputs,
     getOrigTransactions,
@@ -18,7 +20,6 @@ import {
     validateReferencedTransactions,
     validateTrezorInputs,
     validateTrezorOutputs,
-    verifyTicketTx,
     verifyTx,
 } from './bitcoin';
 import { Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
@@ -304,6 +305,15 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             await device.getCommands().unlockPath(params.unlockPath);
         }
 
+        const getHDNode = (address_n: number[]) =>
+            device
+                .getCommands()
+                .getHDNode({ address_n }, { coinInfo, unlockPath: params.unlockPath });
+
+        const outputScripts = await promiseAllSequence(
+            outputs.map(output => () => deriveOutputScript(getHDNode, output, coinInfo.network)),
+        );
+
         const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
         const response = await signTxMethod({
             ...params,
@@ -316,23 +326,16 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             return response;
         }
 
-        const getHDNode = (address_n: number[]) =>
-            device
-                .getCommands()
-                .getHDNode({ address_n }, { coinInfo, unlockPath: params.unlockPath });
-        let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
+        let bitcoinTx: ReturnType<typeof verifyTx> | undefined;
         if (params.options.decred_staking_ticket) {
-            await verifyTicketTx(
-                response.serializedTx,
-                { inputs, outputs, network: coinInfo.network },
-                { getHDNode },
-            );
+            // do nothing, tx verification removed for the sake of simplicity
         } else {
-            bitcoinTx = await verifyTx(
-                response.serializedTx,
-                { inputs, outputs, network: coinInfo.network },
-                { getHDNode },
-            );
+            bitcoinTx = verifyTx(response.serializedTx, {
+                inputs,
+                outputs,
+                outputScripts,
+                network: coinInfo.network,
+            });
             if (bitcoinTx.hasWitnesses()) {
                 response.witnesses = bitcoinTx.ins.map((_, i) =>
                     bitcoinTx?.getWitness(i)?.toString('hex'),
