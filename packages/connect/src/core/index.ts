@@ -1238,7 +1238,7 @@ export class Core extends EventEmitter {
             if (localFirmwares) {
                 DataManager.setLocalFirmwares(localFirmwares);
             }
-            const { debug, priority, _sessionsBackgroundUrl, manifest } = DataManager.getSettings();
+            const { debug, priority, manifest } = DataManager.getSettings();
             const messages = DataManager.getProtobufMessages();
 
             enableLog(debug);
@@ -1252,7 +1252,6 @@ export class Core extends EventEmitter {
                 debug,
                 messages,
                 priority,
-                _sessionsBackgroundUrl,
                 manifest,
             });
             initDeviceList(this.getCoreContext());
