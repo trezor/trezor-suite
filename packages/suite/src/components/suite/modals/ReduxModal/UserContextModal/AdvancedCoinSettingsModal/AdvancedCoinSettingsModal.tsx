@@ -145,7 +145,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                                     >
                                         <Row gap={spacings.sm}>
                                             <Text
-                                                isUrl={true}
+                                                breakAll={true}
                                                 variant={
                                                     url === blockchain[symbol]?.url
                                                         ? 'default'
