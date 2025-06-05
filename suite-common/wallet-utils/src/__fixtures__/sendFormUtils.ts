@@ -108,6 +108,39 @@ export const prepareEthereumTransaction = [
             maxPriorityFeePerGas: '0x1dcd6500',
         },
     },
+    {
+        description: 'bep20 with eip1559 fees',
+        txInfo: {
+            token: {
+                type: 'BEP20',
+                standard: 'BEP20',
+                symbol: 'ETH',
+                decimals: 18,
+                contract: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
+                name: 'Binance-Peg Ethereum Token',
+            },
+            to: '0xA6ABB480640d6D27D2FB314196D94463ceDcB31e',
+            amount: '0.005',
+            chainId: 1,
+            nonce: '11',
+            gasLimit: '200000',
+            gasPrice: '5',
+            data: 'deadbeef-not-used',
+            maxFeePerGas: '1',
+            maxPriorityFeePerGas: '0.5',
+        },
+        result: {
+            to: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
+            value: '0x00',
+            chainId: 1,
+            nonce: '0xb',
+            gasLimit: '0x30d40',
+            gasPrice: undefined,
+            data: '0xa9059cbb000000000000000000000000A6ABB480640d6D27D2FB314196D94463ceDcB31e0000000000000000000000000000000000000000000000000011c37937e08000',
+            maxFeePerGas: '0x3b9aca00',
+            maxPriorityFeePerGas: '0x1dcd6500',
+        },
+    },
 ];
 
 export const restoreOrigOutputsOrder = [

@@ -224,6 +224,30 @@ export const getIsFakeTokenPhishingFixtures = [
         result: false,
     },
     {
+        testName: 'only legit tokens tx',
+        transaction: {
+            symbol: 'bsc',
+            amount: '0',
+            tokens: [
+                { standard: 'BEP20', contract: '0xA' },
+                { standard: 'BEP20', contract: '0xB' },
+            ],
+        } as WalletAccountTransaction,
+        tokenDefinitions: {
+            coin: {
+                error: false,
+                isLoading: false,
+                data: ['0xa', '0xb'],
+            },
+            nft: {
+                error: false,
+                isLoading: false,
+                data: ['0xn', '0xf'],
+            },
+        } as TokenDefinitions,
+        result: false,
+    },
+    {
         testName: 'only zero-value legit tokens tx',
         transaction: {
             symbol: 'pol',

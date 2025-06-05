@@ -693,7 +693,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: 'bsc',
         type: 'sent',
         txid: '0xb970d1dc159a93b1f0610009ace4c51b1d0ae73891a21497075cfa725f4e35ff',
         blockTime: 1672848431,
@@ -712,7 +712,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
                 symbol: 'USDT',
                 decimals: 6,
                 amount: '0',
-                standard: 'ERC20',
+                standard: 'BEP20',
             },
         ],
         internalTransfers: [],
