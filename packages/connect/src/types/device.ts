@@ -1,6 +1,5 @@
 import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
 import type { ThpStateSerialized } from '@trezor/protocol';
-import { Descriptor } from '@trezor/transport';
 
 import type { PROTO } from '../constants';
 import type { ReleaseInfo } from './firmware';
@@ -107,7 +106,7 @@ export type KnownDevice = BaseDevice & {
         // Maybe add AuthenticityCheck result here?
     };
     transportSessionOwner?: undefined;
-    transportDescriptorType?: typeof undefined;
+    hid?: undefined;
     bluetoothProps?: BluetoothDeviceProps;
 };
 
@@ -130,7 +129,7 @@ export type UnknownDevice = BaseDevice & {
     unavailableCapabilities?: typeof undefined;
     availableTranslations?: typeof undefined;
     transportSessionOwner?: string;
-    transportDescriptorType?: typeof undefined;
+    hid?: undefined;
     bluetoothProps?: BluetoothDeviceProps;
 };
 
@@ -153,7 +152,7 @@ export type UnreadableDevice = BaseDevice & {
     unavailableCapabilities?: typeof undefined;
     availableTranslations?: typeof undefined;
     transportSessionOwner?: undefined;
-    transportDescriptorType: Descriptor['type'];
+    hid: boolean;
     bluetoothProps?: BluetoothDeviceProps;
 };
 

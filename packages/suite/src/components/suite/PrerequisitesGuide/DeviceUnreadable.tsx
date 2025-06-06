@@ -36,12 +36,7 @@ export const DeviceUnreadable = ({ device }: DeviceUnreadableProps) => {
     }
 
     // only for unreadable HID devices
-    if (
-        // model 1 hid normal mode
-        selectedDevice?.transportDescriptorType === 0 ||
-        // model 1 webusb or hid bootloader mode
-        selectedDevice?.transportDescriptorType === 2
-    ) {
+    if (selectedDevice?.hid) {
         // If even this did not work, go to support or knowledge base
         // 'If the last time you updated your device firmware was in 2019 and earlier please follow instructions in <a>the knowledge base</a>',
         items.push(TROUBLESHOOTING_TIP_UNREADABLE_HID);

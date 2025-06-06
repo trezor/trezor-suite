@@ -289,7 +289,7 @@ describe('Preloader component', () => {
             selectedDevice: {
                 type: 'unreadable',
                 error: 'unable to open device',
-                transportDescriptorType: 0,
+                hid: true,
             },
         };
 

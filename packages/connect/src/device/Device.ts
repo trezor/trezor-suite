@@ -126,7 +126,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transportPath;
     public readonly bluetoothProps;
     private thp: protocolThp.ThpState | undefined;
-    private readonly transportDescriptorType;
+    private readonly possibleHIDdevice;
     private sessionAcquired: Session | null;
 
     // protocol related
@@ -221,7 +221,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.uniquePath = id;
         this.transport = transport;
         this.transportPath = descriptor.path;
-        this.transportDescriptorType = descriptor.type;
+        this.possibleHIDdevice = [0, 2].includes(descriptor.type);
         this.bluetoothProps = descriptor.id ? { id: descriptor.id } : undefined;
 
         this.sessionAcquired = null;
@@ -356,6 +356,17 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ) {
                         // disconnected, do nothing
                     } else if (
+                        // if unable to open device and it's HID -> device is unreadable
+                        (this.possibleHIDdevice &&
+                            error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE) ||
+                        // catch LIBUSB_ERROR_ACCESS -> missing udev rules usually
+                        error.message === TRANSPORT_ERROR.LIBUSB_ERROR_ACCESS
+                    ) {
+                        this.unreadableError = error.message;
+                        this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                    } else if (
+                        // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
+                        error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
                         // we don't know what really happened
                         error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
                         // someone else took the device at the same time
@@ -365,15 +376,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         // TODO: is this needed? can't I just use transport error?
                         error.code === 'Device_InitializeFailed'
                     ) {
-                        this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
-                    } else if (
-                        // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
-                        // the only remedy for this is to reconnect device manually
-                        error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
-                        // catch one of trezord LIBUSB_ERRORs
-                        error.message === TRANSPORT_ERROR.LIBUSB_ERROR_ACCESS
-                    ) {
-                        this.unreadableError = error?.message;
                         this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                     } else {
                         await resolveAfter(501);
@@ -520,10 +522,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
                     // note 5: ad note 4. it is not so problematic anymore since cleanup on dispose has been improved in https://github.com/trezor/trezor-suite/pull/16930
                     // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
-                    if (
-                        ['v1', 'bridge'].includes(this.protocol.name) &&
-                        ![0, 2].includes(this.transportDescriptorType) // ignore model 1 hid or webusb bootloader mode
-                    ) {
+                    if (['v1', 'bridge'].includes(this.protocol.name) && !this.possibleHIDdevice) {
+                        // ignore model 1 hid or webusb bootloader mode
                         _log.debug(
                             'sending a preventive cancel on the first encounter with the device',
                         );
@@ -1132,7 +1132,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 type: 'unreadable',
                 error: this.unreadableError, // provide error details
                 label: 'Unreadable device',
-                transportDescriptorType: this.transportDescriptorType,
+                hid: this.possibleHIDdevice,
             };
         }
         if (this.isUnacquired()) {
