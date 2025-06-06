@@ -371,7 +371,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         // the only remedy for this is to reconnect device manually
                         error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
                         // catch one of trezord LIBUSB_ERRORs
-                        error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0
+                        error.message === TRANSPORT_ERROR.LIBUSB_ERROR_ACCESS
                     ) {
                         this.unreadableError = error?.message;
                         this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
