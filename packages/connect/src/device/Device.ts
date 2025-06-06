@@ -50,7 +50,6 @@ import {
     FirmwareType,
     KnownDevice,
     ReleaseInfo,
-    StaticSessionId,
     UnavailableCapabilities,
     VersionArray,
 } from '../types';
@@ -61,7 +60,6 @@ import {
     parseCapabilities,
     parseRevision,
 } from '../utils/deviceFeaturesUtils';
-import { toHardened } from '../utils/pathUtils';
 
 // custom log
 const _log = initLog('Device');
@@ -640,38 +638,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
             this.state[this.instance] = newState;
             this.stateStorage?.saveState(this, newState);
-        }
-    }
-
-    async validateState(preauthorized = false) {
-        if (!this.features) return;
-
-        if (!this.features.unlocked && preauthorized) {
-            // NOTE: auto locked device accepts preauthorized methods (authorizeConjoin, getOwnershipProof, signTransaction) without pin request.
-            // in that case it's enough to check if session_id is preauthorized...
-            if (await this.getCommands().preauthorize(false)) {
-                return;
-            }
-            // ...and if it's not then unlock device and proceed to regular GetAddress flow
-        }
-
-        const expectedState = this.getState()?.staticSessionId;
-
-        const { message } = await this.getCurrentSession().typedCall('GetAddress', 'Address', {
-            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
-            coin_name: 'Testnet',
-            script_type: 'SPENDADDRESS',
-        });
-
-        const uniqueState: StaticSessionId = `${message.address}@${this.features.device_id}:${this.instance}`;
-        if (this.features.session_id) {
-            this.setState({ sessionId: this.features.session_id });
-        }
-        if (expectedState && expectedState !== uniqueState) {
-            return uniqueState;
-        }
-        if (!expectedState) {
-            this.setState({ staticSessionId: uniqueState });
         }
     }
 

@@ -16,6 +16,7 @@ import { parseLocalFirmwares } from '../data/connectSettings';
 import type { Device, DeviceEvents } from '../device/Device';
 import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import { WebextensionStateStorage } from '../device/StateStorage';
+import * as workflows from '../device/workflow';
 import {
     CORE_EVENT,
     CoreEventMessage,
@@ -33,12 +34,7 @@ import {
     createTransportMessage,
     createUiMessage,
 } from '../events';
-import type {
-    ConnectSettings,
-    DeviceIdentity,
-    Device as DeviceTyped,
-    StaticSessionId,
-} from '../types';
+import type { ConnectSettings, DeviceIdentity, Device as DeviceTyped } from '../types';
 import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
@@ -184,31 +180,6 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
     }
 
     return device;
-};
-
-const MAX_PIN_TRIES = 3;
-
-/** Including up to 3 pin tries **/
-const getInvalidDeviceState = async (
-    { sendCoreMessage }: CoreContext,
-    device: Device,
-    preauthorized?: boolean,
-): Promise<StaticSessionId | undefined> => {
-    for (let i = 0; i < MAX_PIN_TRIES - 1; ++i) {
-        try {
-            return await device.validateState(preauthorized);
-        } catch (error) {
-            if (error.message.includes('PIN invalid')) {
-                sendCoreMessage(
-                    createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }),
-                );
-            } else {
-                throw error;
-            }
-        }
-    }
-
-    return device.validateState(preauthorized);
 };
 
 /**
@@ -372,62 +343,14 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         }
     }
 
+    const workflowCtx = {
+        device,
+        method,
+        signal: context.signal,
+    };
+
     // Make sure that device will display pin/passphrase
-    const isDeviceUnlocked = device.features.unlocked;
-    if (method.useDeviceState) {
-        try {
-            let invalidDeviceState = await getInvalidDeviceState(
-                context,
-                device,
-                method.preauthorized,
-            );
-            if (isUsingPopup) {
-                while (invalidDeviceState) {
-                    const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
-                    // request action view
-                    sendCoreMessage(
-                        createUiMessage(UI.INVALID_PASSPHRASE, {
-                            device: device.toMessageObject(),
-                        }),
-                    );
-                    // wait for user response
-                    const uiResp = await uiPromise.promise;
-                    if (uiResp.payload) {
-                        // reset sessionId and try again
-                        device.setState({ sessionId: undefined });
-                        await device.initialize(method.useCardanoDerivation);
-
-                        invalidDeviceState = await getInvalidDeviceState(
-                            context,
-                            device,
-                            method.preauthorized,
-                        );
-                    } else {
-                        // set new state as requested
-                        device.setState({ staticSessionId: invalidDeviceState });
-                        break;
-                    }
-                }
-            } else if (invalidDeviceState) {
-                throw ERRORS.TypedError('Device_InvalidState');
-            }
-        } catch (error) {
-            // other error
-            // sendCoreMessage(ResponseMessage(method.responseID, false, { error }));
-            // closePopup();
-            // clear cached passphrase. it's not valid
-            device.setState({ sessionId: undefined });
-
-            // interrupt process and go to "final" block
-            return Promise.reject(error);
-        }
-    }
-
-    // emit additional CHANGE event if device becomes unlocked after authorization
-    // features were automatically updated after PinMatrixAck in DeviceCommands
-    if (!isDeviceUnlocked && device.features.unlocked) {
-        sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
-    }
+    await workflows.validateState(workflowCtx);
 
     if (method.useUi) {
         // make sure that popup is opened
@@ -1113,6 +1036,7 @@ export class Core extends EventEmitter {
 
     private getCoreContext() {
         return {
+            signal: this.abortController.signal,
             uiPromises: this.uiPromises,
             popupPromise: this.popupPromise,
             interactionTimeout: this.interactionTimeout,
