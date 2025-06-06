@@ -176,14 +176,17 @@ export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & Devic
     }
 };
 
-export const selectDiscoveryCompleted = (state: DiscoveryRootState & DeviceRootState) => {
+export const selectPassphraseDiscoveryCompleted = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
     if (!discovery || !discovery.isAddingHiddenWallet) {
         return null;
     }
 
-    return discovery.status === 'complete';
+    return (
+        discovery.status === 'complete' ||
+        (discovery.status === 'progress' && discovery.hasLoadedAnyNonEmptyAccount)
+    );
 };
 
 export const { setCheckPassphraseOnDevice, setInputPassphraseOnDevice } =

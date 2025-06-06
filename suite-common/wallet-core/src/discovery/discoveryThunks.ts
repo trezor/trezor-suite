@@ -97,6 +97,18 @@ const applyDeviceStatesThunk = createThunk(
             const devices = selectDevices(getState());
             const devicesByPath = devices.filter(d => d.path === devicePath);
 
+            const currentDeviceByStaticSessionId = newDeviceState.staticSessionId
+                ? selectDeviceByStaticSessionId(getState(), newDeviceState.staticSessionId)
+                : null;
+
+            if (currentDeviceByStaticSessionId && isAddingHiddenWallet) {
+                console.warn(
+                    'applyDeviceStatesThunk: applying state to a device with static session id',
+                );
+
+                return;
+            }
+
             // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
             // todo: this sanity check could be moved somewhere higher.
@@ -455,9 +467,6 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            // NOTE: this should be true anytime the applyDeviceStatesThunk() is called
-            let deviceStateApplied = false;
-
             const onBundleProgress = createOnBundleProgressHandler(
                 device.path,
                 deviceStateResponse.payload._state.staticSessionId,
@@ -466,7 +475,6 @@ export const runDiscoveryThunk = createThunk(
                 {
                     onNonFirstNonEmptyAccountDiscovered: () => {
                         if (isAddingHiddenWallet) {
-                            deviceStateApplied = true;
                             dispatch(
                                 applyDeviceStatesThunk({
                                     newDeviceState: deviceStateResponse.payload._state,
@@ -547,16 +555,13 @@ export const runDiscoveryThunk = createThunk(
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
             if (!allAccountsEmpty) {
-                if (!deviceStateApplied) {
-                    deviceStateApplied = true;
-                    await dispatch(
-                        applyDeviceStatesThunk({
-                            newDeviceState: deviceStateResponse.payload._state,
-                            isAddingHiddenWallet,
-                            devicePath: device.path,
-                        }),
-                    );
-                }
+                await dispatch(
+                    applyDeviceStatesThunk({
+                        newDeviceState: deviceStateResponse.payload._state,
+                        isAddingHiddenWallet,
+                        devicePath: device.path,
+                    }),
+                );
 
                 dispatch(
                     completeDiscoveryThunk({
@@ -621,16 +626,13 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            if (!deviceStateApplied) {
-                deviceStateApplied = true;
-                await dispatch(
-                    applyDeviceStatesThunk({
-                        newDeviceState: deviceStateResponse.payload._state,
-                        isAddingHiddenWallet,
-                        devicePath: passedDevice.path,
-                    }),
-                );
-            }
+            await dispatch(
+                applyDeviceStatesThunk({
+                    newDeviceState: deviceStateResponse.payload._state,
+                    isAddingHiddenWallet,
+                    devicePath: passedDevice.path,
+                }),
+            );
 
             dispatch(
                 completeDiscoveryThunk({
