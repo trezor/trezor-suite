@@ -8,7 +8,6 @@ import { borders, spacingsPx } from '@trezor/theme';
 
 import { useAccountSearch } from 'src/hooks/suite';
 
-
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
