@@ -11,7 +11,12 @@ import Animated from 'react-native-reanimated';
 // @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    NativeStyleObject,
+    mergeNativeStyleObjects,
+    prepareNativeStyle,
+    useNativeStyles,
+} from '@trezor/styles';
 import { Color, NativeTypographyStyle } from '@trezor/theme';
 
 import { TestProps } from './types';
@@ -87,7 +92,7 @@ export const Text = React.forwardRef<RNText, TextProps>(
             variant = 'body',
             color = 'textDefault',
             textAlign = 'left',
-            style,
+            style = {},
             children,
             ...otherProps
         },
@@ -98,7 +103,10 @@ export const Text = React.forwardRef<RNText, TextProps>(
 
         return (
             <DefaultTextComponent
-                style={[applyStyle(textStyle, { variant, color, textAlign }), style]}
+                style={mergeNativeStyleObjects([
+                    applyStyle(textStyle, { variant, color, textAlign }),
+                    style,
+                ])}
                 maxFontSizeMultiplier={maxFontSizeMultiplier}
                 {...otherProps}
                 ref={ref}

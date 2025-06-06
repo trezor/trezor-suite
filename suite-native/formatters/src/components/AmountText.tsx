@@ -4,7 +4,7 @@ import {
     TextProps,
     resetLetterSpacingOnAndroidStyle,
 } from '@suite-native/atoms';
-import { useNativeStyles } from '@trezor/styles';
+import { mergeNativeStyleObjects, useNativeStyles } from '@trezor/styles';
 
 type AmountTextProps = {
     isDiscreetText?: boolean;
@@ -12,13 +12,21 @@ type AmountTextProps = {
     value: string | null;
 } & TextProps;
 
-export const AmountText = ({ value, isDiscreetText = true, ...otherProps }: AmountTextProps) => {
+export const AmountText = ({
+    value,
+    isDiscreetText = true,
+    style = {},
+    ...otherProps
+}: AmountTextProps) => {
     const { applyStyle } = useNativeStyles();
 
     const TextComponent = isDiscreetText ? DiscreetText : Text;
 
     return (
-        <TextComponent style={applyStyle(resetLetterSpacingOnAndroidStyle)} {...otherProps}>
+        <TextComponent
+            style={mergeNativeStyleObjects([style, applyStyle(resetLetterSpacingOnAndroidStyle)])}
+            {...otherProps}
+        >
             {value}
         </TextComponent>
     );
