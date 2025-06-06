@@ -756,10 +756,9 @@ export const transformTransaction = (
         type: txType,
         txid: tx.transaction.signatures[0].toString(),
         blockTime: tx.blockTime == null ? undefined : Number(tx.blockTime),
+        blockHeight: tx.slot == null ? undefined : Number(tx.slot),
         amount,
-        // FIXME: It is possible for `meta` to be null for some older transactions.
-        // @ts-expect-error
-        fee: tx.meta.fee.toString(),
+        fee: (tx.meta?.fee || 0).toString(),
         targets,
         tokens,
         internalTransfers: [], // not relevant for solana

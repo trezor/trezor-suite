@@ -893,11 +893,14 @@ export const fixtures = {
             expectedOutput: {
                 type: 'sent',
                 txid: 'txid1',
+                blockHeight: 5,
+                blockHash: undefined,
                 blockTime: 1631753600,
                 amount: '20',
                 fee: '10',
                 solanaSpecific: {
                     status: 'confirmed',
+                    stakeOperation: undefined,
                 },
                 targets: [
                     {
