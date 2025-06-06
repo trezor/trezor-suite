@@ -61,6 +61,9 @@ type Position = {
 const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit'] as const;
 type Cursor = (typeof cursors)[number];
 
+const userSelects = ['none', 'text', 'all', 'auto', 'inherit'] as const;
+type UserSelect = (typeof userSelects)[number];
+
 export type FrameProps = {
     margin?: Margin;
     padding?: Padding;
@@ -78,6 +81,7 @@ export type FrameProps = {
     zIndex?: number;
     opacity?: number;
     aspectRatio?: `${number}` | `${number} / ${number}`;
+    userSelect?: UserSelect;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -120,6 +124,7 @@ export const withFrameProps = ({
     $zIndex,
     $aspectRatio,
     $opacity,
+    $userSelect,
 }: TransientFrameProps) => css`
     ${$margin &&
     (typeof $margin === 'object'
@@ -205,6 +210,10 @@ export const withFrameProps = ({
     css`
         opacity: ${$opacity};
     `};
+    ${$userSelect &&
+    css`
+        user-select: ${$userSelect};
+    `};
 `;
 
 const getStorybookType = (key: FramePropsKeys) => {
@@ -260,6 +269,13 @@ const getStorybookType = (key: FramePropsKeys) => {
             return {
                 control: {
                     type: 'text',
+                },
+            };
+        case 'userSelect':
+            return {
+                options: userSelects,
+                control: {
+                    type: 'select',
                 },
             };
     }
@@ -327,6 +343,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('zIndex') ? { zIndex: undefined } : {}),
             ...(allowedFrameProps.includes('opacity') ? { opacity: undefined } : {}),
             ...(allowedFrameProps.includes('aspectRatio') ? { aspectRatio: undefined } : {}),
+            ...(allowedFrameProps.includes('userSelect') ? { userSelect: undefined } : {}),
         },
         argTypes,
     };

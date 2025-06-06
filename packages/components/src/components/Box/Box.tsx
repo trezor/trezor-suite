@@ -33,6 +33,7 @@ export const allowedBoxFrameProps = [
     'zIndex',
     'aspectRatio',
     'opacity',
+    'userSelect',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 
@@ -71,7 +72,7 @@ const Container = styled.div<
         css`
             background: ${mapElevationToBackground({ theme, $elevation })};
         `}
-        
+
     ${withFrameProps};
 `;
 

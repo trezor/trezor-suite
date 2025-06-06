@@ -29,7 +29,7 @@ export const HiddenAddressRow = ({
             <Box minWidth={36}>
                 <Text variant="disabled">/{pathParts[pathParts.length - 1]}</Text>
             </Box>
-            <Box position={{ type: 'relative' }} cursor="pointer">
+            <Box position={{ type: 'relative' }} cursor="pointer" userSelect="none">
                 <GradientOverlay forcedElevation={currentElevation} hiddenFrom="160px" />
                 {item.label}
             </Box>

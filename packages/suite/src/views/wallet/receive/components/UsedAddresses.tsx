@@ -34,6 +34,7 @@ const AddressWrapper = styled.div`
     overflow: hidden;
     position: relative;
     font-variant-numeric: tabular-nums slashed-zero;
+    user-select: none;
 `;
 
 const DEFAULT_LIMIT = 10;
