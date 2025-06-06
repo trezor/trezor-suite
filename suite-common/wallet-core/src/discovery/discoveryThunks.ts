@@ -431,6 +431,30 @@ export const runDiscoveryThunk = createThunk(
             assertDeviceIsAcquired(device);
 
             assertStaticSessionId(deviceStateResponse.payload._state);
+
+            const duplicate = selectDevices(getState())
+                .filter(d => d.state?.staticSessionId)
+                .find(
+                    d =>
+                        d.state!.staticSessionId!.split(':')[0] ===
+                        deviceStateResponse.payload._state.staticSessionId!.split(':')[0],
+                );
+
+            if (isAddingHiddenWallet && duplicate) {
+                dispatch(
+                    discoveryActions.updateDiscovery(
+                        {
+                            status: 'passphrase-duplicate',
+                            duplicateDeviceStaticSessionId:
+                                deviceStateResponse.payload._state.staticSessionId,
+                        },
+                        device.path,
+                    ),
+                );
+
+                return;
+            }
+
             const onBundleProgress = createOnBundleProgressHandler(
                 device.path,
                 deviceStateResponse.payload._state.staticSessionId,
@@ -509,29 +533,6 @@ export const runDiscoveryThunk = createThunk(
 
             if (!deviceStateResponse.payload._state.staticSessionId) {
                 console.error('Discovery: staticSessionId missing in device state response');
-
-                return;
-            }
-
-            const duplicate = selectDevices(getState())
-                .filter(d => d.state?.staticSessionId)
-                .find(
-                    d =>
-                        d.state!.staticSessionId!.split(':')[0] ===
-                        deviceStateResponse.payload._state.staticSessionId!.split(':')[0],
-                );
-
-            if (duplicate) {
-                dispatch(
-                    discoveryActions.updateDiscovery(
-                        {
-                            status: 'passphrase-duplicate',
-                            duplicateDeviceStaticSessionId:
-                                deviceStateResponse.payload._state.staticSessionId,
-                        },
-                        device.path,
-                    ),
-                );
 
                 return;
             }
