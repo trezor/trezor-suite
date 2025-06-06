@@ -5,8 +5,8 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { Text, VStack } from '@suite-native/atoms';
 
+import { ExchangeTabContent } from './ExchangeTabContent';
 import { selectIsTradingExchangeEnabled } from '../../selectors/commonSelectors';
 import { BtcOnlyFirmwareInfo } from '../general/Error/BtcOnlyFirmwareInfo';
 import { PortfolioTrackerInfo } from '../general/Error/PorfolioTrackerInfo';
@@ -30,13 +30,7 @@ const ExchangeTabEnabled = () => {
         return <ViewOnlyWalletInfo />;
     }
 
-    return (
-        <VStack>
-            <Text variant="titleMedium" color="textDefault">
-                Exchange Tab placeholder
-            </Text>
-        </VStack>
-    );
+    return <ExchangeTabContent />;
 };
 
 export const ExchangeTab = () => {

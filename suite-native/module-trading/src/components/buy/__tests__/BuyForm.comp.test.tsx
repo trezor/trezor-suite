@@ -17,12 +17,10 @@ describe('BuyForm', () => {
         renderHookWithStoreProviderAsync(() => useBuyForm(), { preloadedState });
 
     const renderBuyForm = (preloadedState: PreloadedState, form: BuyFormType) =>
-        renderWithStoreProviderAsync(
-            <Form form={form}>
-                <BuyForm />
-            </Form>,
-            { preloadedState },
-        );
+        renderWithStoreProviderAsync(<BuyForm />, {
+            preloadedState,
+            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+        });
 
     it('should render when buy data are not preloaded', async () => {
         const { result } = await renderFormHook({});

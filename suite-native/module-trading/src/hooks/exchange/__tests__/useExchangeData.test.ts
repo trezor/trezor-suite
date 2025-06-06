@@ -1,12 +1,12 @@
 import { tradingThunks } from '@suite-common/trading';
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { useBuyData } from '../useBuyData';
+import { useExchangeData } from '../useExchangeData';
 
-describe('useBuyData', () => {
-    const renderUseBuyData = (reloadRequestOrdinalInitialValue: number = 0) =>
+describe('useExchangeData', () => {
+    const renderUseExchangeData = (reloadRequestOrdinalInitialValue: number = 0) =>
         renderHookWithStoreProviderAsync(
-            ({ reloadRequestOrdinal }) => useBuyData(reloadRequestOrdinal),
+            ({ reloadRequestOrdinal }) => useExchangeData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
             },
@@ -34,14 +34,14 @@ describe('useBuyData', () => {
                     }, 100);
                 }),
         );
-        const { result } = await renderUseBuyData();
+        const { result } = await renderUseExchangeData();
 
         expect(result.current.isLoading).toBe(true);
         expect(result.current.lastLoadedTimestamp).toBe(0);
     });
 
     it('should settle after API queries are resolved', async () => {
-        const { result } = await renderUseBuyData();
+        const { result } = await renderUseExchangeData();
 
         expect(result.current.isLoading).toBe(false);
         expect(result.current.lastLoadedTimestamp).toBeGreaterThan(0);
@@ -52,7 +52,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { rerender } = await renderUseBuyData();
+        const { rerender } = await renderUseExchangeData();
         rerender({ reloadRequestOrdinal: 0 });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
@@ -63,7 +63,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { rerender } = await renderUseBuyData();
+        const { rerender } = await renderUseExchangeData();
         rerender({ reloadRequestOrdinal: 1 });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);

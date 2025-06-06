@@ -14,6 +14,14 @@ jest.mock('@suite-common/wallet-core', () => ({
     selectHasBitcoinOnlyFirmware: () => mockHasBitcoinOnlyFirmware,
 }));
 
+jest.mock('../../../hooks/exchange/useExchangeData', () => ({
+    useExchangeData: () => ({
+        isLoading: false,
+        lastLoadedTimestamp: 1,
+        isFullyLoaded: true,
+    }),
+}));
+
 describe('ExchangeTab', () => {
     const renderExchangeTab = (preloadedState: PreloadedState = {}) =>
         renderWithStoreProviderAsync(<ExchangeTab />, { preloadedState });

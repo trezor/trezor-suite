@@ -18,6 +18,14 @@ jest.mock('../../hooks/buy/useBuyData', () => ({
     }),
 }));
 
+jest.mock('../../hooks/exchange/useExchangeData', () => ({
+    useExchangeData: () => ({
+        isLoading: false,
+        lastLoadedTimestamp: 1,
+        isFullyLoaded: true,
+    }),
+}));
+
 jest.mock('@react-native-community/netinfo', () => ({
     useNetInfo: () => ({
         isInternetReachable: mockIsInternetReachable,

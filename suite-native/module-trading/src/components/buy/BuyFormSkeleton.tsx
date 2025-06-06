@@ -1,40 +1,7 @@
-import { Dimensions } from 'react-native';
+import { Card, VStack } from '@suite-native/atoms';
 
-import { BoxSkeleton, Card, HStack, VStack } from '@suite-native/atoms';
-
-const SKELETON_LARGE_HEIGHT = 60;
-const SKELETON_SMALL_HEIGHT = 20;
-
-type SkeletonProps = {
-    widthPercentage: number;
-};
-
-type SkeletonRowProps = {
-    leftWidthPercentage: number;
-    rightWidthPercentage: number;
-};
-
-const SkeletonSmall = ({ widthPercentage }: SkeletonProps) => (
-    <BoxSkeleton
-        width={Dimensions.get('window').width * widthPercentage}
-        height={SKELETON_SMALL_HEIGHT}
-    />
-);
-
-const SkeletonLarge = ({ widthPercentage }: SkeletonProps) => (
-    <BoxSkeleton
-        width={Dimensions.get('window').width * widthPercentage}
-        height={SKELETON_LARGE_HEIGHT}
-        borderRadius="r16"
-    />
-);
-
-const SkeletonLargeRow = ({ leftWidthPercentage, rightWidthPercentage }: SkeletonRowProps) => (
-    <HStack justifyContent="space-between" alignItems="center">
-        <SkeletonLarge widthPercentage={leftWidthPercentage} />
-        <SkeletonLarge widthPercentage={rightWidthPercentage} />
-    </HStack>
-);
+import { SkeletonLargeRow } from '../general/Skeleton/SkeletonLargeRow';
+import { SkeletonSmall } from '../general/Skeleton/SkeletonSmall';
 
 export const BuyFormSkeleton = () => (
     <VStack spacing="sp16">

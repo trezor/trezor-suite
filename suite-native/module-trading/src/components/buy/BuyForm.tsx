@@ -1,19 +1,17 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { AnimatedBox, VStack } from '@suite-native/atoms';
-import { useDebouncedValue } from '@trezor/react-utils';
 
 import { BuyAlert } from './BuyAlert';
-import { BuyAmountEditingDoneButton } from './BuyAmountEditingDoneButton';
 import { BuyCard } from './BuyCard';
 import { BuyConfirmation } from './BuyConfirmation';
 import { BuyPaymentCard } from './BuyPaymentCard';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
+import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
-import { tradingActions } from '../../tradingSlice';
+import { AmountEditingDoneButton } from '../general/AmountEditingDoneButton';
 
 type BuyFormProps = {
     shouldAnimateEntering?: boolean;
@@ -25,6 +23,7 @@ type BuyFormMemoizedProps = {
 };
 
 const BUY_FORM_TEST_ID = '@trading/buy/form';
+const AMOUNT_EDITING_DONE_BUTTON_TEST_ID = '@trading/buy/amount-editing-done-button';
 
 const getEnteringAnimationForItemsUnderBuyCard = (
     isFormMountedRecently?: boolean,
@@ -57,7 +56,7 @@ const BuyFormMemoized = memo(
                         shouldAnimateEntering={shouldAnimateEntering}
                     />
                     {isAmountInputActive ? (
-                        <BuyAmountEditingDoneButton />
+                        <AmountEditingDoneButton testID={AMOUNT_EDITING_DONE_BUTTON_TEST_ID} />
                     ) : (
                         <>
                             <BuyPaymentCard
@@ -74,16 +73,9 @@ const BuyFormMemoized = memo(
 );
 
 export const BuyForm = ({ shouldAnimateEntering }: BuyFormProps) => {
-    const dispatch = useDispatch();
     const buyForm = useBuyFormContext();
+    const isAmountInputActiveDebounced = useFocusedValueWatch(buyForm.watch);
     useBuyQuotes(buyForm);
-
-    const isAmountInputActive = !!buyForm.watch('focusedValue');
-    const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive);
-
-    useEffect(() => {
-        dispatch(tradingActions.setIsAmountInputActive(isAmountInputActiveDebounced));
-    }, [dispatch, isAmountInputActiveDebounced]);
 
     return (
         <BuyFormMemoized

@@ -33,4 +33,12 @@ describe('ActiveTab', () => {
 
         expect(toJSON()).toBeNull();
     });
+
+    it('should render nothing when no active tab is specified', async () => {
+        const { toJSON } = await renderActiveTab({
+            wallet: { tradingNew: { activeTradingType: undefined } },
+        });
+
+        expect(toJSON()).toBeNull();
+    });
 });
