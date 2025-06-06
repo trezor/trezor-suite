@@ -10696,6 +10696,7 @@ __metadata:
     "@suite-native/intl": "workspace:^"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect-mobile": "workspace:*"
+    "@trezor/urls": "workspace:*"
     expo-linking: "npm:^7.0.5"
     react: "npm:18.2.0"
     react-native: "npm:0.76.9"

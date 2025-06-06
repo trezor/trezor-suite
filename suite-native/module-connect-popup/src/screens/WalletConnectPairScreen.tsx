@@ -14,7 +14,6 @@ import {
     CardDivider,
     HStack,
     IconButton,
-    RoundedIcon,
     Text,
     VStack,
 } from '@suite-native/atoms';
@@ -29,6 +28,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { ConnectAppIcon } from '../components/ConnectAppIcon';
 import { WalletConnectPairBottomSheet } from '../components/WalletConnectPairBottomSheet';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.WalletConnectPair>;
@@ -60,7 +60,11 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
             <VStack spacing={0}>
                 <TouchableOpacity onPress={() => (isExpanded.value = !isExpanded.value)}>
                     <HStack spacing="sp12" alignItems="center">
-                        <RoundedIcon name="walletConnect" iconSize="mediumLarge" />
+                        <ConnectAppIcon
+                            src={session.peer.metadata.icons[0]}
+                            type="walletConnect"
+                            size="medium"
+                        />
                         <VStack flex={1} spacing="sp1">
                             <Text>{session.peer.metadata.name}</Text>
                             <Text color="textSubdued" numberOfLines={1}>

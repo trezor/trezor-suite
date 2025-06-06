@@ -20,6 +20,7 @@
         { "path": "../navigation" },
         {
             "path": "../../packages/connect-mobile"
-        }
+        },
+        { "path": "../../packages/urls" }
     ]
 }

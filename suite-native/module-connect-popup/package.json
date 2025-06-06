@@ -23,6 +23,7 @@
         "@suite-native/intl": "workspace:^",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect-mobile": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "expo-linking": "^7.0.5",
         "react": "18.2.0",
         "react-native": "0.76.9",

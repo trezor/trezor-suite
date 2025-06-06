@@ -17,7 +17,6 @@ import {
     Button,
     Card,
     HStack,
-    Image,
     InlineAlertBox,
     Text,
     TitleHeader,
@@ -27,6 +26,8 @@ import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { ConnectAppIcon } from '../components/ConnectAppIcon';
 
 const networkStyle = prepareNativeStyle<{ isDisabled: boolean }>((_, { isDisabled }) => ({
     opacity: 1,
@@ -103,10 +104,10 @@ export const WalletConnectSessionPopupScreen = () => {
                     </Text>
                     <Card>
                         <HStack alignItems="center" spacing="sp16">
-                            <Image
-                                source={{ uri: pendingProposal?.params.proposer.metadata.icons[0] }}
-                                width={60}
-                                height={60}
+                            <ConnectAppIcon
+                                src={pendingProposal?.params.proposer.metadata.icons[0]}
+                                type="walletConnect"
+                                size="large"
                             />
                             <VStack flex={1} spacing="sp4">
                                 <HStack>
