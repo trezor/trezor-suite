@@ -100,7 +100,7 @@ const etcAccount: Account = {
 } as unknown as Account;
 
 const solStakeData: SolStakeData = {
-    getAssets: {
+    stakingInfo: {
         error: false,
         isLoading: true,
         lastSuccessfulFetchTimestamp: 0 as Timestamp,
