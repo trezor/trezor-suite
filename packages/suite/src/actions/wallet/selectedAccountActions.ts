@@ -18,6 +18,8 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
+import { setCoinFilter } from './accountSearchActions';
+
 // move to selector!!!!
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
@@ -207,7 +209,16 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
     });
 
     if (stateChanged) {
-        // update values in reducer
         dispatch(accountsActions.updateSelectedAccount(newState));
+
+        // reset filter if user selects a different coin
+        const coinFilter = state.wallet.accountSearch?.coinFilter;
+        if (
+            coinFilter !== undefined &&
+            newState.status !== 'none' &&
+            newState.network?.symbol !== coinFilter
+        ) {
+            dispatch(setCoinFilter(undefined));
+        }
     }
 };
