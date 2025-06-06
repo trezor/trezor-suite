@@ -5369,7 +5369,7 @@ export default defineMessages({
     },
     TR_REWARDS: {
         id: 'TR_REWARDS',
-        defaultMessage: 'Rewards',
+        defaultMessage: 'Total rewards',
     },
     TR_ALL_TRANSACTIONS: {
         id: 'TR_ALL_TRANSACTIONS',
