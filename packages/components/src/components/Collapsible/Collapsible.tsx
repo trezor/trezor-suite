@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { CollapsibleContent } from './CollapsibleContent';
 import { CollapsibleToggle } from './CollapsibleToggle';
+import { CollapsibleToggleIcon } from './CollapsibleToggleIcon';
 
 type CollapsibleContextProps = {
     isOpen: boolean;
@@ -54,3 +55,4 @@ export const Collapsible = ({
 
 Collapsible.Content = CollapsibleContent;
 Collapsible.Toggle = CollapsibleToggle;
+Collapsible.ToggleIcon = CollapsibleToggleIcon;

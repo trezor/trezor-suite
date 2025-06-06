@@ -19,10 +19,9 @@ import {
     mapSizeToIconSize,
     mapSizeToSubheadingTypography,
 } from './utils';
-import { motionEasing } from '../../config/motion';
 import { Collapsible } from '../Collapsible/Collapsible';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
@@ -35,8 +34,6 @@ import { TransientProps } from '../../utils/transientProps';
 
 export const allowedCollapsibleBoxFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProps)[number]>;
-
-const ANIMATION_DURATION = 0.4;
 
 type ContainerProps = {
     $paddingType: PaddingType;
@@ -110,12 +107,6 @@ const Header = styled.header<HeaderProps>`
     }
 `;
 
-const IconWrapper = styled.div<{ $isCollapsed?: boolean }>`
-    transform: ${({ $isCollapsed }) => ($isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
-    transition: transform ${ANIMATION_DURATION}s cubic-bezier(${motionEasing.transition.join(', ')});
-    transform-origin: center;
-`;
-
 const Content = styled.div<ContentProps>`
     display: flex;
     flex-direction: column;
@@ -136,8 +127,7 @@ const Content = styled.div<ContentProps>`
 export const CollapsibleBox = ({
     defaultIsOpen = false,
     toggleLabel,
-    toggleComponent,
-    toggleIconName = 'caretCircleDown',
+    toggleIconName,
     paddingType = 'normal',
     heading,
     subHeading,
@@ -183,16 +173,12 @@ export const CollapsibleBox = ({
                             {toggleLabel}
                         </Text>
                     )}
-                    <IconWrapper $isCollapsed={!isOpen}>
-                        {toggleComponent ?? (
-                            <Icon
-                                name={toggleIconName}
-                                size={mapSizeToIconSize({ $headingSize: headingSize })}
-                                data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
-                                variant="tertiary"
-                            />
-                        )}
-                    </IconWrapper>
+                    <Collapsible.ToggleIcon
+                        isOpen={isOpen}
+                        iconName={toggleIconName}
+                        size={mapSizeToIconSize({ $headingSize: headingSize })}
+                        data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
+                    />
                 </Row>
             </Toggle>
         </Row>
