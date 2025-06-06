@@ -266,6 +266,7 @@ export type RootStackParamList = {
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;
     [RootStackRoutes.ConnectPopup]: undefined;
+    [RootStackRoutes.ConnectPermissions]: undefined;
     [RootStackRoutes.WalletConnectSessionPopup]: undefined;
     [RootStackRoutes.WalletConnectSwitchAccount]: {
         sessionTopic: string;

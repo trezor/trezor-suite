@@ -12,6 +12,7 @@ import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts'
 import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import {
+    ConnectPermissionsScreen,
     ConnectPopupScreen,
     WalletConnectPairScreen,
     WalletConnectSessionPopupScreen,
@@ -101,6 +102,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.WalletConnectPair}
                 component={WalletConnectPairScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.ConnectPermissions}
+                component={ConnectPermissionsScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.SettingsScreenStack}

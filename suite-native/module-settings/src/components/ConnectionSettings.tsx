@@ -57,6 +57,19 @@ export const ConnectionSettings = () => {
                     <CardDivider />
                 </>
             )}
+            {isConnectPopupEnabled && (
+                <SettingsSectionItem
+                    iconName="trezorLogo"
+                    title={
+                        <Translation id="moduleSettings.items.connections.trezorConnect.title" />
+                    }
+                    subtitle={
+                        <Translation id="moduleSettings.items.connections.trezorConnect.subtitle" />
+                    }
+                    onPress={() => navigation.navigate(RootStackRoutes.ConnectPermissions)}
+                    testID="@settings/connect-permissions"
+                />
+            )}
             {isWalletConnectEnabled && (
                 <SettingsSectionItem
                     iconName="walletConnect"

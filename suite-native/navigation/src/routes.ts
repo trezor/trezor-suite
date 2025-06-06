@@ -16,6 +16,7 @@ export enum RootStackRoutes {
     AddCoinAccountStack = 'AddCoinAccountStack',
     CoinEnablingInit = 'CoinEnablingInit',
     ConnectPopup = 'ConnectPopup',
+    ConnectPermissions = 'ConnectPermissions',
     WalletConnectSessionPopup = 'WalletConnectSessionPopup',
     WalletConnectSwitchAccount = 'WalletConnectSwitchAccount',
     WalletConnectPair = 'WalletConnectPair',
