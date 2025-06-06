@@ -6,7 +6,7 @@ import { IMAGE_PROXY_API_AUTH_BEARER, IMAGE_PROXY_API_URL } from '@trezor/urls';
 
 const sizeMapping = {
     medium: 48,
-    large: 64,
+    large: 60,
 };
 const fallbackIconSizeMapping = {
     medium: 'mediumLarge' as const,

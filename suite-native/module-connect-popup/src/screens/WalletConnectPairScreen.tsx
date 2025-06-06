@@ -132,10 +132,10 @@ export const WalletConnectPairScreen = () => {
                 {sessions.length === 0 && (
                     <>
                         <Text textAlign="center" variant="titleSmall">
-                            <Translation id="moduleConnectPopup.walletConnect.noConnectedApps" />
+                            <Translation id="moduleConnectPopup.noConnectedApps" />
                         </Text>
                         <Text textAlign="center" color="textSubdued">
-                            <Translation id="moduleConnectPopup.walletConnect.noConnectedAppsDescription" />
+                            <Translation id="moduleConnectPopup.noConnectedAppsDescription" />
                         </Text>
                     </>
                 )}

@@ -388,11 +388,28 @@ export const en = {
         },
     },
     moduleConnectPopup: {
-        title: 'Trezor Connect Mobile',
         callback: 'Callback',
         confirm: 'Confirm',
         cancel: 'Cancel',
         areYouSureMessage: 'Are you sure you want to continue?\nMake sure you trust the source.',
+        noConnectedApps: 'No connected apps',
+        noConnectedAppsDescription:
+            'Use your Trezor with third-party apps and wallets to manage your assets.',
+        grantPermission: {
+            title: 'Grant permissions',
+            message:
+                'This app wants to connect with Trezor Suite and needs the following permissions.',
+        },
+        permissions: {
+            title: 'Permissions',
+            // Matches MethodPermission enum
+            read: 'Access public keys from your Trezor device',
+            write: 'Permit transaction and data signing on Trezor',
+            management: 'Modify device settings',
+            push_tx: 'Broadcast transactions to the blockchain',
+        },
+        optional: 'Optional',
+        alwaysAllow: 'Always allow for this app',
         connectionStatus: {
             loading: 'Loading...',
             discoveryRunning: 'Discovery running, please wait...',
@@ -407,6 +424,10 @@ export const en = {
         bottomSheets: {
             confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
         },
+        trezorConnect: {
+            title: 'Trezor Connect',
+            forget: 'Forget',
+        },
         walletConnect: {
             title: 'WalletConnect',
             message:
@@ -420,9 +441,6 @@ export const en = {
             scanQR: 'Scan WalletConnect QR',
             addConnection: 'Add connection',
             activeConnections: 'Active connections',
-            noConnectedApps: 'No connected apps',
-            noConnectedAppsDescription:
-                'Use your Trezor with third-party apps and wallets to manage your assets.',
             disconnect: 'Disconnect',
             switchAccount: 'Switch account',
             app: 'App',
@@ -708,9 +726,13 @@ export const en = {
             },
             connections: {
                 title: 'Connections',
+                trezorConnect: {
+                    title: 'Trezor Connect',
+                    subtitle: 'Use supported wallets and apps with your Trezor',
+                },
                 walletConnect: {
                     title: 'WalletConnect',
-                    subtitle: 'Use external apps using the WalletConnect protocol',
+                    subtitle: 'Connect external apps using the WalletConnect protocol',
                     add: 'Add WalletConnect connection',
                 },
             },
