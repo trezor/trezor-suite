@@ -253,12 +253,10 @@ const TokenSpecificBalanceDetailsRow = ({
                             formatAmount(transfer.amount, transfer.decimals)
                         );
 
-                        if (!transfer.symbol) return null;
-
                         return (
                             <IOGroup
                                 key={index}
-                                tx={{ ...tx, symbol: transfer.symbol }}
+                                tx={{ ...tx, symbol: transfer.symbol || '' }}
                                 contractAddress={transfer.contract}
                                 inputs={[{ addresses: [transfer.from], value }] as IODetails[]}
                                 outputs={[{ addresses: [transfer.to] }] as IODetails[]}
