@@ -178,9 +178,19 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     }
 
     private buildUrl(method: string, params: any, callback: string) {
-        return `${this._settings.deeplinkUrl}?method=${method}&params=${encodeURIComponent(
-            JSON.stringify(params),
-        )}&callback=${encodeURIComponent(callback)}`;
+        let url =
+            `${this._settings.deeplinkUrl}` +
+            `?method=${method}` +
+            `&params=${encodeURIComponent(JSON.stringify(params))}` +
+            `&callback=${encodeURIComponent(callback)}`;
+        if (this._settings.manifest?.appName) {
+            url += `&appName=${encodeURIComponent(this._settings.manifest.appName)}`;
+        }
+        if (this._settings.manifest?.appIcon) {
+            url += `&appIcon=${encodeURIComponent(this._settings.manifest.appIcon)}`;
+        }
+
+        return url;
     }
 
     private buildCallbackUrl(url: string, params: Record<string, string | number>) {

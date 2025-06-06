@@ -242,6 +242,10 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
                 source: {
                     type: 'deeplink',
                     origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
+                    manifest: {
+                        appName: queryParams.appName,
+                        appIcon: queryParams.appIcon,
+                    },
                 },
                 method: method as keyof typeof TrezorConnect,
                 payload,

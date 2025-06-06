@@ -34,7 +34,7 @@ export type ConnectCallSource = {
     | {
           type: typeof CALL_SOURCE_DEEPLINK;
           process?: undefined;
-          manifest?: undefined;
+          manifest: ManifestPartial;
       }
 );
 
