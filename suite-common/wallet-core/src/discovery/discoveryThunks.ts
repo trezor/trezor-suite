@@ -455,6 +455,9 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
+            // NOTE: this should be true anytime the applyDeviceStatesThunk() is called
+            let deviceStateApplied = false;
+
             const onBundleProgress = createOnBundleProgressHandler(
                 device.path,
                 deviceStateResponse.payload._state.staticSessionId,
@@ -463,6 +466,7 @@ export const runDiscoveryThunk = createThunk(
                 {
                     onNonFirstNonEmptyAccountDiscovered: () => {
                         if (isAddingHiddenWallet) {
+                            deviceStateApplied = true;
                             dispatch(
                                 applyDeviceStatesThunk({
                                     newDeviceState: deviceStateResponse.payload._state,
@@ -543,13 +547,16 @@ export const runDiscoveryThunk = createThunk(
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
             if (!allAccountsEmpty) {
-                await dispatch(
-                    applyDeviceStatesThunk({
-                        newDeviceState: deviceStateResponse.payload._state,
-                        isAddingHiddenWallet,
-                        devicePath: device.path,
-                    }),
-                );
+                if (!deviceStateApplied) {
+                    deviceStateApplied = true;
+                    await dispatch(
+                        applyDeviceStatesThunk({
+                            newDeviceState: deviceStateResponse.payload._state,
+                            isAddingHiddenWallet,
+                            devicePath: device.path,
+                        }),
+                    );
+                }
 
                 dispatch(
                     completeDiscoveryThunk({
@@ -614,13 +621,16 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            await dispatch(
-                applyDeviceStatesThunk({
-                    newDeviceState: deviceStateResponse.payload._state,
-                    isAddingHiddenWallet,
-                    devicePath: passedDevice.path,
-                }),
-            );
+            if (!deviceStateApplied) {
+                deviceStateApplied = true;
+                await dispatch(
+                    applyDeviceStatesThunk({
+                        newDeviceState: deviceStateResponse.payload._state,
+                        isAddingHiddenWallet,
+                        devicePath: passedDevice.path,
+                    }),
+                );
+            }
 
             dispatch(
                 completeDiscoveryThunk({
