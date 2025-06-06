@@ -12,12 +12,9 @@ import {
     selectIsDeviceUsingPassphrase,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
-    selectSelectedDevice,
-    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
     AppTabsRoutes,
@@ -96,8 +93,6 @@ export const useHandleDeviceConnection = () => {
         lastRoute as RootStackRoutes,
     );
 
-    const device = useSelector(selectSelectedDevice);
-
     const {
         failedCheck,
         shouldNavigateToDeviceCompromisedModal,
@@ -155,18 +150,6 @@ export const useHandleDeviceConnection = () => {
             !shouldNavigateToDeviceCompromisedModal &&
             !isDeviceOnboardingStackFocused
         ) {
-            requestPrioritizedDeviceAccess({
-                deviceCallback: () => {
-                    dispatch(
-                        // todo: change it to accept devicePath only to make it less heavy weight in terms of selectors
-                        startDiscoveryThunk({
-                            device,
-                            isAddingHiddenWallet: false,
-                        }),
-                    );
-                },
-            });
-
             // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
             // post auth navigation is handled in @suite-native/module-passphrase for custom UX flow.
             if (!isDeviceUsingPassphrase && !shouldBlockSendReviewRedirect) {
@@ -179,7 +162,6 @@ export const useHandleDeviceConnection = () => {
             navigation.navigate(RootStackRoutes.DeviceCompromisedModal, { failedCheck });
         }
     }, [
-        dispatch,
         failedCheck,
         isDeviceConnected,
         isDeviceOnboardingStackFocused,
@@ -194,7 +176,6 @@ export const useHandleDeviceConnection = () => {
         isDeviceInitialized,
         shouldNavigateToDeviceCompromisedModal,
         isSuspiciousDeviceScreenFocused,
-        device,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and

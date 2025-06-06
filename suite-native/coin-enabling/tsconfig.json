@@ -12,7 +12,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../discovery" },
-        { "path": "../feature-flags" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },

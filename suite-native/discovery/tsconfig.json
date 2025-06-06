@@ -6,6 +6,12 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -15,7 +21,13 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../config" },
+        { "path": "../device" },
         { "path": "../feature-flags" },
+        { "path": "../settings" },
+        { "path": "../tokens" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

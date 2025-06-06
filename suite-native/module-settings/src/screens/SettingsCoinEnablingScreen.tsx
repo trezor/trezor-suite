@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
     changeNetworks,
@@ -17,6 +17,7 @@ import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 export const SettingsCoinEnablingScreen = () => {
     const dispatch = useDispatch();
+    const navigation = useNavigation();
     const { translate } = useTranslate();
 
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
@@ -37,18 +38,15 @@ export const SettingsCoinEnablingScreen = () => {
         }
     }, [enabledNetworkSymbols.length, dispatch, viewOnlyDevicesAccountsNetworkSymbols]);
 
-    useFocusEffect(
-        useCallback(
-            () =>
-                // mark coin init as finished if there are enabled coins on leaving the screen
-                () => {
-                    if (enabledNetworkSymbols.length > 0) {
-                        dispatch(setIsCoinEnablingInitFinished(true));
-                    }
-                },
-            [dispatch, enabledNetworkSymbols.length],
-        ),
-    );
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            if (enabledNetworkSymbols.length > 0) {
+                dispatch(setIsCoinEnablingInitFinished(true));
+            }
+        });
+
+        return unsubscribe;
+    }, [navigation, enabledNetworkSymbols.length, dispatch]);
 
     return (
         <Screen

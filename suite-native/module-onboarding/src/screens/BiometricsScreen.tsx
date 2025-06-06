@@ -48,6 +48,8 @@ export const BiometricsScreen = ({
     const exitOnboardingFlow = () => {
         dispatch(setIsOnboardingFinished());
 
+        // TODO: COSMETIC IMPROVEMENT: redirect to home only if there is no device connected. In case of device connected,
+        // the redirect is handled in useHandleDeviceConnection hook. in reaction to the `setIsOnboardingFinished` call.
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,

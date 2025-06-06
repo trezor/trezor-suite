@@ -56,6 +56,12 @@ export const useOnDeviceReadyNavigation = () => {
     useEffect(() => {
         if (isFirmwareInstallationRunning) return;
 
+        if (!isCoinEnablingInitFinished && isTimeoutFinished) {
+            navigation.navigate(RootStackRoutes.CoinEnablingInit);
+
+            return;
+        }
+
         if (
             (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
             (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingInitFinished)

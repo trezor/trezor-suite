@@ -8,7 +8,6 @@ import {
     AccountsRootState,
     DeviceRootState,
     changeCoinVisibility,
-    restartDiscoveryThunk,
     selectDeviceAccountsByNetworkSymbol,
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
@@ -91,7 +90,6 @@ export const AddCoinDiscoveryRunningScreen = ({
                     shouldBeVisible: true,
                 }),
             );
-            dispatch(restartDiscoveryThunk());
 
             return;
         }

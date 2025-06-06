@@ -1,9 +1,5 @@
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
-
-import { restartDiscoveryThunk } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
@@ -23,19 +19,8 @@ export const DiscoveryCoinsFilter = ({
     allowDeselectLastCoin = false,
     allowChangeAnalytics = true,
 }: DiscoveryCoinsFilterProps) => {
-    const dispatch = useDispatch();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
-
-    useFocusEffect(
-        useCallback(
-            () =>
-                // run on leaving the screen
-                () =>
-                    dispatch(restartDiscoveryThunk()),
-            [dispatch],
-        ),
-    );
 
     const uniqueNetworkSymbols = [...new Set(availableNetworks.map(n => n.symbol))];
 

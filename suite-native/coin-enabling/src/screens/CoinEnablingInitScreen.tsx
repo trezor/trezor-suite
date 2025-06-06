@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
-import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
@@ -35,18 +34,13 @@ export const CoinEnablingInitScreen = () => {
     const handleSave = () => {
         dispatch(setIsCoinEnablingInitFinished(true));
         if (enabledNetworkSymbols.length > 0) {
-            dispatch(setIsCoinEnablingInitFinished(true));
-            dispatch(
-                startDiscoveryThunk({
-                    isAddingHiddenWallet: false,
-                }),
-            );
-
             analytics.report({
                 type: EventType.CoinEnablingInitState,
                 payload: { enabledNetworks: enabledNetworkSymbols },
             });
 
+            // TODO: COSMETIC IMPROVEMENT: redirect to home after 2.5 seconds timeout so user can see some assets already there.
+            // until then change button state to `loading`.
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {

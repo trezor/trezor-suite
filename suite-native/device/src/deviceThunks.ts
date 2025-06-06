@@ -67,7 +67,7 @@ const getResetDeviceConfig = (walletBackupType: WalletBackupType): PROTO.ResetDe
 };
 
 export const createAndBackupWalletThunk = createThunk(
-    `${NATIVE_DEVICE_MODULE_PREFIX}/resetDevice`,
+    `${NATIVE_DEVICE_MODULE_PREFIX}/createAndBackupWalletThunk`,
     async (
         { walletBackupType }: { walletBackupType: WalletBackupType },
         { getState, dispatch },
@@ -132,7 +132,7 @@ export const createAndBackupWalletThunk = createThunk(
 );
 
 export const recoverWalletThunk = createThunk(
-    `${NATIVE_DEVICE_MODULE_PREFIX}/recoverWallet`,
+    `${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`,
     (_, { getState }) => {
         const devicePath = selectDevicePath(getState());
 
