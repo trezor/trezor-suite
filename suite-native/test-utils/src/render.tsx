@@ -18,15 +18,16 @@ export const renderWithBasicProvider = <Props,>(
     element: ReactElement<Props>,
     {
         formattersConfig,
+        wrapper: Wrapper,
         ...options
-    }: Omit<RenderOptions, 'wrapper'> & {
+    }: RenderOptions & {
         formattersConfig?: FormatterProviderConfig;
     } = {},
 ) =>
     render(element, {
         wrapper: ({ children }) => (
             <BasicProviderForTests formattersConfig={formattersConfig}>
-                {children}
+                {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </BasicProviderForTests>
         ),
         ...options,
@@ -36,9 +37,10 @@ export const renderWithStoreProviderAsync = async <Props,>(
     element: ReactElement<Props>,
     {
         preloadedState,
+        wrapper: Wrapper,
         store,
         ...options
-    }: Omit<RenderOptions, 'wrapper'> & {
+    }: RenderOptions & {
         preloadedState?: PreloadedState;
         store?: TestStore;
     } = {},
@@ -46,7 +48,7 @@ export const renderWithStoreProviderAsync = async <Props,>(
     const ret = render(element, {
         wrapper: ({ children }) => (
             <StoreProviderForTests preloadedState={preloadedState} injectedStore={store}>
-                {children}
+                {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </StoreProviderForTests>
         ),
         ...options,
@@ -61,15 +63,16 @@ export const renderHookWithBasicProvider = <Result, Props>(
     callback: (props: Props) => Result,
     {
         formattersConfig,
+        wrapper: Wrapper,
         ...options
-    }: Omit<RenderHookOptions<Props>, 'wrapper'> & {
+    }: RenderHookOptions<Props> & {
         formattersConfig?: FormatterProviderConfig;
     } = {},
 ) =>
     renderHook(callback, {
         wrapper: ({ children }) => (
             <BasicProviderForTests formattersConfig={formattersConfig}>
-                {children}
+                {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </BasicProviderForTests>
         ),
         ...options,
@@ -79,9 +82,10 @@ export const renderHookWithStoreProviderAsync = async <Result, Props>(
     callback: (props: Props) => Result,
     {
         preloadedState,
+        wrapper: Wrapper,
         store,
         ...options
-    }: Omit<RenderHookOptions<Props>, 'wrapper'> & {
+    }: RenderHookOptions<Props> & {
         preloadedState?: PreloadedState;
         store?: TestStore;
     } = {},
@@ -89,7 +93,7 @@ export const renderHookWithStoreProviderAsync = async <Result, Props>(
     const ret = renderHook(callback, {
         wrapper: ({ children }) => (
             <StoreProviderForTests preloadedState={preloadedState} injectedStore={store}>
-                {children}
+                {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </StoreProviderForTests>
         ),
         ...options,
