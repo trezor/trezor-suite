@@ -3,14 +3,14 @@ import { TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { BoxSkeleton } from '@suite-native/atoms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
-import { BuyAmountInput, MAX_INPUT_HEIGHT, MIN_INPUT_WIDTH } from './BuyAmountInput';
 import { MAX_CRYPTO_DECIMALS } from '../../consts/general/consts';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyInputFormControls } from '../../hooks/buy/useBuyInputFormControls';
 import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
+import { AmountInput } from '../general/Input/AmountInput';
 
 export type CryptoAmountInputProps = {
     showAssetsSheet: () => void;
@@ -25,30 +25,25 @@ export const BuyCryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps
         const symbol = getSelectedSymbolFromBuyForm(form);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const isLoading = useSelector(selectTradingBuyIsLoading);
+        const inputControls = useBuyInputFormControls('cryptoValue');
 
         const amountInCrypto = form.watch('amountInCrypto');
         const isAssetSelected = !!form.watch('asset');
 
-        if (isLoading && !amountInCrypto) {
-            return (
-                <BoxSkeleton
-                    height={MAX_INPUT_HEIGHT}
-                    width={MIN_INPUT_WIDTH}
-                    accessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
-                />
-            );
-        }
-
         return (
-            <BuyAmountInput
+            <AmountInput
                 ref={ref}
-                name="cryptoValue"
+                {...inputControls}
                 accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
                 editable={isAssetSelected}
                 inputTransformer={cryptoAmountTransformer}
                 maxDecimals={MAX_CRYPTO_DECIMALS}
                 onPress={isAssetSelected ? undefined : showAssetsSheet}
                 testID={CRYPTO_AMOUNT_TEST_ID}
+                isLoading={isLoading && !amountInCrypto}
+                loadingAccessibilityLabel={translate(
+                    'moduleTrading.tradingScreen.quotesLoadingLabel',
+                )}
             />
         );
     },

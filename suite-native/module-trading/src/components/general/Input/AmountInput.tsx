@@ -1,20 +1,19 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { LayoutChangeEvent, Pressable, TextInput, TextInputProps } from 'react-native';
 
-import { useField } from '@suite-native/forms';
+import { BoxSkeleton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
-import { truncateDecimals } from '../../utils/general/amountUtils';
+import { truncateDecimals } from '../../../utils/general/amountUtils';
 
-export type TradingAmountInputProps = {
-    name: 'fiatValue' | 'cryptoValue';
+export type AmountInputProps = {
     inputTransformer: (value: string) => string;
     maxDecimals?: number;
-} & Omit<
-    TextInputProps,
-    'value' | 'style' | 'onBlur' | 'onFocus' | 'onChangeText' | 'onLayout' | 'onContentSizeChange'
->;
+    hasError?: boolean;
+    onChangeText: (text: string | undefined) => void;
+    isLoading?: boolean;
+    loadingAccessibilityLabel?: string;
+} & Omit<TextInputProps, 'style' | 'onLayout' | 'onContentSizeChange' | 'onChangeText'>;
 
 const MAX_FONT_SIZE = 34;
 const MIN_FONT_SIZE = Math.ceil(MAX_FONT_SIZE / 2);
@@ -24,6 +23,8 @@ const FONT_SIZE_GROW_HYSTERESIS = 20;
 
 export const MIN_INPUT_WIDTH = 70;
 export const MAX_INPUT_HEIGHT = Math.floor(MAX_FONT_SIZE * FONT_TO_LINE_HEIGHT_RATIO);
+
+export const AMOUNT_INPUT_TEST_ID = '@trading/amountInput/wrapper';
 
 const boxStyle = prepareNativeStyle(() => ({
     flex: 1,
@@ -93,58 +94,39 @@ const useInputLayoutControls = () => {
     };
 };
 
-const useInputFormControls = (
-    name: 'fiatValue' | 'cryptoValue',
-    inputTransformer: (value: string) => string,
-    maxLength: number | undefined,
-    maxDecimals: number | undefined,
-) => {
-    const { getValues, setValue } = useBuyFormContext();
-    // do not use `value` from `useField` here, because it does not work properly with `undefined`
-    const value = getValues(name);
-    const { onChange, onBlur, hasError } = useField({ name });
-
-    const setFocusedValue = useCallback(() => {
-        setValue('focusedValue', name);
-    }, [name, setValue]);
-
-    const handleTextChange = useCallback(
-        (text: string) => {
-            let transformedText = inputTransformer(text);
-            transformedText = truncateDecimals(transformedText, maxDecimals);
-            transformedText = transformedText.slice(0, maxLength);
-
-            return onChange(transformedText === '' ? undefined : transformedText);
+export const AmountInput = forwardRef<TextInput, AmountInputProps>(
+    (
+        {
+            onPress,
+            value,
+            maxDecimals,
+            inputTransformer,
+            maxLength,
+            onChangeText,
+            hasError = false,
+            onFocus,
+            onBlur,
+            isLoading,
+            loadingAccessibilityLabel,
+            ...inputProps
         },
-        [maxLength, maxDecimals, inputTransformer, onChange],
-    );
-
-    const clearFocusedValueAndBlur = useCallback(() => {
-        onBlur();
-        setValue('focusedValue', undefined);
-    }, [onBlur, setValue]);
-
-    return {
-        value,
-        hasError,
-        onFocus: setFocusedValue,
-        onChangeText: handleTextChange,
-        onBlur: clearFocusedValueAndBlur,
-    };
-};
-
-export const BuyAmountInput = forwardRef<TextInput, TradingAmountInputProps>(
-    ({ name, inputTransformer, maxLength, maxDecimals, onPress, ...inputProps }, ref) => {
+        ref,
+    ) => {
         const innerRef = useRef<TextInput>(null);
         useImperativeHandle(ref, () => innerRef.current!, []);
 
         const { applyStyle, utils } = useNativeStyles();
         const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls();
-        const { value, hasError, onFocus, onChangeText, onBlur } = useInputFormControls(
-            name,
-            inputTransformer,
-            maxLength,
-            maxDecimals,
+
+        const handleTextChange = useCallback(
+            (text: string) => {
+                let transformedText = inputTransformer(text);
+                transformedText = truncateDecimals(transformedText, maxDecimals);
+                transformedText = transformedText.slice(0, maxLength);
+
+                return onChangeText(transformedText === '' ? undefined : transformedText);
+            },
+            [maxLength, maxDecimals, inputTransformer, onChangeText],
         );
 
         const focusInputCallback = useCallback(() => {
@@ -152,13 +134,23 @@ export const BuyAmountInput = forwardRef<TextInput, TradingAmountInputProps>(
         }, [innerRef]);
         const wrapperOnPress = onPress ?? focusInputCallback;
 
+        if (isLoading) {
+            return (
+                <BoxSkeleton
+                    height={MAX_INPUT_HEIGHT}
+                    width={MIN_INPUT_WIDTH}
+                    accessibilityLabel={loadingAccessibilityLabel}
+                />
+            );
+        }
+
         // Note: it would be nice to use `onContentSizeChange` instead of `onLayout` on `<Pressable />` once this bug is fixed https://github.com/facebook/react-native/issues/29702.
         // It would also allow us to remove `innerRef` and `useImperativeHandle` logic.
         return (
             <Pressable
                 style={applyStyle(boxStyle)}
                 onLayout={onBoxLayout}
-                testID="@trading/amountInput/wrapper"
+                testID={AMOUNT_INPUT_TEST_ID}
                 onPress={wrapperOnPress}
             >
                 <TextInput
@@ -168,9 +160,9 @@ export const BuyAmountInput = forwardRef<TextInput, TradingAmountInputProps>(
                     inputMode="decimal"
                     placeholder="0.0"
                     placeholderTextColor={utils.colors.textDisabled}
-                    value={value ?? ''}
+                    value={value}
                     maxLength={maxLength}
-                    onChangeText={onChangeText}
+                    onChangeText={handleTextChange}
                     onFocus={onFocus}
                     onBlur={onBlur}
                     onLayout={onInputLayout}
