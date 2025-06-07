@@ -100,7 +100,7 @@ const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
 
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();
-    const popoverRef = useRef<PopoverRef>();
+    const popoverRef = useRef<PopoverRef>(undefined);
     const dispatch = useDispatch();
 
     const { isLocked, device } = useDevice();

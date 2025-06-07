@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo } from 'react';
+import { JSX, PropsWithChildren, useMemo } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -76,7 +76,7 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
     const prerequisite = useSelector(selectPrerequisite);
 
     const TipComponent = useMemo(
-        () => (): React.JSX.Element => {
+        () => (): JSX.Element => {
             switch (prerequisite) {
                 case 'transport-bridge':
                     return <Transport />;

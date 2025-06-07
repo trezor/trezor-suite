@@ -15,7 +15,7 @@ import { useReportSendFlowExitToAnalytics } from '../useReportSendFlowExitToAnal
 
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const navigationContainerRef = useNavigationContainerRef();
-    const routeNameRef = useRef<string | undefined>();
+    const routeNameRef = useRef<string | undefined>(undefined);
     const {
         utils: { colors, isDarkColor },
     } = useNativeStyles();

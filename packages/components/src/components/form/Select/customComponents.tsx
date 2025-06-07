@@ -34,7 +34,7 @@ export const Option = ({
     'data-testid': dataTest,
     ...props
 }: OptionComponentProps) => {
-    const ref = useRef<HTMLDivElement>();
+    const ref = useRef<HTMLDivElement>(undefined);
 
     useDeepCompareEffect(() => {
         if (deepEqual(props.data, selectedOption)) {

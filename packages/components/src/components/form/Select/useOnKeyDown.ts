@@ -8,7 +8,7 @@ const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is Gr
     (x as readonly GroupBase<Option>[])[0]?.options !== undefined;
 
 export const useOnKeyDown = (
-    selectRef: RefObject<SelectInstance<Option, boolean>>,
+    selectRef: RefObject<SelectInstance<Option, boolean> | null>,
     useKeyPressScroll?: boolean,
 ) => {
     const lastKeyPressTimestamp = useRef(0);

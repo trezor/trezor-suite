@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { JSX, ReactNode } from 'react';
 
 import { Checkbox, Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';

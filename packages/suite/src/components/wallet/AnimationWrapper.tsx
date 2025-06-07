@@ -1,4 +1,4 @@
-import { ReactNode, ReactText } from 'react';
+import { ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -6,7 +6,7 @@ interface AnimationWrapperProps {
     opened: boolean;
     children?: ReactNode;
     onAnimationStart?: () => void;
-    onUpdate?: (latest: { [key: string]: ReactText }) => void;
+    onUpdate?: (latest: { [key: string]: string | number }) => void;
     onAnimationComplete?: () => void;
     'data-testid'?: string;
 }

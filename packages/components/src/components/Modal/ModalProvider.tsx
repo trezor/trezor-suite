@@ -31,7 +31,7 @@ export const ModalProvider = ({ isDisabled = false, children }: ModalProviderPro
     const target = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setModalTarget(target);
+        setModalTarget(target as RefObject<HTMLDivElement>);
     }, [target]);
 
     return (

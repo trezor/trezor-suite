@@ -38,7 +38,7 @@ import type { Placement, ShiftOptions, UseFloatingReturn } from '@floating-ui/re
 
 const TRANSITION_DURATION_MS = 250;
 
-type ArrowRef = RefObject<SVGSVGElement>;
+type ArrowRef = RefObject<SVGSVGElement | null>;
 
 type Delay = {
     open: number;
@@ -60,7 +60,7 @@ interface TooltipOptions {
 type UseTooltipReturn = ReturnType<typeof useInteractions> & {
     open: boolean;
     setOpen: (open: boolean) => void;
-    arrowRef: RefObject<SVGSVGElement>;
+    arrowRef: RefObject<SVGSVGElement | null>;
 } & UseFloatingReturn;
 
 export const useTooltip = ({
@@ -74,7 +74,7 @@ export const useTooltip = ({
     shift,
     disableFlip = false,
 }: TooltipOptions): UseTooltipReturn => {
-    const arrowRef = useRef<SVGSVGElement>(null);
+    const arrowRef = useRef<SVGSVGElement | null>(null);
     const [isUncontrolledTooltipOpen, setIsUncontrolledTooltipOpen] = useState(isInitiallyOpen);
 
     // NOTE: if the tooltip is overall inactive (isActive === false), always hide it / never display it
@@ -169,9 +169,9 @@ export const TooltipTrigger = forwardRef<HTMLElement, TooltipTriggerProps>(
             state.getReferenceProps({
                 ref,
                 ...props,
-                ...children.props,
+                ...(children.props || {}),
                 'data-state': state.open ? 'open' : 'closed',
-            }),
+            } as HTMLProps<Element>),
         );
     },
 );

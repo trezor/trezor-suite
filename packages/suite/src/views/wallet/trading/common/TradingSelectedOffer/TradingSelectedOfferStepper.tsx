@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, JSX } from 'react';
 
 import { Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';

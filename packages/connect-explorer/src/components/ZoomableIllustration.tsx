@@ -33,7 +33,7 @@ export const ZoomableIllustration = (props: ZoomableIllustrationProps) => {
     const darkMode = props.$darkMode && THEME === 'dark';
 
     // Automatic absolute path handling
-    const src = props?.src?.startsWith('/') ? router.basePath + props.src : props.src;
+    const src = (props?.src as string)?.startsWith('/') ? router.basePath + props.src : props.src;
 
     return (
         <Zoom>

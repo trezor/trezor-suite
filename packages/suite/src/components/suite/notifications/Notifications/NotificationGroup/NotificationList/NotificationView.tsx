@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import type { NotificationEntry } from '@suite-common/toast-notifications';
 import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';

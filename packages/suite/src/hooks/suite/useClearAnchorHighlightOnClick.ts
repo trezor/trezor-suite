@@ -5,7 +5,7 @@ import { onAnchorChange } from 'src/actions/suite/routerActions';
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
 
-export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement>) => {
+export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement | null>) => {
     const anchor = useSelector(state => state.router.anchor);
     const dispatch = useDispatch();
 

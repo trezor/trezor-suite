@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react';
+import { JSX, Suspense, lazy, useState } from 'react';
 
 import styled from 'styled-components';
 

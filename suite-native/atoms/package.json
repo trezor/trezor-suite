@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.0.5",
+        "@gorhom/bottom-sheet": "5.1.5",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.8.2",
         "@shopify/flash-list": "1.7.6",
@@ -32,7 +32,7 @@
         "react-native": "0.79.3",
         "react-native-gesture-handler": "~2.24.0",
         "react-native-keyboard-controller": "1.16.5",
-        "react-native-reanimated": "~3.17.4",
+        "react-native-reanimated": "^3.18.0",
         "react-native-safe-area-context": "5.4.0",
         "react-native-svg": "15.11.2",
         "react-redux": "9.2.0"

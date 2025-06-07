@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { TimerId } from '@trezor/type-utils';
+
 import * as BIOAUTH from './constants/bioAuthConstants';
 
 const setBioAuthEnabled = createAction(BIOAUTH.SET_BIO_AUTH_ENABLED, (payload: boolean) => ({
@@ -19,7 +21,7 @@ const bioAuthValidated = createAction(
 
 const bioAuthWindowBlur = createAction(
     BIOAUTH.BIO_AUTH_WINDOW_BLUR,
-    (payload: { blurDate: string /* Date.toUTCString() */; timeoutId: NodeJS.Timeout }) => ({
+    (payload: { blurDate: string /* Date.toUTCString() */; timeoutId: TimerId }) => ({
         payload,
     }),
 );

@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { AccountExceptionLayout } from 'src/components/wallet';
 
 interface NoTokensProps {

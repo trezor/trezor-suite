@@ -1,10 +1,10 @@
-import { ServerOptions, WebSocket } from 'ws';
+import { ServerOptions, WebSocket, WebSocketServer } from 'ws';
 
 import { WebsocketClient } from '../src/client';
 
 class Client extends WebsocketClient<{ 'foo-event': 'bar-event' }> {}
 
-class Server extends WebSocket.Server {
+class Server extends WebSocketServer {
     private _url: string;
     fixtures?: any[];
 

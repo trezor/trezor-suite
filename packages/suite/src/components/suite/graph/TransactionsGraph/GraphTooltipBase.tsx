@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { JSX, useEffect } from 'react';
 
 import { TooltipProps } from 'recharts';
 import styled from 'styled-components';

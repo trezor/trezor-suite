@@ -19,6 +19,7 @@ import { Box, Button, Icon, IconButton, Input, Link, Row } from '@trezor/compone
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
+import { TimerId } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
 import {
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
@@ -49,7 +50,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const [autocorrectMessage, setAutocorrectMessage] = useState<string | undefined>();
     const contractAddressWarningDismissed = useRef(false);
-    const autocorrectTimeout = useRef<NodeJS.Timeout | null>(null);
+    const autocorrectTimeout = useRef<TimerId>(null);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {

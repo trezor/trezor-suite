@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -66,19 +66,17 @@ interface ListContainerProps<T extends BaseItemProps> {
     renderItem: (item: T, index: number) => React.ReactNode;
 }
 
-function ListContainerComponent<T extends BaseItemProps>(
-    {
-        listHeight,
-        listMinHeight,
-        totalHeight,
-        items,
-        itemHeights,
-        startIndex,
-        endIndex,
-        renderItem,
-    }: ListContainerProps<T>,
-    ref: React.Ref<HTMLDivElement>,
-) {
+function ListContainerComponent<T extends BaseItemProps>({
+    listHeight,
+    listMinHeight,
+    totalHeight,
+    items,
+    itemHeights,
+    startIndex,
+    endIndex,
+    renderItem,
+    ref,
+}: ListContainerProps<T>) {
     return (
         <Container ref={ref} $height={listHeight} $minHeight={listMinHeight}>
             <Content style={{ height: `${totalHeight}px` }}>
@@ -105,8 +103,7 @@ function ListContainerComponent<T extends BaseItemProps>(
     );
 }
 
-// NOTE: don't forget the forwardRef() because of passing the ref for useShadow()
-const ListContainer = memo(forwardRef(ListContainerComponent)) as typeof ListContainerComponent;
+const ListContainer = memo(ListContainerComponent) as typeof ListContainerComponent;
 
 type VirtualizedListProps<T extends BaseItemProps> = {
     items: Array<T>;
@@ -118,17 +115,15 @@ type VirtualizedListProps<T extends BaseItemProps> = {
     renderItem: (item: T, index: number) => React.ReactNode;
 };
 
-export function VirtualizedListComponent<T extends BaseItemProps>(
-    {
-        items: initialItems,
-        onScroll,
-        onScrollEnd,
-        listHeight,
-        listMinHeight,
-        renderItem,
-    }: VirtualizedListProps<T>,
-    ref: React.Ref<HTMLDivElement>,
-) {
+export function VirtualizedListComponent<T extends BaseItemProps>({
+    items: initialItems,
+    onScroll,
+    onScrollEnd,
+    listHeight,
+    listMinHeight,
+    renderItem,
+    ref,
+}: VirtualizedListProps<T>) {
     const newRef = useRef<HTMLDivElement>(null);
     const containerRef = (ref as React.RefObject<HTMLDivElement>) || newRef;
     const [items, setItems] = useState(initialItems);
@@ -220,7 +215,5 @@ export function VirtualizedListComponent<T extends BaseItemProps>(
     );
 }
 
-// NOTE: typecast here + memo() and forwardRef() because of passing the ref for useShadow()
-export const VirtualizedList = memo(
-    forwardRef(VirtualizedListComponent),
-) as typeof VirtualizedListComponent;
+// NOTE: typecast here + memo() because of passing the ref for useShadow()
+export const VirtualizedList = memo(VirtualizedListComponent) as typeof VirtualizedListComponent;

@@ -114,7 +114,7 @@ export const useTradingBuyForm = ({
     });
     const { register, control, formState, reset, setValue, handleSubmit } = methods;
     const values = useWatch<TradingBuyFormProps>({ control });
-    const previousValues = useRef<typeof values | null>(
+    const previousValues = useRef<typeof values | TradingBuyFormProps | null>(
         !isFromRedirect && isNotFormPage ? draftUpdated : null,
     );
 

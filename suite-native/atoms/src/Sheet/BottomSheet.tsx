@@ -88,8 +88,8 @@ export const BottomSheet = forwardRef<BottomSheetHandle, BottomSheetProps>(
                 setIsCloseScrollEnabled(isScrollEnabled);
             },
         });
-        const panGestureRef = useRef();
-        const scrollViewRef = useRef();
+        const panGestureRef = useRef(undefined);
+        const scrollViewRef = useRef(undefined);
 
         useImperativeHandle(ref, () => ({
             closeWithAnimation: closeSheetAnimated,

@@ -171,7 +171,12 @@ export const TransactionReviewOutputList = ({
                     .indexOf(output);
 
                 return (
-                    <Wrapper key={index} ref={ref => (outputRefs.current[index] = ref)}>
+                    <Wrapper
+                        key={index}
+                        ref={(ref: HTMLDivElement | null) => {
+                            outputRefs.current[index] = ref;
+                        }}
+                    >
                         <Column gap={spacings.sm}>
                             {isHeadingShown && (
                                 <SectionHeading output={output} index={recipientIndex} />

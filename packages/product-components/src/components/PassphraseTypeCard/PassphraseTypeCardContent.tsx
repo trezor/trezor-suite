@@ -65,8 +65,8 @@ type PassphraseTypeCardContentProps = {
     hiddenWalletTouched: boolean;
     setHiddenWalletTouched: (hiddenWalletTouched: boolean) => void;
     submit: (value: string, passphraseOnDevice?: boolean) => void;
-    caretRef: MutableRefObject<number>;
-    innerRef: RefObject<HTMLInputElement>;
+    caretRef: MutableRefObject<number | null>;
+    innerRef: RefObject<HTMLInputElement | null>;
 };
 
 export const PassphraseTypeCardContent = ({

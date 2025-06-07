@@ -1,5 +1,5 @@
 import * as net from 'net';
-import WebSocket from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 
 import { blockbook } from '../fixtures/blockbook';
 import { blockfrost } from '../fixtures/blockfrost';
@@ -38,7 +38,7 @@ const getFreePort = () =>
         });
     });
 
-export class BackendWebsocketServerMock extends WebSocket.Server {
+export class BackendWebsocketServerMock extends WebSocketServer {
     backendType: BackendType;
     defaultResponses: Record<string, any> = {};
     fixtures?: Fixture[];

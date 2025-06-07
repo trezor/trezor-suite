@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { JSX, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 

@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
 
 export type DataContext = Record<string, unknown>;

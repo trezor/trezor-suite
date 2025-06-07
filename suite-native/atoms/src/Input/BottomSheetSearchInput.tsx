@@ -25,7 +25,7 @@ export type BottomSheetSearchInputProps = {
     autoCorrect?: boolean;
 };
 
-export type BottomSheetSearchInputRef = TextInput;
+export type BottomSheetSearchInputRef = TextInput | null;
 
 const noOp = () => {};
 

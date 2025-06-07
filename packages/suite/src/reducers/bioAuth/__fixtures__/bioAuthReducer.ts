@@ -129,14 +129,14 @@ export default {
             actions: [
                 bioAuthActions.bioAuthWindowBlur({
                     blurDate: TEST_DATE,
-                    timeoutId: 1 as unknown as NodeJS.Timeout,
+                    timeoutId: 1,
                 }),
             ],
             result: {
                 ...initialState,
                 lastWindowBlurTimestamp: TEST_DATE_TIMESTAMP,
                 windowBlurred: true,
-                blurTimeoutId: 1 as unknown as NodeJS.Timeout,
+                blurTimeoutId: 1,
             },
         },
     ],

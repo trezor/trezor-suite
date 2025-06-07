@@ -1,4 +1,10 @@
-import { BlockquoteHTMLAttributes, Children, cloneElement, isValidElement } from 'react';
+import {
+    BlockquoteHTMLAttributes,
+    Children,
+    PropsWithChildren,
+    cloneElement,
+    isValidElement,
+} from 'react';
 
 import styled from 'styled-components';
 
@@ -40,7 +46,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
     // The middle one is a ReactElement whose children are the content of the message (array of strings and ReactElements - a, strong etc.).
     // The first element is the start of the message which should hold the emoji.
     const message: string[] | undefined = Children.map(children, child => {
-        if (isValidElement(child)) {
+        if (isValidElement<{ children?: string }>(child)) {
             return child.props.children;
         }
 
@@ -60,7 +66,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
 
     // Clone the children to avoid mutating them and prevent weird bugs.
     const clonedChildren = Children.map(children, child => {
-        if (isValidElement(child)) {
+        if (isValidElement<PropsWithChildren>(child)) {
             return cloneElement(child, {
                 ...child.props,
                 children: updatedMessage || child.props.children,

@@ -33,7 +33,7 @@ export const ModalContextProvider = ({
     const target = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setModalTarget(target);
+        setModalTarget(target as RefObject<HTMLDivElement>);
     }, [target]);
 
     return (

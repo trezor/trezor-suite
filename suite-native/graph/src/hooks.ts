@@ -201,8 +201,8 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
     graphPoints,
     totalFiatBalance,
 }: {
-    referencePointAtom: WritableAtom<TGraphPoint | null, TGraphPoint | null>;
-    selectedPointAtom: WritableAtom<TGraphPoint | null, TGraphPoint | null>;
+    referencePointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
+    selectedPointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
     graphPoints: TGraphPoint[];
     totalFiatBalance: string;
 }): {

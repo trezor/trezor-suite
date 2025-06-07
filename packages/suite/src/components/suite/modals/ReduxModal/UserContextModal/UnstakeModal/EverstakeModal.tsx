@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Card, Checkbox, Column, IconName, Modal } from '@trezor/components';

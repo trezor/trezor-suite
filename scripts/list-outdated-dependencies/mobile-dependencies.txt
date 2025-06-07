@@ -18,6 +18,7 @@
 @types/fast-text-encoding
 @types/jest
 @types/node
+@expo/config-plugins
 @whatwg-node/events
 abortcontroller-polyfill
 babel-plugin-transform-inline-environment-variables
