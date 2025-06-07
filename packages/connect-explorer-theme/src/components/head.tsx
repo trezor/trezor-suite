@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import NextHead from 'next/head';
 import type { NextSeoProps } from 'next-seo';
@@ -73,7 +73,7 @@ export function Head(): ReactElement {
           --nextra-primary-saturation: ${darkSaturation}%;
         }
       `}</style>
-                {head}
+                {head as ReactNode}
             </NextHead>
         </>
     );

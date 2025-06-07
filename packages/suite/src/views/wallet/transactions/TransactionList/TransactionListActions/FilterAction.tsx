@@ -47,7 +47,7 @@ export const FilterAction = () => {
     };
     const dataTest = '@wallet/accounts/hide-scam-transactions';
 
-    const dropdownRef = useRef<DropdownRef>();
+    const dropdownRef = useRef<DropdownRef>(undefined);
 
     const handleToggleSuspiciousTransactionsRequest = (requestedHidden: boolean) => {
         if (requestedHidden === suspiciousTransactionsHidden) return;

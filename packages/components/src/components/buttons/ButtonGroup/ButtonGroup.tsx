@@ -71,7 +71,8 @@ export const ButtonGroup = ({
                 React.isValidElement((child.props as TooltipProps).children)
             ) {
                 const tooltipProps = child.props as TooltipProps;
-                const tooltipChild = tooltipProps.children as React.ReactElement;
+                const tooltipChild =
+                    tooltipProps.children as React.ReactElement<AllowedChildrenPropsType>;
                 const tooltipChildProps: AllowedChildrenPropsType = tooltipChild?.props;
                 const childWithProps = React.cloneElement(tooltipChild, {
                     variant: tooltipChildProps.variant || variant,

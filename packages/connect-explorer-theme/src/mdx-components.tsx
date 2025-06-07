@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import type { ComponentProps, ReactElement, ReactNode } from 'react';
+import type { ComponentProps, HTMLProps, PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { Children, cloneElement, useEffect, useRef, useState } from 'react';
 
 import cn from 'clsx';
@@ -103,13 +103,13 @@ const findSummary = (children: ReactNode) => {
             'props' in child &&
             child.props
         ) {
-            const result = findSummary(child.props.children);
+            const result = findSummary((child.props as PropsWithChildren).children);
             summary = result[0];
             c = cloneElement(child, {
                 ...child.props,
                 children: result[1]?.length ? result[1] : undefined,
                 key: index,
-            });
+            } as HTMLProps<Element>);
         }
         restChildren.push(c);
     });

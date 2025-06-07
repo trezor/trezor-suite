@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, JSX } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 

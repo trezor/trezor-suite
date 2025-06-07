@@ -13,6 +13,7 @@ import {
 } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
+import { TimerId } from '@trezor/type-utils';
 
 export type WalletConnectPairBottomSheetProps = {
     pairingOpened: 'qr' | 'manual' | null;
@@ -48,7 +49,7 @@ export const WalletConnectPairBottomSheet = ({
     const [qrVisible, setQrVisible] = useState(false);
     const [manualVisible, setManualVisible] = useState(false);
     useEffect(() => {
-        let timeoutId: NodeJS.Timeout | null = null;
+        let timeoutId: TimerId | null = null;
         if (pairingOpened === 'manual' && lastPairingOpened.current === 'qr') {
             setQrVisible(false);
             timeoutId = setTimeout(() => setManualVisible(true), 100);

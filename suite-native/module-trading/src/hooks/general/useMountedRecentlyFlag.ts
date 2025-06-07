@@ -4,7 +4,7 @@ export const RECENT_DURATION = 100;
 
 export const useMountedRecentlyFlag = (context: string = '') => {
     const [isMountedRecently, setIsMountedRecently] = useState(true);
-    const prevContext = useRef<string>();
+    const prevContext = useRef<string>(undefined);
 
     if (prevContext.current !== context) {
         prevContext.current = context;

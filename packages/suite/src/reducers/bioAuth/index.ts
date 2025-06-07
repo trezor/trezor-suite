@@ -1,13 +1,14 @@
 import { differenceInMilliseconds, differenceInMinutes } from 'date-fns';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { TimerId } from '@trezor/type-utils';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 
 export interface BioAuthState {
     initialNow: number;
     bioAuthEnabled: boolean;
-    blurTimeoutId: NodeJS.Timeout | null;
+    blurTimeoutId: TimerId | null;
     bioAuthEnabledNextValue: boolean | null;
     lastBioAuthValidatedTimestamp: number | null;
     lastWindowBlurTimestamp: number | null;

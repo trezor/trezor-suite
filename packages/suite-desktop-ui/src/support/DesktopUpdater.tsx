@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { JSX, ReactNode, useCallback, useEffect, useMemo } from 'react';
 
 import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';

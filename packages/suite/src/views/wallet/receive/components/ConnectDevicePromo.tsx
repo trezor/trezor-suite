@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, H4, Paragraph } from '@trezor/components';

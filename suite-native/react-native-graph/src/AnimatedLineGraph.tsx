@@ -160,7 +160,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     const gradientPaths = useSharedValue<{ from?: SkPath; to?: SkPath }>({});
     const commands = useSharedValue<PathCommand[]>([]);
     const [commandsChanged, setCommandsChanged] = useState(0);
-    const pointSelectedIndex = useRef<number>();
+    const pointSelectedIndex = useRef<number | undefined>(undefined);
 
     const pathRange: GraphPathRange = useMemo(
         () => getGraphPathRange(allPoints, range),

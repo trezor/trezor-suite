@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { JSX, useContext } from 'react';
 
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';

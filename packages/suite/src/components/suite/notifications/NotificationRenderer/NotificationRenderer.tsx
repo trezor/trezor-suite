@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import { ComponentType, JSX } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';

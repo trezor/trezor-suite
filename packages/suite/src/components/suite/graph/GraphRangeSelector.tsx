@@ -123,7 +123,7 @@ export const GraphRangeSelector = ({
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
     const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
 
-    const popoverRef = useRef<PopoverRef>();
+    const popoverRef = useRef<PopoverRef>(undefined);
     const locale = useLocales();
     const { selectedRange, setSelectedRange } = useGraph();
 

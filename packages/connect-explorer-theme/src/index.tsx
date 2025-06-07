@@ -83,7 +83,7 @@ const Body = ({
                     'nextra-content nx-min-h-[calc(100vh-var(--nextra-navbar-height))] nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]',
                 )}
             >
-                {body}
+                {body as ReactNode}
             </article>
         );
     }
@@ -98,7 +98,7 @@ const Body = ({
         >
             <main className="nx-w-full nx-min-w-0 nx-max-w-6xl nx-px-6 nx-pt-4 md:nx-px-12">
                 {breadcrumb}
-                {body}
+                {body as ReactNode}
             </main>
         </article>
     );

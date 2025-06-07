@@ -18,7 +18,7 @@ export type NativeSupportedFeeLevel = Exclude<FeeLevelLabel, 'low'>;
 export type SendAmountInputProps = {
     recipientIndex: number;
     symbol: NetworkSymbol;
-    inputRef: RefObject<TextInput>;
+    inputRef: RefObject<TextInput | null>;
     scaleValue: SharedValue<number>;
     translateValue: SharedValue<number>;
     accountKey?: AccountKey;

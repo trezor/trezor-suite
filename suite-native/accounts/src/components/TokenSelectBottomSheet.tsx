@@ -10,7 +10,7 @@ import { OnSelectAccount } from '../types';
 import { AccountSelectBottomSheet } from './AccountSelectBottomSheet';
 
 type TokenSelectBottomSheetProps = {
-    bottomSheetAccountAtom: WritableAtom<Account | null, Account | null>;
+    bottomSheetAccountAtom: WritableAtom<Account | null, [Account | null], void>;
     onSelectAccount: OnSelectAccount;
     isStakingPressable?: boolean;
 };

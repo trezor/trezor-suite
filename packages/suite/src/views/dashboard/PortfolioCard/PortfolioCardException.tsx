@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, JSX } from 'react';
 
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { restartDiscoveryThunk } from '@suite-common/wallet-core';

@@ -13,24 +13,24 @@ const minSdkPatchCode = `
 `;
 
 module.exports = function withMinSdkProjectGradlePatch(config) {
-    return withProjectBuildGradle(config, async config => {
-        if (config.modResults.contents.includes(minSdkPatchCode)) {
-            return config;
+    return withProjectBuildGradle(config, modConfig => {
+        if (modConfig.modResults.contents.includes(minSdkPatchCode)) {
+            return modConfig;
         }
 
         const addCode = generateCode.mergeContents({
             newSrc: minSdkPatchCode,
             tag: 'minSdkPatchCode',
-            src: config.modResults.contents,
+            src: modConfig.modResults.contents,
             anchor: 'buildscript {',
             comment: '//',
             offset: 1,
         });
 
-        config.modResults.contents = addCode.contents;
+        modConfig.modResults.contents = addCode.contents;
 
         console.log('[minSdkProjectGradlePatch] Gradle patch applied successfully!');
 
-        return config;
+        return modConfig;
     });
 };

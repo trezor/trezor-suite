@@ -26,14 +26,14 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-linear-gradient": "~14.1.4",
+        "expo-linear-gradient": "~14.1.5",
         "expo-navigation-bar": "^4.0.2",
-        "expo-system-ui": "~5.0.7",
+        "expo-system-ui": "~5.0.8",
         "react": "19.0.0",
         "react-native": "0.79.3",
         "react-native-edge-to-edge": "1.6.0",
         "react-native-keyboard-controller": "1.16.5",
-        "react-native-reanimated": "~3.17.4",
+        "react-native-reanimated": "^3.18.0",
         "react-native-safe-area-context": "5.4.0",
         "react-redux": "9.2.0"
     }

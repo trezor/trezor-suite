@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { JSX, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 

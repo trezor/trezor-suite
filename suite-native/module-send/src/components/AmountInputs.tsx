@@ -63,13 +63,13 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
     const [isCryptoSelected, setIsCryptoSelected] = useState(true);
     const amountInputsWrapperRef = useRef<View>(null);
 
-    const cryptoRef = useRef<TextInput>(null);
+    const cryptoRef = useRef<TextInput | null>(null);
     const cryptoScale = useSharedValue(SCALE_FOCUSED);
     const cryptoTranslateY = useSharedValue(TRANSLATE_Y_FOCUSED);
 
     const fiatScale = useSharedValue(SCALE_UNFOCUSED);
     const fiatTranslateY = useSharedValue(TRANSLATE_Y_UNFOCUSED);
-    const fiatRef = useRef<TextInput>(null);
+    const fiatRef = useRef<TextInput | null>(null);
 
     const handleSwitchInputs = () => {
         if (isCryptoSelected) {

@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { JSX, ReactElement } from 'react';
 
 import type { FormatNumberOptions } from '@formatjs/intl';
 import styled from 'styled-components';

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { JSX, ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { Center, Column, Icon, List, Row, Text } from '@trezor/components';
