@@ -24,6 +24,7 @@
         },
         { "path": "../blockchain-link-types" },
         { "path": "../components" },
+        { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../react-utils" },

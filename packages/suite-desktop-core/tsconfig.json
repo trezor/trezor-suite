@@ -45,6 +45,8 @@
         { "path": "../transport-bridge" },
         { "path": "../urls" },
         { "path": "../utils" },
+        { "path": "../device-utils" },
+        { "path": "../protobuf" },
         { "path": "../trezor-user-env-link" },
         { "path": "../type-utils" }
     ]

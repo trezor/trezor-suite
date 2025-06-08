@@ -37,6 +37,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "tsx": "^4.19.3"
     },
     "dependencies": {

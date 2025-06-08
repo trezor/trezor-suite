@@ -65,6 +65,7 @@
     "dependencies": {
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "cross-fetch": "^4.0.0",
         "usb": "^2.15.0"

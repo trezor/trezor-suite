@@ -13,6 +13,9 @@
             "path": "../protocol"
         },
         {
+            "path": "../type-utils"
+        },
+        {
             "path": "../utils"
         },
         {

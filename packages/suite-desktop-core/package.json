@@ -62,6 +62,8 @@
         "@playwright/browser-webkit": "^1.51.0",
         "@playwright/test": "^1.51.0",
         "@sentry/webpack-plugin": "^2.22.7",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/protobuf": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@types/electron-localshortcut": "^3.1.3",

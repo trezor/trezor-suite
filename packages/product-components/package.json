@@ -21,6 +21,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",

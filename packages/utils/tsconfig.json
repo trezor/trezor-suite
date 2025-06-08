@@ -5,5 +5,8 @@
         "outDir": "./libDev"
     },
     "include": ["."],
-    "references": [{ "path": "../eslint" }]
+    "references": [
+        { "path": "../eslint" },
+        { "path": "../type-utils" }
+    ]
 }
