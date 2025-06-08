@@ -12054,7 +12054,6 @@ __metadata:
     karma-jasmine-async: "npm:^0.0.1"
     karma-sourcemap-loader: "npm:^0.4.0"
     karma-webpack: "npm:^5.0.1"
-    node-fetch: "npm:^2.6.4"
     node-libs-browser: "npm:^2.2.1"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.19.3"
@@ -12389,6 +12388,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
+    "@types/tr46": "npm:^5"
     autoprefixer: "npm:^10.4.21"
     babel-loader: "npm:^10.0.0"
     css-loader: "npm:^6.10.0"
@@ -12401,6 +12401,7 @@ __metadata:
     semver: "npm:^7.7.1"
     simple-git: "npm:^3.27.0"
     style-loader: "npm:^4.0.0"
+    tr46: "npm:^5.1.1"
     tsx: "npm:^4.19.3"
     webpack: "npm:5.99.9"
     webpack-cli: "npm:^6.0.1"
@@ -14150,6 +14151,13 @@ __metadata:
   version: 4.0.2
   resolution: "@types/tough-cookie@npm:4.0.2"
   checksum: 10/8682b4062959c15c0521361825839e10d374344fa84166ee0b731b815ac7b79a942f6e9192fad6383d69df2251021678c86c46748ff69c61609934a3e27472f2
+  languageName: node
+  linkType: hard
+
+"@types/tr46@npm:^5":
+  version: 5.0.1
+  resolution: "@types/tr46@npm:5.0.1"
+  checksum: 10/f232969ca629793dd3bbb50fa9e0a7f3143017ac63cdffc004a764e53c126454c079b52117ccde23040106391243f4a6ca27f80999d51c48cc36e41ab83794d7
   languageName: node
   linkType: hard
 
@@ -34718,7 +34726,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:^2.1.0, punycode@npm:^2.1.1":
+"punycode@npm:^2.1.0, punycode@npm:^2.1.1, punycode@npm:^2.3.1":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
   checksum: 10/febdc4362bead22f9e2608ff0171713230b57aff9dddc1c273aa2a651fbd366f94b7d6a71d78342a7c0819906750351ca7f2edd26ea41b626d87d6a13d1bd059
@@ -39786,6 +39794,15 @@ __metadata:
   dependencies:
     punycode: "npm:^2.1.1"
   checksum: 10/b09a15886cbfaee419a3469081223489051ce9dca3374dd9500d2378adedbee84a3c73f83bfdd6bb13d53657753fc0d4e20a46bfcd3f1b9057ef528426ad7ce4
+  languageName: node
+  linkType: hard
+
+"tr46@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "tr46@npm:5.1.1"
+  dependencies:
+    punycode: "npm:^2.3.1"
+  checksum: 10/833a0e1044574da5790148fd17866d4ddaea89e022de50279967bcd6b28b4ce0d30d59eb3acf9702b60918975b3bad481400337e3a2e6326cffa5c77b874753d
   languageName: node
   linkType: hard
 
