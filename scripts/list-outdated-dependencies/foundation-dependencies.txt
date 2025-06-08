@@ -10,6 +10,7 @@
 @types/fs-extra
 @types/react-router
 @types/react-router-dom
+app-builder-lib
 bech32
 bignumber.js
 bip66

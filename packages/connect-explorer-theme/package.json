@@ -42,7 +42,6 @@
         "zod": "^3.24.2"
     },
     "devDependencies": {
-        "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
         "@testing-library/dom": "^10.4.0",
         "@testing-library/react": "^16.3.0",
         "@types/flexsearch": "^0.7.3",

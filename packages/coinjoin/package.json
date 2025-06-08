@@ -36,6 +36,9 @@
         "n64": "^0.2.10"
     },
     "devDependencies": {
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/type-utils": "workspace:*",
+        "node-fetch": "^2.6.4",
+        "socks-proxy-agent": "8.0.5",
+        "ws": "^8.18.0"
     }
 }

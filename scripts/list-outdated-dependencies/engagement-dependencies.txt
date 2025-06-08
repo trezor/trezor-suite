@@ -35,10 +35,6 @@ pako
 pdfmake
 polished
 postcss-loader
-postcss-modules-extract-imports
-postcss-modules-local-by-default
-postcss-modules-scope
-postcss-modules-values
 postcss-styled-syntax
 qrcode.react
 react

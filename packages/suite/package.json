@@ -95,7 +95,6 @@
         "history": "^4.10.1",
         "idb": "^8.0.3",
         "immer": "10.1.1",
-        "jws": "^4.0.0",
         "pako": "^2.1.0",
         "pdfmake": "^0.2.18",
         "polished": "^4.3.1",
@@ -120,14 +119,11 @@
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
         "styled-components": "^6.1.17",
-        "uuid": "^11.1.0",
-        "web3-utils": "^4.3.1",
-        "zxcvbn": "^4.4.2"
+        "web3-utils": "^4.3.1"
     },
     "devDependencies": {
         "@crowdin/cli": "4.7.0",
         "@formatjs/cli": "6.6.4",
-        "@testing-library/dom": "^10.4.0",
         "@testing-library/react": "^16.3.0",
         "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",
@@ -142,7 +138,6 @@
         "@types/redux-logger": "^3.0.13",
         "@types/redux-mock-store": "^1.5.0",
         "@types/semver": "^7.7.0",
-        "@types/zxcvbn": "4.4.5",
         "jest-canvas-mock": "^2.5.2",
         "jest-watch-typeahead": "2.2.2",
         "redux-mock-store": "^1.5.5",

@@ -65,6 +65,7 @@ jotai
 lottie-react-native
 metro
 node-gyp
+node-libs-browser
 react-fela
 react-native
 react-native-ble-plx

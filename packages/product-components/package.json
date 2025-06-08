@@ -50,6 +50,7 @@
         "@storybook/theming": "^8.6.12",
         "@trezor/eslint": "workspace:*",
         "@types/react": "18.2.55",
+        "@types/zxcvbn": "4.4.5",
         "storybook": "^8.6.12",
         "stylelint": "^16.14.1",
         "typescript-styled-plugin": "^0.18.3"

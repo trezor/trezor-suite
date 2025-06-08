@@ -8,3 +8,4 @@
 dotenv
 jest-diff
 jest-junit
+chai
