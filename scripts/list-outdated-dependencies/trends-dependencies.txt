@@ -57,7 +57,6 @@ react-redux
 react-refresh
 react-use
 redux
-redux-devtools-extension
 redux-logger
 redux-mock-store
 redux-thunk

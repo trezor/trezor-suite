@@ -12701,7 +12701,6 @@ __metadata:
     react-use: "npm:^17.6.0"
     recharts: "npm:^2.15.3"
     redux: "npm:^5.0.1"
-    redux-devtools-extension: "npm:^2.13.9"
     redux-logger: "npm:^3.0.6"
     redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
@@ -36030,15 +36029,6 @@ __metadata:
     expo: ">=53"
     redux: "*"
   checksum: 10/00fe947bef2fbe1a54680ff67fd67f183dc54af59986544a3906c80215468429bd9d06e5791a9585d76c7ad6032cce2d2c3ca78421f400abf9c1f0af869cb0c1
-  languageName: node
-  linkType: hard
-
-"redux-devtools-extension@npm:^2.13.9":
-  version: 2.13.9
-  resolution: "redux-devtools-extension@npm:2.13.9"
-  peerDependencies:
-    redux: ^3.1.0 || ^4.0.0
-  checksum: 10/8d979c95031dee495e62d90cc12cd9923546227a177f6d3fba973a0d022d819854e47eceea7d0c68254cd410632a5eac2eaf84e17644d2fcecf94a1e246fed88
   languageName: node
   linkType: hard
 
