@@ -21,7 +21,6 @@
 @solana-program/token
 @solana-program/token-2022
 @solana/addresses
-@solana/buffer-layout
 @solana/keys
 @solana/kit
 @solana/rpc-api
@@ -67,7 +66,6 @@ webpack-bundle-analyzer
 webpack-cli
 webpack-dev-server
 webpack-merge
-webpack-nano
 webpack-plugin-serve
 worker-loader
 xrpl
