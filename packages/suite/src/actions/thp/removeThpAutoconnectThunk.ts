@@ -2,21 +2,19 @@ import { createThunk } from '@suite-common/redux-utils/';
 import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-// TODO thp-post-fixes
-// import TrezorConnect from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import { THP_PREFIX } from './thpActions';
 
-// TODO thp-post-fixes
-type Fn = (args: { credentials: any[] }) => any; // typeof TrezorConnect.thpRemoveCredentials;
-
 type RemoveThpAutoconnectThunkParams =
     | {
-          credentials?: Parameters<Fn>[0]['credentials'];
+          credentials?: Parameters<typeof TrezorConnect.thpRemoveCredentials>[0]['credentials'];
       }
     | undefined;
 
-type RemoveThpAutoconnectThunkResult = ReturnType<Fn> | undefined;
+type RemoveThpAutoconnectThunkResult =
+    | ReturnType<typeof TrezorConnect.thpRemoveCredentials>
+    | undefined;
 
 export const removeThpAutoconnectThunk = createThunk<
     RemoveThpAutoconnectThunkResult,
@@ -37,13 +35,8 @@ export const removeThpAutoconnectThunk = createThunk<
         const credentialsToRemove =
             params?.credentials !== undefined ? params?.credentials : device.thp.credentials;
 
-        // TODO thp-post-fixes
-        // const response = await TrezorConnect.thpRemoveCredentials({
-        //     credentials: credentialsToRemove,
-        // });
-        const response: any = await Promise.resolve({
-            success: false,
-            payload: { error: 'Implement TrezorConnect.thpRemoveCredentials' },
+        const response = await TrezorConnect.thpRemoveCredentials({
+            credentials: credentialsToRemove,
         });
 
         if (response.success) {
