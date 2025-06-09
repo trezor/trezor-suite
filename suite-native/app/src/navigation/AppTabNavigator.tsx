@@ -1,7 +1,8 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import { fetchCountryCodeThunk, selectCountryCode } from '@suite-common/geolocation';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useHandleDeviceRequestsPassphrase } from '@suite-native/device-authorization';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
@@ -45,6 +46,32 @@ export const AppTabNavigator = () => {
     const isTradingBuyEnabled = useSelector(selectIsTradingBuyEnabled);
     const isTradingExchangeEnabled = useSelector(selectIsTradingExchangeEnabled);
     const isTradingSellEnabled = useSelector(selectIsTradingSellEnabled);
+    const countryCode = useSelector(selectCountryCode);
+    const dispatch = useDispatch();
+
+    const handleTradeTabPress = () => {
+        const tradingType = getTradingAnalyticsType(
+            isTradingBuyEnabled,
+            isTradingExchangeEnabled,
+            isTradingSellEnabled,
+        );
+        if (!tradingType) return;
+
+        analytics.report({
+            type: EventType.TradingNavigate,
+            payload: {
+                action: 'navigate',
+                type: tradingType,
+                from: 'trade',
+            },
+        });
+
+        if (!countryCode) {
+            // fetch country code to show context message
+            // it is not fetched on mount because it is not needed for other tabs
+            dispatch(fetchCountryCodeThunk());
+        }
+    };
 
     return (
         <Tab.Navigator
@@ -64,23 +91,7 @@ export const AppTabNavigator = () => {
                     name={AppTabsRoutes.TradeStack}
                     component={TradingStackNavigator}
                     listeners={{
-                        tabPress: () => {
-                            const tradingType = getTradingAnalyticsType(
-                                isTradingBuyEnabled,
-                                isTradingExchangeEnabled,
-                                isTradingSellEnabled,
-                            );
-                            if (!tradingType) return;
-
-                            analytics.report({
-                                type: EventType.TradingNavigate,
-                                payload: {
-                                    action: 'navigate',
-                                    type: tradingType,
-                                    from: 'trade',
-                                },
-                            });
-                        },
+                        tabPress: handleTradeTabPress,
                     }}
                 />
             )}
