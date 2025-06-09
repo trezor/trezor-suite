@@ -47,8 +47,8 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     dashboardPage: async ({ page, devicePrompt }, use) => {
         await use(new DashboardPage(page, devicePrompt));
     },
-    settingsPage: async ({ page, url }, use) => {
-        await use(new SettingsPage(page, url));
+    settingsPage: async ({ page }, use) => {
+        await use(new SettingsPage(page));
     },
     guidePanel: async ({ page }, use) => {
         await use(new GuidePanel(page));

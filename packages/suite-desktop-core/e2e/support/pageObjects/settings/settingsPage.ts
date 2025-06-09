@@ -72,10 +72,7 @@ export class SettingsPage {
     readonly analyticsSwitch: Locator;
     readonly showLogButton: Locator;
 
-    constructor(
-        private readonly page: Page,
-        private readonly apiURL: string,
-    ) {
+    constructor(private readonly page: Page) {
         this.coins = new CoinsTab(page);
         this.device = new DeviceTab(page);
 
@@ -185,9 +182,7 @@ export class SettingsPage {
     async changeDeviceBackground(image: keyof typeof backgroundImages) {
         await test.step('Change display background image', async () => {
             // To solve the flakiness of the test, we need to wait for the image to load
-            const buttonImageLoad = this.page.waitForResponse(
-                `${this.apiURL}${backgroundImages[image].path}`,
-            );
+            const buttonImageLoad = this.page.waitForResponse(`**/${backgroundImages[image].path}`);
             await this.homescreenGalleryButton.click();
             await buttonImageLoad;
             await this.page.getByTestId(backgroundImages[image].locator).click();
