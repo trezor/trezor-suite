@@ -1193,9 +1193,13 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
 
 export const isAccountInCollection = (account: Account, accounts: Account[]) =>
     accounts.some(
-        ({ descriptor, symbol, accountType, index }) =>
+        ({ deviceState, descriptor, symbol, accountType, index }) =>
+            // most of the time, descriptor is unique for a given (symbol, accountType, index)
             descriptor === account.descriptor &&
+            // but not for EVM networks (intentionally sharing same eth address), so let's compare them too
             symbol === account.symbol &&
             accountType === account.accountType &&
-            index === account.index,
+            index === account.index &&
+            // do not mark as duplicate if two different devices discover the same wallet
+            deviceState === account.deviceState,
     );
