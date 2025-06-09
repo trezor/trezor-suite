@@ -103,7 +103,8 @@ export const AccountListBaseItem = ({
                 )}
                 <VStack flex={info ? 1 : 0} spacing={0}>
                     <HStack alignItems="center" justifyContent="space-between">
-                        {info && <AccountListLabel label={label} flex={1} />}
+                        {/* If no info is provided, display empty Box to maintain layout consistency */}
+                        {info ? <AccountListLabel label={label} flex={1} /> : <Box />}
                         {shouldDisplayBalance && (
                             <CryptoAmountFormatter
                                 value={cryptoValue}
