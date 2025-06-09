@@ -125,16 +125,7 @@ const applyDeviceStatesThunk = createThunk(
             const physicalDevices = selectPhysicalDevices(getState());
             const devicesWithoutState = physicalDevices.filter(d => !d.state?.staticSessionId);
 
-            // now we expect that there is exactly one device without state - meaning that we want to update its state
-            if (devicesWithoutState.length === 1) {
-                dispatch(
-                    deviceActions.setDeviceState({
-                        device,
-                        state: newDeviceState,
-                        useEmptyPassphrase: !isAddingHiddenWallet,
-                    }),
-                );
-            } else {
+            if (devicesWithoutState.length === 0) {
                 dispatch(
                     deviceActions.addAuthorizedDevice({
                         device: {
@@ -152,6 +143,15 @@ const applyDeviceStatesThunk = createThunk(
                 const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
                 if (newlyAddedDevice === undefined) return;
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
+            } else {
+                //
+                dispatch(
+                    deviceActions.setDeviceState({
+                        device,
+                        state: newDeviceState,
+                        useEmptyPassphrase: !isAddingHiddenWallet,
+                    }),
+                );
             }
 
             await dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
