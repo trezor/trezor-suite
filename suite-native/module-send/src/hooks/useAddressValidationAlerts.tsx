@@ -33,6 +33,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
     const [wasTokenAlertDisplayed, setWasTokenAlertDisplayed] = useState(
         G.isNullable(tokenContract),
     );
+    const [wasContractAlertDisplayed, setWasContractAlertDisplayed] = useState(false);
     const { showAlert } = useAlert();
 
     const tokenSymbol = useSelector((state: TokensRootState) =>
@@ -101,14 +102,57 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         }
     }, [addressValue, isFilledValidAddress, symbol, showAlert, convertAddressToChecksum]);
 
+    const handleContractAddressCheck = useCallback(async () => {
+        if (!isFilledValidAddress || !symbol || !networkType) return;
+
+        if (networkType !== 'ethereum') return;
+
+        const result = await TrezorConnect.getAccountInfo({
+            descriptor: addressValue,
+            coin: symbol,
+        });
+
+        if (!result?.success) {
+            return;
+        }
+        const isContract = !!result.payload.misc?.contractInfo;
+
+        if (isContract && !wasContractAlertDisplayed) {
+            showAlert({
+                title: <Translation id="moduleSend.outputs.recipients.smartContract.alert.title" />,
+                description: (
+                    <Translation id="moduleSend.outputs.recipients.smartContract.alert.description" />
+                ),
+                primaryButtonTitle: (
+                    <Translation id="moduleSend.outputs.recipients.smartContract.alert.primaryButton" />
+                ),
+                onPressPrimaryButton: () => setWasContractAlertDisplayed(true),
+            });
+        }
+    }, [
+        addressValue,
+        isFilledValidAddress,
+        symbol,
+        networkType,
+        wasContractAlertDisplayed,
+        showAlert,
+    ]);
+
     useEffect(() => {
         const shouldShowTokenAlert =
             tokenContract && isFilledValidAddress && !wasTokenAlertDisplayed;
-        const shouldChecksumAddress =
+        const isAddressChecksumRequired =
             networkType === 'ethereum' &&
-            !wasAddressChecksummed &&
             isFilledValidAddress &&
-            wasTokenAlertDisplayed;
+            !checkAddressCheckSum(addressValue || '');
+        const shouldChecksumAddress =
+            isAddressChecksumRequired && !wasAddressChecksummed && wasTokenAlertDisplayed;
+        const shouldCheckContractAddress =
+            networkType === 'ethereum' &&
+            isFilledValidAddress &&
+            wasTokenAlertDisplayed &&
+            !wasContractAlertDisplayed &&
+            (!isAddressChecksumRequired || wasAddressChecksummed);
 
         if (shouldShowTokenAlert) {
             showAlert({
@@ -121,11 +165,14 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
                 primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
                 onPressPrimaryButton: () => setWasTokenAlertDisplayed(true),
             });
-        } else if (shouldChecksumAddress) handleAddressChecksum();
-        // TODO: add path for contract address alert: https://github.com/trezor/trezor-suite/issues/14936.
-        else if (!isFilledValidAddress) {
+        } else if (shouldChecksumAddress) {
+            handleAddressChecksum();
+        } else if (shouldCheckContractAddress) {
+            handleContractAddressCheck();
+        } else if (!isFilledValidAddress) {
             if (tokenContract) setWasTokenAlertDisplayed(false);
             setWasAddressChecksummed(false);
+            setWasContractAlertDisplayed(false);
         }
     }, [
         isFilledValidAddress,
@@ -137,6 +184,9 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         wasAddressChecksummed,
         handleAddressChecksum,
         wasTokenAlertDisplayed,
+        wasContractAlertDisplayed,
+        handleContractAddressCheck,
+        addressValue,
     ]);
 
     return { wasAddressChecksummed };
