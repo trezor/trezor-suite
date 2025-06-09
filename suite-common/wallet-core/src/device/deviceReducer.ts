@@ -386,7 +386,7 @@ const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
  * @param {boolean} [alwaysOnDevice=false]
  * @returns
  */
-const changePassphraseMode = (
+const updatePassphraseMode = (
     draft: DeviceReducerState,
     device: TrezorDevice,
     hidden: boolean,
@@ -610,7 +610,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             disconnectDevice(state, payload);
         })
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
-            changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
+            updatePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
         .addCase(UI.REQUEST_PIN, state => {
             resetAuthFailed(state);
