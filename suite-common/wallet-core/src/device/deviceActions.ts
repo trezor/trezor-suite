@@ -69,11 +69,9 @@ const setTemporaryRememberedDevice = createAction(
     (payload: { device: TrezorDevice; temporaryRemember: boolean }) => ({ payload }),
 );
 
-export type ForgetDeviceActionPayload = { device: TrezorDevice; settings: ConnectDeviceSettings };
-
 const forgetDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
-    (payload: ForgetDeviceActionPayload) => ({
+    (payload: { device: TrezorDevice; settings: ConnectDeviceSettings }) => ({
         payload,
     }),
 );
