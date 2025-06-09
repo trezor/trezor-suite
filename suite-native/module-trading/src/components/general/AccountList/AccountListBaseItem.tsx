@@ -52,15 +52,7 @@ const AccountListLabel = ({ label, flex }: { label: ReactNode; flex: number }) =
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Text
-            variant="body"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={applyStyle(labelTextStyle, {
-                textColor: 'textDefault',
-                flex,
-            })}
-        >
+        <Text variant="body" style={applyStyle(labelTextStyle, { textColor: 'textDefault', flex })}>
             {label}
         </Text>
     );
