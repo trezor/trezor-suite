@@ -120,6 +120,20 @@ const connectDevice = (
     device: Device,
     settings: ConnectDeviceSettings,
 ) => {
+    const currentTime = new Date().getTime();
+
+    const deviceCommonFields = {
+        connected: true,
+
+        buttonRequests: [],
+        metadata: {},
+        passwords: {},
+        firstConnectedTimestamp:
+            'firstConnectedTimestamp' in device
+                ? Number(device.firstConnectedTimestamp ?? currentTime)
+                : currentTime,
+        ts: currentTime,
+    };
     // connected device is unacquired/unreadable
     if (!device.features) {
         // check if device already exists in reducer
@@ -128,20 +142,11 @@ const connectDevice = (
             // and ignore this action if so
             return;
         }
-        const currentTime = new Date().getTime();
         draft.devices.push({
             ...device,
-            connected: true,
+            ...deviceCommonFields,
             available: false,
             useEmptyPassphrase: true,
-            buttonRequests: [],
-            metadata: {},
-            passwords: {},
-            firstConnectedTimestamp:
-                'firstConnectedTimestamp' in device
-                    ? Number(device.firstConnectedTimestamp ?? currentTime)
-                    : currentTime,
-            ts: currentTime,
         });
 
         return;
@@ -173,25 +178,16 @@ const connectDevice = (
 
     const useEmptyPassphrase = getShouldUseEmptyPassphrase(device, deviceInstance, settings);
 
-    const currentTime = new Date().getTime();
     const newDevice: TrezorDevice = {
         ...device,
+        ...deviceCommonFields,
         state: device._state,
         useEmptyPassphrase,
         remember: false,
         temporaryRemember: false,
-        connected: true,
         available: true,
         authConfirm: false,
         instance: deviceInstance,
-        buttonRequests: [],
-        metadata: {},
-        passwords: {},
-        firstConnectedTimestamp:
-            'firstConnectedTimestamp' in device
-                ? Number(device.firstConnectedTimestamp ?? currentTime)
-                : currentTime,
-        ts: currentTime,
     };
 
     // update affected devices
