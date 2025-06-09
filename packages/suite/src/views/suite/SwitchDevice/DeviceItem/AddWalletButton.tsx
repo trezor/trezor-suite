@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { startDiscoveryThunk } from '@suite-common/wallet-core';
+import { selectDeviceThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import {
     Button,
@@ -45,7 +45,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         isExisting?: boolean;
     }) => {
         onCancel(false);
-
+        dispatch(selectDeviceThunk({ device }));
         dispatch(
             startDiscoveryThunk({
                 device,
