@@ -37,6 +37,7 @@ expo-device
 expo-haptics
 expo-image
 expo-image-picker
+expo-keep-awake
 expo-linear-gradient
 expo-linking
 expo-local-authentication

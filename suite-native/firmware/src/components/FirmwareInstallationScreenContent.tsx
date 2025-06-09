@@ -9,6 +9,7 @@ import Animated, {
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { useKeepAwake } from 'expo-keep-awake';
 
 import { Badge, Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage, setTemporaryRememberedDeviceThunk } from '@suite-native/device';
@@ -56,6 +57,8 @@ export const FirmwareInstallationScreenContent = ({
     isTemporaryRememeberAllowed = true,
     navigationLocation,
 }: FirmwareInstallationScreenContentProps) => {
+    useKeepAwake(); // Prevents screen from sleeping while installing firmware (might take few minutes).
+
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation();
