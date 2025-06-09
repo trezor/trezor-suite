@@ -13,6 +13,7 @@ import { SessionsClient } from '../sessions/client';
 import { SessionsBackgroundInterface } from '../sessions/types';
 import { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from '../thp';
 import { Session } from '../types';
+import { readWithAttempts } from '../utils/readWithAttempts';
 import { receiveAndParse } from '../utils/receive';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
 
@@ -208,7 +209,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
                 const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
                     this.api.write(path, chunk, attemptSignal || signal);
-                const apiRead = this.api.readWithAttempts(path, { signal });
+                const apiRead = readWithAttempts(
+                    attemptSignal => this.api.read(path, attemptSignal || signal),
+                    { signal },
+                );
 
                 if (protocol.name === 'v2') {
                     const callResult = await callThpMessage({
@@ -293,7 +297,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
                 let sendResult;
                 if (protocol.name === 'v2' && thpState?.expectedResponses?.length) {
-                    const apiRead = this.api.readWithAttempts(path, { signal });
+                    const apiRead = readWithAttempts(
+                        attemptSignal => this.api.read(path, attemptSignal || signal),
+                        { signal },
+                    );
                     sendResult = await sendThpMessage({
                         thpState,
                         chunks,
@@ -335,7 +342,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const { path } = getPathBySessionResponse.payload;
 
                 const protocol = customProtocol || v1Protocol;
-                const apiRead = this.api.readWithAttempts(path, { signal });
+                const apiRead = readWithAttempts(
+                    attemptSignal => this.api.read(path, attemptSignal || signal),
+                    { signal },
+                );
                 if (protocol.name === 'v2') {
                     const decoded = await receiveThpMessage({
                         thpState,

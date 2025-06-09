@@ -84,7 +84,6 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
             return Promise.resolve({ success: true });
         },
         read,
-        readWithAttempts: () => () => read(),
     };
 };
 

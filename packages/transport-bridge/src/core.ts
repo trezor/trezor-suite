@@ -16,6 +16,7 @@ import { callThpMessage, receiveThpMessage } from '@trezor/transport/src/thp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
 import { BridgeProtocolMessage, PathInternal, Session } from '@trezor/transport/src/types';
 import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
+import { readWithAttempts } from '@trezor/transport/src/utils/readWithAttempts';
 import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
 import { success, unknownError } from '@trezor/transport/src/utils/result';
 import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
@@ -99,7 +100,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: readUtil protocol ${protocol.name}`);
         try {
             const receiveProtocol = protocol.name === 'bridge' ? protocolV1 : protocol;
-            const apiRead = api.readWithAttempts(path, { signal });
+            const apiRead = readWithAttempts(
+                attemptSignal => api.read(path, attemptSignal || signal),
+                { signal },
+            );
             const expectedHeaders = receiveProtocol.getHeaders(Buffer.alloc(3));
             const res = await receiveUtil(() => apiRead(expectedHeaders), receiveProtocol);
             if (!res.success) return res;
@@ -254,7 +258,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
                 const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
                     api.write(path, chunk, attemptSignal || signal);
-                const apiRead = api.readWithAttempts(path, { signal });
+                const apiRead = readWithAttempts(
+                    attemptSignal => api.read(path, attemptSignal || signal),
+                    { signal },
+                );
 
                 const message = await callThpMessage({
                     thpState: state,
@@ -369,7 +376,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
                 const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
                     api.write(path, chunk, attemptSignal || signal);
-                const apiRead = api.readWithAttempts(path, { signal });
+                const apiRead = readWithAttempts(
+                    attemptSignal => api.read(path, attemptSignal || signal),
+                    { signal },
+                );
 
                 const message = await receiveThpMessage({
                     thpState: state,

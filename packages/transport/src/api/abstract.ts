@@ -9,7 +9,6 @@ import type {
     PathInternal,
     Success,
 } from '../types';
-import { readWithAttempts } from '../utils/readWithAttempts';
 import { error, success, unknownError } from '../utils/result';
 
 export interface AbstractApiConstructorParams {
@@ -83,20 +82,6 @@ export abstract class AbstractApi extends TypedEmitter<{
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
     >;
-
-    readWithAttempts(
-        path: PathInternal,
-        options: {
-            signal?: AbortSignal;
-            attempts?: number;
-            timeout?: number;
-        },
-    ) {
-        return readWithAttempts(
-            (attemptSignal?: AbortSignal) => this.read(path, attemptSignal || options.signal),
-            options,
-        );
-    }
 
     /**
      * write to device on path

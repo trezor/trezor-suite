@@ -28,7 +28,6 @@ const createTransportApi = (override = {}) => {
         closeDevice: () => Promise.resolve({ success: true }),
         write: () => Promise.resolve({ success: true }),
         read,
-        readWithAttempts: () => () => read(),
         listen: () => {},
         dispose: () => {},
         ...override,
