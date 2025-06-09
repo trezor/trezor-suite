@@ -11,7 +11,7 @@ import {
     FirmwareReleaseConfig,
     IntermediaryReleaseConfig,
 } from '@trezor/firmware-release-config/src/types';
-import { stringToIntegerInRange, versionUtils } from '@trezor/utils';
+import { getIntegerInRangeFromString, versionUtils } from '@trezor/utils';
 
 import type { Features, FirmwareReleaseConfigInfo } from '../types';
 import { DataManager } from './DataManager';
@@ -207,7 +207,7 @@ const calculateShouldOfferRelease = (
         return rolloutProbability > 0;
     } else {
         // If deviceId is provided, use the deterministic approach.
-        const deterministicValueToCompare = stringToIntegerInRange(deviceId);
+        const deterministicValueToCompare = getIntegerInRangeFromString(deviceId, 101);
 
         return deterministicValueToCompare < rolloutProbability;
     }
