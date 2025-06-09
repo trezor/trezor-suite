@@ -1622,6 +1622,14 @@ export const en = {
                     info: 'Online exchanges require this to identify your account. Get your memo/destination tag from your exchange.',
                     linkText: '<link>What’s this?</link>',
                 },
+                smartContract: {
+                    alert: {
+                        title: 'This is a smart contract address.',
+                        description:
+                            'Accidentally sending to smart contract address may result in loss of funds.',
+                        primaryButton: 'I understand',
+                    },
+                },
             },
         },
         fees: {
