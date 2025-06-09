@@ -20,6 +20,7 @@ import { Translation, TranslationKey } from '../../../Translation';
 
 type EnterPassphraseProps = {
     onDeviceOffer: boolean;
+    cancelDisabled?: boolean;
     device: TrezorDevice;
     deviceLoading?: boolean;
     submitting?: boolean;
@@ -31,6 +32,7 @@ type EnterPassphraseProps = {
 
 export const EnterPassphrase = ({
     device,
+    cancelDisabled,
     deviceLoading,
     onDeviceOffer,
     isExistingWallet = false,
@@ -47,6 +49,7 @@ export const EnterPassphrase = ({
     return (
         <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>
             <CardWithDevice
+                cancelDisabled={cancelDisabled}
                 onCancel={onCancel}
                 device={device}
                 onBackButtonClick={onBack}

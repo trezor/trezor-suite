@@ -47,15 +47,28 @@ export const ReduxModal = (modal: ReduxModalProps) => {
 type ForegroundAppModalProps = {
     app: ForegroundAppRoute['app'];
     cancelable: boolean;
+    isAddingHiddenWalletWithRespectToSettings?: boolean;
 };
 
-const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
+const ForegroundAppModal = ({
+    app,
+    isAddingHiddenWalletWithRespectToSettings,
+    cancelable,
+}: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
 
     const onCancel = () => dispatch(closeModalApp());
 
     if (app === 'switch-device') {
-        return <SwitchDevice cancelable={cancelable} onCancel={onCancel} />;
+        return (
+            <SwitchDevice
+                cancelable={cancelable}
+                isAddingHiddenWalletWithRespectToSettings={
+                    isAddingHiddenWalletWithRespectToSettings
+                }
+                onCancel={onCancel}
+            />
+        );
     }
 };
 

@@ -21,6 +21,7 @@ const Container = styled.div<{ $isFullHeaderVisible: boolean }>`
 
 type DeviceHeaderProps = {
     device: TrezorDevice;
+    cancelDisabled?: boolean;
     onCancel?: ForegroundAppProps['onCancel'];
     isFullHeaderVisible: boolean;
     onBackButtonClick?: () => void;
@@ -30,6 +31,7 @@ type DeviceHeaderProps = {
 
 export const DeviceHeader = ({
     onCancel,
+    cancelDisabled,
     device,
     isFullHeaderVisible,
     onBackButtonClick,
@@ -42,7 +44,7 @@ export const DeviceHeader = ({
     const deviceModelInternal = getDeviceInternalModel(device);
 
     const onHeaderClick = () => {
-        if (isFullHeaderVisible && onCancel) {
+        if (isFullHeaderVisible && onCancel && !cancelDisabled) {
             onCancel();
         }
     };
@@ -78,7 +80,7 @@ export const DeviceHeader = ({
                     ) : (
                         <WebUsbButton variant="primary" size="tiny" />
                     ))}
-                {isFullHeaderVisible && (
+                {isFullHeaderVisible && !cancelDisabled && (
                     <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
                         <IconButton
                             icon="x"

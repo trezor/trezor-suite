@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Button, Column, Icon, Row, Text } from '@trezor/components';
@@ -13,7 +15,11 @@ import { selectIsBluetoothListOpen } from '../../../actions/bluetooth/desktopBlu
 import { BluetoothConnect } from '../../../components/suite/bluetooth/BluetoothConnect';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
-export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
+export const SwitchDevice = ({
+    cancelable,
+    isAddingHiddenWalletWithRespectToSettings,
+    onCancel,
+}: ForegroundAppProps) => {
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const isBluetoothMode = useSelector(selectIsBluetoothListOpen);
     const dispatch = useDispatch();
@@ -30,8 +36,14 @@ export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
         dispatch(setBluetoothListOpen({ isOpen: true }));
     };
 
+    const handleCancel = useCallback(() => {
+        if (cancelable) {
+            onCancel();
+        }
+    }, [cancelable, onCancel]);
+
     return (
-        <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>
+        <SwitchDeviceModal isAnimationEnabled onCancel={handleCancel}>
             {isBluetoothMode ? (
                 <BluetoothConnect uiMode="card" />
             ) : (
@@ -39,9 +51,13 @@ export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
                     {sortedDevices.map((device, index) => (
                         <DeviceItem
                             key={`${device.id}-${device.instance}`}
+                            cancelable={cancelable}
                             device={device}
+                            isAddingHiddenWalletWithRespectToSettings={
+                                isAddingHiddenWalletWithRespectToSettings
+                            }
                             instances={deviceUtils.getDeviceInstances(device, devices)}
-                            onCancel={onCancel}
+                            onCancel={handleCancel}
                             isFullHeaderVisible={index === 0}
                         />
                     ))}

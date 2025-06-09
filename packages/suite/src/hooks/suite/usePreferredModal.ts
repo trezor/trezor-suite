@@ -38,6 +38,7 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
     ({
         type: 'foreground-app',
         payload: {
+            ...params,
             app: route.app,
             // params are undefined when the user goes directly to the URL
             cancelable: !!params?.cancelable,

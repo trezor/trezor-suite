@@ -1,6 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
-import { UI } from '@trezor/connect-web';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -12,8 +11,10 @@ type PassphraseWalletIsNotExistFlowProps = {
     deviceOffer: boolean;
     passphraseState: string;
     loading: boolean;
+    onCancel: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     submittingPassphrase?: boolean;
+    isAddingHiddenWalletWithRespectToSettings?: boolean;
 };
 
 export const PassphraseWalletIsNotExistFlow = ({
@@ -22,15 +23,11 @@ export const PassphraseWalletIsNotExistFlow = ({
     passphraseState,
     loading,
     onSubmit,
+    onCancel,
     submittingPassphrase,
+    isAddingHiddenWalletWithRespectToSettings,
 }: PassphraseWalletIsNotExistFlowProps) => {
     const dispatch = useDispatch();
-
-    const onCancel = () => {
-        // To close any dangling modals in the passphrase flow
-        dispatch({ type: UI.CLOSE_UI_WINDOW });
-        dispatch(cancelDiscoveryThunk(device));
-    };
 
     if (passphraseState === 'not-exist-confirm-passphrase') {
         return (
@@ -47,6 +44,7 @@ export const PassphraseWalletIsNotExistFlow = ({
     if (passphraseState === 'not-exist-enter-passphrase') {
         return (
             <EnterPassphrase
+                cancelDisabled={isAddingHiddenWalletWithRespectToSettings}
                 deviceLoading={loading}
                 device={device}
                 submitting={submittingPassphrase}
@@ -58,6 +56,7 @@ export const PassphraseWalletIsNotExistFlow = ({
                             device,
                             isAddingHiddenWallet: true,
                             isAddingExistingWallet: false,
+                            isAddingHiddenWalletWithRespectToSettings,
                         }),
                     );
                 }}

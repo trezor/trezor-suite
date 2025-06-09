@@ -17,6 +17,10 @@ export const determinePassphraseFlowState = (
         (!modalState.modalContextDevice || modalState.context === modalState.modalContextDevice) &&
         modalState.windowType === UI.REQUEST_PASSPHRASE
     );
+
+    const isAddingHiddenWalletWithRespectToSettings =
+        discovery.isAddingHiddenWalletWithRespectToSettings === true;
+
     if (!discovery.isAddingHiddenWallet) {
         return null;
     }
@@ -25,6 +29,7 @@ export const determinePassphraseFlowState = (
         return {
             isExisting: discovery.isAddingExistingWallet,
             screen: 'discovery-loader',
+            isAddingHiddenWalletWithRespectToSettings,
             discovery,
         } as const;
     }
@@ -33,6 +38,7 @@ export const determinePassphraseFlowState = (
         return {
             isExisting: discovery.isAddingExistingWallet,
             screen: 'passphrase-enable-on-device',
+            isAddingHiddenWalletWithRespectToSettings,
             discovery,
         } as const;
     }
@@ -42,6 +48,7 @@ export const determinePassphraseFlowState = (
             return {
                 isExisting: true,
                 screen: 'exists-enter-passphrase',
+                isAddingHiddenWalletWithRespectToSettings,
                 discovery,
                 loading: isLoading,
                 isSubmitting: Boolean(discovery.passphraseSubmitted),
@@ -52,6 +59,7 @@ export const determinePassphraseFlowState = (
             return {
                 isExisting: true,
                 screen: 'exists-confirm-passphrase',
+                isAddingHiddenWalletWithRespectToSettings,
                 discovery,
                 loading: isLoading,
             } as const;
@@ -78,6 +86,7 @@ export const determinePassphraseFlowState = (
         return {
             isExisting: false,
             screen: 'not-exist-enter-passphrase',
+            isAddingHiddenWalletWithRespectToSettings,
             discovery,
             loading: isLoading,
             isSubmitting: Boolean(discovery.passphraseSubmitted),
@@ -88,6 +97,7 @@ export const determinePassphraseFlowState = (
         return {
             isExisting: false,
             screen: 'not-exist-confirm-passphrase',
+            isAddingHiddenWalletWithRespectToSettings,
             discovery,
             loading: isLoading,
         } as const;
@@ -97,6 +107,7 @@ export const determinePassphraseFlowState = (
         return {
             isExisting: false,
             screen: 'passphrase-duplicate',
+            isAddingHiddenWalletWithRespectToSettings,
             discovery,
         } as const;
     }
@@ -105,6 +116,7 @@ export const determinePassphraseFlowState = (
         return {
             isExisting: false,
             screen: 'not-exist-passphrase-mismatch-warning',
+            isAddingHiddenWalletWithRespectToSettings,
             discovery,
         } as const;
     }
@@ -112,6 +124,7 @@ export const determinePassphraseFlowState = (
     return {
         isExisting: false,
         screen: 'not-exist-best-practices',
+        isAddingHiddenWalletWithRespectToSettings,
         discovery,
     } as const;
 };

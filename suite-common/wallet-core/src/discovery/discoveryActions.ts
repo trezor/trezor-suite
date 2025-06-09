@@ -26,11 +26,23 @@ export const deleteDiscovery = createAction(
 
 export const startDiscovery = createAction(
     `${DISCOVERY_MODULE_PREFIX}/start`,
-    (path: DeviceUniquePath, isAddingHiddenWallet?: boolean, isAddingExistingWallet?: boolean) => ({
+    (
+        path: DeviceUniquePath,
+        {
+            isAddingHiddenWallet,
+            isAddingExistingWallet,
+            isAddingHiddenWalletWithRespectToSettings,
+        }: {
+            isAddingHiddenWallet?: boolean;
+            isAddingExistingWallet?: boolean;
+            isAddingHiddenWalletWithRespectToSettings?: boolean;
+        } = {},
+    ) => ({
         payload: {
             path,
             isAddingHiddenWallet,
             isAddingExistingWallet,
+            isAddingHiddenWalletWithRespectToSettings,
         },
     }),
 );
