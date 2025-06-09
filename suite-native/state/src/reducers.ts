@@ -235,6 +235,13 @@ export const prepareRootReducers = async () => {
         transforms: [bluetoothPersistTransform],
     });
 
+    const connectPopupPersistedReducer = await preparePersistReducer({
+        reducer: connectPopupReducer,
+        persistedKeys: ['permissions'],
+        key: 'connectPopup',
+        version: 1,
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             app: appReducer,
@@ -252,7 +259,7 @@ export const prepareRootReducers = async () => {
             notifications: notificationsReducer,
             messageSystem: messageSystemPersistedReducer,
             tokenDefinitions: tokenDefinitionsReducer,
-            connectPopup: connectPopupReducer,
+            connectPopup: connectPopupPersistedReducer,
             walletConnect: walletConnectReducer,
             bluetooth: bluetoothPersistedReducer,
             geolocation: geolocationReducer,
