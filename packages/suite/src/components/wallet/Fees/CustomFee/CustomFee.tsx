@@ -69,10 +69,12 @@ export const CustomFee = <TFieldValues extends FormState>({
 }: CustomFeeProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const [cachedNetworkAmount, setCachedNetworkAmount] = useState<string | undefined>(undefined);
+    const [cachedBytes, setCachedBytes] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         if (transactionInfo && transactionInfo.type !== 'error' && transactionInfo.fee) {
             setCachedNetworkAmount(formatNetworkAmount(transactionInfo.fee, symbol));
+            if (transactionInfo.bytes) setCachedBytes(transactionInfo.bytes);
         }
     }, [symbol, transactionInfo]);
 
@@ -152,6 +154,16 @@ export const CustomFee = <TFieldValues extends FormState>({
                         </Row>
                     </Row>
                 </Column>
+            )}
+            {cachedBytes && (
+                <Row alignItems="baseline" justifyContent="space-between">
+                    <Text variant="tertiary" typographyStyle="hint">
+                        <Translation id="TR_SIZE" />:
+                    </Text>
+                    <Text variant="default" typographyStyle="hint">
+                        {cachedBytes} <Translation id="TR_BYTES" />
+                    </Text>
+                </Row>
             )}
         </>
     );
