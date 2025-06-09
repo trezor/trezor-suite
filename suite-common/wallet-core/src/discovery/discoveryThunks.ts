@@ -63,9 +63,8 @@ function assertStaticSessionId(
     }
 }
 
-// discovery could have been deleted, or cancelled ín the meantime
-const canDiscoveryContinue = (discovery?: DiscoveryStatus) =>
-    discovery && isDiscoveryInProgress(discovery);
+// discovery could have been deleted, or cancelled in the meantime
+const canDiscoveryContinue = (discovery?: DiscoveryStatus) => isDiscoveryInProgress(discovery);
 
 /**
  * If metadata are enabled in settings but metadata master key does not exist for this device state,
