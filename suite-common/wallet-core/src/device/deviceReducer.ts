@@ -107,9 +107,7 @@ const getShouldUseEmptyPassphrase = (
         return true;
     }
 
-    const isPassphraseDisabledInSettings = !device.features.passphrase_protection;
-
-    return isPassphraseDisabledInSettings || settings.defaultWalletLoading === 'standard';
+    return !device.features.passphrase_protection || settings.defaultWalletLoading === 'standard';
 };
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
