@@ -80,6 +80,10 @@ const initNewDeviceStateMetadataThunk = createThunk(
     },
 );
 
+/**
+ * either apply state to the first (and only) connected device that does not have state yet,
+ * or add a device duplicate with the new state.
+ */
 const applyDeviceStatesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
     async (
