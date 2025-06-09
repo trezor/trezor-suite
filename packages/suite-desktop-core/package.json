@@ -14,9 +14,9 @@
         "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=desktop",
         "test:e2e:web": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=web",
         "test:e2e:update-snapshots": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --grep @snapshot --update-snapshots",
-        "test:orchestrated:e2e:desktop": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop",
-        "test:orchestrated:e2e:web": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web",
-        "github:report:manual": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=manual --reporter=./e2e/support/reporters/gitHubReporter.ts",
+        "test:orchestrated:e2e:desktop": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop",
+        "test:orchestrated:e2e:web": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web",
+        "github:report:manual": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=manual --reporter=./e2e/support/reporters/gitHubReporter.ts",
         "github:create:project": "tsx ./e2e/support/reporters/scriptCreateProject.ts"
     },
     "dependencies": {
@@ -53,14 +53,14 @@
         "ws": "^8.18.0"
     },
     "devDependencies": {
-        "@currents/playwright": "^1.11.3",
+        "@currents/playwright": "^1.13.4",
         "@electron/fuses": "^1.8.0",
         "@electron/notarize": "3.0.1",
         "@octokit/rest": "^21.1.1",
-        "@playwright/browser-chromium": "^1.51.0",
-        "@playwright/browser-firefox": "^1.51.0",
-        "@playwright/browser-webkit": "^1.51.0",
-        "@playwright/test": "^1.51.0",
+        "@playwright/browser-chromium": "^1.52.0",
+        "@playwright/browser-firefox": "^1.52.0",
+        "@playwright/browser-webkit": "^1.52.0",
+        "@playwright/test": "^1.52.0",
         "@sentry/webpack-plugin": "^2.22.7",
         "@trezor/device-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
