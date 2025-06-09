@@ -256,7 +256,7 @@ export default defineConfig({
     },
     server: {
         port: 8000,
-        open: true,
+        open: false,
         host: true,
     },
 });
