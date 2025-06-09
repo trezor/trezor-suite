@@ -76,7 +76,8 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(connectPopupActions.confirmAddresses, (state, { payload }) => {
                 if (
                     state.activeCall?.state === 'ongoing' ||
-                    state.activeCall?.state === 'address-confirmation'
+                    state.activeCall?.state === 'address-confirmation' ||
+                    state.activeCall?.state === 'deeplink-callback'
                 ) {
                     state.activeCall = {
                         ...state.activeCall,
@@ -97,7 +98,10 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 if (state.activeCall) state.activeCall.state = 'finished';
             })
             .addCase(connectPopupActions.deeplinkCallback, (state, { payload }) => {
-                if (state.activeCall?.state === 'finished')
+                if (
+                    state.activeCall?.state === 'finished' ||
+                    state.activeCall?.state === 'address-confirmation'
+                )
                     state.activeCall = {
                         ...state.activeCall,
                         state: 'deeplink-callback',

@@ -410,6 +410,10 @@ export const en = {
         },
         optional: 'Optional',
         alwaysAllow: 'Always allow for this app',
+        confirmAddress: {
+            title: 'Confirm address',
+            message: 'Please compare the address on your Trezor with the third-party app.',
+        },
         connectionStatus: {
             loading: 'Loading...',
             discoveryRunning: 'Discovery running, please wait...',

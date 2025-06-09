@@ -4,7 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    connectPopupActions,
+    connectPopupVerifyAddressThunk,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
+import { ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
     selectHasRunningDiscovery,
     selectIsDeviceConnectedAndAuthorized,
@@ -17,6 +22,7 @@ import {
     CheckBox,
     ErrorMessage,
     HStack,
+    IconButton,
     Loader,
     Text,
     TextDivider,
@@ -41,12 +47,26 @@ export const ConnectPopupScreen = () => {
     const discoveryActive = useSelector(selectHasRunningDiscovery);
     const popupCall = useSelector(selectConnectPopupCall);
     const [isRemembered, setIsRemembered] = useState(false);
+    const [addressConfirmation, setAddressConfirmation] = useState<
+        (ConnectPopupCall & { state: 'address-confirmation' }) | null
+    >();
 
     useEffect(() => {
+        // Reset the popup call when the screen is mounted
+        // Hold and restore address confirmation state during deep link callback
+        if (popupCall?.state == 'address-confirmation') {
+            setAddressConfirmation(popupCall);
+        }
+        if (popupCall?.state == 'deeplink-callback' && addressConfirmation) {
+            dispatch(connectPopupActions.confirmAddresses(addressConfirmation));
+            setAddressConfirmation(null);
+        }
+        // If the popup call is finished we can exit the screen
         if (popupCall?.state == 'finished' && navigation.canGoBack()) {
+            setAddressConfirmation(null);
             navigation.goBack();
         }
-    }, [popupCall, navigation]);
+    }, [popupCall, navigation, addressConfirmation, dispatch]);
 
     const mainView = useMemo(() => {
         if (!popupCall) {
@@ -160,6 +180,58 @@ export const ConnectPopupScreen = () => {
                             onPress={() => navigation.goBack()}
                         >
                             <Translation id="generic.buttons.close" />
+                        </Button>
+                    </VStack>
+                );
+            }
+
+            if (popupCall.state === 'address-confirmation') {
+                const onFinish = () => {
+                    dispatch(connectPopupActions.finishCall());
+                };
+                const onVerify = (index: number) => {
+                    dispatch(connectPopupVerifyAddressThunk({ index }));
+                };
+
+                return (
+                    <VStack testID="@popup/address-confirmation" spacing="sp16" flex={1}>
+                        <TitleHeader
+                            title={<Translation id="moduleConnectPopup.confirmAddress.title" />}
+                            subtitle={
+                                <Translation id="moduleConnectPopup.confirmAddress.message" />
+                            }
+                        />
+                        <Card>
+                            <VStack>
+                                {popupCall.addresses.map((item, index) => (
+                                    <HStack
+                                        key={index}
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        padding="sp8"
+                                    >
+                                        <Text variant="hint">{item.address}</Text>
+                                        <IconButton
+                                            size="small"
+                                            colorScheme={
+                                                item.validated === 'valid'
+                                                    ? 'primary'
+                                                    : 'tertiaryElevation0'
+                                            }
+                                            iconName={
+                                                item.validated === 'valid'
+                                                    ? 'checkCircle'
+                                                    : 'trezorDevices'
+                                            }
+                                            onPress={() => onVerify(index)}
+                                        />
+                                    </HStack>
+                                ))}
+                            </VStack>
+                        </Card>
+
+                        <Button testID="@popup/confirm-addresses" onPress={onFinish}>
+                            <Translation id="moduleConnectPopup.confirm" />
                         </Button>
                     </VStack>
                 );

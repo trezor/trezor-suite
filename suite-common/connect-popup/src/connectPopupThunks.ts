@@ -294,6 +294,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
                 chunked: false,
             });
             const validatedStatus = res.success ? 'valid' : 'failed';
+            dispatch(deviceActions.removeButtonRequests({ device }));
             dispatch(
                 connectPopupActions.confirmAddresses({
                     addresses: call.addresses.map((address, i) => ({
