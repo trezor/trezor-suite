@@ -4,6 +4,7 @@ import { getStoredState } from 'redux-persist';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { geolocationReducer } from '@suite-common/geolocation';
 import { logsSlice } from '@suite-common/logger';
 import {
     messageSystemPersistedWhitelist,
@@ -254,6 +255,7 @@ export const prepareRootReducers = async () => {
             connectPopup: connectPopupReducer,
             walletConnect: walletConnectReducer,
             bluetooth: bluetoothPersistedReducer,
+            geolocation: geolocationReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
