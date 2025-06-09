@@ -107,6 +107,7 @@ const applyDeviceStatesThunk = createThunk(
 
             assertDeviceIsAcquired(device);
             assertStaticSessionId(newDeviceState);
+            const { staticSessionId } = newDeviceState;
 
             const physicalDevices = selectPhysicalDevices(getState());
             const devicesWithoutState = physicalDevices.filter(d => !d.state?.staticSessionId);
@@ -133,16 +134,12 @@ const applyDeviceStatesThunk = createThunk(
                     }),
                 );
 
-                // todo: there is probably more efficient way to select device after it was created
-                const newlyAddedDevice = selectDeviceByStaticSessionId(
-                    getState(),
-                    newDeviceState.staticSessionId,
-                );
-                if (!newlyAddedDevice) return;
+                // select the device after deviceReducer updates it (it's a new object reference)
+                const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
+                if (newlyAddedDevice === undefined) return;
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
             }
 
-            const { staticSessionId } = newDeviceState;
             await dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
         } catch (error) {
             console.error('applyDeviceStatesThunk error', error);

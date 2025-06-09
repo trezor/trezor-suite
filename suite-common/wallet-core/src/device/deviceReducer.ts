@@ -306,14 +306,19 @@ const setDeviceState = (
     if (!device.features) return;
 
     // find devices with the same "device_id"
-    const affectedDevice = draft.devices.filter(
-        d =>
-            d.features &&
-            ((d.connected &&
-                (d.id === device.id || (d.path.length > 0 && d.path === device.path))) ||
-                // update "disconnected" remembered devices if in bootloader mode
-                (d.mode === 'bootloader' && d.remember && d.id === device.id)),
-    ) as AcquiredDevice[];
+    const affectedDevice = draft.devices.filter(d => {
+        if (!d.features) return false;
+
+        const isConnectedDeviceMatch =
+            d.connected &&
+            d.instance === device.instance &&
+            (d.id === device.id || (d.path.length > 0 && d.path === device.path));
+
+        // update "disconnected" remembered devices if in bootloader mode
+        const isRememberedDeviceMatch = d.mode === 'bootloader' && d.remember && d.id === device.id;
+
+        return isConnectedDeviceMatch || isRememberedDeviceMatch;
+    });
 
     if (affectedDevice.length > 1) {
         console.error('there must be only one device with the same id and without state');
@@ -323,7 +328,6 @@ const setDeviceState = (
 
     affectedDevice[0].state = state;
     affectedDevice[0].useEmptyPassphrase = useEmptyPassphrase;
-    // affectedDevice[0].instance = Number.parseInt(state.staticSessionId?.split(':')[1]!);
     affectedDevice[0].walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
 };
 

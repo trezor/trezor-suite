@@ -4,16 +4,17 @@ import { A } from '@mobily/ts-belt';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
-    createDeviceInstanceThunk,
     selectDeviceInstances,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
+    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { selectHasNoDeviceWithEmptyPassphrase } from '@suite-native/device';
 
 import { WalletItem } from './WalletItem';
 import { WalletItemBase } from './WalletItemBase';
+import { useDeviceManager } from '../hooks/useDeviceManager';
 
 type WalletListProps = {
     onSelectDevice: (device: TrezorDevice) => void;
@@ -26,23 +27,26 @@ export const WalletList = ({ onSelectDevice }: WalletListProps) => {
     const hasNoDeviceWithEmptyPassphrase = useSelector(selectHasNoDeviceWithEmptyPassphrase);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isSelectable = devices.length > 1 || hasNoDeviceWithEmptyPassphrase;
+    const { setIsDeviceManagerVisible } = useDeviceManager();
 
     // we want to show placeholder in case there are only passphrase wallets without standard and not portfolio
     const showPlaceholder =
-        hasNoDeviceWithEmptyPassphrase && A.isNotEmpty(devices) && !isPortfolioTrackerDevice;
+        hasNoDeviceWithEmptyPassphrase &&
+        A.isNotEmpty(devices) &&
+        !isPortfolioTrackerDevice &&
+        selectedDevice?.connected;
 
     // on tap of placeholder we actually create device with empty passphrase and select it
-    const handlePlaceholderPress = async () => {
-        if (selectedDevice) {
-            await dispatch(
-                createDeviceInstanceThunk({
-                    device: selectedDevice,
-                    useEmptyPassphrase: true,
-                }),
-            )
-                .unwrap()
-                .then(result => onSelectDevice(result.device));
-        }
+    const handlePlaceholderPress = () => {
+        if (selectedDevice === undefined) return;
+        setIsDeviceManagerVisible(false);
+        dispatch(
+            startDiscoveryThunk({
+                device: selectedDevice,
+                isAddingHiddenWallet: false,
+                isAddingExistingWallet: false,
+            }),
+        );
     };
 
     return (
