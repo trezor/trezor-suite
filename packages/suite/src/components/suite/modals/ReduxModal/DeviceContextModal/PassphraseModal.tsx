@@ -9,8 +9,10 @@ import {
     selectIsDiscoveryAuthConfirmationRequired,
     submitPassphrase,
 } from '@suite-common/wallet-core';
+import { UI } from '@trezor/connect';
 
 import { CONTEXT_DEVICE } from 'src/actions/suite/constants/modalConstants';
+import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';
@@ -19,8 +21,6 @@ import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow
 import { DiscoveryLoader } from '../../ModalSwitcher/DiscoveryLoader';
 import { PassphraseDuplicateModal } from '../UserContextModal/PassphraseDuplicateModal';
 import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchModal';
-
-// Using the shared determinePassphraseFlowState function from suite-common/wallet-core
 
 export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
@@ -54,10 +54,26 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         selectIsDiscoveryAuthConfirmationRequired(state, device?.path),
     );
 
-    const cancel = useCallback(() => {
-        if (!passphraseState?.discovery) return;
+    const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
-    }, [device, dispatch, passphraseState?.discovery]);
+        dispatch({ type: UI.CLOSE_UI_WINDOW });
+        if (passphraseState?.isAddingHiddenWalletWithRespectToSettings) {
+            dispatch(
+                goto('suite-switch-device', {
+                    params: {
+                        cancelable: false,
+                        isAddingHiddenWalletWithRespectToSettings: true,
+                    },
+                }),
+            );
+        }
+    };
+
+    const onCancel = () => {
+        if (!passphraseState?.isAddingHiddenWalletWithRespectToSettings) {
+            dispatch(cancelDiscoveryThunk(device));
+        }
+    };
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
@@ -111,9 +127,10 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
         case 'not-exist-best-practices':
             return (
                 <PassphraseWalletBestPractices
+                    cancelDisabled={passphraseState.isAddingHiddenWalletWithRespectToSettings}
                     device={device}
-                    onBack={cancel}
-                    onCancel={cancel}
+                    onBack={onBackToInitial}
+                    onCancel={onCancel}
                     onNext={() => dispatch(runDiscoveryThunk(device))}
                 />
             );
@@ -125,10 +142,15 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 discovery={passphraseState.discovery}
                 device={device}
                 passphraseState={passphraseState.screen}
+                isAddingHiddenWalletWithRespectToSettings={
+                    passphraseState.isAddingHiddenWalletWithRespectToSettings
+                }
                 loading={Boolean(passphraseState.loading)}
                 deviceOffer={deviceOffer}
                 authConfirmation={authConfirmation}
                 submittingPassphrase={Boolean(passphraseState.isSubmitting)}
+                onBackToInitial={onBackToInitial}
+                onCancel={onCancel}
                 onSubmit={onSubmit}
             />
         );
@@ -137,10 +159,14 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     return (
         <PassphraseWalletIsNotExistFlow
             device={device}
+            isAddingHiddenWalletWithRespectToSettings={
+                passphraseState.isAddingHiddenWalletWithRespectToSettings
+            }
             passphraseState={passphraseState.screen}
             loading={Boolean(passphraseState.loading)}
             deviceOffer={deviceOffer}
             submittingPassphrase={Boolean(passphraseState.isSubmitting)}
+            onCancel={onCancel}
             onSubmit={onSubmit}
         />
     );

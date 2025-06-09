@@ -7,6 +7,7 @@ import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/Switc
 import { Translation } from '../../../Translation';
 
 type PassphraseWalletBestPracticesProps = {
+    cancelDisabled?: boolean;
     onCancel: () => void;
     onNext: () => void;
     onBack: () => void;
@@ -55,6 +56,7 @@ const PassphraseWalletBestPracticesContent = ({
 );
 
 export const PassphraseWalletBestPractices = ({
+    cancelDisabled,
     onCancel,
     onNext,
     onBack,
@@ -63,6 +65,7 @@ export const PassphraseWalletBestPractices = ({
     <SwitchDeviceModal onCancel={onCancel}>
         <CardWithDevice
             onCancel={onCancel}
+            cancelDisabled={cancelDisabled}
             device={device}
             onBackButtonClick={onBack}
             isFullHeaderVisible

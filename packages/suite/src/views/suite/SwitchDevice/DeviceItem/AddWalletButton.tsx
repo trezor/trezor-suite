@@ -18,6 +18,7 @@ import {
 import { CardButton } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { closeModalApp } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDeviceOrUiLocked } from 'src/reducers/suite/suiteReducer';
@@ -27,9 +28,15 @@ interface AddWalletButtonProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
     onCancel: ForegroundAppProps['onCancel'];
+    isAddingHiddenWalletWithRespectToSettings?: boolean;
 }
 
-export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButtonProps) => {
+export const AddWalletButton = ({
+    device,
+    instances,
+    onCancel,
+    isAddingHiddenWalletWithRespectToSettings, // NOTE: This is passed from to opening goto() that's called from the passphrase modals
+}: AddWalletButtonProps) => {
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
@@ -47,11 +54,19 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     }) => {
         onCancel(false);
         dispatch(selectDeviceThunk({ device }));
+        dispatch(closeModalApp());
         dispatch(
+            // NOTE: this prop drilling of isAddingHiddenWalletWithRespectToSettings is "needed"
+            // becuase this infor comes from when the APP IS STARTED an initial discovery receives this flag
+            // from the settings. However! Only "first" discovery must get this flag, no other following,
+            // but if the first discovery is cancelled the switch-device is opened with this flag in "router params"
+            // and in this case, we want to make device switch uncancelable and pass this prop to another discovery
+            // as required first passphrase wallet hasn't been yet opened
             startDiscoveryThunk({
                 device,
                 isAddingHiddenWallet: walletType === WalletType.PASSPHRASE,
                 isAddingExistingWallet: isExisting,
+                isAddingHiddenWalletWithRespectToSettings,
             }),
         );
     };

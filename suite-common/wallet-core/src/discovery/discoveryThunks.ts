@@ -668,16 +668,17 @@ export const startDiscoveryThunk = createThunk(
         {
             device,
             isAddingHiddenWallet,
+            isAddingHiddenWalletWithRespectToSettings,
             isAddingExistingWallet,
         }: {
             device?: TrezorDevice;
             isAddingHiddenWallet?: boolean;
+            isAddingHiddenWalletWithRespectToSettings?: boolean;
             isAddingExistingWallet?: boolean;
         },
         { dispatch, getState },
     ): void => {
         const selectedDevice = selectSelectedDevice(getState());
-
         const actualDevice = device ?? selectedDevice;
 
         if (!actualDevice) {
@@ -697,20 +698,43 @@ export const startDiscoveryThunk = createThunk(
         }
 
         dispatch(
-            discoveryActions.startDiscovery(
-                actualDevice.path,
+            discoveryActions.startDiscovery(actualDevice.path, {
                 isAddingHiddenWallet,
                 isAddingExistingWallet,
-            ),
+                isAddingHiddenWalletWithRespectToSettings,
+            }),
         );
 
         // NOTE: run the discovery only if
         // - we are adding a standard wallet,
         // - or adding an existing hidden wallet,
-        // -
-        if (!isAddingHiddenWallet || (isAddingHiddenWallet && isAddingExistingWallet)) {
+        // - or adding initially a hidden wallet set by settings
+        if (
+            !isAddingHiddenWallet ||
+            ((isAddingHiddenWalletWithRespectToSettings || isAddingHiddenWallet) &&
+                isAddingExistingWallet)
+        ) {
             dispatch(runDiscoveryThunk(actualDevice));
         }
+    },
+);
+
+export const startInitialDiscovery = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/startInitial`,
+    ({ device }: { device: TrezorDevice }, { dispatch, getState, extra }) => {
+        // note: currently this is only used in Suite. If a Suite Lite implementation is needed,
+        // refactor this to a parameter because suiteSettings is a suite-only reducer.
+        const isAddingHiddenWalletWithRespectToSettings =
+            extra.selectors.selectSuiteSettings(getState()).defaultWalletLoading === 'passphrase';
+
+        dispatch(
+            startDiscoveryThunk({
+                device,
+                isAddingHiddenWalletWithRespectToSettings,
+                isAddingExistingWallet: true,
+                isAddingHiddenWallet: isAddingHiddenWalletWithRespectToSettings,
+            }),
+        );
     },
 );
 
@@ -739,7 +763,13 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
             return;
         }
-        dispatch(discoveryActions.startDiscovery(device.path, false, false));
+        dispatch(
+            discoveryActions.startDiscovery(device.path, {
+                isAddingHiddenWallet: false,
+                isAddingExistingWallet: false,
+                isAddingHiddenWalletWithRespectToSettings: false,
+            }),
+        );
 
         const onBundleProgress = createOnBundleProgressHandler(
             device.path,

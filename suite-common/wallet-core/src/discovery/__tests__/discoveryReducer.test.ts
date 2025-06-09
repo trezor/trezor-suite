@@ -55,7 +55,12 @@ describe('Discovery Reducer', () => {
         const timestamp = Date.now();
         jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
 
-        store.dispatch(discoveryActions.startDiscovery(TEST_DEVICE_PATH, true, true));
+        store.dispatch(
+            discoveryActions.startDiscovery(TEST_DEVICE_PATH, {
+                isAddingHiddenWallet: true,
+                isAddingExistingWallet: true,
+            }),
+        );
 
         expect(store.getState().wallet.discovery).toEqual({
             [TEST_DEVICE_PATH]: {

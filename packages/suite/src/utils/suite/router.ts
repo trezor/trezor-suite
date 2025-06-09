@@ -68,15 +68,38 @@ const validateWalletParams = (url: string): CommonWalletParams => {
     };
 };
 
-const validateModalAppParams = (url: string) => {
+const parseParamValue = <T>(value: string, defaultValue?: T) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+
+    return value ?? defaultValue;
+};
+
+export type ModalAppParams = {
+    cancelable: boolean;
+    isAddingHiddenWalletWithRespectToSettings?: boolean;
+    variant?: string;
+};
+
+const validateModalAppParams = (url: string, params?: Route['params']): ModalAppParams | null => {
     const [, hash] = stripPrefixedURL(url).split('#');
-    if (!hash) return;
-    const [cancelable] = hash.split('/').filter(p => p.length > 0);
-    if (cancelable !== 'true') return;
+    if (!hash) return null;
+    const splitted = hash.split('/').filter(p => p.length > 0);
+    if (splitted.length === 0) return null;
+
+    const defaults: ModalAppParams = { cancelable: true };
+
+    if (params === undefined) return defaults;
 
     return {
-        cancelable: true,
-    };
+        ...defaults,
+        ...Object.fromEntries(
+            params.map((param, index) => [
+                param,
+                parseParamValue(splitted[index], defaults[param as keyof ModalAppParams]),
+            ]),
+        ),
+    } as ModalAppParams;
 };
 
 // Used in routerReducer
@@ -102,7 +125,7 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
     if (route.params) {
         return {
             app: route.app,
-            params: validateModalAppParams(url),
+            params: validateModalAppParams(url, route.params),
             route,
         } as RouterAppWithParams;
     }
@@ -115,8 +138,9 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
 };
 
 export type WalletParams = CommonWalletParams;
-export type ModalAppParams = NonNullable<ReturnType<typeof validateModalAppParams>>;
-export type RouteParams = WalletParams | ModalAppParams;
+export type RouteParams = (WalletParams | ModalAppParams) & {
+    isAddingHiddenWalletWithRespectToSettings?: boolean;
+};
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);

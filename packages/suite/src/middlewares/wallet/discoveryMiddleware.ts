@@ -7,7 +7,7 @@ import {
     deviceActions,
     runAdditionalDiscoveryThunk,
     selectSelectedDevice,
-    startDiscoveryThunk,
+    startInitialDiscovery,
 } from '@suite-common/wallet-core';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -55,7 +55,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         ) {
             if (device && device.connected && isDeviceAcquired(device) && !isDeviceLocked) {
                 if (!device?.state) {
-                    dispatch(startDiscoveryThunk({ device }));
+                    dispatch(
+                        startInitialDiscovery({
+                            device,
+                        }),
+                    );
                 } else if (device.state.staticSessionId) {
                     dispatch(runAdditionalDiscoveryThunk(device.state.staticSessionId));
                 }
