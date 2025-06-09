@@ -37,13 +37,24 @@ describe('CryptoAmountFormatter', () => {
             ).toBe('0.000003');
         });
 
-        it('BTC balance with symbol', () => {
+        it.each([
+            ['0.3', '0.3 BTC'],
+            ['0.3000', '0.3 BTC'],
+            ['3.000', '3 BTC'],
+            ['000.3', '0.3 BTC'],
+            ['003', '3 BTC'],
+            ['0', '0 BTC'],
+            ['000', '0 BTC'],
+            ['3000', '3000 BTC'],
+            ['0033.3300', '33.33 BTC'],
+            ['0033', '33 BTC'],
+        ])('BTC balance with symbol, case %#', (inputValue, expectedValue) => {
             expect(
-                CryptoAmountFormatter.format('0.3', {
+                CryptoAmountFormatter.format(inputValue, {
                     symbol: 'btc',
                     isBalance: true,
                 }),
-            ).toBe('0.3 BTC');
+            ).toBe(expectedValue);
         });
 
         it('ETH balance with symbol + truncate decimals', () => {
@@ -62,7 +73,7 @@ describe('CryptoAmountFormatter', () => {
                     isBalance: true,
                     isEllipsisAppended: false,
                 }),
-            ).toBe('0.02063870 ETH');
+            ).toBe('0.0206387 ETH');
         });
 
         it('ETH balance with units', () => {

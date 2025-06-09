@@ -116,10 +116,16 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                 ? truncateDecimals(convertedValue, maxDisplayedDecimals, isEllipsisAppended)
                 : convertedValue;
 
+            const withoutLeadingZeros = truncatedValue.replace(/^0+(\d)/, '$1');
+
+            const withTrimmedZeros = withoutLeadingZeros.match(/\.\d*$/)
+                ? withoutLeadingZeros.replace(/\.?0+$/, '')
+                : withoutLeadingZeros;
+
             const formattedValue =
                 withSymbol && symbol && isNetworkSymbol(symbol)
-                    ? appendSymbol(truncatedValue, config, symbol, smallestUnitsOverride)
-                    : truncatedValue;
+                    ? appendSymbol(withTrimmedZeros, config, symbol, smallestUnitsOverride)
+                    : withTrimmedZeros;
 
             return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
         },

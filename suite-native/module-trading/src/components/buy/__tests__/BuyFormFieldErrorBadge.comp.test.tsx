@@ -120,6 +120,22 @@ describe('BuyFormFieldErrorBadge', () => {
             expect(toJSON()).toBeNull();
         });
 
+        it('should not render badge when crypto amount does not differ but contains trailing zeros', async () => {
+            act(() => {
+                tradingForm.setValue('amountInCrypto', true);
+            });
+            act(() => {
+                tradingForm.setValue('cryptoValue', '0.0005000');
+            });
+
+            const { toJSON } = await renderBuyFormFieldErrorBadge(
+                { fieldName: 'cryptoValue' },
+                tradingForm,
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
         it('should not render badge while quotes are loading', async () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
@@ -196,6 +212,19 @@ describe('BuyFormFieldErrorBadge', () => {
             expect(toJSON()).toBeNull();
         });
 
+        it('should not render badge when fiat amount does not differ but contains trailing zeros', async () => {
+            act(() => {
+                tradingForm.setValue('fiatValue', '10.000');
+            });
+
+            const { toJSON } = await renderBuyFormFieldErrorBadge(
+                { fieldName: 'fiatValue' },
+                tradingForm,
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
         it('should correctly compare with amount in sats', async () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
@@ -240,6 +269,87 @@ describe('BuyFormFieldErrorBadge', () => {
             );
 
             expect(getByText('Provider offer: 50000 sat')).toBeTruthy();
+        });
+    });
+
+    describe('with quote with trailing zeros', () => {
+        beforeEach(() => {
+            act(() => {
+                tradingForm.setValue('asset', btcAsset);
+            });
+            act(() => {
+                tradingForm.setValue('quote', {
+                    fiatStringAmount: '10.0000',
+                    fiatCurrency: 'USD',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '00.00050',
+                    rate: 20000,
+                    quoteId: 'test-quote-id',
+                    exchange: 'invity',
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    orderId: 'order_id_1',
+                    paymentId: 'test-payment-id',
+                });
+            });
+        });
+
+        it('should not render badge when crypto amount does not differ', async () => {
+            act(() => {
+                tradingForm.setValue('amountInCrypto', true);
+            });
+            act(() => {
+                tradingForm.setValue('cryptoValue', '0.0005');
+            });
+
+            const { toJSON } = await renderBuyFormFieldErrorBadge(
+                { fieldName: 'cryptoValue' },
+                tradingForm,
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
+        it('should not render badge when crypto amount does not differ but contains trailing zeros', async () => {
+            act(() => {
+                tradingForm.setValue('amountInCrypto', true);
+            });
+            act(() => {
+                tradingForm.setValue('cryptoValue', '0.0005000');
+            });
+
+            const { toJSON } = await renderBuyFormFieldErrorBadge(
+                { fieldName: 'cryptoValue' },
+                tradingForm,
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
+        it('should not render badge when fiat amount does not differ', async () => {
+            act(() => {
+                tradingForm.setValue('fiatValue', '10.0');
+            });
+
+            const { toJSON } = await renderBuyFormFieldErrorBadge(
+                { fieldName: 'fiatValue' },
+                tradingForm,
+            );
+
+            expect(toJSON()).toBeNull();
+        });
+
+        it('should not render badge when fiat amount does not differ but contains trailing zeros', async () => {
+            act(() => {
+                tradingForm.setValue('fiatValue', '10.000');
+            });
+
+            const { toJSON } = await renderBuyFormFieldErrorBadge(
+                { fieldName: 'fiatValue' },
+                tradingForm,
+            );
+
+            expect(toJSON()).toBeNull();
         });
     });
 });
