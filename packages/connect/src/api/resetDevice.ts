@@ -14,6 +14,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
 
         const { payload } = this;

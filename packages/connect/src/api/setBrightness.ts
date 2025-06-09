@@ -8,6 +8,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO.SetBrightness> {
     init() {
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.useDeviceState = false;
         const { payload } = this;
 

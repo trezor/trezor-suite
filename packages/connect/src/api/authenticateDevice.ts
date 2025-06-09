@@ -15,6 +15,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         this.useEmptyPassphrase = true;
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.useDeviceState = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
 

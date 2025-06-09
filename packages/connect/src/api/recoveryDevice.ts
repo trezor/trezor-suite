@@ -10,6 +10,7 @@ import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDev
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {
     init() {
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.useEmptyPassphrase = true;
 
         const { payload } = this;

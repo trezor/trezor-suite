@@ -9,6 +9,7 @@ export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpa
     init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.useDeviceState = false;
         this.skipFinalReload = true;
 
