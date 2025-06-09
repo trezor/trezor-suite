@@ -8,6 +8,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.BackupDevice> {
     init() {
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.useDeviceState = false;
 
         const { payload } = this;

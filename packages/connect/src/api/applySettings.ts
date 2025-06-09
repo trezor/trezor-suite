@@ -10,6 +10,7 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
     init() {
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
+        this.skipFinalReload = false;
         const { payload } = this;
 
         Assert(ApplySettingsSchema, payload);

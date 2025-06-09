@@ -11,6 +11,7 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useEmptyPassphrase = true;
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.useDeviceState = false;
 
         const { payload } = this;

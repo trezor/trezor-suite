@@ -10,6 +10,7 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
         this.allowDeviceMode = [UI.INITIALIZE];
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
 
         const { payload } = this;

@@ -5,6 +5,7 @@ import { validateParams } from './common/paramsValidator';
 export default class ChangeWipeCode extends AbstractMethod<'changeWipeCode', PROTO.ChangeWipeCode> {
     init() {
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
         this.useDeviceState = false;
 
         const { payload } = this;

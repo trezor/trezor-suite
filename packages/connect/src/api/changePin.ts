@@ -9,6 +9,7 @@ export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangeP
     init() {
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
+        this.skipFinalReload = false;
 
         const { payload } = this;
         Assert(PROTO.ChangePin, payload);

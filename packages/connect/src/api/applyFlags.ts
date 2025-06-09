@@ -9,6 +9,7 @@ export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.Apply
     init() {
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
+        this.skipFinalReload = false;
 
         const { payload } = this;
 

@@ -9,6 +9,7 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     init() {
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
+        this.skipFinalReload = false;
 
         const { payload } = this;
 
