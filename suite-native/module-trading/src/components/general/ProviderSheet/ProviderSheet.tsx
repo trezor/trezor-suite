@@ -1,9 +1,10 @@
 import { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
-import { BottomSheetFlashList } from '@suite-native/atoms';
+import { BottomSheetFlashList, Box } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader';
 import { PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT, ProviderListItem } from './ProviderListItem';
+import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 
 export type ProvidersSheetProps<T extends TradingTradeType> = {
     quotes: T[];
@@ -60,10 +61,16 @@ export const ProviderSheet = <T extends TradingTradeType>({
                 );
             }}
             handleComponent={() => (
-                <SimpleSheetHeader
-                    onClose={onClose}
-                    title={translate('moduleTrading.tradingScreen.provider')}
-                />
+                <>
+                    <SimpleSheetHeader
+                        onClose={onClose}
+                        title={translate('moduleTrading.tradingScreen.provider')}
+                    />
+                    {/* context message cant scroll for some use cases (UK banner) so it cant be in items */}
+                    <Box paddingHorizontal="sp16" paddingVertical="sp4">
+                        <TradingTypeAwareContextMessage />
+                    </Box>
+                </>
             )}
             data={quotes}
             estimatedListHeight={getEstimatedListHeight(quotes.length)}
