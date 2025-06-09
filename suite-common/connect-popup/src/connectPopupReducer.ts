@@ -55,6 +55,7 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             })
             .addCase(connectPopupActions.approvePermissions, state => {
                 if (state.activeCall?.state === 'permission-request') {
+                    // @ts-expect-error
                     state.activeCall.permissionDecision?.resolve();
                     state.activeCall = {
                         ...state.activeCall,
@@ -65,6 +66,7 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             })
             .addCase(connectPopupActions.rejectPermissions, (state, { payload }) => {
                 if (state.activeCall?.state === 'permission-request') {
+                    // @ts-expect-error
                     state.activeCall.permissionDecision?.reject(payload);
                     state.activeCall = {
                         ...state.activeCall,

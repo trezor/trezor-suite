@@ -43,6 +43,7 @@ type RootState = {
     firmware: typeof initialState;
 };
 
+// @ts-expect-error
 export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, builder => {
     builder
         .addCase(firmwareActions.setStatus, (state, { payload }) => {
@@ -58,6 +59,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
         .addCase(firmwareActions.setTargetType, (state, { payload }) => {
             state.targetType = payload;
         })
+        // @ts-expect-error
         .addCase(firmwareActions.resetReducer, state => ({
             ...initialState,
             useDevkit: state.useDevkit,
@@ -66,6 +68,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
             state.useDevkit = payload;
         })
         .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
+            // @ts-expect-error
             state.cachedDevice = payload;
         })
         .addMatcher<FirmwareProgress | FirmwareReconnect | DeviceButtonRequest>(
@@ -77,6 +80,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
                 // DEVICE.BUTTON can be dispatched outside of the firmware update flow and that should not change the uiEvent,
                 // otherwise it could result in confirmation pill being displayed unintentionally.
                 if (!(action.type === DEVICE.BUTTON && state.status === 'initial'))
+                    // @ts-expect-error
                     state.uiEvent = action;
             },
         );

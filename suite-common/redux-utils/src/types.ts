@@ -38,3 +38,13 @@ export type ActionsFromAsyncThunk<T extends AnyAsyncThunk> =
     | ActionFromMatcher<T['pending']>
     | ActionFromMatcher<T['fulfilled']>
     | ActionFromMatcher<T['rejected']>;
+
+// because of nested objects, we need to use a recursive type
+export type DeepSerializable<T> =
+    T extends string | number | boolean | null | undefined
+        ? T
+        : T extends Array<infer U>
+        ? DeepSerializable<U>[]
+        : T extends object
+        ? { [K in keyof T]: DeepSerializable<T[K]> }
+        : never;

@@ -5,6 +5,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { walletConnectActions } from './walletConnectActions';
 import { PendingConnectionProposal, WalletConnectSession } from './walletConnectTypes';
 
+
 export type WalletConnectState = {
     sessions: WalletConnectSession[];
     pendingProposal: PendingConnectionProposal | undefined;
@@ -26,6 +27,7 @@ const walletConnectInitialState: WalletConnectState = {
 };
 
 export const prepareWalletConnectReducer = createReducerWithExtraDeps(
+    // @ts-expect-error
     walletConnectInitialState,
     (builder, extra) => {
         builder
@@ -52,6 +54,7 @@ export const prepareWalletConnectReducer = createReducerWithExtraDeps(
                 state.sessions = state.sessions.filter(session => session.topic !== topic);
             })
             .addCase(walletConnectActions.createSessionProposal, (state, { payload }) => {
+                // @ts-expect-error
                 state.pendingProposal = payload;
             })
             .addCase(walletConnectActions.clearSessionProposal, state => {

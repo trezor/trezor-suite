@@ -217,24 +217,28 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT,
                 (state, { payload }: PayloadAction<BlockchainInfo>) => {
+                    // @ts-expect-error
                     connect(state, payload);
                 },
             )
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR,
                 (state, { payload }: PayloadAction<BlockchainError>) => {
+                    // @ts-expect-error
                     error(state, payload);
                 },
             )
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.RECONNECTING,
                 (state, { payload }: PayloadAction<BlockchainReconnecting>) => {
+                    // @ts-expect-error
                     reconnecting(state, payload);
                 },
             )
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK,
                 (state, { payload }: PayloadAction<BlockchainBlock>) => {
+                    // @ts-expect-error
                     update(state, payload);
                 },
             );

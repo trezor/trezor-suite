@@ -1,15 +1,13 @@
 import { ActionReducerMapBuilder, createReducer } from '@reduxjs/toolkit';
 
 import { ExtraDependenciesForReducer } from './extraDependenciesType';
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-type NotFunction<T> = T extends Function ? never : T;
+import { DeepSerializable } from './types';
 
 export const createReducerWithExtraDeps =
-    <S extends NotFunction<any>>(
-        initialState: S | (() => S),
+    <S>(
+        initialState: DeepSerializable<S> | (() => DeepSerializable<S>),
         builderCallback: (
-            builder: ActionReducerMapBuilder<S>,
+            builder: ActionReducerMapBuilder<DeepSerializable<S>>,
             extra: ExtraDependenciesForReducer,
         ) => void,
     ) =>
@@ -21,3 +19,5 @@ export const createReducerWithExtraDeps =
                 reducers: extraDeps.reducers,
             }),
         );
+
+

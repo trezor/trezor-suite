@@ -1,13 +1,13 @@
 import { AnyAction, Draft } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { DeepSerializable , createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { DeviceConnectActionPayload, deviceActions } from '@suite-common/wallet-core';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
 import { BluetoothAdapterStatus, BluetoothDeviceCommon, BluetoothScanStatus } from './types';
 
-export type BluetoothState<T extends BluetoothDeviceCommon> = {
+export type BluetoothState<T extends DeepSerializable<BluetoothDeviceCommon>> = {
     isBluetoothListOpen: boolean;
     adapterStatus: BluetoothAdapterStatus;
     scanStatus: BluetoothScanStatus;
@@ -31,7 +31,7 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     connectingDeviceIds: string[];
 };
 
-export const prepareInitialState = <T extends BluetoothDeviceCommon>(): BluetoothState<T> => ({
+export const prepareInitialState = <T extends DeepSerializable<BluetoothDeviceCommon>>(): BluetoothState<T> => ({
     isBluetoothListOpen: false,
     adapterStatus: 'unknown',
     scanStatus: 'idle',
@@ -41,8 +41,8 @@ export const prepareInitialState = <T extends BluetoothDeviceCommon>(): Bluetoot
     connectingDeviceIds: [],
 });
 
-export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
-    createReducerWithExtraDeps<BluetoothState<T>>(prepareInitialState<T>(), (builder, extra) =>
+export const prepareBluetoothReducerCreator = <T extends DeepSerializable<BluetoothDeviceCommon>>() =>
+    createReducerWithExtraDeps<BluetoothState<T>>(prepareInitialState<T>() as BluetoothState<DeepSerializable<T>>, (builder, extra) =>
         builder
             .addCase(bluetoothActions.adapterEventAction, (state, { payload: { status } }) => {
                 state.adapterStatus = status;
@@ -54,6 +54,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(
                 bluetoothActions.nearbyDevicesUpdateAction,
                 (state, { payload: { nearbyDevices } }) => {
+                    // @ts-expect-error
                     state.nearbyDevices = nearbyDevices
                         // Devices with 'pairing-error' status should NOT be displayed in the list, as it
                         // won't be possible to connect to them ever again. User has to start pairing again,
@@ -67,11 +68,13 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 bluetoothActions.updateDeviceConnectionStatus,
                 (state, { payload: { deviceId, connectionStatus } }) => {
                     if (state.nearbyDevices !== null) {
+                        // @ts-expect-error
                         state.nearbyDevices = state.nearbyDevices.map(it =>
                             it.id === deviceId ? { ...it, connectionStatus } : it,
                         ) as Draft<T>[];
                     }
 
+                    // @ts-expect-error
                     state.knownDevices = state.knownDevices.map(it =>
                         it.id === deviceId ? { ...it, connectionStatus } : it,
                     ) as Draft<T>[];
@@ -79,11 +82,12 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             )
             .addCase(bluetoothActions.deviceUpdateAction, (state, { payload: { device } }) => {
                 if (state.nearbyDevices !== null) {
+                    // @ts-expect-error
                     state.nearbyDevices = state.nearbyDevices.map(it =>
                         it.id === device.id ? device : it,
                     ) as Draft<T>[];
                 }
-
+                // @ts-expect-error
                 state.knownDevices = state.knownDevices.map(it =>
                     it.id === device.id ? device : it,
                 ) as Draft<T>[];
@@ -91,6 +95,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(
                 bluetoothActions.knownDevicesUpdateAction,
                 (state, { payload: { knownDevices } }) => {
+                    // @ts-expect-error
                     state.knownDevices = knownDevices as Draft<T>[];
                 },
             )
@@ -170,6 +175,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     const loadedKnownDevices = (action.payload?.bluetooth?.knownDevices ??
                         []) as T[];
 
+                    // @ts-expect-error
                     state.knownDevices = loadedKnownDevices.map(
                         deserializeBluetoothDeviceSerialization,
                     ) as Draft<T>[];

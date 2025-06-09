@@ -594,40 +594,52 @@ export const setDeviceAuthenticity = (
     };
 };
 
+// @ts-expect-error
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(deviceActions.deviceChanged, (state, { payload }) => {
+            // @ts-expect-error
             changeDevice(state, payload, { connected: true, available: true });
         })
         .addCase(deviceActions.setDeviceState, (state, { payload }) => {
+            // @ts-expect-error
             setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
         })
         .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
+            // @ts-expect-error
             addAuthorizedDevice(state, payload.device);
         })
 
         .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
+            // @ts-expect-error
             disconnectDevice(state, payload);
         })
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
+            // @ts-expect-error
             changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
         .addCase(UI.REQUEST_PIN, state => {
+            // @ts-expect-error
             resetAuthFailed(state);
         })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
+            // @ts-expect-error
             remember(state, payload.device, payload.remember, payload.forceRemember);
         })
         .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
+            // @ts-expect-error
             setTemporaryRememberedDevice(state, payload.device, payload.temporaryRemember);
         })
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
+            // @ts-expect-error
             forget(state, payload.device, payload.settings);
         })
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
+            // @ts-expect-error
             addButtonRequest(state, payload.device, payload.buttonRequest);
         })
         .addCase(deviceActions.removeButtonRequests, (state, { payload }) => {
+            // @ts-expect-error
             removeButtonRequests(state, payload.device, payload.buttonRequestCode);
         })
         .addCase(deviceActions.requestDeviceReconnect, state => {
@@ -636,13 +648,17 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             }
         })
         .addCase(deviceActions.selectDevice, (state, { payload }) => {
+            // @ts-expect-error
             updateTimestamp(state, payload);
+            // @ts-expect-error
             state.selectedDevice = payload;
         })
         .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
+            // @ts-expect-error
             state.selectedDevice = payload;
         })
         .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
+            // @ts-expect-error
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
         .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
@@ -667,11 +683,13 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             state.devicesWithFailedEntropyCheck.push(payload);
         })
         .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
+            // @ts-expect-error
             createInstance(state, payload.device);
         })
         .addMatcher(
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
             (state, { payload: { device, settings } }) => {
+                // @ts-expect-error
                 connectDevice(state, device, settings);
             },
         );

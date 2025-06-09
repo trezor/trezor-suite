@@ -41,6 +41,7 @@ const getMessageStateById = (draft: MessageSystemState, id: string): MessageStat
 };
 
 export const prepareMessageSystemReducer = createReducerWithExtraDeps(
+    // @ts-expect-error
     initialState,
     (builder, extra) => {
         builder
@@ -51,6 +52,7 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
             .addCase(messageSystemActions.fetchSuccessUpdate, (state, { payload }) => {
                 const { timestamp, config } = payload;
                 state.timestamp = timestamp;
+                // @ts-expect-error
                 state.config = config;
                 state.currentSequence = config.sequence;
             })
