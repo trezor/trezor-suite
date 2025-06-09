@@ -116,10 +116,9 @@ const applyDeviceStatesThunk = createThunk(
 
             // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
-            // todo: this sanity check could be moved somewhere higher.
-            // if (devicesByPath.length !== 1) {
-            //     throw new Error('exactly one device should be found by path');
-            // }
+            if (devicesByPath.length !== 1) {
+                throw new Error('exactly one device should be found by path');
+            }
             const device = devicesByPath[0];
 
             assertDeviceIsAcquired(device);
