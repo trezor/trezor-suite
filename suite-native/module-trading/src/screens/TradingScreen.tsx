@@ -5,7 +5,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import { useNavigation } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { VStack } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 
@@ -46,15 +46,12 @@ const TradingScreenContent = () => {
     }
 
     return (
-        <>
-            <TradingTypeAwareContextMessage />
-            <VStack spacing="sp16">
-                <Header isFormMountedRecently={isScreenMountedRecently} />
-                {isInternetReachable === false ? <DeviceOffline /> : <ActiveTab />}
-                <Footer isFormMountedRecently={isScreenMountedRecently} />
-                <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
-            </VStack>
-        </>
+        <VStack spacing="sp16">
+            <Header isFormMountedRecently={isScreenMountedRecently} />
+            {isInternetReachable === false ? <DeviceOffline /> : <ActiveTab />}
+            <Footer isFormMountedRecently={isScreenMountedRecently} />
+            <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
+        </VStack>
     );
 };
 
@@ -66,7 +63,17 @@ export const TradingScreen = () => {
     }
 
     return (
-        <Screen header={<DeviceManagerScreenHeader />}>
+        <Screen
+            header={
+                <>
+                    <DeviceManagerScreenHeader />
+                    {/* context message cant scroll for some use cases (UK banner) so it cant be in the children */}
+                    <Box paddingHorizontal="sp16" paddingVertical="sp4">
+                        <TradingTypeAwareContextMessage />
+                    </Box>
+                </>
+            }
+        >
             <TradingScreenContent />
         </Screen>
     );
