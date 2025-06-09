@@ -61,7 +61,10 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
-            if (device && device.connected && isDeviceAcquired(device) && !isDeviceLocked) {
+            // device becomes acquired from unacquired in the middle of the process (acquireDevice)
+            // device is still locked when it happens
+            const theFix = authorizationIntent ? false : isDeviceLocked;
+            if (device && device.connected && isDeviceAcquired(device) && !theFix) {
                 if (!device?.state) {
                     dispatch(startDiscoveryThunk({ device }));
                 } else if (device.state.staticSessionId) {
