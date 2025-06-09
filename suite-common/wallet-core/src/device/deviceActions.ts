@@ -10,7 +10,7 @@ export type ConnectDeviceSettings = {
     defaultWalletLoading: WalletType;
 };
 
-export type DeviceConnectActionPayload = { device: Device; settings: ConnectDeviceSettings };
+export type DeviceConnectActionPayload = { device: Device };
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
     payload,
@@ -71,7 +71,7 @@ const setTemporaryRememberedDevice = createAction(
 
 const forgetDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
-    (payload: { device: TrezorDevice; settings: ConnectDeviceSettings }) => ({
+    (payload: { device: TrezorDevice }) => ({
         payload,
     }),
 );

@@ -172,15 +172,13 @@ export const handleDeviceDisconnect = createThunk(
  */
 export const forgetDisconnectedDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
-    (device: Device | TrezorDevice, { dispatch, getState, extra }) => {
+    (device: Device | TrezorDevice, { dispatch, getState }) => {
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
 
-        const settings = extra.selectors.selectSuiteSettings(getState());
-
         deviceInstances.forEach(d => {
             if (d.features && !d.remember) {
-                dispatch(deviceActions.forgetDevice({ device: d, settings }));
+                dispatch(deviceActions.forgetDevice({ device: d }));
             }
         });
     },
@@ -464,16 +462,14 @@ type DeviceConnectThunksParams = {
 
 export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
-    ({ type, device }, { dispatch, getState, extra }) => {
-        const settings = extra.selectors.selectSuiteSettings(getState());
-
+    ({ type, device }, { dispatch }) => {
         switch (type) {
             case DEVICE.CONNECT:
-                dispatch(deviceActions.connectDevice({ device, settings }));
+                dispatch(deviceActions.connectDevice({ device }));
                 dispatch(connectThpDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
-                dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
+                dispatch(deviceActions.connectUnacquiredDevice({ device }));
                 dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
                 break;
             default:
@@ -519,11 +515,10 @@ export const wipeDeviceThunk = createThunk(
             }
             const newDevice = selectSelectedDevice(getState());
             const newDevices = selectDevices(getState());
-            const settings = extra.selectors.selectSuiteSettings(getState());
 
             deviceInstances.push(...getDeviceInstances(newDevice!, newDevices));
             deviceInstances.forEach(d => {
-                dispatch(deviceActions.forgetDevice({ device: d, settings }));
+                dispatch(deviceActions.forgetDevice({ device: d }));
             });
             dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
 

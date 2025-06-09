@@ -23,7 +23,6 @@ import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/stora
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
-import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 import { DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
@@ -537,12 +536,11 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     if (!(await db.isAccessible())) return;
 
     const devices = selectDevices(getState());
-    const settings = selectSuiteSettings(getState());
 
     const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
-        dispatch(deviceActions.forgetDevice({ device: d, settings }));
+        dispatch(deviceActions.forgetDevice({ device: d }));
     });
     await db.removeDatabase();
     dispatch(

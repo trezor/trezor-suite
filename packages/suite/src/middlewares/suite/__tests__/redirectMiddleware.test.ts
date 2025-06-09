@@ -87,7 +87,6 @@ describe('redirectMiddleware', () => {
                 type: DEVICE.CONNECT,
                 payload: {
                     device: getConnectDevice({ mode: 'initialize' }),
-                    settings: { defaultWalletLoading: 'standard' },
                 },
             };
 
@@ -102,7 +101,6 @@ describe('redirectMiddleware', () => {
                 type: DEVICE.CONNECT,
                 payload: {
                     device: getConnectDevice({ mode: 'normal', firmware: 'required' }),
-                    settings: { defaultWalletLoading: 'standard' },
                 },
             };
 

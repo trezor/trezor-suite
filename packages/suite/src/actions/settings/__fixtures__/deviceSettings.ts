@@ -3,12 +3,7 @@ import assert from 'assert';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    ConnectDeviceSettings,
-    deviceActions,
-    prepareDeviceReducer,
-    wipeDeviceThunk,
-} from '@suite-common/wallet-core';
+import { deviceActions, prepareDeviceReducer, wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Response } from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -39,10 +34,6 @@ type Feature = {
     };
 };
 
-const SUITE_SETTINGS: ConnectDeviceSettings = {
-    defaultWalletLoading: 'standard',
-};
-
 const fixture: Feature[] = [
     {
         description: 'Wipe device',
@@ -69,7 +60,6 @@ const fixture: Feature[] = [
                             available: false,
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -82,7 +72,6 @@ const fixture: Feature[] = [
                             available: true,
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -144,7 +133,6 @@ const fixture: Feature[] = [
                             available: false,
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -159,7 +147,6 @@ const fixture: Feature[] = [
                             state: { staticSessionId: '1stTestnetAddress@device_1_id:0' },
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -174,7 +161,6 @@ const fixture: Feature[] = [
                             state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -187,7 +173,6 @@ const fixture: Feature[] = [
                             available: true,
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -202,7 +187,6 @@ const fixture: Feature[] = [
                             state: { staticSessionId: '1stTestnetAddress@device_1_id:0' },
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -217,7 +201,6 @@ const fixture: Feature[] = [
                             state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
-                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {

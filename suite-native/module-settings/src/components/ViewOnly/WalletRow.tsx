@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
-    ConnectDeviceSettings,
     DeviceRootState,
     deviceActions,
     selectDeviceLabelOrNameById,
@@ -69,12 +68,8 @@ export const WalletRow = ({ device }: WalletRowProps) => {
         }
 
         if (!device.connected && device.remember) {
-            const settings: ConnectDeviceSettings = {
-                defaultWalletLoading: 'standard',
-            };
-
             // disconnected device, view-only is being disabled so it can be forgotten
-            dispatch(deviceActions.forgetDevice({ device, settings }));
+            dispatch(deviceActions.forgetDevice({ device }));
         } else {
             // device is connected or become remembered
             dispatch(deviceActions.rememberDevice({ device, remember: !device.remember }));

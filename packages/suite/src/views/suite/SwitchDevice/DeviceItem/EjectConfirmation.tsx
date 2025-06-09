@@ -9,9 +9,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
+import { useDispatch } from 'src/hooks/suite';
 
 const Container = styled.div`
     cursor: auto;
@@ -39,10 +37,8 @@ const EjectConfirmationContainer = ({
 }: EjectConfirmationContainerProps) => {
     const dispatch = useDispatch();
 
-    const settings = useSelector(selectSuiteSettings);
-
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice({ device: instance, settings }));
+        dispatch(deviceActions.forgetDevice({ device: instance }));
 
         analytics.report({
             type: EventType.SwitchDeviceEject,

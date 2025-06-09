@@ -4,7 +4,6 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
 import {
-    ConnectDeviceSettings,
     acquireDevice,
     deviceActions,
     forgetDisconnectedDevices,
@@ -109,10 +108,6 @@ const initStore = (state: State) => {
     });
 
     return store;
-};
-
-const SUITE_SETTINGS: ConnectDeviceSettings = {
-    defaultWalletLoading: 'standard',
 };
 
 describe('Suite Actions', () => {
@@ -238,9 +233,7 @@ describe('Suite Actions', () => {
     // just for coverage
     it('misc', () => {
         const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-        expect(
-            deviceActions.forgetDevice({ device: SUITE_DEVICE, settings: SUITE_SETTINGS }),
-        ).toMatchObject({
+        expect(deviceActions.forgetDevice({ device: SUITE_DEVICE })).toMatchObject({
             type: deviceActions.forgetDevice.type,
         });
         expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({

@@ -27,7 +27,7 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
 };
 
 export interface ExtendedDevice {
-    useEmptyPassphrase: boolean;
+    useEmptyPassphrase?: boolean;
     passphraseOnDevice?: boolean;
     remember?: boolean; // device should be remembered
     forceRemember?: true; // device was forced to be remembered
@@ -57,13 +57,15 @@ export type UnknownDevice = UnknownDeviceBase & ExtendedDevice;
 
 export type UnreadableDevice = UnreadableDeviceBase & ExtendedDevice;
 
-export type TrezorDevice = AcquiredDevice | UnknownDevice | UnreadableDevice;
-
 export type AuthorizedDevice = AcquiredDevice & {
     state: Required<DeviceState>;
+    // todo: these fields should be removed from other device types (they are optional now) for better type safety
     instance: number;
     walletNumber: number;
+    useEmptyPassphrase: boolean;
 };
+
+export type TrezorDevice = AcquiredDevice | AuthorizedDevice | UnknownDevice | UnreadableDevice;
 
 /**
  * used when saving device to storage

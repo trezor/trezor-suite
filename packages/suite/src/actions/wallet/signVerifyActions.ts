@@ -35,7 +35,7 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
         : Promise.resolve({
               device,
               account,
-              useEmptyPassphrase: device.useEmptyPassphrase,
+              useEmptyPassphrase: device.useEmptyPassphrase!,
               coin: account.symbol,
               chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
           });
