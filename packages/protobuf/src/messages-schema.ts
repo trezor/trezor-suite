@@ -1241,6 +1241,9 @@ export enum Enum_FailureType {
     Failure_WipeCodeMismatch = 13,
     Failure_InvalidSession = 14,
     Failure_Busy = 15,
+    Failure_ThpUnallocatedSession = 16,
+    Failure_InvalidProtocol = 17,
+    Failure_BufferError = 18,
     Failure_FirmwareError = 99,
 }
 
@@ -1474,6 +1477,26 @@ export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetD
 
 export type DebugLinkOptigaSetSecMax = Static<typeof DebugLinkOptigaSetSecMax>;
 export const DebugLinkOptigaSetSecMax = Type.Object({}, { $id: 'DebugLinkOptigaSetSecMax' });
+
+export type DebugLinkGetGcInfo = Static<typeof DebugLinkGetGcInfo>;
+export const DebugLinkGetGcInfo = Type.Object({}, { $id: 'DebugLinkGetGcInfo' });
+
+export type DebugLinkGcInfoItem = Static<typeof DebugLinkGcInfoItem>;
+export const DebugLinkGcInfoItem = Type.Object(
+    {
+        name: Type.String(),
+        value: Type.Number(),
+    },
+    { $id: 'DebugLinkGcInfoItem' },
+);
+
+export type DebugLinkGcInfo = Static<typeof DebugLinkGcInfo>;
+export const DebugLinkGcInfo = Type.Object(
+    {
+        items: Type.Array(DebugLinkGcInfoItem),
+    },
+    { $id: 'DebugLinkGcInfo' },
+);
 
 export enum DefinitionType {
     ETHEREUM_NETWORK = 0,
@@ -3524,6 +3547,9 @@ export const MessageType = Type.Object(
         ECDHSessionKey,
         DebugLinkResetDebugEvents,
         DebugLinkOptigaSetSecMax,
+        DebugLinkGetGcInfo,
+        DebugLinkGcInfoItem,
+        DebugLinkGcInfo,
         EthereumNetworkInfo,
         EthereumTokenInfo,
         SolanaTokenInfo,

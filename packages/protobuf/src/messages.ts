@@ -832,6 +832,9 @@ export enum Enum_FailureType {
     Failure_WipeCodeMismatch = 13,
     Failure_InvalidSession = 14,
     Failure_Busy = 15,
+    Failure_ThpUnallocatedSession = 16,
+    Failure_InvalidProtocol = 17,
+    Failure_BufferError = 18,
     Failure_FirmwareError = 99,
 }
 
@@ -977,6 +980,17 @@ export enum DebugWaitType {
 export type DebugLinkResetDebugEvents = {};
 
 export type DebugLinkOptigaSetSecMax = {};
+
+export type DebugLinkGetGcInfo = {};
+
+export type DebugLinkGcInfoItem = {
+    name: string;
+    value: number;
+};
+
+export type DebugLinkGcInfo = {
+    items: DebugLinkGcInfoItem[];
+};
 
 export enum DefinitionType {
     ETHEREUM_NETWORK = 0,
@@ -2320,6 +2334,9 @@ export type MessageType = {
     ECDHSessionKey: ECDHSessionKey;
     DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
     DebugLinkOptigaSetSecMax: DebugLinkOptigaSetSecMax;
+    DebugLinkGetGcInfo: DebugLinkGetGcInfo;
+    DebugLinkGcInfoItem: DebugLinkGcInfoItem;
+    DebugLinkGcInfo: DebugLinkGcInfo;
     EthereumNetworkInfo: EthereumNetworkInfo;
     EthereumTokenInfo: EthereumTokenInfo;
     SolanaTokenInfo: SolanaTokenInfo;
