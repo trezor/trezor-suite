@@ -7,18 +7,16 @@ import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { setBluetoothDeviceNeedsManualOsRemoval } from './desktopBluetoothReducer';
 
-type UnpairCurrentBondParams = {
+type ForgetBluetoothDeviceThunkParams = {
+    // This thunk must relay on `bluetoothId` directly. When this think is called,
+    // the device may already be disconnected, and therefore, it cannot be selected from the state.
     bluetoothId: string;
 };
 
-export const forgetBluetoothDevice = createThunk(
+export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDeviceThunkParams, void>(
     `${BLUETOOTH_PREFIX}/forgetBluetoothDevice`,
-    async (_, { getState, dispatch }) => {
-        const device = selectSelectedDevice(getState());
-
-        if (!device || !device.bluetoothProps) return;
-
-        const resultForget = await bluetoothIpc.forgetDevice(device.bluetoothProps.id);
+    async ({ bluetoothId }, { dispatch }) => {
+        const resultForget = await bluetoothIpc.forgetDevice(bluetoothId);
         if (!resultForget.success) {
             dispatch(
                 setBluetoothDeviceNeedsManualOsRemoval({
@@ -29,7 +27,11 @@ export const forgetBluetoothDevice = createThunk(
     },
 );
 
-const unpairCurrentBond = createThunk<void, UnpairCurrentBondParams, void>(
+type UnpairCurrentBondThunkParams = {
+    bluetoothId: string;
+};
+
+const unpairCurrentBondThunk = createThunk<void, UnpairCurrentBondThunkParams, void>(
     `${BLUETOOTH_PREFIX}/unpairCurrentBond`,
     async ({ bluetoothId }, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
@@ -42,7 +44,7 @@ const unpairCurrentBond = createThunk<void, UnpairCurrentBondParams, void>(
             result.payload.code === 'Device_Disconnected' // This is an expected success
         ) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
-            dispatch(forgetBluetoothDevice());
+            dispatch(forgetBluetoothDeviceThunk({ bluetoothId }));
         } else {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }
@@ -60,7 +62,7 @@ export const bluetoothEraseBondsThunk = createThunk(
         const bluetoothId = device.bluetoothProps?.id;
 
         if (bluetoothId !== undefined) {
-            await dispatch(unpairCurrentBond({ bluetoothId }));
+            await dispatch(unpairCurrentBondThunk({ bluetoothId }));
         }
     },
 );

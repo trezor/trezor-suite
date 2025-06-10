@@ -566,7 +566,9 @@ export const wipeDeviceThunk = createThunk(
                 dispatch(
                     bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }),
                 );
-                dispatch(extra.thunks.forgetBluetoothDevice());
+                dispatch(
+                    extra.thunks.forgetBluetoothDevice({ bluetoothId: device.bluetoothProps.id }),
+                );
             }
             const newDevice = selectSelectedDevice(getState());
             const newDevices = selectDevices(getState());

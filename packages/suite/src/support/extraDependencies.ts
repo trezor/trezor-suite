@@ -36,7 +36,7 @@ import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDev
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
-import { forgetBluetoothDevice } from '../actions/bluetooth/bluetoothEraseBondsThunk';
+import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import { METADATA, STORAGE } from '../actions/suite/constants';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
@@ -70,7 +70,7 @@ export const extraDependencies: ExtraDependencies = {
         findLabelsToBeMovedOrDeleted,
         moveLabelsForRbfAction,
         openSwitchDeviceDialog,
-        forgetBluetoothDevice,
+        forgetBluetoothDevice: forgetBluetoothDeviceThunk,
     },
     selectors: {
         selectDevices: (state: AppState) => state.device.devices,
