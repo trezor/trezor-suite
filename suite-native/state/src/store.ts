@@ -4,7 +4,7 @@ import { logger } from 'redux-logger';
 
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { blockchainMiddleware } from '@suite-native/blockchain';
-import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
+import { prepareDeviceMiddleware } from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
@@ -24,7 +24,6 @@ const middlewares: Middleware[] = [
     blockchainMiddleware,
     prepareFiatRatesMiddleware(extraDependencies),
     prepareDeviceMiddleware(extraDependencies),
-    prepareButtonRequestMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
     sendFormMiddleware,
 ];

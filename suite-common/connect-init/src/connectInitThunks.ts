@@ -1,9 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
+    deviceActions,
     deviceConnectThunks,
     selectDevices,
     selectEnabledNetworks,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
@@ -11,6 +13,7 @@ import TrezorConnect, {
     DEVICE_EVENT,
     Device,
     TRANSPORT_EVENT,
+    UI,
     UI_EVENT,
 } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
@@ -72,8 +75,37 @@ export const connectInitThunk = createThunk<
         ) {
             // return;
         }
+
         // dispatch event as action
         dispatch(action);
+
+        // this switch is still one more layer of indirection to be removed. connect actions are dispatched
+        // and could be handled directly in reducers
+        switch (action.type) {
+            case UI.REQUEST_PIN:
+            case UI.INVALID_PIN:
+                dispatch(
+                    deviceActions.addButtonRequest({
+                        // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device
+                        // connect call was made for
+                        device: selectSelectedDevice(getState()),
+                        buttonRequest: {
+                            code: action.payload.type ? action.payload.type : action.type,
+                        },
+                    }),
+                );
+                break;
+            case UI.REQUEST_BUTTON: {
+                const { device: _, ...request } = action.payload;
+                dispatch(
+                    deviceActions.addButtonRequest({
+                        device: selectSelectedDevice(getState()),
+                        buttonRequest: request,
+                    }),
+                );
+                break;
+            }
+        }
     });
 
     TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {

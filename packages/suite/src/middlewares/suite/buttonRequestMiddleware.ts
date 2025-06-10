@@ -102,29 +102,6 @@ const buttonRequest =
         next(action);
 
         switch (action.type) {
-            // old device might not be sending (action.payload.type) matrix thingy. In that case, we use only 'ui-request_pin' I am not sure
-            // anyway, remove this entire roundtrip through buttonRequests and save pin related data directly in modalReducer
-            case UI.REQUEST_PIN:
-            case UI.INVALID_PIN:
-                api.dispatch(
-                    deviceActions.addButtonRequest({
-                        device: selectSelectedDevice(api.getState()),
-                        buttonRequest: {
-                            code: action.payload.type ? action.payload.type : action.type,
-                        },
-                    }),
-                );
-                break;
-            case UI.REQUEST_BUTTON: {
-                const { device: _, ...request } = action.payload;
-                api.dispatch(
-                    deviceActions.addButtonRequest({
-                        device: selectSelectedDevice(api.getState()),
-                        buttonRequest: request,
-                    }),
-                );
-                break;
-            }
             case SUITE.LOCK_DEVICE:
                 if (!action.payload) {
                     api.dispatch(
