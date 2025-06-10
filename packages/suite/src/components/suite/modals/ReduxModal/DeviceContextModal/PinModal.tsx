@@ -1,8 +1,8 @@
+import { usePin } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
 import { PinMatrix, Translation } from 'src/components/suite';
-import { usePin } from 'src/hooks/suite/usePinModal';
 import { TrezorDevice } from 'src/types/suite';
 
 type PinModalProps = {
@@ -19,7 +19,7 @@ export const PinModal = ({ device }: PinModalProps) => {
         setPin,
         pin,
         submitted,
-    } = usePin();
+    } = usePin(device.buttonRequests);
     if (!device.features) return null;
 
     const getHeading = () => {

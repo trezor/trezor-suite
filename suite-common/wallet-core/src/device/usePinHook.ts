@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { ButtonRequest } from '@suite-common/suite-types';
-import { selectDeviceButtonRequests } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
 
 const NEW_PIN_REQUEST_TYPES = ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'];
 const NEW_WIPE_CODE_REQUEST_TYPES = [
@@ -12,7 +9,7 @@ const NEW_WIPE_CODE_REQUEST_TYPES = [
     'PinMatrixRequestType_WipeCodeSecond',
 ];
 
-const usePinWithoutSelector = (buttonRequests: Pick<ButtonRequest, 'code'>[]) => {
+export const usePin = (buttonRequests: ButtonRequest[]) => {
     const [pin, setPin] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
@@ -22,7 +19,8 @@ const usePinWithoutSelector = (buttonRequests: Pick<ButtonRequest, 'code'>[]) =>
     const isSettingNewPin =
         pinRequestType?.code && NEW_PIN_REQUEST_TYPES.includes(pinRequestType.code);
 
-    const cancel = () => isSettingNewWipeCode
+    const cancel = () =>
+        isSettingNewWipeCode
             ? TrezorConnect.cancel('wipe-cancelled')
             : TrezorConnect.cancel('pin-cancelled');
 
@@ -49,5 +47,3 @@ const usePinWithoutSelector = (buttonRequests: Pick<ButtonRequest, 'code'>[]) =>
         submitted,
     };
 };
-
-export const usePin = () => usePinWithoutSelector(useSelector(selectDeviceButtonRequests));

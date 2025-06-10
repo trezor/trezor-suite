@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { usePin } from '@suite-common/wallet-core';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -18,7 +19,6 @@ import {
 import { MODAL } from 'src/actions/suite/constants';
 import { Loading, PinMatrix, Translation, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { usePin } from 'src/hooks/suite/usePinModal';
 import messages from 'src/support/messages';
 import type { RecoveryType, WordCount } from 'src/types/recovery';
 import type { ForegroundAppProps } from 'src/types/suite';
@@ -39,7 +39,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const [wordCount, setWordCount] = useState<WordCount | undefined>();
     const [recoveryType, setRecoveryType] = useState<RecoveryType | undefined>();
     const intl = useIntl();
-    const { pin, setPin, handlePinSubmit } = usePin();
+    const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? []);
 
     const deviceModelInternal = device?.features?.internal_model;
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
