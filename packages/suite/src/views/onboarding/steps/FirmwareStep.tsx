@@ -37,8 +37,17 @@ export const FirmwareStep = () => {
         resetReducer();
     }, [goToNextStep, resetReducer]);
 
+    // After the THP is finished, we want to jump to the next step automatically.
+    // For devices without THP, the user is supposed to click [Continue] after
+    // the installation is finished. For THP devices, however, user already drifted
+    // away from the installation flow, and is not aware that THP is actually in the middle
+    // of the Firmware installation (before the final version checks). So we need to jump
+    // automagically to the next step in onboarding.
+    //
+    // This is an ugly hack to do so using the effect.
     useEffect(() => {
         if (status === 'done' && device?.thp?.properties !== undefined) {
+            console.log('____YOLO');
             goToNextStepAndResetReducer();
         }
     }, [status, goToNextStepAndResetReducer, device]);
