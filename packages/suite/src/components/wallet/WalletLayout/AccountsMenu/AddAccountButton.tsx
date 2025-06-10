@@ -38,11 +38,7 @@ export const AddAccountButton = ({
     const isSidebarCollapsed = useIsSidebarCollapsed();
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled =
-        isDiscoveryRunning ||
-        !device ||
-        !device.connected ||
-        device.authConfirm ||
-        device.authFailed;
+        isDiscoveryRunning || !device || !device.connected || device.authFailed;
 
     const tooltipMessage = getExplanationMessage(device, isDiscoveryRunning);
 

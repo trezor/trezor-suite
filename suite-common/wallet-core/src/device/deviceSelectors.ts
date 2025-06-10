@@ -162,11 +162,6 @@ export const selectIsDeviceAuthorized = createMemoizedSelector(
     device => !!device?.state,
 );
 
-export const selectHasDeviceAuthConfirm = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => !!device?.authConfirm,
-);
-
 export const selectIsDeviceConnectedAndAuthorized = createMemoizedSelector(
     [selectIsDeviceAuthorized, selectDeviceFeatures],
     (isDeviceAuthorized, deviceFeatures) => isDeviceAuthorized && !!deviceFeatures,

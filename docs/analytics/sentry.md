@@ -24,7 +24,6 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
 ```
 [
   {
-    authConfirm:False,
     bundleSize: 0,
     deviceState: [redacted],
     failed: [],
@@ -42,7 +41,6 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
 
 ```
 {
-  authConfirm: False,
   available: False,
   buttonRequests: [],
   connected: False,

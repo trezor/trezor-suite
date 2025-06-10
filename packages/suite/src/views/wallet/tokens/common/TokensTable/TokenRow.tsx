@@ -158,7 +158,7 @@ export const TokenRow = ({
         </InfoItem>
     );
 
-    const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
+    const isReceiveButtonDisabled = isDeviceLocked;
 
     const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
     const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);

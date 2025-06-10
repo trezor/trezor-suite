@@ -229,7 +229,6 @@ const getSuiteDevice = (
             remember: false,
             connected: false,
             available: false,
-            authConfirm: false,
             instance: undefined,
             ts: 0,
             buttonRequests: [],

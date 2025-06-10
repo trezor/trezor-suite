@@ -186,7 +186,6 @@ const connectDevice = (
         remember: false,
         temporaryRemember: false,
         available: true,
-        authConfirm: false,
         instance: deviceInstance,
     };
 
@@ -442,7 +441,6 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         // to be able to filter device accounts for portfolio tracker
         state: isPortfolioTrackerDevice ? device.state : undefined,
         walletNumber: undefined,
-        authConfirm: false,
         ts: currentTime,
         firstConnectedTimestamp: device.firstConnectedTimestamp ?? currentTime,
         buttonRequests: [],
@@ -520,7 +518,6 @@ const forget = (
     const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
     if (device.connected && others.length < 1) {
         // do not forget the last instance, just reset state
-        draft.devices[index].authConfirm = false;
         delete draft.devices[index].authFailed;
         draft.devices[index].state = undefined;
         draft.devices[index].walletNumber = undefined;

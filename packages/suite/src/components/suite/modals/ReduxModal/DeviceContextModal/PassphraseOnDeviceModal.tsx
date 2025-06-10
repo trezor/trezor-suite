@@ -32,8 +32,7 @@ interface PassphraseOnDeviceModalProps {
  */
 export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps) => {
     const intl = useIntl();
-    const authConfirmation =
-        useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
+    const authConfirmation = useSelector(selectIsDiscoveryAuthConfirmationRequired);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));

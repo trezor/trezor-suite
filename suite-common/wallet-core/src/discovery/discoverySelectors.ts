@@ -44,7 +44,6 @@ export const selectHasDeviceDiscovery = selectHasRunningDiscovery;
 
 /**
  * Helper selector called from components
- * return `true` if discovery process is running/completed and `authConfirm` is required
  */
 export const selectIsDiscoveryAuthConfirmationRequired = (
     state: DiscoveryRootState & DeviceRootState,

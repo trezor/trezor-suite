@@ -69,7 +69,7 @@ const Details = () => {
 
     const { account } = selectedAccount;
     const locked = isLocked(true);
-    const disabled = !!device.authConfirm || locked;
+    const disabled = locked;
 
     const accountTypeTech = getAccountTypeTech(account.path);
 

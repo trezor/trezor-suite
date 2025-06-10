@@ -38,7 +38,7 @@ export const Receive = () => {
         return <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount} />;
     }
 
-    const disabled = !!device.authConfirm;
+    const disabled = false; // TODO: it should be disabled based on locks probably
     const showCexWarning = account?.accountType === 'coinjoin' && !isCoinjoinReceiveWarningHidden;
 
     const isDeviceConnected = device.connected && device.available;

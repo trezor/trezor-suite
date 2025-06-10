@@ -36,7 +36,6 @@ const getDiscoveryStatus = ({
         if (discovery.status === 'progress' && discovery.isAddingHiddenWallet)
             return {
                 status: 'loading',
-                // type: discovery.authConfirm ? 'auth-confirm' : 'discovery',
                 // type: 'discovery',
                 type: 'auth-confirm',
             };
