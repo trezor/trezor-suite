@@ -1,0 +1,83 @@
+import { thp as protocolThp } from '@trezor/protocol';
+
+import { ERRORS } from '../../constants';
+import { DEVICE } from '../../events';
+import type { Device } from '../Device';
+
+type ThpTypedCall = {
+    ThpCreateChannelRequest: 'ThpCreateChannelResponse';
+    ThpHandshakeInitRequest: 'ThpHandshakeInitResponse';
+    ThpHandshakeCompletionRequest: 'ThpHandshakeCompletionResponse';
+    ThpPairingRequest: 'ThpPairingRequestApproved';
+    ThpSelectMethod: [
+        'ThpCodeEntryCommitment',
+        'ThpEndResponse',
+        'ThpPairingRequestApproved',
+        'ThpPairingPreparationsFinished',
+    ];
+    ThpCodeEntryChallenge: ['ThpCodeEntryCpaceTrezor'];
+    ThpCodeEntryCpaceHostTag: 'ThpCodeEntrySecret';
+    ThpQrCodeTag: 'ThpQrCodeSecret';
+    ThpNfcTagHost: 'ThpNfcTagTrezor';
+    ThpCredentialRequest: 'ThpCredentialResponse';
+    ThpEndRequest: 'ThpEndResponse';
+    ThpCreateNewSession: 'Success';
+};
+
+type ThpMessage = protocolThp.ThpMessageType & { Success: {} };
+type TypedPayloadItem<K> = K extends keyof ThpMessage
+    ? {
+          type: K;
+          message: ThpMessage[K];
+      }
+    : never;
+type ExtractFromArray<A extends any[]> = {
+    [K in keyof A]: TypedPayloadItem<A[K]>;
+}[number];
+
+type MessageKey = keyof ThpTypedCall;
+type TypedPayload<T extends MessageKey> = ThpTypedCall[T] extends any[]
+    ? ExtractFromArray<ThpTypedCall[T]>
+    : TypedPayloadItem<ThpTypedCall[T]>;
+
+type ThpCallResponse = {
+    [K in keyof ThpTypedCall]: TypedPayload<K>;
+};
+
+type ThpMessagePayload<T extends MessageKey = MessageKey> = ThpMessage[T];
+
+export const thpCall = async <T extends MessageKey>(
+    device: Device,
+    name: T,
+    data: ThpMessagePayload<T>,
+): Promise<ThpCallResponse[T]> => {
+    const thpState = device.getThpState();
+    if (!thpState) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+
+    const result = await device.getCurrentSession().call(name, data);
+    if (!result.success) {
+        throw ERRORS.serializeError({ code: result.error, message: result.error.message });
+    }
+
+    if (result.payload.type === 'ButtonRequest') {
+        if (result.payload.message.code === 'ButtonRequest_PassphraseEntry') {
+            device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
+        } else {
+            device.emit(DEVICE.BUTTON, { device, payload: result.payload.message });
+        }
+
+        return thpCall(device, 'ButtonAck' as T, {} as ThpMessagePayload<T>);
+    }
+
+    if (result.payload.type === 'Failure') {
+        throw ERRORS.serializeError(result.payload.message);
+    }
+
+    if (result.payload.type === 'ThpError') {
+        throw ERRORS.serializeError(result.payload.message);
+    }
+
+    return result.payload as ThpCallResponse[T];
+};
