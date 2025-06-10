@@ -32,6 +32,7 @@ export function isDiscoveryInProgress(
         discovery.status !== 'cancelled'
     );
 }
+
 export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryForSelectedDevice(state);
 

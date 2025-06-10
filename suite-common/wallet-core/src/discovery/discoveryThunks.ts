@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
+import { FailedAccount } from '@suite-common/wallet-types';
 import TrezorConnect, {
     BundleProgress,
     DeviceState,
@@ -62,9 +62,6 @@ function assertStaticSessionId(
         throw new Error('assertion error: device state does not contain static session id');
     }
 }
-
-// discovery could have been deleted, or cancelled in the meantime
-const canDiscoveryContinue = (discovery?: DiscoveryStatus) => isDiscoveryInProgress(discovery);
 
 /**
  * If metadata are enabled in settings but metadata master key does not exist for this device state,
@@ -335,7 +332,7 @@ export const runDiscoveryThunk = createThunk(
 
             const discovery = selectDiscoveryByDevicePath(getState(), device.path);
 
-            if (!canDiscoveryContinue(discovery) || !discovery) return;
+            if (!isDiscoveryInProgress(discovery)) return;
 
             const { isAddingHiddenWallet } = discovery;
 
@@ -392,7 +389,9 @@ export const runDiscoveryThunk = createThunk(
                 useEmptyPassphrase: !isAddingHiddenWallet,
             });
 
-            if (!canDiscoveryContinue(selectDiscoveryByDevicePath(getState(), device.path))) return;
+            if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
+                return;
+            }
 
             if (!deviceStateResponse.success) {
                 const { error, code } = deviceStateResponse.payload;
@@ -446,7 +445,9 @@ export const runDiscoveryThunk = createThunk(
 
             TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-            if (!canDiscoveryContinue(selectDiscoveryByDevicePath(getState(), device.path))) return;
+            if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
+                return;
+            }
 
             if (!result.success) {
                 dispatch(
@@ -554,7 +555,9 @@ export const runDiscoveryThunk = createThunk(
                 useEmptyPassphrase: false,
             });
 
-            if (!canDiscoveryContinue(selectDiscoveryByDevicePath(getState(), device.path))) return;
+            if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
+                return;
+            }
 
             if (!getDeviceState2Res.success) {
                 const { error, code } = getDeviceState2Res.payload;
