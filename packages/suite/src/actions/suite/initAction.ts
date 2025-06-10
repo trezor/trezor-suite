@@ -10,13 +10,14 @@ import {
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as walletConnectActions from '@suite-common/walletconnect';
-import { DEVICE } from '@trezor/connect';
+import { DEVICE, UI } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
 import type { Dispatch, GetState } from 'src/types/suite';
@@ -97,6 +98,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                             }),
                         );
                     }
+                },
+                [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
+                    dispatch(
+                        modalActions.openModal({
+                            type: UI.INVALID_PIN_ATTEMPTS_DEPLETED,
+                        }),
+                    );
+                    dispatch(modalActions.preserve());
                 },
             }),
         ).unwrap();

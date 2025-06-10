@@ -36,6 +36,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
+        "react": "18.2.0",
         "react-hook-form": "^7.56.3",
         "web3-utils": "^4.3.1"
     }

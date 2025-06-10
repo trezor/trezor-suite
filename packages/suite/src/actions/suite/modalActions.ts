@@ -22,16 +22,6 @@ export const onCancel = createAction(MODAL.CLOSE);
  */
 export const preserve = createAction(MODAL.PRESERVE);
 
-/**
- * Called from <PinModal /> component
- * Sends pin to `@trezor/connect`
- * @param {string} payload
- * @returns
- */
-export const onPinSubmit = (payload: string) => () => {
-    TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload });
-};
-
 export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
     TrezorConnect.uiResponse({
         type: UI.RECEIVE_CONFIRMATION,

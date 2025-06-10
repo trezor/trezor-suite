@@ -10101,6 +10101,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
+    react: "npm:18.2.0"
     react-hook-form: "npm:^7.56.3"
     web3-utils: "npm:^4.3.1"
   languageName: unknown

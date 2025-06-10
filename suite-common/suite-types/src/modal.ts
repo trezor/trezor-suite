@@ -1,6 +1,7 @@
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, AddressType } from '@suite-common/wallet-types';
+import { UI } from '@trezor/connect';
 import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
@@ -95,6 +96,9 @@ export type UserContextPayload =
       }
     | {
           type: 'pin-mismatch';
+      }
+    | {
+          type: typeof UI.INVALID_PIN_ATTEMPTS_DEPLETED;
       }
     | {
           type: 'device-authenticity-check-opt-out';

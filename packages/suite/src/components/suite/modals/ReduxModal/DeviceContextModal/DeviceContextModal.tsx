@@ -14,7 +14,6 @@ import {
     ConfirmXpubModal,
     PassphraseModal,
     PassphraseOnDeviceModal,
-    PinInvalidModal,
     PinModal,
     TransactionReviewModal,
 } from 'src/components/suite/modals';
@@ -48,11 +47,8 @@ export const DeviceContextModal = ({
     switch (windowType) {
         // T1B1 firmware
         case UI.REQUEST_PIN:
-            return <PinModal device={device} />;
-        // T1B1 firmware
         case UI.INVALID_PIN:
-            return <PinInvalidModal device={device} />;
-
+            return <PinModal device={device} />;
         // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':

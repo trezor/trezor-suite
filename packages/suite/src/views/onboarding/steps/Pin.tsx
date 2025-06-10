@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 
+
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
-import { onPinSubmit } from 'src/actions/suite/modalActions';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
@@ -44,7 +45,8 @@ const SetPinStep = () => {
     };
 
     const handlePinSubmit = () => {
-        dispatch(onPinSubmit(pin));
+        TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: pin });
+
         setPin('');
     };
 

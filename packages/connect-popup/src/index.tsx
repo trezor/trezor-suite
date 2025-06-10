@@ -156,6 +156,7 @@ export const handleUIAffectingMessage = (message: CoreEventMessage) => {
             view.initWordView(message.payload);
             break;
         case UI_REQUEST.INVALID_PIN:
+            // todo: test
             showView('invalid-pin');
             break;
         // comes when user clicks "enter on device"

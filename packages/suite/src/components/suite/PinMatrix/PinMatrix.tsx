@@ -25,6 +25,7 @@ type PinMatrixProps = {
     onSubmit: () => void;
     showExplanation?: boolean;
     showLabel?: boolean;
+    isDisabled?: boolean;
 };
 
 export const PinMatrix = ({
@@ -33,6 +34,7 @@ export const PinMatrix = ({
     pin,
     setPin,
     onSubmit,
+    isDisabled,
 }: PinMatrixProps) => {
     const learnMoreUrl = useExternalLink(HELP_CENTER_PIN_URL);
 
@@ -145,6 +147,7 @@ export const PinMatrix = ({
                                     data-value={value}
                                     onClick={() => onPinAdd(value)}
                                     data-testid={`@pin/input/${value}`}
+                                    disabled={isDisabled}
                                 />
                             ))
                         }
@@ -156,6 +159,7 @@ export const PinMatrix = ({
                             onClick={onPinBackspace}
                             size="small"
                             icon="caretLeft"
+                            isDisabled={isDisabled}
                         >
                             <Translation id="TR_BACKSPACE" />
                         </Button>

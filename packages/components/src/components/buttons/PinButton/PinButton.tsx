@@ -33,10 +33,16 @@ const Button = styled.button<{ $elevation: Elevation }>`
     &:hover::before {
         background: ${({ theme }) => theme.textSecondaryHighlight};
     }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 `;
 
 export interface PinButtonProps extends Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
     'data-value': string;
+    disabled?: boolean;
 }
 
 export const PinButton = (props: PinButtonProps) => {

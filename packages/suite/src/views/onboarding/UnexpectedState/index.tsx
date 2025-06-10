@@ -4,12 +4,12 @@ import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { onPinSubmit } from 'src/actions/suite/modalActions';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import IsSameDevice from './components/IsSameDevice';
@@ -27,7 +27,6 @@ interface UnexpectedStateProps {
  */
 const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const [pin, setPin] = useState('');
-    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
@@ -63,7 +62,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     }, [activeStep, prerequisite, isNotSameDevice]);
 
     const handlePinSubmit = () => {
-        dispatch(onPinSubmit(pin));
+        TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: pin });
         setPin('');
     };
 
