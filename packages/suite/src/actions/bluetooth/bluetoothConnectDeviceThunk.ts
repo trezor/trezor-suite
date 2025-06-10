@@ -26,6 +26,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
     async ({ deviceId }, { fulfillWithValue, dispatch }) => {
         dispatch(startConnectingBluetoothDevice({ deviceId }));
 
+        console.log('_____calling: bluetoothIpc.connectDevice(id)', deviceId);
         const result = await bluetoothIpc.connectDevice(deviceId);
 
         // restore focus in case if OS bluetooth setting is opened above the app (linux/mac)
