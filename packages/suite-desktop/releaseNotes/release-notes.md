@@ -2,7 +2,6 @@
 
 - Added support for Stellar (XLM) network, which can be accessed via Experimental features.
 - WalletConnect integration is now available via Experimental features, allowing you to connect Suite to popular dApps.
-- You can now connect Trezor to third-party apps via TrezorConnect within Suite, a safe environment.
 
 ### 🎨 Improvements
 
