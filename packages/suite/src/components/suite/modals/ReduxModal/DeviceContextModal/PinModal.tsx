@@ -1,12 +1,7 @@
-import { useState } from 'react';
-
 import { Modal } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
-import { onPinSubmit } from 'src/actions/suite/modalActions';
 import { PinMatrix, Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { usePin } from 'src/hooks/suite/usePinModal';
 import { TrezorDevice } from 'src/types/suite';
 
@@ -15,9 +10,15 @@ type PinModalProps = {
 };
 
 export const PinModal = ({ device }: PinModalProps) => {
-    const dispatch = useDispatch();
-    const { isRequestingNewPinCode, isWipeCode } = usePin();
-    const [pin, setPin] = useState('');
+    const {
+        isSettingNewPin,
+        isSettingNewWipeCode,
+        hasInvalidAttempts,
+        onCancel,
+        handlePinSubmit,
+        setPin,
+        pin,
+    } = usePin();
 
     if (!device.features) return null;
 
@@ -36,14 +37,6 @@ export const PinModal = ({ device }: PinModalProps) => {
             default:
                 return 'TR_ENTER_PIN';
         }
-    };
-
-    const onCancel = () =>
-        isWipeCode ? TrezorConnect.cancel('wipe-cancelled') : TrezorConnect.cancel('pin-cancelled');
-
-    const handlePinSubmit = () => {
-        dispatch(onPinSubmit(pin));
-        setPin('');
     };
 
     return (
@@ -74,7 +67,8 @@ export const PinModal = ({ device }: PinModalProps) => {
                     pin={pin}
                     setPin={setPin}
                     onSubmit={handlePinSubmit}
-                    showExplanation={isRequestingNewPinCode || isWipeCode}
+                    // show explanation when either setting a new pin or wipe code or entering existing pin but has at least one invalid attempt
+                    showExplanation={isSettingNewPin || isSettingNewWipeCode || hasInvalidAttempts}
                 />
             </Modal.ModalBase>
         </Modal.Backdrop>
