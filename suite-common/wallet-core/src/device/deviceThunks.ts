@@ -8,11 +8,7 @@ import {
     getSelectedDevice,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
-import {
-    autoInitThpAfterDeviceConnectionThunk,
-    connectThpDeviceThunk,
-    thpActions,
-} from '@suite-common/thp';
+import { connectThpDeviceThunk, thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
@@ -516,7 +512,6 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
-                dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
                 break;
             default:
                 exhaustive(type);
