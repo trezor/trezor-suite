@@ -147,6 +147,7 @@ const init = async () => {
 
     ipcMain.on('app/restart', () => {
         logger.info('main', 'App restart requested');
+        mainThreadEmitter.emit('app/fully-quit');
         restartApp();
     });
 

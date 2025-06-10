@@ -16,6 +16,7 @@ export const ClearStorage = () => {
         dispatch(removeDatabase());
         if (desktopApi.available) {
             // Reset the desktop-specific store.
+            desktopApi.appAutoStart(false);
             desktopApi.clearStore();
         } else {
             // redirect to / and reload the web
