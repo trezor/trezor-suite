@@ -1,11 +1,13 @@
+import styled from 'styled-components';
+
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
-import { Card, Column, DotIndicator, H4, Modal, Row, Text } from '@trezor/components';
+import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -14,6 +16,13 @@ import { useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 import { ConfirmActionModal } from './ConfirmActionModal';
+
+const MessageText = styled.pre`
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin-left: ${spacingsPx.xxl};
+`;
 
 interface SignMessageModalProps {
     device: TrezorDevice;
@@ -102,14 +111,9 @@ export const SignMessageModal = ({
                         }
                         paddingType="small"
                     >
-                        <Text
-                            isMonospaced
-                            as="pre"
-                            margin={{ left: spacings.xxl }}
-                            data-testid="@sign-message-modal/message"
-                        >
+                        <MessageText data-testid="@sign-message-modal/message">
                             {message}
-                        </Text>
+                        </MessageText>
                     </Card>
                 </Column>
             </Modal.ModalBase>
