@@ -19,7 +19,11 @@ import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/walle
 
 import { SummaryCards } from './SummaryCards';
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
+import { useGraphData } from './useGraphData';
 import { TransactionsGraph } from '../../../../components/suite/graph/TransactionsGraph/newGraph/TransactionsGraph';
+import { RawDataItem } from '../../../../components/suite/graph/TransactionsGraph/newGraph/types';
+import { selectIsDebugModeActive } from '../../../../reducers/suite/suiteReducer';
+import { GraphData } from '../../../../types/wallet/graph';
 
 const ErrorMessage = styled.div`
     display: flex;
@@ -38,14 +42,30 @@ interface TransactionSummaryProps {
     account: Account;
 }
 
+const getBalanceData = (intervalGraphData: GraphData[]): RawDataItem[] =>
+    intervalGraphData.reduce<RawDataItem[]>((acc, data) => {
+        if (data.data) {
+            const balanceData = data.data.map(d => ({
+                date: d.time,
+                value: d.balance,
+            }));
+
+            return [...acc, ...balanceData];
+        }
+
+        return acc;
+    }, []);
+
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
     const graph = useSelector(state => state.wallet.graph);
+    const { graphData } = useGraphData({ selectedRange });
 
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
-
+    const isDebug = useSelector(selectIsDebugModeActive);
     const intervalGraphData = getGraphDataForInterval({ account, graph });
+    const balanceData = getBalanceData(intervalGraphData);
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -117,26 +137,29 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                             <HiddenPlaceholder enforceIntensity={8}>
                                 <Card overflow="visible">
                                     <Row height={320} overflow="visible" alignItems="stretch">
+                                        {/*{isDebug ? (*/}
                                         <TransactionsGraph
-                                            selectedRange={selectedRange}
-                                            portfolioData={data}
+                                            data={graphData}
+                                            portfolioData={balanceData}
                                             localCurrency={localCurrency}
                                         />
-                                        {/*<LegacyTransactionsGraph*/}
-                                        {/*    hideToolbar*/}
-                                        {/*    variant="one-asset"*/}
-                                        {/*    xTicks={xTicks}*/}
-                                        {/*    account={account}*/}
-                                        {/*    isLoading={isLoading}*/}
-                                        {/*    data={data}*/}
-                                        {/*    minMaxValues={minMaxValues}*/}
-                                        {/*    localCurrency={localCurrency}*/}
-                                        {/*    onRefresh={onRefresh}*/}
-                                        {/*    selectedRange={selectedRange}*/}
-                                        {/*    receivedValueFn={data => data.received}*/}
-                                        {/*    sentValueFn={data => data.sent}*/}
-                                        {/*    balanceValueFn={data => data.balance}*/}
-                                        {/*/>*/}
+                                        {/*) : (*/}
+                                        <LegacyTransactionsGraph
+                                            hideToolbar
+                                            variant="one-asset"
+                                            xTicks={xTicks}
+                                            account={account}
+                                            isLoading={isLoading}
+                                            data={data}
+                                            minMaxValues={minMaxValues}
+                                            localCurrency={localCurrency}
+                                            onRefresh={onRefresh}
+                                            selectedRange={selectedRange}
+                                            receivedValueFn={data => data.received}
+                                            sentValueFn={data => data.sent}
+                                            balanceValueFn={data => data.balance}
+                                        />
+                                        {/*)}*/}
                                     </Row>
                                 </Card>
                             </HiddenPlaceholder>

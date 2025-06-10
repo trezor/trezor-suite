@@ -16,7 +16,6 @@ interface CustomMessageEvent extends MessageEvent {
 
 ctx.addEventListener('message', (event: CustomMessageEvent) => {
     const result = aggregateBalanceHistory(event.data.history, event.data.groupBy, event.data.type);
-    console.log('___', result, event.data);
     ctx.postMessage(result);
 });
 

@@ -30,7 +30,6 @@ import { hexToRgba } from '@trezor/utils';
 import { useSelector } from '../../../../hooks/suite';
 import { selectLocalCurrency } from '../../../../reducers/wallet/settingsReducer';
 
-
 const TooltipContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -103,7 +102,6 @@ function generateData(start: number, min: number, max: number, count: number) {
 }
 
 const raw = generateData(new Date().getTime(), 80000, 120000, 120);
-console.log('___', raw);
 
 const dateFormatter = (date: string) => format(new Date(date), 'd MMM');
 const dateFormatterWithYear = (date: string) => format(new Date(date), 'd MMMM yyyy');
@@ -310,20 +308,20 @@ export const TransactionsGraph = () => {
                     {/* hlavní křivka */}
                     );
                     {segments.map((segment, index) => (
-                            <Area
-                                key={`main-${index}`}
-                                data={segment}
-                                type="monotone"
-                                dataKey="value"
-                                stroke={theme.backgroundPrimaryDefault}
-                                strokeWidth={1.5}
-                                dot={false}
-                                isAnimationActive={false}
-                                legendType={index ? 'none' : undefined}
-                                fill="url(#gradient-area)"
-                                name={`main-line-${index}`}
-                            />
-                        ))}
+                        <Area
+                            key={`main-${index}`}
+                            data={segment}
+                            type="monotone"
+                            dataKey="value"
+                            stroke={theme.backgroundPrimaryDefault}
+                            strokeWidth={1.5}
+                            dot={false}
+                            isAnimationActive={false}
+                            legendType={index ? 'none' : undefined}
+                            fill="url(#gradient-area)"
+                            name={`main-line-${index}`}
+                        />
+                    ))}
                     {/* samostatná čárkovaná vertikála pro každý skok */}
                     {verticalSegments.map((pair, index) => {
                         const firstPoint = pair[0];
