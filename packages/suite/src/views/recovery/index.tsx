@@ -16,9 +16,9 @@ import {
     setWordsCount,
 } from 'src/actions/recovery/recoveryActions';
 import { MODAL } from 'src/actions/suite/constants';
-import { onPinSubmit } from 'src/actions/suite/modalActions';
 import { Loading, PinMatrix, Translation, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { usePin } from 'src/hooks/suite/usePinModal';
 import messages from 'src/support/messages';
 import type { RecoveryType, WordCount } from 'src/types/recovery';
 import type { ForegroundAppProps } from 'src/types/suite';
@@ -38,8 +38,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const [isUnderstood, setIsUnderstood] = useState(false);
     const [wordCount, setWordCount] = useState<WordCount | undefined>();
     const [recoveryType, setRecoveryType] = useState<RecoveryType | undefined>();
-    const [pin, setPin] = useState('');
     const intl = useIntl();
+    const { pin, setPin, handlePinSubmit } = usePin();
 
     const deviceModelInternal = device?.features?.internal_model;
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;
@@ -62,11 +62,6 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         } else {
             onCancel();
         }
-    };
-
-    const handlePinSubmit = () => {
-        dispatch(onPinSubmit(pin));
-        setPin('');
     };
 
     const handleBackClick = () => {
