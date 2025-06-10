@@ -24,16 +24,9 @@ type PinMatrixProps = {
     setPin: (pin: string) => void;
     onSubmit: () => void;
     showExplanation?: boolean;
-    showLabel?: boolean;
 };
 
-export const PinMatrix = ({
-    showExplanation,
-    showLabel,
-    pin,
-    setPin,
-    onSubmit,
-}: PinMatrixProps) => {
+export const PinMatrix = ({ showExplanation, pin, setPin, onSubmit }: PinMatrixProps) => {
     const learnMoreUrl = useExternalLink(HELP_CENTER_PIN_URL);
 
     const onPinBackspace = useCallback(() => {
@@ -131,7 +124,7 @@ export const PinMatrix = ({
                     </Paragraph>
                 </Banner>
             )}
-            <Card label={showLabel ? <Translation id="TR_ENTER_PIN" /> : undefined}>
+            <Card>
                 <Column gap={spacings.xl} padding={spacings.md} data-testid="@pin">
                     <Grid columns={3} gap={spacings.lg} width="100%">
                         {
