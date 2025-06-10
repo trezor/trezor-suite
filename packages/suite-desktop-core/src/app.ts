@@ -154,10 +154,6 @@ const init = async () => {
     // https://github.com/electron/electron/issues/43556
     app.commandLine.appendSwitch('disable-features', 'PlzDedicatedWorker');
 
-    // workaround for Electron 36 on older linux distros
-    // https://github.com/electron/electron/issues/46538#issuecomment-2808806722
-    app.commandLine.appendSwitch('gtk-version', '3');
-
     await app.whenReady();
 
     // Load bridge module first, it is required in both UI and daemon mode
