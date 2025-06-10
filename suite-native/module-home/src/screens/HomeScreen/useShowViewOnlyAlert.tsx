@@ -12,7 +12,6 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
-import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     selectViewOnlyCancelationTimestamp,
@@ -36,7 +35,6 @@ export const useShowViewOnlyAlert = () => {
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const isCreatingNewPassphraseWallet = useSelector(selectIsCreatingNewPassphraseWallet);
 
     const handleEnable = useCallback(() => {
         if (device) {
@@ -94,8 +92,7 @@ export const useShowViewOnlyAlert = () => {
             isDeviceReadyToUseAndAuthorized &&
             !isPortfolioTrackerDevice &&
             !hasDiscovery &&
-            !viewOnlyCancelationTimestamp &&
-            !isCreatingNewPassphraseWallet;
+            !viewOnlyCancelationTimestamp;
 
         //show after a delay
         if (canBeShowed) {
@@ -117,6 +114,5 @@ export const useShowViewOnlyAlert = () => {
         isPortfolioTrackerDevice,
         showViewOnlyAlert,
         viewOnlyCancelationTimestamp,
-        isCreatingNewPassphraseWallet,
     ]);
 };
