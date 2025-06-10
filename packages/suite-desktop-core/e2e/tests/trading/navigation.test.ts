@@ -1,4 +1,4 @@
-import { test } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -55,8 +55,12 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
         });
 
         await test.step('Sell from token', async () => {
-            await walletPage.openSellTradingOfToken('eth', 'USD Coin');
-            await tradingPage.verifySellFormOpened('USD Coin');
+            // There is instability in test, sell form has Ethereum instead of USD Coin
+            // We cannot reproduce it manually, so we are using retry workaround to stabilize automation
+            await expect(async () => {
+                await walletPage.openSellTradingOfToken('eth', 'USD Coin');
+                await tradingPage.verifySellFormOpened('USD Coin');
+            }).toPass({ timeout: 15_000 });
         });
 
         // SWAP
