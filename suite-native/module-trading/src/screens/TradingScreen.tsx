@@ -16,6 +16,7 @@ import { Header } from '../components/general/Header/Header';
 import { HistoryButton, NavigationProps } from '../components/general/HistoryButton';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
+import { useGeolocationCountryCode } from '../hooks/general/useGeolocationCountryCode';
 import { useMountedRecentlyFlag } from '../hooks/general/useMountedRecentlyFlag';
 import {
     selectActiveTradingType,
@@ -30,6 +31,7 @@ const TradingScreenContent = () => {
     const navigation = useNavigation<NavigationProps>();
     const isScreenMountedRecently = useMountedRecentlyFlag(activeTradingType);
     useActiveTradingTypeReaction();
+    useGeolocationCountryCode();
 
     useEffect(() => {
         if (tradeToBeOpened) {
