@@ -5,7 +5,8 @@ import {
     MessageSystemRootState,
     selectContextMessage,
 } from '@suite-common/message-system';
-import { InlineAlertBox, InlineAlertBoxProps } from '@suite-native/atoms';
+import { InlineAlertBox, InlineAlertBoxProps, Text } from '@suite-native/atoms';
+import { Link } from '@suite-native/link';
 
 import { useHandleMessageLink } from '../hooks/useHandleMessageLink';
 
@@ -24,19 +25,36 @@ export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
         selectContextMessage(state, context),
     );
 
-    const { linkLabel, handleLinkPress } = useHandleMessageLink({
+    const { linkLabel } = useHandleMessageLink({
         messageCTA: message?.cta,
         language,
     });
 
     if (!message) return null;
 
+    const msgText = message.content[language];
+    const link = message?.cta?.link;
+    const shouldDisplayLink = !!(link && linkLabel);
+
     return (
         <InlineAlertBox
             variant={message.variant}
-            title={message.content[language]}
-            buttonLabel={linkLabel}
-            onButtonPress={handleLinkPress}
+            title={
+                <Text variant="label">
+                    {msgText}
+                    {msgText && shouldDisplayLink && ' '}
+                    {shouldDisplayLink && (
+                        <Link
+                            label={linkLabel}
+                            textVariant="label"
+                            href={link}
+                            isUnderlined
+                            textColor="textDefault"
+                            textPressedColor="textSubdued"
+                        />
+                    )}
+                </Text>
+            }
             {...rest}
         />
     );
