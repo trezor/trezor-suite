@@ -20,11 +20,42 @@ const getDiscoveryStatus = ({
     discovery,
     walletSettings,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
-    if (!device)
+    if (!device) {
         return {
             status: 'loading',
             type: 'waiting-for-device',
         };
+    }
+
+    if (walletSettings.enabledNetworks.length === 0) {
+        return {
+            status: 'exception',
+            type: 'discovery-empty',
+        };
+    }
+
+    if (
+        discovery?.status === 'failed' &&
+        discovery?.errorCode === 'Device_InvalidState' &&
+        !device.available
+    ) {
+        return {
+            status: 'exception',
+            type: 'device-unavailable',
+        };
+    }
+
+    if (
+        (discovery?.status === 'failed' && discovery.error) ||
+        (discovery?.failed ?? []).length > 0
+    ) {
+        return {
+            status: 'exception',
+            type: 'discovery-failed',
+        };
+    }
+
+    // if we failed to input pin or passphrase we don't have authorized device.
     if (!device.state?.staticSessionId) {
         return {
             status: 'loading',
@@ -33,31 +64,6 @@ const getDiscoveryStatus = ({
     }
 
     if (discovery) {
-        if (walletSettings.enabledNetworks.length === 0)
-            return {
-                status: 'exception',
-                type: 'discovery-empty',
-            };
-
-        if (
-            discovery.status === 'failed' &&
-            discovery.errorCode === 'Device_InvalidState' &&
-            !device.available
-        )
-            return {
-                status: 'exception',
-                type: 'device-unavailable',
-            };
-
-        if (
-            (discovery.status === 'failed' && discovery.error) ||
-            (discovery.failed ?? []).length > 0
-        )
-            return {
-                status: 'exception',
-                type: 'discovery-failed',
-            };
-
         if (discovery.status === 'progress') {
             return {
                 status: 'loading',
