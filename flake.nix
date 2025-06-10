@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; 
     flake-utils.url = "github:numtide/flake-utils";
-    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.51.0";
+    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.52.0";
     old-gcc-nixpkgs.url = "github:NixOS/nixpkgs/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4";  # For GCC 10.2.0
   };
 
