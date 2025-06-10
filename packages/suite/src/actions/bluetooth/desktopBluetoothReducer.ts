@@ -21,6 +21,11 @@ export type DesktopBluetoothState = BluetoothState<DesktopBluetoothDevice> & {
     // { type: 'connecting' } in the DeviceBluetoothConnectionStatus which indicates
     // the state of the Bluetooth connection itself.
     connectingDeviceIds: string[];
+
+    // When the device is being unpaired (manual Erase Bonds or Wipe Device),
+    // it may take some time. During that time, the Device is already disconnected,
+    // but the user needs to be notified that something is happening.
+    isUnpairingDevice: boolean;
 };
 
 export type WithBluetoothRootState = {
@@ -34,6 +39,7 @@ export const bluetoothSlice = createSliceWithExtraDeps({
         isBluetoothListOpen: false,
         unpairedDeviceNeedsManualOsRemoval: false,
         connectingDeviceIds: [] as string[],
+        isUnpairingDevice: false,
     } satisfies DesktopBluetoothState,
     reducers: {
         setBluetoothDeviceNeedsManualOsRemoval: (state, { payload: { needsManualRemoval } }) => {
@@ -47,6 +53,9 @@ export const bluetoothSlice = createSliceWithExtraDeps({
         },
         setBluetoothListOpen: (state, { payload: { isOpen } }) => {
             state.isBluetoothListOpen = isOpen;
+        },
+        setIsUnpairingDevice: (state, { payload: { isUnpairing } }) => {
+            state.isUnpairingDevice = isUnpairing;
         },
     },
     extraReducers: (builder, extra) => {
@@ -63,4 +72,5 @@ export const {
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
     setBluetoothListOpen,
+    setIsUnpairingDevice,
 } = bluetoothSlice.actions;

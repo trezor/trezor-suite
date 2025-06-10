@@ -10014,6 +10014,10 @@ export default defineMessages({
         id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS',
         defaultMessage: 'Remove Trezor from Bluetooth settings',
     },
+    TR_BLUETOOTH_UNPAIRING: {
+        id: 'TR_BLUETOOTH_UNPAIRING',
+        defaultMessage: 'Unpairing the Bluetooth device...',
+    },
     TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION: {
         id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION',
         defaultMessage:

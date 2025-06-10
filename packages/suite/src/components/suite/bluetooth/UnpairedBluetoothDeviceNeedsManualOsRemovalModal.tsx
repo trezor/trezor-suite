@@ -1,18 +1,22 @@
 import { useState } from 'react';
 
-import { Banner, H3, Modal, Paragraph } from '@trezor/components';
+import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
 import { setBluetoothDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothReducer';
-import { selectUnpairedDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothSelectors';
+import {
+    selectIsUnpairingDevice,
+    selectUnpairedDeviceNeedsManualOsRemoval,
+} from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
 export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
     const dispatch = useDispatch();
     const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
+    const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
 
@@ -27,6 +31,19 @@ export const UnpairedBluetoothDeviceNeedsManualOsRemovalModal = () => {
     const onCancel = () => {
         dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: false }));
     };
+
+    if (isUnpairingDevice) {
+        return (
+            <Modal>
+                <Column gap={spacings.md}>
+                    <H3>
+                        <Translation id="TR_BLUETOOTH_UNPAIRING" />
+                    </H3>
+                    <Spinner size={32} />
+                </Column>
+            </Modal>
+        );
+    }
 
     if (!wasBluetoothDeviceWiped) {
         return null;
