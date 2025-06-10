@@ -27,7 +27,10 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
-import { selectIsOnboardingFinished } from '@suite-native/settings';
+import {
+    selectIsCoinEnablingInitFinished,
+    selectIsOnboardingFinished,
+} from '@suite-native/settings';
 
 import {
     isOnboardingDeviceDisconnectedAlertDisplayedAtom,
@@ -59,6 +62,7 @@ export const useHandleDeviceConnection = () => {
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
+    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
@@ -148,14 +152,16 @@ export const useHandleDeviceConnection = () => {
             !isDeviceConnectedAndAuthorized &&
             !isBiometricsOverlayVisible &&
             !shouldNavigateToDeviceCompromisedModal &&
-            !isDeviceOnboardingStackFocused
+            !isDeviceOnboardingStackFocused &&
+            !isDeviceUsingPassphrase &&
+            !shouldBlockSendReviewRedirect
         ) {
-            // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
-            // post auth navigation is handled in @suite-native/module-passphrase for custom UX flow.
-            if (!isDeviceUsingPassphrase && !shouldBlockSendReviewRedirect) {
+            if (isCoinEnablingInitFinished) {
                 navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                     screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
                 });
+            } else {
+                navigation.navigate(RootStackRoutes.CoinEnablingInit);
             }
         }
         if (shouldNavigateToDeviceCompromisedModal) {
@@ -163,6 +169,7 @@ export const useHandleDeviceConnection = () => {
         }
     }, [
         failedCheck,
+        isCoinEnablingInitFinished,
         isDeviceConnected,
         isDeviceOnboardingStackFocused,
         isOnboardingFinished,
