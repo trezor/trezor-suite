@@ -49,8 +49,11 @@ export const Feature = {
     },
 
     // device onboarding (MOBILE ONLY!!!).
+    // TODO: remove during August 2025 release if is everything still working as expected
+    // https://github.com/trezor/trezor-suite/issues/19449
     deviceOnboardingMobile: 'device.onboarding.mobile', // for all device models (including T2T1)
     deviceOnboardingMobileT2T1: 'device.onboarding.T2T1.mobile', // specifically for T2T1 devices
+    deviceOnboardingMobileRecovery: 'device.onboarding.mobile.recovery', // seed recovery flow
 } as const;
 
 type ExtractFeatureValues<T> =

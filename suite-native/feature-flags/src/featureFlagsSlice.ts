@@ -8,7 +8,6 @@ export const FeatureFlag = {
     IsStellarSupportEnabled: 'isStellarSupportEnabled',
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
-    IsDeviceOnboardingRecoveryEnabled: 'isDeviceOnboardingRecoveryEnabled',
     IsWalletConnectEnabled: 'isWalletConnectEnabled',
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
     IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
@@ -34,8 +33,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsConnectPopupEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true',
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
-    [FeatureFlag.IsDeviceOnboardingRecoveryEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_DEVICE_ONBOARDING_RECOVERY_ENABLED === 'true',
     [FeatureFlag.IsWalletConnectEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true',
     [FeatureFlag.IsTradingBuyEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_BUY_ENABLED === 'true',
@@ -50,7 +47,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsCardanoSendEnabled,
     FeatureFlag.IsStellarSupportEnabled,
     FeatureFlag.IsConnectPopupEnabled,
-    FeatureFlag.IsDeviceOnboardingRecoveryEnabled,
     FeatureFlag.IsWalletConnectEnabled,
     FeatureFlag.IsTradingBuyEnabled,
     FeatureFlag.IsTradingExchangeEnabled,
