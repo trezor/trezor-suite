@@ -31,7 +31,6 @@ const getAcquiredDevice = async (apiMethods: any = {}) => {
         id: 'ABCD' as any, // any = DeviceUniquePath
         transport,
         descriptor: { path: '1' as any, type: 3, session: null }, // any = PathPublic
-        listener: () => {},
     });
     await device.acquire();
 
