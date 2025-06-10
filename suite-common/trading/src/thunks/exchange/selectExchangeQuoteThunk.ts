@@ -55,7 +55,10 @@ export const selectExchangeQuoteThunk = createThunk(
             return;
         }
 
-        dispatch(tradingExchangeActions.saveSelectedQuote(quote));
+        if (!quote.isDex) {
+            dispatch(tradingExchangeActions.saveSelectedQuote(quote));
+        }
+
         timer.stop();
         nextStep();
     },

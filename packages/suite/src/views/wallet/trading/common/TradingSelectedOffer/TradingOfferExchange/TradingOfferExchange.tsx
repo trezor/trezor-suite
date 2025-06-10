@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import { selectTradingExchangeFormStep } from '@suite-common/trading';
+import { isSendingEvmNativeToken, selectTradingExchangeFormStep } from '@suite-common/trading';
 import { Card, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -32,16 +32,10 @@ export const TradingOfferExchange = ({
         nonSuiteAccount: !selectedQuote.tags?.includes('noExternalAddress'),
     });
 
+    const showApprovalStep = selectedQuote.isDex && !isSendingEvmNativeToken(selectedQuote.send);
+
     const steps: TradingSelectedOfferStepperItemProps[] = [
-        {
-            step: 'RECEIVING_ADDRESS',
-            translationId: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
-            isActive: formStep === 'RECEIVING_ADDRESS',
-            component: cryptoId ? (
-                <TradingVerify tradingVerifyAccount={tradingVerifyAccount} cryptoId={cryptoId} />
-            ) : null,
-        },
-        ...((selectedQuote.isDex
+        ...((showApprovalStep
             ? [
                   {
                       step: 'SEND_APPROVAL_TRANSACTION',
@@ -51,6 +45,14 @@ export const TradingOfferExchange = ({
                   },
               ]
             : []) as TradingSelectedOfferStepperItemProps[]),
+        {
+            step: 'RECEIVING_ADDRESS',
+            translationId: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
+            isActive: formStep === 'RECEIVING_ADDRESS',
+            component: cryptoId ? (
+                <TradingVerify tradingVerifyAccount={tradingVerifyAccount} cryptoId={cryptoId} />
+            ) : null,
+        },
         {
             step: 'SEND_TRANSACTION',
             translationId: 'TR_EXCHANGE_CONFIRM_SEND_STEP',

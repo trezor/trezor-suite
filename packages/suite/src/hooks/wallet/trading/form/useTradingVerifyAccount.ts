@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -127,16 +127,19 @@ const useTradingVerifyAccount = ({
     const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
     const accountAddress = address ? addressDictionary[address] : undefined;
 
-    const selectAccountOption = (option: TradingVerifyFormAccountOptionProps) => {
-        setSelectedAccountOption(option);
+    const selectAccountOption = useCallback(
+        (option: TradingVerifyFormAccountOptionProps) => {
+            setSelectedAccountOption(option);
 
-        if (option.account) {
-            const { address } = getUnusedAddressFromAccount(option.account);
-            methods.setValue('address', address, { shouldValidate: true });
-        } else {
-            methods.setValue('address', '', { shouldValidate: false });
-        }
-    };
+            if (option.account) {
+                const { address } = getUnusedAddressFromAccount(option.account);
+                methods.setValue('address', address, { shouldValidate: true });
+            } else {
+                methods.setValue('address', '', { shouldValidate: false });
+            }
+        },
+        [methods],
+    );
 
     const onChangeAccount = (account: TradingVerifyFormAccountOptionProps) => {
         if (account.type === 'ADD_SUITE' && device) {
@@ -160,11 +163,14 @@ const useTradingVerifyAccount = ({
 
     // preselect the account
     useEffect(() => {
-        if (preselectedAccount && preselectedAccount.type !== 'ADD_SUITE') {
+        if (
+            preselectedAccount &&
+            preselectedAccount.type !== 'ADD_SUITE' &&
+            !selectedAccountOption
+        ) {
             selectAccountOption(preselectedAccount);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [accounts]);
+    }, [preselectedAccount, selectedAccountOption, selectAccountOption]);
 
     return {
         form: {

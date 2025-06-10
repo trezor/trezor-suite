@@ -152,6 +152,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
             });
         }
 
+        dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
         confirmTrade({ receiveAddress: address, extraField });
     };
 

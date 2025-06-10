@@ -1,16 +1,31 @@
 import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 import {
+    CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY,
     TRADING_EXCHANGE_RATE_FIXED,
 } from '../../constants';
 import { ExchangeInfo } from '../../reducers/exchangeReducer';
 import { TradingExchangeAmountLimitProps, TradingExchangeRateType } from '../../types';
+import { cryptoIdToNetwork, parseCryptoId } from '../../utils';
 
 type GetAmountLimitsProps = {
     quotes: ExchangeTrade[];
     currency: string;
+};
+
+export const isSendingEvmNativeToken = (cryptoId?: CryptoId) => {
+    if (!cryptoId) {
+        return false;
+    }
+
+    const isEvmNetwork = cryptoIdToNetwork(cryptoId)?.networkType === 'ethereum';
+    const { contractAddress } = parseCryptoId(cryptoId);
+
+    return (
+        isEvmNetwork && (!contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN)
+    );
 };
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message

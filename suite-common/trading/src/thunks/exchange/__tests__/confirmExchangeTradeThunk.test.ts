@@ -451,7 +451,7 @@ describe('confirmExchangeTradeThunk', () => {
     describe('should return true from confirmation for trade, which is in to confirm state from dex and request approval transaction', () => {
         it.each([
             [
-                'when formStep is RECEIVING_ADDRESS',
+                'when formStep is SEND_APPROVAL_TRANSACTION',
                 {
                     status: 'CONFIRM',
                     orderId: 'orderId',
@@ -498,16 +498,16 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.tradingNew;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(5);
+            expect(store.getActions().length).toEqual(4);
             expect(exchange.transactionId).toBeUndefined();
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
-            expect(exchange.formStep).toEqual('SEND_APPROVAL_TRANSACTION');
+            expect(exchange.formStep).toEqual('RECEIVING_ADDRESS');
             expect(response).toBeTruthy();
         });
     });
 
-    it('should return true from confirmation for trade, which is in to confirm state from dex and set next step', async () => {
+    it('should return true from confirmation for trade, which is in to confirm state from dex', async () => {
         const {
             store,
             returnUrl,
@@ -548,11 +548,10 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.tradingNew;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(5);
+        expect(store.getActions().length).toEqual(4);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
-        expect(exchange.formStep).toEqual('SEND_TRANSACTION');
         expect(response).toBeTruthy();
     });
 

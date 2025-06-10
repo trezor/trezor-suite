@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePrevious } from 'react-use';
 
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
@@ -32,6 +33,7 @@ import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
+import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 
 // add APPROVED means no approval request is necessary
@@ -63,6 +65,9 @@ export const TradingOfferExchangeSendApproval = () => {
         selectedQuote?.status === 'CONFIRM' ? selectedQuote : undefined,
     );
 
+    const currentQuoteStatus = selectedQuote?.status;
+    const previousQuoteStatus = usePrevious(currentQuoteStatus);
+
     const { navigateToExchangeForm } = useTradingNavigation(account);
 
     useTradingExchangeWatchSendApproval({
@@ -71,6 +76,70 @@ export const TradingOfferExchangeSendApproval = () => {
     });
 
     const explorers = useSelector(state => state.wallet.explorer);
+
+    const [approvalStep, setApprovalStep] = useState<
+        'REQUIRED' | 'APPROVED' | 'LOADING' | undefined
+    >();
+
+    const { accountAddress } = useTradingVerifyAccount({
+        cryptoId: selectedQuote?.receive,
+        nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
+    });
+
+    useEffect(() => {
+        if (
+            (!previousQuoteStatus || previousQuoteStatus === 'APPROVAL_REQ') &&
+            currentQuoteStatus === 'APPROVAL_REQ'
+        ) {
+            setApprovalStep('REQUIRED');
+        }
+
+        if (
+            (!previousQuoteStatus || previousQuoteStatus === 'APPROVAL_PENDING') &&
+            currentQuoteStatus === 'APPROVAL_PENDING'
+        ) {
+            setApprovalStep('LOADING');
+        }
+
+        if (
+            (!previousQuoteStatus || previousQuoteStatus === 'CONFIRM') &&
+            currentQuoteStatus === 'CONFIRM'
+        ) {
+            setApprovalStep('APPROVED');
+        }
+
+        const forceConfirmTrade = async () => {
+            if (!accountAddress?.address) {
+                return;
+            }
+
+            await confirmTrade({
+                trade: selectedQuote,
+                receiveAddress: accountAddress?.address,
+            });
+        };
+
+        if (previousQuoteStatus === 'APPROVAL_PENDING' && currentQuoteStatus === 'CONFIRM') {
+            forceConfirmTrade();
+
+            if (approvalType === 'ZERO') {
+                setApprovalStep('REQUIRED');
+
+                return;
+            }
+
+            setApprovalStep('APPROVED');
+            dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+        }
+    }, [
+        currentQuoteStatus,
+        previousQuoteStatus,
+        approvalType,
+        confirmTrade,
+        selectedQuote,
+        accountAddress,
+        dispatch,
+    ]);
 
     if (!selectedQuote) return null;
 
@@ -145,6 +214,8 @@ export const TradingOfferExchangeSendApproval = () => {
             trade: updatedSelectedQuote,
         });
 
+        dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+
         analytics.report({
             type: EventType.TradingExchange,
             payload: {
@@ -157,6 +228,8 @@ export const TradingOfferExchangeSendApproval = () => {
 
     const confirmAndSend = async () => {
         const result = await sendTransaction();
+
+        dispatch(tradingExchangeActions.setFormStep('SEND_APPROVAL_TRANSACTION'));
 
         analytics.report({
             type: EventType.TradingExchange,
@@ -196,25 +269,8 @@ export const TradingOfferExchangeSendApproval = () => {
                     />
                 </InfoItem>
             )}
-            {selectedQuote.status === 'APPROVAL_PENDING' && (
-                <Column
-                    alignItems="center"
-                    justifyContent="center"
-                    margin={{ top: spacings.xxxxl, bottom: spacings.md }}
-                >
-                    <Spinner />
-                    <Paragraph typographyStyle="highlight" margin={{ top: spacings.lg }}>
-                        <Translation id="TR_EXCHANGE_APPROVAL_CONFIRMING" />
-                    </Paragraph>
-                </Column>
-            )}
-            {selectedQuote.status === 'ERROR' && (
-                <Banner variant="destructive" icon margin={{ top: spacings.xl }}>
-                    <Translation id="TR_EXCHANGE_APPROVAL_FAILED" />
-                </Banner>
-            )}
 
-            {(selectedQuote.status === 'APPROVAL_REQ' || selectedQuote.status === 'CONFIRM') && (
+            {approvalStep === 'REQUIRED' && (
                 <Card
                     label={
                         <Text typographyStyle="hint">
@@ -224,53 +280,89 @@ export const TradingOfferExchangeSendApproval = () => {
                     margin={{ top: spacings.md }}
                 >
                     <Column gap={spacings.xl} alignItems="flex-start">
-                        {selectedQuote.status === 'APPROVAL_REQ' && (
-                            <>
+                        <>
+                            <Radio
+                                isChecked={approvalType === 'MINIMAL'}
+                                onClick={() => selectApprovalValue('MINIMAL')}
+                                verticalAlignment="center"
+                                isDisabled={isFormLoading}
+                            >
+                                <Column alignItems="flex-start">
+                                    <Text typographyStyle="highlight">
+                                        <Translation
+                                            id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL"
+                                            values={translationValues}
+                                        />
+                                    </Text>
+                                    <Paragraph typographyStyle="hint">
+                                        <Translation
+                                            id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"
+                                            values={translationValues}
+                                        />
+                                    </Paragraph>
+                                </Column>
+                            </Radio>
+                            <Radio
+                                isChecked={approvalType === 'INFINITE'}
+                                onClick={() => selectApprovalValue('INFINITE')}
+                                verticalAlignment="center"
+                                isDisabled={isFormLoading}
+                            >
+                                <Column alignItems="flex-start">
+                                    <Text typographyStyle="highlight">
+                                        <Translation
+                                            id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE"
+                                            values={translationValues}
+                                        />
+                                    </Text>
+                                    <Paragraph typographyStyle="hint">
+                                        <Translation
+                                            id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
+                                            values={translationValues}
+                                        />
+                                    </Paragraph>
+                                </Column>
+                            </Radio>
+
+                            {isToken && !isFullApproval && (
                                 <Radio
-                                    isChecked={approvalType === 'MINIMAL'}
-                                    onClick={() => selectApprovalValue('MINIMAL')}
+                                    isChecked={approvalType === 'ZERO'}
+                                    onClick={() => selectApprovalValue('ZERO')}
                                     verticalAlignment="center"
                                     isDisabled={isFormLoading}
                                 >
                                     <Column alignItems="flex-start">
                                         <Text typographyStyle="highlight">
                                             <Translation
-                                                id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL"
+                                                id="TR_EXCHANGE_APPROVAL_VALUE_ZERO"
                                                 values={translationValues}
                                             />
                                         </Text>
                                         <Paragraph typographyStyle="hint">
                                             <Translation
-                                                id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"
+                                                id="TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO"
                                                 values={translationValues}
                                             />
                                         </Paragraph>
                                     </Column>
                                 </Radio>
-                                <Radio
-                                    isChecked={approvalType === 'INFINITE'}
-                                    onClick={() => selectApprovalValue('INFINITE')}
-                                    verticalAlignment="center"
-                                    isDisabled={isFormLoading}
-                                >
-                                    <Column alignItems="flex-start">
-                                        <Text typographyStyle="highlight">
-                                            <Translation
-                                                id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE"
-                                                values={translationValues}
-                                            />
-                                        </Text>
-                                        <Paragraph typographyStyle="hint">
-                                            <Translation
-                                                id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
-                                                values={translationValues}
-                                            />
-                                        </Paragraph>
-                                    </Column>
-                                </Radio>
-                            </>
-                        )}
-                        {selectedQuote.status !== 'APPROVAL_REQ' && (
+                            )}
+                        </>
+                    </Column>
+                </Card>
+            )}
+
+            {approvalStep === 'APPROVED' && (
+                <Card
+                    label={
+                        <Text typographyStyle="hint">
+                            <Translation id="TR_EXCHANGE_APPROVAL_VALUE" />
+                        </Text>
+                    }
+                    margin={{ top: spacings.md }}
+                >
+                    <Column gap={spacings.xl} alignItems="flex-start">
+                        <>
                             <Radio
                                 isChecked={approvalType === 'APPROVED'}
                                 onClick={() => selectApprovalValue('APPROVED')}
@@ -297,32 +389,46 @@ export const TradingOfferExchangeSendApproval = () => {
                                     </Paragraph>
                                 </Column>
                             </Radio>
-                        )}
-                        {isToken && !isFullApproval && (
-                            <Radio
-                                isChecked={approvalType === 'ZERO'}
-                                onClick={() => selectApprovalValue('ZERO')}
-                                verticalAlignment="center"
-                                isDisabled={isFormLoading}
-                            >
-                                <Column alignItems="flex-start">
-                                    <Text typographyStyle="highlight">
-                                        <Translation
-                                            id="TR_EXCHANGE_APPROVAL_VALUE_ZERO"
-                                            values={translationValues}
-                                        />
-                                    </Text>
-                                    <Paragraph typographyStyle="hint">
-                                        <Translation
-                                            id="TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO"
-                                            values={translationValues}
-                                        />
-                                    </Paragraph>
-                                </Column>
-                            </Radio>
-                        )}
+
+                            {isToken && !isFullApproval && (
+                                <Radio
+                                    isChecked={approvalType === 'ZERO'}
+                                    onClick={() => selectApprovalValue('ZERO')}
+                                    verticalAlignment="center"
+                                    isDisabled={isFormLoading}
+                                >
+                                    <Column alignItems="flex-start">
+                                        <Text typographyStyle="highlight">
+                                            <Translation
+                                                id="TR_EXCHANGE_APPROVAL_VALUE_ZERO"
+                                                values={translationValues}
+                                            />
+                                        </Text>
+                                        <Paragraph typographyStyle="hint">
+                                            <Translation
+                                                id="TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO"
+                                                values={translationValues}
+                                            />
+                                        </Paragraph>
+                                    </Column>
+                                </Radio>
+                            )}
+                        </>
                     </Column>
                 </Card>
+            )}
+
+            {approvalStep === 'LOADING' && (
+                <Column
+                    alignItems="center"
+                    justifyContent="center"
+                    margin={{ top: spacings.xxxxl, bottom: spacings.md }}
+                >
+                    <Spinner />
+                    <Paragraph typographyStyle="highlight" margin={{ top: spacings.lg }}>
+                        <Translation id="TR_EXCHANGE_APPROVAL_CONFIRMING" />
+                    </Paragraph>
+                </Column>
             )}
 
             {dexTx.data && (selectedQuote.status !== 'CONFIRM' || approvalType === 'ZERO') && (
@@ -331,10 +437,17 @@ export const TradingOfferExchangeSendApproval = () => {
                 </CollapsibleBox>
             )}
 
+            {selectedQuote.status === 'ERROR' && (
+                <Banner variant="destructive" icon margin={{ top: spacings.xl }}>
+                    <Translation id="TR_EXCHANGE_APPROVAL_FAILED" />
+                </Banner>
+            )}
+
             <Column>
                 <Divider margin={{ top: spacings.xxs, bottom: spacings.lg }} />
-                {(selectedQuote.status === 'APPROVAL_REQ' ||
-                    (selectedQuote.status === 'CONFIRM' && approvalType === 'ZERO')) && (
+
+                {(approvalStep === 'REQUIRED' ||
+                    (approvalStep === 'APPROVED' && approvalType === 'ZERO')) && (
                     <Button
                         isLoading={isFormLoading}
                         isDisabled={!device?.connected}
@@ -344,7 +457,7 @@ export const TradingOfferExchangeSendApproval = () => {
                     </Button>
                 )}
 
-                {selectedQuote.status === 'CONFIRM' && approvalType !== 'ZERO' && (
+                {approvalStep === 'APPROVED' && approvalType !== 'ZERO' && (
                     <Button
                         isLoading={isFormLoading}
                         isDisabled={isFormLoading}

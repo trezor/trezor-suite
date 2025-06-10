@@ -1,14 +1,22 @@
-import { SellFiatTrade } from 'invity-api';
+import { ExchangeTrade, SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import { TradingTradeMapProps, getTagAndInfoNote, sellUtils } from '@suite-common/trading';
+import {
+    TradingTradeMapProps,
+    getTagAndInfoNote,
+    isSendingEvmNativeToken,
+    sellUtils,
+    tradingExchangeActions,
+} from '@suite-common/trading';
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
@@ -93,6 +101,7 @@ export interface TradingOffersItemProps {
 }
 
 export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
+    const dispatch = useDispatch();
     const theme = useTheme();
     const context = useTradingFormContext();
     const {
@@ -110,7 +119,33 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
-    const onSelectQuote = () => {
+    const { receiveAddress } = useTradingReceiveAddress({
+        cryptoId: quote && 'receive' in quote ? (quote as ExchangeTrade)?.receive : undefined,
+    });
+
+    const onSelectQuote = async () => {
+        // DEX swap
+        if (isTradingExchangeContext(context) && (quote as ExchangeTrade).isDex) {
+            const { confirmTrade } = context;
+            const trade = quote as ExchangeTrade;
+
+            if (!receiveAddress) {
+                return;
+            }
+
+            await confirmTrade({ trade, receiveAddress });
+
+            dispatch(
+                tradingExchangeActions.setFormStep(
+                    isSendingEvmNativeToken(trade.send)
+                        ? 'RECEIVING_ADDRESS'
+                        : 'SEND_APPROVAL_TRANSACTION',
+                ),
+            );
+        } else {
+            dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+        }
+
         selectQuote(quote);
     };
     const isSellVerificationRequired =

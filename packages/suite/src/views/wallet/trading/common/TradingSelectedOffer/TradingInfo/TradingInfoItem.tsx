@@ -1,11 +1,12 @@
 import { CryptoId } from 'invity-api';
 
-import type { TradingType } from '@suite-common/trading';
+import { type TradingType, selectTradingExchangeFormStep } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import { Column, InfoItem, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
@@ -27,31 +28,43 @@ export const TradingInfoItem = ({
     label,
     currency,
     amount,
-}: TradingInfoItemProps) => (
-    <InfoItem label={<Translation id={label} />} direction="row">
-        {type === 'exchange' || isReceive ? (
-            <Column alignItems="flex-end" gap={spacings.xxxs}>
-                <Row gap={spacings.xs}>
-                    {currency && (
-                        <>
-                            <TradingCoinLogo cryptoId={currency} size={20} />
-                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
-                        </>
+}: TradingInfoItemProps) => {
+    const formStep = useSelector(selectTradingExchangeFormStep);
+
+    const showReceiveAccount = !isReceive || formStep !== 'SEND_APPROVAL_TRANSACTION';
+
+    return (
+        <InfoItem label={<Translation id={label} />} direction="row">
+            {type === 'exchange' || isReceive ? (
+                <Column alignItems="flex-end" gap={spacings.xxxs}>
+                    <Row gap={spacings.xs}>
+                        {currency && (
+                            <>
+                                <TradingCoinLogo cryptoId={currency} size={20} />
+                                <TradingCryptoAmount amount={amount} cryptoId={currency} />
+                            </>
+                        )}
+                    </Row>
+                    {account && showReceiveAccount && (
+                        <Text variant="tertiary" typographyStyle="label" as="div">
+                            <Row gap={spacings.xxs}>
+                                <AccountLabeling account={account} />
+                                {account.accountType !== 'normal' ? `(${account.accountType})` : ''}
+                            </Row>
+                        </Text>
                     )}
+
+                    {account && !showReceiveAccount && (
+                        <Text variant="tertiary" typographyStyle="label" as="div">
+                            <Translation id="TR_EXCHANGE_SWAP_ACCOUNT_TO_BE_SELECTED" />
+                        </Text>
+                    )}
+                </Column>
+            ) : (
+                <Row data-testid="@trading/form/info/fiat-amount">
+                    <TradingFiatAmount amount={amount} currency={currency} />
                 </Row>
-                {account && (
-                    <Text variant="tertiary" typographyStyle="label" as="div">
-                        <Row gap={spacings.xxs}>
-                            <AccountLabeling account={account} />
-                            {account.accountType !== 'normal' ? `(${account.accountType})` : ''}
-                        </Row>
-                    </Text>
-                )}
-            </Column>
-        ) : (
-            <Row data-testid="@trading/form/info/fiat-amount">
-                <TradingFiatAmount amount={amount} currency={currency} />
-            </Row>
-        )}
-    </InfoItem>
-);
+            )}
+        </InfoItem>
+    );
+};

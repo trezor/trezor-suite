@@ -10,7 +10,6 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
     selectTradingExchangeAccountKey,
-    selectTradingExchangeFormStep,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
@@ -50,7 +49,6 @@ export const confirmExchangeTradeThunk = createThunk(
         const quotesRequest = selectTradingExchangeQuotesRequest(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
-        const formStep = selectTradingExchangeFormStep(getState());
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
 
         let isConfirmationOk = false;
@@ -129,16 +127,7 @@ export const confirmExchangeTradeThunk = createThunk(
         }
 
         if (response.status === 'CONFIRM' && response.isDex) {
-            const isApprovalActive =
-                formStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO';
-
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
-
-            if (isApprovalActive) {
-                dispatch(tradingExchangeActions.setFormStep('SEND_APPROVAL_TRANSACTION'));
-            } else {
-                dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
-            }
 
             return isConfirmationOk;
         }

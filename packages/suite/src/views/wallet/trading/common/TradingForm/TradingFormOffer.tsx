@@ -1,13 +1,15 @@
 import { useState } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { CryptoId, ExchangeTrade } from 'invity-api';
 
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_DEX,
     type TradingTradeType,
     type TradingType,
+    isSendingEvmNativeToken,
     parseCryptoId,
+    tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
@@ -17,8 +19,10 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
@@ -54,7 +58,9 @@ const getSelectedQuote = (
 };
 
 export const TradingFormOffer = () => {
+    const dispatch = useDispatch();
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
+    const [isDexSwapLoading, setIsDexSwapLoading] = useState<boolean>(false);
     const context = useTradingFormContext();
     const {
         account,
@@ -95,9 +101,37 @@ export const TradingFormOffer = () => {
             new BigNumber(bestScoredQuoteAmounts.receiveAmount),
         );
 
-    const onSelectQuote = () => {
+    const { receiveAddress } = useTradingReceiveAddress({
+        cryptoId: quote && 'receive' in quote ? (quote as ExchangeTrade)?.receive : undefined,
+    });
+
+    const onSelectQuote = async () => {
         if (!quote) {
             return;
+        }
+
+        // DEX swap
+        if (isTradingExchangeContext(context) && (quote as ExchangeTrade).isDex) {
+            const { confirmTrade } = context;
+            const trade = quote as ExchangeTrade;
+
+            if (!receiveAddress) {
+                return;
+            }
+
+            setIsDexSwapLoading(true);
+            await confirmTrade({ trade, receiveAddress });
+            setIsDexSwapLoading(false);
+
+            dispatch(
+                tradingExchangeActions.setFormStep(
+                    isSendingEvmNativeToken(trade.send)
+                        ? 'RECEIVING_ADDRESS'
+                        : 'SEND_APPROVAL_TRANSACTION',
+                ),
+            );
+        } else {
+            dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
         }
 
         selectQuote(quote);
@@ -141,7 +175,8 @@ export const TradingFormOffer = () => {
                 ) : (
                     <TradingFormOfferCryptoAmount
                         amount={
-                            !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.receiveAmount
+                            (!state.isLoadingOrInvalid || isDexSwapLoading) &&
+                            bestScoredQuoteAmounts?.receiveAmount
                                 ? bestScoredQuoteAmounts.receiveAmount
                                 : '0'
                         }
@@ -204,7 +239,7 @@ export const TradingFormOffer = () => {
                 {isTradingExchangeContext(context) ? (
                     <TradingFormOffersSwitcher
                         context={context}
-                        isFormLoading={state.isFormLoading}
+                        isFormLoading={state.isFormLoading && !isDexSwapLoading}
                         isFormInvalid={state.isFormInvalid}
                         providers={providers}
                     />
@@ -217,6 +252,7 @@ export const TradingFormOffer = () => {
                     />
                 )}
             </Column>
+
             <Button
                 onClick={onSelectQuote}
                 variant="primary"
@@ -225,10 +261,12 @@ export const TradingFormOffer = () => {
                 }}
                 isFullWidth
                 isDisabled={isButtonDisabled}
+                isLoading={isDexSwapLoading}
                 data-testid={`@trading/form/${type}-button`}
             >
                 <Translation id={tradingGetSectionActionLabel(type)} />
             </Button>
+
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
         </Column>
     );

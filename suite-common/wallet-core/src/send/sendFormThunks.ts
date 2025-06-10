@@ -318,6 +318,7 @@ export const pushSendFormTransactionThunk = createThunk<
 
         if (isSuccessfullyPushedTransaction(pushTxResponse)) {
             const { txid } = pushTxResponse.payload;
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'tx-sent',

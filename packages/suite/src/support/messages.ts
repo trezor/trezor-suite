@@ -617,6 +617,10 @@ export default defineMessages({
         defaultMessage: 'Proceed to swap',
         id: 'TR_EXCHANGE_APPROVAL_TO_SWAP_BUTTON',
     },
+    TR_EXCHANGE_SWAP_ACCOUNT_TO_BE_SELECTED: {
+        defaultMessage: 'To be selected',
+        id: 'TR_EXCHANGE_SWAP_ACCOUNT_TO_BE_SELECTED',
+    },
     TR_EXCHANGE_SWAP_SEND_TO: {
         defaultMessage: '{provider} contract address',
         id: 'TR_EXCHANGE_SWAP_SEND_TO',
