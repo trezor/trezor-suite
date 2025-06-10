@@ -1,37 +1,22 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
 import { PinOnDevice } from '../../components/connect/PinOnDevice';
 import { PinOnKeypad } from '../../components/connect/PinOnKeypad';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PinMatrix,
-    RootStackParamList
->;
-
 export const PinScreen = () => {
-    const navigation = useNavigation<NavigationProp>();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const deviceModel = useSelector(selectDeviceModel);
 
     const onSuccess = useCallback(() => {
-        if (navigation.canGoBack()) {
-            navigation.goBack();
-        }
-    }, [navigation]);
+        navigateToInitialScreen();
+    }, [navigateToInitialScreen]);
 
     if (!deviceModel) return null;
 
