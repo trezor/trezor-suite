@@ -330,11 +330,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
         }
     }
 
-    async call<T extends Messages.MessageKey>(
-        name: T,
-        data: Messages.MessagePayload<T>,
-        options: AbortableOptions = {},
-    ) {
+    async call(name: string, data: Record<string, unknown>, options: AbortableOptions = {}) {
         if (this.disposed) return Promise.resolve(error(this.disposed));
 
         logger.debug('Sending', name, filterForLog(name, data));
@@ -359,11 +355,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
         return result.success ? success(result.payload) : fail(result.message || result.error);
     }
 
-    async send<T extends Messages.MessageKey>(
-        name: T,
-        data: Messages.MessagePayload<T>,
-        options: AbortableOptions = {},
-    ) {
+    async send(name: string, data: Record<string, unknown>, options: AbortableOptions = {}) {
         if (this.disposed) return Promise.resolve(error(this.disposed));
 
         const result = await this.transport.send({
