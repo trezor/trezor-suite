@@ -4,7 +4,7 @@ import { Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
 import { FiatGraphPoint } from '@suite-common/graph';
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -63,7 +63,7 @@ export const GraphFiatBalance = ({
     const firstGraphPoint = useAtomValue(referencePointAtom);
     const { DateTimeFormatter } = useFormatters();
 
-    const hasDeviceDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const hasBalance = Number(totalFiatBalance) !== 0;
     const showLoading = isLoading || !firstGraphPoint;
     const showBalanceFallback =

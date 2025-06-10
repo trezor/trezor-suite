@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import {
@@ -41,7 +41,7 @@ export const ConnectDeviceScreenHeader = ({
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
 
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isAddingHiddenWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 

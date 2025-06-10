@@ -9,7 +9,7 @@ import {
     DeviceRootState,
     changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
-    selectHasDeviceDiscovery,
+    selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
@@ -34,7 +34,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     );
 
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');

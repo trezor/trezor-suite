@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
-    selectHasDeviceDiscovery,
+    selectHasRunningDiscovery,
     selectInstacelessUnselectedDevices,
     selectIsDeviceConnected,
     selectSelectedDevice,
@@ -132,7 +132,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const device = useSelector(selectSelectedDevice);
     const notSelectedInstancelessDevices = useSelector(selectInstacelessUnselectedDevices);
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const opacity = useSharedValue(0);
     const height = useSharedValue(0);

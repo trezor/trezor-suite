@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
@@ -25,7 +25,7 @@ export const FeaturesSettings = () => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
 
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
 
     return (
         <SettingsSection title={<Translation id="moduleSettings.items.features.title" />}>

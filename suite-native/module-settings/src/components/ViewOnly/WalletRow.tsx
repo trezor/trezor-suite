@@ -6,7 +6,7 @@ import {
     DeviceRootState,
     deviceActions,
     selectDeviceLabelOrNameById,
-    selectHasDeviceDiscovery,
+    selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -33,7 +33,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
     const { applyStyle } = useNativeStyles();
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const deviceLabel = useSelector((state: DeviceRootState) =>
         selectDeviceLabelOrNameById(state, device?.id),
     );

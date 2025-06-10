@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    selectHasDeviceDiscovery,
+    selectHasRunningDiscovery,
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -28,7 +28,7 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
 
-    const hasDeviceDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);

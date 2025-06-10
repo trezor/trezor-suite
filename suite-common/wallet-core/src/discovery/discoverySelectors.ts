@@ -39,9 +39,6 @@ export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRoot
     return isDiscoveryInProgress(discovery);
 };
 
-// TODO remove reexport
-export const selectHasDeviceDiscovery = selectHasRunningDiscovery;
-
 /**
  * Helper selector called from components
  */

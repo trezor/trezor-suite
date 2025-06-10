@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     deviceActions,
-    selectHasDeviceDiscovery,
+    selectHasRunningDiscovery,
     selectIsDeviceRemembered,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
@@ -36,7 +36,7 @@ export const useShowViewOnlyAlert = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isCreatingNewPassphraseWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const [isAvailableBiometrics, setIsAvailableBiometrics] = useState(false);
 
