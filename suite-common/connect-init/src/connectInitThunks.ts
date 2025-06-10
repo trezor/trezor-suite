@@ -161,6 +161,13 @@ export const connectInitThunk = createThunk<
             dispatch(lockDevice(true));
             const result = await synchronize(() => original(params));
             dispatch(lockDevice(false));
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                    // be the same re-selected device from this line. We should reuse device from params.
+                    device: selectSelectedDevice(getState()),
+                }),
+            );
 
             return result;
         };

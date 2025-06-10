@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     cancelDiscoveryThunk,
-    deviceActions,
     runDiscoveryThunk,
     selectSelectedDevice,
     startDiscoveryThunk,
@@ -41,12 +40,6 @@ export const PassphraseEmptyWalletScreen = () => {
     const handleTryAgain = () => {
         if (device) {
             dispatch(cancelDiscoveryThunk(device));
-            dispatch(
-                deviceActions.removeButtonRequests({
-                    device,
-                    buttonRequestCode: 'ButtonRequest_Other',
-                }),
-            );
             dispatch(
                 startDiscoveryThunk({
                     device,

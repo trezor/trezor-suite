@@ -49,7 +49,6 @@ export const signTransactionNativeThunk = createThunk<
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         const formState = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
-        const device = selectSelectedDevice(getState());
 
         if (!account || !formState)
             return rejectWithValue({
@@ -92,8 +91,6 @@ export const signTransactionNativeThunk = createThunk<
         const signTransactionResponse = deviceAccessResponse.payload;
 
         if (isRejected(signTransactionResponse)) {
-            dispatch(deviceActions.removeButtonRequests({ device }));
-
             return rejectWithValue(signTransactionResponse.payload);
         }
 
@@ -116,6 +113,7 @@ export const cleanupSendFormThunk = createThunk(
 
         if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey }));
 
+        // todo: maybe not needed anymore
         dispatch(deviceActions.removeButtonRequests({ device }));
     },
 );

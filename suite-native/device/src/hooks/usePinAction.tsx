@@ -1,13 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    removeButtonRequests,
-    selectIsDeviceConnected,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -50,7 +46,6 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const device = useSelector(selectSelectedDevice);
     const navigation = useNavigation();
-    const dispatch = useDispatch();
     const { showToast } = useToast();
     const { showAlert, hideAlert } = useAlert();
 
@@ -102,7 +97,6 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
                     remove,
                 }),
         });
-        dispatch(removeButtonRequests({ device }));
 
         if (!result.success) {
             return;
@@ -134,7 +128,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
                 navigation.goBack();
             }
         }
-    }, [device, dispatch, navigation, onSuccess, handleError, showSuccess, type]);
+    }, [device, navigation, onSuccess, handleError, showSuccess, type]);
 
     useEffect(() => {
         if (isDeviceConnected) handlePinAction();

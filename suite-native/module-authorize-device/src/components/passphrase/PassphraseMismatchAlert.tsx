@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     cancelDiscoveryThunk,
-    deviceActions,
     runDiscoveryThunk,
     selectSelectedDevice,
     startDiscoveryThunk,
@@ -58,12 +57,6 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                     if (!device) return;
 
                     dispatch(cancelDiscoveryThunk(device));
-                    dispatch(
-                        deviceActions.removeButtonRequests({
-                            device,
-                            buttonRequestCode: 'ButtonRequest_Other',
-                        }),
-                    );
                     dispatch(
                         startDiscoveryThunk({
                             device,

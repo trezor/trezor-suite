@@ -116,9 +116,6 @@ export const connectPopupCallThunkInner = createThunk<
             });
             response.id = undefined;
 
-            // Note: for mobile this needs to be called explicitly, on desktop it's automatically handled by middleware
-            dispatch(deviceActions.removeButtonRequests({ device }));
-
             const postCallOngoing = await postCallHooks({
                 method,
                 payload: modifiedPayload,
@@ -294,7 +291,6 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
                 chunked: false,
             });
             const validatedStatus = res.success ? 'valid' : 'failed';
-            dispatch(deviceActions.removeButtonRequests({ device }));
             dispatch(
                 connectPopupActions.confirmAddresses({
                     addresses: call.addresses.map((address, i) => ({
@@ -323,6 +319,7 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string }>(
     `${CONNECT_POPUP_MODULE}/cancelThunk`,
     ({ error }, { dispatch }) => {
         TrezorConnect.cancel(error);
+        // todo: probably not needed to call explicitly anymore
         dispatch(deviceActions.removeButtonRequests({}));
         dispatch(connectPopupActions.finishCall());
     },

@@ -8,12 +8,14 @@ describe('TrezorConnect Actions', () => {
 
     beforeEach(() => {
         store = configureMockStore({
-            preloadedState: { wallet: { settings: { enabledNetworks: [] } } },
+            preloadedState: {
+                wallet: { settings: { enabledNetworks: [] } },
+                device: { selectedDevice: undefined },
+            },
         });
     });
 
     it('Success', async () => {
-        console.warn(testMocks.getTrezorConnectMock().setTestFixtures);
         await store.dispatch(connectInitThunk());
         const expectedActions = [
             {
@@ -129,6 +131,9 @@ describe('TrezorConnect Actions', () => {
         await testMocks.getTrezorConnectMock().getFeatures();
         const actions = store.getActions();
         // check actions in reversed order
+        expect(actions.pop()).toMatchObject({
+            type: '@suite/device/removeButtonRequests',
+        });
         expect(actions.pop()).toEqual({
             type: extraDependenciesMock.actions.lockDevice.type,
             payload: false,

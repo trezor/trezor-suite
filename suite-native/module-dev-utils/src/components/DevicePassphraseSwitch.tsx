@@ -1,7 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
-    removeButtonRequests,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
@@ -12,7 +11,6 @@ import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
 export const DevicePassphraseSwitch = () => {
-    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isPassphraseEnabled = useSelector(selectIsDeviceProtectedByPassphrase);
@@ -42,8 +40,6 @@ export const DevicePassphraseSwitch = () => {
             message: toastMessage,
             icon: 'check',
         });
-
-        dispatch(removeButtonRequests({ device }));
     };
 
     return (

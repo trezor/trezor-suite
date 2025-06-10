@@ -683,7 +683,7 @@ const acquireDevice = [
                 selectedDevice: SUITE_DEVICE,
             },
         },
-        result: SUITE.LOCK_DEVICE,
+        result: '@suite/device/removeButtonRequests',
     },
     {
         description: `success with requestedDevice param`,
@@ -691,7 +691,7 @@ const acquireDevice = [
             device: {},
         },
         requestedDevice: SUITE_DEVICE,
-        result: SUITE.LOCK_DEVICE,
+        result: '@suite/device/removeButtonRequests',
     },
     {
         description: `with TrezorConnect error`,

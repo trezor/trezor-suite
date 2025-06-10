@@ -1,14 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    removeButtonRequests,
-    selectAccountByKey,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, ErrorMessage, InlineAlertBox, VStack } from '@suite-native/atoms';
@@ -37,12 +32,9 @@ export const ReceiveAddressScreen = ({
     tokenContract,
     closeActionType,
 }: ReceiveAddressScreenProps) => {
-    const dispatch = useDispatch();
-
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const device = useSelector(selectSelectedDevice);
     const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
 
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
@@ -58,12 +50,6 @@ export const ReceiveAddressScreen = ({
     if (G.isNullable(account) || G.isNullable(address)) {
         return <ErrorMessage errorMessage={<Translation id="generic.unknownError" />} />;
     }
-
-    const handleShowAddressAndRemoveButtonRequests = async () => {
-        await handleShowAddress();
-        if (!device) return;
-        dispatch(removeButtonRequests({ device }));
-    };
 
     const isConfirmOnTrezorReady =
         isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
@@ -124,7 +110,7 @@ export const ReceiveAddressScreen = ({
                         isTokenAddress={!!tokenContract}
                         isReceiveApproved={isReceiveApproved}
                         isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
-                        onShowAddress={handleShowAddressAndRemoveButtonRequests}
+                        onShowAddress={handleShowAddress}
                     />
                 </VStack>
             </Box>

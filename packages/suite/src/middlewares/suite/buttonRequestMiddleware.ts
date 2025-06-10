@@ -1,11 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 
-import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
-import { ONBOARDING } from 'src/actions/onboarding/constants';
-import { SUITE } from 'src/actions/suite/constants';
 import { goto } from 'src/actions/suite/routerActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
@@ -98,32 +95,6 @@ const buttonRequest =
             }
         }
 
-        // pass action
-        next(action);
-
-        switch (action.type) {
-            case SUITE.LOCK_DEVICE:
-                if (!action.payload) {
-                    api.dispatch(
-                        deviceActions.removeButtonRequests({
-                            device: selectSelectedDevice(api.getState()),
-                        }),
-                    );
-                }
-                break;
-            case ONBOARDING.SET_STEP_ACTIVE:
-            case checkDeviceAuthenticityThunk.fulfilled.type:
-                // clear all device's button requests in each step of the onboarding and after device authenticity check
-                api.dispatch(
-                    deviceActions.removeButtonRequests({
-                        device: selectSelectedDevice(api.getState()),
-                    }),
-                );
-                break;
-            default:
-            // no default
-        }
-
-        return action;
+        return next(action);
     };
 export default buttonRequest;

@@ -116,6 +116,9 @@ describe('TrezorConnect Actions', () => {
         await testMocks.getTrezorConnectMock().getFeatures();
         const actions = store.getActions();
         // check actions in reversed order
+        expect(actions.pop()).toMatchObject({
+            type: '@suite/device/removeButtonRequests',
+        });
         expect(actions.pop()).toEqual({
             type: SUITE.LOCK_DEVICE,
             payload: false,

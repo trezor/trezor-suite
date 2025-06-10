@@ -35,6 +35,8 @@ export default [
                 { type: MODAL.PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
+                { type: '@suite/device/removeButtonRequests' },
+
                 { type: MODAL.OPEN_USER_CONTEXT },
             ],
         },
@@ -53,6 +55,7 @@ export default [
                 { type: MODAL.PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
+                { type: '@suite/device/removeButtonRequests' },
                 { type: MODAL.OPEN_USER_CONTEXT },
             ],
         },
@@ -129,6 +132,8 @@ export default [
                 { type: MODAL.PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
+                { type: '@suite/device/removeButtonRequests' },
+
                 { type: MODAL.CLOSE },
                 {
                     type: notificationsActions.addToast.type,
@@ -154,6 +159,8 @@ export default [
                 { type: MODAL.PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
+                { type: '@suite/device/removeButtonRequests' },
+
                 { type: MODAL.CLOSE },
             ],
         },
