@@ -830,8 +830,14 @@ export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
     (_, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
+        if (!device) return;
         const staticSessionId = device?.state?.staticSessionId;
-        if (staticSessionId === undefined) return;
-        dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+        if (staticSessionId) {
+            // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
+            dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+        } else {
+            // if no staticSessionId available yet it means we failed sooner, for example during pin input
+            dispatch(startDiscoveryThunk({ device }));
+        }
     },
 );
