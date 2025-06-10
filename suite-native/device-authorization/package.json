@@ -13,7 +13,6 @@
     "dependencies": {
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "2.8.2",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
