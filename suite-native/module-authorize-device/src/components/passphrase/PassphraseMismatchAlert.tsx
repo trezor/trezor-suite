@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import {
     cancelDiscoveryThunk,
     deviceActions,
@@ -12,11 +14,25 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { selectHasPassphraseMismatchError } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import { AuthorizeDeviceStackRoutes, useNavigateToInitialScreen } from '@suite-native/navigation';
+import {
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
+} from '@suite-native/navigation';
+
+type NavigationProp = StackToStackCompositeNavigationProps<
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PassphraseForm,
+    RootStackParamList
+>;
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
     const dispatch = useDispatch();
 
+    const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
@@ -56,6 +72,9 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                         }),
                     );
                     dispatch(runDiscoveryThunk(device));
+                    navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                        screen: AuthorizeDeviceStackRoutes.PassphraseForm,
+                    });
                 },
                 primaryButtonVariant: 'redBold',
                 secondaryButtonTitle: (
@@ -75,7 +94,14 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                 pictogramVariant: 'critical',
             });
         }
-    }, [device, dispatch, hasPassphraseMismatchError, navigateToInitialScreen, showAlert]);
+    }, [
+        device,
+        dispatch,
+        hasPassphraseMismatchError,
+        navigateToInitialScreen,
+        navigation,
+        showAlert,
+    ]);
 
     return children ?? null;
 };
