@@ -65,6 +65,18 @@ export const messageToHex = (message: string) => {
     return buffer.toString('hex');
 };
 
+export const hexToText = (hex: string) => {
+    const clean = messageToHex(hex);
+
+    const text = Buffer.from(clean, 'hex').toString('utf8');
+
+    // U+FFFD is the replacement character for invalid UTF-8 sequences
+    // If we find it, return the hex original string
+    if (/[\uFFFD]/.test(text)) return hex;
+
+    return text;
+};
+
 export const deepTransform = <V>(transform: (str: string) => V) => {
     const recursion = <T>(value: T): DeepTransformed<T, V> => {
         if (typeof value === 'string') {

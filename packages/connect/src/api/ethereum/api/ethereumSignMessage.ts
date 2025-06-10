@@ -11,7 +11,7 @@ import {
     EthereumSignMessage as EthereumSignMessageSchema,
 } from '../../../types';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
-import { messageToHex } from '../../../utils/formatUtils';
+import { hexToText, messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
@@ -64,7 +64,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
                 type: 'message' as const,
                 coin: this.params.network?.shortcut ?? 'ETH',
                 serializedPath: getSerializedPath(this.params.address_n),
-                message: this.payload.message,
+                message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
             };
         }
     }

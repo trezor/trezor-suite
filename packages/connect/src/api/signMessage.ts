@@ -8,7 +8,7 @@ import type { BitcoinNetworkInfo } from '../types';
 import { SignMessage as SignMessageSchema } from '../types';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { messageToHex } from '../utils/formatUtils';
+import { hexToText, messageToHex } from '../utils/formatUtils';
 import { getLabel, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 export default class SignMessage extends AbstractMethod<'signMessage', PROTO.SignMessage> {
@@ -63,7 +63,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
                 type: 'message' as const,
                 serializedPath: getSerializedPath(this.params.address_n.slice(0, 4)),
                 coin: this.coinInfo?.shortcut ?? 'BTC',
-                message: this.payload.message,
+                message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
             };
         }
     }
