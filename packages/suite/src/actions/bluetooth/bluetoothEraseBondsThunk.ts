@@ -5,7 +5,10 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { setBluetoothDeviceNeedsManualOsRemoval } from './desktopBluetoothReducer';
+import {
+    setBluetoothDeviceNeedsManualOsRemoval,
+    setIsUnpairingDevice,
+} from './desktopBluetoothReducer';
 
 type ForgetBluetoothDeviceThunkParams = {
     // This thunk must relay on `bluetoothId` directly. When this think is called,
@@ -16,13 +19,11 @@ type ForgetBluetoothDeviceThunkParams = {
 export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDeviceThunkParams, void>(
     `${BLUETOOTH_PREFIX}/forgetBluetoothDevice`,
     async ({ bluetoothId }, { dispatch }) => {
+        dispatch(setIsUnpairingDevice({ isUnpairing: true }));
         const resultForget = await bluetoothIpc.forgetDevice(bluetoothId);
+        dispatch(setIsUnpairingDevice({ isUnpairing: false }));
         if (!resultForget.success) {
-            dispatch(
-                setBluetoothDeviceNeedsManualOsRemoval({
-                    needsManualRemoval: true,
-                }),
-            );
+            dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: true }));
         }
     },
 );

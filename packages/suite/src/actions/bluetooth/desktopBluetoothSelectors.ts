@@ -6,5 +6,8 @@ export const selectConnectingDevices = (state: WithBluetoothRootState) =>
 export const selectUnpairedDeviceNeedsManualOsRemoval = (state: WithBluetoothRootState) =>
     state.bluetooth.unpairedDeviceNeedsManualOsRemoval;
 
+export const selectIsUnpairingDevice = (state: WithBluetoothRootState) =>
+    state.bluetooth.isUnpairingDevice;
+
 export const selectIsBluetoothListOpen = (state: WithBluetoothRootState) =>
     state.bluetooth.isBluetoothListOpen;
