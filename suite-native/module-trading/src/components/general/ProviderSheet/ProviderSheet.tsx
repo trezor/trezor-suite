@@ -1,5 +1,5 @@
 import { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
-import { BottomSheetFlashList, Box } from '@suite-native/atoms';
+import { BottomSheetFlashList } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader';
@@ -66,10 +66,7 @@ export const ProviderSheet = <T extends TradingTradeType>({
                         onClose={onClose}
                         title={translate('moduleTrading.tradingScreen.provider')}
                     />
-                    {/* context message cant scroll for some use cases (UK banner) so it cant be in items */}
-                    <Box paddingHorizontal="sp16" paddingVertical="sp4">
-                        <TradingTypeAwareContextMessage />
-                    </Box>
+                    <TradingTypeAwareContextMessage marginHorizontal="sp16" marginBottom="sp4" />
                 </>
             )}
             data={quotes}
