@@ -59,7 +59,17 @@ const getInvalidDeviceState = async (
         }
     }
 
-    return getState(context);
+    // eslint-disable-next-line no-restricted-syntax
+    return getState(context).catch(error => {
+        if (error.message.includes('PIN invalid')) {
+            context.method.postMessage(
+                createUiMessage(UI.INVALID_PIN_ATTEMPTS_DEPLETED, {
+                    device: context.device.toMessageObject(),
+                }),
+            );
+        }
+        throw error;
+    });
 };
 
 export const validateState = async (context: WorkflowContext) => {

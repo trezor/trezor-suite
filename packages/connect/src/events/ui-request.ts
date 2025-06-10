@@ -48,6 +48,7 @@ export const UI_REQUEST = {
     REQUEST_CONFIRMATION: 'ui-request_confirmation',
     REQUEST_PIN: 'ui-request_pin',
     INVALID_PIN: 'ui-invalid_pin',
+    INVALID_PIN_ATTEMPTS_DEPLETED: 'ui-invalid_pin_attempts_depleted',
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     INVALID_PASSPHRASE: 'ui-invalid_passphrase',
@@ -116,6 +117,13 @@ export type UiRequestDeviceAction =
       }
     | {
           type: typeof UI_REQUEST.INVALID_PIN;
+          payload: {
+              device: Device;
+              type?: typeof undefined;
+          };
+      }
+    | {
+          type: typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED;
           payload: {
               device: Device;
               type?: typeof undefined;
