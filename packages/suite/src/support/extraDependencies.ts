@@ -26,7 +26,7 @@ import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDev
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
-import { forgetBluetoothDevice } from '../actions/bluetooth/bluetoothEraseBondsThunk';
+import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import * as suiteActions from '../actions/suite/suiteActions';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
@@ -57,7 +57,7 @@ export const extraDependencies: ExtraDependencies = {
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
-        forgetBluetoothDevice,
+        forgetBluetoothDevice: forgetBluetoothDeviceThunk,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>

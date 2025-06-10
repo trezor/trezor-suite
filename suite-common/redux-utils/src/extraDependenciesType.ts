@@ -37,7 +37,7 @@ export type ExtraDependencies = {
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
-        forgetBluetoothDevice: SuiteCompatibleThunk<void>;
+        forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: string }>;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras
