@@ -1,4 +1,3 @@
-import { AccessibilityProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import {
@@ -6,11 +5,14 @@ import {
     MessageSystemRootState,
     selectContextMessage,
 } from '@suite-common/message-system';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { InlineAlertBox, InlineAlertBoxProps } from '@suite-native/atoms';
 
 import { useHandleMessageLink } from '../hooks/useHandleMessageLink';
 
-type ContextMessageProps = AccessibilityProps & {
+export type ContextMessageProps = Omit<
+    InlineAlertBoxProps,
+    'variant' | 'title' | 'buttonLabel' | 'onButtonPress'
+> & {
     context: (typeof Context)[keyof typeof Context];
 };
 

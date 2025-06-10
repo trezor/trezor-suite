@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import { AccessibilityProps } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { BoxProps } from '../Box';
 import { Text } from '../Text';
 import {
     InlineAlertBoxStyles,
@@ -32,7 +32,7 @@ const textStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp2,
 }));
 
-export type InlineAlertBoxProps = AccessibilityProps & {
+export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
     title: Exclude<ReactNode, null | undefined>;
     variant?: InlineAlertBoxVariant;
     buttonLabel?: ReactNode;
