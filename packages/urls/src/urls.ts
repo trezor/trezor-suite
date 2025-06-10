@@ -43,7 +43,7 @@ export const TREZOR_SUPPORT_DIFFERENT_PACKAGING: Url =
     'https://trezor.io/support/a/why-is-my-box-different-from-what-is-shown-on-the-website';
 
 export const HELP_CENTER_PIN_URL: Url =
-    'https://trezor.io/learn/a/pin-protection-on-trezor-devices';
+    'https://trezor.io/guides/trezor-devices/pin-protection-on-trezor-devices#trezor-model-one';
 export const HELP_CENTER_DRY_RUN_T1B1_URL: Url =
     'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-one';
 export const HELP_CENTER_DRY_RUN_T2T1_URL: Url =
