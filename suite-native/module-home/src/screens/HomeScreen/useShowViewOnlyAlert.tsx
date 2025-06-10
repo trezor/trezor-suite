@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -11,7 +11,6 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
-import { getIsBiometricsFeatureAvailable } from '@suite-native/biometrics';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
@@ -38,16 +37,6 @@ export const useShowViewOnlyAlert = () => {
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isCreatingNewPassphraseWallet = useSelector(selectIsCreatingNewPassphraseWallet);
-    const [isAvailableBiometrics, setIsAvailableBiometrics] = useState(false);
-
-    useEffect(() => {
-        const fetchBiometricsAvailability = async () => {
-            const isAvailable = await getIsBiometricsFeatureAvailable();
-            setIsAvailableBiometrics(isAvailable);
-        };
-
-        fetchBiometricsAvailability();
-    }, []);
 
     const handleEnable = useCallback(() => {
         if (device) {
@@ -123,7 +112,6 @@ export const useShowViewOnlyAlert = () => {
         };
     }, [
         hasDiscovery,
-        isAvailableBiometrics,
         isDeviceReadyToUseAndAuthorized,
         isDeviceRemembered,
         isPortfolioTrackerDevice,

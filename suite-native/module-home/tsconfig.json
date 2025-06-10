@@ -9,7 +9,6 @@
         { "path": "../analytics" },
         { "path": "../assets" },
         { "path": "../atoms" },
-        { "path": "../biometrics" },
         { "path": "../blockchain" },
         { "path": "../device" },
         { "path": "../device-manager" },
