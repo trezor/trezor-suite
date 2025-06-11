@@ -9497,6 +9497,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/semver": "npm:^7.7.0"
@@ -12872,7 +12873,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:packages/type-utils":
+"@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:^, @trezor/type-utils@workspace:packages/type-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
   dependencies:

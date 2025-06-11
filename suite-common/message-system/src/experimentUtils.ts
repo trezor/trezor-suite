@@ -1,5 +1,7 @@
 import { createHash } from 'crypto';
 
+import { Range } from '@trezor/type-utils';
+
 import { ExperimentId, ExperimentsItemType } from './messageSystemTypes';
 
 type ExperimentCategoriesProps = {
@@ -12,17 +14,33 @@ type ExperimentsGroupType = ExperimentsGroupsType[number];
 
 type ExperimentGetGroupByInclusion = {
     groups: ExperimentsGroupsType;
-    inclusion: number;
+    inclusion: Range<0, 99>;
 };
+
+function assertIsInRange<Min extends number, Max extends number>(
+    value: number,
+    min: Min,
+    max: Max,
+): asserts value is Range<Min, Max> {
+    if (value < min || value > max) {
+        throw new Error(`Value ${value} is out of range [${min}, ${max}].`);
+    }
+}
 
 /**
  * @returns number between 0 and 99 generated from instanceId and experimentId
  */
-export const getInclusionFromInstanceId = (instanceId: string, experimentId: ExperimentId) => {
+export const getInclusionFromInstanceId = (
+    instanceId: string,
+    experimentId: ExperimentId,
+): Range<0, 99> => {
     const combinedId = `${instanceId}-${experimentId}`;
     const hash = createHash('sha256').update(combinedId).digest('hex').slice(0, 8);
 
-    return parseInt(hash, 16) % 100;
+    const res = parseInt(hash, 16) % 100;
+    assertIsInRange(res, 0, 99);
+
+    return res;
 };
 
 export const getExperimentGroupByInclusion = ({
