@@ -1,6 +1,4 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { randomBytes } from 'crypto';
-
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 import {
     TransportProtocol,
@@ -11,14 +9,7 @@ import {
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
-import {
-    Deferred,
-    TypedEmitter,
-    createDeferred,
-    isArrayMember,
-    serializeError,
-    versionUtils,
-} from '@trezor/utils';
+import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 
 import { DeviceCommands } from './DeviceCommands';
 import { ERRORS, FIRMWARE, PROTO } from '../constants';
@@ -26,10 +17,10 @@ import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession'
 import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { getThpChannel } from './thp';
-import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
+import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHash';
 import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
-import { getFirmwareStatus, getRelease, getReleaseInfo, getReleases } from '../data/firmwareInfo';
+import { getFirmwareStatus, getRelease, getReleaseInfo } from '../data/firmwareInfo';
 import { getLanguage } from '../data/getLanguage';
 import {
     DEVICE,
@@ -50,7 +41,6 @@ import {
     Device as DeviceTyped,
     DeviceUniquePath,
     Features,
-    FirmwareHashCheckError,
     FirmwareHashCheckResult,
     FirmwareType,
     KnownDevice,
@@ -194,7 +184,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private availableTranslations: string[] = [];
 
-    private authenticityChecks: NonNullable<KnownDevice['authenticityChecks']> = {
+    private authenticityChecks: KnownDevice['authenticityChecks'] = {
         firmwareRevision: null,
         firmwareHash: null,
     };
@@ -528,7 +518,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         if (!options.skipFirmwareChecks) {
-            await this.checkFirmwareHashWithRetries();
+            await checkFirmwareHashWithRetries({ device: this, logger: _log });
             await this.checkFirmwareRevisionWithRetries();
         }
 
@@ -653,101 +643,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this._updateFeatures(message);
     }
 
-    private async checkFirmwareHashWithRetries() {
-        const lastResult = this.authenticityChecks.firmwareHash;
-        const notDoneYet = lastResult === null;
-        const attemptsDone = lastResult?.attemptCount ?? 0;
-        if (attemptsDone >= FIRMWARE.HASH_CHECK_MAX_ATTEMPTS) return;
-
-        const wasError = lastResult !== null && !lastResult.success;
-        const wasErrorRetriable =
-            wasError && isArrayMember(lastResult.error, FIRMWARE.HASH_CHECK_RETRIABLE_ERRORS);
-        const lastErrorPayload = wasError ? lastResult?.errorPayload : null;
-
-        if (notDoneYet || wasErrorRetriable) {
-            const result = await this.checkFirmwareHash();
-
-            this.authenticityChecks = {
-                ...this.authenticityChecks,
-                firmwareHash: result,
-            };
-
-            if (result === null) return;
-            result.attemptCount = attemptsDone + 1;
-
-            // if it suceeeded only after a retry, and there was an `errorPayload` previously, we want to pass that information to suite
-            if (result.success && lastErrorPayload) {
-                result.warningPayload = { lastErrorPayload, successOnAttempt: result.attemptCount };
-            }
-        }
+    getAuthenticityChecks() {
+        return this.authenticityChecks;
     }
 
-    private async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
-        const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
-            success: false,
-            error,
-            errorPayload,
-        });
-
-        const baseUrl = DataManager.getSettings('binFilesBaseUrl');
-        const enabled = DataManager.getSettings('enableFirmwareHashCheck');
-        if (!enabled || baseUrl === undefined) return createFailResult('check-skipped');
-
-        const firmwareVersion = this.getVersion();
-        // device has no features (not yet connected) or no firmware
-        if (firmwareVersion === undefined || !this.features || this.features.bootloader_mode) {
-            return null;
-        }
-
-        const checkSupported = !this.unavailableCapabilities.getFirmwareHash;
-        if (!checkSupported) return createFailResult('check-unsupported');
-
-        const release = getReleases(this.features.internal_model).find(r =>
-            versionUtils.isEqual(r.version, firmwareVersion),
-        );
-        // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
-        if (release === undefined) return createFailResult('unknown-release');
-
-        const btcOnly = this.firmwareType === FirmwareType.BitcoinOnly;
-        const binary = await getBinaryOptional({ baseUrl, btcOnly, release });
-        // release was found, but not its binary - happens on desktop, where only local files are searched
-        if (binary === null) {
-            return createFailResult('check-unsupported');
-        }
-        // binary was found, but it's likely a git LFS pointer (can happen on dev) - see onCallFirmwareUpdate.ts
-        if (binary.byteLength < 200) {
-            _log.warn(`Firmware binary for hash check suspiciously small (< 200 b)`);
-
-            return createFailResult('check-unsupported');
-        }
-
-        const strippedBinary = stripFwHeaders(binary);
-        const { hash: expectedHash, challenge } = calculateFirmwareHash(
-            this.features.major_version,
-            strippedBinary,
-            randomBytes(32),
-        );
-
-        // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
-        // so device can't be used, but it's preferable to display proper message about counterfeit device
-        try {
-            const deviceResponse = await this.getCurrentSession().typedCall(
-                'GetFirmwareHash',
-                'FirmwareHash',
-                { challenge },
-            );
-            if (!deviceResponse?.message?.hash) {
-                return createFailResult('other-error', 'Device response is missing hash');
-            }
-
-            if (deviceResponse.message.hash !== expectedHash) {
-                return createFailResult('hash-mismatch');
-            }
-
-            return { success: true };
-        } catch (errorPayload) {
-            return createFailResult('other-error', serializeError(errorPayload));
-        }
+    setAuthenticityChecks(firmwareHash: FirmwareHashCheckResult | null) {
+        this.authenticityChecks.firmwareHash = firmwareHash;
     }
 
     private async checkFirmwareRevisionWithRetries() {
