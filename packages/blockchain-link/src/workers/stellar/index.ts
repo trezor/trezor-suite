@@ -6,6 +6,7 @@ import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors'
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
+import { IntervalId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
@@ -18,17 +19,26 @@ const BASE_INFO = {
 type Context = ContextType<Horizon.Server>;
 type Request<T> = T & Context;
 
-const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {
-    const api = await request.connect();
-    const horizonServerInfo = await api.root();
+const fetchLatestLedger = async (api: Horizon.Server) => {
     const latestLedgerInfo = await api.ledgers().order('desc').limit(1).call();
 
     if (latestLedgerInfo.records.length === 0) {
         throw new CustomError('worker_invalid_horizon_response');
     }
 
-    const latestLedgerRecord = latestLedgerInfo.records[0];
-    BASE_INFO.BASE_RESERVE = new BigNumber(latestLedgerRecord.base_reserve_in_stroops);
+    return latestLedgerInfo.records[0];
+};
+
+const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {
+    const api = await request.connect();
+    const horizonServerInfo = await api.root();
+    const {
+        sequence: blockHeight,
+        hash: blockHash,
+        base_reserve_in_stroops: baseReserveInStroops,
+    } = await fetchLatestLedger(api);
+
+    BASE_INFO.BASE_RESERVE = new BigNumber(baseReserveInStroops);
     BASE_INFO.MINIMUM_RESERVE = BASE_INFO.BASE_RESERVE.times(2);
 
     const serverInfo = {
@@ -39,8 +49,8 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         testnet: isTestnet,
         version: horizonServerInfo.horizon_version,
         decimals: utils.STELLAR_DECIMALS,
-        blockHeight: latestLedgerRecord.sequence,
-        blockHash: latestLedgerRecord.hash,
+        blockHeight,
+        blockHash,
     };
 
     return {
@@ -159,42 +169,43 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     } as const;
 };
 
+// Stellar typically produces a new block every 5 seconds.
+// Our requirements for real-time updates are not high; let us update every 15 seconds.
+const BLOCK_SUBSCRIBE_INTERVAL_MS = 1000 * 15;
+
 const subscribeBlock = async ({ state, connect, post }: Context) => {
     if (state.getSubscription('block')) return { subscribed: true };
-
     const api = await connect();
 
-    const es = api
-        .ledgers()
-        .cursor('now')
-        .stream({
-            onmessage: (ledger: Horizon.ServerApi.LedgerRecord) => {
-                post({
-                    id: -1,
-                    type: RESPONSES.NOTIFICATION,
-                    payload: {
-                        type: 'block',
-                        payload: {
-                            blockHeight: Number(ledger.sequence),
-                            blockHash: ledger.hash,
-                        },
-                    },
-                });
+    const fetchBlock = async () => {
+        const { sequence: blockHeight, hash: blockHash } = await fetchLatestLedger(api);
+        post({
+            id: -1,
+            type: RESPONSES.NOTIFICATION,
+            payload: {
+                type: 'block',
+                payload: {
+                    blockHeight,
+                    blockHash,
+                },
             },
         });
+    };
+    fetchBlock();
 
-    state.addSubscription('block', es);
+    const interval = setInterval(fetchBlock, BLOCK_SUBSCRIBE_INTERVAL_MS);
+    // we save the interval in the state so we can clear it later
+    state.addSubscription('block', interval);
 
     return { subscribed: true };
 };
 
 const unsubscribeBlock = ({ state }: Context) => {
-    const es = state.getSubscription('block');
+    if (!state.getSubscription('block')) return { subscribed: false };
 
-    if (es && typeof es === 'function') {
-        es(); // To stop listening for new events call the function returned by this method.
-        state.removeSubscription('block');
-    }
+    const interval = state.getSubscription('block') as IntervalId;
+    clearInterval(interval);
+    state.removeSubscription('block');
 
     return { subscribed: false };
 };
