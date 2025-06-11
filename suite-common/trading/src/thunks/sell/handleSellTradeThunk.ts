@@ -16,7 +16,7 @@ import { getUnusedAddressFromAccount } from '../../utils';
 
 export type HandleSellTradeThunkProps = {
     account: Account;
-    quote: SellFiatTrade;
+    trade: SellFiatTrade;
     returnUrl: string;
 
     processResponseData: (response: SellFiatTradeResponse) => void;
@@ -25,19 +25,19 @@ export type HandleSellTradeThunkProps = {
 export const handleSellTradeThunk = createThunk(
     `${TRADING_SELL_THUNK_PREFIX}/handleTrade`,
     async (
-        { account, quote, returnUrl, processResponseData }: HandleSellTradeThunkProps,
+        { account, trade, returnUrl, processResponseData }: HandleSellTradeThunkProps,
         { dispatch, getState, fulfillWithValue },
     ) => {
         const sellInfo = selectTradingSellInfo(getState());
         const quotesRequest = selectTradingSellQuotesRequest(getState());
         const provider =
-            sellInfo?.providerInfos && quote.exchange
-                ? sellInfo.providerInfos[quote.exchange]
+            sellInfo?.providerInfos && trade.exchange
+                ? sellInfo.providerInfos[trade.exchange]
                 : undefined;
         if (!quotesRequest || !provider) return;
 
         const response = await invityAPI.doSellTrade({
-            trade: { ...quote, refundAddress: getUnusedAddressFromAccount(account).address },
+            trade: { ...trade, refundAddress: getUnusedAddressFromAccount(account).address },
             returnUrl,
         });
 
