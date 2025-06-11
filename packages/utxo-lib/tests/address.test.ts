@@ -90,7 +90,7 @@ describe('address', () => {
         //     it(`encode fails (${f.exception}`, () => {
         //         expect(() => {
         //             baddress.toBech32(Buffer.from(f.data, 'hex'), f.version, f.prefix);
-        //         }).toThrowError(new RegExp(f.exception));
+        //         }).toThrow(new RegExp(f.exception));
         //     });
         // });
     });

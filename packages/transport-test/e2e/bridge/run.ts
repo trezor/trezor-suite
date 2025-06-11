@@ -12,7 +12,7 @@ import { config } from './jest.config';
     const argv: Config.Argv = {
         ...config,
         runInBand: true,
-        testPathPattern: [process.argv[2] || ''],
+        testPathPatterns: [process.argv[2] || ''],
     };
 
     const { results } = await runCLI(argv, [__dirname]);

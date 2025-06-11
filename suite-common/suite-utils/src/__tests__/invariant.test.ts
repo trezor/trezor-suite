@@ -1,7 +1,7 @@
 import { invariant } from '../invariant';
 
 describe('invariant', () => {
-    let consoleErrorSpy: jest.SpyInstance;
+    let consoleErrorSpy: jest.Spied<typeof console.error>;
 
     beforeEach(() => {
         consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});

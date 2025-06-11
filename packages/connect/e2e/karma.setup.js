@@ -2,7 +2,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 // jest vs jasmine matchers compatibility:
 // - jasmine is missing "toMatchObject" matcher (deeply partial matching)
-// - jest.toBeCalledTimes === jasmine.matchers.toHaveBeenCalledTimes
 jasmine.getEnv().beforeAll(() => {
     jasmine.addMatchers({
         toMatchObject: _obj => ({
@@ -56,7 +55,6 @@ jasmine.getEnv().beforeAll(() => {
                 return success;
             },
         }),
-        toBeCalledTimes: jasmine.matchers.toHaveBeenCalledTimes,
     });
 });
 

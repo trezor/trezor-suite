@@ -104,7 +104,7 @@
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/karma": "^6.3.9",
         "babel-loader": "^10.0.0",
-        "jest": "29.7.0",
+        "jest": "30.0.0",
         "karma": "^6.4.4",
         "karma-babel-preprocessor": "^8.0.2",
         "karma-chrome-launcher": "^3.2.0",
