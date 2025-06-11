@@ -1,9 +1,11 @@
+import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-utils';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport, selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import type { TrezorDevice } from 'src/types/suite';
@@ -99,6 +101,8 @@ export const SettingsDevice = () => {
 
     return (
         <SettingsLayout>
+            <ContextMessage context={Context.getSettings('device')} />
+
             {bootloaderMode && (
                 <DeviceBanner
                     title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER" />}

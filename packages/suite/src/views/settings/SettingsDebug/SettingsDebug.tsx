@@ -1,7 +1,9 @@
+import { Context } from '@suite-common/message-system';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
@@ -35,6 +37,8 @@ export const SettingsDebug = () => {
 
     return (
         <SettingsLayout>
+            <ContextMessage context={Context.getSettings('debug')} />
+
             {isWeb() && (
                 <SettingsSection title="Localization">
                     <TranslationMode />

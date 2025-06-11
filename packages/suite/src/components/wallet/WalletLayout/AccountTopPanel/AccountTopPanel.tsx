@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
+import { Context } from '@suite-common/message-system';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { SkeletonCircle, SkeletonRectangle } from '@trezor/components';
@@ -11,6 +12,8 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
+
+import { ContextMessage } from '../AccountBanners/ContextMessage';
 
 export const ACCOUNT_INFO_HEIGHT = 80;
 
@@ -68,7 +71,7 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
         );
     }
 
-    const { symbol, formattedBalance } = account;
+    const { symbol, formattedBalance, accountType } = account;
 
     return (
         <Container ref={ref}>
@@ -93,6 +96,7 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
                     />
                 </div>
             </AmountsWrapper>
+            <ContextMessage context={Context.getAccount(symbol, accountType)} />
         </Container>
     );
 });

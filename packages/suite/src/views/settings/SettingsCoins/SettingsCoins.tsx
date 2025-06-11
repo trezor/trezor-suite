@@ -1,6 +1,7 @@
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { Context } from '@suite-common/message-system';
 import {
     restartDiscoveryThunk,
     selectDeviceSupportedNetworks,
@@ -18,6 +19,7 @@ import {
     SettingsSectionItem,
 } from 'src/components/settings';
 import { CoinGroup, Translation } from 'src/components/suite';
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -112,6 +114,8 @@ export const SettingsCoins = () => {
 
     return (
         <SettingsLayout>
+            <ContextMessage context={Context.getSettings('networks')} />
+
             {showDeviceBanner && (
                 <DeviceBanner
                     title={

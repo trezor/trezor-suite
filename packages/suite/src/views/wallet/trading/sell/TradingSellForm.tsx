@@ -28,7 +28,7 @@ const TradingSellFormWrapper = ({ selectedAccount }: UseTradingProps) => {
 
     return (
         <TradingLayout>
-            <ContextMessage context={Context.tradingSell} />
+            <ContextMessage context={Context.getTrading(type)} />
             {isDisabled ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
