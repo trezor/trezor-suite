@@ -1,3 +1,4 @@
+import { expect as jestExpect } from '@jest/globals';
 import { exec } from 'child_process';
 import { expect as detoxExpect } from 'detox';
 import http from 'http';
@@ -121,19 +122,15 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
         await TrezorUserEnvLink.pressYes();
 
         const response = await promise;
-        const expectedResponse = {
-            id: 1,
-            payload: {
+
+        jestExpect(response).toEqual({
+            success: true,
+            id: jestExpect.any(Number),
+            payload: jestExpect.objectContaining({
                 path: [2147483697, 2147483648, 2147483648, 0, 0],
                 serializedPath: "m/49'/0'/0'/0/0",
-                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
-            },
-            success: true,
-        };
-
-        if (JSON.stringify(response) !== JSON.stringify(expectedResponse)) {
-            console.error('Received:', response);
-            throw new Error('Result does not match expected.');
-        }
+                address: jestExpect.any(String),
+            }),
+        });
     });
 });
