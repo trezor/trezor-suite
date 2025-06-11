@@ -74,7 +74,8 @@ export type ToastPayload = (
               | 'estimated-fee-error'
               | 'not-enough-funds-error'
               | 'could-not-parse-csv'
-              | 'thp-credentials-reset';
+              | 'thp-credentials-reset'
+              | 'sign-transaction-timeout';
       }
     | SentTransactionNotification
     | {

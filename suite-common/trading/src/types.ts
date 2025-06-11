@@ -240,7 +240,7 @@ export type MinimalExchangeFormProps = {
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
 export type TradingSendRejectedProps = {
-    type: 'error' | 'sign-tx-error';
+    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout';
     error: {
         id: ExtendedMessageDescriptor['id'];
         values?: Record<string, PrimitiveType>;

@@ -10,10 +10,8 @@ import {
     SerializedTx,
     StakeState,
     selectIsTxOutputInternal,
-    selectPrecomposedSendForm,
     selectSelectedDevice,
     selectSendFormReviewButtonRequestsCount,
-    selectStakePrecomposedForm,
 } from '@suite-common/wallet-core';
 import { FormState, RbfTransactionType, StakeType } from '@suite-common/wallet-types';
 import {
@@ -40,6 +38,7 @@ import { redactRouterUrl } from 'src/utils/suite/analytics';
 import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewDetails } from './TransactionReviewDetails';
+import { isStakeState } from './TransactionReviewModal';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputList/TransactionReviewOutputTimer';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
@@ -65,6 +64,7 @@ type ShouldShowTxValidityTimerProps = {
     stakeType: StakeType | null;
     shouldCheckTxTimeValidity: boolean;
     isInternalTransfer: boolean;
+    isTrading: boolean;
 };
 
 const shouldShowTxValidityTimer = ({
@@ -74,6 +74,7 @@ const shouldShowTxValidityTimer = ({
     stakeType,
     shouldCheckTxTimeValidity,
     isInternalTransfer,
+    isTrading,
 }: ShouldShowTxValidityTimerProps) => {
     if (!shouldCheckTxTimeValidity || hasTxValidityExpired(deadline)) {
         return false;
@@ -82,10 +83,8 @@ const shouldShowTxValidityTimer = ({
     const isFirstStep = buttonRequestsCount <= 1;
     const isStaking = stakeType && !serializedTx;
 
-    return isInternalTransfer || !isFirstStep || serializedTx || isStaking;
+    return isInternalTransfer || !isFirstStep || serializedTx || isStaking || isTrading;
 };
-
-const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
 const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormState) => {
     const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
@@ -105,6 +104,7 @@ type TransactionReviewModalContentProps = {
     tryAgainSignTx: () => void;
     cancelSignTx: () => void;
     isRbfConfirmedError?: boolean;
+    precomposedForm?: FormState;
 };
 
 export const TransactionReviewModalContent = ({
@@ -113,6 +113,7 @@ export const TransactionReviewModalContent = ({
     tryAgainSignTx,
     cancelSignTx,
     isRbfConfirmedError,
+    precomposedForm,
 }: TransactionReviewModalContentProps) => {
     const dispatch = useDispatch();
     const account = useSelector(selectAccountIncludingChosenInTrading);
@@ -127,18 +128,10 @@ export const TransactionReviewModalContent = ({
 
     const router = useSelector(state => state.router);
 
-    const precomposedForm = useSelector(state =>
-        isStakeState(txInfoState)
-            ? selectStakePrecomposedForm(state)
-            : selectPrecomposedSendForm(state),
-    );
     const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
-    const shouldCheckTxTimeValidity =
-        account?.networkType === 'solana' &&
-        !precomposedForm?.activeTradingSection &&
-        createdTxTimestamp !== 0;
+    const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
     const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
 
     // check if transaction is still valid
@@ -222,6 +215,7 @@ export const TransactionReviewModalContent = ({
         stakeType,
         shouldCheckTxTimeValidity,
         isInternalTransfer,
+        isTrading: !!precomposedForm.activeTradingSection,
     });
 
     const actionTranslation = getTransactionReviewModalActionTranslation({

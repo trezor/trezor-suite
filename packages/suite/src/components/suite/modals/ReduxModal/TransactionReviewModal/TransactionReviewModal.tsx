@@ -1,7 +1,11 @@
 import { UserContextPayload } from '@suite-common/suite-types';
 import {
+    SendState,
+    StakeState,
     cancelSignSendFormTransactionThunk,
+    selectPrecomposedSendForm,
     selectStake,
+    selectStakePrecomposedForm,
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
@@ -15,10 +19,14 @@ import {
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { TransactionReviewModalContent } from './TransactionReviewModalContent';
+import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
+import { TransactionReviewModalSell } from './TransactionReviewModalSell';
+
+export const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
-type TransactionReviewModalProps =
+export type TransactionReviewModalProps =
     | Extract<UserContextPayload, { type: 'review-transaction' }>
     | { type: 'sign-transaction'; decision?: undefined }
     | Extract<
@@ -36,6 +44,17 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     // Only one state should be available when the modal is open
     const txInfoState = isSend ? send : stake;
 
+    const precomposedForm = useSelector(state =>
+        isStakeState(txInfoState)
+            ? selectStakePrecomposedForm(state)
+            : selectPrecomposedSendForm(state),
+    );
+
+    const isRbfConfirmedError = type === 'review-transaction-rbf-previous-transaction-mined-error';
+    const isSelectedAccountLoaded = selectedAccount.status === 'loaded';
+    const isExchange = precomposedForm?.activeTradingSection === 'exchange';
+    const isSell = precomposedForm?.activeTradingSection === 'sell';
+
     const handleCancelSignTx = () => {
         if (isSend) {
             dispatch(cancelSignSendFormTransactionThunk());
@@ -44,26 +63,63 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         }
     };
 
+    const handleSendTx = async () => {
+        dispatch(sendFormActions.discardTransaction());
+
+        await dispatch(
+            signAndPushSendFormTransactionThunk({
+                formState: send.precomposedForm!,
+                precomposedTransaction: send.precomposedTx!,
+                selectedAccount: selectedAccount.account,
+            }),
+        );
+    };
+
+    const handleStakeTx = async () => {
+        dispatch(stakeActions.dispose());
+        await dispatch(
+            signTransaction(
+                stake.precomposedForm!,
+                stake.precomposedTx as PrecomposedTransactionFinal,
+            ),
+        );
+    };
+
     const handleTryAgainSignTx = async () => {
         if (send.precomposedForm && send.precomposedTx) {
-            dispatch(sendFormActions.discardTransaction());
-            await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState: send.precomposedForm,
-                    precomposedTransaction: send.precomposedTx,
-                    selectedAccount: selectedAccount.account,
-                }),
-            );
+            await handleSendTx();
         } else if (stake.precomposedForm && stake.precomposedTx) {
-            dispatch(stakeActions.dispose());
-            await dispatch(
-                signTransaction(
-                    stake.precomposedForm,
-                    stake.precomposedTx as PrecomposedTransactionFinal,
-                ),
-            );
+            await handleStakeTx();
         }
     };
+
+    if (isSelectedAccountLoaded) {
+        if (isExchange) {
+            return (
+                <TransactionReviewModalExchange
+                    selectedAccount={selectedAccount}
+                    decision={decision}
+                    txInfoState={txInfoState}
+                    cancelSignTx={handleCancelSignTx}
+                    isRbfConfirmedError={isRbfConfirmedError}
+                    precomposedForm={precomposedForm}
+                />
+            );
+        }
+
+        if (isSell) {
+            return (
+                <TransactionReviewModalSell
+                    selectedAccount={selectedAccount}
+                    decision={decision}
+                    txInfoState={txInfoState}
+                    cancelSignTx={handleCancelSignTx}
+                    isRbfConfirmedError={isRbfConfirmedError}
+                    precomposedForm={precomposedForm}
+                />
+            );
+        }
+    }
 
     return (
         <TransactionReviewModalContent
@@ -71,7 +127,8 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             txInfoState={txInfoState}
             tryAgainSignTx={handleTryAgainSignTx}
             cancelSignTx={handleCancelSignTx}
-            isRbfConfirmedError={type === 'review-transaction-rbf-previous-transaction-mined-error'}
+            isRbfConfirmedError={isRbfConfirmedError}
+            precomposedForm={precomposedForm}
         />
     );
 };

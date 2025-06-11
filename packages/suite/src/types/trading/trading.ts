@@ -36,7 +36,7 @@ import { Timer } from '@trezor/react-utils';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 
-export type TradingPageType = 'form' | 'offers' | 'confirm';
+export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
 
 export type UseTradingProps = { selectedAccount: SelectedAccountLoaded };
 export type UseTradingCommonProps = UseTradingProps & {
