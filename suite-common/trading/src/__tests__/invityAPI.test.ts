@@ -361,6 +361,63 @@ describe('InvityAPI', () => {
         });
     });
 
+    describe('getSignedTrade', () => {
+        it('should get signed exchange trade', async () => {
+            (global.fetch as jest.Mock).mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(invityAPIFixtures.exchangeTradeSigned),
+            });
+
+            const trade = await invityAPI.getSignedTrade(
+                invityAPIFixtures.createTradeSignatureRequest,
+            );
+            expect(trade).toEqual(invityAPIFixtures.exchangeTradeSigned);
+        });
+
+        it('should get signed sell trade', async () => {
+            (global.fetch as jest.Mock).mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(invityAPIFixtures.sellFiatTradeSigned),
+            });
+
+            const trade = await invityAPI.getSignedTrade({
+                type: 'sell',
+                orderId: 'test-order-id',
+                nonce: 'test-nonce',
+                outputs: [
+                    {
+                        address: 'test-address',
+                        amount: '100000000',
+                    },
+                ],
+                memoText: 'test-memo',
+            });
+            expect(trade).toEqual(invityAPIFixtures.sellFiatTradeSigned);
+        });
+
+        it('should return undefined when response is undefined', async () => {
+            (global.fetch as jest.Mock).mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(undefined),
+            });
+
+            const trade = await invityAPI.getSignedTrade(
+                invityAPIFixtures.createTradeSignatureRequest,
+            );
+            expect(trade).toBeUndefined();
+        });
+
+        it('should handle error and return undefined', async () => {
+            (global.fetch as jest.Mock).mockRejectedValueOnce(error);
+
+            const trade = await invityAPI.getSignedTrade(
+                invityAPIFixtures.createTradeSignatureRequest,
+            );
+            expect(consoleSpy).toHaveBeenCalledWith('[getSignedTrade]', error);
+            expect(trade).toBeUndefined();
+        });
+    });
+
     it('getCoinLogoUrl', () => {
         const icon = invityAPI.getCoinLogoUrl('bitcoin');
 
