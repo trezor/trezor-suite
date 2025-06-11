@@ -8,16 +8,20 @@ import type {
     BuyTradeRequest,
     BuyTradeResponse,
     ConfirmExchangeTradeRequest,
+    CreateTradeSignatureRequestExchange,
+    CreateTradeSignatureRequestSell,
     ExchangeListResponse,
     ExchangeTrade,
     ExchangeTradeQuoteRequest,
     ExchangeTradeQuoteResponse,
+    ExchangeTradeSigned,
     InfoResponse,
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
     SellFiatTradeQuoteResponse,
     SellFiatTradeRequest,
     SellFiatTradeResponse,
+    SellFiatTradeSigned,
     SellListResponse,
     SellVoucherTradeQuoteRequest,
     SellVoucherTradeRequest,
@@ -59,6 +63,8 @@ class InvityAPI {
 
     // info service
     private readonly INFO = '/api/info';
+    // SLIP24 - sign trade
+    private readonly TRADE_SIGN = '/api/sign-trade';
 
     // exchange service
     private readonly EXCHANGE_LIST = '/api/v3/exchange/list';
@@ -439,6 +445,23 @@ class InvityAPI {
             }
         } catch (error) {
             console.error('[getOTCData]', error);
+        }
+    };
+
+    getSignedTrade = async <
+        T extends SellFiatTradeSigned | ExchangeTradeSigned,
+        P extends CreateTradeSignatureRequestSell | CreateTradeSignatureRequestExchange,
+    >(
+        params: P,
+    ): Promise<T | undefined> => {
+        try {
+            const response = await this.request(this.TRADE_SIGN, params, 'POST');
+
+            if (response) {
+                return response;
+            }
+        } catch (error) {
+            console.error('[getSignedTrade]', error);
         }
     };
 }
