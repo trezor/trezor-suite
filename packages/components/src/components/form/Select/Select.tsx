@@ -33,7 +33,6 @@ import {
     Option,
     OptionComponentProps,
 } from './customComponents';
-import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { useOnKeyDown } from './useOnKeyDown';
 
 const reactSelectClassNamePrefix = 'react-select';
@@ -286,6 +285,8 @@ export type SelectProps = KeyPressScrollProps &
         menuFitContent?: boolean;
         isMenuOpen?: boolean;
         isLoading?: boolean;
+        /** @deprecated: workaround for issues with modal (GH #19376) */
+        isRenderedInModal?: boolean;
         onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
         'data-testid'?: string;
     };
@@ -303,6 +304,7 @@ export const Select = ({
     onChange,
     placeholder,
     isLoading = false,
+    isRenderedInModal = false,
     'data-testid': dataTest,
     ...rest
 }: SelectProps) => {
@@ -310,10 +312,9 @@ export const Select = ({
     const { elevation } = useElevation();
     const theme = useTheme();
     const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
-    const menuPortalTarget = useDetectPortalTarget(selectRef);
+    const menuPortalTarget = isRenderedInModal ? document.body : null;
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled } = formCellProps;
-    const isRenderedInModal = menuPortalTarget !== null;
 
     const [selectedOption, setSelectedOption] = useState<Option | undefined>(rest.value);
 
@@ -324,13 +325,24 @@ export const Select = ({
                 setSelectedOption(value);
 
                 if (!isMenuOpen && action === 'select-option') {
-                    selectRef.current?.blur();
+                    if (!isRenderedInModal) {
+                        selectRef.current?.blur();
+                    } else {
+                        // Blur issue in modal, delay the blur to allow menu to close properly
+                        const timeoutId = setTimeout(() => {
+                            selectRef.current?.blur();
+                        }, 50);
+
+                        return () => {
+                            clearTimeout(timeoutId);
+                        };
+                    }
                 }
             }
 
             return null;
         },
-        [onChange, isMenuOpen],
+        [onChange, isMenuOpen, isRenderedInModal],
     );
 
     /**
