@@ -3,6 +3,7 @@ import { WebUSB, usb } from 'usb';
 import {
     TransportProtocol,
     bridge as protocolBridge,
+    thp as protocolThp,
     v1 as protocolV1,
     v2 as protocolV2,
 } from '@trezor/protocol';
@@ -11,11 +12,12 @@ import { UdpApi } from '@trezor/transport/src/api/udp';
 import { UsbApi } from '@trezor/transport/src/api/usb';
 import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
+import { callThpMessage, receiveThpMessage, sendThpMessage } from '@trezor/transport/src/thp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
 import { BridgeProtocolMessage, PathInternal, Session } from '@trezor/transport/src/types';
 import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
 import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
-import { success, unknownError } from '@trezor/transport/src/utils/result';
+import { error, success, unknownError } from '@trezor/transport/src/utils/result';
 import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
 import { Log } from '@trezor/utils';
 
@@ -211,6 +213,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         data,
         protocol: protocolName,
         signal,
+        thpState,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
@@ -230,6 +233,45 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
         return api.runInIsolation({ lock: { read: true, write: true }, path }, async () => {
             logger?.debug('core: call: writeUtil');
+
+            if (protocol.name === 'v2') {
+                if (!thpState) {
+                    return error({ error: 'ThpStateMissing' });
+                }
+
+                const state = new protocolThp.ThpState();
+                state.deserialize(thpState);
+
+                const bytes = Buffer.from(data, 'hex');
+                const [, chunkHeader] = protocol.getHeaders(bytes);
+                const chunks = createChunks(bytes, chunkHeader, api.chunkSize);
+
+                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
+                    api.write(path, chunk, attemptSignal || signal);
+
+                const message = await callThpMessage({
+                    thpState: state,
+                    chunks,
+                    apiWrite,
+                    apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                    signal,
+                    logger,
+                });
+                if (!message.success) {
+                    return message;
+                }
+
+                return createProtocolMessageResponse(
+                    {
+                        success: true,
+                        payload: protocol
+                            .encode(message.payload.payload, message.payload)
+                            .toString('hex'),
+                    },
+                    protocol.name,
+                );
+            }
+
             const writeResult = await writeUtil({ path, data, signal, protocol });
             if (!writeResult.success) {
                 logger?.error(`core: call: writeUtil ${writeResult.error}`);
@@ -248,6 +290,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         data,
         protocol: protocolName,
         signal,
+        thpState,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
@@ -261,6 +304,34 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         }
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
+        if (protocol.name === 'v2') {
+            if (!thpState) {
+                return error({ error: 'ThpStateMissing' });
+            }
+
+            const state = new protocolThp.ThpState();
+            state.deserialize(thpState);
+
+            const bytes = Buffer.from(data, 'hex');
+            const [, chunkHeader] = protocol.getHeaders(bytes);
+            const chunks = createChunks(bytes, chunkHeader, api.chunkSize);
+
+            const writeResult = await sendThpMessage({
+                thpState: state,
+                chunks,
+                apiWrite: (chunk, attemptSignal) => api.write(path, chunk, attemptSignal || signal),
+                apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                signal,
+                logger,
+                skipAck: true,
+            });
+
+            if (!writeResult.success) {
+                return writeResult;
+            }
+
+            return createProtocolMessageResponse(writeResult, protocolName);
+        }
 
         const writeResult = await writeUtil({ path, data, signal, protocol });
 
@@ -271,6 +342,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         session,
         protocol: protocolName,
         signal,
+        thpState,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
@@ -286,6 +358,38 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
 
         return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
+            if (protocol.name === 'v2') {
+                if (!thpState) {
+                    return error({ error: 'ThpStateMissing' });
+                }
+
+                const state = new protocolThp.ThpState();
+                state.deserialize(thpState);
+
+                const message = await receiveThpMessage({
+                    thpState: state,
+                    apiWrite: (chunk, attemptSignal) =>
+                        api.write(path, chunk, attemptSignal || signal),
+                    apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                    signal,
+                    logger,
+                    skipAck: true,
+                });
+                if (!message.success) {
+                    return message;
+                }
+
+                return createProtocolMessageResponse(
+                    {
+                        success: true,
+                        payload: protocol
+                            .encode(message.payload.payload, message.payload)
+                            .toString('hex'),
+                    },
+                    protocolName,
+                );
+            }
+
             const readResult = await readUtil({ path, signal, protocol });
 
             return createProtocolMessageResponse(readResult, protocolName);
