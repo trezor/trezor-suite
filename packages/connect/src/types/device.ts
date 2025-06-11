@@ -64,7 +64,9 @@ export type FirmwareHashCheckError =
     | 'check-skipped'
     | 'check-unsupported'
     | 'unknown-release'
+    | 'takes-too-long'
     | 'other-error';
+
 export type FirmwareHashCheckResult =
     | { success: true; attemptCount?: number; warningPayload?: unknown }
     | {
@@ -104,7 +106,8 @@ export type KnownDevice = BaseDevice & {
     thp?: ThpStateSerialized;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: string[];
-    authenticityChecks?: {
+    // FIXME: previous fix was not a connect problem, rather suite db migration
+    authenticityChecks: {
         firmwareRevision: FirmwareRevisionCheckResult | null;
         firmwareHash: FirmwareHashCheckResult | null;
         // Maybe add AuthenticityCheck result here?
