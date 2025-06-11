@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import {
-    Context,
+    ContextDomain,
     MessageSystemRootState,
     selectContextMessage,
 } from '@suite-common/message-system';
@@ -14,7 +14,7 @@ export type ContextMessageProps = Omit<
     InlineAlertBoxProps,
     'variant' | 'title' | 'buttonLabel' | 'onButtonPress'
 > & {
-    context: (typeof Context)[keyof typeof Context];
+    context: ContextDomain;
 };
 
 export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
