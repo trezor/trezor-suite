@@ -1,9 +1,16 @@
 import type { ThpState } from './ThpState';
 import {
     THP_CONTINUATION_PACKET,
+    THP_CONTROL_BYTE_DECRYPTED,
+    THP_CONTROL_BYTE_ENCRYPTED,
     THP_CREATE_CHANNEL_REQUEST,
     THP_CREATE_CHANNEL_RESPONSE,
     THP_ERROR_HEADER_BYTE,
+    THP_HANDSHAKE_COMPLETION_REQUEST,
+    THP_HANDSHAKE_COMPLETION_RESPONSE,
+    THP_HANDSHAKE_INIT_REQUEST,
+    THP_HANDSHAKE_INIT_RESPONSE,
+    THP_READ_ACK_HEADER_BYTE,
 } from './constants';
 import type { ThpMessageSyncBit } from './messages';
 
@@ -69,9 +76,40 @@ export const getExpectedResponses = (bytes: Buffer) => {
     if (magic === THP_CREATE_CHANNEL_REQUEST) {
         return [THP_CREATE_CHANNEL_RESPONSE];
     }
+    if (magic === THP_HANDSHAKE_INIT_REQUEST) {
+        return [THP_HANDSHAKE_INIT_RESPONSE, THP_CONTINUATION_PACKET];
+    }
+    if (magic === THP_HANDSHAKE_COMPLETION_REQUEST) {
+        return [THP_HANDSHAKE_COMPLETION_RESPONSE, THP_CONTINUATION_PACKET];
+    }
+    if (magic === THP_CONTROL_BYTE_ENCRYPTED) {
+        return [THP_CONTROL_BYTE_ENCRYPTED, THP_CONTINUATION_PACKET];
+    }
+    if (magic === THP_CONTROL_BYTE_DECRYPTED) {
+        return [THP_CONTROL_BYTE_DECRYPTED, THP_CONTINUATION_PACKET];
+    }
 
     return [];
 };
+
+// get expected responses from ThpState (stored as numbers)
+// and join them with the channel to receive 3 bytes header
+export const getExpectedHeaders = (state: ThpState): Buffer[] =>
+    state.expectedResponses.map(resp => {
+        let magic;
+        switch (resp) {
+            case THP_CONTINUATION_PACKET:
+                magic = Buffer.from([resp]); // THP_CONTINUATION_PACKET is not masked with sequence bit
+                break;
+            case THP_READ_ACK_HEADER_BYTE:
+                magic = addAckBit(resp, state.sendBit);
+                break;
+            default:
+                magic = addSequenceBit(resp, state.recvBit);
+        }
+
+        return Buffer.concat([magic, state.channel]);
+    });
 
 export const isExpectedResponse = (bytes: Buffer, state: ThpState) => {
     if (bytes.length < 3) {
