@@ -237,7 +237,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {
-            if (pageType === 'confirm') return;
+            if (pageType === 'confirm' || pageType === 'retry') return;
 
             const fiatValue = values?.outputs?.[0]?.fiat;
             const cryptoValue = values?.outputs?.[0]?.amount;
@@ -270,7 +270,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     // call change handler on every change of select inputs
     // effect only for sell form
     useEffect(() => {
-        if (type !== 'sell' || pageType === 'confirm') return;
+        if (type !== 'sell' || pageType === 'confirm' || pageType === 'retry') return;
 
         if (
             isChanged(
@@ -293,7 +293,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     // call change handler on every change of select inputs
     // effect only for exchange form
     useEffect(() => {
-        if (type !== 'exchange' || pageType === 'confirm') return;
+        if (type !== 'exchange' || pageType === 'confirm' || pageType === 'retry') return;
 
         if (
             isChanged(

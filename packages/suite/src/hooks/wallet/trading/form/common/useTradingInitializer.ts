@@ -29,7 +29,7 @@ export const useTradingInitializer = ({
                     timer.stop();
                 }
 
-                if (pageType === 'confirm') {
+                if (pageType === 'confirm' || pageType === 'retry') {
                     timer.stop();
 
                     return;

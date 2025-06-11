@@ -3335,6 +3335,10 @@ export default defineMessages({
         defaultMessage: 'THP credentials have been reset. Reconnect your Trezor.',
         id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
     },
+    TR_SIGN_TRANSACTION_TIMEOUT: {
+        defaultMessage: 'Signing transaction timed out',
+        id: 'TR_SIGN_TRANSACTION_TIMEOUT',
+    },
     TR_THP_ENTER_ONE_TIME_CODE: {
         id: 'TR_THP_ENTER_ONE_TIME_CODE',
         defaultMessage: 'Enter one-time security code',

@@ -471,12 +471,14 @@ export const useTradingSellForm = ({
         } catch (e) {
             const errorTyped = e as TradingSendRejectedProps;
 
-            dispatch(
-                notificationsActions.addToast({
-                    type: errorTyped.type,
-                    error: translationString(errorTyped.error.id, errorTyped.error.values),
-                }),
-            );
+            if (errorTyped.type !== 'sign-transaction-timeout') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: errorTyped.type,
+                        error: translationString(errorTyped.error.id, errorTyped.error.values),
+                    }),
+                );
+            }
 
             return false;
         }
@@ -563,14 +565,14 @@ export const useTradingSellForm = ({
 
     useEffect(() => {
         if (isFromRedirect) {
-            if (transactionId && trade) {
+            if (transactionId && trade && pageType !== 'retry') {
                 dispatch(tradingSellActions.saveSelectedQuote(trade.data));
                 dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
             }
 
             dispatch(tradingSellActions.setIsFromRedirect(false));
         }
-    }, [isFromRedirect, trade, transactionId, dispatch]);
+    }, [isFromRedirect, trade, transactionId, pageType, dispatch]);
 
     useEffect(() => {
         checkQuotesTimer(handleChange);

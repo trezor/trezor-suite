@@ -480,12 +480,14 @@ export const useTradingExchangeForm = ({
         } catch (e) {
             const errorTyped = e as TradingSendRejectedProps;
 
-            dispatch(
-                notificationsActions.addToast({
-                    type: errorTyped.type,
-                    error: translationString(errorTyped.error.id, errorTyped.error.values),
-                }),
-            );
+            if (errorTyped.type !== 'sign-transaction-timeout') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: errorTyped.type,
+                        error: translationString(errorTyped.error.id, errorTyped.error.values),
+                    }),
+                );
+            }
 
             return false;
         }

@@ -21,7 +21,7 @@ import {
     PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
-import { PROTO } from '@trezor/connect';
+import { PROTO, Unsuccessful } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { getSynchronize } from '@trezor/utils';
 
@@ -249,7 +249,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
             // Do not close the modal if the transaction signing timed out
             if (signResponse.payload?.error === 'sign-transaction-timeout') {
-                return;
+                return { type: signResponse.payload.error } as unknown as Unsuccessful;
             }
 
             // Close the modal manually since UI.CLOSE_UI.WINDOW was
