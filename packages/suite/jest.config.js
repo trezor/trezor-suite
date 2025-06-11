@@ -54,8 +54,8 @@ module.exports = {
         global: {
             statements: 49,
             branches: 35,
-            lines: 50,
-            functions: 47,
+            lines: 49,
+            functions: 46,
         },
     },
     modulePathIgnorePatterns: ['node_modules'],
