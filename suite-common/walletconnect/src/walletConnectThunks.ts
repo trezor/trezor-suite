@@ -311,19 +311,23 @@ export const sessionProposalRejectThunk = createThunk<
     {
         eventId: number;
     }
->(`${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`, async ({ eventId }) => {
-    await walletKit.rejectSession({
-        id: eventId,
-        reason: getSdkError('USER_REJECTED'),
-    });
-    /* const pendingProposal = selectPendingProposal(getState());
-    analytics.report({
-        type: EventType.WalletConnectProposalRejected,
-        payload: {
-            origin: pendingProposal?.origin,
-        },
-    });*/
-});
+>(
+    `${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`,
+    async ({ eventId }, { getState, dispatch }) => {
+        await walletKit.rejectSession({
+            id: eventId,
+            reason: getSdkError('USER_REJECTED'),
+        });
+        const pendingProposal = selectPendingProposal(getState());
+        dispatch(walletConnectActions.clearSessionProposal());
+        analytics.report({
+            type: EventType.WalletConnectProposalRejected,
+            payload: {
+                origin: pendingProposal?.origin,
+            },
+        });
+    },
+);
 
 export const walletConnectInitThunk = createThunk(
     `${WALLETCONNECT_MODULE}/walletConnectInitThunk`,
