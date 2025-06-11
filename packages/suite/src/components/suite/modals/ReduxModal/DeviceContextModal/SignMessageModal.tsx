@@ -101,7 +101,7 @@ export const SignMessageModal = ({
             >
                 <Column gap={spacings.xs}>
                     <Card
-                        heading={
+                        header={
                             <Row gap={spacings.sm}>
                                 <DotIndicator isActive={true} />
                                 <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">

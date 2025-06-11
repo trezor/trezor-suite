@@ -122,7 +122,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
         >
             <Column gap={spacings.lg}>
                 <Card
-                    heading={
+                    header={
                         <BackendTypeSelect
                             network={network}
                             value={backendsForm.type}

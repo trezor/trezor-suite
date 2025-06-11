@@ -127,7 +127,7 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card heading={body ? header : null} paddingType="large">
+            <Card header={body ? header : null} paddingType="large">
                 {body ? (
                     <Column justifyContent="center" minHeight={329}>
                         {body}

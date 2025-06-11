@@ -44,7 +44,10 @@ export const Card: StoryObj = {
         label: {
             control: 'text',
         },
-        heading: {
+        header: {
+            control: 'text',
+        },
+        footer: {
             control: 'text',
         },
         fillType: {
