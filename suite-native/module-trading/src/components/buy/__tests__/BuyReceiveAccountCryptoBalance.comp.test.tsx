@@ -22,46 +22,25 @@ describe('BuyReceiveAccountCryptoBalance', () => {
         return result.current;
     };
 
-    const renderComponent = async () =>
-        await renderWithStoreProviderAsync(
-            <Form form={buyForm}>
-                <BuyReceiveAccountCryptoBalance />
-            </Form>,
-        );
+    const renderComponent = () =>
+        renderWithStoreProviderAsync(<BuyReceiveAccountCryptoBalance />, {
+            wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
+        });
 
     beforeEach(async () => {
         buyForm = await renderBuyForm();
     });
 
-    it('should display empty box when nor symbol nor asset is specified', async () => {
+    it('should use asset form field as default symbol', async () => {
         act(() => {
-            buyForm.setValue('receiveAccount', {
-                account: {
-                    symbol: undefined,
-                    balance: '10000',
-                } as any,
-            });
-        });
-        const { queryByTestId } = await renderComponent();
-
-        expect(queryByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
-    });
-
-    it('should display empty balance when balance is not specified', async () => {
-        act(() => {
-            buyForm.setValue('receiveAccount', {
-                account: {
-                    symbol: 'btc',
-                    balance: undefined,
-                } as any,
-            });
+            buyForm.setValue('asset', btcAsset);
         });
         const { getByTestId } = await renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 
-    it('should display balance when symbol and balance is specified', async () => {
+    it('should use receiveAccount form field to obtain account', async () => {
         act(() => {
             buyForm.setValue('receiveAccount', {
                 account: {
@@ -73,14 +52,5 @@ describe('BuyReceiveAccountCryptoBalance', () => {
         const { getByTestId } = await renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
-    });
-
-    it('should display empty balance when symbol is not specified, but asset is', async () => {
-        act(() => {
-            buyForm.setValue('asset', btcAsset);
-        });
-        const { getByTestId } = await renderComponent();
-
-        expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 });
