@@ -26,34 +26,26 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard')
             return action;
 
-        let authorizationIntent = false;
         const device = selectSelectedDevice(nextState);
         const isDeviceLocked = selectIsDeviceLocked(nextState);
         // 1. selected device is acquired but doesn't have a state
 
         // 2. selected device becomes acquired from unacquired or connected from disconnected
+        let becomesAcquired = false;
         let becomesConnected = false;
         if (deviceActions.updateSelectedDevice.match(action)) {
             const prevDevice = prevState.device.selectedDevice;
-            const becomesAcquired = !!(
-                prevDevice &&
-                !prevDevice.features &&
-                device &&
-                device.features
-            );
+            becomesAcquired = !!(prevDevice && !prevDevice.features && device && device.features);
             becomesConnected = !!(
                 prevDevice &&
                 !prevDevice.connected &&
                 device &&
                 device.connected
             );
-            if (becomesAcquired) {
-                authorizationIntent = true;
-            }
         }
 
         if (
-            authorizationIntent ||
+            becomesAcquired ||
             becomesConnected ||
             action.type === SUITE.APP_CHANGED ||
             connectPopupCallThunkInner.fulfilled.match(action) ||
