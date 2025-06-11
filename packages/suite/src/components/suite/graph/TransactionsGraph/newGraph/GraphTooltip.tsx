@@ -35,7 +35,7 @@ export const GraphTooltip = props => {
                             <Row gap={spacings.xs} alignItems="center">
                                 <Text typographyStyle="highlight">
                                     <FiatAmountFormatter
-                                        value={from.value.toFixed()}
+                                        value={from.fiatValue.toFixed()}
                                         currency={localCurrency}
                                         minimumFractionDigits={0}
                                     />
@@ -43,7 +43,7 @@ export const GraphTooltip = props => {
                                 <Icon name="arrowRight" variant="tertiary" size="small" />{' '}
                                 <Text typographyStyle="highlight">
                                     <FiatAmountFormatter
-                                        value={to.value.toFixed()}
+                                        value={to.fiatValue.toFixed()}
                                         currency={localCurrency}
                                         minimumFractionDigits={0}
                                     />
@@ -53,30 +53,33 @@ export const GraphTooltip = props => {
                                 <Paragraph variant="primary" typographyStyle="hint">
                                     received{' '}
                                     <FiatAmountFormatter
-                                        value={(to.value - from.value).toFixed()}
+                                        value={(to.fiatValue - from.fiatValue).toFixed()}
                                         currency={localCurrency}
                                         minimumFractionDigits={0}
                                     />
+                                    {from.value} {to.value}
                                 </Paragraph>
                             )}
                             {from.value > to?.value && (
                                 <Paragraph variant="destructive" typographyStyle="hint">
                                     spent{' '}
                                     <FiatAmountFormatter
-                                        value={(from.value - to.value).toFixed()}
+                                        value={(from.fiatValue - to.fiatValue).toFixed()}
                                         currency={localCurrency}
                                         minimumFractionDigits={0}
                                     />
+                                    {from.value} {to.value}
                                 </Paragraph>
                             )}
                         </>
                     ) : (
                         <Paragraph>
                             <FiatAmountFormatter
-                                value={from.value.toFixed()}
+                                value={from.fiatValue.toFixed()}
                                 currency={localCurrency}
                                 minimumFractionDigits={0}
                             />
+                            <div>{from.value}</div>
                         </Paragraph>
                     )}
 

@@ -136,11 +136,11 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                     </ErrorMessage>
                 ) : (
                     <>
-                        <TransactionsGraph
-                            selectedRange={graph.selectedRange}
-                            portfolioData={data}
-                            localCurrency={localCurrency}
-                        />
+                        {/*<TransactionsGraph*/}
+                        {/*    selectedRange={graph.selectedRange}*/}
+                        {/*    portfolioData={data}*/}
+                        {/*    localCurrency={localCurrency}*/}
+                        {/*/>*/}
                         {/*<LegacyTransactionsGraph*/}
                         {/*    hideToolbar*/}
                         {/*    variant="all-assets"*/}

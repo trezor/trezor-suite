@@ -7,6 +7,7 @@ export type ApiData = {
 export type RawDataItem = {
     date: string;
     value: number;
+    fiatValue?: number;
 };
 
 export type MetaData = {

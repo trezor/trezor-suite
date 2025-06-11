@@ -1,4 +1,4 @@
-import { getUnixTime } from 'date-fns';
+import { fromUnixTime, getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
@@ -42,12 +42,13 @@ interface TransactionSummaryProps {
     account: Account;
 }
 
-const getBalanceData = (intervalGraphData: GraphData[]): RawDataItem[] =>
-    intervalGraphData.reduce<RawDataItem[]>((acc, data) => {
+const getBalanceGraphData = (intervalGraphData: GraphData[]): RawDataItem[] => {
+    return intervalGraphData.reduce<RawDataItem[]>((acc, data) => {
         if (data.data) {
             const balanceData = data.data.map(d => ({
-                date: d.time,
-                value: d.balance,
+                // get unix timestamp from date
+                date: fromUnixTime(d.time).toISOString(),
+                value: parseFloat(d.balance),
             }));
 
             return [...acc, ...balanceData];
@@ -55,17 +56,18 @@ const getBalanceData = (intervalGraphData: GraphData[]): RawDataItem[] =>
 
         return acc;
     }, []);
+};
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
     const graph = useSelector(state => state.wallet.graph);
-    const { graphData } = useGraphData({ selectedRange });
 
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
     const isDebug = useSelector(selectIsDebugModeActive);
     const intervalGraphData = getGraphDataForInterval({ account, graph });
-    const balanceData = getBalanceData(intervalGraphData);
+    const balanceGraphData = getBalanceGraphData(intervalGraphData);
+    const { graphData } = useGraphData(selectedRange, balanceGraphData, account);
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -104,7 +106,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
 
     const onRefresh = () => dispatch(updateGraphData([account]));
     const onSelectedRange = () => dispatch(updateGraphData([account], { newAccountsOnly: true }));
-
+    console.log('___DATA', { graphData });
     return (
         <Column alignItems="stretch" gap={20}>
             {account.networkType !== 'solana' && (
@@ -140,7 +142,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                         {/*{isDebug ? (*/}
                                         <TransactionsGraph
                                             data={graphData}
-                                            portfolioData={balanceData}
+                                            portfolioData={balanceGraphData}
                                             localCurrency={localCurrency}
                                         />
                                         {/*) : (*/}

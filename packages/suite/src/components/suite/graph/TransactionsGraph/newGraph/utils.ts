@@ -42,13 +42,15 @@ export const calculateSegments = (raw: RawDataItem[]) => {
 export const calculateMetaData = (data: RawDataItem[]) => {
     const minMax = data.reduce<{ min: number | null; max: number | null }>(
         (acc, item) => {
-            if (acc.min === null || acc.max === null) return { min: item.value, max: item.value };
+            if (!item.fiatValue) return acc;
+            if (acc.min === null || acc.max === null)
+                return { min: item.fiatValue, max: item.fiatValue };
 
-            if (acc.min > item.value) {
-                return { min: item.value, max: acc.max };
+            if (acc.min > item.fiatValue) {
+                return { min: item.fiatValue, max: acc.max };
             }
-            if (acc.max < item.value) {
-                return { min: acc.min, max: item.value };
+            if (acc.max < item.fiatValue) {
+                return { min: acc.min, max: item.fiatValue };
             }
 
             return acc;
@@ -64,7 +66,8 @@ export const calculateMetaData = (data: RawDataItem[]) => {
 export const dateFormatter = (date: string, isSameYear: boolean) =>
     format(new Date(date), `d MMM${isSameYear ? '' : ' yyyy'}`);
 
-export const sanitizePortfolioData = data => Object.values(data).map(item => ({
+export const sanitizePortfolioData = data =>
+    Object.values(data).map(item => ({
         value: parseFloat(item.balanceFiat.usd),
         date: fromUnixTime(item.time).toISOString(),
     }));
@@ -93,13 +96,13 @@ export const sanitizeCoinData = (data: ApiData, selectedRange: GraphRange): RawD
         const date = new Date(item[0]).toISOString();
         const value = item[1];
 
-        const probability = getProbabilityOfTransaction(selectedRange);
-        if (Math.random() > probability) {
-            newArray.push({
-                date,
-                value: getNewValue(value),
-            });
-        }
+        // const probability = getProbabilityOfTransaction(selectedRange);
+        // if (Math.random() > probability) {
+        //     newArray.push({
+        //         date,
+        //         value: getNewValue(value),
+        //     });
+        // }
 
         newArray.push({
             date,

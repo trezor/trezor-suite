@@ -66,7 +66,6 @@ export const TransactionsGraph = ({
 }: TransactionsGraphProps) => {
     const theme = useTheme();
     const [segments, setSegments] = useState<RawDataItem[][]>([]);
-    const [sanitizedPortfolioData, setSanitizedPortfolioData] = useState<RawDataItem[]>([]);
     const [verticalSegments, setVerticalSegments] = useState<RawDataItem[][]>([]);
     const [ticks, setTicks] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -75,7 +74,7 @@ export const TransactionsGraph = ({
         max: null,
         average: null,
     });
-    console.log('___', { raw, segments, verticalSegments, ticks });
+    // console.log('___', { raw, segments, verticalSegments, ticks });
 
     const handleRemoveData = () => {
         setVerticalSegments([]);
@@ -91,39 +90,6 @@ export const TransactionsGraph = ({
     //     setSegments([]);
     // };
 
-    // useEffect(() => {
-    //     setIsLoading(true);
-    //     removeData();
-    //
-    //     const fetchMockData = () => {
-    //         const rawData = sanitizeCoinData(demoData, selectedRange);
-    //         const filteredRawData = rawData.filter(
-    //             item =>
-    //                 isBefore(new Date(item.date), currentRange.endDate) &&
-    //                 isAfter(new Date(item.date), currentRange.startDate),
-    //         );
-    //         setRaw(filteredRawData);
-    //     };
-    //
-    //     const fetchData = async () => {
-    //         const fromTimestamp = getUnixTime(new Date(currentRange.startDate));
-    //         const toTimestamp = getUnixTime(new Date(currentRange.endDate));
-    //
-    //         console.log(
-    //             '___ZZZZZTT',
-    //             `https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/market_chart/range?vs_currency=${localCurrency}&from=${fromTimestamp}&to=${toTimestamp}`,
-    //         );
-    //         const response = await fetch(
-    //             `https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/market_chart/range?vs_currency=${localCurrency}&from=${fromTimestamp}&to=${toTimestamp}`,
-    //         );
-    //         const fetchedData = (await response.json()) as ApiData;
-    //         setRaw(sanitizeCoinData(fetchedData, selectedRange));
-    //     };
-    //
-    //     fetchMockData();
-    //     // fetchData().catch(console.error);
-    // }, [selectedRange.startDate, selectedRange.endDate, localCurrency]);
-
     useEffect(() => {
         const { newSegments, newVerticalSegments, filteredTicks } = calculateSegments(raw);
 
@@ -134,11 +100,6 @@ export const TransactionsGraph = ({
         setMetaData(calculateMetaData(raw));
         setIsLoading(false);
     }, [raw]);
-
-    useEffect(() => {
-        // const sanitizedData = sanitizePortfolioData(portfolioData);
-        setSanitizedPortfolioData(portfolioData);
-    }, [portfolioData]);
 
     if (isLoading) {
         return <GraphSkeleton animate />;
@@ -166,8 +127,9 @@ export const TransactionsGraph = ({
                         ticks={[...new Set(ticks)]}
                     />
                     <YAxis
+                        // yAxisId="left"
                         type="number"
-                        domain={['auto', 'auto']}
+                        domain={[0, 'auto']}
                         ticks={[]}
                         hide={true}
                         allowDataOverflow
@@ -214,10 +176,11 @@ export const TransactionsGraph = ({
                     );
                     {segments.map((segment, index) => (
                         <Area
+                            // yAxisId="left"
                             key={`main-${index}`}
                             data={segment}
                             type="linear"
-                            dataKey="value"
+                            dataKey="fiatValue"
                             stroke={theme.backgroundPrimaryDefault}
                             strokeWidth={1.5}
                             dot={false}
@@ -236,10 +199,11 @@ export const TransactionsGraph = ({
 
                         return (
                             <Line
+                                // yAxisId="left"
                                 key={`v-${index}`}
                                 data={pair}
                                 type="linear"
-                                dataKey="value"
+                                dataKey="fiatValue"
                                 stroke={
                                     isPositive
                                         ? theme.backgroundSecondaryDefault
@@ -257,21 +221,25 @@ export const TransactionsGraph = ({
                             />
                         );
                     })}
-                    {/*{sanitizedPortfolioData.map((pair, index) => (*/}
-                    {/*    <Line*/}
-                    {/*        key={`b-${index}`}*/}
-                    {/*        data={pair}*/}
-                    {/*        type="linear"*/}
-                    {/*        dataKey="value"*/}
-                    {/*        stroke="blue"*/}
-                    {/*        strokeWidth={1.5}*/}
-                    {/*        strokeDasharray="3 6"*/}
-                    {/*        strokeLinejoin="round"*/}
-                    {/*        strokeLinecap="round"*/}
-                    {/*        isAnimationActive={false}*/}
-                    {/*        legendType="none"*/}
-                    {/*        name={`balance-${index}`}*/}
-                    {/*    />*/}
+                    {/*{raw.map((pair, index) => (*/}
+                    <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        stroke="#82ca9d"
+                        domain={['auto', 'auto']}
+                    />
+                    <Line
+                        yAxisId="right"
+                        type="linear"
+                        dataKey="value"
+                        stroke="blue"
+                        dot={false}
+                        strokeWidth={1}
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        isAnimationActive={false}
+                        legendType="none"
+                    />
                     {/*))}*/}
                     {metaData.min && (
                         <ReferenceLine
