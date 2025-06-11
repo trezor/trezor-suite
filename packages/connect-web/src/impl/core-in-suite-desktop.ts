@@ -86,7 +86,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         }
     }
 
-    public async init(settings: Partial<ConnectSettingsPublic> = {}): Promise<void> {
+    public async init(settings: Partial<ConnectSettingsPublic>): Promise<void> {
         const newSettings = parseConnectSettings({
             ...this._settings,
             ...settings,
@@ -106,6 +106,10 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         }
         this._settings = newSettings;
 
+        return await this.connect();
+    }
+
+    private async connect(): Promise<void> {
         try {
             await this.ws.connect();
         } catch (err) {
@@ -123,7 +127,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
         try {
             if (!this.ws.isConnected()) {
-                await this.init();
+                await this.connect();
             }
             await this.handshake();
 
