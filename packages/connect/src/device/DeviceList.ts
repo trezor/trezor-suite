@@ -151,9 +151,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         );
 
         if (!stillConnected) {
-            // this emit is here solely for waitForDevices to work; it would be nice to remove it
-            this.emit(DEVICE.DISCONNECT, device);
-
             return;
         }
 
@@ -232,20 +229,17 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const descriptors = enumerateResult.payload;
 
-        const waitForDevicesPromise =
-            pendingTransportEvent && descriptors.length
-                ? this.waitForDevices(transport, descriptors, signal)
-                : Promise.resolve();
-
         transport.handleDescriptorsChange(descriptors);
         transport.listen();
 
-        await waitForDevicesPromise;
+        if (pendingTransportEvent && descriptors.length) {
+            await this.waitForDevices(transport, signal);
+        }
     }
 
     /**
      * Returned promise:
-     * - resolves when all the devices visible from given transport were acquired (or at least tried to)
+     * - resolves when all the devices visible from given transport were handshaked
      * - resolves after 10 secs (in order not to get stuck waiting for devices)
      * - rejects when aborted (e.g. because of DeviceList reinit)
      * - rejects when given transport emits an error
@@ -256,7 +250,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
      * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
      * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
      */
-    private waitForDevices(transport: Transport, descriptors: Descriptor[], signal: AbortSignal) {
+    private waitForDevices(transport: Transport, signal: AbortSignal) {
         const { promise, reject, resolve } = createDeferred();
 
         const onAbort = () => reject(signal.reason);
@@ -267,28 +261,15 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const autoResolveTransportEventTimeout = setTimeout(resolve, 10000);
 
-        const remaining = descriptors.slice();
-
-        const onDeviceEvent = (device: Device) => {
-            const index = remaining.findIndex(
-                d => d.path === device.transportPath && transport === device.transport,
-            );
-            if (index >= 0) remaining.splice(index, 1);
-            if (!remaining.length) resolve();
-        };
-
-        // listen for self emitted events and resolve pending transport event if needed
-        this.on(DEVICE.CONNECT, onDeviceEvent);
-        this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceEvent);
-        this.on(DEVICE.DISCONNECT, onDeviceEvent);
+        // this works because all initial device handshakes are started synchronously from
+        // initializeTransport -> transport.handleDescriptorsChange so this `resolve`
+        // in handshakeLock cannot be called before all of them are resolved
+        this.handshakeLock(resolve);
 
         return promise.finally(() => {
             transport.off(TRANSPORT.ERROR, onError);
             signal.removeEventListener('abort', onAbort);
             clearTimeout(autoResolveTransportEventTimeout);
-            this.off(DEVICE.CONNECT, onDeviceEvent);
-            this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceEvent);
-            this.off(DEVICE.DISCONNECT, onDeviceEvent);
         });
     }
 
