@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import {
-    Context,
+    ContextDomain,
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';
@@ -13,7 +13,7 @@ import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer'
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 type ContextMessageProps = {
-    context: (typeof Context)[keyof typeof Context];
+    context: ContextDomain;
 };
 
 export const ContextMessage = ({ context }: ContextMessageProps) => {

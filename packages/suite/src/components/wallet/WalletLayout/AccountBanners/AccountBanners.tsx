@@ -30,13 +30,19 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
 
     return (
         <Column gap={spacings.sm}>
-            {account?.accountType === 'coinjoin' && <ContextMessage context={Context.coinjoin} />}
+            {account?.accountType === 'coinjoin' && (
+                <ContextMessage context={Context.getDeprecated('accounts.coinjoin')} />
+            )}
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && <ContextMessage context={Context.ethStaking} />}
+                route?.name === 'wallet-staking' && (
+                    <ContextMessage context={Context.getStaking('eth')} />
+                )}
             {account?.symbol &&
                 isSupportedSolStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && <ContextMessage context={Context.solStaking} />}
+                route?.name === 'wallet-staking' && (
+                    <ContextMessage context={Context.getStaking('sol')} />
+                )}
             <BackendDisconnected />
             <DeviceUnavailable />
             <TorDisconnected />

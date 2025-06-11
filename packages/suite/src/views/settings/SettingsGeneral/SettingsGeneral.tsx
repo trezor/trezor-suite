@@ -1,9 +1,11 @@
+import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import {
@@ -64,6 +66,8 @@ export const SettingsGeneral = () => {
 
     return (
         <SettingsLayout data-testid="@settings/index">
+            <ContextMessage context={Context.getSettings('general')} />
+
             <div>
                 {isWeb() && !isBelowTablet && shouldShowSettingsDesktopAppPromoBanner && (
                     <DesktopSuiteBanner />

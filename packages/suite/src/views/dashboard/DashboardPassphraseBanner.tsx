@@ -19,7 +19,7 @@ import { bannerAnimationConfig } from './banner-animations';
 
 const Container = styled(motion.div)`
     width: 100%;
-    margin-bottom: ${spacingsPx.xxxxl};
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 export const DashboardPassphraseBanner = () => {

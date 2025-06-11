@@ -1,7 +1,11 @@
+import styled from 'styled-components';
+
+import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
@@ -11,15 +15,22 @@ import { PromoBanner } from './PromoBanner';
 import { StakeEthCard } from './StakeEthCard/StakeEthCard';
 // import { T3T1PromoBanner } from './T3T1PromoBanner/T3T1PromoBanner';
 
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xl};
+`;
+
 export const Dashboard = () => {
     useLayout('Home', <PageHeader />);
 
     return (
         <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
-            <div>
+            <Container>
+                <ContextMessage context={Context.getGeneral('dashboard')} />
                 <DashboardPassphraseBanner />
                 <PortfolioCard />
-            </div>
+            </Container>
             {/*<T3T1PromoBanner />*/}
             <AssetsView />
             <StakeEthCard />
