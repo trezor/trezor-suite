@@ -2,7 +2,7 @@ import { PixelRatio } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import {
-    selectDeviceFirmwareVersion,
+    selectDeviceFirmwareVersionArray,
     selectDeviceUpdateFirmwareVersion,
     selectHasBitcoinOnlyFirmware,
 } from '@suite-common/wallet-core';
@@ -76,7 +76,7 @@ const firmwareArrowStyle = prepareNativeStyle(utils => {
 
 export const FirmwareUpdateVersionCard = (props: BoxProps) => {
     const { applyStyle } = useNativeStyles();
-    const firmwareVersion = useSelector(selectDeviceFirmwareVersion);
+    const firmwareVersion = useSelector(selectDeviceFirmwareVersionArray);
     const updateFirmwareVersion = useSelector(selectDeviceUpdateFirmwareVersion);
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
     const { translate } = useTranslate();

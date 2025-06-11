@@ -312,7 +312,12 @@ export const selectDeviceReleaseInfo = createMemoizedSelector(
 );
 
 export const selectDeviceFirmwareVersion = createMemoizedSelector([selectSelectedDevice], device =>
-    getFirmwareVersionArray(device),
+    getFirmwareVersion(device),
+);
+
+export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => getFirmwareVersionArray(device),
 );
 
 export const selectPhysicalDevices = createMemoizedSelector([selectDevices], devices =>
@@ -432,7 +437,7 @@ export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
 };
 
 export const selectIsLatestFirmwareInstalled = createMemoizedSelector(
-    [selectDeviceFirmwareVersion, selectDeviceUpdateFirmwareVersion],
+    [selectDeviceFirmwareVersionArray, selectDeviceUpdateFirmwareVersion],
     (deviceFirmwareVersion, updateFirmwareVersion) =>
         deviceFirmwareVersion?.join('.') === updateFirmwareVersion,
 );
