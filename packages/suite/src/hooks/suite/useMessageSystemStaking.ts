@@ -3,13 +3,12 @@ import {
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 import { useSelector } from './useSelector';
 
-type AvailableNetworkSymbols = Extract<NetworkSymbol, 'eth' | 'sol'>;
 const availableNetworks = [
     ...Object.keys(Feature.stake),
     ...Object.keys(Feature.unstake),
@@ -21,11 +20,11 @@ export const useMessageSystemStaking = (networkSymbol?: NetworkSymbol) => {
 
     const isAvailable = networkSymbol != null && availableNetworks.includes(networkSymbol);
 
-    const stake = isAvailable ? Feature.stake[networkSymbol as AvailableNetworkSymbols] : undefined;
+    const stake = isAvailable ? Feature.stake[networkSymbol as StakingNetworkSymbol] : undefined;
     const unstake = isAvailable
-        ? Feature.unstake[networkSymbol as AvailableNetworkSymbols]
+        ? Feature.unstake[networkSymbol as StakingNetworkSymbol]
         : undefined;
-    const claim = isAvailable ? Feature.claim[networkSymbol as AvailableNetworkSymbols] : undefined;
+    const claim = isAvailable ? Feature.claim[networkSymbol as StakingNetworkSymbol] : undefined;
 
     const isStakingDisabled = useSelector(state =>
         stake ? selectIsFeatureDisabled(state, stake) : undefined,
