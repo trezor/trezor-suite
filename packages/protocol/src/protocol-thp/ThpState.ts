@@ -81,6 +81,29 @@ export class ThpState {
         }
     }
 
+    sync(type: 'send' | 'recv', messageType: string) {
+        // check if syncBit should be updated
+        const updateSyncBit = !['ThpCreateChannelRequest', 'ThpCreateChannelResponse'].includes(
+            messageType,
+        );
+        if (updateSyncBit) {
+            this.updateSyncBit(type);
+        }
+
+        // check if nonce should be updated
+        const updateNonce =
+            updateSyncBit &&
+            ![
+                'ThpHandshakeInitRequest',
+                'ThpHandshakeInitResponse',
+                'ThpHandshakeCompletionRequest',
+                'ThpHandshakeCompletionResponse',
+            ].includes(messageType);
+        if (updateNonce) {
+            this.updateNonce(type);
+        }
+    }
+
     serialize(): ThpStateSerialized {
         return {
             properties: this._properties,
@@ -89,8 +112,8 @@ export class ThpState {
             recvBit: this.recvBit,
             sendNonce: this.sendNonce,
             recvNonce: this.recvNonce,
-            expectedResponses: this._expectedResponses,
-            credentials: this._pairingCredentials,
+            expectedResponses: this._expectedResponses.slice(0),
+            credentials: this._pairingCredentials.slice(0),
         };
     }
 
