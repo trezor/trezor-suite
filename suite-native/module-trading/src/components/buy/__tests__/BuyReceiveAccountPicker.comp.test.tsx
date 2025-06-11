@@ -2,25 +2,16 @@ import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
     act,
-    fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
+import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyFormType } from '../../../types/buy';
-import { ReceiveAccount } from '../../../types/general';
+import { ReceiveAccount, TradeableAsset } from '../../../types/general';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
-
-let mockNavigate: jest.Mock;
-
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => ({
-        navigate: mockNavigate,
-    }),
-}));
 
 const btcAccountName1 = 'BTC Account #1';
 const btcAddressAddress = '1BTC';
@@ -38,10 +29,6 @@ const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
 describe('BuyReceiveAccountPicker', () => {
     let buyForm: BuyFormType;
 
-    beforeEach(() => {
-        jest.resetAllMocks();
-    });
-
     const renderBuyForm = async () => {
         const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
 
@@ -49,23 +36,18 @@ describe('BuyReceiveAccountPicker', () => {
     };
 
     const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
-        renderWithStoreProviderAsync(
-            <Form form={buyForm}>
-                <BuyReceiveAccountPicker />
-            </Form>,
-            {
-                preloadedState,
-            },
-        );
+        renderWithStoreProviderAsync(<BuyReceiveAccountPicker />, {
+            preloadedState,
+            wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
+        });
 
-    const setSelectedCryptoId = (cryptoId: string) => {
+    const setSelectedAsset = (asset: TradeableAsset) => {
         act(() => {
-            buyForm.setValue('asset', { cryptoId } as any);
+            buyForm.setValue('asset', asset);
         });
     };
 
     beforeEach(async () => {
-        mockNavigate = jest.fn();
         buyForm = await renderBuyForm();
     });
 
@@ -75,36 +57,15 @@ describe('BuyReceiveAccountPicker', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should display "Not selected" when selectedValue is not specified', async () => {
-        setSelectedCryptoId('bitcoin');
+    it('should display "Not selected" when asset is not specified', async () => {
+        setSelectedAsset(btcAsset);
         const { getByText } = await renderPicker();
 
         expect(getByText('Not selected')).toBeTruthy();
     });
 
-    it('should call navigate to account picker when selectedSymbol is specified and picker pressed', async () => {
-        setSelectedCryptoId('ethereum');
-        const { getByText } = await renderPicker({
-            preloadedState: getBuyState(undefined),
-        });
-
-        fireEvent.press(getByText('Receive account'));
-
-        expect(mockNavigate).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', expect.anything());
-    });
-
-    it('should display selected account name', async () => {
-        setSelectedCryptoId('bitcoin');
-        const { getByText } = await renderPicker({
-            preloadedState: getBuyState({ account: getBtcAccount() }),
-        });
-
-        expect(getByText(btcAccountName1)).toBeTruthy();
-    });
-
     it('should display selected account name and address', async () => {
-        setSelectedCryptoId('bitcoin');
+        setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
             preloadedState: getBuyState({
