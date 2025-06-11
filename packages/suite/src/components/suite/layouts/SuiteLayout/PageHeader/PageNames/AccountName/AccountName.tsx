@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
-import { spacings } from '@trezor/theme';
 
-import { ACCOUNT_INFO_HEIGHT } from 'src/components/wallet/WalletLayout/AccountTopPanel/AccountTopPanel';
+import { HEADER_HEIGHT } from 'src/constants/suite/layout';
+import { useOptionalAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
 
 import { AccountDetails } from './AccountDetails';
-import { SCROLL_WRAPPER_ID } from '../../../SuiteLayout';
 
 interface AccountNameProps {
     selectedAccount: Account;
@@ -14,26 +13,28 @@ interface AccountNameProps {
 
 export const AccountName = ({ selectedAccount }: AccountNameProps) => {
     const [isScrolled, setIsScrolled] = useState(false);
+    const accountHeaderContext = useOptionalAccountHeaderContext();
+    const balanceSectionRef = accountHeaderContext?.balanceSectionRef;
 
     useEffect(() => {
-        const scrollContainer = document.getElementById(SCROLL_WRAPPER_ID);
+        const target = balanceSectionRef?.current;
+        if (!target) return;
 
-        if (!scrollContainer) return;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsScrolled(!entry.isIntersecting);
+            },
+            {
+                root: null,
+                threshold: 0,
+                rootMargin: `-${HEADER_HEIGHT} 0px 0px 0px`,
+            },
+        );
 
-        const handleScroll = (e: Event) => {
-            const target = e.target as HTMLElement;
-            //  ContentWrapper top padding + info height + AccountInfo bottom margin
-            const breakingPoint = spacings.lg + ACCOUNT_INFO_HEIGHT + spacings.lg;
+        observer.observe(target);
 
-            setIsScrolled(target.scrollTop > breakingPoint);
-        };
-
-        scrollContainer.addEventListener('scroll', handleScroll);
-
-        return () => {
-            scrollContainer.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+        return () => observer.disconnect();
+    }, [balanceSectionRef]);
 
     return <AccountDetails selectedAccount={selectedAccount} isBalanceShown={isScrolled} />;
 };

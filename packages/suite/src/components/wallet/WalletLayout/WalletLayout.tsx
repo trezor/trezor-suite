@@ -7,6 +7,7 @@ import { PrimitiveType } from '@trezor/type-utils';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout, useTranslation } from 'src/hooks/suite';
+import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
 import { AppState } from 'src/types/suite';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
@@ -20,11 +21,11 @@ type WalletPageHeaderProps = {
 };
 
 const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => (
-    <>
+    <AccountHeaderProvider>
         <PageHeader />
         {!isSubpage && <AccountTopPanel />}
         {!isSubpage && <AccountNavigation />}
-    </>
+    </AccountHeaderProvider>
 );
 
 type WalletLayoutProps = {

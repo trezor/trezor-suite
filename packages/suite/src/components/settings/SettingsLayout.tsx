@@ -16,6 +16,7 @@ import {
     selectHasExperimentalFeature,
     selectIsDebugModeActive,
 } from 'src/reducers/suite/suiteReducer';
+import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 
 type SettingsLayoutProps = {
@@ -75,10 +76,10 @@ const SettingsHeader = () => {
     );
 
     return (
-        <>
+        <AccountHeaderProvider>
             <PageHeader />
             <SubpageNavigation items={settingsSubpages} />
-        </>
+        </AccountHeaderProvider>
     );
 };
 

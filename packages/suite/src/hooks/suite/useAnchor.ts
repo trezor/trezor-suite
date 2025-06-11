@@ -1,18 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 
-import { SCROLL_WRAPPER_ID } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
+import { ScrollContext } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
 import { HEADER_HEIGHT_NUMERIC, SUBPAGE_NAV_HEIGHT_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
 const OFFSET = 30;
 
 export const useAnchor = (anchorId: string) => {
+    const scrollRef = useContext(ScrollContext);
     const anchorRef = useRef<HTMLDivElement>(null);
     const anchor = useSelector(state => state.router.anchor);
 
     useEffect(() => {
         if (anchorId === anchor && anchorRef.current) {
-            const scrollContainer = document.getElementById(SCROLL_WRAPPER_ID);
+            const scrollContainer = scrollRef?.current;
             if (!scrollContainer) return;
 
             const headerHeight = HEADER_HEIGHT_NUMERIC + SUBPAGE_NAV_HEIGHT_NUMERIC + OFFSET;
@@ -29,7 +30,7 @@ export const useAnchor = (anchorId: string) => {
                 behavior: 'smooth',
             });
         }
-    }, [anchor, anchorId]);
+    }, [anchor, anchorId, scrollRef]);
 
     return {
         anchorRef,
