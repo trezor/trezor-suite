@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, createContext, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -27,7 +27,10 @@ import { PassphraseFlow } from './PassphraseFlow';
 import { Sidebar } from './Sidebar/Sidebar';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 
-export const SCROLL_WRAPPER_ID = 'layout-scroll';
+export const ScrollContext = createContext<React.RefObject<HTMLDivElement | null>>({
+    current: null,
+});
+
 export const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -149,59 +152,57 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const isAccountPage = !!selectedAccount;
 
     return (
-        <ElevationContext baseElevation={-1}>
-            <Wrapper ref={wrapperRef} data-testid="@suite-layout">
-                <PageWrapper>
-                    <Modal.Provider>
-                        <Metadata title={title} />
+        <ScrollContext.Provider value={scrollRef}>
+            <ElevationContext baseElevation={-1}>
+                <Wrapper ref={wrapperRef} data-testid="@suite-layout">
+                    <PageWrapper>
+                        <Modal.Provider>
+                            <Metadata title={title} />
 
-                        <ModalSwitcher />
-                        <PassphraseFlow />
-                        <AppShortcuts />
+                            <ModalSwitcher />
+                            <PassphraseFlow />
+                            <AppShortcuts />
 
-                        {isBelowTablet && <CoinjoinBars />}
+                            {isBelowTablet && <CoinjoinBars />}
 
-                        {isBelowTablet && <MobileMenu />}
+                            {isBelowTablet && <MobileMenu />}
 
-                        <DiscoveryProgress />
+                            <DiscoveryProgress />
 
-                        <LayoutContext.Provider value={setLayoutPayload}>
-                            <Body data-testid="@suite-layout/body">
-                                <Columns>
-                                    {!isBelowTablet && (
-                                        <ElevationDown>
-                                            <Sidebar />
-                                        </ElevationDown>
-                                    )}
-                                    <MainContent>
-                                        {!isBelowTablet && <CoinjoinBars />}
-                                        <SuiteBanners />
-                                        <AppWrapper
-                                            data-testid="@app"
-                                            ref={scrollRef}
-                                            id={SCROLL_WRAPPER_ID}
-                                        >
-                                            <ElevationUp>
-                                                {isBelowTablet && isAccountPage && (
-                                                    <MobileAccountsMenu />
-                                                )}
-                                                {layoutHeader}
+                            <LayoutContext.Provider value={setLayoutPayload}>
+                                <Body data-testid="@suite-layout/body">
+                                    <Columns>
+                                        {!isBelowTablet && (
+                                            <ElevationDown>
+                                                <Sidebar />
+                                            </ElevationDown>
+                                        )}
+                                        <MainContent>
+                                            {!isBelowTablet && <CoinjoinBars />}
+                                            <SuiteBanners />
+                                            <AppWrapper data-testid="@app" ref={scrollRef}>
+                                                <ElevationUp>
+                                                    {isBelowTablet && isAccountPage && (
+                                                        <MobileAccountsMenu />
+                                                    )}
+                                                    {layoutHeader}
 
-                                                <ContentWrapper>{children}</ContentWrapper>
-                                            </ElevationUp>
-                                        </AppWrapper>
-                                    </MainContent>
-                                </Columns>
-                            </Body>
-                        </LayoutContext.Provider>
+                                                    <ContentWrapper>{children}</ContentWrapper>
+                                                </ElevationUp>
+                                            </AppWrapper>
+                                        </MainContent>
+                                    </Columns>
+                                </Body>
+                            </LayoutContext.Provider>
 
-                        {!isBelowTablet && <GuideButton />}
-                    </Modal.Provider>
-                </PageWrapper>
+                            {!isBelowTablet && <GuideButton />}
+                        </Modal.Provider>
+                    </PageWrapper>
 
-                <GuideRouter />
-            </Wrapper>
-            {theme.variant === 'debug' && <DebugLegend />}
-        </ElevationContext>
+                    <GuideRouter />
+                </Wrapper>
+                {theme.variant === 'debug' && <DebugLegend />}
+            </ElevationContext>
+        </ScrollContext.Provider>
     );
 };
