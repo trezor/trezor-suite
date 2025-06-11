@@ -1,7 +1,5 @@
 import { CoinInfo, CryptoId } from 'invity-api';
 
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
-
 import coins from '../../../__fixtures__/coins.json';
 import {
     btcAsset,
@@ -9,11 +7,9 @@ import {
     ethOnBaseAsset,
     usdcAsset,
 } from '../../../__fixtures__/tradeableAssets';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { TradeableAsset } from '../../../types/general';
 import {
     coinInfoToTradeableAsset,
-    getSelectedSymbolFromBuyForm,
+    getSymbolFromTradeableAsset,
     tradeableAssetSortingComparator,
 } from '../tradeableAssetUtils';
 
@@ -56,22 +52,13 @@ describe('tradeableAssetUtils', () => {
         });
     });
 
-    describe('getSelectedSymbolFromBuyForm', () => {
-        it('should return correct symbol', async () => {
-            const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
-
-            act(() =>
-                result.current.setValue('asset', {
-                    cryptoId: 'ethereum--0x07150e919b4de5fd6a63de1f9384828396f25fdc',
-                    symbol: 'base',
-                    name: 'Base Protocol',
-                    coingeckoId: 'base-protocol',
-                    contractAddress: '0x07150e919b4de5fd6a63de1f9384828396f25fdc',
-                    networkId: 'ethereum',
-                } as TradeableAsset),
-            );
-
-            expect(getSelectedSymbolFromBuyForm(result.current)).toEqual('eth');
+    describe('getSymbolFromTradeableAsset', () => {
+        it.each([
+            [undefined, undefined],
+            [btcAsset, 'btc'],
+            [usdcAsset, 'eth'],
+        ])('should return symbol based on asset.cryptoId', (asset, expectedSymbol) => {
+            expect(getSymbolFromTradeableAsset(asset)).toEqual(expectedSymbol);
         });
     });
 

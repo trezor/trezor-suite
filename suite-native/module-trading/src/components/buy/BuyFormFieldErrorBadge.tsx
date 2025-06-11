@@ -11,7 +11,7 @@ import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 import { BuyFormValues } from '../../types/buy';
 import { truncateDecimals } from '../../utils/general/amountUtils';
-import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
+import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 
 export type BuyFormFieldErrorBadgeProps = {
     fieldName: keyof BuyFormValues;
@@ -20,13 +20,18 @@ export type BuyFormFieldErrorBadgeProps = {
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
 const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
-    const form = useBuyFormContext();
+    const { watch } = useBuyFormContext();
     const { translate } = useTranslate();
     const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();
-    const symbol = getSelectedSymbolFromBuyForm(form);
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
 
-    const [quote, amountInCrypto, value] = form.watch(['quote', 'amountInCrypto', fieldName]);
+    const [asset, quote, amountInCrypto, value] = watch([
+        'asset',
+        'quote',
+        'amountInCrypto',
+        fieldName,
+    ]);
+    const symbol = getSymbolFromTradeableAsset(asset);
 
     if (!quote) {
         return undefined;

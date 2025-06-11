@@ -4,7 +4,6 @@ import { cryptoIdToSymbol, isCryptoIdForNativeToken, parseCryptoId } from '@suit
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 
-import { BuyFormType } from '../../types/buy';
 import { TradeableAsset } from '../../types/general';
 
 const FAVOURITE_NETWORKS_PRIORITY_ORDER = ['bitcoin', 'ethereum', 'litecoin', 'cardano', 'solana'];
@@ -44,8 +43,5 @@ export const coinInfoToTradeableAsset = (
     };
 };
 
-export const getSelectedSymbolFromBuyForm = (form: BuyFormType) => {
-    const cryptoId = form.watch('asset')?.cryptoId;
-
-    return cryptoId ? cryptoIdToSymbol(cryptoId) : undefined;
-};
+export const getSymbolFromTradeableAsset = (asset: TradeableAsset | undefined) =>
+    asset?.cryptoId ? cryptoIdToSymbol(asset.cryptoId) : undefined;

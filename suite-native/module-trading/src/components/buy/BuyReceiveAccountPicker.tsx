@@ -2,16 +2,17 @@ import { useSelector } from 'react-redux';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { selectBuySelectedReceiveAccount } from '../../selectors/buySelectors';
-import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
+import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { ReceiveAccountPicker } from '../general/ReceiveAccount/ReceiveAccountPicker';
 
 const RECEIVE_ACCOUNT_PICKER_TEST_ID = '@trading/buy/receive-account';
 
 export const BuyReceiveAccountPicker = () => {
+    const { watch } = useBuyFormContext();
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
-    const form = useBuyFormContext();
 
-    const selectedSymbol = getSelectedSymbolFromBuyForm(form);
+    const asset = watch('asset');
+    const selectedSymbol = getSymbolFromTradeableAsset(asset);
 
     return (
         <ReceiveAccountPicker

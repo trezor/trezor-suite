@@ -29,7 +29,7 @@ import {
     getAnalyticsTradingBuyPayload,
     getSourceForForm,
 } from '../../utils/general/formUtils';
-import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
+import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -69,7 +69,11 @@ export const useBuyFlow = (form: BuyFormType) => {
 
     const [isConsentRequested, setIsConsentRequested] = useState(false);
 
-    const [candidateQuote, receiveAccount] = form.watch(['quote', 'receiveAccount']);
+    const [asset, candidateQuote, receiveAccount] = form.watch([
+        'asset',
+        'quote',
+        'receiveAccount',
+    ]);
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, candidateQuote?.receiveCurrency),
     );
@@ -82,7 +86,7 @@ export const useBuyFlow = (form: BuyFormType) => {
     });
 
     const selectReceiveAccount = () => {
-        const selectedNetworkSymbol = getSelectedSymbolFromBuyForm(form);
+        const selectedNetworkSymbol = getSymbolFromTradeableAsset(asset);
         if (selectedNetworkSymbol) {
             navigation.navigate(TradingStackRoutes.ReceiveAccounts, {
                 symbol: selectedNetworkSymbol,

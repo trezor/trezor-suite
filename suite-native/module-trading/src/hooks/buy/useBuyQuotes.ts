@@ -21,7 +21,7 @@ import { selectValidTradingBuyQuotesNative } from '../../selectors/buySelectors'
 import { tradingActions } from '../../tradingSlice';
 import { BuyFormType } from '../../types/buy';
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/general/quotesUtils';
-import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
+import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useReloadTimer } from '../general/useReloadTimer';
 
 type PromiseType = {
@@ -154,7 +154,7 @@ const useBuyQuotesThunk = (
     const dispatch = useDispatch();
 
     const asset = form.watch('asset');
-    const symbol = getSelectedSymbolFromBuyForm(form);
+    const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );

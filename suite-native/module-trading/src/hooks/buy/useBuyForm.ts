@@ -29,7 +29,7 @@ import { tradingActions } from '../../tradingSlice';
 import { BuyFormType, BuyFormValues } from '../../types/buy';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
-import { getSelectedSymbolFromBuyForm } from '../../utils/general/tradeableAssetUtils';
+import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { getRandomAccountDescriptor } from '../../utils/general/utils';
 import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
 
@@ -179,10 +179,9 @@ const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
     }, [quotes, getValues, setValue]);
 };
 
-const useBuyQuoteChangeEffect = (form: BuyFormType) => {
-    const { getValues, setValue, watch } = form;
-    const quote = watch('quote');
-    const symbol = getSelectedSymbolFromBuyForm(form);
+const useBuyQuoteChangeEffect = ({ getValues, setValue, watch }: BuyFormType) => {
+    const [asset, quote] = watch(['asset', 'quote']);
+    const symbol = getSymbolFromTradeableAsset(asset);
 
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
