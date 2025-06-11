@@ -137,35 +137,6 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'should save verify address',
-        initialState: buyInitialState,
-        actions: [
-            {
-                type: tradingBuyActions.verifyAddress.type,
-                payload: '1abcdef',
-            },
-        ],
-        result: {
-            ...buyInitialState,
-            addressVerified: '1abcdef',
-        },
-    },
-    {
-        description: 'should dispose verified address',
-        initialState: {
-            ...buyInitialState,
-            addressVerified: '1abcdef',
-        },
-        actions: [
-            {
-                type: tradingBuyActions.dispose.type,
-            },
-        ],
-        result: {
-            ...buyInitialState,
-        },
-    },
-    {
         description: 'should save selected quote',
         initialState: buyInitialState,
         actions: [

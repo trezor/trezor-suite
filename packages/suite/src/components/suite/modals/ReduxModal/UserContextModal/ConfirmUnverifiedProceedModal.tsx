@@ -1,4 +1,4 @@
-import { tradingBuyActions } from '@suite-common/trading';
+import { tradingActions } from '@suite-common/trading';
 
 import { Dispatch } from 'src/types/suite';
 
@@ -10,7 +10,11 @@ interface ConfirmUnverifiedProceedModalProps {
 
 export const ConfirmUnverifiedProceedModal = ({ value }: ConfirmUnverifiedProceedModalProps) => {
     const proceedWithUnverifiedAddress = () => (dispatch: Dispatch) => {
-        dispatch(tradingBuyActions.verifyAddress(value));
+        dispatch(
+            tradingActions.setVerifiedAddress({
+                address: value,
+            }),
+        );
     };
 
     return (

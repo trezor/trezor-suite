@@ -20,10 +20,11 @@ import {
     selectTradingExchange,
     selectTradingExchangeInfo,
     selectTradingTrades,
+    selectTradingVerifiedAddress,
+    tradingExchangeActions,
     tradingThunks,
     useTradingInfo,
 } from '@suite-common/trading';
-import { tradingExchangeActions } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -78,10 +79,10 @@ export const useTradingExchangeForm = ({
         transactionId,
         tradingAccountKey,
         selectedQuote,
-        addressVerified,
         amountLimits,
         isLoading,
     } = useSelector(selectTradingExchange);
+    const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
 
@@ -529,7 +530,6 @@ export const useTradingExchangeForm = ({
                     account,
                     address,
                     path,
-                    tradingAction: tradingExchangeActions.verifyAddress.type,
                 }),
             );
         };
@@ -670,7 +670,7 @@ export const useTradingExchangeForm = ({
         network,
         receiveAccount,
         selectedQuote,
-        addressVerified,
+        verifiedAddress,
         shouldSendInSats,
         trade,
         setReceiveAccount,

@@ -445,14 +445,12 @@ export const useTradingSellForm = ({
             formState,
             precomposedTransaction,
             selectedAccount,
-            paymentRequests,
         }: TradingSignAndPushSendFormTransactionProps) =>
             await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formState,
                     precomposedTransaction,
                     selectedAccount,
-                    paymentRequests,
                 }),
             ).unwrap();
 

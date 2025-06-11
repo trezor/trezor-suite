@@ -16,6 +16,7 @@ import {
     getTradingQuotesByPaymentMethod,
     selectTradingBuy,
     selectTradingPaymentMethods,
+    selectTradingVerifiedAddress,
     tradingBuyActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -57,7 +58,6 @@ export const useTradingBuyForm = ({
     const isNotFormPage = pageType !== 'form';
     const dispatch = useDispatch();
     const {
-        addressVerified,
         buyInfo,
         isFromRedirect,
         quotes,
@@ -66,6 +66,7 @@ export const useTradingBuyForm = ({
         amountLimits,
         isLoading,
     } = useSelector(selectTradingBuy);
+    const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
     const isTradingTermsDismissed = useSelector(state =>
         selectIsTradingTermsDismissed(state, type),
@@ -322,7 +323,6 @@ export const useTradingBuyForm = ({
                     account,
                     address,
                     path,
-                    tradingAction: tradingBuyActions.verifyAddress.type,
                 }),
             );
         };
@@ -467,7 +467,7 @@ export const useTradingBuyForm = ({
         cryptoInputValue: values.cryptoInput,
         formState,
         device,
-        addressVerified,
+        verifiedAddress,
         timer,
         quotes: quotesByPaymentMethod,
         quotesRequest,

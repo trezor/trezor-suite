@@ -393,4 +393,42 @@ export const tradingFixtures = [
             },
         },
     },
+    {
+        description: 'should save verify address',
+        initialState,
+        actions: [
+            {
+                type: tradingActions.setVerifiedAddress.type,
+                payload: {
+                    address: '1abcdef',
+                    mac: 'mac123',
+                },
+            },
+        ],
+        result: {
+            ...initialState,
+            verifiedAddress: {
+                address: '1abcdef',
+                mac: 'mac123',
+            },
+        },
+    },
+    {
+        description: 'should dispose verified address',
+        initialState: {
+            ...initialState,
+            verifiedAddress: {
+                address: '1abcdef',
+                mac: 'mac123',
+            },
+        },
+        actions: [
+            {
+                type: tradingActions.setVerifiedAddress.type,
+            },
+        ],
+        result: {
+            ...initialState,
+        },
+    },
 ];

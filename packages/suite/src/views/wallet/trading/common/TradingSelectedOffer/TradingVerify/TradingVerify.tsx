@@ -5,7 +5,7 @@ import { CryptoId } from 'invity-api';
 import {
     TradingTradeBuyExchangeType,
     cryptoIdToNetwork,
-    tradingBuyActions,
+    tradingActions,
     tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
@@ -50,7 +50,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
         },
         device,
         verifyAddress,
-        addressVerified,
+        verifiedAddress,
         confirmTrade,
     } = context;
     const exchangeQuote = isTradingExchangeContext(context) ? context.selectedQuote : null;
@@ -112,10 +112,9 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
         },
     });
 
-    // close modals and reset addressVerified on device connection change
+    // close modals and reset verifiedAddress on device connection change
     useEffect(() => {
-        dispatch(tradingBuyActions.verifyAddress(undefined));
-        dispatch(tradingExchangeActions.verifyAddress(undefined));
+        dispatch(tradingActions.setVerifiedAddress(undefined));
         dispatch(modalActions.onCancel());
     }, [device?.connected, dispatch]);
 
@@ -244,14 +243,16 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
 
                     {device?.connected &&
                         device.available &&
-                        addressVerified &&
-                        addressVerified === address && <ConfirmedOnTrezor device={device} />}
+                        verifiedAddress &&
+                        verifiedAddress.address === address && (
+                            <ConfirmedOnTrezor device={device} />
+                        )}
                 </Column>
             )}
             {selectedAccountOption && (
                 <Column>
                     <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
-                    {(!addressVerified || addressVerified !== address) &&
+                    {(!verifiedAddress || verifiedAddress.address !== address) &&
                         selectedAccountOption.account && (
                             <Button
                                 data-testid="@trading/offer/confirm-on-trezor-button"
@@ -280,7 +281,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                                 />
                             </Button>
                         )}
-                    {((addressVerified && addressVerified === address) ||
+                    {((verifiedAddress && verifiedAddress.address === address) ||
                         selectedAccountOption?.type === 'NON_SUITE') && (
                         <Button
                             data-testid="@trading/offer/continue-transaction-button"

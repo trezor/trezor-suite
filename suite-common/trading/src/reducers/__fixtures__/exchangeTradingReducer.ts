@@ -141,35 +141,6 @@ export const exchangeTradingFixtures = [
         },
     },
     {
-        description: 'should save verify address',
-        initialState: exchangeInitialState,
-        actions: [
-            {
-                type: tradingExchangeActions.verifyAddress.type,
-                payload: '1abcdef',
-            },
-        ],
-        result: {
-            ...exchangeInitialState,
-            addressVerified: '1abcdef',
-        },
-    },
-    {
-        description: 'should dispose verified address',
-        initialState: {
-            ...exchangeInitialState,
-            addressVerified: '1abcdef',
-        },
-        actions: [
-            {
-                type: tradingExchangeActions.dispose.type,
-            },
-        ],
-        result: {
-            ...exchangeInitialState,
-        },
-    },
-    {
         description: 'should set trading account key',
         initialState: exchangeInitialState,
         actions: [
