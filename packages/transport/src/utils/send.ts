@@ -1,5 +1,5 @@
 import { encodeMessage } from '@trezor/protobuf';
-import { ThpState, TransportProtocol } from '@trezor/protocol';
+import { ThpState, TransportProtocol, thp as protocolThp } from '@trezor/protocol';
 
 import { AsyncResultWithTypedError } from '../types';
 
@@ -34,10 +34,25 @@ interface BuildMessageProps {
     thpState?: ThpState;
 }
 
-export const buildMessage = ({ messages, name, data, protocol }: BuildMessageProps) => {
-    const { messageType, message } = encodeMessage(messages, name, data);
+// common protobufEncoder for protocol v1 and v2 (THP)
+export const buildMessage = ({ messages, name, data, protocol, thpState }: BuildMessageProps) => {
+    const protobufEncoder = (messageName: string, data: Record<string, unknown>) => {
+        const { messageType, message } = encodeMessage(messages, messageName, data);
 
-    return protocol.encode(message, { messageType });
+        return protocol.encode(message, { messageType });
+    };
+
+    if (protocol.name === 'v2') {
+        // THP encoding requires more data than regular protocol.encode
+        return protocolThp.encode({
+            messageName: name,
+            data,
+            thpState,
+            protobufEncoder: (messageName, data) => encodeMessage(messages, messageName, data),
+        });
+    }
+
+    return protobufEncoder(name, data);
 };
 
 export const sendChunks = async <T, E>(

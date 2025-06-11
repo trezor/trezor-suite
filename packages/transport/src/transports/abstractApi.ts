@@ -11,6 +11,7 @@ import * as ERRORS from '../errors';
 import { SessionsBackground } from '../sessions/background';
 import { SessionsClient } from '../sessions/client';
 import { SessionsBackgroundInterface } from '../sessions/types';
+import { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from '../thp';
 import { Session } from '../types';
 import { receiveAndParse } from '../utils/receive';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
@@ -205,7 +206,36 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 });
                 const [, chunkHeader] = protocol.getHeaders(bytes);
                 const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
-                const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
+                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
+                    this.api.write(path, chunk, attemptSignal || signal);
+                const apiRead = (attemptSignal?: AbortSignal) =>
+                    this.api.read(path, attemptSignal || signal);
+
+                if (protocol.name === 'v2') {
+                    const callResult = await callThpMessage({
+                        thpState,
+                        chunks,
+                        apiWrite,
+                        apiRead,
+                        signal,
+                        logger: this.logger,
+                    });
+                    if (!callResult.success) {
+                        handleError(callResult.error);
+
+                        return callResult;
+                    }
+
+                    thpState?.sync('send', name);
+                    const message = parseThpMessage({
+                        messages: this.messages,
+                        decoded: callResult.payload,
+                        thpState,
+                    });
+                    thpState?.sync('recv', message.type);
+
+                    return this.success(message);
+                }
                 const sendResult = await sendChunks(chunks, apiWrite);
 
                 if (!sendResult.success) {
@@ -214,11 +244,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return sendResult;
                 }
 
-                const readResult = await receiveAndParse(
-                    this.messages,
-                    () => this.api.read(path, signal),
-                    protocol,
-                );
+                const readResult = await receiveAndParse(this.messages, apiRead, protocol);
 
                 if (!readResult.success) {
                     handleError(readResult.error);
@@ -262,7 +288,20 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
                 const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
-                const sendResult = await sendChunks(chunks, apiWrite);
+                let sendResult;
+                if (protocol.name === 'v2') {
+                    sendResult = await sendThpMessage({
+                        thpState,
+                        skipAck: true,
+                        chunks,
+                        apiWrite,
+                        apiRead: attemptSignal => this.api.read(path, attemptSignal || signal),
+                        signal,
+                        logger: this.logger,
+                    });
+                } else {
+                    sendResult = await sendChunks(chunks, apiWrite);
+                }
 
                 if (!sendResult.success) {
                     if (sendResult.error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
@@ -292,13 +331,34 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
+                const apiRead = (attemptSignal?: AbortSignal) =>
+                    this.api.read(path, attemptSignal || signal);
+
                 const protocol = customProtocol || v1Protocol;
-                const message = await receiveAndParse(
-                    this.messages,
-                    () => this.api.read(path, signal),
-                    protocol,
-                    thpState,
-                );
+                if (protocol.name === 'v2') {
+                    const decoded = await receiveThpMessage({
+                        thpState,
+                        skipAck: true,
+                        apiWrite: (chunk, attemptSignal) =>
+                            this.api.write(path, chunk, attemptSignal || signal),
+                        apiRead,
+                        signal,
+                    });
+
+                    if (!decoded.success) {
+                        return decoded;
+                    }
+
+                    const message = parseThpMessage({
+                        messages: this.messages,
+                        decoded: decoded.payload,
+                        thpState,
+                    });
+
+                    return this.success(message);
+                }
+
+                const message = await receiveAndParse(this.messages, apiRead, protocol);
 
                 if (!message.success) {
                     console.log(message.error);

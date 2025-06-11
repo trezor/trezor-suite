@@ -14,6 +14,7 @@ import {
 } from './abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
+import { parseThpMessage } from '../thp/receive';
 import {
     AnyError,
     AsyncResultWithTypedError,
@@ -242,20 +243,35 @@ export class BridgeTransport extends AbstractTransport {
                     protocol,
                     thpState,
                 });
+
                 const response = await this.post(`/call`, {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
                     signal,
                 });
+
                 if (!response.success) {
                     return response;
                 }
 
+                const respBytes = Buffer.from(response.payload.data, 'hex');
+                if (protocol.name === 'v2') {
+                    // see callThpMessage in @trezor/transport-bridge
+                    thpState?.sync('send', name);
+                    const message = parseThpMessage({
+                        decoded: protocol.decode(respBytes),
+                        messages: this.messages,
+                        thpState,
+                    });
+                    thpState?.sync('recv', message.type);
+
+                    return this.success(message);
+                }
+
                 return receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
+                    () => Promise.resolve(this.success(respBytes)),
                     protocol,
-                    thpState,
                 );
             },
             { signal, timeout },
@@ -280,6 +296,7 @@ export class BridgeTransport extends AbstractTransport {
                     protocol,
                     thpState,
                 });
+                // see sendThpMessage in @trezor/transport-bridge
                 const response = await this.post('/post', {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
@@ -287,6 +304,9 @@ export class BridgeTransport extends AbstractTransport {
                 });
                 if (!response.success) {
                     return response;
+                }
+                if (protocol.name === 'v2') {
+                    thpState?.sync('send', name);
                 }
 
                 return this.success(undefined);
@@ -314,11 +334,23 @@ export class BridgeTransport extends AbstractTransport {
                     return response;
                 }
 
+                const respBytes = Buffer.from(response.payload.data, 'hex');
+                if (protocol.name === 'v2') {
+                    // see readThpMessage in @trezor/transport-bridge
+                    const message = parseThpMessage({
+                        decoded: protocol.decode(respBytes),
+                        messages: this.messages,
+                        thpState,
+                    });
+                    thpState?.sync('recv', message.type);
+
+                    return this.success(message);
+                }
+
                 return receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
+                    () => Promise.resolve(this.success(respBytes)),
                     protocol,
-                    thpState,
                 );
             },
             { signal, timeout: undefined },
