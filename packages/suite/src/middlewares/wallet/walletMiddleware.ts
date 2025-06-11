@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { tradingBuyActions } from '@suite-common/trading';
+import { tradingActions } from '@suite-common/trading';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -100,7 +100,7 @@ const walletMiddleware =
             api.dispatch(accountsActions.disposeAccount());
             api.dispatch(sendFormActions.dispose());
             api.dispatch(receiveActions.dispose());
-            api.dispatch(tradingBuyActions.dispose());
+            api.dispatch(tradingActions.setVerifiedAddress(undefined));
             api.dispatch(stakeActions.dispose());
         }
 

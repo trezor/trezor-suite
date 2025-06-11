@@ -30,6 +30,7 @@ import type {
     TradingTransactionExchange,
     TradingTransactionSell,
     TradingType,
+    TradingVerifiedAddress,
 } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { AccountsState } from '@suite-common/wallet-core';
@@ -124,7 +125,7 @@ export interface TradingBuyFormContextProps
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
     trade?: TradingTransactionBuy;
-    addressVerified: string | undefined;
+    verifiedAddress: TradingVerifiedAddress;
     // form - additional helpers for form
     form: {
         state: TradingFormStateProps;
@@ -198,7 +199,7 @@ export interface TradingExchangeFormContextProps
     dexQuotes: ExchangeTrade[];
     quotesRequest: ExchangeTradeQuoteRequest | undefined;
     receiveAccount?: Account;
-    addressVerified: string | undefined;
+    verifiedAddress: TradingVerifiedAddress;
     shouldSendInSats: boolean | undefined;
     setReceiveAccount: (account?: Account) => void;
     setAmountLimits: (limits?: CryptoAmountLimitProps) => void;

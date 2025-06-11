@@ -275,3 +275,10 @@ export type HandleBuyRequestThunkProps = {
     timer: Timer;
     shouldSendInSats: boolean | undefined;
 };
+
+export type TradingVerifiedAddress =
+    | {
+          address: string;
+          mac?: string;
+      }
+    | undefined;

@@ -581,3 +581,12 @@ export const selectTradingSupportedSymbols = createMemoizedSelector(
         }
     },
 );
+
+export const selectTradingExchangeTransactionId = (state: TradingRootState) =>
+    state.wallet.tradingNew.exchange.transactionId;
+
+export const selectTradingSellTransactionId = (state: TradingRootState) =>
+    state.wallet.tradingNew.sell.transactionId;
+
+export const selectTradingVerifiedAddress = (state: TradingRootState) =>
+    state.wallet.tradingNew.verifiedAddress;

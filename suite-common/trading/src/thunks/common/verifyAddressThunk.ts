@@ -7,41 +7,39 @@ import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
+import { selectTradingActiveSection } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
 
 export interface VerifyAddressThunk {
     account: Account;
     address: string | undefined;
     path: string | undefined;
-    tradingAction:
-        | typeof tradingBuyActions.verifyAddress.type
-        | typeof tradingExchangeActions.verifyAddress.type;
 }
 
 export const verifyAddressThunk = createThunk(
     `${TRADING_THUNK_PREFIX}/verifyAddress`,
-    async (
-        { account, address, path, tradingAction }: VerifyAddressThunk,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ account, address, path }: VerifyAddressThunk, { dispatch, getState, extra }) => {
         const device = selectSelectedDevice(getState());
+        const activeSection = selectTradingActiveSection(getState());
+
         if (!device) return;
+
         const accountAddress = getUnusedAddressFromAccount(account);
         address = address ?? accountAddress.address;
         path = path ?? accountAddress.path;
+
         if (!path || !address) return;
 
         dispatch(tradingActions.setModalAccountKey(account.key));
 
-        if (tradingAction === tradingBuyActions.verifyAddress.type) {
+        if (activeSection === 'buy') {
             dispatch(tradingBuyActions.setTradingAccountKey(account.key));
         } else {
             dispatch(tradingExchangeActions.setReceiveAccountKey(account.key));
         }
 
         const addressDisplayType = extra.selectors.selectAddressDisplayType(getState());
-
-        const { useEmptyPassphrase, connected, available } = device;
+        const { connected, available } = device;
 
         // Show warning when device is not connected
         if (!connected || !available) {
@@ -55,22 +53,21 @@ export const verifyAddressThunk = createThunk(
             return;
         }
 
-        const params = {
-            device,
+        const params: Parameters<typeof confirmAddressOnDeviceThunk>[0] = {
             accountKey: account.key,
             addressPath: path,
-            useEmptyPassphrase,
-            coin: account.symbol,
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
         };
 
         const response = await dispatch(confirmAddressOnDeviceThunk(params)).unwrap();
 
         if (response.success) {
-            dispatch({
-                type: tradingAction,
-                payload: address,
-            });
+            dispatch(
+                tradingActions.setVerifiedAddress({
+                    address: response.payload.address,
+                    mac: 'mac' in response.payload ? response.payload.mac : undefined,
+                }),
+            );
         } else {
             // special case: device no-backup permissions not granted
             if (response.payload.code === 'Method_PermissionsNotGranted') return;

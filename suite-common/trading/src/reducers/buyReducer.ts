@@ -25,7 +25,6 @@ export interface TradingBuyState {
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
-    addressVerified: string | undefined;
     tradingAccountKey?: AccountKey;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
@@ -40,7 +39,6 @@ export const buyInitialState: TradingBuyState = {
     quotesRequest: undefined,
     selectedQuote: undefined,
     quotes: [],
-    addressVerified: undefined,
     tradingAccountKey: undefined,
     isLoading: false,
     amountLimits: undefined,
@@ -70,12 +68,6 @@ const tradingBuySlice = createSlice({
         },
         clearQuotes(state) {
             state.quotes = [];
-        },
-        verifyAddress(state, action: PayloadAction<string | undefined>) {
-            state.addressVerified = action.payload;
-        },
-        dispose(state) {
-            state.addressVerified = undefined;
         },
         setIsLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;

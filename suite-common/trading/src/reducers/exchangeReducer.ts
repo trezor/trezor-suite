@@ -21,7 +21,6 @@ export interface TradingExchangeState {
     exchangeInfo?: ExchangeInfo;
     quotesRequest?: ExchangeTradeQuoteRequest;
     quotes: ExchangeTrade[];
-    addressVerified: string | undefined;
     // internal selected account key in trading section
     tradingAccountKey?: AccountKey;
     receiveAccountKey?: AccountKey;
@@ -39,7 +38,6 @@ export const exchangeInitialState: TradingExchangeState = {
     transactionId: undefined,
     quotesRequest: undefined,
     quotes: [],
-    addressVerified: undefined,
     tradingAccountKey: undefined,
     receiveAccountKey: undefined,
     selectedQuote: undefined,
@@ -67,12 +65,6 @@ const tradingExchangeSlice = createSlice({
         },
         clearQuotes(state) {
             state.quotes = [];
-        },
-        verifyAddress(state, action: PayloadAction<string | undefined>) {
-            state.addressVerified = action.payload;
-        },
-        dispose(state) {
-            state.addressVerified = undefined;
         },
         setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.tradingAccountKey = action.payload;
