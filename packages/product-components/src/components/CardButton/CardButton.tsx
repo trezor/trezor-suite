@@ -13,7 +13,7 @@ export const CardButton = ({
     'data-testid': dataTestId,
     isDisabled = false,
 }: CardButtonProps) => (
-    <Card paddingType="small" onClick={isDisabled ? undefined : onClick} data-testid={dataTestId}>
+    <Card paddingType="normal" onClick={isDisabled ? undefined : onClick} data-testid={dataTestId}>
         {children}
     </Card>
 );

@@ -2,12 +2,10 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Icon, IconName, IconVariant, Text } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { Icon, IconName, IconVariant, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 const Container = styled.span<{ $isAction?: boolean }>`
-    ${typography.label}
-
     ${({ $isAction }) =>
         $isAction &&
         css`
@@ -15,11 +13,6 @@ const Container = styled.span<{ $isAction?: boolean }>`
                 opacity: 0.8;
             }
         `}
-`;
-const TextRow = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
 `;
 
 type DeviceConnectionTextProps = {
@@ -47,9 +40,11 @@ export const DeviceConnectionText = ({
         data-testid={dataTest}
         data-testid-alt={dataTestAlt}
     >
-        <TextRow>
+        <Row gap={spacings.xxs}>
             <Icon name={icon} size={12} variant={variant} />
-            <Text variant={variant}>{children} </Text>
-        </TextRow>
+            <Text typographyStyle="label" variant={variant}>
+                {children}
+            </Text>
+        </Row>
     </Container>
 );

@@ -55,7 +55,7 @@ export const ConfirmPassphraseBeforeAction = () => {
                 isFullHeaderVisible
                 icon="x"
             >
-                <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>
+                <Column gap={spacings.sm}>
                     <H3>
                         <Translation id="TR_CONFIRM_PASSPHRASE" />
                     </H3>

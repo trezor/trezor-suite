@@ -78,7 +78,7 @@ export const PassphraseDuplicateModal = ({
     return (
         <SwitchDeviceModal>
             <CardWithDevice device={device} isFullHeaderVisible={false} onBackButtonClick={onBack}>
-                <Column gap={spacings.xs} margin={{ top: spacings.xxs }}>
+                <Column gap={spacings.xs}>
                     <H3 data-testid="@passphrase-duplicate-header">
                         <Translation id="TR_WALLET_DUPLICATE_TITLE" />
                     </H3>

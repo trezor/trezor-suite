@@ -43,7 +43,7 @@ const PassphraseWalletIsEmptyContent = ({
     );
 
     return (
-        <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>
+        <Column gap={spacings.sm}>
             <H3>
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE" />
             </H3>

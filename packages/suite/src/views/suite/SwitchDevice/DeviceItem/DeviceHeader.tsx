@@ -1,10 +1,9 @@
-import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { IconButton, IconName, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
@@ -20,14 +19,7 @@ const Container = styled.div<{ $isFullHeaderVisible: boolean }>`
     ${({ $isFullHeaderVisible }) => ($isFullHeaderVisible ? `cursor: pointer;` : '')}
 `;
 
-const DeviceActions = styled.div`
-    display: flex;
-    align-items: center;
-    margin-left: ${spacingsPx.lg};
-    gap: ${spacingsPx.xxs};
-`;
-
-interface DeviceHeaderProps {
+type DeviceHeaderProps = {
     device: TrezorDevice;
     onCancel?: ForegroundAppProps['onCancel'];
     isFullHeaderVisible: boolean;
@@ -35,7 +27,7 @@ interface DeviceHeaderProps {
     isFindTrezorVisible?: boolean;
     forceConnectionInfo: boolean;
     icon?: IconName;
-}
+};
 
 export const DeviceHeader = ({
     onCancel,
@@ -59,7 +51,7 @@ export const DeviceHeader = ({
 
     return (
         <Container onClick={onHeaderClick} $isFullHeaderVisible={isFullHeaderVisible}>
-            <Row gap={spacings.xs} flex="1">
+            <Row gap={spacings.xs} flex="1" padding={{ left: onBackButtonClick ? 0 : 0 }}>
                 {onBackButtonClick && (
                     <IconButton
                         icon="caretLeft"
@@ -79,7 +71,7 @@ export const DeviceHeader = ({
                 )}
             </Row>
 
-            <DeviceActions>
+            <Row gap={spacings.xxs} margin={{ left: spacings.lg }}>
                 {isFullHeaderVisible &&
                     isWebUsbTransport &&
                     isFindTrezorVisible &&
@@ -90,25 +82,17 @@ export const DeviceHeader = ({
                     ))}
                 {isFullHeaderVisible && (
                     <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
-                        <motion.div
-                            exit={{ rotate: 0 }}
-                            animate={{
-                                rotate: 180,
-                            }}
-                            style={{ originX: '50%', originY: '50%' }}
-                        >
-                            <IconButton
-                                icon={icon}
-                                iconSize={20}
-                                size="small"
-                                variant="tertiary"
-                                onClick={() => onCancel?.()}
-                                data-testid="@switch-device/cancel-button"
-                            />
-                        </motion.div>
+                        <IconButton
+                            icon={icon}
+                            iconSize={20}
+                            size="small"
+                            variant="tertiary"
+                            onClick={() => onCancel?.()}
+                            data-testid="@switch-device/cancel-button"
+                        />
                     </Tooltip>
                 )}
-            </DeviceActions>
+            </Row>
         </Container>
     );
 };

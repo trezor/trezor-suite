@@ -41,7 +41,7 @@ export const SwitchDeviceModal = ({
         <Modal.Backdrop
             onClick={onCancel}
             alignment={{ x: 'start', y: 'start' }}
-            padding={spacings.xxs}
+            padding={spacings.xs}
         >
             <TrafficLightOffset>
                 <Container data-testid={`${dataTest}/switch-device`}>
