@@ -3,7 +3,7 @@ import { Coins, CryptoId, InfoResponse, Platforms } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
+import { CardanoOutput, FeeLevel, PROTO } from '@trezor/connect';
 
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
@@ -16,17 +16,22 @@ import {
 } from './exchangeReducer';
 import { TradingSellState, sellInitialState, tradingSellReducer } from './sellReducer';
 
+type TradingComposedTransactionInfoOutputs = {
+    outputs?: PROTO.TxOutputType[] | CardanoOutput[];
+};
+
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
         PrecomposedTransactionFinal,
-        | 'feePerByte'
-        | 'estimatedFeeLimit'
-        | 'feeLimit'
-        | 'token'
         | 'fee'
+        | 'feePerByte'
+        | 'feeLimit'
+        | 'estimatedFeeLimit'
         | 'maxFeePerGas'
         | 'maxPriorityFeePerGas'
-    >;
+        | 'token'
+    > &
+        TradingComposedTransactionInfoOutputs;
     selectedFee?: FeeLevel['label'];
 }
 

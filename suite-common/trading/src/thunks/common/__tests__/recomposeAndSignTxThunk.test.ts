@@ -70,6 +70,7 @@ describe('recomposeAndSignTxThunk', () => {
             feeLimit: '1000',
             token: undefined,
             fee: '1000',
+            outputs: [],
         },
         selectedFee: 'normal' as const,
     };
