@@ -63,13 +63,11 @@ const getDiscoveryStatus = ({
         };
     }
 
-    if (discovery) {
-        if (discovery.status === 'progress') {
-            return {
-                status: 'loading',
-                type: 'discovery',
-            };
-        }
+    if (discovery?.status === 'progress') {
+        return {
+            status: 'loading',
+            type: 'discovery',
+        };
     }
 
     return undefined;
