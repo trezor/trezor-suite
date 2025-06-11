@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -7,7 +7,7 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { Network, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     FeesRootState,
@@ -23,6 +23,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { getExcludedUtxos } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
     SendStackParamList,
@@ -92,6 +93,16 @@ const useSendForm = (
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
+    const excludedUtxos = useMemo(
+        () =>
+            getExcludedUtxos({
+                utxos: account?.utxo ?? [],
+                anonymitySet: account?.addresses?.anonymitySet,
+                dustLimit: networkFeeInfo?.dustLimit,
+            }),
+        [account, networkFeeInfo],
+    );
+
     useSubscribeForSolanaBlockUpdates(account);
 
     const deviceUnavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
@@ -134,6 +145,7 @@ const useSendForm = (
                         account,
                         network,
                         feeInfo: networkFeeInfo,
+                        excludedUtxos,
                     },
                 }),
             );
@@ -181,6 +193,7 @@ const useSendForm = (
         network,
         networkFeeInfo,
         setError,
+        excludedUtxos,
     ]);
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
@@ -245,6 +258,7 @@ const useSendForm = (
                     account,
                     network,
                     feeInfo: networkFeeInfo,
+                    excludedUtxos,
                 },
             }),
         );
