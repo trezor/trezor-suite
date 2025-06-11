@@ -19,7 +19,7 @@ import {
     selectAccountsByDeviceState,
     selectCurrentFiatRates,
     selectDeviceAccounts,
-    selectDeviceFirmwareVersion,
+    selectDeviceFirmwareVersionArray,
     selectDeviceInstances,
     selectDeviceModel,
     selectDevices,
@@ -62,7 +62,7 @@ type NativeDeviceRootState = DeviceRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
 export const selectIsDeviceFirmwareSupported = (state: DeviceRootState) => {
-    const deviceFwVersion = selectDeviceFirmwareVersion(state);
+    const deviceFwVersion = selectDeviceFirmwareVersionArray(state);
     const deviceModel = selectDeviceModel(state);
 
     return isFirmwareVersionSupported(deviceFwVersion, deviceModel);

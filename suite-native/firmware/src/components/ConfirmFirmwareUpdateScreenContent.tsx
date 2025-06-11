@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    selectDeviceFirmwareVersion,
+    selectDeviceFirmwareVersionArray,
     selectDeviceUpdateFirmwareVersion,
     selectHasBitcoinOnlyFirmware,
     selectIsFirmwareUpgradable,
@@ -40,7 +40,7 @@ const UpgradableContent = () => {
 };
 
 const UpToDateContent = () => {
-    const firmwareVersion = useSelector(selectDeviceFirmwareVersion);
+    const firmwareVersion = useSelector(selectDeviceFirmwareVersionArray);
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
     const { translate } = useTranslate();
 
