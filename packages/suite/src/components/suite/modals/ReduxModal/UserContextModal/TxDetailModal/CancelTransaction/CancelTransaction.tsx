@@ -42,7 +42,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
         <Card
             fillType="flat"
             paddingType="small"
-            heading={
+            header={
                 <Row justifyContent="space-between">
                     <Text typographyStyle="highlight">
                         <Translation id="TR_CANCEL_TX_HEADER" />

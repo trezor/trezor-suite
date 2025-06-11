@@ -20,7 +20,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
         <Card
             fillType="flat"
             paddingType="small"
-            heading={
+            header={
                 <Row justifyContent="space-between" alignItems="center">
                     <Text typographyStyle="body">
                         <Translation id="TR_CHAINED_TXS" />

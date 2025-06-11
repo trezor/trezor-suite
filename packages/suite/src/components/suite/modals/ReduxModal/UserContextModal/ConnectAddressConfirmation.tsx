@@ -88,7 +88,7 @@ export const ConnectAddressConfirmation = () => {
                         />
                     </Paragraph>
 
-                    <Card heading={<Translation id="TR_ADDRESSES" />} margin={{ top: spacings.md }}>
+                    <Card header={<Translation id="TR_ADDRESSES" />} margin={{ top: spacings.md }}>
                         <Column gap={spacings.sm}>
                             {popupCall?.addresses.map((address, index) => (
                                 <Row

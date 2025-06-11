@@ -69,6 +69,8 @@ type CardContainerProps = {
 
 const CardContainer = styled.div<CardContainerProps>`
     position: relative;
+    display: flex;
+    flex-direction: column;
     border-radius: ${borders.radii.md};
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
     overflow: ${({ $overflow }) => ($overflow ? $overflow : 'hidden')};
@@ -96,7 +98,8 @@ const CardContainer = styled.div<CardContainerProps>`
 
 export type CardProps = AccessibilityProps &
     AllowedFrameProps & {
-        heading?: ReactNode;
+        header?: ReactNode;
+        footer?: ReactNode;
         label?: ReactNode;
         paddingType?: PaddingType;
         fillType?: FillType;
@@ -112,7 +115,8 @@ export type CardProps = AccessibilityProps &
 export const Card = ({
     paddingType = 'normal',
     fillType = 'default',
-    heading,
+    header,
+    footer,
     label,
     onClick,
     onMouseEnter,
@@ -130,7 +134,7 @@ export const Card = ({
 
     const content = (
         <>
-            {heading && (
+            {header && (
                 <>
                     <Box
                         padding={mapPaddingTypeToPadding({
@@ -138,7 +142,7 @@ export const Card = ({
                         })}
                     >
                         <Text as="div" typographyStyle="callout">
-                            {heading}
+                            {header}
                         </Text>
                     </Box>
                     <Divider margin={{}} />
@@ -148,10 +152,16 @@ export const Card = ({
                 padding={mapPaddingTypeToPadding({
                     paddingType,
                 })}
-                height="100%"
+                flex="1"
             >
                 {children}
             </Box>
+            {footer && (
+                <>
+                    <Divider margin={{}} />
+                    <Box padding={mapPaddingTypeToPadding({ paddingType })}>{footer}</Box>
+                </>
+            )}
         </>
     );
 

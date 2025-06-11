@@ -58,7 +58,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
             <Card
                 fillType="flat"
                 paddingType="small"
-                heading={<Translation id="TR_BUMP_FEE_SUBTEXT" />}
+                header={<Translation id="TR_BUMP_FEE_SUBTEXT" />}
             >
                 <InfoItem
                     direction="row"

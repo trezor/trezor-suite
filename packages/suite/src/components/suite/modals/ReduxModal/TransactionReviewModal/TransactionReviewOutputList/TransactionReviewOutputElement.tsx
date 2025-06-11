@@ -148,7 +148,7 @@ export const TransactionReviewOutputElement = ({
         <Card
             paddingType="small"
             fillType={state === 'confirmed' ? 'flat' : 'default'}
-            heading={
+            header={
                 <Row gap={spacings.sm}>
                     <Status state={state} />
                     <H4
