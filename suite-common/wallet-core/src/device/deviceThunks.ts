@@ -393,14 +393,17 @@ export const createImportedDeviceThunk = createThunk<
     },
 );
 
+type ConfirmAddressOnDeviceThunk = {
+    accountKey: AccountKey;
+    addressPath: string;
+    chunkify: boolean;
+    showOnTrezor?: boolean;
+};
+
 export const confirmAddressOnDeviceThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
     async (
-        {
-            accountKey,
-            addressPath,
-            chunkify,
-        }: { accountKey: AccountKey; addressPath: string; chunkify: boolean },
+        { accountKey, addressPath, chunkify, showOnTrezor = true }: ConfirmAddressOnDeviceThunk,
         { getState },
     ): Promise<ConnectResponse<Address | CardanoAddress>> => {
         const device = selectSelectedDevice(getState());
@@ -419,6 +422,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
             useEmptyPassphrase: device.useEmptyPassphrase,
             coin: account.symbol,
             chunkify,
+            showOnTrezor,
         };
 
         let response;
