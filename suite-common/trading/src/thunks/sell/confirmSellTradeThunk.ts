@@ -11,7 +11,7 @@ import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors
 export type ConfirmSellTradeThunkProps = {
     bankAccount: BankAccount;
     triggerAnalyticsTradeConfirmation: () => void;
-} & Omit<HandleSellTradeThunkProps, 'quote'>;
+} & Omit<HandleSellTradeThunkProps, 'trade'>;
 
 export const confirmSellTradeThunk = createThunk(
     `${TRADING_SELL_THUNK_PREFIX}/confirmTrade`,
@@ -31,11 +31,11 @@ export const confirmSellTradeThunk = createThunk(
 
         triggerAnalyticsTradeConfirmation();
 
-        const quote = { ...selectedQuote, bankAccount };
+        const trade = { ...selectedQuote, bankAccount };
         const response = await dispatch(
             sellThunks.handleTradeThunk({
                 account,
-                quote,
+                trade,
                 returnUrl,
                 processResponseData,
             }),

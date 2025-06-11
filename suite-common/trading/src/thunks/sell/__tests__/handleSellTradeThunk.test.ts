@@ -107,7 +107,7 @@ describe('handleSellTradeThunk', () => {
                 .dispatch(
                     handleSellTradeThunk({
                         account,
-                        quote: {
+                        trade: {
                             ...quote,
                             ...quoteData,
                         },
@@ -137,7 +137,7 @@ describe('handleSellTradeThunk', () => {
             .dispatch(
                 handleSellTradeThunk({
                     account,
-                    quote,
+                    trade: quote,
                     returnUrl,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -170,7 +170,7 @@ describe('handleSellTradeThunk', () => {
             .dispatch(
                 handleSellTradeThunk({
                     account,
-                    quote,
+                    trade: quote,
                     returnUrl,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -204,7 +204,7 @@ describe('handleSellTradeThunk', () => {
             .dispatch(
                 handleSellTradeThunk({
                     account,
-                    quote,
+                    trade: quote,
                     returnUrl,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -235,7 +235,7 @@ describe('handleSellTradeThunk', () => {
             .dispatch(
                 handleSellTradeThunk({
                     account,
-                    quote,
+                    trade: quote,
                     returnUrl,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -283,7 +283,7 @@ describe('handleSellTradeThunk', () => {
             .dispatch(
                 handleSellTradeThunk({
                     account,
-                    quote,
+                    trade: quote,
                     returnUrl,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -341,7 +341,7 @@ describe('handleSellTradeThunk', () => {
             .dispatch(
                 handleSellTradeThunk({
                     account,
-                    quote: {
+                    trade: {
                         ...quote,
                         exchange: 'provider2',
                     },
