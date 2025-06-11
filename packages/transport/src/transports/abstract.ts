@@ -70,7 +70,8 @@ export type ReadWriteError =
     | typeof ERRORS.WRONG_ENVIRONMENT
     | typeof ERRORS.DEVICE_NOT_FOUND
     | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
-    | typeof ERRORS.INTERFACE_DATA_TRANSFER;
+    | typeof ERRORS.INTERFACE_DATA_TRANSFER
+    | typeof ERRORS.THP_STATE_MISSING;
 
 type TransportEvents = {
     [TRANSPORT.DEVICE_CONNECTED]: Descriptor;
