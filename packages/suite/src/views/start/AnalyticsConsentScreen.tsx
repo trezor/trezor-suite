@@ -6,22 +6,17 @@ import { analytics } from '@suite-common/analytics';
 import { DataAnalytics } from '@trezor/components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
-import { rerun } from '../../actions/recovery/recoveryActions';
 import { TrezorLink } from '../../components/suite';
 import { WelcomeLayoutWithoutModalSwitcher } from '../../components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
-import { useDispatch, useSelector } from '../../hooks/suite';
 
 const Content = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%; /* to fit the DeviceAuthenticity steps  */
+    width: 100%;
 `;
 
 export const AnalyticsConsentScreen = () => {
-    const recovery = useSelector(state => state.recovery);
-
-    const dispatch = useDispatch();
     const theme = useTheme();
 
     const onConfirm = (trackingEnabled: boolean) => {
@@ -29,10 +24,6 @@ export const AnalyticsConsentScreen = () => {
             analytics.enable();
         } else {
             analytics.disable();
-        }
-        if (recovery.status === 'in-progress') {
-            // T2T1 remember the recovery state and should continue with recovery
-            dispatch(rerun());
         }
     };
 
