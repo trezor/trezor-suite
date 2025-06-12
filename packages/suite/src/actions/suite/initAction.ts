@@ -15,7 +15,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as languageActions from 'src/actions/settings/languageActions';
-import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -52,9 +51,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
      *       Those number-comments are very strong indicator that this code
      *       has many responsibilities and should be split into smaller parts.
      */
-
-    // 1. init analytics
-    dispatch(analyticsActions.init());
 
     // 2. fetching locales
     dispatch(languageActions.setLanguage(language));

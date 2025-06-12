@@ -1,10 +1,12 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
+import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
 import {
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 
+import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -26,6 +28,7 @@ import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
+import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScreen';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceCompromised';
@@ -69,6 +72,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     );
     // Entropy check won't be performed if disabled but we must also check it here to avoid showing the UI when the failed state is stored in database.
     const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
+    const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     // report firmware authenticity failures even when the UI is disabled
     useReportDeviceCompromised();
@@ -76,12 +80,25 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(init());
+        // Analytics needs to be resolved before we show anything to the user. Until this is solved,
+        // we do not init anything. Especially nothing related to the devices/connect. With THP,
+        // the autoconnect flow may be automatically triggered, resulting in Suite vs. Device Screen inconsistency.
+        dispatch(analyticsActions.init());
     }, [dispatch]);
+
+    useEffect(() => {
+        if (isAnalyticsConsentConfirmed) {
+            dispatch(init());
+        }
+    }, [dispatch, isAnalyticsConsentConfirmed]);
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
     useWindowVisibility();
+
+    if (!isAnalyticsConsentConfirmed) {
+        return <AnalyticsConsentScreen />;
+    }
 
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
