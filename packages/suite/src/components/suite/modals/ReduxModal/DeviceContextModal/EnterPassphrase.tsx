@@ -1,14 +1,13 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Column, H3, Icon, List } from '@trezor/components';
-import { PassphraseTypeCard } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
+import { PassphraseInputCard } from './PassphraseInputCard';
 import { useSelector } from '../../../../../hooks/suite';
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
-import { OpenGuideFromTooltip } from '../../../../guide';
 import { Translation } from '../../../Translation';
 import { TrezorLink } from '../../../TrezorLink';
 
@@ -17,6 +16,7 @@ type EnterPassphraseProps = {
     device: TrezorDevice;
     deviceLoading?: boolean;
     submitting?: boolean;
+    isExistingWallet?: boolean;
     onBack: () => void;
     onCancel: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
@@ -26,7 +26,7 @@ export const EnterPassphrase = ({
     device,
     deviceLoading,
     onDeviceOffer,
-    submitting,
+    isExistingWallet = false,
     onBack,
     onCancel,
     onSubmit,
@@ -41,7 +41,7 @@ export const EnterPassphrase = ({
                 onBackButtonClick={onBack}
                 isFullHeaderVisible
             >
-                <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>
+                <Column gap={spacings.sm}>
                     <H3>
                         <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />
                     </H3>
@@ -70,22 +70,12 @@ export const EnterPassphrase = ({
                             <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
                         </List.Item>
                     </List>
-                    <PassphraseTypeCard
-                        deviceLoading={deviceLoading}
-                        submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
-                        submitting={submitting}
-                        type="hidden"
-                        singleColModal
-                        offerPassphraseOnDevice={onDeviceOffer}
-                        onSubmit={onSubmit}
+                    <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
-                        deviceBackup={device.features?.backup_type}
-                        learnMoreTooltipOnClick={
-                            <OpenGuideFromTooltip
-                                data-testid="@tooltip/guideAnchor"
-                                id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                            />
-                        }
+                        deviceLoading={deviceLoading}
+                        onSubmit={onSubmit}
+                        offerPassphraseOnDevice={onDeviceOffer}
+                        allowNonAsciiCharacters={isExistingWallet}
                     />
                 </Column>
             </CardWithDevice>

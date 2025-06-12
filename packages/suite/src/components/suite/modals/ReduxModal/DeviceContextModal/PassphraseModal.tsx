@@ -119,7 +119,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             );
     }
 
-    if (passphraseState.isExisting)
+    if (passphraseState.isExisting) {
         return (
             <PassphraseWalletExistsFlow
                 discovery={passphraseState.discovery}
@@ -132,6 +132,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 onSubmit={onSubmit}
             />
         );
+    }
 
     return (
         <PassphraseWalletIsNotExistFlow
