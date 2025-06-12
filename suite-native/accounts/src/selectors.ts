@@ -8,7 +8,6 @@ import {
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -16,7 +15,6 @@ import {
     TransactionsRootState,
     WalletSettingsRootState,
     selectAccountByKey,
-    selectAccounts,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
     selectIsPortfolioTrackerDevice,
@@ -34,7 +32,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import { isCoinWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
-import type { StaticSessionId } from '@trezor/connect';
 
 import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {
@@ -74,25 +71,6 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
             groupAccountsByNetworkAccountType,
         ) as GroupedByTypeAccounts,
 );
-
-export const selectIsAccountAlreadyDiscovered = (
-    state: AccountsRootState,
-    {
-        symbol,
-        path,
-        deviceState,
-    }: { symbol: NetworkSymbol; path: string; deviceState: StaticSessionId },
-) =>
-    pipe(
-        state,
-        selectAccounts,
-        A.any(
-            account =>
-                account.symbol === symbol &&
-                account.path === path &&
-                account.deviceState === deviceState,
-        ),
-    );
 
 export const selectAccountFiatBalance = createMemoizedSelector(
     [

@@ -15,22 +15,14 @@ import { Translation } from '@suite-native/intl';
 import {
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
-    RootStackParamList,
     Screen,
     ScreenHeader,
     StackProps,
-    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
 import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
-
-export type AddCoinDiscoveryFinishedScreenNavigationProps = StackToStackCompositeNavigationProps<
-    AddCoinAccountStackParamList,
-    AddCoinAccountStackRoutes.AddCoinDiscoveryFinished,
-    RootStackParamList
->;
 
 const accountsStyle = prepareNativeStyle(_ => ({ paddingHorizontal: 0, paddingTop: 0 }));
 

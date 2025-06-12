@@ -21,8 +21,6 @@ import { WalletDetailDeviceItemContent } from './WalletDetailDeviceItemContent';
 
 export type DeviceItemContentVariant = 'simple' | 'walletDetail';
 
-export type DeviceItemContentMode = 'compact' | 'header';
-
 export type DeviceItemContentProps = {
     deviceState: TrezorDevice['state'] | undefined;
     headerTextVariant?: NativeTypographyStyle;

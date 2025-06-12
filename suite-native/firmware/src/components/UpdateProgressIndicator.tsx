@@ -96,10 +96,6 @@ const AnimatedOpacity = ({
 };
 
 export type UpdateProgressIndicatorStatus = 'starting' | 'success' | 'error' | 'inProgress';
-export type UpdateProgressIndicatorProps = {
-    progress: number;
-    status: UpdateProgressIndicatorStatus;
-};
 
 // If you want to test animation states, use UpdateProgressIndicatorDemo, it will help you a lot.
 export const UpdateProgressIndicator = ({

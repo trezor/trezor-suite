@@ -63,10 +63,6 @@ export const featureFlagsSlice = createSlice({
     },
 });
 
-export const createSelectIsFeatureFlagEnabled =
-    (featureFlagKey: FeatureFlag) => (state: FeatureFlagsRootState) =>
-        state.featureFlags[featureFlagKey];
-
 export const selectIsFeatureFlagEnabled = (state: FeatureFlagsRootState, key: FeatureFlag) =>
     state.featureFlags[key];
 

@@ -33,7 +33,6 @@
         "@suite-native/staking": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "1.9.1",
         "react": "18.2.0",

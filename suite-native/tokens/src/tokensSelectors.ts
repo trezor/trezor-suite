@@ -91,31 +91,6 @@ export const selectAccountTokenDecimals = createMemoizedSelector(
     },
 );
 
-export const selectAccountTokenTransactions = createMemoizedSelector(
-    [
-        selectAccountTransactions,
-        (_state, _accountKey: AccountKey, tokenAddress: TokenAddress) => tokenAddress,
-    ],
-    (transactions, tokenAddress): WalletAccountTransaction[] =>
-        pipe(
-            transactions,
-            A.map(transaction => ({
-                ...transaction,
-                tokens: transaction.tokens.map((tokenTransfer: TokenTransfer) => ({
-                    ...tokenTransfer,
-                    symbol: tokenTransfer.symbol,
-                })),
-            })),
-            A.filter(transaction =>
-                A.some(
-                    transaction.tokens,
-                    tokenTransfer => tokenTransfer.contract === tokenAddress,
-                ),
-            ),
-            returnStableArrayIfEmpty,
-        ) as WalletAccountTransaction[],
-);
-
 const selectAllAccountTokens = (
     state: AccountsRootState,
     accountKey: AccountKey,
