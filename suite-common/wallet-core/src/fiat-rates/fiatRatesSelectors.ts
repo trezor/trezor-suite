@@ -29,6 +29,7 @@ import { MAX_AGE } from './fiatRatesConstants';
 import { FiatRatesRootState } from './fiatRatesTypes';
 import { AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSelectors';
+import { WalletSettingsRootState, selectLocalCurrency } from '../settings/walletSettingsReducer';
 import { TransactionsRootState } from '../transactions/transactionsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
@@ -184,4 +185,17 @@ export const selectTransactionsWithMissingRates = (
         account: Account;
         txs: WalletAccountTransaction[];
     }[];
+};
+
+export const selectHasPendingCurrentRateUpdates = (
+    state: FiatRatesRootState & TokenDefinitionsRootState & WalletSettingsRootState,
+): boolean => {
+    const fiatCurrency = selectLocalCurrency(state);
+    const allTickers = selectTickerFromAccounts(state);
+
+    return allTickers.some(ticker => {
+        const isTickerLoading = selectIsTickerLoading(state, ticker, fiatCurrency, 'current');
+
+        return isTickerLoading;
+    });
 };

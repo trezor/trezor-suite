@@ -69,6 +69,10 @@ export const GraphFiatBalance = ({
     const showBalanceFallback =
         !hasDeviceDiscovery && ((hasBalance && showLoading) || !isHistoryEnabledAccount);
 
+    if (totalFiatBalance === null) {
+        return <Skeleton />;
+    }
+
     // If discovery finished but graph still loading or missing first point we just show latest total balance
     if (showBalanceFallback) {
         return (

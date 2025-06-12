@@ -8,6 +8,7 @@ import {
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -24,6 +25,7 @@ import {
     selectDeviceInstances,
     selectDeviceModel,
     selectDevices,
+    selectHasPendingCurrentRateUpdates,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDiscoveredDeviceAccountless,
@@ -55,7 +57,9 @@ type NativeDeviceRootState = DeviceRootState &
     WalletSettingsRootState &
     FiatRatesRootState &
     FeatureFlagsRootState &
-    MessageSystemRootState;
+    MessageSystemRootState &
+    FiatRatesRootState &
+    TokenDefinitionsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
@@ -120,9 +124,20 @@ const getTotalFiatBalanceNative = ({
 };
 
 export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
-    [selectDeviceAccounts, selectCurrentFiatRates, selectLocalCurrency],
-    (deviceAccounts, rates, localCurrency) =>
-        getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+    [
+        selectDeviceAccounts,
+        selectCurrentFiatRates,
+        selectLocalCurrency,
+        selectHasPendingCurrentRateUpdates,
+    ],
+    (deviceAccounts, rates, localCurrency, hasPendingRateUpdates) => {
+        // If not all rates are loaded, we cannot calculate the total fiat balance accurately.
+        if (hasPendingRateUpdates) {
+            return null;
+        }
+
+        return getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates });
+    },
 );
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
