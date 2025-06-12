@@ -214,29 +214,31 @@ export const selectDeviceStatus = createMemoizedSelector(
     device => device && getStatus(device),
 );
 
+export const selectSupportedNetworkByDevice = (device: TrezorDevice | undefined) => {
+    const firmwareVersion = getFirmwareVersion(device);
+    const result = networkSymbolCollection.filter(symbol => {
+        const unavailableCapability = device?.unavailableCapabilities?.[symbol];
+        // if device does not have fw, do not show coins which are not supported by device in any case
+        if (!firmwareVersion && unavailableCapability === 'no-support') {
+            return false;
+        }
+        // if device has fw, do not show coins which are not supported by current fw
+        if (
+            firmwareVersion &&
+            ['no-support', 'no-capability'].includes(unavailableCapability || '')
+        ) {
+            return false;
+        }
+
+        return true;
+    });
+
+    return returnStableArrayIfEmpty(result);
+};
+
 export const selectDeviceSupportedNetworks = createMemoizedSelector(
     [selectSelectedDevice],
-    device => {
-        const firmwareVersion = getFirmwareVersion(device);
-        const result = networkSymbolCollection.filter(symbol => {
-            const unavailableCapability = device?.unavailableCapabilities?.[symbol];
-            // if device does not have fw, do not show coins which are not supported by device in any case
-            if (!firmwareVersion && unavailableCapability === 'no-support') {
-                return false;
-            }
-            // if device has fw, do not show coins which are not supported by current fw
-            if (
-                firmwareVersion &&
-                ['no-support', 'no-capability'].includes(unavailableCapability || '')
-            ) {
-                return false;
-            }
-
-            return true;
-        });
-
-        return returnStableArrayIfEmpty(result);
-    },
+    selectSupportedNetworkByDevice,
 );
 
 export const selectDeviceById = createMemoizedSelector(

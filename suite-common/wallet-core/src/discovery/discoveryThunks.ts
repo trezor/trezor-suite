@@ -24,6 +24,7 @@ import {
     selectDevices,
     selectPhysicalDevices,
     selectSelectedDevice,
+    selectSupportedNetworkByDevice,
 } from '../device/deviceSelectors';
 import { selectDeviceThunk } from '../device/deviceThunks';
 import {
@@ -487,7 +488,10 @@ export const runDiscoveryThunk = createThunk(
 
             TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-            const enabledNetworks = selectEnabledNetworks(getState());
+            const deviceNetworks = selectSupportedNetworkByDevice(device);
+            const enabledNetworks = selectEnabledNetworks(getState()).filter(symbol =>
+                deviceNetworks.includes(symbol),
+            );
             const discoveryAccountsPayload = enabledNetworks.map(n => ({ symbol: n }));
 
             // no networks to discover, complete discovery
