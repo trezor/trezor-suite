@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 
 import { transactionsActions } from './transactionsActions';
@@ -56,25 +56,6 @@ const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => 
     }
 
     return state.transactions[accountKey];
-};
-
-export const updateTransaction = (
-    state: TransactionsState,
-    account: Account,
-    txid: string,
-    updateObject: Partial<WalletAccountTransaction>,
-) => {
-    initializeAccount(state, account.key);
-    const accountTxs = state.transactions[account.key];
-    if (!accountTxs) return;
-
-    const index = accountTxs.findIndex(t => t && t.txid === txid);
-    if (accountTxs[index]) {
-        accountTxs[index] = {
-            ...accountTxs[index]!,
-            ...updateObject,
-        };
-    }
 };
 
 export const prepareTransactionsReducer = createReducerWithExtraDeps(

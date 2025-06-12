@@ -7,7 +7,6 @@ import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/s
 import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getConfirmations,
-    getEverstakePool,
     isClaimTx,
     isPending,
     isStakeTx,
@@ -17,7 +16,7 @@ import {
 
 import { TransactionsRootState } from './transactionsReducer';
 import { AccountsRootState } from '../accounts/accountsReducer';
-import { selectAccountByKey, selectSolAccountHasStaked } from '../accounts/accountsSelectors';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
 import {
     BlockchainRootState,
     selectBlockchainHeightBySymbol,
@@ -196,25 +195,6 @@ export const selectAnyAccountIsStakingActive = createMemoizedSelector(
             return isAccountStakingActive(account, claimTransactions);
         }),
 );
-
-export const selectEthAccountHasStaked = createMemoizedSelector(
-    [selectAccountStakeTransactions, selectAccountByKey],
-    (stakeTxs, account) => {
-        if (!account) return false;
-
-        return stakeTxs.length > 0 || !!getEverstakePool(account);
-    },
-);
-
-export const selectAssetAccountsThatStaked = (
-    state: TransactionsRootState & AccountsRootState,
-    accounts: Account[],
-) =>
-    accounts.filter(
-        account =>
-            selectEthAccountHasStaked(state, account.key) ||
-            selectSolAccountHasStaked(state, account.key),
-    );
 
 export const selectAccountTransactionsFetchStatus = (
     state: TransactionsRootState,

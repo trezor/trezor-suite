@@ -12,7 +12,6 @@ import { isNative } from '@trezor/env-utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
 import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
-import { selectFees } from '../fees/feesReducer';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 // Conditionally subscribe to blockchain backend
@@ -149,21 +148,5 @@ export const updateFeeInfoThunk = createThunk(
 
             dispatch(feesActions.updateFee(partial));
         }
-    },
-);
-
-export const removeFeeInfoThunk = createThunk(
-    `${FEES_MODULE_PREFIX}/removeFeeInfoThunk`,
-    ({ networks }: { networks: NetworkSymbol[] }, { dispatch, getState }) => {
-        const fees = selectFees(getState());
-        const networksWithFees = Object.keys(fees) as NetworkSymbol[];
-
-        const removedNetworks = networksWithFees.filter(
-            network => !networks.includes(network as NetworkSymbol),
-        );
-
-        removedNetworks.forEach(network => {
-            dispatch(feesActions.removeFee({ network }));
-        });
     },
 );

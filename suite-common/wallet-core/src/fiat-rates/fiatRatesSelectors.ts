@@ -185,20 +185,3 @@ export const selectTransactionsWithMissingRates = (
         txs: WalletAccountTransaction[];
     }[];
 };
-
-export const selectIsAccountWithRatesByKey = (
-    state: AccountsRootState & FiatRatesRootState,
-    accountKey: string,
-    fiatCurrency: FiatCurrencyCode,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account) {
-        return false;
-    }
-
-    const fiatRateKey = getFiatRateKey(account.symbol, fiatCurrency);
-    const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
-
-    return !!rates;
-};

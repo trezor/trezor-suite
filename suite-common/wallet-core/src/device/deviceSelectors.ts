@@ -11,7 +11,6 @@ import {
     getFirmwareVersion,
     getFirmwareVersionArray,
     hasBitcoinOnlyFirmware,
-    isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
 
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
@@ -22,21 +21,6 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
-export const selectSelectedDeviceBySelector = createMemoizedSelector(
-    [selectSelectedDevice, selectDevices],
-    (selectedDevice, devices) => {
-        const deviceId = selectedDevice?.id;
-        const devicePath = selectedDevice?.path;
-        const deviceInstance = selectedDevice?.instance ?? selectedDevice?.walletNumber;
-
-        return devices.find(
-            device =>
-                device.id === deviceId &&
-                device.path === devicePath &&
-                (device.instance === deviceInstance || device.walletNumber === deviceInstance),
-        );
-    },
-);
 
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(
@@ -349,16 +333,6 @@ export const selectHasOnlyPortfolioDevice = createMemoizedSelector(
     devices => devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID,
 );
 
-export const selectIsDeviceBitcoinOnly = createMemoizedSelector(
-    [selectDeviceFeatures],
-    features => features?.unit_btconly ?? false,
-);
-
-export const selectDeviceLanguage = createMemoizedSelector(
-    [selectDeviceFeatures],
-    features => features?.language ?? null,
-);
-
 export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device && device.firmware !== 'none',
@@ -445,10 +419,6 @@ export const selectInstacelessUnselectedDevices = createMemoizedSelector(
             deviceUtils.getSortedDevicesWithoutInstances(allDevices, device?.id),
             returnStableArrayIfEmpty,
         ),
-);
-
-export const selectIsBitcoinOnlyDevice = createMemoizedSelector([selectSelectedDevice], device =>
-    isBitcoinOnlyDevice(device),
 );
 
 export const selectHasBitcoinOnlyFirmware = createMemoizedSelector([selectSelectedDevice], device =>
