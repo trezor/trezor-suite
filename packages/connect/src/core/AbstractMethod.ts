@@ -323,7 +323,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             (device.firmwareStatus === 'required' ||
                 !versionUtils.isNewerOrEqual(version, range.min))
         ) {
-            // return UI.FIRMWARE_OLD;
+            return UI.FIRMWARE_OLD;
         }
 
         if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
