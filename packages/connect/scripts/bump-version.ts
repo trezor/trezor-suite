@@ -28,6 +28,7 @@ const connectPaths = [
     './packages/connect-web/package.json',
     './packages/connect-web/src/webextension/trezor-usb-permissions.js',
     './packages/connect-webextension/package.json',
+    './packages/connect-mobile/package.json',
 ];
 
 const cmd = ['bump', semver];
