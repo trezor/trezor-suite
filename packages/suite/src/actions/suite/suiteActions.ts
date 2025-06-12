@@ -248,16 +248,6 @@ export const setOnionLinks = (payload: boolean): SuiteAction => ({
     payload,
 });
 
-/**
- * Triggered by `@suite/tor-bootstrap`
- * Set torBootstrap in suite reducer
- * @returns
- */
-export const updateTorBootstrap = (payload: TorBootstrap | null): SuiteAction => ({
-    type: SUITE.TOR_BOOTSTRAP,
-    payload,
-});
-
 export const setTorBootstrap =
     (torBootstrap: TorBootstrap) => (dispatch: Dispatch, getState: GetState) => {
         const { torBootstrap: previousTorBootstrap } = selectTorState(getState());

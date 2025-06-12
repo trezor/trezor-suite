@@ -21,12 +21,10 @@ import type {
     TradingExchangeInfoSelector,
     TradingExchangeType,
     TradingPaymentMethodListProps,
-    TradingPaymentMethodProps,
     TradingPaymentMethodType,
     TradingSellFormProps,
     TradingSellInfoSelector,
     TradingSellType,
-    TradingTradeMapProps,
     TradingTradeType,
     TradingTransactionBuy,
     TradingTransactionExchange,
@@ -227,15 +225,6 @@ export type TradingFormMapProps = {
 };
 
 export type TradingFormContextValues<T extends TradingType> = TradingFormMapProps[T];
-
-export type TradingPaymentMethodHookProps<T extends TradingType> = {
-    paymentMethods: TradingPaymentMethodListProps[];
-    getPaymentMethods: (quotes: TradingTradeMapProps[T][]) => TradingPaymentMethodListProps[];
-    getQuotesByPaymentMethod: (
-        quotes: TradingTradeMapProps[T][] | undefined,
-        currentPaymentMethod: TradingPaymentMethodProps,
-    ) => TradingTradeMapProps[T][] | undefined;
-};
 
 export interface TradingFormInputDefaultProps {
     label?: TranslationKey;

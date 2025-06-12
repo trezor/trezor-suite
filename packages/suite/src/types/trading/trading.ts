@@ -111,8 +111,6 @@ export interface TradingCoinLogoProps {
     className?: string;
 }
 
-export interface TradingCryptoSelectGroupProps extends TradingSelectAssetOptionGroupProps {}
-
 export interface TradingGetSortedAccountsProps {
     accounts: AccountsState;
     deviceState: StaticSessionId | undefined;

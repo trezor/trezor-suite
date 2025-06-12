@@ -43,12 +43,6 @@ export const selectSelectedAccountKey = (state: SelectedAccountRootState) =>
 export const selectSelectedAccountStatus = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.status;
 
-export const selectSelectedAccountBalance = (state: SelectedAccountRootState) =>
-    state.wallet.selectedAccount.account?.formattedBalance;
-
-export const selectSelectedAccountParams = (state: SelectedAccountRootState) =>
-    state.wallet.selectedAccount.params;
-
 export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.status === 'loaded';
 

@@ -2,7 +2,6 @@ import url from 'url';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { TOR_URLS } from '@trezor/urls';
 
 const getAppName = () => {
     const appName = 'Trezor Suite';
@@ -25,14 +24,3 @@ export const APP_SRC = isDevEnv
           protocol: FILE_PROTOCOL,
           slashes: true,
       });
-
-// HTTP server default origins
-export const HTTP_ORIGINS_DEFAULT = [
-    '127.0.0.1',
-    'localhost',
-    'trezor.io',
-    '*.trezor.io',
-    '*.sldev.cz',
-    TOR_URLS['trezor.io'],
-    `*.${TOR_URLS['trezor.io']}`,
-];

@@ -3,7 +3,7 @@ import { hoursToMilliseconds } from 'date-fns';
 
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { getBip43Type, getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
@@ -304,14 +304,6 @@ export const prepareCoinjoinTransaction = (
             signature: affiliateRequest.signature,
         },
     };
-};
-
-export const getIsCoinjoinOutOfSync = (selectedAccount: SelectedAccountStatus) => {
-    if (selectedAccount.status !== 'loaded') return true;
-    const { account } = selectedAccount;
-    if (account.backendType === 'coinjoin') {
-        return account.status === 'out-of-sync';
-    }
 };
 
 export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase) => {

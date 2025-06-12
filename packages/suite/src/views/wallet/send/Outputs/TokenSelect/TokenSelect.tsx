@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import styled from 'styled-components';
-
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
     TokenDefinitions,
@@ -59,10 +57,6 @@ import {
     getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
-
-export const IconCursorWrapper = styled.div`
-    cursor: pointer;
-`;
 
 const createTokenOption = (token: TokenInfo, symbol: NetworkSymbol, shouldTryToFetch: boolean) => ({
     ticker: token.symbol ?? '',

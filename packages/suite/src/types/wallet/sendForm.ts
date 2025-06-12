@@ -25,8 +25,6 @@ import {
 } from 'src/hooks/wallet/useSendFormChangeHandlers';
 import { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
 
-export type ExportFileType = 'csv' | 'pdf' | 'json';
-
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
     account: Account;

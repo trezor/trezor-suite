@@ -1,5 +1,3 @@
-import { transactionsReducer } from 'src/reducers/wallet';
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { Account } from 'src/types/wallet';
 
 export const ACCOUNT: Account = {
@@ -48,15 +46,4 @@ export const ACCOUNT: Account = {
     marker: undefined,
     stellarCursor: undefined,
     ts: 0,
-};
-
-export const DEFAULT_STORE = {
-    wallet: {
-        selectedAccount: selectedAccountReducer(undefined, { type: 'foo' } as any),
-        transactions: transactionsReducer(undefined, { type: 'foo' } as any),
-    },
-    suite: {},
-    device: {
-        selectedDevice: undefined,
-    },
 };

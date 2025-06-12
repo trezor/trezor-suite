@@ -18,8 +18,6 @@ const ModalContext = createContext<ModalContextData>({
     modalTarget: null,
 });
 
-export const useModalTarget = () => useContext(ModalContext).modalTarget?.current ?? null;
-
 type ModalContextProviderProps = {
     isDisabled?: boolean;
     children: ReactNode;

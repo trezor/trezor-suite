@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { LogEntry, selectLogs } from '@suite-common/logger';
 import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 import { accountsActions, deviceActions, selectDevices } from '@suite-common/wallet-core';
-import { Discovery } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';
 import {
@@ -75,15 +74,6 @@ export const redactAccount = (account: DeepPartial<Account> | undefined) => {
                           : undefined,
               }
             : undefined,
-    };
-};
-
-export const redactDiscovery = (discovery: DeepPartial<Discovery> | undefined) => {
-    if (!discovery) return undefined;
-
-    return {
-        ...discovery,
-        deviceState: REDACTED_REPLACEMENT,
     };
 };
 

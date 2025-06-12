@@ -18,7 +18,6 @@ export const SET_ADDRESS_DISPLAY_TYPE = '@suite/set-display-address-type';
 export const SET_DEFAULT_WALLET_LOADING = '@suite/set-default-wallet-loading';
 export const SET_AUTODETECT = '@suite/set-autodetect';
 export const COINJOIN_RECEIVE_WARNING = '@suite/coinjoin-receive-warning';
-export const DESKTOP_SUITE_PROMO = '@suite/desktop-suite-promo';
 export const TOGGLE_DEVICE_AUTHENTICITY_CHECK = '@suite/toggle-device-authenticity-check';
 export const TOGGLE_FIRMWARE_REVISION_CHECK = '@suite/toggle-firmware-revision-check';
 export const TOGGLE_FIRMWARE_HASH_CHECK = '@suite/toggle-firmware-hash-check';
@@ -34,7 +33,6 @@ export const LOCK_TYPE = {
     DEVICE: 'device', // restricted device call (TrezorConnect)
     UI: 'ui', // restricted most of the UI actions (buttons, keyboard etc.)
 } as const;
-export const REQUEST_DEVICE_RECONNECT = '@suite/request-device-reconnect';
 export const SET_EXPERIMENTAL_FEATURES = '@suite/set-experimental-features';
 export const SET_SIDEBAR_WIDTH = '@suite/set-sidebar-width';
 export const SET_IS_COINS_FILTER_VISIBLE = '@suite/set-is-coins-filter-visible';

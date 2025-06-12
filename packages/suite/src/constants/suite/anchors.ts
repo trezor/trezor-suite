@@ -59,6 +59,4 @@ export const mapAnchorToRoute: Record<AnchorSettingSection, Route['name']> = {
 
 export const AccountTransactionBaseAnchor = '@account/transaction';
 
-export const CoinjoinLogsAnchor = '@coinjoin/logs';
-
 export type AnchorType = keyof typeof SettingsAnchor | string;

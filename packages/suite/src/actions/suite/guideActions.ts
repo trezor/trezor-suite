@@ -35,11 +35,6 @@ export const close = (): GuideAction => ({
     type: GUIDE.CLOSE,
 });
 
-export const setIndexNode = (payload: GuideCategory) => ({
-    type: GUIDE.SET_INDEX_NODE,
-    payload,
-});
-
 export const unsetNode = (): GuideAction => ({
     type: GUIDE.UNSET_NODE,
 });
