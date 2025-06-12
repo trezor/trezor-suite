@@ -28,6 +28,7 @@ const initialState: DesktopBluetoothState = {
     knownDevices: [] as DesktopBluetoothDevice[],
     unpairedDeviceNeedsManualOsRemoval: false,
     connectingDeviceIds: [],
+    isUnpairingDevice: false,
 };
 
 const disconnectedDeviceB: DesktopBluetoothDevice = {

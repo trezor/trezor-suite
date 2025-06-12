@@ -7,15 +7,12 @@ import { spacings } from '@trezor/theme';
 
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 import { ThpPairingCodeEntry } from '../../../components/thp/ThpPairingCodeEntry';
 import messages from '../../../support/messages';
 
 export const ThpPairingStep = () => {
     const intl = useIntl();
-    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const abort = useCallback(
         () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED)),
@@ -32,7 +29,6 @@ export const ThpPairingStep = () => {
                 </Text>
             }
             device={undefined}
-            isActionAbortable={isActionAbortable}
         >
             <Column gap={spacings.xxxxl} flex="1" justifyContent="center" alignItems="center">
                 <ThpPairingCodeEntry />

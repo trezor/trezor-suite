@@ -16,6 +16,8 @@ export const autoInitThpAfterDeviceConnectionThunk = createThunk<
 >(`${THP_PREFIX}/autoInitThpAfterDeviceConnectionThunk`, ({ device }, { dispatch, getState }) => {
     const isFwInstall = selectFirmware(getState()).status !== 'initial';
 
+    // This needs to be re-selected to convert Device to TrezorDevice.
+    // This TrezorDevice will be there ready after the reducer fills data in.
     const reselectedTrezorDevice = selectDevices(getState())?.find(
         stateDevice => stateDevice.path === device.path,
     );

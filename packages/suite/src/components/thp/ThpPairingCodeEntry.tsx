@@ -40,6 +40,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
                 right: isLoading
                     ? // This is a bit hack, but I think it is better to make it explicitly
                       // bound to SPINNER_SIZE+gap so it is clear why it is shifted (to prevent jumping)
+                      // This is relevant only when parent component sets margin (e.g., centering)
                       (-(SPINNER_SIZE + spacings.xl) as SpacingValues)
                     : undefined,
             }}

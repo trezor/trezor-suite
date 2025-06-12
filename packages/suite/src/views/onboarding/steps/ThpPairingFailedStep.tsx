@@ -8,13 +8,11 @@ import { Translation } from 'src/components/suite';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
 import { ThpPairingFailedForFirmwareInstallation } from '../../../components/thp/ThpPairingFailedForFirmwareInstallation';
-import { useDispatch, useSelector } from '../../../hooks/suite';
-import { selectIsActionAbortable } from '../../../reducers/suite/suiteReducer';
+import { useDispatch } from '../../../hooks/suite';
 
 export const ThpPairingFailedStep = () => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
-    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const handleRetry = () => {
         setIsLoading(true);
@@ -33,7 +31,6 @@ export const ThpPairingFailedStep = () => {
                 </Text>
             }
             device={undefined}
-            isActionAbortable={isActionAbortable}
         >
             <Column gap={spacings.xxxxl} flex="1" justifyContent="center" alignItems="center">
                 <Column gap={spacings.xl} flex="1" justifyContent="center" alignItems="center">

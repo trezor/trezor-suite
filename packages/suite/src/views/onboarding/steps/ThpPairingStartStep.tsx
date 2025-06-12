@@ -8,7 +8,6 @@ export const ThpPairingStartStep = () => (
         image="CHECK_SHIELD"
         heading={<Translation id="TR_THP_CREATE_SECURE_CONNECTION" />}
         device={undefined}
-        isActionAbortable={false}
     >
         <ThpPairingStart />
     </OnboardingStepBox>
