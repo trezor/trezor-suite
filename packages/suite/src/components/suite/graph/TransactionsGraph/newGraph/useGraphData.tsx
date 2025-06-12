@@ -7,19 +7,12 @@ import { Account } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { demoData } from '../../../../components/suite/graph/TransactionsGraph/newGraph/data';
-import {
-    ApiData,
-    MetaData,
-    RawDataItem,
-} from '../../../../components/suite/graph/TransactionsGraph/newGraph/types';
-import {
-    calculateMetaData,
-    calculateSegments,
-    sanitizeCoinData,
-} from '../../../../components/suite/graph/TransactionsGraph/newGraph/utils';
-import { useSelector } from '../../../../hooks/suite';
-import { GraphRange } from '../../../../types/wallet/graph';
+import { useSelector } from 'src/hooks/suite';
+import { GraphRange } from 'src/types/wallet/graph';
+
+import { demoData } from './data';
+import { ApiData, RawDataItem } from './types';
+import { sanitizeCoinData } from './utils';
 
 const getCurrentRange = (selectedRange: GraphRange) => {
     if (selectedRange.label === 'all') {
@@ -48,11 +41,7 @@ const fetchMockData = (selectedRange: GraphRange) => {
     return filteredRawData;
 };
 
-const fetchData = async (selectedRange: GraphRange, localCurrency: string) => {
-    //getBalanceHistory
-    // zpub6rpZ3Q1MYUfqGRRDjsjMLxQ1NiTanLrbeJDRaqf7PdMnPW4dpnUaAcNLQRZyebJCoV6WUBfXQieDikrWMKqk8mmCRSvPSG1JgABxB5DNyJg
-    // 1575288000
-    // 1749739726
+const fetchData = async (selectedRange: GraphRange, localCurrency) => {
     const currentRange = getCurrentRange(selectedRange);
     const fromTimestamp = getUnixTime(new Date(currentRange.startDate));
     const toTimestamp = getUnixTime(new Date(currentRange.endDate));
@@ -108,66 +97,40 @@ type UseGraphDataProps = {
     account: Account;
 };
 
-const SATS_TO_BTC = 100000000;
+const GROUPING_IN_SECONDS = 100000000;
 
 export const useGraphData = ({ selectedRange, balanceGraphData, account }: UseGraphDataProps) => {
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [fiatRates, setFiatRates] = useState<RawDataItem[]>([]);
     const [graphData, setGraphData] = useState<RawDataItem[]>([]);
-    const [startBalance, setStartBalance] = useState<number | null>(null);
-    const [hasError, setHasError] = useState<boolean>(false);
+    const [startBalance, setStartBalance] = useState<number>(0);
     const localCurrency = useSelector(selectLocalCurrency);
     const currentRange = getCurrentRange(selectedRange);
-    const [segments, setSegments] = useState<RawDataItem[][]>([]);
-    const [verticalSegments, setVerticalSegments] = useState<RawDataItem[][]>([]);
-    const [ticks, setTicks] = useState<string[]>([]);
-    const [metaData, setMetaData] = useState<MetaData>({
-        min: null,
-        max: null,
-        average: null,
-    });
 
-    const removeData = () => {
-        setVerticalSegments([]);
-        setTicks([]);
-        setGraphData([]);
-        setSegments([]);
+    const fetchStartBalance = async () => {
+        const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
+            coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
+            descriptor: account.descriptor,
+            to: currentRange.endDate.getTime(),
+            groupBy: 100000000,
+            currencies: ['usd'],
+        });
+        console.log('___connectBalanceHistory', connectBalanceHistory);
+        const value =
+            connectBalanceHistory?.success === true
+                ? (parseFloat(connectBalanceHistory.payload[0]?.sent) ||
+                      0 + parseFloat(connectBalanceHistory.payload[0]?.received) ||
+                      0) / GROUPING_IN_SECONDS
+                : 0;
+
+        setStartBalance(value);
     };
 
     useEffect(() => {
-        const fetchStartBalance = async () => {
-            const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-                coin: account.symbol,
-                identity: tryGetAccountIdentity(account),
-                descriptor: account.descriptor,
-                to: currentRange.endDate.getTime(),
-                groupBy: 1000000000,
-                currencies: ['usd'],
-            });
-
-            const value =
-                connectBalanceHistory?.success === true
-                    ? (parseFloat(connectBalanceHistory.payload[0]?.sent) ||
-                          0 + parseFloat(connectBalanceHistory.payload[0]?.received) ||
-                          0) / SATS_TO_BTC
-                    : null;
-
-            if (value === null) {
-                setHasError(true);
-            } else {
-                setStartBalance(value);
-            }
-        };
-
         fetchStartBalance();
-    }, [account, currentRange.endDate]);
-
-    useEffect(() => {
-        console.log('___', { currentRange, selectedRange });
-        if (startBalance === null || hasError) return;
-
-        // setIsLoading(true);
-        removeData();
+        setIsLoading(true);
+        // removeData();
 
         setFiatRates(fetchMockData(selectedRange));
         // setFiatRates(await fetchData(selectedRange,localCurrency).catch(console.error)); // tohle je možná blbě
@@ -177,7 +140,6 @@ export const useGraphData = ({ selectedRange, balanceGraphData, account }: UseGr
             currentRange,
             balanceGraphData,
         );
-        console.log('___', { balanceGraphDataForEachStep });
 
         const combinedData = fiatRates.map(rate => {
             const balanceValueForThisStep = balanceGraphDataForEachStep.find(balanceItem =>
@@ -190,37 +152,8 @@ export const useGraphData = ({ selectedRange, balanceGraphData, account }: UseGr
                 fiatValue: balanceValueForThisStep ? rate.value * balanceValueForThisStep.value : 0,
             };
         });
-        console.log('___', { combinedData });
         setGraphData(combinedData);
-    }, [
-        selectedRange,
-        currentRange,
-        localCurrency,
-        startBalance,
-        // removeData, // špatný
-        // balanceGraphData, // špatný
-        // fiatRates // špatný
-        hasError,
-    ]);
+    }, [selectedRange.startDate, selectedRange.endDate, localCurrency]);
 
-    useEffect(() => {
-        const { newSegments, newVerticalSegments, filteredTicks } = calculateSegments(graphData);
-
-        setSegments(newSegments);
-        setVerticalSegments(newVerticalSegments);
-        setTicks(filteredTicks);
-
-        setMetaData(calculateMetaData(graphData));
-        // setIsLoading(false);
-    }, [graphData, setSegments, setTicks, setVerticalSegments]);
-
-    return {
-        // isLoading,
-        data: graphData,
-        hasError,
-        metaData,
-        segments,
-        verticalSegments,
-        ticks,
-    };
+    return { isLoading, graphData };
 };

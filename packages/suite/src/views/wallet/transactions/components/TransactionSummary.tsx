@@ -19,11 +19,8 @@ import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/walle
 
 import { SummaryCards } from './SummaryCards';
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
-import { useGraphData } from './useGraphData';
-import { TransactionsGraph } from '../../../../components/suite/graph/TransactionsGraph/newGraph/TransactionsGraph';
-import { RawDataItem } from '../../../../components/suite/graph/TransactionsGraph/newGraph/types';
 import { selectIsDebugModeActive } from '../../../../reducers/suite/suiteReducer';
-import { GraphData } from '../../../../types/wallet/graph';
+import { TransactionsGraphWithData } from '../../../../components/suite/graph/TransactionsGraph/newGraph/TransactionsGraphWithData';
 
 const ErrorMessage = styled.div`
     display: flex;
@@ -42,22 +39,6 @@ interface TransactionSummaryProps {
     account: Account;
 }
 
-const getBalanceGraphData = (intervalGraphData: GraphData[]): RawDataItem[] => {
-    return intervalGraphData.reduce<RawDataItem[]>((acc, data) => {
-        if (data.data) {
-            const balanceData = data.data.map(d => ({
-                // get unix timestamp from date
-                date: fromUnixTime(d.time).toISOString(),
-                value: parseFloat(d.balance),
-            }));
-
-            return [...acc, ...balanceData];
-        }
-
-        return acc;
-    }, []);
-};
-
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
     const graph = useSelector(state => state.wallet.graph);
@@ -66,8 +47,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const dispatch = useDispatch();
     const isDebug = useSelector(selectIsDebugModeActive);
     const intervalGraphData = getGraphDataForInterval({ account, graph });
-    const balanceGraphData = getBalanceGraphData(intervalGraphData);
-    const { graphData } = useGraphData({ selectedRange, balanceGraphData, account });
+
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -106,7 +86,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
 
     const onRefresh = () => dispatch(updateGraphData([account]));
     const onSelectedRange = () => dispatch(updateGraphData([account], { newAccountsOnly: true }));
-    console.log('___DATA', { graphData });
+
     return (
         <Column alignItems="stretch" gap={20}>
             {account.networkType !== 'solana' && (
@@ -140,27 +120,26 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                 <Card overflow="visible">
                                     <Row height={320} overflow="visible" alignItems="stretch">
                                         {/*{isDebug ? (*/}
-                                        <TransactionsGraph
-                                            data={graphData}
-                                            portfolioData={balanceGraphData}
-                                            localCurrency={localCurrency}
+                                        <TransactionsGraphWithData
+                                            account={account}
+                                            selectedRange={selectedRange}
                                         />
                                         {/*) : (*/}
-                                        <LegacyTransactionsGraph
-                                            hideToolbar
-                                            variant="one-asset"
-                                            xTicks={xTicks}
-                                            account={account}
-                                            isLoading={isLoading}
-                                            data={data}
-                                            minMaxValues={minMaxValues}
-                                            localCurrency={localCurrency}
-                                            onRefresh={onRefresh}
-                                            selectedRange={selectedRange}
-                                            receivedValueFn={data => data.received}
-                                            sentValueFn={data => data.sent}
-                                            balanceValueFn={data => data.balance}
-                                        />
+                                        {/*<LegacyTransactionsGraph*/}
+                                        {/*    hideToolbar*/}
+                                        {/*    variant="one-asset"*/}
+                                        {/*    xTicks={xTicks}*/}
+                                        {/*    account={account}*/}
+                                        {/*    isLoading={isLoading}*/}
+                                        {/*    data={data}*/}
+                                        {/*    minMaxValues={minMaxValues}*/}
+                                        {/*    localCurrency={localCurrency}*/}
+                                        {/*    onRefresh={onRefresh}*/}
+                                        {/*    selectedRange={selectedRange}*/}
+                                        {/*    receivedValueFn={data => data.received}*/}
+                                        {/*    sentValueFn={data => data.sent}*/}
+                                        {/*    balanceValueFn={data => data.balance}*/}
+                                        {/*/>*/}
                                         {/*)}*/}
                                     </Row>
                                 </Card>

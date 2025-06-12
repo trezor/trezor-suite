@@ -1,7 +1,7 @@
 import { format, fromUnixTime } from 'date-fns';
 
 import { ApiData, RawDataItem } from './types';
-import { GraphRange } from '../../../../../types/wallet/graph';
+import { GraphData, GraphRange } from '../../../../../types/wallet/graph';
 
 const getNewValue = (previousValue: number) => {
     const howClose = 0.52 - Math.random();
@@ -111,4 +111,19 @@ export const sanitizeCoinData = (data: ApiData, selectedRange: GraphRange): RawD
     });
 
     return newArray;
+};
+
+export const getBalanceGraphData = (intervalGraphData: GraphData[]): RawDataItem[] => {
+    return intervalGraphData.reduce<RawDataItem[]>((acc, data) => {
+        if (data.data) {
+            const balanceData = data.data.map(d => ({
+                date: fromUnixTime(d.time).toISOString(),
+                value: parseFloat(d.balance),
+            }));
+
+            return [...acc, ...balanceData];
+        }
+
+        return acc;
+    }, []);
 };
