@@ -16,7 +16,6 @@ import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { Metadata } from 'src/components/suite/Metadata';
 import { Preloader, ToastContainer, TrafficLightDraggableWindowHeader } from 'src/components/suite';
-import { Box, Button, Text } from '@trezor/components';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
 import Autodetect from 'src/support/suite/Autodetect';
@@ -29,12 +28,7 @@ import RouterHandler from 'src/support/suite/Router';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
-import {
-    useDebugLanguageShortcut,
-    useDispatch,
-    useFormattersConfig,
-    useSelector,
-} from 'src/hooks/suite';
+import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 import history from 'src/support/history';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
@@ -44,99 +38,7 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
-import { useEffect, useRef } from 'react';
-import { requestBioAuthValidationThunk } from 'src/actions/suite/bioAuthThunks';
-import {
-    Body,
-    Columns,
-    ContentWrapper,
-    MainContent,
-    PageWrapper,
-    Wrapper,
-} from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
-import { selectIsAppUiHidden, selectIsBioAuthValidationRequired } from 'src/reducers/bioAuth';
-import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
-import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
-
-const BioAuthOverlay = ({
-    isBioAuthValidationRequired,
-}: {
-    isBioAuthValidationRequired: boolean;
-}) => {
-    const dispatch = useDispatch();
-    const wrapperRef = useRef<HTMLDivElement>(null);
-
-    return (
-        <Wrapper ref={wrapperRef} data-testid="@suite-layout">
-            <PageWrapper>
-                <Body data-testid="@suite-layout/body">
-                    <Columns>
-                        <MainContent>
-                            <ContentWrapper>
-                                <Box>
-                                    <Text>Je to ZAMČENY!!!!</Text>
-                                    {isBioAuthValidationRequired && (
-                                        <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                                dispatch(requestBioAuthValidationThunk())
-                                            }
-                                        >
-                                            Request BIO Auth
-                                        </Button>
-                                    )}
-                                </Box>
-                                <Box>
-                                    {isBioAuthValidationRequired && (
-                                        <Button
-                                            variant="destructive"
-                                            onClick={() => dispatch(resetSuiteAppThunk())}
-                                        >
-                                            Reset app storage
-                                        </Button>
-                                    )}
-                                </Box>
-                            </ContentWrapper>
-                        </MainContent>
-                    </Columns>
-                </Body>
-            </PageWrapper>
-        </Wrapper>
-    );
-};
-
-const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
-    const isBioAuthValidationRequired = useSelector(state =>
-        selectIsBioAuthValidationRequired(state, new Date()),
-    );
-    const isAppUiHidden = useSelector(selectIsAppUiHidden);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const handleBlur = () => {
-            dispatch(bioAuthActions.bioAuthWindowBlur(new Date().toISOString()));
-        };
-
-        const handleFocus = () => {
-            dispatch(bioAuthActions.bioAuthWindowFocus(new Date().toISOString()));
-        };
-
-        window.addEventListener('blur', handleBlur);
-
-        window.addEventListener('focus', handleFocus);
-
-        return () => {
-            window.removeEventListener('blur', handleBlur);
-            window.removeEventListener('focus', handleFocus);
-        };
-    }, [dispatch]);
-
-    return isAppUiHidden || isBioAuthValidationRequired ? (
-        <BioAuthOverlay isBioAuthValidationRequired={isBioAuthValidationRequired} />
-    ) : (
-        children
-    );
-};
+import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 
 const MainDesktop = () => {
     useTor();

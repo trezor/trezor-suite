@@ -4,7 +4,10 @@
         "outDir": "libDev",
         "baseUrl": "../suite"
     },
-    "include": ["."],
+    "include": [
+        ".",
+        "../suite/src/components/suite/BioAuthGuard"
+    ],
     "references": [
         {
             "path": "../../suite-common/formatters"

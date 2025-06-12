@@ -1697,7 +1697,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH',
     },
     TR_BIO_AUTH_DESCRIPTION: {
-        defaultMessage: 'Use biometric authentication to confirm actions in Trezor Suite.',
+        defaultMessage: 'Use biometric authentication to access Trezor Suite.',
         id: 'TR_BIO_AUTH_DESCRIPTION',
     },
     TR_ADDRESS_DISPLAY: {
@@ -8594,6 +8594,26 @@ export default defineMessages({
         id: 'TR_UNAVAILABLE_WHILE_LOADING',
         description: 'Coinjoin account navigation button tooltip during discovery',
         defaultMessage: 'Unavailable while loading',
+    },
+    TR_BIO_AUTH_LOCKED_HEADING: {
+        id: 'TR_BIO_AUTH_LOCKED_HEADING',
+        description: 'Heading of the modal saying that bio auth is not available',
+        defaultMessage: 'Trezor Suite is locked',
+    },
+    TR_BIO_AUTH_LOCKED_TEXT_MAC: {
+        id: 'TR_BIO_AUTH_LOCKED_TEXT_MAC',
+        description: 'Heading of the modal saying that bio auth is not available',
+        defaultMessage: 'Use Touch ID to unlock',
+    },
+    TR_BIO_AUTH_LOCKED_TEXT_WIN: {
+        id: 'TR_BIO_AUTH_LOCKED_TEXT_WIN',
+        description: 'Text of the modal saying that bio auth is not available',
+        defaultMessage: 'Use Windows Hello to unlock',
+    },
+    TR_BIO_AUTH_UNLOCK: {
+        id: 'TR_BIO_AUTH_UNLOCK',
+        description: 'CTA to unlock suit with biometrics',
+        defaultMessage: 'Unlock',
     },
     TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP: {
         id: 'TR_BIO_AUTH_STATE_UNKNOWN_TOOLTIP',
