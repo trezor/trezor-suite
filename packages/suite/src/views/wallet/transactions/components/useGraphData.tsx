@@ -98,11 +98,15 @@ export const enhanceBalanceGraphDataForEachStep = (
     return newValues.map(item => ({ ...item, value: item.value + startBalance }));
 };
 
-export const useGraphData = (
-    selectedRange: GraphRange,
-    balanceGraphData: RawDataItem[],
-    account: Account,
-) => {
+type UseGraphDataProps = {
+    selectedRange: GraphRange;
+    balanceGraphData: RawDataItem[];
+    account: Account;
+};
+
+const GROUPING_IN_SECONDS = 100000000;
+
+export const useGraphData = ({ selectedRange, balanceGraphData, account }: UseGraphDataProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [fiatRates, setFiatRates] = useState<RawDataItem[]>([]);
     const [graphData, setGraphData] = useState<RawDataItem[]>([]);
@@ -110,27 +114,24 @@ export const useGraphData = (
     const localCurrency = useSelector(selectLocalCurrency);
     const currentRange = getCurrentRange(selectedRange);
 
-    useEffect(() => {
-        const fetchStartBalance = async () => {
-            const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-                coin: account.symbol,
-                identity: tryGetAccountIdentity(account),
-                descriptor: account.descriptor,
-                to: currentRange.endDate.getTime(),
-                groupBy: 100000000,
-                // we don't need currencies at all here, this will just reduce transferred data size
-                // TODO: doesn't work at all, fix it in connect or blockchain-link?
-                // issue: https://github.com/trezor/trezor-suite/issues/8888
-                currencies: ['usd'],
-            });
-            const value =
-                (connectBalanceHistory?.payload?.[0]?.sent ||
-                    0 + connectBalanceHistory?.payload?.[0]?.received ||
-                    0) / 100000000;
-            setStartBalance(value);
-        };
-        fetchStartBalance();
+    const fetchStartBalance = async () => {
+        const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
+            coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
+            descriptor: account.descriptor,
+            to: currentRange.endDate.getTime(),
+            groupBy: 100000000,
+            currencies: ['usd'],
+        });
+        const value =
+            ((connectBalanceHistory?.payload?.[0]?.sent || 0) +
+                connectBalanceHistory?.payload?.[0]?.received || 0) / GROUPING_IN_SECONDS;
 
+        setStartBalance(value);
+    };
+
+    useEffect(() => {
+        fetchStartBalance();
         setIsLoading(true);
         // removeData();
 

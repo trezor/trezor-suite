@@ -76,13 +76,6 @@ export const TransactionsGraph = ({
     });
     // console.log('___', { raw, segments, verticalSegments, ticks });
 
-    const handleRemoveData = () => {
-        setVerticalSegments([]);
-        setTicks([]);
-        // setRaw([]);
-        setSegments([]);
-    };
-
     // const removeData = () => {
     //     setVerticalSegments([]);
     //     setTicks([]);
@@ -199,7 +192,6 @@ export const TransactionsGraph = ({
 
                         return (
                             <Line
-                                // yAxisId="left"
                                 key={`v-${index}`}
                                 data={pair}
                                 type="linear"
@@ -221,12 +213,12 @@ export const TransactionsGraph = ({
                             />
                         );
                     })}
-                    {/*{raw.map((pair, index) => (*/}
                     <YAxis
                         yAxisId="right"
                         orientation="right"
                         stroke="#82ca9d"
                         domain={['auto', 'auto']}
+                        hide={true}
                     />
                     <Line
                         yAxisId="right"
@@ -240,7 +232,6 @@ export const TransactionsGraph = ({
                         isAnimationActive={false}
                         legendType="none"
                     />
-                    {/*))}*/}
                     {metaData.min && (
                         <ReferenceLine
                             y={metaData.min}

@@ -67,7 +67,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const isDebug = useSelector(selectIsDebugModeActive);
     const intervalGraphData = getGraphDataForInterval({ account, graph });
     const balanceGraphData = getBalanceGraphData(intervalGraphData);
-    const { graphData } = useGraphData(selectedRange, balanceGraphData, account);
+    const { graphData } = useGraphData({ selectedRange, balanceGraphData, account });
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
