@@ -2,11 +2,11 @@ import { ReactNode } from 'react';
 
 import { Box, Text } from '@suite-native/atoms';
 
-export type BuyCardTitleProps = {
+export type CardTitleProps = {
     children: ReactNode;
 };
 
-export const BuyCardTitle = ({ children }: BuyCardTitleProps) => (
+export const CardTitle = ({ children }: CardTitleProps) => (
     <Box paddingHorizontal="sp8">
         <Text variant="body" color="textDefault">
             {children}

@@ -13,13 +13,13 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { BuyAssetNetworkInfo } from './BuyAssetNetworkInfo';
-import { BuyCardTitle } from './BuyCardTitle';
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
 import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
 import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { CardTitle } from '../general/CardTitle';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;
@@ -71,9 +71,9 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                     testID={BUY_CARD_TEST_ID + '/fiatSection'}
                 >
                     <HStack justifyContent="space-between" alignItems="center">
-                        <BuyCardTitle>
+                        <CardTitle>
                             <Translation id="moduleTrading.selectFiat.title" />
-                        </BuyCardTitle>
+                        </CardTitle>
                         <Box alignItems="flex-end">
                             <BuyFormFieldErrorBadge fieldName="fiatValue" />
                         </Box>
@@ -85,9 +85,9 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                     testID={BUY_CARD_TEST_ID + '/cryptoSection'}
                 >
                     <HStack justifyContent="space-between" alignItems="center">
-                        <BuyCardTitle>
+                        <CardTitle>
                             <Translation id="moduleTrading.selectCoin.title" />
-                        </BuyCardTitle>
+                        </CardTitle>
                         <BuyFormFieldErrorBadge fieldName="cryptoValue" />
                     </HStack>
                     <BuyTradeableAssetPicker />
