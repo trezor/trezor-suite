@@ -31,7 +31,7 @@ const isLegacyBridge = (transport: Context['device']['transport']) =>
 // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
 export const handshakeCancel = async ({ device, logger, signal }: Context) => {
     // device handshake already done
-    if (device.features) {
+    if (device.features || device.getThpState()?.properties) {
         return;
     }
 
@@ -89,6 +89,7 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
                 result.payload.message.code === 'Failure_InvalidProtocol'
             ) {
                 logger?.debug(`handshake Cancel protocol v2 detected`);
+                await device.setupThp();
             }
 
             return;

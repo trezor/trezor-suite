@@ -44,6 +44,7 @@ export const ERROR_CODES = {
     Device_MissingCapability: 'Device is missing capability', // thrown by methods which require specific capability
     Device_MissingCapabilityBtcOnly: 'Device is missing capability (BTC only)', // thrown by methods which require specific capability when using BTC only firmware
     Device_ThpPairingTagInvalid: 'Pairing tag mismatch', // thrown by RECEIVE_THP_PAIRING_TAG handler
+    Device_ThpStateMissing: 'ThpState missing', // thrown by thp related actions
 
     Failure_ActionCancelled: 'Action cancelled by user',
     Failure_FirmwareError: 'Firmware installation failed',

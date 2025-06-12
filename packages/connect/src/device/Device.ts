@@ -2,7 +2,12 @@
 import { randomBytes } from 'crypto';
 
 import { DeviceModelInternal, models } from '@trezor/device-utils';
-import { TransportProtocol, thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
+import {
+    TransportProtocol,
+    thp as protocolThp,
+    v1 as protocolV1,
+    v2 as protocolV2,
+} from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
@@ -21,6 +26,7 @@ import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { getThpChannel } from './thp';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
 import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
@@ -326,6 +332,27 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.releasePromise;
     }
 
+    async setupThp() {
+        _log.info('Setup THP device');
+        this._protocol = protocolV2;
+
+        if (
+            this.transport.name === 'BridgeTransport' &&
+            !versionUtils.isNewerOrEqual(this.transport.version, '3.0.0')
+        ) {
+            // old bridge is not compatible with THP
+            this.unreadableError = 'THP incompatible with bridge ' + this.transport.version;
+        } else {
+            try {
+                await this.transport.loadMessages('thp', protocolThp.getProtobufDefinitions);
+                this.thp = new protocolThp.ThpState();
+            } catch (error) {
+                // THP messages not loaded
+                this.unreadableError = error.message;
+            }
+        }
+    }
+
     // call only once, right after device creation
     async handshake(delay?: number) {
         if (delay) {
@@ -438,6 +465,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.emitLifecycle(DEVICE.CONNECT);
+                } else if (wasUnacquired && this.isUnacquired() && this.thp?.properties) {
+                    this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                 }
             });
 
@@ -502,13 +531,21 @@ export class Device extends TypedEmitter<DeviceEvents> {
             try {
                 await handshakeCancel({ device: this, logger: _log, signal: abortSignal });
 
-                if (fn) {
+                if (this.protocol.name === 'v2') {
+                    const withInteraction = !!fn;
+                    await getThpChannel(this, withInteraction);
+                } else if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
                     await this.getFeatures();
                 }
             } catch (error) {
                 _log.warn('Device._runInner error: ', error.message);
+
+                if (error.code === 'Device_ThpPairingTagInvalid') {
+                    // return as TypedError
+                    return Promise.reject(error);
+                }
 
                 return Promise.reject(
                     ERRORS.TypedError(
