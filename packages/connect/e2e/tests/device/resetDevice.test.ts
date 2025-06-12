@@ -27,7 +27,7 @@ describe('TrezorConnect.resetDevice', () => {
         expect(response.success).toEqual(true);
     });
 
-    it('resetDevice Slip39_Basic', async () => {
+    conditionalTest(['1', '<2.7.2'], 'resetDevice Slip39_Basic', async () => {
         const response = await TrezorConnect.resetDevice({
             skip_backup: true,
             backup_type: 1,
@@ -35,7 +35,7 @@ describe('TrezorConnect.resetDevice', () => {
         expect(response.success).toEqual(true);
     });
 
-    conditionalTest(['<2.7.2'], 'resetDevice Slip39_Basic_Extendable', async () => {
+    conditionalTest(['1', '<2.7.2'], 'resetDevice Slip39_Basic_Extendable', async () => {
         const response = await TrezorConnect.resetDevice({
             skip_backup: true,
             backup_type: 4,
@@ -43,7 +43,7 @@ describe('TrezorConnect.resetDevice', () => {
         expect(response.success).toEqual(true);
     });
 
-    it('resetDevice Slip39_Advanced', async () => {
+    conditionalTest(['1', '<2.7.2'], 'resetDevice Slip39_Advanced', async () => {
         const response = await TrezorConnect.resetDevice({
             skip_backup: true,
             backup_type: 2,
@@ -51,7 +51,7 @@ describe('TrezorConnect.resetDevice', () => {
         expect(response.success).toEqual(true);
     });
 
-    conditionalTest(['<2.7.2'], 'resetDevice Slip39_Advanced_Extendable', async () => {
+    conditionalTest(['1', '<2.7.2'], 'resetDevice Slip39_Advanced_Extendable', async () => {
         const response = await TrezorConnect.resetDevice({
             skip_backup: true,
             backup_type: 5,
@@ -59,7 +59,7 @@ describe('TrezorConnect.resetDevice', () => {
         expect(response.success).toEqual(true);
     });
 
-    conditionalTest(['<2.7.2'], 'resetDevice Slip39_Single_Extendable', async () => {
+    conditionalTest(['1', '<2.7.2'], 'resetDevice Slip39_Single_Extendable', async () => {
         const response = await TrezorConnect.resetDevice({
             skip_backup: true,
             backup_type: 3,
