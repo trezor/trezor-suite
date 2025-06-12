@@ -2484,7 +2484,7 @@ export default defineMessages({
         id: 'TR_ENTER_PASSPHRASE',
     },
     TR_ENTER_PASSPHRASE_ON_DEVICE: {
-        defaultMessage: 'Enter passphrase on Trezor',
+        defaultMessage: 'or enter on Trezor',
         id: 'TR_ENTER_PASSPHRASE_ON_DEVICE',
     },
     TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL: {
@@ -4773,6 +4773,10 @@ export default defineMessages({
     TR_REMOVE: {
         id: 'TR_REMOVE',
         defaultMessage: 'Remove',
+    },
+    TR_REMOVE_NON_RECOMMENDED_CHARACTERS: {
+        id: 'TR_REMOVE_NON_RECOMMENDED_CHARACTERS',
+        defaultMessage: 'Remove non-recommended characters',
     },
     TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED: {
         id: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',

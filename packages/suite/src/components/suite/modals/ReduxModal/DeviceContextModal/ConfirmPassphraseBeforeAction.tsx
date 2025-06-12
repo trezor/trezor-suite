@@ -8,15 +8,14 @@ import {
 } from '@suite-common/wallet-core';
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { PassphraseTypeCard } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 
+import { PassphraseInputCard } from './PassphraseInputCard';
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
-import { OpenGuideFromTooltip } from '../../../../guide';
 import { Translation } from '../../../Translation';
 
 export const ConfirmPassphraseBeforeAction = () => {
@@ -62,20 +61,11 @@ export const ConfirmPassphraseBeforeAction = () => {
                     <Paragraph>
                         <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
                     </Paragraph>
-                    <PassphraseTypeCard
-                        submitLabel={<Translation id="TR_CONFIRM" />}
-                        type="hidden"
-                        singleColModal
-                        offerPassphraseOnDevice={onDeviceOffer}
-                        onSubmit={onSubmit}
+                    <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
-                        deviceBackup={device.features?.backup_type}
-                        learnMoreTooltipOnClick={
-                            <OpenGuideFromTooltip
-                                data-testid="@tooltip/guideAnchor"
-                                id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                            />
-                        }
+                        onSubmit={onSubmit}
+                        offerPassphraseOnDevice={onDeviceOffer}
+                        allowNonAsciiCharacters
                     />
                 </Column>
             </CardWithDevice>

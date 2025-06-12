@@ -99,6 +99,7 @@ export const PassphraseWalletExistsFlow = ({
 
     return (
         <EnterPassphrase
+            isExistingWallet={true}
             deviceLoading={loading}
             device={device}
             submitting={submittingPassphrase}
