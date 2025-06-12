@@ -5,12 +5,14 @@ import { Box, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
-import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { TradeableAsset } from '../../types/general';
 
-export const BuyAssetNetworkInfo = () => {
+export type TradeableAssetNetworkInfoProps = {
+    asset: TradeableAsset | undefined;
+};
+
+export const TradeableAssetNetworkInfo = ({ asset }: TradeableAssetNetworkInfoProps) => {
     const { translate } = useTranslate();
-    const { watch } = useBuyFormContext();
-    const asset = watch('asset');
 
     if (!asset) {
         return null;

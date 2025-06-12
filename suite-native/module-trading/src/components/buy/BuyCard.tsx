@@ -12,7 +12,6 @@ import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/at
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { BuyAssetNetworkInfo } from './BuyAssetNetworkInfo';
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
 import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
@@ -20,6 +19,7 @@ import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { CardTitle } from '../general/CardTitle';
+import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;
@@ -97,7 +97,7 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                         paddingVertical="sp4"
                         spacing="sp4"
                     >
-                        <BuyAssetNetworkInfo />
+                        <TradeableAssetNetworkInfo asset={asset} />
                         <BuyReceiveAccountCryptoBalance />
                     </HStack>
                 </VStack>
