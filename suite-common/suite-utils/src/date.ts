@@ -1,7 +1,6 @@
 import { type Locale } from 'date-fns';
 import {
     differenceInCalendarMonths,
-    differenceInMinutes,
     differenceInMonths,
     eachDayOfInterval,
     eachMonthOfInterval,
@@ -74,19 +73,6 @@ export const calcTicksFromData = (data: { time: number }[]) => {
 };
 
 /**
- * @deprecated It's not needed anymore, new blockbook will handle it
- */
-export const getBlockbookSafeTime = (timestamp?: number) => {
-    const currentTimestamp = getUnixTime(new Date());
-    if (timestamp && differenceInMinutes(currentTimestamp * 1000, timestamp * 1000) > 3) {
-        // timestamp is older than 3 mins, no adjustment needed
-        return timestamp;
-    }
-
-    return currentTimestamp - 180;
-};
-
-/**
  * Sets hh:mm:ss to 00:00:00 in local timezone (UTC time may be different).
  * If `resetDay` is true  sets date to the first of the month
  * Returns unix timestamp
@@ -104,27 +90,4 @@ export const resetTime = (ts: number, resetDay?: boolean) => {
     }
 
     return getUnixTime(sanitizedTimestamp);
-};
-
-/**
- * Sets hh:mm:ss to 00:00:00 in UTC.
- * If `resetDay` is true  sets date to the first of the month
- * Returns unix timestamp
- *
- * @param {number} ts
- * @param {boolean} [resetDay]
- * @returns
- */
-export const resetUTCTime = (ts: number, resetDay?: boolean) => {
-    let sanitizedTimestamp = fromUnixTime(ts);
-    sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCHours(0) / 1000);
-    sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCMinutes(0) / 1000);
-    sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCSeconds(0) / 1000);
-
-    if (resetDay) {
-        sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCDate(1) / 1000);
-    }
-    const sanitizedUnixTimestamp = getUnixTime(sanitizedTimestamp);
-
-    return sanitizedUnixTimestamp;
 };

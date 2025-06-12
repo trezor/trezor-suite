@@ -1,5 +1,4 @@
 import { TranslationKey } from '@suite-common/intl-types';
-import { testMocks } from '@suite-common/test-utils';
 import type {
     Bip43Path,
     Bip43PathTemplate,
@@ -7,47 +6,6 @@ import type {
 } from '@suite-common/wallet-config';
 
 import { ACCOUNTS } from './accounts';
-
-const DISCOVERIES = [
-    {
-        deviceState: '1stTestnet@device_id:0',
-        index: 0,
-        status: 4,
-        total: 35,
-        bundleSize: 0,
-        loaded: 39,
-        failed: [],
-        networks: ['btc', 'btc', 'btc', 'test', 'test', 'test', 'eth', 'txrp'],
-    },
-];
-
-export const getDiscoveryProcess = [
-    {
-        testName: 'Discovery for 1stTestnet@device_id:0 device',
-        discoveries: DISCOVERIES,
-        device: testMocks.getSuiteDevice({
-            state: '1stTestnet@device_id:0',
-        }),
-        result: {
-            bundleSize: 0,
-            deviceState: '1stTestnet@device_id:0',
-            failed: [],
-            index: 0,
-            loaded: 39,
-            networks: ['btc', 'btc', 'btc', 'test', 'test', 'test', 'eth', 'txrp'],
-            status: 4,
-            total: 35,
-        },
-    },
-    {
-        testName: 'Discovery for 1stTestnet@device_id:1 device',
-        discoveries: DISCOVERIES,
-        device: testMocks.getSuiteDevice({
-            state: '1stTestnet@device_id:1',
-        }),
-        result: null,
-    },
-];
 
 export const accountTitleCoinjoinFixture: Array<{
     symbol: NetworkSymbolExtended;

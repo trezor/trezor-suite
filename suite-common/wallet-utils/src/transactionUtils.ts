@@ -721,14 +721,6 @@ export const enhanceTransaction = (
     hex: (origTx.blockHeight ?? 0) <= 0 && origTx.rbf ? origTx.hex : undefined, // store tx hex **only** for pending transactions (used by rbf)
 });
 
-export const getOriginalTransaction = ({
-    descriptor,
-    deviceState,
-    symbol,
-    rbfParams,
-    ...tx
-}: WalletAccountTransaction): AccountTransaction => tx;
-
 const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) => {
     const addresses: { [address: string]: string[] } = {};
     const addAddress = (txid: string, addrs: string[] | undefined) => {

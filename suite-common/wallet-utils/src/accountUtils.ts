@@ -286,9 +286,6 @@ export const getAccountTypeUrl = (path: string) => {
 
 export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
 
-export const stripNetworkAmount = (amount: string, decimals: number) =>
-    new BigNumber(amount).toFixed(decimals, 1);
-
 export const formatAmount = (amount: BigNumberValue, decimals: number) => {
     const safeAmount = amount || '0';
     const bAmount = new BigNumber(safeAmount);
@@ -450,13 +447,6 @@ export const getAllAccounts = (
  */
 export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) =>
     `${descriptor}-${symbol}-${deviceState}`;
-
-export const countUniqueCoins = (accounts: Account[]) => {
-    const coins = new Set();
-    accounts.forEach(acc => coins.add(acc.symbol));
-
-    return coins.size;
-};
 
 /**
  * Clear invalid tokens and formats amounts
@@ -621,27 +611,6 @@ export const getAccountTokensFiatBalance = (
                 : total;
         }, new BigNumber(0))
         .toFixed();
-
-export const getAssetTokensFiatBalance = (
-    accounts: Account[],
-    localCurrency: FiatCurrencyCode,
-    rates?: RatesByKey,
-) => {
-    const totalBalance = accounts
-        .reduce((total, account) => {
-            const tokensBalance = getAccountTokensFiatBalance(
-                account,
-                localCurrency,
-                rates,
-                account.tokens,
-            );
-
-            return total.plus(tokensBalance ?? 0);
-        }, new BigNumber(0))
-        .toFixed();
-
-    return totalBalance;
-};
 
 export const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
     const balance = getAccountTotalStakingBalance(account) ?? '0';

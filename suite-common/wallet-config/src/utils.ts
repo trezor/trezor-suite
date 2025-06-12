@@ -5,7 +5,6 @@ import {
     type NetworkFeature,
     type NetworkSymbol,
     type NetworkSymbolExtended,
-    type NormalizedNetworkAccount,
 } from './types';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
@@ -28,23 +27,6 @@ export const getTestnets = (debug = false) =>
 
 export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);
 
-/**
- * For a given network, return a collection of accounts incl. 'normal', and with missing properties backfilled from 'normal'
- */
-export const normalizeNetworkAccounts = (network: Network): NormalizedNetworkAccount[] => {
-    const normalAccount: NormalizedNetworkAccount = {
-        accountType: NORMAL_ACCOUNT_TYPE,
-        bip43Path: network.bip43Path,
-        features: network.features,
-    };
-    const alternativeAccounts = Object.values(network.accountTypes).map(account => ({
-        ...normalAccount,
-        ...account,
-    }));
-
-    return [normalAccount, ...alternativeAccounts];
-};
-
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
     networks[symbol]?.backendTypes.some(backend => backend === 'blockbook');
 
@@ -66,8 +48,6 @@ export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
     networks[symbol]?.features;
 
 export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
-
-export const getTradeCryptoId = (symbol: NetworkSymbol) => networks[symbol].tradeCryptoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
     Object.prototype.hasOwnProperty.call(networks, symbol);

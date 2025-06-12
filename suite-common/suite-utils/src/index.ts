@@ -5,6 +5,5 @@ export * from './build';
 export * from './resolveStaticPath';
 export * from './txsPerPage';
 export * from './parseFirmwareChangelog';
-export * from './uppercaseType';
 export * from './protocol';
 export * from './invariant';

@@ -9,7 +9,6 @@ export function getLocaleSeparators(locale: string): {
 
     // Find the thousand and decimal separators
     let thousandsSeparator = ' ';
-    let decimalSeparator = '.';
 
     // Since the number is 1,234,567.89 or 1.234.567,89 or similar,
     // the last non-numeric character before the last 2 digits is the decimal separator
@@ -21,7 +20,7 @@ export function getLocaleSeparators(locale: string): {
         }
     }
 
-    decimalSeparator = formattedNumber[formattedNumber.length - 3];
+    const decimalSeparator = formattedNumber[formattedNumber.length - 3];
 
     return { decimalSeparator, thousandsSeparator };
 }

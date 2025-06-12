@@ -22,8 +22,6 @@ import {
 } from '../../utils';
 import { buyUtils } from '../../utils/buy/buyUtils';
 
-export const BUY_THUNK_COMMON_PREFIX = '@trading-buy/thunk';
-
 type GetQuotesRequest = {
     requestData: BuyTradeQuoteRequest;
     signal: AbortSignal | null;
