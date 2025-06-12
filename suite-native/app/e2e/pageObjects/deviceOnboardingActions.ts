@@ -96,8 +96,14 @@ class DeviceOnboardingActions {
 
     async skipFirmwareUpdate() {
         const testId = '@firmware/skip-button';
-        await waitForElementByIdToBeVisible(testId, 20000);
-        await element(by.id(testId)).tap();
+        try {
+            await waitForElementByIdToBeVisible(testId, 10000);
+            await element(by.id(testId)).tap();
+        } catch {
+            console.warn(
+                'SKIPPING FIRMWARE UPDATE: Firmware update was not displayed, it is already latest version.',
+            );
+        }
     }
 }
 
