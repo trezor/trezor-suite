@@ -4,6 +4,7 @@ import { LinearTransition } from 'react-native-reanimated';
 import { AnimatedBox, Card, Text, VStack } from '@suite-native/atoms';
 
 import { ExchangeAlert } from './ExchangeAlert';
+import { ExchangeBuyCard } from './ExchangeBuyCard';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { AmountEditingDoneButton } from '../general/AmountEditingDoneButton';
@@ -26,6 +27,7 @@ const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoized
                     Exchange Tab placeholder
                 </Text>
             </Card>
+            <ExchangeBuyCard />
             {isAmountInputActive && <AmountEditingDoneButton />}
         </VStack>
     </AnimatedBox>
