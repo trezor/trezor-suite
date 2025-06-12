@@ -71,9 +71,15 @@ export const ResetDeviceStep = () => {
         async (type: BackupType) => {
             switch (type) {
                 case 'shamir-single':
+                    // We do not send `_Extendable` versions of the `backup_type` to be compatible
+                    // with older firmwares. New firmware creates always extensible Shamir. Even for
+                    // original, non-extendable enum values.
                     await onResetDevice({ backup_type: 1 });
                     break;
-                case 'shamir-advanced':
+                case 'shamir-advanced': // <-- bad naming, this means `multi-share`
+                    // This is for multi-share, but we send simple Slip39_Basic. At this point,
+                    // the device does not care about extendibility, the only info needed is that its Shamir
+                    // and extendability are handled in the `TrezorConnect.backupDevice(...)
                     await onResetDevice({ backup_type: 1 });
                     break;
                 case '12-words':
