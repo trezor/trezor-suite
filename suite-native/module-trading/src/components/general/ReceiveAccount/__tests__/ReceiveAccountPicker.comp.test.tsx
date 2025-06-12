@@ -90,6 +90,18 @@ describe('ReceiveAccountPicker', () => {
             expect(getByTestId('TEST_ID/not-selected')).toHaveTextContent('Not selected');
         });
 
+        it('should render correctly with empty string as receiveAccount label', () => {
+            const { getByTestId } = renderReceiveAccountPicker({
+                receiveAccount: {
+                    account: { ...getBtcAccount(), accountLabel: '' },
+                    address: undefined,
+                },
+                testID: 'TEST_ID',
+            });
+
+            expect(getByTestId('TEST_ID/selected-account')).toHaveTextContent('');
+        });
+
         it('should render correctly with receiveAccount but no address', () => {
             const { getByTestId } = renderReceiveAccountPicker({
                 receiveAccount: {

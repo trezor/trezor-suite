@@ -60,7 +60,7 @@ const ReceiveAccountPickerRight = ({
     addressText,
     testID,
 }: ReceiveAccountPickerRightProps) => {
-    if (!accountLabel) {
+    if (accountLabel == null) {
         return (
             <RightText color="textSubdued" testID={testID ? `${testID}/not-selected` : undefined}>
                 <Translation id="moduleTrading.notSelected" />
