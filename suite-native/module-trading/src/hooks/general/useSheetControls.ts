@@ -1,10 +1,16 @@
 import { useCallback } from 'react';
 
-import { useBottomSheetControls } from './useBottomSheetControls';
-import { BuyFormType, BuyFormValues } from '../../types/buy';
+import type { Path, UseFormReturn } from '@suite-native/forms';
 
-export const useSheetControls = <Key extends keyof BuyFormValues>(
-    { setValue, watch }: BuyFormType,
+import { useBottomSheetControls } from './useBottomSheetControls';
+import { BuyFormValues } from '../../types/buy';
+import { ExchangeFormValues } from '../../types/exchange';
+
+export const useSheetControls = <
+    FormValues extends BuyFormValues | ExchangeFormValues,
+    Key extends Path<FormValues>,
+>(
+    { setValue, watch }: UseFormReturn<FormValues>,
     key: Key,
 ) => {
     const bottomSheetControls = useBottomSheetControls();

@@ -10,6 +10,7 @@ import type {
 import {
     TradingPaymentMethodProps,
     selectTradingBuyLoadingTimestampAndStatus,
+    selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeLoadingTimestampAndStatus,
 } from '@suite-common/trading';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
@@ -780,6 +781,37 @@ describe('tradingSelectors', () => {
             state.wallet.tradingNew.exchange.exchangeInfo = undefined;
 
             expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
+        });
+    });
+
+    describe('selectTradingExchangeBuyCryptoIds', () => {
+        it('should select only coins presented in exchangeInfo and info', () => {
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual(['bitcoin']);
+        });
+
+        it('should be stable', () => {
+            const first = selectTradingExchangeBuyCryptoIds(state);
+            const second = selectTradingExchangeBuyCryptoIds(state);
+
+            expect(first).toBe(second);
+        });
+
+        it('should be empty array when platforms are not set', () => {
+            state.wallet.tradingNew.info.platforms = undefined;
+
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
+        });
+
+        it('should be empty array when coins are not set', () => {
+            state.wallet.tradingNew.info.coins = undefined;
+
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
+        });
+
+        it('should be empty array when buyCryptoIds are not set', () => {
+            state.wallet.tradingNew.exchange.exchangeInfo = undefined;
+
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
     });
 

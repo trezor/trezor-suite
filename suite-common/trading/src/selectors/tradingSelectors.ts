@@ -454,17 +454,19 @@ export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms),
 );
 
-export const selectTradingExchangeSellCryptoIds = createMemoizedSelector(
-    [
-        ({ wallet }) => wallet.tradingNew.info.coins,
-        ({ wallet }) => wallet.tradingNew.info.platforms,
-        ({ wallet }) =>
-            returnStableArrayIfEmpty<CryptoId>(
-                wallet.tradingNew.exchange.exchangeInfo?.sellCryptoIds,
-            ),
-    ],
-    (coins, platforms, sellCryptoIds) => getFilteredCryptoIds(sellCryptoIds, coins, platforms),
-);
+const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') =>
+    createMemoizedSelector(
+        [
+            ({ wallet }) => wallet.tradingNew.info.coins,
+            ({ wallet }) => wallet.tradingNew.info.platforms,
+            ({ wallet }) =>
+                returnStableArrayIfEmpty<CryptoId>(wallet.tradingNew.exchange.exchangeInfo?.[key]),
+        ],
+        (coins, platforms, cryptoIds) => getFilteredCryptoIds(cryptoIds, coins, platforms),
+    );
+
+export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
+export const selectTradingExchangeBuyCryptoIds = createExchangeCryptoIdsSelector('buyCryptoIds');
 
 export const selectTradingBuyIsLoading = (state: TradingRootState) =>
     state.wallet.tradingNew.buy.isLoading;

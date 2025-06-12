@@ -1,6 +1,13 @@
-import { BuyProviderInfo, Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
+import {
+    BuyProviderInfo,
+    Coins,
+    CryptoId,
+    ExchangeProviderInfo,
+    FiatCurrenciesProps,
+    Platforms,
+} from 'invity-api';
 
-import { TradingBuyState, TradingPaymentMethodListProps } from '@suite-common/trading';
+import { TradingBuyState, TradingPaymentMethodListProps, TradingType } from '@suite-common/trading';
 
 import { TradingState, initialState } from '../tradingSlice';
 import coins from './coins.json';
@@ -48,10 +55,34 @@ export const getInitializedBuyState = () =>
         },
     }) as TradingBuyState;
 
-export const getInitializedTradingState = () =>
+export const getInitializedExchangeState = () => ({
+    ...initialState.exchange,
+    exchangeInfo: {
+        providerInfos: {
+            ['invity']: invity,
+            ['mercuryo']: mercuryo,
+            ['cexdirect']: cexdirect,
+        } as unknown as Record<string, ExchangeProviderInfo>,
+        buyCryptoIds: [
+            'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            'ethereum',
+            'bitcoin',
+        ] as CryptoId[],
+        sellCryptoIds: [
+            'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            'ethereum--0xWithoutObjectInCoinsInfo',
+            'eos',
+            'ethereum',
+            'bitcoin',
+        ] as CryptoId[],
+    },
+});
+
+export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
     ({
         ...initialState,
         buy: getInitializedBuyState(),
+        exchange: getInitializedExchangeState(),
         info: {
             paymentMethods: [
                 {
@@ -62,7 +93,7 @@ export const getInitializedTradingState = () =>
             coins: coins as Coins,
             platforms: platforms as Platforms,
         },
-        trades: [{ tradeType: 'buy' }],
+        trades: [{ tradeType }],
     }) as TradingState;
 
 export const getInitializedTradingStateWithQuotes = () => {

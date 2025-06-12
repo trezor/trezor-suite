@@ -1,4 +1,4 @@
-import { Button, buttonSchemeToColorsMap } from '@suite-native/atoms';
+import { Button, ButtonColorScheme, buttonSchemeToColorsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 
@@ -9,6 +9,7 @@ export type SelectAssetButtonProps = {
     onPress: () => void;
     selectedAsset: TradeableAsset | undefined;
     caret?: boolean;
+    colorScheme?: ButtonColorScheme;
     testID?: string;
 };
 
@@ -16,10 +17,11 @@ export const SelectTradeableAssetButton = ({
     onPress,
     selectedAsset,
     caret,
+    colorScheme = 'primary',
     testID,
 }: SelectAssetButtonProps) => {
     const { translate } = useTranslate();
-    const { iconColor } = buttonSchemeToColorsMap.primary;
+    const { iconColor } = buttonSchemeToColorsMap[colorScheme];
 
     if (selectedAsset) {
         return (
@@ -40,6 +42,7 @@ export const SelectTradeableAssetButton = ({
             accessibilityLabel={translate('moduleTrading.selectCoin.buttonTitle')}
             size="small"
             testID={testID}
+            colorScheme={colorScheme}
         >
             <Translation id="moduleTrading.selectCoin.buttonTitle" />
         </Button>
