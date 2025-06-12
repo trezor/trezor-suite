@@ -75,13 +75,13 @@ const getOutputTitle = (
         case 'contract':
             return <Translation id={networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT'} />;
         case 'address':
+        case 'regular_legacy':
             return (
                 <Translation
                     id={stakeType ? displayModeStringsMap[stakeType].label : 'TR_RECIPIENT_ADDRESS'}
                 />
             );
-        case 'regular_legacy':
-            return <Translation id="TR_RECIPIENT_ADDRESS" />;
+
         case 'amount':
             return <Translation id="TR_AMOUNT_SENT" />;
         case 'destination-tag':
@@ -168,6 +168,7 @@ const getOutputLines = (
             ];
         case 'address':
         case 'data':
+        case 'regular_legacy':
             if (stakeType) {
                 return [
                     {
@@ -183,25 +184,7 @@ const getOutputLines = (
             return [
                 {
                     id: type,
-                    type,
-                    value,
-                },
-            ];
-        case 'regular_legacy':
-            if (stakeType) {
-                return [
-                    {
-                        id: 'data',
-                        type: 'default',
-                        value,
-                    },
-                ];
-            }
-
-            return [
-                {
-                    id: type,
-                    type: 'address',
+                    type: type === 'regular_legacy' ? 'address' : type,
                     value,
                 },
             ];
@@ -310,7 +293,8 @@ export const TransactionReviewOutput = ({
     });
 
     // prevents double label when bumping stake type txs
-    if (type === 'address' && isRbf && stakeType) {
+    const ignoredRbfTypes = ['address', 'regular_legacy'];
+    if (isRbf && stakeType && ignoredRbfTypes.includes(type)) {
         return null;
     }
 

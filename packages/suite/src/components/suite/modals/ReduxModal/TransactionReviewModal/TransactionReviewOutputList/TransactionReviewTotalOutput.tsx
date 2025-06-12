@@ -26,10 +26,11 @@ const getLines = (
     stakeType?: StakeType,
 ): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
-    const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType);
+    const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType, stakeType);
     const isEthereum = networkType === 'ethereum';
     const isSolana = networkType === 'solana';
     const showAmountWithoutFee = isEthereum || isSolana;
+
     const feeLabelId = ((network: NetworkType) => {
         switch (network) {
             case 'ethereum':
@@ -48,7 +49,7 @@ const getLines = (
         .toString();
 
     if (isUpdatedEthereumSendFlow) {
-        const isUnknownStakingClaimValue = isRbfAction && stakeType === 'claim';
+        const isUnknownStakingValue = isRbfAction && stakeType !== 'stake';
 
         const amountLine: OutputElementLine = {
             id: 'amount', // In updated ethereum send flow there is no total amount shown, only amount without fee
@@ -64,7 +65,7 @@ const getLines = (
             type: 'amount',
         };
 
-        return isUnknownStakingClaimValue ? [feeLine] : [amountLine, feeLine];
+        return isUnknownStakingValue ? [feeLine] : [amountLine, feeLine];
     }
     if (isUpdatedSendFlow) {
         const amount = showAmountWithoutFee ? amountWithoutFee : precomposedTx.totalSpent;

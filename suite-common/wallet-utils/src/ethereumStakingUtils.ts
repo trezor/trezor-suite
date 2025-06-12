@@ -3,6 +3,9 @@ import { fromWei, hexToNumberString } from 'web3-utils';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     Account,
+    FormState,
+    ReviewOutput,
+    StakeFormState,
     StakeType,
     StakingPoolExtended,
     SupportedEthereumNetworkSymbol,
@@ -133,3 +136,14 @@ export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {
 
     return hexToNumberString(`0x${dataBuffer.subarray(4, 36).toString('hex')}`);
 };
+
+export const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
+    'stakeType' in form;
+
+export const getStakeType = (precomposedForm: FormState, outputs: ReviewOutput[]) =>
+    isStakeForm(precomposedForm)
+        ? precomposedForm.stakeType
+        : outputs
+              .filter(output => output.type === 'data')
+              .map(output => getTxStakeNameByDataHex(output?.value))
+              .find(type => type) || null;

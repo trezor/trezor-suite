@@ -8,12 +8,14 @@ import {
     ReviewOutput,
     ReviewOutputState,
     StakeFormState,
+    StakeType,
 } from '@suite-common/wallet-types';
 import { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
+import { getStakeType } from './ethereumStakingUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 export const getTransactionReviewOutputState = (
@@ -35,13 +37,15 @@ export const getIsUpdatedSendFlow = (device: TrezorDevice) => {
 export const getIsUpdatedEthereumSendFlow = (
     device: TrezorDevice,
     network: Account['networkType'],
+    stakeType?: StakeType,
 ) => {
     if (network !== 'ethereum') return false;
 
     const firmwareVersion = getFirmwareVersion(device);
 
     // publicly introduced in 2.6.3, versions 2.6.1 and 2.6.2 were internal
-    return versionUtils.isNewer(firmwareVersion, '2.6.0');
+    // staking uses new flow on T1B1
+    return versionUtils.isNewer(firmwareVersion, '2.6.0') || !!stakeType;
 };
 
 const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
@@ -209,6 +213,10 @@ const constructOldFlow = ({
         outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
+    // For bump fee we have to analyze tx data,
+    // so outputs must already include type 'data' beforehand
+    const stakeType = getStakeType(precomposedForm, outputs);
+
     if (networkType === 'ripple') {
         // ripple displays requests on device in different order:
         // 1. destination tag
@@ -221,7 +229,7 @@ const constructOldFlow = ({
                 value: precomposedForm.destinationTag,
             });
         }
-    } else if (!isBumpFeeRbf || !precomposedTx.useNativeRbf) {
+    } else if ((!isBumpFeeRbf || !precomposedTx.useNativeRbf) && !stakeType) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 

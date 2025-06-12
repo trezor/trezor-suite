@@ -15,17 +15,11 @@ import {
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
 } from '@suite-common/wallet-core';
-import {
-    FormState,
-    RbfTransactionType,
-    ReviewOutput,
-    StakeFormState,
-    StakeType,
-} from '@suite-common/wallet-types';
+import { FormState, RbfTransactionType, ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
     findAccountsByAddress,
-    getTxStakeNameByDataHex,
+    getStakeType,
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
     isRbfTransaction,
@@ -91,9 +85,6 @@ const shouldShowTxValidityTimer = (
 };
 
 const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
-
-const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
-    'stakeType' in form;
 
 const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormState) => {
     const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
@@ -202,12 +193,7 @@ export const TransactionReviewModalContent = ({
     });
 
     // for bump fee we have to analyze tx data which are in outputs[0], for legacy in outputs[1]
-    const stakeType = isStakeForm(precomposedForm)
-        ? precomposedForm.stakeType
-        : outputs
-              .filter(output => output.type === 'data')
-              .map(output => getTxStakeNameByDataHex(output?.value))
-              .find(type => type) || null;
+    const stakeType = getStakeType(precomposedForm, outputs);
 
     const onCancel = () => {
         dispatch(modalActions.onCancel());
