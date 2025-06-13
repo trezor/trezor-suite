@@ -1,5 +1,8 @@
 import { AccountType } from '@suite-common/wallet-config';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectDeviceAccountsVisibleEnabledAndSupported,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
@@ -75,7 +78,7 @@ const Accounts = ({
 
 export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(selectAccounts);
+    const accounts = useSelector(selectDeviceAccountsVisibleEnabledAndSupported);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const { discovery } = useDiscovery();
@@ -93,7 +96,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const staticSessionId = device.state?.staticSessionId;
     const failed = getFailedAccounts(staticSessionId, discovery);
 
-    const list = sortByCoin(accounts.filter(a => a.deviceState === staticSessionId)).concat(failed);
+    const list = sortByCoin(accounts).concat(failed);
     const filteredAccounts =
         searchString || coinFilter
             ? list.filter(account => {
@@ -107,21 +110,17 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
             : list;
 
     const filterAccountsByType = (type: Account['accountType']) =>
-        filteredAccounts.filter(a => a.accountType === type && (!a.empty || a.visible));
+        filteredAccounts.filter(a => a.accountType === type);
 
     // always show first "normal" account even if they are empty
-    const normalAccounts = filteredAccounts.filter(
-        a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
-    );
+    const normalAccounts = filteredAccounts.filter(a => a.accountType === 'normal');
     const coinjoinAccounts = filterAccountsByType('coinjoin');
     const taprootAccounts = filterAccountsByType('taproot');
     const segwitAccounts = filterAccountsByType('segwit');
     const legacyAccounts = filterAccountsByType('legacy');
     const ledgerAccounts = filterAccountsByType('ledger');
 
-    const hasMultipleAccounts = filteredAccounts.some(
-        a => a.accountType !== 'normal' && (!a.empty || a.visible),
-    );
+    const hasMultipleAccounts = filteredAccounts.some(a => a.accountType !== 'normal');
     const { params } = selectedAccount;
 
     const keepOpen = (type: Account['accountType']) =>

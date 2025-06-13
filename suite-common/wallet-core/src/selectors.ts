@@ -8,9 +8,14 @@ import {
     selectAccounts,
     selectAccountsByDeviceState,
     selectIsDeviceAccountless,
+    selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
 import { DeviceRootState } from './device/deviceReducer';
-import { selectHasOnlyPortfolioDevice, selectSelectedDevice } from './device/deviceSelectors';
+import {
+    selectHasOnlyPortfolioDevice,
+    selectSelectedDevice,
+    selectSupportedNetworkByDevice,
+} from './device/deviceSelectors';
 import { DiscoveryRootState } from './discovery/discoveryReducer';
 import {
     selectDiscoveryByDevicePath,
@@ -24,8 +29,19 @@ to prevent circular dependencies between reducers
 */
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
-    AccountsRootState & DeviceRootState & DiscoveryRootState
+    AccountsRootState & DeviceRootState & DiscoveryRootState & WalletSettingsRootState
 >();
+
+export const selectDeviceAccountsVisibleEnabledAndSupported = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectSelectedDevice, selectEnabledNetworks],
+    (accounts, device, enabledNetworks) => {
+        const deviceNetworks = selectSupportedNetworkByDevice(device);
+
+        return accounts.filter(
+            ({ symbol }) => enabledNetworks.includes(symbol) && deviceNetworks.includes(symbol),
+        );
+    },
+);
 
 export const selectNetworksToDiscover = (
     state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,

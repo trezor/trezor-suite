@@ -52,6 +52,7 @@ export const selectVisibleDeviceAccounts = createMemoizedSelector(
     accounts =>
         pipe(
             accounts,
+            // all non-empty accounts are also made visible by discoveryThunks, so need to filter by !account.empty
             A.filter(account => account.visible),
             returnStableArrayIfEmpty,
         ),
