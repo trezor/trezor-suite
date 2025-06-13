@@ -11,3 +11,5 @@ export type AssetExposure =
     | AccountSummary.Erc20AddressExposure
     | AccountSummary.Erc721AddressExposure
     | AccountSummary.Erc1155AddressExposure;
+
+export type { TransactionScanResponse } from '@blockaid/client/resources';

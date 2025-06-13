@@ -49,6 +49,11 @@ export const PermissionConfirmation = () => {
         }
         dispatch(connectPopupActions.approvePermissions());
     };
+    const onClose = () => {
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    };
 
     return (
         <VStack testID="@popup/deeplink-info" spacing="sp16" flex={1}>
@@ -105,7 +110,7 @@ export const PermissionConfirmation = () => {
                     <Translation id="moduleConnectPopup.confirm" />
                 )}
             </Button>
-            <Button colorScheme="tertiaryElevation0" onPress={() => navigation.goBack()}>
+            <Button colorScheme="tertiaryElevation0" onPress={onClose}>
                 <Translation id="generic.buttons.close" />
             </Button>
         </VStack>

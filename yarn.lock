@@ -10798,6 +10798,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -10807,6 +10808,7 @@ __metadata:
     "@suite-native/feature-flags": "workspace:^"
     "@suite-native/intl": "workspace:^"
     "@suite-native/navigation": "workspace:*"
+    "@trezor/connect": "workspace:^"
     "@trezor/connect-mobile": "workspace:*"
     "@trezor/urls": "workspace:*"
     expo-linking: "npm:~7.1.5"
@@ -10814,6 +10816,7 @@ __metadata:
     react-native: "npm:0.79.3"
     react-native-reanimated: "npm:^3.18.0"
     react-redux: "npm:9.2.0"
+    web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
 

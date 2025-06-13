@@ -8,6 +8,8 @@ import {
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
+jest.mock('@suite-common/tx-simulation', () => ({}));
+
 describe('AppTabNavigator', () => {
     const renderTabs = (preloadedState?: PreloadedState) =>
         renderWithStoreProviderAsync(<AppTabNavigator />, { preloadedState });

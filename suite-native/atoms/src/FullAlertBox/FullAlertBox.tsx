@@ -18,8 +18,8 @@ const containerStyle = prepareNativeStyle<Pick<FullAlertStyles, 'backgroundColor
 );
 
 export type FullAlertBoxProps = {
-    title: string;
-    description?: string;
+    title: React.ReactNode;
+    description?: React.ReactNode;
     primaryButtonLabel?: string;
     secondaryButtonLabel?: string;
     onPressPrimaryButton?: () => void;
