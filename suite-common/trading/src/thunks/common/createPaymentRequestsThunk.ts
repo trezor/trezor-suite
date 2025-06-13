@@ -49,18 +49,18 @@ export const createPaymentRequestsThunk = createThunk<
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const { mac: macRefund } = await dispatch(getRefundAddress({ account })).unwrap();
-
         const nonce = await dispatch(getNonce()).unwrap();
 
         // const { composed } = selectTradingComposedTransactionInfo(getState()); // TODO: slip24 - use after update fees during swaps/sells
 
-        if (!('outputs' in composedLevels))
+        if (!('outputs' in composedLevels)) {
             return rejectWithValue({
                 type: 'sign-tx-error',
                 error: {
                     id: 'TR_PAYMENT_REQUESTS_ERROR',
                 },
             });
+        }
 
         const outputs: PaymentRequestOutput[] = [];
 
