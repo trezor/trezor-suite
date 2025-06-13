@@ -49,6 +49,7 @@ const ChildrenWrapper = styled.div`
 
 export type WelcomeLayoutWithoutModalSwitcherProps = {
     children: ReactNode;
+    hideSidebar?: boolean;
 };
 
 const Right = ({ bannerSlot, children }: { bannerSlot?: ReactNode; children: ReactNode }) => {
@@ -68,6 +69,7 @@ const Right = ({ bannerSlot, children }: { bannerSlot?: ReactNode; children: Rea
 // used in Preloader and Onboarding
 export const WelcomeLayoutWithoutModalSwitcher = ({
     children,
+    hideSidebar,
 }: WelcomeLayoutWithoutModalSwitcherProps) => {
     const bannerMessage = useSelector(selectBannerMessage);
     const theme = useSelector(state => state.suite.settings.theme);
@@ -82,9 +84,11 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
                     alignItems="normal"
                 >
                     <Modal.Provider>
-                        <ElevationDown>
-                            <LoggedOutSidebar />
-                        </ElevationDown>
+                        {!hideSidebar ? (
+                            <ElevationDown>
+                                <LoggedOutSidebar />
+                            </ElevationDown>
+                        ) : null}
 
                         <Right
                             bannerSlot={

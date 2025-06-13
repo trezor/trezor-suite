@@ -1,4 +1,4 @@
-import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
     fetchConfigThunk,
@@ -87,7 +87,6 @@ const fixtures: Fixture[] = [
         actions: [
             SUITE.INIT,
             initDevices.pending.type,
-            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
@@ -134,7 +133,6 @@ const fixtures: Fixture[] = [
         actions: [
             SUITE.INIT,
             initDevices.pending.type,
-            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
@@ -179,7 +177,6 @@ const fixtures: Fixture[] = [
         actions: [
             SUITE.INIT,
             initDevices.pending.type,
-            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
@@ -224,7 +221,6 @@ const fixtures: Fixture[] = [
         actions: [
             SUITE.INIT,
             initDevices.pending.type,
-            analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,

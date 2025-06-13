@@ -15,15 +15,15 @@ type Autofill<T> = Partial<T> & {
     shouldFill?: boolean;
 };
 
-export interface State {
+export interface ProtocolState {
     sendForm: Autofill<SendFormState>;
 }
 
-export const initialState: State = {
+export const initialState: ProtocolState = {
     sendForm: {},
 };
 
-const protocolReducer = (state: State = initialState, action: Action): State =>
+const protocolReducer = (state: ProtocolState = initialState, action: Action): ProtocolState =>
     produce(state, draft => {
         switch (action.type) {
             case PROTOCOL.FILL_SEND_FORM:

@@ -1,6 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectThpCredentials, selectThpStaticKey } from '@suite-common/thp';
 import {
     deviceActions,
     deviceConnectThunks,
@@ -201,22 +200,15 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             transports,
             debug: showConnectLogs,
-            thp: {
-                hostName: 'Trezor Suite',
-                staticKey: selectThpStaticKey(getState()),
-                knownCredentials: selectThpCredentials(getState()),
-                // TODO: mobile should use ['Nfc', 'CodeEntry']
-                pairingMethods: ['CodeEntry'],
-            },
-            });
-        } catch (error) {
-            let formattedError: string;
-            if (typeof error === 'string') {
-                formattedError = error;
-            } else {
-                formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
-            }
-            throw new Error(formattedError);
+        });
+    } catch (error) {
+        let formattedError: string;
+        if (typeof error === 'string') {
+            formattedError = error;
+        } else {
+            formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
         }
-    },
+        throw new Error(formattedError);
+    }
+},
 );
