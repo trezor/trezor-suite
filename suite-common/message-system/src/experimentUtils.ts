@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { getIntegerInRangeFromString } from '@trezor/utils';
 
 import { ExperimentId, ExperimentsItemType } from './messageSystemTypes';
 
@@ -20,9 +20,8 @@ type ExperimentGetGroupByInclusion = {
  */
 export const getInclusionFromInstanceId = (instanceId: string, experimentId: ExperimentId) => {
     const combinedId = `${instanceId}-${experimentId}`;
-    const hash = createHash('sha256').update(combinedId).digest('hex').slice(0, 8);
 
-    return parseInt(hash, 16) % 100;
+    return getIntegerInRangeFromString(combinedId, 100);
 };
 
 export const getExperimentGroupByInclusion = ({

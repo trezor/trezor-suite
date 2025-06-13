@@ -44,7 +44,7 @@ describe('testing experiment utils', () => {
 
     const mockRandomInt = (isAGroup: boolean) => {
         (getWeakRandomId as jest.Mock).mockImplementation(() =>
-            isAGroup ? '1XxK0mjUnx' : 'AyRQxROQKW',
+            isAGroup ? '1XxK0mwana' : 'AyRQxROQKW',
         );
     };
 
