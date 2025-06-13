@@ -20,6 +20,7 @@ export type SendTransactionThunkProps = {
     trade: ExchangeTrade | undefined;
     decimals: number;
     shouldSendInSats: boolean | undefined;
+    isSlip24Active?: boolean;
 } & SendDexTransactionThunkProps;
 
 export const sendTransactionThunk = createThunk<
@@ -38,6 +39,7 @@ export const sendTransactionThunk = createThunk<
             setMaxOutputId,
             decimals,
             shouldSendInSats,
+            isSlip24Active,
             nextStep,
             processResponseData,
             triggerAnalyticsTradeConfirmation,
@@ -100,6 +102,8 @@ export const sendTransactionThunk = createThunk<
                 destinationTag: sendPaymentExtraId,
                 signAndPushSendFormTransaction,
                 setMaxOutputId,
+                isSlip24Active,
+                receiveCryptoId: selectedTrade.receive,
             }),
         );
 
