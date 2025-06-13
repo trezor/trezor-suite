@@ -9,11 +9,8 @@ import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-typ
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,
-    AccountKey,
     AddressDisplayOptions,
-    Discovery,
     SelectedAccountStatus,
-    WalletAccountTransaction,
     WalletType,
 } from '@suite-common/wallet-types';
 import { BlockchainBlock, ConnectSettings, Manifest, StaticSessionId } from '@trezor/connect';
@@ -40,37 +37,23 @@ export type ExtraDependencies = {
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
-        findLabelsToBeMovedOrDeleted: SuiteCompatibleThunk<{
-            prevTxid: string;
-        }>;
-        moveLabelsForRbfAction: SuiteCompatibleThunk<{
-            newTxid: string;
-            toBeMovedOrDeletedList: Record<
-                AccountKey,
-                {
-                    toBeMoved: WalletAccountTransaction;
-                    toBeDeleted: WalletAccountTransaction[];
-                }
-            >;
-        }>;
-        openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
         forgetBluetoothDevice: SuiteCompatibleThunk<void>;
     };
     selectors: {
-        selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
+        // TODO when tokens are implemented 1:1 in both apps, delete from extras
+        // wallet-core selector is used in desktop, but suite-native has its own implementation
         selectTokenDefinitionsEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
-        selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
         // todo: we do not want to, so far, transfer coinjoin to @suite-common
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
+        // a wallet-core selector that could be reused directly, but this one is used very often and would create circular deps
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
-        selectDiscoveryForSelectedDevice: SuiteCompatibleSelector<Discovery | undefined>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
@@ -87,10 +70,6 @@ export type ExtraDependencies = {
     actions: {
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
-        appChanged: ActionCreatorWithPayload<any>;
-        setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
-        updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice>;
-        requestAuthConfirm: ActionCreatorWithoutPayload;
         onModalCancel: ActionCreatorWithoutPayload;
         openModal: ActionCreatorWithPayload<UserContextPayload>;
     };

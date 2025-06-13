@@ -10,7 +10,7 @@ describe('TrezorConnect Actions', () => {
         store = configureMockStore({
             preloadedState: {
                 wallet: { settings: { enabledNetworks: [] } },
-                device: { selectedDevice: undefined },
+                device: { selectedDevice: undefined, devices: [] },
             },
         });
     });

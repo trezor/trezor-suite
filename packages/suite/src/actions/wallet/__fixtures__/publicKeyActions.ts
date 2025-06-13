@@ -88,6 +88,7 @@ export default [
         initialState: {
             device: {
                 selectedDevice: getSuiteDevice({ connected: false }),
+                devices: [],
             },
         },
         mocks: {},
@@ -107,6 +108,7 @@ export default [
         initialState: {
             device: {
                 selectedDevice: undefined,
+                devices: [],
             },
         },
         mocks: {},

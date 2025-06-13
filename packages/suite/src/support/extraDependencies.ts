@@ -9,14 +9,9 @@ import {
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     BlockchainState,
-    DeviceRootState,
-    DiscoveryRootState,
     ExplorerConfig,
     FiatRatesState,
     TransactionsState,
-    deviceActions,
-    selectDiscoveryByDevicePath,
-    selectIsPendingTransportEvent,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
@@ -26,12 +21,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
-import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
-import {
-    findLabelsToBeMovedOrDeleted,
-    moveLabelsForRbfAction,
-} from 'src/actions/wallet/moveLabelsForRbfActions';
 import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
@@ -67,24 +57,17 @@ export const extraDependencies: ExtraDependencies = {
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
-        findLabelsToBeMovedOrDeleted,
-        moveLabelsForRbfAction,
-        openSwitchDeviceDialog,
         forgetBluetoothDevice,
     },
     selectors: {
-        selectDevices: (state: AppState) => state.device.devices,
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
             state.wallet.settings.enabledNetworks,
-        selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
-        selectDiscoveryForSelectedDevice: (state: DiscoveryRootState & DeviceRootState) =>
-            selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path),
         selectRouterApp: (state: AppState) => state.router.app,
         selectRoute: (state: AppState) => state.router.route,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
@@ -98,10 +81,6 @@ export const extraDependencies: ExtraDependencies = {
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
         lockDevice: suiteActions.lockDevice,
-        appChanged: suiteActions.appChanged,
-        setSelectedDevice: deviceActions.selectDevice,
-        updateSelectedDevice: deviceActions.updateSelectedDevice,
-        requestAuthConfirm: suiteActions.requestAuthConfirm,
         onModalCancel: modalActions.onCancel,
         openModal: modalActions.openModal,
     },

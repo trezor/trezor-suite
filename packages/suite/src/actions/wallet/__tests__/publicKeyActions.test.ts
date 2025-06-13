@@ -79,7 +79,7 @@ const rootReducer = combineReducers({
 });
 
 interface StateOverrides {
-    device?: Pick<DeviceReducerState, 'selectedDevice'>;
+    device?: Pick<DeviceReducerState, 'selectedDevice' | 'devices'>;
     networkType?: string;
 }
 

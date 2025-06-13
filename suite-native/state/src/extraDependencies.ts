@@ -4,11 +4,7 @@ import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
-import {
-    selectDevices,
-    selectDiscoveryForSelectedDevice,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { isBluetoothEnabled } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
@@ -34,10 +30,8 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
-        selectDevices,
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
-        selectDiscoveryForSelectedDevice,
         selectDebugSettings: () => ({
             transports,
         }),

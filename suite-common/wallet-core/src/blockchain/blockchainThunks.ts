@@ -34,6 +34,7 @@ import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
+import { selectDevices } from '../device/deviceSelectors';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 
@@ -299,10 +300,7 @@ export const onBlockMinedThunk = createThunk(
 
 export const onBlockchainNotificationThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
-    (payload: BlockchainNotification, { dispatch, getState, extra }) => {
-        const {
-            selectors: { selectDevices },
-        } = extra;
+    (payload: BlockchainNotification, { dispatch, getState }) => {
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
         if (!isNetworkSymbol(symbol)) {

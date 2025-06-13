@@ -6,7 +6,6 @@ export const SET_BIO_AUTH_ENABLED = '@suite/set-bio-auth-enabled';
 export const REQUEST_BIO_AUTH_CHANGE = '@suite/request-bio-auth-change';
 export const REQUEST_BIO_AUTH_CHANGE_END = '@suite/request-bio-auth-change-end';
 export const REQUEST_BIO_AUTH_VALIDATED = '@suite/request-bio-auth-validated';
-export const REQUEST_AUTH_CONFIRM = '@suite/request-auth-confirm';
 export const BIO_AUTH_WINDOW_BLUR = '@suite/bio-auth-window-blur';
 export const BIO_AUTH_WINDOW_FOCUS = '@suite/bio-auth-window-focus';
 export const TOGGLE_BIO_AUTH_VALIDATION_REQUESTED = '@suite/toggle-bio-auth-validation-requested';

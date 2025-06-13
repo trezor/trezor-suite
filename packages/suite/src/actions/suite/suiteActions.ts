@@ -28,7 +28,6 @@ export type SuiteAction =
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
-    | { type: typeof requestAuthConfirm.type }
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: Locale;
@@ -110,8 +109,6 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
 });
 
 // Bio auth related actions have been moved to bioAuthActions.ts
-
-export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);
 
 export const setTheme = (
     variant: AppState['suite']['settings']['theme']['variant'],

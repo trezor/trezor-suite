@@ -62,18 +62,13 @@ export const extraDependenciesMock: ExtraDependencies = {
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
         initMetadata: mockThunk('initMetadata'),
         addAccountMetadata: mockThunk('addAccountMetadata'),
-        findLabelsToBeMovedOrDeleted: mockThunk('findLabelsToBeMovedOrDeleted'),
-        moveLabelsForRbfAction: mockThunk('moveLabelsForRbfAction'),
-        openSwitchDeviceDialog: mockThunk('openSwitchDeviceDialog'),
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
     },
     selectors: {
-        selectDevices: mockSelector('selectDevices', []),
         selectTokenDefinitionsEnabledNetworks: mockSelector(
             'selectTokenDefinitonsEnabledNetworks',
             ['eth'],
         ),
-        selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
         selectDebugSettings: mockSelector('selectDebugSettings', {
             checkFirmwareAuthenticity: false,
             showDebugMenu: false,
@@ -87,10 +82,6 @@ export const extraDependenciesMock: ExtraDependencies = {
             ...testMocks.getSuiteDevice(),
         }),
         selectLanguage: mockSelector('selectLanguage', 'en'),
-        selectDiscoveryForSelectedDevice: mockSelector(
-            'selectDiscoveryForSelectedDevice',
-            undefined,
-        ),
         selectAddressDisplayType: mockSelector(
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,
@@ -109,10 +100,6 @@ export const extraDependenciesMock: ExtraDependencies = {
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         lockDevice: mockAction('lockDevice'),
-        appChanged: mockAction('appChanged'),
-        setSelectedDevice: mockAction('setSelectedDevice'),
-        updateSelectedDevice: mockAction('updateSelectedDevice'),
-        requestAuthConfirm: mockAction('requestAuthConfirm'),
         onModalCancel: mockAction('onModalCancel'),
         openModal: mockAction('openModal'),
     },

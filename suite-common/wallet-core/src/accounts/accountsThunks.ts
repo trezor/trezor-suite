@@ -20,6 +20,7 @@ import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectAccountByKey } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectDevices } from '../device/deviceSelectors';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsSelectors';
@@ -56,10 +57,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, extra, getState }) => {
-        const {
-            selectors: { selectDevices },
-        } = extra;
+    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) return;

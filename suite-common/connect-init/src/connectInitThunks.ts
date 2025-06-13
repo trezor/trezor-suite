@@ -5,6 +5,7 @@ import {
     deviceConnectThunks,
     selectDevices,
     selectEnabledNetworks,
+    selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
@@ -39,7 +40,7 @@ export const connectInitThunk = createThunk<
     void
 >(`${CONNECT_INIT_MODULE}/initThunk`, async (connectInitHooks, { dispatch, getState, extra }) => {
     const {
-        selectors: { selectIsPendingTransportEvent, selectDebugSettings },
+        selectors: { selectDebugSettings },
         actions: { lockDevice },
         utils: { connectInitSettings },
     } = extra;
