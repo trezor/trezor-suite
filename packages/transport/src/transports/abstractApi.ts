@@ -239,6 +239,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         protocol: customProtocol,
         thpState,
         signal,
+        timeout,
     }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(
             async signal => {
@@ -272,7 +273,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return sendResult;
             },
-            { signal, timeout: undefined },
+            { signal, timeout },
         );
     }
 
@@ -281,6 +282,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         protocol: customProtocol,
         thpState,
         signal,
+        timeout,
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
             async signal => {
@@ -301,7 +303,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 );
 
                 if (!message.success) {
-                    console.log(message.error);
                     if (message.error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
                     }
@@ -309,7 +310,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return message;
             },
-            { signal, timeout: undefined },
+            { signal, timeout },
         );
     }
 
