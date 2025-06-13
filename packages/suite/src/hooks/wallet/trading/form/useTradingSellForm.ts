@@ -47,7 +47,10 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { selectIsTradingTermsDismissed } from 'src/reducers/suite/suiteReducer';
+import {
+    selectIsDebugModeActive,
+    selectIsTradingTermsDismissed,
+} from 'src/reducers/suite/suiteReducer';
 import {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,
@@ -80,6 +83,7 @@ export const useTradingSellForm = ({
         sellInfo,
         amountLimits,
     } = useSelector(selectTradingSell);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
@@ -445,12 +449,14 @@ export const useTradingSellForm = ({
             formState,
             precomposedTransaction,
             selectedAccount,
+            paymentRequests,
         }: TradingSignAndPushSendFormTransactionProps) =>
             await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formState,
                     precomposedTransaction,
                     selectedAccount,
+                    paymentRequests,
                 }),
             ).unwrap();
 
@@ -462,6 +468,8 @@ export const useTradingSellForm = ({
                     shouldSendInSats,
                     decimals,
                     formValues: values as TradingSellFormProps,
+                    // TODO: slip24 - exclude from debug mode
+                    isSlip24Active: isDebugModeActive,
                     nextStep,
                     signAndPushSendFormTransaction,
                 }),

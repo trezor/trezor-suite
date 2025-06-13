@@ -2265,6 +2265,18 @@ export default defineMessages({
         defaultMessage: 'Device {deviceLabel} is unavailable',
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
     },
+    TR_NONCE_ERROR: {
+        defaultMessage: 'Nonce could not be generated. Please try again.',
+        id: 'TR_NONCE_ERROR',
+    },
+    TR_VERIFY_ERROR: {
+        defaultMessage: 'Address could not be verified. Please try again.',
+        id: 'TR_VERIFY_ERROR',
+    },
+    TR_PAYMENT_REQUESTS_ERROR: {
+        defaultMessage: 'Payment request could not be created. Please try again.',
+        id: 'TR_PAYMENT_REQUESTS_ERROR',
+    },
     TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
         defaultMessage:
             "Address has no transaction history and isn't checksummed. Check that the address is correct.",

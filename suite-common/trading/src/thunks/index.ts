@@ -2,6 +2,7 @@ import { confirmBuyTradeThunk } from './buy/confirmBuyTradeThunk';
 import { handleBuyRequestThunk } from './buy/handleBuyRequestThunk';
 import { loadBuyInfoThunk } from './buy/loadBuyInfoThunk';
 import { selectBuyQuoteThunk } from './buy/selectBuyQuoteThunk';
+import { createPaymentRequestsThunk } from './common/createPaymentRequestsThunk';
 import { loadInitialDataThunk } from './common/loadInitialDataThunk';
 import { recomposeAndSignTxThunk } from './common/recomposeAndSignTxThunk';
 import { verifyAddressThunk } from './common/verifyAddressThunk';
@@ -26,6 +27,7 @@ export const tradingThunks = {
     loadInitialDataThunk,
     recomposeAndSignTxThunk,
     watchTradeThunk,
+    createPaymentRequestsThunk,
 };
 
 export const buyThunks = {

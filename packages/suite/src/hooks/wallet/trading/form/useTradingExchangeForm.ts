@@ -49,7 +49,10 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { selectIsTradingTermsDismissed } from 'src/reducers/suite/suiteReducer';
+import {
+    selectIsDebugModeActive,
+    selectIsTradingTermsDismissed,
+} from 'src/reducers/suite/suiteReducer';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
@@ -84,6 +87,7 @@ export const useTradingExchangeForm = ({
         isLoading,
     } = useSelector(selectTradingExchange);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
 
@@ -433,12 +437,14 @@ export const useTradingExchangeForm = ({
             formState,
             precomposedTransaction,
             selectedAccount,
+            paymentRequests,
         }: TradingSignAndPushSendFormTransactionProps) =>
             await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formState,
                     precomposedTransaction,
                     selectedAccount,
+                    paymentRequests,
                 }),
             ).unwrap();
 
@@ -451,6 +457,8 @@ export const useTradingExchangeForm = ({
                     setMaxOutputId: values.setMaxOutputId,
                     decimals,
                     shouldSendInSats,
+                    // TODO: slip24 - exclude from debug mode
+                    isSlip24Active: isDebugModeActive,
                     nextStep,
                     processResponseData,
                     triggerAnalyticsTradeConfirmation,
