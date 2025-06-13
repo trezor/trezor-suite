@@ -17,7 +17,6 @@ import { AddressDisplay } from './AddressDisplay';
 import { Analytics } from './Analytics';
 import { AutoStart } from './AutoStart';
 import { AutomaticUpdate } from './AutomaticUpdate';
-import { BioAuthSettings } from './BioAuthSettings';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { ClearStorage } from './ClearStorage';
 import { ConnectLabelingProvider } from './ConnectLabelingProvider';
@@ -98,7 +97,6 @@ export const SettingsGeneral = () => {
             <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="appWindow">
                 <Theme />
                 <AddressDisplay />
-                <BioAuthSettings />
                 <Analytics />
                 <ShowApplicationLog />
                 <ClearStorage />
