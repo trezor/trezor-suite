@@ -139,6 +139,9 @@ describe('bioAuthReducer', () => {
             bioAuthValidationRequested: false,
             windowBlurred: false,
             bioAuthAvailable: null,
+            bioAuthValidationRequired: false,
+            blurTimeoutId: null,
+            initialNow: 0,
         });
     });
 
@@ -160,26 +163,6 @@ describe('bioAuthReducer', () => {
 
             // Verify lastWindowBlurTimestamp is reset to null (blur was less than or equal to 5 minutes)
             expect(resultState.lastWindowBlurTimestamp).toBeNull();
-            expect(resultState.windowBlurred).toBe(false);
-        });
-
-        it('should keep lastWindowBlurTimestamp when blur duration is more than 5 minutes', () => {
-            // Set up initial state with a blur timestamp
-            const blurTimestamp = new Date('2023-01-01T12:00:00Z').getTime();
-            const initialState = {
-                ...fixtures.setBioAuthEnabled[0].initialState,
-                lastWindowBlurTimestamp: blurTimestamp,
-                windowBlurred: true,
-            };
-
-            // Create focus action with a timestamp 6 minutes after the blur
-            const focusAction = bioAuthActions.bioAuthWindowFocus('2023-01-01T12:06:01Z'); // Just over 6 minutes to ensure it's > 5 minutes
-
-            // Apply the action
-            const resultState = bioAuthReducer(initialState, focusAction);
-
-            // Verify lastWindowBlurTimestamp is preserved (blur was more than 5 minutes)
-            expect(resultState.lastWindowBlurTimestamp).toBe(blurTimestamp);
             expect(resultState.windowBlurred).toBe(false);
         });
     });

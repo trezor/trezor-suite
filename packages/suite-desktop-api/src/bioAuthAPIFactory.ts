@@ -21,34 +21,45 @@ export const createBioAuthAPI = <R extends StrictIpcRenderer<any, IpcRendererEve
     if (!ipcRenderer) return createBioAuthAPI(ipcRendererFallback);
 
     return {
-        validateBioAuth: async () => {
-            try {
-                // Use Promise.race to implement timeout
-                const authPromise = ipcRenderer.invoke('bio-auth/authenticate');
+        validateBioAuth: () => {
+            const resultPromise = Promise.race([
+                new Promise<boolean>((resolve, reject) => {
+                    ipcRenderer.on('bio-auth/validated', (_, result: boolean) => {
+                        if (result) {
+                            resolve(true);
+                        } else {
+                            reject(false);
+                        }
+                    });
 
-                const result = await Promise.race([authPromise, createTimeoutPromise()]);
+                    setTimeout(() => {
+                        reject(new Error('timeout'));
+                    }, BIO_AUTH_TIMEOUT);
+                }),
+                createTimeoutPromise(),
+            ]);
 
-                if (!result || !result.success) {
-                    throw new Error(result?.error || 'Authentication failed');
-                }
+            ipcRenderer.send('bio-auth/request');
 
-                return true;
-            } catch (error) {
-                console.error('Bio authentication failed:', error);
-
-                return Promise.reject(false);
-            }
+            return resultPromise;
         },
-        isBioAuthAvailable: async () => {
-            try {
-                const result = await ipcRenderer.invoke('bio-auth/is-available');
+        isBioAuthAvailable: () => {
+            const resultPromise = Promise.race([
+                new Promise<boolean>((resolve, reject) => {
+                    ipcRenderer.on('bio-auth/is-available', (_, result: boolean) => {
+                        resolve(result);
+                    });
 
-                return result.success;
-            } catch (error) {
-                console.error('Bio available check failed:', error);
+                    setTimeout(() => {
+                        reject(new Error('timeout'));
+                    }, BIO_AUTH_TIMEOUT);
+                }),
+                createTimeoutPromise(),
+            ]);
 
-                return false;
-            }
+            ipcRenderer.send('bio-auth/request-availability');
+
+            return resultPromise;
         },
     };
 };

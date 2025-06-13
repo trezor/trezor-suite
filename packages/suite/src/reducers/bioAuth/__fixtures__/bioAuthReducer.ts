@@ -4,8 +4,11 @@ import { BioAuthState } from '../index';
 
 const initialState: BioAuthState = {
     bioAuthEnabled: false,
+    initialNow: 0,
+    blurTimeoutId: null,
     bioAuthEnabledNextValue: null,
     lastBioAuthValidatedTimestamp: null,
+    bioAuthValidationRequired: false,
     lastWindowBlurTimestamp: null,
     bioAuthValidationInProgress: false,
     bioAuthValidationRequested: false,
@@ -16,7 +19,6 @@ const initialState: BioAuthState = {
 // Mock date for consistent testing
 const TEST_DATE = '2023-01-01T12:00:00Z';
 const TEST_DATE_TIMESTAMP = new Date(TEST_DATE).getTime();
-const TEST_DATE_PLUS_10_MIN = '2023-01-01T12:10:00Z';
 const TEST_DATE_PLUS_6_MIN = '2023-01-01T12:06:00Z';
 const TEST_DATE_PLUS_25_HOURS = '2023-01-02T13:00:00Z';
 
@@ -124,29 +126,21 @@ export default {
         {
             description: 'Window blur event',
             initialState,
-            actions: [bioAuthActions.bioAuthWindowBlur(TEST_DATE)],
+            actions: [
+                bioAuthActions.bioAuthWindowBlur({
+                    blurDate: TEST_DATE,
+                    timeoutId: 1 as unknown as NodeJS.Timeout,
+                }),
+            ],
             result: {
                 ...initialState,
                 lastWindowBlurTimestamp: TEST_DATE_TIMESTAMP,
                 windowBlurred: true,
+                blurTimeoutId: 1 as unknown as NodeJS.Timeout,
             },
         },
     ],
     bioAuthWindowFocus: [
-        {
-            description: 'Window focus event after short blur (less than 10 minutes)',
-            initialState: {
-                ...initialState,
-                lastWindowBlurTimestamp: TEST_DATE_TIMESTAMP,
-                windowBlurred: true,
-            },
-            actions: [bioAuthActions.bioAuthWindowFocus(TEST_DATE_PLUS_10_MIN)],
-            result: {
-                ...initialState,
-                lastWindowBlurTimestamp: TEST_DATE_TIMESTAMP,
-                windowBlurred: false,
-            },
-        },
         {
             description: 'Window focus event after long blur (more than 5 minutes)',
             initialState: {
@@ -157,7 +151,6 @@ export default {
             actions: [bioAuthActions.bioAuthWindowFocus(TEST_DATE_PLUS_6_MIN)],
             result: {
                 ...initialState,
-                lastWindowBlurTimestamp: TEST_DATE_TIMESTAMP,
                 windowBlurred: false,
             },
         },

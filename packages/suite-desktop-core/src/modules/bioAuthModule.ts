@@ -1,7 +1,9 @@
-import { ipcMain as electronIpcMain, systemPreferences } from 'electron';
+import { systemPreferences } from 'electron';
 import { Passport, VerificationResult } from 'passport-desktop';
 
 import { isMacOs, isWindows } from '@trezor/env-utils';
+
+import { ipcMain } from '../typed-electron';
 
 import { Dependencies } from './index';
 
@@ -12,13 +14,13 @@ type BioAuthModule = (dependencies: Dependencies) => {
 
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 
-const loadWin = () => {
-    // Using the native electron ipcMain for handle method
-    electronIpcMain.handle('bio-auth/authenticate', async () => {
+const loadWin = ({ mainWindowProxy }: Dependencies) => {
+    ipcMain.on('bio-auth/request', async () => {
         if (!Passport.available()) {
             console.error('bioAuth', 'WIN: Passport is not available');
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
 
-            return { success: false, error: 'Passport is not available' };
+            return;
         }
 
         try {
@@ -28,78 +30,66 @@ const loadWin = () => {
                 throw new Error('WIN: bioAuth validation failed');
             }
 
-            return { success: true };
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', true);
+
+            return;
         } catch (error) {
             console.error('WIN: bioAuth validation failed', error);
-
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Unknown error',
-            };
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
         }
     });
 
-    electronIpcMain.handle('bio-auth/is-available', () => {
+    ipcMain.on('bio-auth/request-availability', () => {
         try {
             const available = Passport.available();
 
-            return { success: true, payload: available };
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', available);
         } catch (error) {
             console.error('WIN: bioAuth isAvailable failed', error);
 
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Unknown error',
-            };
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', false);
         }
     });
 };
 
-const loadMac = () => {
-    // Using the native electron ipcMain for handle method
-    electronIpcMain.handle('bio-auth/authenticate', async () => {
+const loadMac = ({ mainWindowProxy }: Dependencies) => {
+    ipcMain.on('bio-auth/request', async () => {
         try {
             await systemPreferences.canPromptTouchID();
         } catch (error) {
             console.error('MAC: bioAuth canPromptTouchID failed', error);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
 
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'TouchID not available',
-            };
+            return;
         }
 
         try {
             await systemPreferences.promptTouchID(PROMPT_REASON);
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', true);
 
-            return { success: true };
+            return;
         } catch (error) {
             console.error('MAC: bioAuth validation failed', error);
-
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Authentication failed',
-            };
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/validated', false);
         }
     });
 
-    electronIpcMain.handle('bio-auth/is-available', async () => {
+    ipcMain.on('bio-auth/request-availability', async () => {
         try {
             const canPromptTouchID = await systemPreferences.canPromptTouchID();
 
-            return { success: true, payload: canPromptTouchID };
+            mainWindowProxy
+                .getInstance()
+                ?.webContents.send('bio-auth/is-available', canPromptTouchID);
         } catch (error) {
             console.error('MAC: bioAuth isAvailable failed', error);
 
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'TouchID not available',
-            };
+            mainWindowProxy.getInstance()?.webContents.send('bio-auth/is-available', false);
         }
     });
 };
 
-export const initBioAuthModule: BioAuthModule = _dependencies => {
+export const initBioAuthModule: BioAuthModule = dependencies => {
     let loaded = false;
 
     const onLoad = () => {
@@ -110,19 +100,19 @@ export const initBioAuthModule: BioAuthModule = _dependencies => {
         loaded = true;
 
         if (isMacOs()) {
-            loadMac();
+            loadMac(dependencies);
         }
 
         if (isWindows()) {
-            loadWin();
+            loadWin(dependencies);
         }
     };
 
     const onQuit = () => {
         const { logger } = global;
         logger.info('bioAuth', 'Stopping (app quit)');
-        electronIpcMain.removeHandler('bio-auth/authenticate');
-        electronIpcMain.removeHandler('bio-auth/is-available');
+        ipcMain.removeAllListeners('bio-auth/request');
+        ipcMain.removeAllListeners('bio-auth/is-available');
         loaded = false;
     };
 

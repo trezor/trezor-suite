@@ -44,6 +44,8 @@ export interface MainChannels {
 
     // bio auth
     'bio-auth/request': void;
+    'bio-auth/is-available': void;
+    'bio-auth/request-availability': void;
 }
 
 // Event messages from main to renderer process
@@ -88,8 +90,8 @@ export interface RendererChannels {
 
     // bio auth
     'bio-auth/request': void;
-    'bio-auth/validated': void;
-    'bio-auth/validation-failure': void;
+    'bio-auth/validated': boolean;
+    'bio-auth/is-available': boolean;
 }
 
 // Invocation from renderer process
@@ -129,8 +131,8 @@ export interface InvokeChannels {
     'system/open-settings': (settings: string) => InvokeResult;
 
     // bio auth
-    'bio-auth/authenticate': () => InvokeResult;
-    'bio-auth/is-available': () => InvokeResult<boolean>;
+    'bio-auth/request': () => void;
+    'bio-auth/is-available': () => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
