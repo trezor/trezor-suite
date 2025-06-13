@@ -9,10 +9,10 @@ import {
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../types/buy';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+import { ExchangeFormType } from '../../../types/exchange';
 import { ReceiveAccount, TradeableAsset } from '../../../types/general';
-import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
+import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
 const btcAccountName1 = 'BTC Account #1';
@@ -25,40 +25,40 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
+const getExchangeState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
     wallet: {
         tradingNew: {
-            buy: {
+            exchange: {
                 selectedReceiveAccount,
             },
         },
     },
 });
 
-describe('BuyReceiveAccountPicker', () => {
-    let buyForm: BuyFormType;
+describe('ExchangeReceiveAccountPicker', () => {
+    let exchangeForm: ExchangeFormType;
 
-    const renderBuyForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderExchangeForm = async () => {
+        const { result } = await renderHookWithStoreProviderAsync(() => useExchangeForm());
 
         return result.current;
     };
 
     const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
-        renderWithStoreProviderAsync(<BuyReceiveAccountPicker />, {
+        renderWithStoreProviderAsync(<ExchangeReceiveAccountPicker />, {
             preloadedState,
-            wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
+            wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
     const setSelectedAsset = (asset: TradeableAsset) => {
         act(() => {
-            buyForm.setValue('asset', asset);
+            exchangeForm.setValue('receiveAsset', asset);
         });
     };
 
     beforeEach(async () => {
         jest.resetAllMocks();
-        buyForm = await renderBuyForm();
+        exchangeForm = await renderExchangeForm();
     });
 
     it('should display nothing when selectedSymbol is not specified', async () => {
@@ -78,7 +78,7 @@ describe('BuyReceiveAccountPicker', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
-            preloadedState: getBuyState({
+            preloadedState: getExchangeState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],
             }),
@@ -92,7 +92,7 @@ describe('BuyReceiveAccountPicker', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
-            preloadedState: getBuyState({
+            preloadedState: getExchangeState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],
             }),
@@ -103,7 +103,7 @@ describe('BuyReceiveAccountPicker', () => {
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
             symbol: 'btc',
-            tradingType: 'buy',
+            tradingType: 'exchange',
         });
     });
 });

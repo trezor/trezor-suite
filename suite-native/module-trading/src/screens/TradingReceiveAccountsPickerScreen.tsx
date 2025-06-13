@@ -20,15 +20,20 @@ import {
 import { AccountList } from '../components/general/AccountList/AccountList';
 import { ReceiveAccountsListMode } from '../hooks/general/useReceiveAccountsListData';
 import { selectBuySelectedReceiveAccount } from '../selectors/buySelectors';
+import { selectExchangeSelectedReceiveAccount } from '../selectors/exchangeSelectors';
 
 export const TradingReceiveAccountsPickerScreen = () => {
     const {
-        params: { symbol },
+        params: { symbol, tradingType },
     } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>>();
 
     const { translate } = useTranslate();
 
-    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
+    const accountSelector =
+        tradingType === 'buy'
+            ? selectBuySelectedReceiveAccount
+            : selectExchangeSelectedReceiveAccount;
+    const selectedReceiveAccount = useSelector(accountSelector);
 
     const [pickerMode, setPickerMode] = useState<ReceiveAccountsListMode>('account');
 
@@ -61,6 +66,7 @@ export const TradingReceiveAccountsPickerScreen = () => {
                 pickerMode={pickerMode}
                 onAddAccountTap={handleAddAccount}
                 onSetPickerMode={setPickerMode}
+                tradingType={tradingType}
             />
             <AccountTypeDecisionBottomSheet
                 coinName={symbol}

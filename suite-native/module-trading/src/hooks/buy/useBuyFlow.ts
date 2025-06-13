@@ -90,6 +90,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         if (selectedNetworkSymbol) {
             navigation.navigate(TradingStackRoutes.ReceiveAccounts, {
                 symbol: selectedNetworkSymbol,
+                tradingType: 'buy',
             });
         }
     };

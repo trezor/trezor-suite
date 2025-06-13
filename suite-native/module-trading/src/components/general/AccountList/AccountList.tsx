@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/wallet-core';
 import {
@@ -26,6 +27,7 @@ import {
 } from '../../../hooks/general/useReceiveAccountsListData';
 import { useSectionList } from '../../../hooks/general/useSectionList';
 import { selectBuySelectedReceiveAccount } from '../../../selectors/buySelectors';
+import { selectExchangeSelectedReceiveAccount } from '../../../selectors/exchangeSelectors';
 import { tradingActions } from '../../../tradingSlice';
 import { ReceiveAccount } from '../../../types/general';
 
@@ -40,6 +42,7 @@ export type AccountsListProps = {
     pickerMode: ReceiveAccountsListMode;
     onAddAccountTap: () => void;
     onSetPickerMode: (mode: ReceiveAccountsListMode) => void;
+    tradingType: Exclude<TradingType, 'sell'>;
 };
 
 const DEFAULT_INSET_BOTTOM = 25;
@@ -58,12 +61,17 @@ export const AccountList = ({
     pickerMode,
     onAddAccountTap,
     onSetPickerMode,
+    tradingType,
 }: AccountsListProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
     const { bottom: insetsBottom } = useSafeAreaInsets();
-    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
+    const selectReceiveAccount =
+        tradingType === 'buy'
+            ? selectBuySelectedReceiveAccount
+            : selectExchangeSelectedReceiveAccount;
+    const selectedReceiveAccount = useSelector(selectReceiveAccount);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
     const data =
@@ -74,9 +82,12 @@ export const AccountList = ({
         }) ?? [];
 
     const onItemSelect = (receiveAccount: ReceiveAccount) => {
-        dispatch(
-            tradingActions.setBuySelectedReceiveAccount({ selectedReceiveAccount: receiveAccount }),
-        );
+        const payload = { selectedReceiveAccount: receiveAccount };
+        const action =
+            tradingType === 'buy'
+                ? tradingActions.setBuySelectedReceiveAccount(payload)
+                : tradingActions.setExchangeSelectedReceiveAccount(payload);
+        dispatch(action);
         const hasAddresses = receiveAccount.account.addresses;
         if (receiveAccount.account && hasAddresses) {
             onSetPickerMode('address');

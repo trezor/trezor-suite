@@ -20,6 +20,7 @@ describe('ReceiveAccountPicker', () => {
         return renderWithBasicProvider(
             <ReceiveAccountPicker
                 symbol="btc"
+                tradingType="buy"
                 receiveAccount={{ account: btcAccount, address }}
                 {...props}
             />,
@@ -53,7 +54,26 @@ describe('ReceiveAccountPicker', () => {
         fireEvent.press(getByText('Receive account'));
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', { symbol: 'btc' });
+        expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
+            symbol: 'btc',
+            tradingType: 'buy',
+        });
+    });
+
+    it('should call navigate to account picker when tradingType is exchange, symbol is specified and picker pressed', () => {
+        const { getByText } = renderReceiveAccountPicker({
+            symbol: 'btc',
+            receiveAccount: undefined,
+            tradingType: 'exchange',
+        });
+
+        fireEvent.press(getByText('Receive account'));
+
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+        expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
+            symbol: 'btc',
+            tradingType: 'exchange',
+        });
     });
 
     it('should display account name', () => {

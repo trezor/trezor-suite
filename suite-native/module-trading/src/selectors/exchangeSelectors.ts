@@ -6,6 +6,11 @@ import {
     tradeableAssetSortingComparator,
 } from '../utils/general/tradeableAssetUtils';
 
+export const selectTradingExchange = (state: TradingRootState) => state.wallet.tradingNew.exchange;
+
+export const selectExchangeSelectedReceiveAccount = (state: TradingRootState) =>
+    selectTradingExchange(state).selectedReceiveAccount;
+
 export const selectExchangeTradeableAssetsSorted = createMemoizedSelector(
     [
         selectTradingExchangeBuyCryptoIds as unknown as (

@@ -114,6 +114,34 @@ describe('tradingSlice', () => {
         });
     });
 
+    describe('exchange', () => {
+        it('setExchangeSelectedReceiveAccount should set selectedReceiveAccount', () => {
+            const receiveAccount = { account: getBtcAccount(), address: undefined };
+            const state = tradingReducer(
+                undefined,
+                tradingActions.setExchangeSelectedReceiveAccount({
+                    selectedReceiveAccount: receiveAccount,
+                }),
+            );
+
+            expect(state.exchange.selectedReceiveAccount).toBe(receiveAccount);
+        });
+
+        it('setExchangeSelectedReceiveAccount should set and clear selectedReceiveAccount', () => {
+            const actions = [
+                tradingActions.setExchangeSelectedReceiveAccount({
+                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                }),
+                tradingActions.setExchangeSelectedReceiveAccount({
+                    selectedReceiveAccount: undefined,
+                }),
+            ];
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.exchange.selectedReceiveAccount).toBeUndefined();
+        });
+    });
+
     describe('tradingEnvironment', () => {
         it('should have production as initial trading environment', () => {
             const state = tradingReducer(undefined, { type: 'undefined_action' });
@@ -242,12 +270,16 @@ describe('tradingSlice', () => {
                 tradingActions.setBuySelectedReceiveAccount({
                     selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
                 }),
+                tradingActions.setExchangeSelectedReceiveAccount({
+                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                }),
                 deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
             expect(state.buy.selectedReceiveAccount).toBeUndefined();
+            expect(state.exchange.selectedReceiveAccount).toBeUndefined();
         });
     });
 

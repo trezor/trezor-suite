@@ -1,11 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { Account } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    TestStore,
+    fireEvent,
+    initStore,
+    renderWithStoreProviderAsync,
+} from '@suite-native/test-utils';
 import { Address } from '@trezor/blockchain-link-types';
 import { StaticSessionId } from '@trezor/connect';
 
 import fixturesAccounts from '../../../../__fixtures__/accounts.json';
+import { selectBuySelectedReceiveAccount } from '../../../../selectors/buySelectors';
+import { selectExchangeSelectedReceiveAccount } from '../../../../selectors/exchangeSelectors';
 import { ReceiveAccount } from '../../../../types/general';
 import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 
@@ -24,12 +31,24 @@ const defaultPreloadedState = {
     wallet: { accounts },
 };
 
-const getStateMockup = (selectedAccount: ReceiveAccount) => ({
+const getStateMockupBuy = (selectedAccount: ReceiveAccount) => ({
     ...defaultPreloadedState,
     wallet: {
         accounts: defaultPreloadedState.wallet.accounts,
         tradingNew: {
             buy: {
+                selectedReceiveAccount: selectedAccount,
+            },
+        },
+    },
+});
+
+const getStateMockupExchange = (selectedAccount: ReceiveAccount) => ({
+    ...defaultPreloadedState,
+    wallet: {
+        accounts: defaultPreloadedState.wallet.accounts,
+        tradingNew: {
+            exchange: {
                 selectedReceiveAccount: selectedAccount,
             },
         },
@@ -45,20 +64,26 @@ describe('AccountList', () => {
     const onSetPickerModeMock = jest.fn();
     const popToTop = jest.fn();
 
-    const renderComponent = (
+    let store: TestStore;
+
+    const renderComponent = async (
         props: Partial<AccountsListProps>,
         preloadedState = defaultPreloadedState,
-    ) =>
-        renderWithStoreProviderAsync(
+    ) => {
+        store = await initStore(preloadedState);
+
+        return renderWithStoreProviderAsync(
             <AccountList
                 symbol="btc"
                 pickerMode="account"
+                tradingType="buy"
                 onAddAccountTap={jest.fn()}
                 onSetPickerMode={jest.fn()}
                 {...props}
             />,
-            { preloadedState },
+            { store },
         );
+    };
 
     describe('renderItem', () => {
         it('should display all accounts for given symbol', async () => {
@@ -77,7 +102,7 @@ describe('AccountList', () => {
                     symbol: 'btc',
                     pickerMode: 'address',
                 },
-                getStateMockup({ account: accounts[0] }),
+                getStateMockupBuy({ account: accounts[0] }),
             );
 
             const item = getByText('UNUSED1');
@@ -129,7 +154,56 @@ describe('AccountList', () => {
                     pickerMode: 'address',
                     onSetPickerMode: onSetPickerModeMock,
                 },
-                getStateMockup({ account: accounts[0] }),
+                getStateMockupBuy({ account: accounts[0] }),
+            );
+
+            const item = getByText('UNUSED1');
+            expect(item).toBeTruthy();
+
+            fireEvent.press(item);
+
+            expect(popToTop).toHaveBeenCalled();
+        });
+
+        it('should set correct state with tradingType set to "buy"', async () => {
+            const { getByText } = await renderComponent({
+                symbol: 'btc',
+                pickerMode: 'account',
+            });
+
+            fireEvent.press(getByText('BTC Account #1'));
+
+            expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
+                account: accounts[0],
+                address: undefined,
+            });
+        });
+
+        it('should set correct state with tradingType set to "exchange"', async () => {
+            const { getByText } = await renderComponent({
+                symbol: 'btc',
+                pickerMode: 'account',
+                tradingType: 'exchange',
+            });
+
+            fireEvent.press(getByText('BTC Account #1'));
+
+            expect(selectExchangeSelectedReceiveAccount(store.getState())).toEqual({
+                account: accounts[0],
+                address: undefined,
+            });
+        });
+
+        it('should handle address selection in address mode for "exchange"', async () => {
+            (useNavigation as jest.Mock).mockReturnValue({ popToTop });
+            const { getByText } = await renderComponent(
+                {
+                    symbol: 'btc',
+                    pickerMode: 'address',
+                    onSetPickerMode: onSetPickerModeMock,
+                    tradingType: 'exchange',
+                },
+                getStateMockupExchange({ account: accounts[0] }),
             );
 
             const item = getByText('UNUSED1');
@@ -157,7 +231,7 @@ describe('AccountList', () => {
                     symbol: 'btc',
                     pickerMode: 'address',
                 },
-                getStateMockup({ account: accounts[0] }),
+                getStateMockupBuy({ account: accounts[0] }),
             );
 
             expect(queryByText('Add new')).toBeNull();

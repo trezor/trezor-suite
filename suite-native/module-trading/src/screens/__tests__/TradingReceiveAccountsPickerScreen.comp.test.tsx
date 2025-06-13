@@ -14,7 +14,8 @@ const accounts = fixturesAccounts as Account[];
 
 let mockRouteParams: {
     symbol: NetworkSymbol;
-} = { symbol: 'btc' };
+    tradingType: 'exchange' | 'buy';
+} = { symbol: 'btc', tradingType: 'buy' };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -50,7 +51,7 @@ const renderScreen = (preloadedState: PreloadedState) =>
 
 describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render account list with correct title', async () => {
-        mockRouteParams = { symbol: 'btc' };
+        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
         const { getByText } = await renderScreen(getPreloadedState([]));
 
@@ -58,7 +59,15 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render account list with accounts', async () => {
-        mockRouteParams = { symbol: 'btc' };
+        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
+
+        const { getByText } = await renderScreen(getPreloadedState(accounts));
+
+        expect(getByText(accounts[0].accountLabel!)).toBeTruthy();
+    });
+
+    it('should render account list with accounts for exchange', async () => {
+        mockRouteParams = { symbol: 'btc', tradingType: 'exchange' };
 
         const { getByText } = await renderScreen(getPreloadedState(accounts));
 
@@ -66,7 +75,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render empty state when no account exist', async () => {
-        mockRouteParams = { symbol: 'btc' };
+        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
         const { getByText } = await renderScreen(getPreloadedState([]));
 
@@ -74,7 +83,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     });
 
     it('should render add account button', async () => {
-        mockRouteParams = { symbol: 'btc' };
+        mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
         const { getByText } = await renderScreen(getPreloadedState([]));
 

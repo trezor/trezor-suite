@@ -18,6 +18,7 @@ export const BuyReceiveAccountPicker = () => {
         <ReceiveAccountPicker
             symbol={selectedSymbol}
             receiveAccount={selectedReceiveAccount}
+            tradingType="buy"
             testID={RECEIVE_ACCOUNT_PICKER_TEST_ID}
         />
     );

@@ -4,6 +4,7 @@ import { CryptoId } from 'invity-api';
 import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     TradingBuyState as CommonTradingBuyState,
+    TradingExchangeState as CommonTradingExchangeState,
     TradingState as CommonTradingState,
     InvityServerEnvironment,
     TradingType,
@@ -18,8 +19,13 @@ export interface TradingBuyState extends CommonTradingBuyState {
     selectedReceiveAccount: ReceiveAccount | undefined;
 }
 
+export interface TradingExchangeState extends CommonTradingExchangeState {
+    selectedReceiveAccount: ReceiveAccount | undefined;
+}
+
 export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
+    exchange: TradingExchangeState;
     favouriteAssets: Record<CryptoId, true>;
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
@@ -36,6 +42,7 @@ export type TradingRootState = {
 export const initialState: TradingState = {
     ...commonInitialState,
     buy: { ...commonInitialState.buy, selectedReceiveAccount: undefined },
+    exchange: { ...commonInitialState.exchange, selectedReceiveAccount: undefined },
     favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
@@ -105,12 +112,19 @@ export const tradingSlice = createSliceWithExtraDeps({
         clearActiveTradingType: state => {
             state.activeTradingType = undefined;
         },
+        setExchangeSelectedReceiveAccount: (
+            state,
+            { payload }: PayloadAction<{ selectedReceiveAccount: ReceiveAccount | undefined }>,
+        ) => {
+            state.exchange.selectedReceiveAccount = payload.selectedReceiveAccount;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
         builder
             .addCase(deviceActions.selectDevice, state => {
                 state.buy.selectedReceiveAccount = undefined;
+                state.exchange.selectedReceiveAccount = undefined;
             })
             // In case that this reducer does not match the action, try to handle it by suite-common tradingReducer.
             .addDefaultCase((state, action) => {

@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -20,6 +21,7 @@ import { OverviewRow } from '../OverviewRow';
 export type ReceiveAccountPickerProps = {
     symbol: NetworkSymbol | undefined;
     receiveAccount: ReceiveAccount | undefined;
+    tradingType: Exclude<TradingType, 'sell'>;
     testID?: string;
 };
 
@@ -101,6 +103,7 @@ const ReceiveAccountPickerRight = ({
 export const ReceiveAccountPicker = ({
     receiveAccount,
     symbol,
+    tradingType,
     testID,
 }: ReceiveAccountPickerProps) => {
     const { translate } = useTranslate();
@@ -111,7 +114,7 @@ export const ReceiveAccountPicker = ({
     }
 
     const openAccountPicker = () =>
-        navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol });
+        navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol, tradingType });
 
     const accountLabel = receiveAccount?.account.accountLabel;
     const addressText =

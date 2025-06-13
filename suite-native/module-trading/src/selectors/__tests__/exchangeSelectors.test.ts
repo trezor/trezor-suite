@@ -2,9 +2,14 @@ import { CryptoId } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
+import { getBtcAccount } from '../../__fixtures__/account';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingState, tradingSlice } from '../../tradingSlice';
-import { selectExchangeTradeableAssetsSorted } from '../exchangeSelectors';
+import {
+    selectExchangeSelectedReceiveAccount,
+    selectExchangeTradeableAssetsSorted,
+    selectTradingExchange,
+} from '../exchangeSelectors';
 
 describe('exchangeSelectors', () => {
     let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
@@ -13,6 +18,21 @@ describe('exchangeSelectors', () => {
     beforeEach(() => {
         tradingReducer = tradingSlice.prepareReducer(extraDependenciesMock);
         prevState = getInitializedTradingState('exchange');
+    });
+
+    it('selectTradingExchange should select trading exchange state', () => {
+        expect(selectTradingExchange({ wallet: { tradingNew: prevState } })).toEqual(
+            prevState.exchange,
+        );
+    });
+
+    it('selectExchangeSelectedReceiveAccount should select receiveAccount', () => {
+        const receiveAccount = { account: getBtcAccount(), address: undefined };
+        prevState.exchange.selectedReceiveAccount = receiveAccount;
+
+        expect(selectExchangeSelectedReceiveAccount({ wallet: { tradingNew: prevState } })).toEqual(
+            receiveAccount,
+        );
     });
 
     describe('selectExchangeTradeableAssetsSorted', () => {

@@ -17,7 +17,7 @@ export interface ExchangeInfo {
     sellCryptoIds: CryptoId[];
 }
 
-export type TradingExchangeState = {
+export interface TradingExchangeState {
     exchangeInfo?: ExchangeInfo;
     quotesRequest?: ExchangeTradeQuoteRequest;
     quotes: ExchangeTrade[];
@@ -32,7 +32,7 @@ export type TradingExchangeState = {
     formStep: TradingExchangeStepType;
 
     transactionId?: string;
-};
+}
 
 export const exchangeInitialState: TradingExchangeState = {
     exchangeInfo: undefined,
