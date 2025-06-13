@@ -1,4 +1,5 @@
 import { HEADER_SIZE } from './constants';
+import { PROTOCOL_MALFORMED } from '../errors';
 import { TransportProtocolDecode } from '../types';
 
 /**
@@ -14,6 +15,10 @@ const readHeader = (buffer: Buffer) => {
 };
 
 export const decode: TransportProtocolDecode = bytes => {
+    if (bytes.byteLength < HEADER_SIZE) {
+        throw new Error(PROTOCOL_MALFORMED);
+    }
+
     const { messageType, length } = readHeader(bytes);
 
     return {
