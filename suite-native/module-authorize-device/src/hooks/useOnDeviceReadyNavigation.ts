@@ -56,14 +56,6 @@ export const useOnDeviceReadyNavigation = () => {
     useEffect(() => {
         if (isFirmwareInstallationRunning) return;
 
-        if (!isCoinEnablingInitFinished && isTimeoutFinished) {
-            // TODO: This should not be needed anymore, let's remove it.
-            // User should not be redirected to this screen without coin enabling finished.
-            navigation.navigate(RootStackRoutes.CoinEnablingInit);
-
-            return;
-        }
-
         if (
             (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
             (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingInitFinished)
