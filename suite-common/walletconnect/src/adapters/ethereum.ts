@@ -112,7 +112,10 @@ const ethereumRequestThunk = createThunk<
             if (account.networkType !== 'ethereum') {
                 throw new Error('Account is not Ethereum');
             }
-            if (!transaction.gasPrice && !transaction.maxFeePerGas) {
+            if (
+                !transaction.gasPrice &&
+                (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas)
+            ) {
                 // Fee not provided, estimate it
                 const feeLevels = await TrezorConnect.blockchainEstimateFee({
                     coin: account.symbol,
@@ -127,7 +130,10 @@ const ethereumRequestThunk = createThunk<
                 if (!feeLevels.success) {
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
-                transaction.gasPrice = feeLevels.payload.levels[0]?.feePerUnit;
+                transaction.maxFeePerGas =
+                    feeLevels.payload.levels[0]?.eip1559?.medium?.maxFeePerGas;
+                transaction.maxPriorityFeePerGas =
+                    feeLevels.payload.levels[0]?.eip1559?.medium?.maxPriorityFeePerGas;
             }
             if (!transaction.gas) {
                 const estimatedFee = await TrezorConnect.blockchainEstimateFee({
