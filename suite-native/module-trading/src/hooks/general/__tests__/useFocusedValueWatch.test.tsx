@@ -31,10 +31,6 @@ describe('useFocusedValueWatch', () => {
         store = await initStore();
     });
 
-    afterEach(() => {
-        jest.useRealTimers();
-    });
-
     it('should return false by default', async () => {
         const { result } = await renderUseFocusedValueWatch();
 
@@ -59,16 +55,15 @@ describe('useFocusedValueWatch', () => {
 
     it('should be true after 300ms of input focus', async () => {
         const { result, rerender } = await renderUseFocusedValueWatch();
-        jest.useFakeTimers();
 
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
         rerender({ watch: form.watch });
         await act(async () => {
-            jest.advanceTimersByTime(300);
-            // wait for state update
-            await Promise.resolve();
+            // temporary: find the proper async timer handling
+            // https://github.com/trezor/trezor-suite/issues/19553
+            await new Promise(resolve => setTimeout(resolve, 300));
         });
 
         expect(result.current).toEqual(true);
@@ -77,15 +72,14 @@ describe('useFocusedValueWatch', () => {
 
     it('should set isAmountInputActive to false on unmount', async () => {
         const { rerender, unmount } = await renderUseFocusedValueWatch();
-        jest.useFakeTimers();
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
         rerender({ watch: form.watch });
         await act(async () => {
-            jest.advanceTimersByTime(300);
-            // wait for state to update
-            await Promise.resolve();
+            // temporary: find the proper async timer handling
+            // https://github.com/trezor/trezor-suite/issues/19553
+            await new Promise(resolve => setTimeout(resolve, 300));
         });
 
         unmount();
