@@ -22,7 +22,7 @@ type GraphFiatBalanceProps = BalanceProps & {
     percentageChangeAtom: Atom<number>;
     showChange?: boolean;
     isLoading?: boolean;
-    totalFiatBalance: string;
+    totalFiatBalance: string | null;
     isHistoryEnabledAccount?: boolean;
 };
 
@@ -65,16 +65,12 @@ export const GraphFiatBalance = ({
 
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const hasBalance = Number(totalFiatBalance) !== 0;
-    const showLoading = isLoading || !firstGraphPoint;
+    const isGraphLoading = isLoading || !firstGraphPoint;
     const showBalanceFallback =
-        !hasDeviceDiscovery && ((hasBalance && showLoading) || !isHistoryEnabledAccount);
-
-    if (totalFiatBalance === null) {
-        return <Skeleton />;
-    }
+        !hasDeviceDiscovery && ((hasBalance && isGraphLoading) || !isHistoryEnabledAccount);
 
     // If discovery finished but graph still loading or missing first point we just show latest total balance
-    if (showBalanceFallback) {
+    if (showBalanceFallback && totalFiatBalance !== null) {
         return (
             <Box style={applyStyle(wrapperStyle)}>
                 <Balance selectedPointAtom={selectedPointAtom} latestValue={totalFiatBalance} />
@@ -90,7 +86,7 @@ export const GraphFiatBalance = ({
         );
     }
 
-    if (showLoading) {
+    if (isGraphLoading || totalFiatBalance === null) {
         return <Skeleton />;
     }
 

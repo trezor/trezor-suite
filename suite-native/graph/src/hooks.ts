@@ -204,7 +204,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
     referencePointAtom: WritableAtom<TGraphPoint | null, TGraphPoint | null>;
     selectedPointAtom: WritableAtom<TGraphPoint | null, TGraphPoint | null>;
     graphPoints: TGraphPoint[];
-    totalFiatBalance: string;
+    totalFiatBalance: string | null;
 }): {
     handleGestureStart: () => void;
     setInitialSelectedPoints: () => void;
@@ -231,7 +231,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
 
     const setInitialSelectedPoints = useCallback(() => {
         setIsGestureActive(false);
-        if (lastPoint && referencePoint) {
+        if (lastPoint && referencePoint && totalFiatBalance) {
             setSelectedPoint({
                 ...lastPoint,
                 valueLatestTotal: totalFiatBalance,
@@ -245,7 +245,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
     }, [setIsGestureActive]);
 
     useEffect(() => {
-        if (!isGestureActive && lastPoint) {
+        if (!isGestureActive && lastPoint && totalFiatBalance) {
             setSelectedPoint({
                 ...lastPoint,
                 valueLatestTotal: totalFiatBalance,

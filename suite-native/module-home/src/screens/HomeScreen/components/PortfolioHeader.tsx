@@ -11,7 +11,7 @@ import {
 
 type PortfolioHeaderProps = {
     isLoading: boolean;
-    totalFiatBalance: string;
+    totalFiatBalance: string | null;
 };
 
 export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeaderProps) => {

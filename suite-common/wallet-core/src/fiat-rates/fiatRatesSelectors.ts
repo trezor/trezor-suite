@@ -193,6 +193,11 @@ export const selectHasPendingCurrentRateUpdates = (
     const fiatCurrency = selectLocalCurrency(state);
     const allTickers = selectTickerFromAccounts(state);
 
+    const hasOutdatedTickers = selectTickersToBeUpdated(state, Date.now(), fiatCurrency, 'current');
+    if (hasOutdatedTickers.length > 0) {
+        return true;
+    }
+
     return allTickers.some(ticker => {
         const isTickerLoading = selectIsTickerLoading(state, ticker, fiatCurrency, 'current');
 

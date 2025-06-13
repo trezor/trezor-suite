@@ -12,6 +12,7 @@ import {
 } from './fiatRatesThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { blockchainActions } from '../blockchain/blockchainActions';
+import { deviceActions } from '../device/deviceActions';
 import { setLocalCurrency } from '../settings/walletSettingsActions';
 import { selectLocalCurrency } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
@@ -121,6 +122,17 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     rateType: 'current',
                     localCurrency,
                     fetchAttemptTimestamp: Date.now() as Timestamp,
+                }),
+            );
+        }
+
+        if (deviceActions.selectDevice.match(action) && isNative()) {
+            // When a device is selected, we want to fetch fiat rates for the graph.
+            const localCurrency = selectLocalCurrency(getState());
+            dispatch(
+                fetchFiatRatesThunk({
+                    rateType: 'current',
+                    localCurrency,
                 }),
             );
         }
