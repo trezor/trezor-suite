@@ -20,7 +20,6 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.core.errors.ModuleDestroyedException
 import java.nio.ByteBuffer
-import java.util.concurrent.ConcurrentHashMap
 
 // Convert Android USBDevice to JS compatible WebUSBDevice
 typealias WebUSBDevice = Map<String, Any?>
@@ -70,10 +69,6 @@ class ReactNativeUsbModule : Module() {
 
         AsyncFunction("open") { deviceName: String ->
             return@AsyncFunction openDevice(deviceName)
-        }
-
-        AsyncFunction("reset") { deviceName: String ->
-            return@AsyncFunction resetDevice(deviceName)
         }
 
         AsyncFunction("close") { deviceName: String ->
@@ -161,7 +156,7 @@ class ReactNativeUsbModule : Module() {
             for (device in devicesList) {
                 if (usbManager.hasPermission(device)) {
                     Log.d(LOG_TAG, "Has permission, send event onDeviceConnected: $device")
-
+                    
                     val webUsbDevice = if (hasOpenedConnection(device.deviceName)) {
                         Log.d(LOG_TAG, "Device already opened: $device")
                         getWebUSBDevice(device)
@@ -225,8 +220,7 @@ class ReactNativeUsbModule : Module() {
         get() = context.getSystemService(Context.USB_SERVICE) as UsbManager
 
 
-    private val openedConnections = ConcurrentHashMap<String, UsbDeviceConnection>()
-    private val pendingRequests = ConcurrentHashMap<String, UsbRequest>()
+    private val openedConnections = mutableMapOf<String, UsbDeviceConnection>()
 
     // We need to store device metadata because we can't access them in detached event
     private val devicesHistory = mutableMapOf<String, WebUSBDevice>()
@@ -254,12 +248,6 @@ class ReactNativeUsbModule : Module() {
         return getWebUSBDevice(device)
     }
 
-    private fun resetDevice(deviceName: String) {
-        Log.d(LOG_TAG, "Resetting device $deviceName")
-        val usbRequest = pendingRequests.remove(deviceName)
-        usbRequest?.cancel()
-    }
-
     private fun closeDevice(deviceName: String) {
         Log.d(LOG_TAG, "Closing device $deviceName")
         getOpenedConnection(deviceName).close()
@@ -268,10 +256,12 @@ class ReactNativeUsbModule : Module() {
 
     private fun closeAllOpenedDevices() {
         Log.d(LOG_TAG, "Closing all devices")
-        pendingRequests.values.forEach { it.cancel() }
-        pendingRequests.clear()
-        openedConnections.values.forEach { it.close() }
-        openedConnections.clear()
+        with(openedConnections.iterator()) {
+            forEach {
+                it.value.close()
+                remove()
+            }
+        }
     }
 
     private fun selectConfiguration(deviceName: String, configurationIndex: Int) {
@@ -362,19 +352,7 @@ class ReactNativeUsbModule : Module() {
         req.initialize(usbConnection, usbEndpoint)
         req.queue(buffer)
 
-        if (pendingRequests.putIfAbsent(device.deviceName, req) != null) {
-            req.cancel()
-            req.close()
-            Log.e(LOG_TAG, "Transfer already in progress for device ${device.deviceName}")
-            throw Exception("Transfer already in progress for device ${device.deviceName}")
-        }
-
-        val result = try {
-            usbConnection.requestWait()
-        } finally {
-            pendingRequests.remove(device.deviceName)
-            req.close()
-        }
+        val result = usbConnection.requestWait()
 
         if (result == null) {
             Log.e(LOG_TAG, "Failed to transfer data from device ${device.deviceName}")
@@ -399,6 +377,7 @@ class ReactNativeUsbModule : Module() {
         Log.d(LOG_TAG, "Device $deviceName hasOpenedConnection: $isConnectionOpened")
         return isConnectionOpened
     }
+
 
     private fun getDeviceByName(deviceName: String): UsbDevice {
         Log.d(LOG_TAG, "getDeviceByName: $deviceName")
