@@ -19,7 +19,7 @@ const bioAuthValidated = createAction(
 
 const bioAuthWindowBlur = createAction(
     BIOAUTH.BIO_AUTH_WINDOW_BLUR,
-    (payload: string /* Date.toUTCString() */) => ({
+    (payload: { blurDate: string /* Date.toUTCString() */; timeoutId: NodeJS.Timeout }) => ({
         payload,
     }),
 );
@@ -46,6 +46,8 @@ const initBioAuth = createAction(BIOAUTH.INIT_BIO_AUTH, (payload: number) => ({
     payload,
 }));
 
+const setBioAuthValidationRequired = createAction(BIOAUTH.BIO_AUTH_VALIDATION_REQUIRED);
+
 export const bioAuthActions = {
     setBioAuthEnabled,
     requestBioAuthChange,
@@ -55,6 +57,7 @@ export const bioAuthActions = {
     bioAuthWindowBlur,
     bioAuthWindowFocus,
     initBioAuth,
+    setBioAuthValidationRequired,
     toggleBioAuthValidationRequested,
 } as const;
 

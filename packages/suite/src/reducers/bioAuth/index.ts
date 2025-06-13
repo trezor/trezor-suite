@@ -1,4 +1,4 @@
-import { differenceInMinutes } from 'date-fns';
+import { differenceInMilliseconds, differenceInMinutes } from 'date-fns';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -7,11 +7,13 @@ import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 export interface BioAuthState {
     initialNow: number;
     bioAuthEnabled: boolean;
+    blurTimeoutId: NodeJS.Timeout | null;
     bioAuthEnabledNextValue: boolean | null;
     lastBioAuthValidatedTimestamp: number | null;
     lastWindowBlurTimestamp: number | null;
     bioAuthValidationInProgress: boolean;
     bioAuthValidationRequested: boolean;
+    bioAuthValidationRequired: boolean;
     windowBlurred: boolean;
     bioAuthAvailable: boolean | null;
 }
@@ -24,29 +26,35 @@ export type BioAuthRootState = {
 
 const initialState: BioAuthState = {
     initialNow: 0,
+    blurTimeoutId: null,
     bioAuthEnabled: false,
     bioAuthEnabledNextValue: null,
     lastBioAuthValidatedTimestamp: null,
     lastWindowBlurTimestamp: null,
     bioAuthValidationInProgress: false,
     bioAuthValidationRequested: false,
+    bioAuthValidationRequired: false,
     windowBlurred: false,
     bioAuthAvailable: null,
 };
 
+export const BLUR_LOCK_TIMEOUT_MS = 5 * 60 * 1000;
+
 const isBlurredTooLong = ({
     lastWindowBlurTimestamp,
     timestamp,
+    bioAuthValidationRequired,
 }: {
     lastWindowBlurTimestamp: number | null;
     timestamp: Date;
+    bioAuthValidationRequired: boolean;
 }) => {
-    const fiveMinutesInMinutes = 5;
     const isBlurredTooLong =
         lastWindowBlurTimestamp &&
-        differenceInMinutes(timestamp, new Date(lastWindowBlurTimestamp)) > fiveMinutesInMinutes;
+        differenceInMilliseconds(timestamp, new Date(lastWindowBlurTimestamp)) >
+            BLUR_LOCK_TIMEOUT_MS;
 
-    return isBlurredTooLong;
+    return isBlurredTooLong || bioAuthValidationRequired;
 };
 
 export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
@@ -65,6 +73,9 @@ export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
                 state.bioAuthEnabledNextValue = action.payload;
                 state.bioAuthValidationRequested = true;
             })
+            .addCase(bioAuthActions.setBioAuthValidationRequired, state => {
+                state.bioAuthValidationRequired = true;
+            })
             .addCase(bioAuthActions.requestBioAuthChangeEnd, state => {
                 state.bioAuthEnabledNextValue = null;
             })
@@ -74,24 +85,21 @@ export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
                     : null;
                 state.bioAuthValidationRequested = false;
                 state.lastWindowBlurTimestamp = null;
+                state.bioAuthValidationRequired = false;
                 // NOTE: it happens that when the bio auth validated action is received, the window is not focused but it is in front
                 // so that's why we remove the UI that hides it, coz the bio was just validated
                 state.windowBlurred = false;
             })
             .addCase(bioAuthActions.bioAuthWindowBlur, (state, action) => {
-                state.lastWindowBlurTimestamp = new Date(action.payload).getTime();
+                state.lastWindowBlurTimestamp = new Date(action.payload.blurDate).getTime();
                 state.windowBlurred = true;
+                state.blurTimeoutId = action.payload.timeoutId;
             })
-            .addCase(bioAuthActions.bioAuthWindowFocus, (state, action) => {
+            .addCase(bioAuthActions.bioAuthWindowFocus, state => {
                 state.windowBlurred = false;
-                // NOTE: if the window was NOT blurred for too long, we reset the lastWindowBlurTimestamp
-                // coz then we would make the app accessible without bio auth
-                state.lastWindowBlurTimestamp = !isBlurredTooLong({
-                    lastWindowBlurTimestamp: state.lastWindowBlurTimestamp,
-                    timestamp: new Date(action.payload),
-                })
-                    ? null
-                    : state.lastWindowBlurTimestamp;
+                state.lastWindowBlurTimestamp = null;
+
+                state.blurTimeoutId = null;
             })
             .addCase(bioAuthActions.toggleBioAuthValidationRequested, (state, action) => {
                 state.bioAuthValidationRequested = action.payload;
@@ -136,6 +144,7 @@ export const selectIsBioAuthValidationRequired = (
     const blurredTooLong = isBlurredTooLong({
         lastWindowBlurTimestamp: state.bioAuth.lastWindowBlurTimestamp,
         timestamp,
+        bioAuthValidationRequired: state.bioAuth.bioAuthValidationRequired,
     });
 
     return Boolean(isValidationExpired || blurredTooLong);
@@ -161,3 +170,6 @@ export const selectIsBioAuthAvailableStateKnown = (state: BioAuthRootState) =>
 
 export const selectIsBioAuthAvailable = (state: BioAuthRootState) =>
     Boolean(selectBioAuthState(state).bioAuthAvailable);
+
+export const selectBlurTimeoutId = (state: BioAuthRootState) =>
+    selectBioAuthState(state).blurTimeoutId;

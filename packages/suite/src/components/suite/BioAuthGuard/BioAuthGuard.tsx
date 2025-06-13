@@ -13,7 +13,11 @@ import {
 } from '@trezor/theme';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
-import { requestBioAuthValidationThunk } from 'src/actions/suite/bioAuthThunks';
+import {
+    bioAuthWindowBlurThunk,
+    bioAuthWindowFocusThunk,
+    requestBioAuthValidationThunk,
+} from 'src/actions/suite/bioAuthThunks';
 import { Translation } from 'src/components/suite';
 import {
     Body,
@@ -23,7 +27,11 @@ import {
     Wrapper,
 } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsAppUiHidden, selectIsBioAuthValidationRequired } from 'src/reducers/bioAuth';
+import {
+    selectBioAuthEnabled,
+    selectIsAppUiHidden,
+    selectIsBioAuthValidationRequired,
+} from 'src/reducers/bioAuth';
 
 const Container = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -100,18 +108,22 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
     const isBioAuthValidationRequired = useSelector(state =>
         selectIsBioAuthValidationRequired(state, new Date()),
     );
+    const isBioAuthAvailable = useSelector(selectBioAuthEnabled);
     const isAppUiHidden = useSelector(selectIsAppUiHidden);
     const dispatch = useDispatch();
 
     useEffect(() => {
+        if (!isBioAuthAvailable) {
+            return;
+        }
         dispatch(bioAuthActions.initBioAuth(performance.now()));
 
         const handleBlur = () => {
-            dispatch(bioAuthActions.bioAuthWindowBlur(new Date().toISOString()));
+            dispatch(bioAuthWindowBlurThunk(new Date()));
         };
 
         const handleFocus = () => {
-            dispatch(bioAuthActions.bioAuthWindowFocus(new Date().toISOString()));
+            dispatch(bioAuthWindowFocusThunk(new Date()));
         };
 
         window.addEventListener('blur', handleBlur);
@@ -122,7 +134,7 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
             window.removeEventListener('blur', handleBlur);
             window.removeEventListener('focus', handleFocus);
         };
-    }, [dispatch]);
+    }, [dispatch, isBioAuthAvailable]);
 
     return isAppUiHidden || isBioAuthValidationRequired ? (
         <BioAuthOverlay isBioAuthValidationRequired={isBioAuthValidationRequired} />

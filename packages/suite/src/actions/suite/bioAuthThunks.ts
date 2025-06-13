@@ -3,9 +3,12 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import {
+    BLUR_LOCK_TIMEOUT_MS,
     selectBioAuthEnabled,
+    selectBlurTimeoutId,
     selectIsBioAuthAvailableStateKnown,
     selectIsBioAuthValidationRequested,
+    selectIsBioAuthValidationRequired,
     selectIsRequestingBioAuthChange,
 } from 'src/reducers/bioAuth';
 
@@ -13,6 +16,44 @@ import { bioAuthActions } from './bioAuthActions';
 import * as storageActions from './storageActions';
 
 const BIO_AUTH_PREFIX = '@suite/bioAuth';
+
+export const bioAuthWindowBlurThunk = createThunk(
+    `${BIO_AUTH_PREFIX}/bioAuthWindowBlurThunk`,
+    (date: Date, { dispatch, getState }) => {
+        const blurTimeoutId = selectBlurTimeoutId(getState());
+        if (blurTimeoutId) {
+            clearTimeout(blurTimeoutId);
+        }
+
+        const timeoutId = setTimeout(() => {
+            dispatch(bioAuthActions.setBioAuthValidationRequired());
+        }, BLUR_LOCK_TIMEOUT_MS);
+
+        dispatch(
+            bioAuthActions.bioAuthWindowBlur({
+                blurDate: date.toUTCString(),
+                timeoutId,
+            }),
+        );
+    },
+);
+
+export const bioAuthWindowFocusThunk = createThunk(
+    `${BIO_AUTH_PREFIX}/bioAuthWindowFocusThunk`,
+    (date: Date, { dispatch, getState }) => {
+        const blurTimeoutId = selectBlurTimeoutId(getState());
+        if (blurTimeoutId) {
+            clearTimeout(blurTimeoutId);
+        }
+
+        const validationRequired = selectIsBioAuthValidationRequired(getState());
+
+        if (validationRequired) {
+            dispatch(bioAuthActions.setBioAuthValidationRequired());
+        }
+        dispatch(bioAuthActions.bioAuthWindowFocus(date.toUTCString()));
+    },
+);
 
 export const requestBioAuthChangeThunk = createThunk(
     `${BIO_AUTH_PREFIX}/requestBioAuthChangeThunk`,
@@ -62,6 +103,10 @@ export const requestBioAuthValidationThunk = createThunk(
         try {
             await desktopApi.validateBioAuth();
             dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
+            const blurTimeoutId = selectBlurTimeoutId(getState());
+            if (blurTimeoutId) {
+                clearTimeout(blurTimeoutId);
+            }
         } catch (error) {
             dispatch(bioAuthActions.bioAuthValidated(null));
             console.error(error);
