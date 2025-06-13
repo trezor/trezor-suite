@@ -42,6 +42,10 @@ const setBioAuthAvailable = createAction(BIOAUTH.SET_BIO_AUTH_AVAILABLE, (payloa
     payload,
 }));
 
+const initBioAuth = createAction(BIOAUTH.INIT_BIO_AUTH, (payload: number) => ({
+    payload,
+}));
+
 export const bioAuthActions = {
     setBioAuthEnabled,
     requestBioAuthChange,
@@ -50,6 +54,7 @@ export const bioAuthActions = {
     bioAuthValidated,
     bioAuthWindowBlur,
     bioAuthWindowFocus,
+    initBioAuth,
     toggleBioAuthValidationRequested,
 } as const;
 

@@ -104,6 +104,8 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        dispatch(bioAuthActions.initBioAuth(performance.now()));
+
         const handleBlur = () => {
             dispatch(bioAuthActions.bioAuthWindowBlur(new Date().toISOString()));
         };

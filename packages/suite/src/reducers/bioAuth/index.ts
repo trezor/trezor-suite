@@ -5,6 +5,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 
 export interface BioAuthState {
+    initialNow: number;
     bioAuthEnabled: boolean;
     bioAuthEnabledNextValue: boolean | null;
     lastBioAuthValidatedTimestamp: number | null;
@@ -22,6 +23,7 @@ export type BioAuthRootState = {
 };
 
 const initialState: BioAuthState = {
+    initialNow: 0,
     bioAuthEnabled: false,
     bioAuthEnabledNextValue: null,
     lastBioAuthValidatedTimestamp: null,
@@ -52,6 +54,9 @@ export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
     (builder, extra) => {
         builder
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBioAuth)
+            .addCase(bioAuthActions.initBioAuth, (state, action) => {
+                state.initialNow = action.payload;
+            })
             .addCase(bioAuthActions.setBioAuthEnabled, (state, action) => {
                 state.bioAuthEnabled = action.payload;
                 state.bioAuthEnabledNextValue = null;
