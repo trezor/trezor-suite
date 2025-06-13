@@ -5,7 +5,7 @@ import { Button, Row, SkeletonRectangle } from '@trezor/components';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useFastAccounts } from 'src/hooks/wallet';
+import { useAccounts } from 'src/hooks/wallet';
 import { Discovery } from 'src/types/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
 
@@ -34,7 +34,7 @@ export const PortfolioCardHeader = ({
     showGraphControls,
     receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
-    const accounts = useFastAccounts();
+    const accounts = useAccounts();
 
     const onSelectedRange = useCallback(
         (_range: GraphRange) => {

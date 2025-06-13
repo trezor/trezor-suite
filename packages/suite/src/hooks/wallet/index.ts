@@ -1,2 +1,2 @@
-export { useAccounts, useFastAccounts } from './useAccounts';
+export { useAccounts } from './useAccounts';
 export { useSendFormContext } from './useSendForm';

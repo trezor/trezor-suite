@@ -10,7 +10,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphScaleDropdownItem, GraphSkeleton, Translation } from 'src/components/suite';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { useFastAccounts } from 'src/hooks/wallet';
+import { useAccounts } from 'src/hooks/wallet';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -24,7 +24,7 @@ export const PortfolioCard = memo(() => {
     const localCurrency = useSelector(selectLocalCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const accounts = useFastAccounts();
+    const accounts = useAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
     const { device } = useDevice();

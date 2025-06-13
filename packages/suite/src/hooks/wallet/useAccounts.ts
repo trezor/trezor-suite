@@ -5,7 +5,7 @@ import {
     selectDiscoveryForSelectedDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { getAllAccounts, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import type { AccountAddress } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
@@ -24,18 +24,6 @@ export const useAccounts = () => {
 
         return sortedAccounts;
     }, [staticSessionId, discovery, accounts]);
-};
-
-export const useFastAccounts = () => {
-    const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(state => state.wallet.accounts);
-
-    const deviceAccounts = useMemo(
-        () => (device ? getAllAccounts(device.state, accounts) : []),
-        [accounts, device],
-    );
-
-    return deviceAccounts;
 };
 
 export const useAccountAddressDictionary = (account: Account | undefined) =>
