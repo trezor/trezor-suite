@@ -61,8 +61,12 @@ export const confirmExchangeTradeThunk = createThunk(
             return isConfirmationOk;
         }
 
-        if (trade.isDex && !trade.fromAddress) {
-            trade = { ...trade, fromAddress: refundAddress };
+        if (trade.isDex) {
+            trade = { ...trade, receiveAddress };
+
+            if (!trade.fromAddress) {
+                trade = { ...trade, fromAddress: refundAddress };
+            }
         }
 
         dispatch(tradingExchangeActions.saveTransactionId(undefined));

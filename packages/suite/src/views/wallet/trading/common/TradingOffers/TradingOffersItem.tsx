@@ -16,7 +16,6 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
@@ -119,21 +118,23 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
-    const { receiveAddress } = useTradingReceiveAddress({
-        cryptoId: quote && 'receive' in quote ? (quote as ExchangeTrade)?.receive : undefined,
-    });
-
     const onSelectQuote = async () => {
         // DEX swap
         if (isTradingExchangeContext(context) && (quote as ExchangeTrade).isDex) {
-            const { confirmTrade } = context;
+            const { confirmTrade, account } = context;
+
             const trade = quote as ExchangeTrade;
+            const receiveAddress = account.descriptor;
 
             if (!receiveAddress) {
                 return;
             }
 
-            await confirmTrade({ trade, receiveAddress });
+            const result = await confirmTrade({ trade, receiveAddress });
+
+            if (!result) {
+                return;
+            }
 
             dispatch(
                 tradingExchangeActions.setFormStep(
@@ -148,6 +149,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
 
         selectQuote(quote);
     };
+
     const isSellVerificationRequired =
         isTradingSellContext(context) &&
         context.sellInfo &&

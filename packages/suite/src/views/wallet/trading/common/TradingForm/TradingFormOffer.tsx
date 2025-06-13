@@ -22,7 +22,6 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
@@ -101,10 +100,6 @@ export const TradingFormOffer = () => {
             new BigNumber(bestScoredQuoteAmounts.receiveAmount),
         );
 
-    const { receiveAddress } = useTradingReceiveAddress({
-        cryptoId: quote && 'receive' in quote ? (quote as ExchangeTrade)?.receive : undefined,
-    });
-
     const onSelectQuote = async () => {
         if (!quote) {
             return;
@@ -112,16 +107,22 @@ export const TradingFormOffer = () => {
 
         // DEX swap
         if (isTradingExchangeContext(context) && (quote as ExchangeTrade).isDex) {
-            const { confirmTrade } = context;
+            const { confirmTrade, account } = context;
+
             const trade = quote as ExchangeTrade;
+            const receiveAddress = account.descriptor;
 
             if (!receiveAddress) {
                 return;
             }
 
             setIsDexSwapLoading(true);
-            await confirmTrade({ trade, receiveAddress });
+            const result = await confirmTrade({ trade, receiveAddress });
             setIsDexSwapLoading(false);
+
+            if (!result) {
+                return;
+            }
 
             dispatch(
                 tradingExchangeActions.setFormStep(

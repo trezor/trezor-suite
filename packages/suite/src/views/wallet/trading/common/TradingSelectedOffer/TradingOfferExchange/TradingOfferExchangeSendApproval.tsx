@@ -8,9 +8,9 @@ import {
     type TradingExchangeType,
     cryptoIdToNetwork,
     parseCryptoId,
+    tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
-import { tradingExchangeActions } from '@suite-common/trading';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
     Banner,
@@ -33,7 +33,6 @@ import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
-import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 
 // add APPROVED means no approval request is necessary
@@ -81,11 +80,6 @@ export const TradingOfferExchangeSendApproval = () => {
         'REQUIRED' | 'APPROVED' | 'LOADING' | undefined
     >();
 
-    const { accountAddress } = useTradingVerifyAccount({
-        cryptoId: selectedQuote?.receive,
-        nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
-    });
-
     useEffect(() => {
         if (
             (!previousQuoteStatus || previousQuoteStatus === 'APPROVAL_REQ') &&
@@ -108,19 +102,11 @@ export const TradingOfferExchangeSendApproval = () => {
             setApprovalStep('APPROVED');
         }
 
-        const forceConfirmTrade = async () => {
-            if (!accountAddress?.address) {
-                return;
-            }
-
-            await confirmTrade({
-                trade: selectedQuote,
-                receiveAddress: accountAddress?.address,
-            });
-        };
-
         if (previousQuoteStatus === 'APPROVAL_PENDING' && currentQuoteStatus === 'CONFIRM') {
-            forceConfirmTrade();
+            confirmTrade({
+                trade: selectedQuote,
+                receiveAddress: account.descriptor,
+            });
 
             if (approvalType === 'ZERO') {
                 setApprovalStep('REQUIRED');
@@ -137,7 +123,7 @@ export const TradingOfferExchangeSendApproval = () => {
         approvalType,
         confirmTrade,
         selectedQuote,
-        accountAddress,
+        account,
         dispatch,
     ]);
 
