@@ -17,7 +17,6 @@ export type PortfolioCardHeaderProps = {
     isWalletLoading: boolean;
     isWalletError: boolean;
     isDiscoveryRunning?: boolean;
-    isMissingFiatRate?: boolean;
     showGraphControls: boolean;
     receiveClickHandler: () => void;
 };
@@ -30,7 +29,6 @@ export const PortfolioCardHeader = ({
     isWalletLoading,
     isWalletError,
     isDiscoveryRunning,
-    isMissingFiatRate,
     showGraphControls,
     receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
@@ -65,8 +63,7 @@ export const PortfolioCardHeader = ({
         }
     }
 
-    const valueLoading =
-        isDiscoveryRunning || isMissingFiatRate || (!discovery && !Number(fiatAmount));
+    const valueLoading = isDiscoveryRunning || (!discovery && isNaN(Number(fiatAmount)));
 
     return (
         <Row justifyContent="space-between">
