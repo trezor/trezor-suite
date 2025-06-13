@@ -382,7 +382,7 @@ describe('InvityAPI', () => {
 
             const trade = await invityAPI.getSignedTrade({
                 type: 'sell',
-                orderId: 'test-order-id',
+                id: 'test-order-id',
                 nonce: 'test-nonce',
                 outputs: [
                     {
@@ -391,6 +391,7 @@ describe('InvityAPI', () => {
                     },
                 ],
                 memoText: 'test-memo',
+                sendSlip44: 0,
             });
             expect(trade).toEqual(invityAPIFixtures.sellFiatTradeSigned);
         });
