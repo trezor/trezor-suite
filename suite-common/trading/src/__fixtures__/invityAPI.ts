@@ -177,7 +177,7 @@ const otc: TradingOTC = {
 
 const createTradeSignatureRequest: CreateTradeSignatureRequest = {
     type: 'exchange',
-    orderId: 'test-order-id',
+    id: 'test-order-id',
     nonce: 'test-nonce',
     outputs: [
         {
@@ -197,7 +197,7 @@ const exchangeTradeSigned: ExchangeTradeSigned = {
 
 const sellFiatTradeSigned: SellFiatTradeSigned = {
     ...sellTrade,
-    orderId: 'test-order-id',
+    paymentId: 'test-order-id',
     tradeSignature: 'test-trade-signature',
 };
 
