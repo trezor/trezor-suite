@@ -21,6 +21,11 @@ const blacklist: Record<string, string[] | true> = {
     Features: true,
 };
 
+type AbortableOptions = {
+    timeout?: number;
+    signal?: AbortSignal;
+};
+
 const allowedCallsBeforeInitialize: Messages.MessageKey[] = [
     // Preventive Cancel
     'Cancel',
@@ -68,6 +73,9 @@ export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
     cancelCall: DeviceCurrentSession['cancelCall'];
     isDisposed: () => boolean;
+    call: DeviceCurrentSession['call'];
+    send: DeviceCurrentSession['send'];
+    receive: DeviceCurrentSession['receive'];
 }
 
 export class DeviceCurrentSession implements TypedCallProvider {
@@ -183,7 +191,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
             const timeout = name === 'GetFeatures' ? getFeaturesTimeout() : undefined;
 
-            const callPromise = this.call(name, data, timeout);
+            const callPromise = this.call(name, data, { timeout });
 
             const [abortedDuringCall, response] = await Promise.race([
                 callPromise.then(res => [false, res] as const),
@@ -321,10 +329,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
         }
     }
 
-    private async call<T extends Messages.MessageKey>(
+    async call<T extends Messages.MessageKey>(
         name: T,
         data: Messages.MessagePayload<T>,
-        timeout?: number,
+        options: AbortableOptions = {},
     ) {
         if (this.disposed) return Promise.resolve(error(this.disposed));
 
@@ -336,7 +344,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             session: this.session,
             protocol: this.device.protocol,
             thpState: this.device.getThpState(),
-            timeout,
+            ...options,
         });
 
         if (result.success) {
@@ -347,7 +355,39 @@ export class DeviceCurrentSession implements TypedCallProvider {
             logger.warn('Received transport error', result.error, result.message);
         }
 
-        return result.success ? success(result.payload) : fail(result.error);
+        return result.success ? success(result.payload) : fail(result.message || result.error);
+    }
+
+    async send<T extends Messages.MessageKey>(
+        name: T,
+        data: Messages.MessagePayload<T>,
+        options: AbortableOptions = {},
+    ) {
+        if (this.disposed) return Promise.resolve(error(this.disposed));
+
+        const result = await this.transport.send({
+            name,
+            data,
+            session: this.session,
+            protocol: this.device.protocol,
+            thpState: this.device.getThpState(),
+            ...options,
+        });
+
+        return result.success ? success(result.payload) : fail(result.message || result.error);
+    }
+
+    async receive(options: AbortableOptions = {}) {
+        if (this.disposed) return Promise.resolve(error(this.disposed));
+
+        const result = await this.transport.receive({
+            session: this.session,
+            protocol: this.device.protocol,
+            thpState: this.device.getThpState(),
+            ...options,
+        });
+
+        return result.success ? success(result.payload) : fail(result.message || result.error);
     }
 
     cancelCall() {
