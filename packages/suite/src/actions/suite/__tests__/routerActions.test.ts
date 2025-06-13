@@ -2,6 +2,7 @@ import { AppState } from 'src/reducers/store';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { setLocation, setNavigate } from 'src/support/suite/navigationService';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from '../__fixtures__/routerActions';
@@ -9,6 +10,14 @@ import * as routerActions from '../routerActions';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
+
+const defaultLocation = {
+    pathname: '/',
+    state: undefined,
+    key: '',
+    hash: '',
+    search: '',
+};
 
 interface InitialState {
     suite?: Partial<SuiteState>;
@@ -60,6 +69,8 @@ describe('Suite Actions', () => {
         it(`init: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
+            setLocation(defaultLocation);
+            setNavigate(() => {});
             store.dispatch(routerActions.init());
             if (f.result) {
                 expect(store.getState().router).toEqual(f.result);
@@ -82,7 +93,10 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
 
-            require('src/support/history').default.location.pathname = f.pathname || '/';
+            setLocation({
+                ...defaultLocation,
+                pathname: f.pathname || '/',
+            });
             store.dispatch(routerActions.initialRedirection());
             expect(store.getState().router.app).toEqual(f.app);
         });
@@ -93,7 +107,10 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
 
-            require('src/support/history').default.location.hash = `#${f.hash}`;
+            setLocation({
+                ...defaultLocation,
+                hash: `#${f.hash}`,
+            });
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
                 expect(store.getActions()[0].payload.url).toEqual(f.result);
@@ -119,7 +136,10 @@ describe('Suite Actions', () => {
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
 
-        require('src/support/history').default.location.pathname = '/accounts/send';
+        setLocation({
+            ...defaultLocation,
+            pathname: '/accounts/send',
+        });
         store.dispatch(routerActions.closeModalApp());
         expect(store.getActions().length).toEqual(2); // unlock + location change
         expect(store.getState().router.app).toEqual('wallet');

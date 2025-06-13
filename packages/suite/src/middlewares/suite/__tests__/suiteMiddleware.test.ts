@@ -87,7 +87,6 @@ describe('suite middleware', () => {
                     name: 'suite-index',
                     pattern: '/',
                     app: 'dashboard',
-                    exact: true,
                 },
             };
             store.dispatch({
@@ -121,7 +120,7 @@ describe('suite middleware', () => {
                         clearUrl: undefined,
                         isNestedRoute: undefined,
                         params: undefined,
-                        exact: undefined,
+                        hasNestedRoutes: undefined,
                     },
                     settingsBackRoute: {
                         name: 'suite-index',
@@ -140,7 +139,6 @@ describe('suite middleware', () => {
                     isFullscreenApp: true,
                     isNestedRoute: undefined,
                     params: undefined,
-                    exact: undefined,
                 },
             };
             store.dispatch({

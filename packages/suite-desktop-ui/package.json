@@ -28,7 +28,7 @@
         "react-dom": "19.0.0",
         "react-helmet-async": "^2.0.5",
         "react-redux": "9.2.0",
-        "react-router-dom": "^5.2.0",
+        "react-router-dom": "^6.30.1",
         "styled-components": "^6.1.19"
     },
     "devDependencies": {

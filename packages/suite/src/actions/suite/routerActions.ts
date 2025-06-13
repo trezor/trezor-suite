@@ -8,7 +8,7 @@ import * as suiteActions from 'src/actions/suite/suiteActions';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/reducers/suite/suiteReducer';
-import history from 'src/support/history';
+import { getLocation, navigate } from 'src/support/suite/navigationService';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     RouteParams,
@@ -90,7 +90,8 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
 export const init = () => (dispatch: Dispatch, getState: GetState) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const url = history.location.pathname + history.location.hash;
+        const location = getLocation();
+        const url = location.pathname + location.hash;
         dispatch(onLocationChange(url));
     }
 };
@@ -129,7 +130,8 @@ export const goto =
 
             return;
         }
-        const newUrl = `${urlBase}${preserveParams ? history.location.hash : ''}`;
+        const location = getLocation();
+        const newUrl = `${urlBase}${preserveParams ? location.hash : ''}`;
         dispatch(onLocationChange(newUrl, anchor));
 
         const route = findRouteByName(routeName);
@@ -141,13 +143,13 @@ export const goto =
             // where we want to have suite-start router clearing the URL to ensure
             // that there isn't a state stuck
             if (route?.clearUrl) {
-                history.push(urlBase);
+                navigate(urlBase);
             }
 
             return;
         }
 
-        history.push(newUrl);
+        navigate(newUrl);
     };
 
 /**
@@ -168,11 +170,13 @@ export const closeModalApp =
             return dispatch(goto('suite-index'));
         }
 
-        if (!preserveParams && history.location.hash.length > 0) {
-            history.push(getPrefixedURL(history.location.pathname));
+        const location = getLocation();
+
+        if (!preserveParams && location.hash.length > 0) {
+            navigate(getPrefixedURL(location.pathname));
         } else {
             // + history.location.hash is here to preserve params (e.g. nth account)
-            dispatch(onLocationChange(history.location.pathname + history.location.hash));
+            dispatch(onLocationChange(location.pathname + location.hash));
         }
     };
 
@@ -181,7 +185,8 @@ export const closeModalApp =
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
 export const initialRedirection = () => (dispatch: Dispatch, getState: GetState) => {
-    const route = findRoute(history.location.pathname + history.location.hash);
+    const location = getLocation();
+    const route = findRoute(location.pathname + location.hash);
 
     const { initialRun } = getState().suite.flags;
     // only do initial redirection of route is valid
