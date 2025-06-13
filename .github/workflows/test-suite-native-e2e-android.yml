@@ -283,6 +283,7 @@ jobs:
           npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --ci-build-id=${CURRENTS_CI_BUILD_ID} --report-dir ./currents
 
       - name: Generate GitHub App token
+        if: ${{ ! cancelled() }}
         id: trezor-bot-token
         uses: actions/create-github-app-token@v1
         with:
