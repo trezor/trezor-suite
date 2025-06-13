@@ -27,11 +27,7 @@ import {
     Wrapper,
 } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectBioAuthEnabled,
-    selectIsAppUiHidden,
-    selectIsBioAuthValidationRequired,
-} from 'src/reducers/bioAuth';
+import { selectBioAuthEnabled, selectIsBioAuthValidationRequired } from 'src/reducers/bioAuth';
 
 const Container = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -109,7 +105,7 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
         selectIsBioAuthValidationRequired(state, new Date()),
     );
     const isBioAuthAvailable = useSelector(selectBioAuthEnabled);
-    const isAppUiHidden = useSelector(selectIsAppUiHidden);
+    const isAppUiHidden = false; // NOTE: temporary
     const dispatch = useDispatch();
 
     useEffect(() => {
