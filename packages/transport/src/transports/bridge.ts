@@ -269,6 +269,7 @@ export class BridgeTransport extends AbstractTransport {
         protocol: customProtocol,
         thpState,
         signal,
+        timeout,
     }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(
             async signal => {
@@ -291,7 +292,7 @@ export class BridgeTransport extends AbstractTransport {
 
                 return this.success(undefined);
             },
-            { signal },
+            { signal, timeout },
         );
     }
 
@@ -300,6 +301,7 @@ export class BridgeTransport extends AbstractTransport {
         protocol: customProtocol,
         thpState,
         signal,
+        timeout,
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
             async signal => {
@@ -321,7 +323,7 @@ export class BridgeTransport extends AbstractTransport {
                     thpState,
                 );
             },
-            { signal, timeout: undefined },
+            { signal, timeout },
         );
     }
 
