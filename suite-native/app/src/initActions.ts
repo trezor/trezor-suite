@@ -13,36 +13,35 @@ import {
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
+import { setIsAppReady } from '@suite-native/state/src/appSlice';
 
-let isAlreadyInitialized = false;
+const ACTION_PREFIX = '@suite-native/app';
 
 export const applicationInit = createThunk(
-    `@app/init-actions`,
-    async (_, { dispatch, getState }) => {
-        if (isAlreadyInitialized) {
-            return;
-        }
-
+    `${ACTION_PREFIX}/applicationInit`,
+    (_, { dispatch }) => {
         dispatch(initAnalyticsThunk());
-
         dispatch(initMessageSystemThunk());
 
         // Select latest remembered device or Portfolio Tracker device.
         dispatch(initDevices());
 
+        // Tell the application to render
+        dispatch(setIsAppReady(true));
+    },
+);
+
+export const postOnboardingInit = createThunk(
+    `${ACTION_PREFIX}/postOnboardingInit`,
+    async (_, { dispatch, getState }) => {
         try {
             await dispatch(connectInitThunk()).unwrap();
         } catch (error) {
             console.error(`Connect init error: ${JSON.stringify(error)}`);
         }
 
-        dispatch(setIsConnectInitialized(true));
-
         dispatch(initBlockchainThunk());
-
         dispatch(periodicCheckTokenDefinitionsThunk());
-
         dispatch(initStakeDataThunk());
 
         dispatch(
@@ -58,9 +57,5 @@ export const applicationInit = createThunk(
         if (selectIsFeatureFlagEnabled(getState(), FeatureFlag.IsWalletConnectEnabled)) {
             dispatch(walletConnectInitThunk());
         }
-
-        // Tell the application to render
-        dispatch(setIsAppReady(true));
-        isAlreadyInitialized = true;
     },
 );

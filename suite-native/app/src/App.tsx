@@ -15,13 +15,14 @@ import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { initSentry } from '@suite-native/sentry';
-import { StoreProvider, selectIsAppReady, selectIsConnectInitialized } from '@suite-native/state';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { StoreProvider, selectIsAppReady } from '@suite-native/state';
 
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
 import { StylesProvider } from './StylesProvider';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
-import { applicationInit } from './initActions';
+import { applicationInit, postOnboardingInit } from './initActions';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { disableRTL } from './rtl';
 
@@ -47,25 +48,36 @@ SplashScreen.preventAutoHideAsync();
 // https://github.com/react-native-netinfo/react-native-netinfo?tab=readme-ov-file#configure
 configureNetInfo();
 
+let isApplicationInitDispatched = false;
+let isPostOnboardingInitDispatched = false;
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
-    const isConnectInitialized = useSelector(selectIsConnectInitialized);
+    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
     useEffect(() => {
-        if (!isConnectInitialized) {
+        if (!isApplicationInitDispatched) {
             dispatch(applicationInit());
+            isApplicationInitDispatched = true;
         }
-    }, [dispatch, isConnectInitialized]);
+    }, [dispatch]);
 
     useEffect(() => {
         if (isAppReady) {
             SplashScreen.hideAsync();
         }
     }, [isAppReady]);
+
+    useEffect(() => {
+        if (isAppReady && isOnboardingFinished && !isPostOnboardingInitDispatched) {
+            dispatch(postOnboardingInit());
+            isPostOnboardingInitDispatched = true;
+        }
+    }, [isAppReady, isOnboardingFinished, dispatch]);
 
     if (!isAppReady) return null;
 

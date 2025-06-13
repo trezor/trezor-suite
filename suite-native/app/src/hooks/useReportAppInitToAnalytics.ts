@@ -14,14 +14,14 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { selectIsConnectInitialized } from '@suite-native/state';
+import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
 
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);
     const [initWasReported, setInitWasReported] = useState(false);
 
-    const isConnectInitialized = useSelector(selectIsConnectInitialized);
+    const isAppReady = useSelector(selectIsAppReady);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
     const { isDiscreetMode } = useDiscreetMode();
@@ -33,11 +33,11 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     useEffect(() => {
-        if (isConnectInitialized && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);
-    }, [isConnectInitialized, appLaunchTimestamp, loadDuration]);
+        if (isAppReady && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);
+    }, [isAppReady, appLaunchTimestamp, loadDuration]);
 
     useEffect(() => {
-        if (isConnectInitialized && isOnboardingFinished && loadDuration && !initWasReported) {
+        if (isAppReady && isOnboardingFinished && loadDuration && !initWasReported) {
             setInitWasReported(true);
             analytics.report({
                 type: EventType.AppReady,
@@ -63,7 +63,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
             });
         }
     }, [
-        isConnectInitialized,
+        isAppReady,
         isOnboardingFinished,
         initWasReported,
         currencyCode,
