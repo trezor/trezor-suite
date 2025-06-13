@@ -1,11 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import {
-    scrollUntilVisible,
-    sleep,
-    waitForElementByIdToBeVisible,
-    waitForElementByTextToBeVisible,
-} from '../utils';
+import { sleep, waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../utils';
 
 const LONG_TIMEOUT = 30000;
 const SHORT_TIMEOUT = 5000;
@@ -117,10 +112,9 @@ class TradingBuyActions {
     async setFiatAmount(amount: string) {
         await this.getFiatAmountElement().tap();
         await this.getFiatAmountElement().replaceText(amount);
+        await this.getFiatAmountElement().typeText('\n'); // Simulate pressing 'Enter' to submit the input
         await this.waitForQuotesToLoad();
         await this.scrollScreenToBottom();
-        await scrollUntilVisible(this.getAmountEditingDoneButton(), '@screen/mainScrollView');
-        await this.getAmountEditingDoneButton().tap();
     }
 
     async expectReceiveAccountBalance(expectedValue: string) {
