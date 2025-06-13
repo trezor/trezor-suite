@@ -1,12 +1,14 @@
 import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    DeviceReducerState,
     type DeviceRootState,
     selectAccounts,
     selectDeviceAccounts,
+    selectDeviceUnavailableCapabilities,
 } from '@suite-common/wallet-core';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
@@ -54,6 +56,7 @@ export type TradingRootState = {
             };
         };
     };
+    device: DeviceReducerState;
 };
 
 export type TradingBuyInfoSelector = Omit<
@@ -600,3 +603,32 @@ export const selectTradingSellTransactionId = (state: TradingRootState) =>
 
 export const selectTradingVerifiedAddress = (state: TradingRootState) =>
     state.wallet.tradingNew.verifiedAddress;
+
+export const selectTradingIsSlip24Allowed = createMemoizedSelector(
+    [
+        state => selectDeviceUnavailableCapabilities(state),
+        (_: TradingRootState, account: Account) => account,
+        (_: TradingRootState, __: Account, isSlip24Active: boolean) => isSlip24Active,
+        (_: TradingRootState, __: Account, ___: boolean, receiveNetwork?: Network) =>
+            receiveNetwork,
+    ],
+    (unavailableCapabilities, account, isSlip24Active, receiveNetwork) => {
+        const isFirmwareVersionSlip24Compatible = !unavailableCapabilities?.['slip24'];
+        const isBitcoinLikeNetwork = account.networkType === 'bitcoin';
+        /* TODO: slip24
+         - for ethereumGetAddress, solanaGetAddress,  etc. does not support `mac` parameter
+         - not implemented in firmware - protob/messages-ethereum.proto line 48 (EthereumAddress)
+         - works only for Bitcoin-like networks
+       */
+        const isBitcoinLikeReceiveNetwork = receiveNetwork
+            ? receiveNetwork?.networkType === 'bitcoin'
+            : true; // passed only in exchange, for sell it has to be true
+
+        return (
+            isSlip24Active &&
+            isFirmwareVersionSlip24Compatible &&
+            isBitcoinLikeNetwork &&
+            isBitcoinLikeReceiveNetwork
+        );
+    },
+);

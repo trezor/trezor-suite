@@ -1,4 +1,5 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
+import { CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -12,16 +13,19 @@ import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { Success, Unsuccessful } from '@trezor/connect';
 
+import { tradingThunks } from '../';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import {
     selectTradingActiveSection,
     selectTradingComposedTransactionInfo,
+    selectTradingIsSlip24Allowed,
 } from '../../selectors/tradingSelectors';
 import type {
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
     TradingTradeSellExchangeType,
 } from '../../types';
+import { cryptoIdToNetwork } from '../../utils';
 
 type FulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
 
@@ -29,16 +33,23 @@ export type RecomposeAndSignTxThunkProps = {
     account: Account;
     address: string;
     amount: string;
+    receiveCryptoId?: CryptoId;
     destinationTag?: string;
     ethereumDataHex?: string;
     recalculateCustomLimit?: boolean;
     ethereumAdjustGasLimit?: string;
     setMaxOutputId?: number | undefined;
+    /**
+     * Indicates whether SLIP24 is active for the transaction.
+     * Important: should not be used for DEX trades.
+     */
+    isSlip24Active?: boolean;
 
     signAndPushSendFormTransaction: ({
         formState,
         precomposedTransaction,
         selectedAccount,
+        paymentRequests,
     }: TradingSignAndPushSendFormTransactionProps) => Promise<FulfillValue>;
 };
 
@@ -65,15 +76,20 @@ export const recomposeAndSignTxThunk = createThunk<
             account,
             address,
             amount,
+            receiveCryptoId,
             destinationTag,
             ethereumDataHex,
             recalculateCustomLimit,
             ethereumAdjustGasLimit,
             setMaxOutputId,
+            isSlip24Active = false,
             signAndPushSendFormTransaction,
         }: RecomposeAndSignTxThunkProps,
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const activeSection = selectTradingActiveSection(
+            getState(),
+        ) as TradingTradeSellExchangeType; // used only in the sell and exchange sections
         const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
         const options: FormOptions[] = ['broadcast'];
         const network = getNetwork(account.symbol);
@@ -200,10 +216,29 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
+        const receiveNetwork = receiveCryptoId && cryptoIdToNetwork(receiveCryptoId);
+        const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
+            getState(),
+            account,
+            isSlip24Active,
+            receiveNetwork,
+        );
+
+        const paymentRequests = isPaymentRequestsAllowed
+            ? await dispatch(
+                  tradingThunks.createPaymentRequestsThunk({
+                      type: activeSection,
+                      account,
+                      composedLevels: precomposedToSign,
+                  }),
+              ).unwrap()
+            : [];
+
         const resultOfSignedTransaction = await signAndPushSendFormTransaction({
             formState,
             precomposedTransaction: precomposedToSign,
             selectedAccount: account,
+            paymentRequests,
         });
 
         return fulfillWithValue(resultOfSignedTransaction);

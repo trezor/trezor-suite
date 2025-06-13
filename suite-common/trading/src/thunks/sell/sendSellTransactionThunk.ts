@@ -23,6 +23,7 @@ export type SendSellTransactionThunkProps = {
     shouldSendInSats: boolean | undefined;
     decimals: number;
     formValues: TradingSellFormProps;
+    isSlip24Active?: boolean;
 
     nextStep: () => void;
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
@@ -37,6 +38,7 @@ export const sendSellTransactionThunk = createThunk(
             shouldSendInSats,
             decimals,
             formValues,
+            isSlip24Active,
             nextStep,
             signAndPushSendFormTransaction,
         }: SendSellTransactionThunkProps,
@@ -75,6 +77,7 @@ export const sendSellTransactionThunk = createThunk(
                 address: destinationAddress,
                 amount: cryptoStringAmount,
                 destinationTag: destinationPaymentExtraId,
+                isSlip24Active,
                 signAndPushSendFormTransaction,
                 // when lockSendAmount is true, the amount should not be recomputed based on the maximum balance.
                 setMaxOutputId: lockSendAmount ? undefined : formValues.setMaxOutputId,
