@@ -126,7 +126,12 @@ export class DeviceCurrentSession implements TypedCallProvider {
         this.callPromise = undefined;
         this.abortController = undefined;
 
-        if (!response.success) throw response.error;
+        if (!response.success) {
+            // if (this.device.features || this.device.getThpProperties()) {
+            throw response.error;
+            // }
+            // this is first message, but response.false also could be because of device disconnection :(
+        }
 
         const { payload } = response;
         const receivedType = payload.type;
