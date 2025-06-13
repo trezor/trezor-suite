@@ -1,0 +1,92 @@
+import React from 'react';
+
+import { useFormatters } from '@suite-common/formatters';
+import { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
+import { Network, isNetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { Box, HStack, Text } from '@suite-native/atoms';
+import { CryptoIcon, CryptoIconWithNetwork, Icon } from '@suite-native/icons';
+
+export const TxSimulationAsset = ({
+    assetDiff,
+    assetExposure,
+    network,
+}: {
+    assetDiff?: AssetDiff;
+    assetExposure?: AssetExposure;
+    network: Network;
+}) => {
+    const { BaseCurrencyAmountFormatter } = useFormatters();
+
+    const AssetIcon = () => {
+        const asset = (assetDiff || assetExposure)?.asset;
+        const assetType = (assetDiff || assetExposure)?.asset_type;
+        const coinSymbol = asset?.symbol?.toLowerCase();
+        if (assetType === 'NATIVE' && coinSymbol && isNetworkSymbol(coinSymbol)) {
+            return <CryptoIcon symbol={coinSymbol} size="small" />;
+        }
+        if (asset?.symbol && 'address' in asset && network.coingeckoId) {
+            return (
+                <CryptoIconWithNetwork
+                    symbol={network.symbol}
+                    contractAddress={asset.address.toLowerCase() as TokenAddress}
+                    size="small"
+                />
+            );
+        }
+
+        return <Icon name="coins" size="small" />;
+    };
+
+    return (
+        <HStack spacing="sp12" padding="sp16" alignItems="center">
+            <AssetIcon />
+
+            {assetDiff?.in.map((inAmount, inIndex) => (
+                <HStack key={`in-${inIndex}`} spacing="sp12" alignItems="center" flex={1}>
+                    <Text color="textPrimaryDefault">{inAmount.summary}</Text>
+                    <Box flex={1} />
+                    {inAmount.usd_price && (
+                        <Text color="textSubdued">
+                            {`+ `}
+                            <BaseCurrencyAmountFormatter
+                                value={inAmount.usd_price}
+                                currency="USD"
+                            />
+                        </Text>
+                    )}
+                </HStack>
+            ))}
+            {assetDiff?.out.map((outAmount, outIndex) => (
+                <HStack key={`out-${outIndex}`} spacing="sp12" alignItems="center" flex={1}>
+                    <Text color="textAlertRed">{outAmount.summary}</Text>
+                    <Box flex={1} />
+                    {outAmount.usd_price && (
+                        <Text color="textSubdued">
+                            {`- `}
+                            <BaseCurrencyAmountFormatter
+                                value={outAmount.usd_price}
+                                currency="USD"
+                            />
+                        </Text>
+                    )}
+                </HStack>
+            ))}
+            {assetExposure?.spenders &&
+                Object.values(assetExposure.spenders).map((spender, index) => (
+                    <HStack key={`spender-${index}`} spacing="sp12" alignItems="center" flex={1}>
+                        <Text color="textSubdued">{spender.summary}</Text>
+                        <Box flex={1} />
+                        {spender.exposure.usd_price && (
+                            <Text color="textSubdued">
+                                <BaseCurrencyAmountFormatter
+                                    value={spender.exposure.usd_price}
+                                    currency="USD"
+                                />
+                            </Text>
+                        )}
+                    </HStack>
+                ))}
+        </HStack>
+    );
+};

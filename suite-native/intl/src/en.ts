@@ -440,6 +440,22 @@ export const en = {
             management: 'Modify device settings',
             push_tx: 'Broadcast transactions to the blockchain',
         },
+        simulation: {
+            reviewTransaction: 'Review transaction',
+            simulation: 'Simulation',
+            simulationPoweredBy: 'Simulation powered by {provider}',
+            simulationStatusError: 'Unable to simulate transaction. Proceed at your own risk.',
+            simulationStatusWarning:
+                'This transaction is potentially risky! Please make sure you trust the source.',
+            simulationStatusMalicious:
+                'This transaction is likely malicious! We recommend not to engage with this app.',
+            disclaimerOverride: 'I want to ignore the warning and proceed anyways',
+            contractInfo: 'Contract info',
+            feeInfo: 'Fee info',
+            protocol: 'Protocol',
+            address: 'Address',
+            contractFunction: 'Contract function',
+        },
         optional: 'Optional',
         alwaysAllow: 'Always allow for this app',
         confirmAddress: {
@@ -456,6 +472,8 @@ export const en = {
             invalidParams: 'Invalid parameters from calling app',
             versionUnsupported: 'Unsupported version. Please update your Trezor Suite app.',
             methodNotAllowed: 'Method not allowed for security reasons.',
+            methodCanceled: 'Call canceled by user.',
+            unknownError: 'Unknown error occurred.',
         },
         bottomSheets: {
             confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
@@ -1725,6 +1743,8 @@ export const en = {
                         feeRate: 'Fee rate',
                         gasLimit: 'Gas limit',
                         gasPrice: 'Gas price',
+                        maxFeePerGas: 'Max fee per gas',
+                        maxPriorityFeePerGas: 'Max priority fee per gas',
                     },
                     total: 'Total fee',
                     confirmButton: 'Confirm custom fee',
