@@ -182,6 +182,8 @@ const createTradeSignatureRequest: CreateTradeSignatureRequest = {
             amount: '100000000',
         },
     ],
+    sendSlip44: 0,
+    receiveSlip44: 2,
 };
 
 const exchangeTradeSigned: ExchangeTradeSigned = {
