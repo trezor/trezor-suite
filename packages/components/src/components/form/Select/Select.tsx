@@ -287,6 +287,8 @@ export type SelectProps = KeyPressScrollProps &
         isLoading?: boolean;
         /** @deprecated: workaround for issues with modal (GH #19376) */
         isRenderedInModal?: boolean;
+        /** @deprecated: workaround for issues with scroll */
+        isScrollToSelectedEnabled?: boolean;
         onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
         'data-testid'?: string;
     };
@@ -305,6 +307,7 @@ export const Select = ({
     placeholder,
     isLoading = false,
     isRenderedInModal = false,
+    isScrollToSelectedEnabled = true,
     'data-testid': dataTest,
     ...rest
 }: SelectProps) => {
@@ -356,12 +359,16 @@ export const Select = ({
                 <Control {...controlProps} data-testid={dataTest} />
             ),
             Option: (optionProps: OptionComponentProps) => (
-                <Option {...optionProps} data-testid={dataTest} selectedOption={selectedOption} />
+                <Option
+                    {...optionProps}
+                    data-testid={dataTest}
+                    selectedOption={isScrollToSelectedEnabled ? selectedOption : undefined}
+                />
             ),
             GroupHeading,
             ...components,
         }),
-        [components, dataTest, selectedOption],
+        [components, dataTest, selectedOption, isScrollToSelectedEnabled],
     );
 
     return (

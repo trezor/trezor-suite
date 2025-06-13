@@ -186,6 +186,7 @@ export function Menu({
                     menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
                     menuShouldScrollIntoView={false}
                     maxMenuHeight={400}
+                    isScrollToSelectedEnabled={false}
                     data-testid="@select-coin"
                 />
             </SelectWrapper>
