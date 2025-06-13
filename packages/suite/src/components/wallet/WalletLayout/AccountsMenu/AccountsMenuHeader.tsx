@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Box,
     Column,
@@ -18,7 +18,6 @@ import { CoinsFilter } from './CoinsFilter';
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 import { setIsCoinsFilterVisible } from '../../../../actions/suite/suiteActions';
 import { useAccountSearch, useDiscovery, useDispatch, useSelector } from '../../../../hooks/suite';
-import { useAccounts } from '../../../../hooks/wallet';
 import { Translation } from '../../../suite';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
@@ -43,7 +42,7 @@ export const AccountsMenuHeader = () => {
     const { coinFilter } = useAccountSearch();
 
     const device = useSelector(selectSelectedDevice);
-    const accounts = useAccounts();
+    const accounts = useSelector(selectAllAccountsToList);
     const { discovery } = useDiscovery();
 
     const isEmpty = accounts.length === 0;

@@ -1,5 +1,5 @@
 import { AccountType } from '@suite-common/wallet-config';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
@@ -13,7 +13,6 @@ import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { useAccounts } from '../../../../hooks/wallet';
 import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
@@ -71,7 +70,7 @@ const Accounts = ({
 
 export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
-    const accounts = useAccounts();
+    const accounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabels);

@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Button, Row, SkeletonRectangle } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useAccounts } from 'src/hooks/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { Discovery } from 'src/types/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
 
@@ -34,7 +35,7 @@ export const PortfolioCardHeader = ({
     showGraphControls,
     receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
-    const accounts = useAccounts();
+    const accounts = useSelector(selectAllAccountsToList);
 
     const onSelectedRange = useCallback(
         (_range: GraphRange) => {

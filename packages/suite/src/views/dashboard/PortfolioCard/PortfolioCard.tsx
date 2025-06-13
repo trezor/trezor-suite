@@ -1,6 +1,10 @@
 import { memo, useMemo } from 'react';
 
-import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
+import {
+    selectAllAccountsToList,
+    selectCurrentFiatRates,
+    selectLocalCurrency,
+} from '@suite-common/wallet-core';
 import { Card, Column, Dropdown, Switch, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -10,7 +14,6 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphScaleDropdownItem, GraphSkeleton, Translation } from 'src/components/suite';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { useAccounts } from 'src/hooks/wallet';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -24,7 +27,7 @@ export const PortfolioCard = memo(() => {
     const localCurrency = useSelector(selectLocalCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const accounts = useAccounts();
+    const accounts = useSelector(selectAllAccountsToList);
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
     const { device } = useDevice();

@@ -1,30 +1,8 @@
 import { useMemo } from 'react';
 
-import {
-    selectDeviceAccountsVisibleEnabledAndSupported,
-    selectDiscoveryForSelectedDevice,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
-import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import type { AccountAddress } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
-
-export const useAccounts = () => {
-    const accounts = useSelector(selectDeviceAccountsVisibleEnabledAndSupported);
-    const device = useSelector(selectSelectedDevice);
-    const staticSessionId = device?.state?.staticSessionId;
-    const discovery = useSelector(selectDiscoveryForSelectedDevice);
-
-    return useMemo(() => {
-        const failed = getFailedAccounts(staticSessionId, discovery);
-        const allAccounts = [...accounts, ...failed];
-        const sortedAccounts = sortByCoin(allAccounts);
-
-        return sortedAccounts;
-    }, [staticSessionId, discovery, accounts]);
-};
 
 export const useAccountAddressDictionary = (account: Account | undefined) =>
     useMemo(() => {

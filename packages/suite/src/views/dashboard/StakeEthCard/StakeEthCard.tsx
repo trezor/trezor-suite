@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
-import { selectEnabledNetworks, selectPoolStatsApyData } from '@suite-common/wallet-core';
+import {
+    selectAllAccountsToList,
+    selectEnabledNetworks,
+    selectPoolStatsApyData,
+} from '@suite-common/wallet-core';
 import { Card, Column, Divider, Grid, H3, IconName, Paragraph, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -11,7 +15,6 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingFeature, Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useAccounts } from 'src/hooks/wallet';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 import { StakeEthCardFooter } from './StakeEthCardFooter/StakeEthCardFooter';
@@ -37,7 +40,7 @@ export const StakeEthCard = () => {
 
     const apy = useSelector(state => selectPoolStatsApyData(state, bannerSymbol));
 
-    const accounts = useAccounts();
+    const accounts = useSelector(selectAllAccountsToList);
     const ethAccountWithSufficientBalanceForStaking = accounts.find(
         ({ symbol, formattedBalance }) =>
             symbol === bannerSymbol &&

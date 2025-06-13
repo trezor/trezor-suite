@@ -1,6 +1,6 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { networksCollection } from '@suite-common/wallet-config';
-import { getFailedAccounts } from '@suite-common/wallet-utils';
+import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 import { AccountsRootState } from './accounts/accountsReducer';
@@ -19,6 +19,7 @@ import {
 import { DiscoveryRootState } from './discovery/discoveryReducer';
 import {
     selectDiscoveryByDevicePath,
+    selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
 } from './discovery/discoverySelectors';
 import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
@@ -40,6 +41,22 @@ export const selectDeviceAccountsVisibleEnabledAndSupported = createMemoizedSele
         return accounts.filter(
             ({ symbol }) => enabledNetworks.includes(symbol) && deviceNetworks.includes(symbol),
         );
+    },
+);
+
+export const selectAllAccountsToList = createMemoizedSelector(
+    [
+        selectDeviceAccountsVisibleEnabledAndSupported,
+        selectSelectedDevice,
+        selectDiscoveryForSelectedDevice,
+    ],
+    (okAccounts, device, discovery) => {
+        const staticSessionId = device?.state?.staticSessionId;
+        const failedAccounts = getFailedAccounts(staticSessionId, discovery);
+        const allAccounts = [...okAccounts, ...failedAccounts];
+        const sortedAccounts = sortByCoin(allAccounts);
+
+        return returnStableArrayIfEmpty(sortedAccounts);
     },
 );
 
