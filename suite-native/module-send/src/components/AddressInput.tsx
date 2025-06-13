@@ -17,7 +17,7 @@ import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
-import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts';
+import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
 import { AddressChecksumMessage } from './AddressChecksumMessage';
