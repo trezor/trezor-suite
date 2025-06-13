@@ -2,7 +2,9 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Bridge page', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
-    test('can use webusb', async ({ url, page }) => {
+    test('can use webusb', async ({ url, page, analyticsSection }) => {
+        await analyticsSection.continueButton.click();
+
         await page.goto(url + 'bridge');
 
         // user may exit bridge page and use webusb

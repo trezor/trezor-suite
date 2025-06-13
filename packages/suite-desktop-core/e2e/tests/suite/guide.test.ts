@@ -13,7 +13,9 @@ test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () 
                 priority: TestPriority.Low,
             }),
         },
-        async ({ page, guidePanel, settingsPage }) => {
+        async ({ page, guidePanel, settingsPage, analyticsSection }) => {
+            await analyticsSection.continueButton.click();
+
             // Open guide
             await guidePanel.openPanel();
             const firstNode = guidePanel.guideNodes.first().locator('> *').first();

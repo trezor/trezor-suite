@@ -14,13 +14,10 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         page,
         analytics,
         onboardingPage,
-        settingsPage,
         trezorUserEnvLink,
+        analyticsSection,
     }) => {
-        // go to settings and enable analytics (makes analytics enabled and initialized)
-        await settingsPage.navigateTo('application');
-        await settingsPage.analyticsSwitch.click();
-        await settingsPage.closeSettings();
+        await analyticsSection.continueButton.click();
 
         const firmwareVersion = findLatestVersionForModel('T3T1');
         await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1', version: firmwareVersion });
@@ -103,21 +100,31 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         onboardingPage,
         trezorUserEnvLink,
     }) => {
+        // First: do NOT allow analytics, and expect no analytics are sent
+        await analyticsSection.toggleSwitch.click();
+        await analyticsSection.continueButton.click();
+
+        // Intercept analytic after we disable them, as if a user disables the analytics,
+        // the only message about the analytics being sent is the "settings/analytics" disabled.
+        await analytics.interceptAnalytics();
+
         await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1' });
         await trezorUserEnvLink.setupEmu({
             passphrase_protection: true,
         });
 
         await trezorUserEnvLink.startBridge();
-
-        await analytics.interceptAnalytics();
-
         await settingsPage.navigateTo('application');
 
         // change language
         await page.getByTestId('@settings/language-select/input').scrollIntoViewIfNeeded();
         await page.getByTestId('@settings/language-select/input').click();
         await page.getByTestId('@settings/language-select/option/cs').click();
+
+        // change language back to EN, otherwise `settingsPage.navigateTo` won't work
+        await page.getByTestId('@settings/language-select/input').scrollIntoViewIfNeeded();
+        await page.getByTestId('@settings/language-select/input').click();
+        await page.getByTestId('@settings/language-select/option/en').click();
 
         // change fiat
         await page.getByTestId('@settings/fiat-select/input').scrollIntoViewIfNeeded();
@@ -151,12 +158,20 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         await onboardingPage.optionallyDismissFwHashCheckError();
 
         expect(analytics.requests).toHaveLength(0);
-        await analyticsSection.continueButton.click();
+
+        // Go to settings and enable analytics
+        await settingsPage.navigateTo('application');
+        await settingsPage.analyticsSwitch.click();
+        await settingsPage.closeSettings();
+
+        await page.reload();
+
         await page.getByTestId('@onboarding/exit-app-button').click();
 
-        await analytics.waitForAnalyticsRequests(2);
+        await analytics.waitForAnalyticsRequests(3);
         expect(analytics.requests[0]).toHaveProperty('c_type', EventType.SettingsAnalytics);
-        expect(analytics.requests[1]).toHaveProperty('c_type', EventType.SuiteReady);
+        expect(analytics.requests[1]).toHaveProperty('c_type', EventType.RouterLocationChange);
+        expect(analytics.requests[2]).toHaveProperty('c_type', EventType.SuiteReady);
 
         // settings/analytics
         const settingsAnalyticsEvent = analytics.findAnalyticsEventByType<
@@ -164,16 +179,16 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         >(EventType.SettingsAnalytics);
         expect(settingsAnalyticsEvent.value).toBe('true');
 
-        // suite-ready reflects state when app was launched, does not include changes
+        // suite-ready reflects changes
         const suiteReadyEvent = analytics.findAnalyticsEventByType<
             ExtractByEventType<EventType.SuiteReady>
         >(EventType.SuiteReady);
         expect(suiteReadyEvent).toContainSubObject({
             language: 'en',
-            enabledNetworks: 'btc',
-            customBackends: '',
-            localCurrency: 'usd',
-            bitcoinUnit: 'BTC',
+            enabledNetworks: 'eth,thol',
+            customBackends: 'eth',
+            localCurrency: 'czk',
+            bitcoinUnit: 'sat',
             discreetMode: 'false',
             screenWidth: '1280',
             screenHeight: '720',
@@ -182,11 +197,11 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             labeling: '',
             rememberedStandardWallets: '0',
             rememberedHiddenWallets: '0',
-            theme: 'light',
+            theme: 'dark',
             earlyAccessProgram: 'false',
             experimentalFeatures: '',
-            autodetectLanguage: 'true',
-            autodetectTheme: 'true',
+            autodetectLanguage: 'false',
+            autodetectTheme: 'false',
             isAutomaticUpdateEnabled: 'false',
         });
         expect(parseInt(suiteReadyEvent.suiteVersion, 10)).not.toBeNaN();

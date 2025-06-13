@@ -14,7 +14,9 @@ test(
             priority: TestPriority.Critical,
         }),
     },
-    async ({ settingsPage }) => {
+    async ({ settingsPage, analyticsSection }) => {
+        await analyticsSection.continueButton.click();
+
         await settingsPage.navigateTo('application');
         await settingsPage.joinEarlyAccessProgram();
         await expect(settingsPage.earlyAccessJoinButton).toHaveText('Opt out');

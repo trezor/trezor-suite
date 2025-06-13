@@ -2,7 +2,9 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Hidden version page', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
-    test('is accessible via route', async ({ url, page }) => {
+    test('is accessible via route', async ({ url, page, analyticsSection }) => {
+        await analyticsSection.continueButton.click();
+
         await page.goto(url + 'version');
         await expect(page.getByTestId('@version/number')).toHaveText(/^\d+.\d+.\d+$/, {
             timeout: 30_000,

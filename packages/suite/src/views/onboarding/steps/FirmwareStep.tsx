@@ -47,7 +47,6 @@ export const FirmwareStep = () => {
     // This is an ugly hack to do so using the effect.
     useEffect(() => {
         if (status === 'done' && device?.thp?.properties !== undefined) {
-            console.log('____YOLO');
             goToNextStepAndResetReducer();
         }
     }, [status, goToNextStepAndResetReducer, device]);
