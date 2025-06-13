@@ -1,4 +1,4 @@
-import * as ERRORS from '../errors';
+import { PROTOCOL_MALFORMED } from '../errors';
 import { HEADER_SIZE, MESSAGE_HEADER_BYTE, MESSAGE_MAGIC_HEADER_BYTE } from './constants';
 import { TransportProtocolDecode } from '../types';
 
@@ -28,6 +28,10 @@ export const decode: TransportProtocolDecode = bytes => {
         console.error('protocol-v1: decode: received empty buffer');
     }
 
+    if (bytes.byteLength < HEADER_SIZE) {
+        throw new Error(PROTOCOL_MALFORMED);
+    }
+
     const { magic, sharp1, sharp2, messageType, length } = readHeaderChunked(bytes);
 
     if (
@@ -36,7 +40,7 @@ export const decode: TransportProtocolDecode = bytes => {
         sharp2 !== MESSAGE_HEADER_BYTE
     ) {
         // read-write is out of sync
-        throw new Error(ERRORS.PROTOCOL_MALFORMED);
+        throw new Error(PROTOCOL_MALFORMED);
     }
 
     return {
