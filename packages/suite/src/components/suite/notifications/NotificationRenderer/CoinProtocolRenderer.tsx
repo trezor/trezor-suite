@@ -1,4 +1,4 @@
-import { useRouteMatch } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 
 import styled from 'styled-components';
 
@@ -22,7 +22,7 @@ const getIcon = (symbol?: NetworkSymbol) => symbol && <CoinLogo symbol={symbol} 
 
 const useActionAllowed = (path: string, symbol?: NetworkSymbol) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const pathMatch = useRouteMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
+    const pathMatch = useMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
 
     return !!pathMatch && selectedAccount?.network?.symbol === symbol;
 };

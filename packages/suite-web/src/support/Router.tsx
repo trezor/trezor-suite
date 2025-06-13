@@ -1,5 +1,5 @@
-import { ComponentType, LazyExoticComponent, Suspense, lazy, memo } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { ComponentType, LazyExoticComponent, Suspense, createElement, lazy, memo } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 import { PageName } from '@suite-common/suite-types';
 
@@ -157,16 +157,17 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
 
 const AppRouter = () => (
     <Suspense fallback={<BundleLoader />}>
-        <Switch>
-            {routes.map(route => (
-                <Route
-                    key={route.name}
-                    path={process.env.ASSET_PREFIX + route.pattern}
-                    exact={route.exact}
-                    component={components[route.name as PageName]}
-                />
-            ))}
-        </Switch>
+        <Routes>
+            {routes
+                .filter(route => Object.keys(components).includes(route.name))
+                .map(route => (
+                    <Route
+                        key={route.name}
+                        path={`${process.env.ASSET_PREFIX}${route.pattern}${route.hasNestedRoutes ? '/*' : ''}`}
+                        element={createElement(components[route.name as PageName])}
+                    />
+                ))}
+        </Routes>
     </Suspense>
 );
 

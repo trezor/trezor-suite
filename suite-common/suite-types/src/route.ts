@@ -4,7 +4,7 @@ import { ArrayElement, ConstWithOptionalFields } from '@trezor/type-utils';
 type RouteKeys =
     | keyof ArrayElement<typeof routes>
     | 'params'
-    | 'exact'
+    | 'hasNestedRoutes'
     | 'isForegroundApp'
     | 'isNestedRoute'
     | 'isFullscreenApp'

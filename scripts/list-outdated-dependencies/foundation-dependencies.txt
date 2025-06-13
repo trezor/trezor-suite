@@ -8,8 +8,6 @@
 @types/electron-localshortcut
 @types/file-saver
 @types/fs-extra
-@types/react-router
-@types/react-router-dom
 app-builder-lib
 bech32
 bignumber.js
@@ -47,7 +45,6 @@ fs-extra
 glob
 globals
 golomb
-history
 husky
 idb
 int64-buffer
@@ -58,7 +55,6 @@ nx
 openpgp
 prettier
 react-hook-form
-react-router
 react-router-dom
 rimraf
 sort-package-json

@@ -1,17 +1,19 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { onBeforePopState, onLocationChange } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import history from 'src/support/history';
 
-const RouterComponent = () => {
+import { setLocation, setNavigate } from './navigationService';
+
+export const RouterHandler = () => {
     const routerLoaded = useSelector(state => state.router.loaded);
     const dispatch = useDispatch();
 
     const location = useLocation();
+    const navigate = useNavigate();
 
     useDidUpdate(() => {
         // Let router to be initialized properly
@@ -22,20 +24,28 @@ const RouterComponent = () => {
         }
     }, [dispatch, location.pathname, location.hash]);
 
+    // Make navigate available globally (useful in actions)
+    useEffect(() => {
+        setNavigate(navigate);
+    }, [navigate]);
+
+    // Make location available globally (useful in actions)
+    useEffect(() => {
+        setLocation(location);
+    }, [location]);
+
     useEffect(() => {
         const onPopState = () => {
             const canGoBack = dispatch(onBeforePopState());
             if (!canGoBack) {
-                history.go(1);
+                navigate(1);
             }
         };
 
         window.addEventListener('popstate', onPopState);
 
         return () => window.removeEventListener('popstate', onPopState);
-    }, [dispatch]);
+    }, [dispatch, navigate]);
 
     return null;
 };
-
-export default RouterComponent;

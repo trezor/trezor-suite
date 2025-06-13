@@ -1,9 +1,8 @@
 /* eslint-disable import/order */
 import { Provider as ReduxProvider } from 'react-redux';
-import { Router as RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { init as initSentry } from '@sentry/browser';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
@@ -20,11 +19,10 @@ import { useTor } from 'src/support/suite/useTor';
 import { useConnectPopupModals } from 'src/support/suite/useConnectPopupModals';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
 import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
-import RouterHandler from 'src/support/suite/Router';
+import { RouterHandler } from 'src/support/suite/RouterHandler';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
-import history from 'src/support/history';
 
 import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
@@ -42,7 +40,7 @@ const MainWeb = () => {
         // <StrictMode>
         <HelmetProvider>
             <ConnectedThemeProvider>
-                <RouterProvider history={history}>
+                <BrowserRouter>
                     <ResponsiveContextProvider>
                         <ErrorBoundary>
                             <Autodetect />
@@ -61,7 +59,7 @@ const MainWeb = () => {
                             </ConnectedIntlProvider>
                         </ErrorBoundary>
                     </ResponsiveContextProvider>
-                </RouterProvider>
+                </BrowserRouter>
             </ConnectedThemeProvider>
         </HelmetProvider>
         // </StrictMode>
