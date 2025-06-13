@@ -17,8 +17,6 @@ export const setPriorityMode = (isInPriorityMode: boolean) =>
 
 const open = (deviceName: string) => ReactNativeUsbModule.open(deviceName);
 
-const reset = (deviceName: string) => ReactNativeUsbModule.reset(deviceName);
-
 const close = (deviceName: string) => ReactNativeUsbModule.close(deviceName);
 
 const claimInterface = (deviceName: string, interfaceNumber: number) =>
@@ -75,7 +73,6 @@ const createNoop = (methodName: string) => async () => {
 const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
     ...device,
     open: () => open(device.deviceName),
-    reset: () => reset(device.deviceName),
     close: () => close(device.deviceName),
     forget: createNoop('forget'),
     selectConfiguration: (configurationValue: number) =>
@@ -93,6 +90,7 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
         transferOut(device.deviceName, endpointNumber, data),
     isochronousTransferIn: createNoop('isochronousTransferIn'),
     isochronousTransferOut: createNoop('isochronousTransferOut'),
+    reset: createNoop('reset'),
 
     // TODO: Implement these properties, very low priority we are not using them anywhere
     usbVersionMajor: 2,
