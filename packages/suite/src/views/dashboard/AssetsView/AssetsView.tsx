@@ -91,9 +91,9 @@ export const AssetsView = () => {
 
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { discovery, isDiscoveryRunning } = useDiscovery();
+    const { isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const { accounts } = useAccounts(discovery);
+    const accounts = useAccounts();
     const { supportedMainnets } = useNetworkSupport();
     const { isBelowTablet } = useLayoutSize();
 

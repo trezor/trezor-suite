@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import {
     Box,
     Column,
@@ -19,6 +18,7 @@ import { CoinsFilter } from './CoinsFilter';
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 import { setIsCoinsFilterVisible } from '../../../../actions/suite/suiteActions';
 import { useAccountSearch, useDiscovery, useDispatch, useSelector } from '../../../../hooks/suite';
+import { useAccounts } from '../../../../hooks/wallet';
 import { Translation } from '../../../suite';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
@@ -43,13 +43,10 @@ export const AccountsMenuHeader = () => {
     const { coinFilter } = useAccountSearch();
 
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(state => state.wallet.accounts);
+    const accounts = useAccounts();
     const { discovery } = useDiscovery();
 
-    const staticSessionId = device?.state?.staticSessionId;
-    const failed = getFailedAccounts(staticSessionId, discovery);
-    const list = sortByCoin(accounts.filter(a => a.deviceState === staticSessionId).concat(failed));
-    const isEmpty = list.length === 0;
+    const isEmpty = accounts.length === 0;
 
     const isDiscoveryRunning = discovery?.status === 'progress';
     const isCoinsFilterVisible = useSelector(state => state.suite.settings.isCoinsFilterVisible);

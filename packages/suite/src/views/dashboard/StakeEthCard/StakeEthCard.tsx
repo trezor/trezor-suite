@@ -10,7 +10,7 @@ import { spacings } from '@trezor/theme';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingFeature, Translation } from 'src/components/suite';
-import { useDevice, useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
@@ -37,8 +37,7 @@ export const StakeEthCard = () => {
 
     const apy = useSelector(state => selectPoolStatsApyData(state, bannerSymbol));
 
-    const { discovery } = useDiscovery();
-    const { accounts } = useAccounts(discovery);
+    const accounts = useAccounts();
     const ethAccountWithSufficientBalanceForStaking = accounts.find(
         ({ symbol, formattedBalance }) =>
             symbol === bannerSymbol &&

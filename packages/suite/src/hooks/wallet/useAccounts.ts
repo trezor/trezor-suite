@@ -1,34 +1,29 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
-import * as accountUtils from '@suite-common/wallet-utils';
+import {
+    selectDeviceAccountsVisibleEnabledAndSupported,
+    selectDiscoveryForSelectedDevice,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { getAllAccounts, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import type { AccountAddress } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
-export const useAccounts = (discovery?: DiscoveryStatus) => {
-    const [accounts, setAccounts] = useState<Account[]>([]);
-
+export const useAccounts = () => {
+    const accounts = useSelector(selectDeviceAccountsVisibleEnabledAndSupported);
     const device = useSelector(selectSelectedDevice);
-    const accountsState = useSelector(state => state.wallet.accounts);
+    const staticSessionId = device?.state?.staticSessionId;
+    const discovery = useSelector(selectDiscoveryForSelectedDevice);
 
-    useEffect(() => {
-        if (device) {
-            const deviceAccounts = accountUtils.getAllAccounts(device.state, accountsState);
-            const failedAccounts = accountUtils.getFailedAccounts(
-                device?.state?.staticSessionId,
-                discovery,
-            );
-            const sortedAccounts = accountUtils.sortByCoin(deviceAccounts.concat(failedAccounts));
-            setAccounts(sortedAccounts);
-        }
-    }, [device, discovery, accountsState]);
+    return useMemo(() => {
+        const failed = getFailedAccounts(staticSessionId, discovery);
+        const allAccounts = [...accounts, ...failed];
+        const sortedAccounts = sortByCoin(allAccounts);
 
-    return {
-        accounts,
-    };
+        return sortedAccounts;
+    }, [staticSessionId, discovery, accounts]);
 };
 
 export const useFastAccounts = () => {
@@ -36,7 +31,7 @@ export const useFastAccounts = () => {
     const accounts = useSelector(state => state.wallet.accounts);
 
     const deviceAccounts = useMemo(
-        () => (device ? accountUtils.getAllAccounts(device.state, accounts) : []),
+        () => (device ? getAllAccounts(device.state, accounts) : []),
         [accounts, device],
     );
 

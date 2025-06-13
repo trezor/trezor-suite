@@ -1,26 +1,19 @@
 import { AccountType } from '@suite-common/wallet-config';
-import {
-    selectDeviceAccountsVisibleEnabledAndSupported,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { accountSearchFn, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { accountSearchFn } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import {
-    useAccountSearch,
-    useDefaultAccountLabel,
-    useDiscovery,
-    useSelector,
-} from 'src/hooks/suite';
+import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { useAccounts } from '../../../../hooks/wallet';
 import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
@@ -78,10 +71,9 @@ const Accounts = ({
 
 export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(selectDeviceAccountsVisibleEnabledAndSupported);
+    const accounts = useAccounts();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
-    const { discovery } = useDiscovery();
     const accountLabels = useSelector(selectAccountLabels);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isSidebarCollapsed = useIsSidebarCollapsed();
@@ -93,13 +85,9 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         return null;
     }
 
-    const staticSessionId = device.state?.staticSessionId;
-    const failed = getFailedAccounts(staticSessionId, discovery);
-
-    const list = sortByCoin(accounts).concat(failed);
     const filteredAccounts =
         searchString || coinFilter
-            ? list.filter(account => {
+            ? accounts.filter(account => {
                   const { key, accountType, symbol, index } = account;
                   const accountLabel = Object.prototype.hasOwnProperty.call(accountLabels, key)
                       ? accountLabels[key]
@@ -107,7 +95,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
 
                   return accountSearchFn(account, searchString, coinFilter, accountLabel);
               })
-            : list;
+            : accounts;
 
     const filterAccountsByType = (type: Account['accountType']) =>
         filteredAccounts.filter(a => a.accountType === type);
