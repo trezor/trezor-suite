@@ -47,8 +47,6 @@ const getOsVersion = async () => {
 
     return version ?? '';
 };
-/** @deprecated: Use the async getOsVersion instead. */
-const getDeprecatedOsVersion = () => getUserAgentParser().getOS().version || '';
 
 /**
  * Similar to `getOsVersion`. Here, the sync fn works everywhere but macOS, hence we use async.
@@ -127,6 +125,7 @@ const getOsName = () => {
     return '';
 };
 
+// generally works the same as `getOsName`, just with different information source, but does not work in some specific iOS cases
 const getOsNameWeb = () => getUserAgentParser().getOS().name?.replaceAll(' ', '');
 
 const getOsFamily = () => {
@@ -161,7 +160,6 @@ export const envUtils: EnvUtils = {
     isAndroid,
     isChromeOs,
     getOsVersion,
-    getDeprecatedOsVersion,
     getCpuArch,
     getBrowserName,
     getBrowserVersion,
