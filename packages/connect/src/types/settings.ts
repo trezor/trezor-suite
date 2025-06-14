@@ -1,6 +1,8 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Transport } from '@trezor/transport';
+import { PartialRecord } from '@trezor/type-utils';
 
 export type { SystemInfo } from '@trezor/connect-common';
 export interface Manifest {
@@ -9,6 +11,9 @@ export interface Manifest {
     appUrl: string;
     email: string;
 }
+
+// timeouts for firmware hash check in milliseconds per model type
+export type FirmwareHashCheckTimeouts = PartialRecord<DeviceModelInternal, number>;
 
 export type Proxy = BlockchainSettings['proxy'];
 
@@ -43,6 +48,7 @@ export interface ConnectSettingsPublic {
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
     enableFirmwareHashCheck?: boolean;
+    firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
     thp?: ThpSettings;
 }
 

@@ -18,7 +18,6 @@ import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHash';
-import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
 import { getFirmwareStatus, getRelease, getReleaseInfo } from '../data/firmwareInfo';
 import { getLanguage } from '../data/getLanguage';

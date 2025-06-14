@@ -48,6 +48,9 @@ const connectInitSettings = {
     },
     sharedLogger: false,
     enableFirmwareHashCheck: true,
+    firmwareHashCheckTimeouts: {
+        T1B1: 1500,
+    },
 };
 
 export const extraDependencies: ExtraDependencies = {
