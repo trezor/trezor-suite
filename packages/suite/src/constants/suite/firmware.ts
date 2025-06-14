@@ -36,6 +36,7 @@ export const revisionCheckErrorScenarios = {
 } satisfies RevisionCheckErrorScenarios;
 
 export const hashCheckErrorScenarios = {
+    'takes-too-long': { type: 'hardModal', shouldReport: true, isConclusive: false },
     'hash-mismatch': { type: 'hardModal', shouldReport: true, isConclusive: true },
     'check-skipped': { type: 'skipped', shouldReport: false, isConclusive: false },
     'check-unsupported': { type: 'skipped', shouldReport: false, isConclusive: false },

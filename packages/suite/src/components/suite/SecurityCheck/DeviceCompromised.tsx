@@ -73,7 +73,11 @@ const DeviceCompromisedContent = () => {
             <SecurityCheckFail
                 ctaSection={<FwAuthencityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
-                text="TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT"
+                text={
+                    hashCheckError === 'takes-too-long'
+                        ? 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT'
+                        : 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT'
+                }
                 checklistItems={hardFailureChecklistItems}
             />
         );
