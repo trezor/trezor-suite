@@ -7393,6 +7393,10 @@ export default defineMessages({
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
         defaultMessage: 'Your device firmware hash check failed.',
     },
+    TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT',
+        defaultMessage: 'Your device firmware hash check timed out.',
+    },
     TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
         defaultMessage: 'Your device firmware revision check failed.',
@@ -7592,6 +7596,10 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
         defaultMessage: 'Firmware hash check failed. Your Trezor might be counterfeit.',
+    },
+    TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG: {
+        id: 'TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG',
+        defaultMessage: 'Firmware hash check timed out. Your Trezor might be counterfeit.',
     },
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',

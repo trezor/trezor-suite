@@ -26,6 +26,7 @@ const hashCheckMessages: Record<
 > = {
     'hash-mismatch': 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
     'other-error': 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
+    'takes-too-long': 'TR_DEVICE_FIRMWARE_HASH_TAKES_TOO_LONG',
 };
 
 const useAuthenticityCheckMessage = (): TranslationKey | null => {
