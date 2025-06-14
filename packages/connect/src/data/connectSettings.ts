@@ -171,6 +171,14 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.enableFirmwareHashCheck = Boolean(input.enableFirmwareHashCheck);
     }
 
+    if (
+        // non-exhaustive Record is expected, so all we need to validate is that it's an indexable object.
+        typeof input.firmwareHashCheckTimeouts === 'object' &&
+        input.firmwareHashCheckTimeouts !== null
+    ) {
+        settings.firmwareHashCheckTimeouts = input.firmwareHashCheckTimeouts;
+    }
+
     if (typeof input.npmVersion === 'string') {
         settings.npmVersion = input.npmVersion;
     }

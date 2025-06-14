@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 
-import { isArrayMember, promiseAllSequence, serializeError, versionUtils } from '@trezor/utils';
+import { isArrayMember, serializeError, versionUtils } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { FIRMWARE } from '../../constants';
@@ -16,12 +16,18 @@ const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown)
     errorPayload,
 });
 
+type Context = {
+    device: Device;
+    logger: Log;
+};
+
 const checkFirmwareHash = async ({
     device,
     logger,
 }: Context): Promise<FirmwareHashCheckResult | null> => {
     const baseUrl = DataManager.getSettings('binFilesBaseUrl');
     const enabled = DataManager.getSettings('enableFirmwareHashCheck');
+    const timeoutThresholdsPerModel = DataManager.getSettings('firmwareHashCheckTimeouts');
     if (!enabled || baseUrl === undefined) return createFailResult('check-skipped');
     const firmwareVersion = device.getVersion();
     // device has no features (not yet connected) or no firmware
@@ -61,7 +67,7 @@ const checkFirmwareHash = async ({
     // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
     // so device can't be used, but it's preferable to display proper message about counterfeit device
     try {
-        const ts = Date.now();
+        const ts = performance.now();
         const deviceResponse = await device
             .getCurrentSession()
             .typedCall('GetFirmwareHash', 'FirmwareHash', { challenge });
@@ -73,9 +79,10 @@ const checkFirmwareHash = async ({
             return createFailResult('hash-mismatch');
         }
 
-        const threshold = 1000; // FIXME as method param
-        logger.debug('GetFirmwareHash time', Date.now() - ts);
-        if (Date.now() - ts > threshold) {
+        const duration = performance.now() - ts;
+        logger.debug('GetFirmwareHash time', duration);
+        const timeoutThreshold = timeoutThresholdsPerModel?.[device.features.internal_model];
+        if (timeoutThreshold !== undefined && duration > timeoutThreshold) {
             return createFailResult('takes-too-long');
         }
 
@@ -85,22 +92,19 @@ const checkFirmwareHash = async ({
     }
 };
 
-type Context = {
-    device: Device;
-    logger: Log;
-};
+const PROBE_CHECK_TIME_RETRIES = 4;
 
 const probeCheckTime = async (context: Context) => {
-    // FIXME number
-    const tries = 4;
-    const results = await promiseAllSequence(
-        new Array(tries).fill(() => checkFirmwareHash(context)),
-    );
-    const failed = results.filter(r => r.error === 'takes-too-long');
-    if (failed.length >= tries / 2) {
-        // more than 50% failed?
-    } else {
-        // what to do here? set AuthenticityChecks to success?
+    for (let i = 0; i < PROBE_CHECK_TIME_RETRIES; i++) {
+        const result = await checkFirmwareHash(context);
+
+        // The hash check itself on the device must take always the same time.
+        // A delay can happen on the host side, so at least one good result means OK
+        if (result !== null && (result.success || result.error !== 'takes-too-long')) {
+            context.device.setAuthenticityChecks(result);
+
+            return;
+        }
     }
 };
 
@@ -119,7 +123,7 @@ export const checkFirmwareHashWithRetries = async (context: Context): Promise<vo
         const result = await checkFirmwareHash(context);
         context.device.setAuthenticityChecks(result);
 
-        if (result === null) return; // FIXME: what does it mean null?
+        if (result === null) return; // device was not acquired or was in bootloader mode, couldn't have performed the check
         result.attemptCount = attemptsDone + 1;
 
         if (!result.success && result.error === 'takes-too-long') {

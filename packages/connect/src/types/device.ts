@@ -106,7 +106,6 @@ export type KnownDevice = BaseDevice & {
     thp?: ThpStateSerialized;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: string[];
-    // FIXME: previous fix was not a connect problem, rather suite db migration
     authenticityChecks: {
         firmwareRevision: FirmwareRevisionCheckResult | null;
         firmwareHash: FirmwareHashCheckResult | null;
