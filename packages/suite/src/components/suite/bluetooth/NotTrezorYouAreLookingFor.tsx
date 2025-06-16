@@ -23,7 +23,7 @@ export const NotTrezorYouAreLookingFor = ({ onReScanClick }: NotTrezorYouAreLook
                                 <Translation id="TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR" />
                             </Text>
                         </Link>
-                        <Collapsible.ToggleIcon isOpen={showTips} />
+                        <Collapsible.ToggleIcon />
                     </Row>
                 </Row>
             </Collapsible.Toggle>

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { useCollapsible } from './Collapsible';
 import { motionEasing } from '../../config/motion';
 import { Icon, IconName, IconProps } from '../Icon/Icon';
 
@@ -12,19 +13,21 @@ const IconWrapper = styled.div<{ $isCollapsed?: boolean }>`
 `;
 
 type ToggleProps = {
-    isOpen: boolean;
     size?: IconProps['size'];
     iconName?: IconName;
     'data-testid'?: string;
 };
 
 export const CollapsibleToggleIcon = ({
-    isOpen,
     size,
-    iconName = 'caretUp',
+    iconName = 'caretDown',
     'data-testid': dataTestId,
-}: ToggleProps) => (
-    <IconWrapper $isCollapsed={!isOpen}>
-        <Icon name={iconName} size={size} data-testid={dataTestId} variant="tertiary" />
-    </IconWrapper>
-);
+}: ToggleProps) => {
+    const { isOpen } = useCollapsible();
+
+    return (
+        <IconWrapper $isCollapsed={!isOpen}>
+            <Icon name={iconName} size={size} data-testid={dataTestId} variant="tertiary" />
+        </IconWrapper>
+    );
+};
