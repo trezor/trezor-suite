@@ -1,18 +1,17 @@
-import {
-    BuyProviderInfo,
-    Coins,
-    CryptoId,
-    ExchangeProviderInfo,
-    FiatCurrenciesProps,
-    Platforms,
-} from 'invity-api';
+import { Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
 
-import { TradingBuyState, TradingPaymentMethodListProps, TradingType } from '@suite-common/trading';
+import {
+    TradingBuyState,
+    TradingExchangeState,
+    TradingPaymentMethodListProps,
+    TradingType,
+} from '@suite-common/trading';
 
 import { TradingState, initialState } from '../tradingSlice';
+import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
 import coins from './coins.json';
+import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
 import platforms from './platforms.json';
-import { cexdirect, invity, mercuryo } from './providers';
 import quotes from './quotes.json';
 
 export const getInitializedBuyState = () =>
@@ -25,7 +24,7 @@ export const getInitializedBuyState = () =>
         buyInfo: {
             buyInfo: {
                 country: 'CZ',
-                providers: [invity, mercuryo, cexdirect],
+                providers: [buyInvity, buyMercuryo, buyCexdirect],
                 defaultAmountsOfFiatCurrencies: {
                     usd: 150,
                     eur: 100,
@@ -42,10 +41,10 @@ export const getInitializedBuyState = () =>
                 'bitcoin',
             ] as CryptoId[],
             providerInfos: {
-                ['invity']: invity,
-                ['mercuryo']: mercuryo,
-                ['cexdirect']: cexdirect,
-            } as unknown as Record<string, BuyProviderInfo>,
+                ['invity']: buyInvity,
+                ['mercuryo']: buyMercuryo,
+                ['cexdirect']: buyCexdirect,
+            },
             supportedFiatCurrencies: ['usd', 'eur', 'czk'],
         },
         amountLimits: {
@@ -55,28 +54,29 @@ export const getInitializedBuyState = () =>
         },
     }) as TradingBuyState;
 
-export const getInitializedExchangeState = () => ({
-    ...initialState.exchange,
-    exchangeInfo: {
-        providerInfos: {
-            ['invity']: invity,
-            ['mercuryo']: mercuryo,
-            ['cexdirect']: cexdirect,
-        } as unknown as Record<string, ExchangeProviderInfo>,
-        buyCryptoIds: [
-            'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            'ethereum',
-            'bitcoin',
-        ] as CryptoId[],
-        sellCryptoIds: [
-            'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            'ethereum--0xWithoutObjectInCoinsInfo',
-            'eos',
-            'ethereum',
-            'bitcoin',
-        ] as CryptoId[],
-    },
-});
+export const getInitializedExchangeState = () =>
+    ({
+        ...initialState.exchange,
+        exchangeInfo: {
+            providerInfos: {
+                ['invity']: exchangeInvity,
+                ['mercuryo']: exchangeMercuryo,
+                ['cexdirect']: exchangeCexdirect,
+            },
+            buyCryptoIds: [
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                'ethereum',
+                'bitcoin',
+            ] as CryptoId[],
+            sellCryptoIds: [
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                'ethereum--0xWithoutObjectInCoinsInfo',
+                'eos',
+                'ethereum',
+                'bitcoin',
+            ] as CryptoId[],
+        },
+    }) as TradingExchangeState;
 
 export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
     ({

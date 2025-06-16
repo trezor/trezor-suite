@@ -1,6 +1,6 @@
 import { BuyProviderInfo } from 'invity-api';
 
-export const invity = {
+export const buyInvity = {
     name: 'invity',
     companyName: 'Invity Finance',
     logo: 'invity.svg',
@@ -14,7 +14,7 @@ export const invity = {
     supportUrl: 'https://invity.io/#support',
 } as BuyProviderInfo;
 
-export const mercuryo = {
+export const buyMercuryo = {
     name: 'mercuryo',
     companyName: 'Mercuryo',
     logo: 'mercuryo.svg',
@@ -28,7 +28,7 @@ export const mercuryo = {
     supportUrl: 'https://mercuryo.io/#support',
 } as BuyProviderInfo;
 
-export const cexdirect = {
+export const buyCexdirect = {
     name: 'cexdirect',
     companyName: 'Cexdirect',
     logo: 'cexdirect.svg',

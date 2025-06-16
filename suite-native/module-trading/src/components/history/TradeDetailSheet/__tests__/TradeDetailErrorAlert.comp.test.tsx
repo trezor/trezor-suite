@@ -5,7 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { mercuryo } from '../../../../__fixtures__/providers';
+import { buyMercuryo } from '../../../../__fixtures__/buyProviders';
 import { getBuyTrade } from '../../../../__fixtures__/trades';
 import { getInitializedTradingStateWithQuotes } from '../../../../__fixtures__/tradingState';
 import { TradeDetailErrorAlert } from '../TradeDetailErrorAlert';
@@ -28,7 +28,7 @@ describe('TradeDetailErrorAlert', () => {
                         },
                         providerInfos: {
                             ['mercuryo']: {
-                                ...mercuryo,
+                                ...buyMercuryo,
                                 supportUrl,
                             },
                         },

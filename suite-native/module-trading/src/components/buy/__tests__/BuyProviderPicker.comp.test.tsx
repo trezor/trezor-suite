@@ -10,7 +10,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { cexdirect, invity, mercuryo } from '../../../__fixtures__/providers';
+import { buyCexdirect, buyInvity, buyMercuryo } from '../../../__fixtures__/buyProviders';
 import quotes from '../../../__fixtures__/quotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
@@ -64,9 +64,9 @@ describe('BuyProviderPicker', () => {
 
             preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
             preloadedState.wallet!.tradingNew!.buy!.buyInfo!.providerInfos = {
-                invity,
-                mercuryo,
-                cexdirect,
+                invity: buyInvity,
+                mercuryo: buyMercuryo,
+                cexdirect: buyCexdirect,
             };
         });
 
