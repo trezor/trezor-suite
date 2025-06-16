@@ -6,7 +6,6 @@ import {
     getFirstDeviceInstance,
     getIsThpDevice,
     getSelectedDevice,
-    sortByTimestamp,
 } from '@suite-common/suite-utils';
 import {
     autoInitThpAfterDeviceConnectionThunk,
@@ -43,6 +42,7 @@ import {
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
 } from './deviceSelectors';
+import { sortDevices } from './sortDevices';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
@@ -227,19 +227,6 @@ export const acquireDevice = createThunk(
         }
     },
 );
-
-// Sort devices by timestamp and put Portfolio Tracker device at the end.
-export const sortDevices = (devices: TrezorDevice[]) => {
-    const sortedDevicesByTimestamp = sortByTimestamp([...devices]);
-
-    const containsPortfolioTrackerDevices = sortedDevicesByTimestamp.filter(
-        device => device.id === PORTFOLIO_TRACKER_DEVICE_ID,
-    );
-
-    return sortedDevicesByTimestamp
-        .filter(device => device.id !== PORTFOLIO_TRACKER_DEVICE_ID)
-        .concat(containsPortfolioTrackerDevices);
-};
 
 export const initDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
