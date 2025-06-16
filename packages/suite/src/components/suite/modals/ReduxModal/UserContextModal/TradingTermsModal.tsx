@@ -4,8 +4,8 @@ import { CryptoId } from 'invity-api';
 
 import { TradingType, useTradingInfo } from '@suite-common/trading';
 import {
-    Banner,
-    Checkbox,
+    //  Banner,
+    //  Checkbox,
     Column,
     H4,
     Icon,
@@ -49,7 +49,7 @@ export const TradingTermsModal = ({
     fromCryptoCurrency,
 }: TradingTermsModalProps) => {
     const dispatch = useDispatch();
-    const [dontShowAgain, setDontShowAgain] = useState(false);
+    const [dontShowAgain, _setDontShowAgain] = useState(false);
 
     const providerName = provider || 'unknown provider';
     const { device } = useDevice();
@@ -186,6 +186,7 @@ export const TradingTermsModal = ({
                         </Column>
                     </List.Item>
                 </List>
+                {/*
                 <Banner variant="tertiary">
                     <Checkbox
                         isChecked={dontShowAgain}
@@ -194,6 +195,7 @@ export const TradingTermsModal = ({
                         <Translation id="TR_TRADING_TERMS_DONT_SHOW_AGAIN" />
                     </Checkbox>
                 </Banner>
+              */}
             </Column>
         </Modal>
     );
