@@ -1,6 +1,7 @@
 import { useBluetoothAdapter } from '@suite-native/bluetooth';
 import {
     useDetectDeviceError,
+    useDeviceCompromisedNotification,
     useHandleDeviceConnection,
     useRenderDeviceDangerBanner,
     useReportDeviceCompromised,
@@ -21,6 +22,7 @@ export const useGlobalHooks = () => {
     useDetectDeviceError();
     useReportDeviceCompromised();
     useRenderDeviceDangerBanner();
+    useDeviceCompromisedNotification();
 
     useRetryFwAuthenticityChecks();
 };

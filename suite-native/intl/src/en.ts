@@ -614,6 +614,9 @@ export const en = {
             continue: 'Continue anyway',
         },
         confirmOnDeviceSheetTitle: 'Confirm on Trezor',
+        toasts: {
+            firmwareRevisionCheckOtherError: "Couldn't perform firmware authenticity check.",
+        },
     },
     moduleDeviceSettings: {
         sectionTitles: {

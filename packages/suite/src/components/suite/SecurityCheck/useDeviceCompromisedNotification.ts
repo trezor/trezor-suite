@@ -16,6 +16,8 @@ const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, Tra
 
 /**
  * Dispatch one-time toast notifications for firmware authenticity check errors.
+ * duplicated with suite-native/device/src/hooks/useDeviceCompromisedNotification.ts
+ * Because suite-native does not use the suite-common/toast-notification
  */
 export const useDeviceCompromisedNotification = () => {
     const { device } = useDevice();
