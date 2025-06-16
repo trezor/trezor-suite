@@ -247,6 +247,19 @@ const getInitialState = ({
         sessions: [],
         pendingProposal: undefined,
     },
+    bioAuth: {
+        initialNow: 0,
+        bioAuthEnabled: false,
+        blurTimeoutId: null,
+        bioAuthEnabledNextValue: null,
+        lastBioAuthValidatedTimestamp: null,
+        lastWindowBlurTimestamp: null,
+        bioAuthValidationInProgress: false,
+        bioAuthValidationRequested: false,
+        bioAuthValidationRequired: false,
+        windowBlurred: false,
+        bioAuthAvailable: null,
+    },
 });
 
 const mockStore = configureStore<AppState, any>();
