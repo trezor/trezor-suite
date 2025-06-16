@@ -33,6 +33,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/settings": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",

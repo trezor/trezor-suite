@@ -8,7 +8,6 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-
 export const reportCheckFail = (
     checkType: FirmwareCheckType,
     contextData: Record<string, any>,

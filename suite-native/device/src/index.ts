@@ -4,6 +4,7 @@ export * from './hooks/useDetectDeviceError';
 export * from './hooks/useWipeDevice';
 export * from './hooks/useDeviceAuthenticityCheck';
 export * from './hooks/useReportDeviceCompromised';
+export * from './hooks/useDeviceCompromisedNotification';
 export * from './hooks/useRetryFwAuthenticityChecks';
 export * from './hooks/usePinAction';
 export * from './hooks/useRenderDeviceDangerBanner';
