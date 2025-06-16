@@ -907,7 +907,7 @@
   "TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO": "Create a single approval transaction to simplify multiple exchanges of {send} with {provider}. This saves on fees but carries a risk to your funds in the unlikely case of a flaw in {provider}’s contract.",
   "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL": "Necessary value of {value} {send}",
   "TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO": "Approve only the exact amount required for this swap. You will need to pay an additional fee if you want to make a similar swap again.",
-  "TR_EXCHANGE_APPROVAL_VALUE_ZERO": "Revoke previous approval",
+  "TR_EXCHANGE_APPROVAL_VALUE_ZERO": "Revoke previous approval of {value} {send}",
   "TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO": "Perform a transaction that will remove previous approval of contract with {provider}.",
   "TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND": "Confirm on Trezor & send",
   "TR_EXCHANGE_CONFIRM_SEND_STEP": "Confirm & Send",

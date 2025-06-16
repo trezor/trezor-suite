@@ -227,11 +227,7 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]: TradingExchangeRateFilter;
 }
 
-export type TradingExchangeStepType =
-    | 'RECEIVING_ADDRESS'
-    | 'SEND_TRANSACTION'
-    | 'SEND_APPROVAL_TRANSACTION'
-    | 'SIGN_DATA';
+export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
 export type TradingSendRejectedProps = {
     type: 'error' | 'sign-tx-error';

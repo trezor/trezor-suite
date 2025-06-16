@@ -26,7 +26,7 @@ export const TradingFormOffersSwitcher = ({
     isFormInvalid,
     providers,
 }: TradingFormOffersSwitcherProps) => {
-    const { setValue, getValues, dexQuotes, cexQuotes } = context;
+    const { setValue, getValues, dexQuotes, cexQuotes, preselectedQuote } = context;
     const { exchangeType } = getValues();
     const cexQuote = cexQuotes?.[0];
     const dexQuote = dexQuotes?.[0];
@@ -73,44 +73,65 @@ export const TradingFormOffersSwitcher = ({
                 margin={{ horizontal: spacings.xxs, vertical: spacings.xxs }}
                 gap={spacings.xxs}
             >
-                {cexQuote ? (
+                {preselectedQuote ? (
                     <TradingFormOffersSwitcherItem
-                        selectedExchangeType={exchangeType}
-                        isSelectable={!hasSingleOption}
-                        onSelect={() => setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX)}
-                        providers={providers}
-                        quote={cexQuote}
-                    />
-                ) : (
-                    <Paragraph
-                        typographyStyle="label"
-                        variant="tertiary"
-                        align="center"
-                        margin={{ vertical: spacings.md }}
-                    >
-                        <Translation id="TR_TRADING_NO_CEX_PROVIDER_FOUND" />
-                    </Paragraph>
-                )}
-                {dexQuote ? (
-                    <TradingFormOffersSwitcherItem
-                        selectedExchangeType={exchangeType}
+                        selectedExchangeType={preselectedQuote.isDex ? 'DEX' : 'CEX'}
                         isSelectable={!hasSingleOption}
                         onSelect={() => {
-                            setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX);
-                            setValue(TRADING_EXCHANGE_RATE, TRADING_EXCHANGE_RATE_FLOATING);
+                            if (preselectedQuote.isDex) {
+                                setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX);
+                            } else {
+                                setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX);
+                                setValue(TRADING_EXCHANGE_RATE, TRADING_EXCHANGE_RATE_FLOATING);
+                            }
                         }}
                         providers={providers}
-                        quote={dexQuote}
+                        quote={preselectedQuote}
                     />
                 ) : (
-                    <Paragraph
-                        typographyStyle="label"
-                        variant="tertiary"
-                        align="center"
-                        margin={{ vertical: spacings.md }}
-                    >
-                        <Translation id="TR_TRADING_NO_DEX_PROVIDER_FOUND" />
-                    </Paragraph>
+                    <>
+                        {cexQuote ? (
+                            <TradingFormOffersSwitcherItem
+                                selectedExchangeType={exchangeType}
+                                isSelectable={!hasSingleOption}
+                                onSelect={() =>
+                                    setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX)
+                                }
+                                providers={providers}
+                                quote={cexQuote}
+                            />
+                        ) : (
+                            <Paragraph
+                                typographyStyle="label"
+                                variant="tertiary"
+                                align="center"
+                                margin={{ vertical: spacings.md }}
+                            >
+                                <Translation id="TR_TRADING_NO_CEX_PROVIDER_FOUND" />
+                            </Paragraph>
+                        )}
+                        {dexQuote ? (
+                            <TradingFormOffersSwitcherItem
+                                selectedExchangeType={exchangeType}
+                                isSelectable={!hasSingleOption}
+                                onSelect={() => {
+                                    setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX);
+                                    setValue(TRADING_EXCHANGE_RATE, TRADING_EXCHANGE_RATE_FLOATING);
+                                }}
+                                providers={providers}
+                                quote={dexQuote}
+                            />
+                        ) : (
+                            <Paragraph
+                                typographyStyle="label"
+                                variant="tertiary"
+                                align="center"
+                                margin={{ vertical: spacings.md }}
+                            >
+                                <Translation id="TR_TRADING_NO_DEX_PROVIDER_FOUND" />
+                            </Paragraph>
+                        )}
+                    </>
                 )}
             </Column>
         </Card>

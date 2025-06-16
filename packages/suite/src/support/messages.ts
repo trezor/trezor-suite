@@ -546,6 +546,66 @@ export default defineMessages({
         defaultMessage: '{providerName}’s address',
         id: 'TR_EXCHANGE_SEND_TO',
     },
+    TR_EXCHANGE_APPROVAL_ERROR: {
+        defaultMessage: 'Failed to load approval status.',
+        id: 'TR_EXCHANGE_APPROVAL_ERROR',
+    },
+    TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING: {
+        defaultMessage: 'Approve {displaySymbol} spending',
+        id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_REQUIRED: {
+        defaultMessage: 'Approval is required',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_REQUIRED',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_PENDING_PREFIX: {
+        defaultMessage: 'Transaction with ID',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_PENDING_PREFIX',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX: {
+        defaultMessage: 'is being processed',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_APPROVED: {
+        defaultMessage: 'Ready to swap: {amount} {coinSymbol}',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVED',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_APPROVED_PLAIN: {
+        defaultMessage: 'Ready to swap',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVED_PLAIN',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP: {
+        defaultMessage: 'Ready to swap',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_APPROVAL_REVOKED: {
+        defaultMessage: 'Approval revoked',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVAL_REVOKED',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_TITLE: {
+        defaultMessage: 'Contract approval',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_TITLE',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_CHECKING_APPROVAL_STATUS: {
+        defaultMessage: 'Checking approval status',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_CHECKING_APPROVAL_STATUS',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON: {
+        defaultMessage: 'Approve',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON: {
+        defaultMessage: 'Revoke approval',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON: {
+        defaultMessage: 'Refresh',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED: {
+        defaultMessage: 'The approval transaction has been successfully processed.',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED',
+    },
     TR_EXCHANGE_APPROVAL_SEND_TO: {
         defaultMessage: '{send} contract',
         id: 'TR_EXCHANGE_APPROVAL_SEND_TO',
@@ -573,7 +633,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO',
     },
     TR_EXCHANGE_APPROVAL_VALUE_ZERO: {
-        defaultMessage: 'Revoke previous approval',
+        defaultMessage: 'Revoke previous approval of {value} {send}',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_ZERO',
     },
     TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO: {
@@ -1274,6 +1334,10 @@ export default defineMessages({
     TR_TRADING_YOUR_BEST_OFFER: {
         defaultMessage: 'Your best offer',
         id: 'TR_TRADING_YOUR_BEST_OFFER',
+    },
+    TR_TRADING_YOUR_SELECTED_OFFER: {
+        defaultMessage: 'Your selected offer',
+        id: 'TR_TRADING_YOUR_SELECTED_OFFER',
     },
     TR_TRADING_COMPARE_OFFERS: {
         defaultMessage: 'Compare all offers',

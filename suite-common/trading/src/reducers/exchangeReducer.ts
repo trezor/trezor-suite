@@ -25,6 +25,7 @@ export interface TradingExchangeState {
     tradingAccountKey?: AccountKey;
     receiveAccountKey?: AccountKey;
     selectedQuote: ExchangeTrade | undefined;
+    preselectedQuote: ExchangeTrade | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
     amountLimits: TradingExchangeAmountLimitProps | undefined;
@@ -41,6 +42,7 @@ export const exchangeInitialState: TradingExchangeState = {
     tradingAccountKey: undefined,
     receiveAccountKey: undefined,
     selectedQuote: undefined,
+    preselectedQuote: undefined,
     isFromRedirect: false,
     isLoading: false,
     amountLimits: undefined,
@@ -74,6 +76,9 @@ const tradingExchangeSlice = createSlice({
         },
         saveSelectedQuote(state, action: PayloadAction<ExchangeTrade | undefined>) {
             state.selectedQuote = action.payload;
+        },
+        savePreselectedQuote(state, action: PayloadAction<ExchangeTrade | undefined>) {
+            state.preselectedQuote = action.payload;
         },
         setIsFromRedirect(state, action: PayloadAction<boolean>) {
             state.isFromRedirect = action.payload;

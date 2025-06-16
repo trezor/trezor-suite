@@ -22,6 +22,7 @@ export type ConfirmExchangeTradeThunkProps = {
     account: Account;
     extraField?: string;
     trade?: ExchangeTrade;
+    approvalFlow?: boolean;
 
     triggerAnalyticsTradeConfirmation: () => void;
     processResponseData: (response: ExchangeTrade) => void;
@@ -37,6 +38,7 @@ export const confirmExchangeTradeThunk = createThunk(
             receiveAddress,
             account,
             extraField,
+            approvalFlow = false,
             triggerAnalyticsTradeConfirmation,
             processResponseData,
             nextStep,
@@ -77,6 +79,7 @@ export const confirmExchangeTradeThunk = createThunk(
             refundAddress,
             extraField,
             returnUrl,
+            approvalFlow,
         });
 
         if (!response) {
@@ -111,7 +114,6 @@ export const confirmExchangeTradeThunk = createThunk(
 
         if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
-            dispatch(tradingExchangeActions.setFormStep('SEND_APPROVAL_TRANSACTION'));
 
             return isConfirmationOk;
         }
@@ -132,6 +134,11 @@ export const confirmExchangeTradeThunk = createThunk(
 
         if (response.status === 'CONFIRM' && response.isDex) {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
+
+            // hotfix, will be fixed in https://github.com/trezor/trezor-suite/issues/19768
+            if (!approvalFlow) {
+                dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
+            }
 
             return isConfirmationOk;
         }

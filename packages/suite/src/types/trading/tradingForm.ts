@@ -173,6 +173,7 @@ export type TradingExchangeConfirmTradeProps = {
     receiveAddress: string;
     extraField?: string;
     trade?: ExchangeTrade;
+    approvalFlow?: boolean;
 };
 
 export interface TradingExchangeFormContextProps
@@ -186,6 +187,7 @@ export interface TradingExchangeFormContextProps
     };
 
     selectedQuote?: ExchangeTrade;
+    preselectedQuote?: ExchangeTrade;
     trade?: TradingTransactionExchange;
     suiteReceiveAccounts?: AccountsState;
     feeInfo: FeeInfo;
@@ -217,7 +219,13 @@ export interface TradingExchangeFormContextProps
     selectQuote: (quote: ExchangeTrade) => void;
     verifyAddress: TradingVerifyAccountProps;
     watchTradeApproval: (refreshCount: number) => Promise<void>;
+    approveTransaction: (trade: ExchangeTrade) => Promise<void>;
+    revokeApproval: (trade: ExchangeTrade) => Promise<boolean>;
+    fetchApprovalStatus: (trade?: ExchangeTrade) => Promise<void>;
+    isFetchingApprovalStatus: boolean;
 }
+
+export type TradingExchangeApprovalType = 'APPROVE' | 'REVOKE';
 
 export type TradingFormMapProps = {
     buy: TradingBuyFormContextProps;

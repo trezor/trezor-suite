@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
@@ -20,10 +20,14 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
+import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ApproveModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingFormContextValues } from 'src/types/trading/tradingForm';
+import {
+    TradingExchangeApprovalType,
+    TradingFormContextValues,
+} from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
@@ -38,6 +42,7 @@ import {
     tradingGetSectionActionLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { TradingFormApproval } from 'src/views/wallet/trading/common/TradingForm/TradingFormApproval';
 import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferCryptoAmount';
 import { TradingFormOfferFiatAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferFiatAmount';
 import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferItem';
@@ -59,8 +64,9 @@ const getSelectedQuote = (
 
 export const TradingFormOffer = () => {
     const dispatch = useDispatch();
+
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
-    const [isDexSwapLoading, setIsDexSwapLoading] = useState<boolean>(false);
+    const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 
     const context = useTradingFormContext();
     const {
@@ -71,10 +77,17 @@ export const TradingFormOffer = () => {
         getValues,
         form: { state },
     } = context;
+
+    const isFetchingApprovalStatus =
+        isTradingExchangeContext(context) && context.isFetchingApprovalStatus;
+
     const { cryptoIdToPlatformName } = useTradingInfo();
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
-    const quote = getSelectedQuote(context, bestScoredQuote);
+    const preselectedQuote = isTradingExchangeContext(context)
+        ? context.preselectedQuote
+        : undefined;
+    const quote = preselectedQuote ?? getSelectedQuote(context, bestScoredQuote);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
 
@@ -103,39 +116,34 @@ export const TradingFormOffer = () => {
             new BigNumber(bestScoredQuoteAmounts.receiveAmount),
         );
 
-    const onSelectQuote = async () => {
+    const [approvalType, setApprovalType] = useState<TradingExchangeApprovalType>('APPROVE');
+
+    const requiresTokenApproval =
+        isTradingExchangeContext(context) &&
+        quote &&
+        (quote as ExchangeTrade)?.isDex &&
+        context.getValues().sendCryptoSelect &&
+        !isSendingEvmNativeToken(context.getValues().sendCryptoSelect?.value);
+
+    useEffect(() => {
+        if (isTradingExchangeContext(context) && requiresTokenApproval) {
+            const { fetchApprovalStatus } = context;
+            const trade = quote as ExchangeTrade | undefined;
+            fetchApprovalStatus(trade);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [quote, requiresTokenApproval]);
+
+    const onSelectQuote = () => {
         if (!quote) {
             return;
         }
 
-        // DEX swap
-        if (isTradingExchangeContext(context) && (quote as ExchangeTrade).isDex) {
-            const { confirmTrade, account } = context;
+        dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
 
+        if (isTradingExchangeContext(context)) {
             const trade = quote as ExchangeTrade;
-            const receiveAddress = account.descriptor;
-
-            if (!receiveAddress) {
-                return;
-            }
-
-            setIsDexSwapLoading(true);
-            const result = await confirmTrade({ trade, receiveAddress });
-            setIsDexSwapLoading(false);
-
-            if (!result) {
-                return;
-            }
-
-            dispatch(
-                tradingExchangeActions.setFormStep(
-                    isSendingEvmNativeToken(trade.send)
-                        ? 'RECEIVING_ADDRESS'
-                        : 'SEND_APPROVAL_TRANSACTION',
-                ),
-            );
-        } else {
-            dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+            dispatch(tradingExchangeActions.saveSelectedQuote(trade));
         }
 
         selectQuote(quote);
@@ -179,8 +187,7 @@ export const TradingFormOffer = () => {
                 ) : (
                     <TradingFormOfferCryptoAmount
                         amount={
-                            (!state.isLoadingOrInvalid || isDexSwapLoading) &&
-                            bestScoredQuoteAmounts?.receiveAmount
+                            !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.receiveAmount
                                 ? bestScoredQuoteAmounts.receiveAmount
                                 : '0'
                         }
@@ -224,10 +231,22 @@ export const TradingFormOffer = () => {
                                 />
                             }
                         >
-                            <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
+                            <Translation
+                                id={
+                                    preselectedQuote
+                                        ? 'TR_TRADING_YOUR_SELECTED_OFFER'
+                                        : 'TR_TRADING_YOUR_BEST_OFFER'
+                                }
+                            />
                         </Tooltip>
                     ) : (
-                        <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
+                        <Translation
+                            id={
+                                preselectedQuote
+                                    ? 'TR_TRADING_YOUR_SELECTED_OFFER'
+                                    : 'TR_TRADING_YOUR_BEST_OFFER'
+                            }
+                        />
                     )}
                     <TextButton
                         onClick={onCompareAllOffersClick}
@@ -243,8 +262,8 @@ export const TradingFormOffer = () => {
                 {isTradingExchangeContext(context) ? (
                     <TradingFormOffersSwitcher
                         context={context}
-                        isFormLoading={state.isFormLoading && !isDexSwapLoading}
-                        isFormInvalid={state.isFormInvalid}
+                        isFormLoading={state.isFormLoading && !preselectedQuote}
+                        isFormInvalid={state.isFormInvalid && !preselectedQuote}
                         providers={providers}
                     />
                 ) : (
@@ -257,21 +276,37 @@ export const TradingFormOffer = () => {
                 )}
             </Column>
 
-            <Button
-                onClick={onSelectQuote}
-                variant="primary"
-                margin={{
-                    top: spacings.md,
-                }}
-                isFullWidth
-                isDisabled={isButtonDisabled}
-                isLoading={isDexSwapLoading || areFeesLoading}
-                data-testid={`@trading/form/${type}-button`}
-            >
-                <Translation id={tradingGetSectionActionLabel(type)} />
-            </Button>
+            {requiresTokenApproval && bestScoredQuote && !state.isFormInvalid ? (
+                <TradingFormApproval
+                    openApproveModal={() => setIsApproveModalOpen(true)}
+                    isFetchingApprovalStatus={isFetchingApprovalStatus}
+                    approvalType={approvalType}
+                    setApprovalType={setApprovalType}
+                />
+            ) : (
+                <Button
+                    onClick={onSelectQuote}
+                    variant="primary"
+                    margin={{
+                        top: spacings.md,
+                    }}
+                    isFullWidth
+                    isDisabled={isButtonDisabled}
+                    isLoading={(!state.isFormInvalid && state.isFormLoading) || areFeesLoading}
+                    data-testid={`@trading/form/${type}-button`}
+                >
+                    <Translation id={tradingGetSectionActionLabel(type)} />
+                </Button>
+            )}
 
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
+
+            {isApproveModalOpen && (
+                <ApproveModal
+                    onCancel={() => setIsApproveModalOpen(false)}
+                    setApprovalType={setApprovalType}
+                />
+            )}
         </Column>
     );
 };
