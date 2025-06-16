@@ -18,8 +18,9 @@ import { Elevation, spacings, spacingsPx } from '@trezor/theme';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { useSelector } from 'src/hooks/suite';
 
-import { LoggedOutSidebar } from '../LoggedOutSidebar';
+import { ConnectSidebar } from './ConnectSidebar';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
+import { PassphraseFlow } from '../SuiteLayout/PassphraseFlow';
 
 const Content = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -41,6 +42,7 @@ const ChildrenWrapper = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
+    position: relative;
 `;
 
 export type ConnectLayoutProps = {
@@ -76,7 +78,7 @@ export const ConnectLayout = ({ children, hideSidebar }: ConnectLayoutProps) => 
                 >
                     {!hideSidebar ? (
                         <ElevationDown>
-                            <LoggedOutSidebar />
+                            <ConnectSidebar />
                         </ElevationDown>
                     ) : null}
 
@@ -91,6 +93,9 @@ export const ConnectLayout = ({ children, hideSidebar }: ConnectLayoutProps) => 
                             )
                         }
                     >
+                        <Modal.Provider>
+                            <PassphraseFlow />
+                        </Modal.Provider>
                         <Modal.Provider noBackdrop={true}>{children}</Modal.Provider>
                     </Right>
                 </Row>

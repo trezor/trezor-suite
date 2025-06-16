@@ -1,6 +1,7 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import {
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
@@ -33,6 +34,7 @@ import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScr
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceCompromised';
+import { ConnectLayout } from '../layouts/ConnectLayout/ConnectLayout';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
@@ -76,6 +78,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     // Entropy check won't be performed if disabled but we must also check it here to avoid showing the UI when the failed state is stored in database.
     const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
+    const popupCall = useSelector(selectConnectPopupCall);
 
     // report firmware authenticity failures even when the UI is disabled
     useReportDeviceCompromised();
@@ -145,6 +148,9 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     }
 
     if (router.route?.isForegroundApp) {
+        if (popupCall && popupCall?.state !== 'finished')
+            return <ConnectLayout>{children}</ConnectLayout>;
+
         return <SuiteLayout>{children}</SuiteLayout>;
     }
 

@@ -27,7 +27,7 @@ const hasPriority = (route: ForegroundAppRoute) => {
         recovery: true,
 
         // Backup, SwitchDevice - always get beaten by redux modals
-        'switch-device': false,
+        'switch-device': true, // WIP
         backup: false,
     };
 

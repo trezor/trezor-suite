@@ -7,6 +7,7 @@ import { ROUTER } from 'src/actions/suite/constants';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
+import { selectRouterApp } from 'src/reducers/suite/routerReducer';
 import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/reducers/suite/suiteReducer';
 import history from 'src/support/history';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -43,6 +44,9 @@ export type RouterAction =
 export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
     const isLocked = selectIsRouterOrUiLocked(getState());
     const hasActionModal = getState().modal.context !== '@modal/context-none';
+    // unlock connect app
+    const routerApp = selectRouterApp(getState());
+    if (routerApp === 'connect') return true;
 
     return !isLocked && !hasActionModal;
 };
