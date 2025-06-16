@@ -1,3 +1,6 @@
+import { decodeParameters } from 'web3-eth-abi';
+import { sha3 } from 'web3-utils';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const isEip1559 = (
@@ -31,4 +34,33 @@ export const strip = (str: string): string => {
     }
 
     return padLeftEven(str);
+};
+
+type EvmTransactionPurpose = 'default' | 'approval' | 'revoke';
+
+export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
+    if (!data) return 'default';
+
+    const dataWithPrefix = data.toLowerCase().startsWith('0x') ? data : `0x${data}`;
+    const dataLowercase = dataWithPrefix.toLowerCase();
+    const approvalPrefix = sha3('approve(address,uint256)')?.slice(0, 10);
+    const hasApprovalPrefix = !!approvalPrefix && dataLowercase.startsWith(approvalPrefix);
+
+    if (hasApprovalPrefix) {
+        try {
+            const decodedData = decodeParameters(['address', 'uint256'], dataLowercase.slice(10)); // [spender, approval_amount]
+
+            // when approval amount is 0 -> revoke
+            if (decodedData[1] === 0n) {
+                return 'revoke';
+            }
+
+            return 'approval';
+        } catch {
+            // If decoding fails, treat as default transaction
+            return 'default';
+        }
+    }
+
+    return 'default';
 };

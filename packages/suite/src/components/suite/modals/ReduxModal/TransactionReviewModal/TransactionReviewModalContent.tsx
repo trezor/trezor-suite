@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
     AccountsState,
@@ -38,7 +39,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
-import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
+import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewDetails } from './TransactionReviewDetails';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
@@ -88,7 +89,7 @@ const isStakeState = (state: SendState | StakeState): state is StakeState => 'da
 
 const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormState) => {
     const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
-    const tradeType = precomposedForm.isTrading ? 'trade' : undefined;
+    const tradeType = precomposedForm.activeTradingSection ? 'trade' : undefined;
 
     return stakeType ?? tradeType;
 };
@@ -131,11 +132,12 @@ export const TransactionReviewModalContent = ({
             ? selectStakePrecomposedForm(state)
             : selectPrecomposedSendForm(state),
     );
+    const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity =
         account?.networkType === 'solana' &&
-        !precomposedForm?.isTrading &&
+        !precomposedForm?.activeTradingSection &&
         createdTxTimestamp !== 0;
     const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
 
@@ -219,8 +221,10 @@ export const TransactionReviewModalContent = ({
         shouldCheckTxTimeValidity,
     );
 
-    const actionLabel = getTransactionReviewModalActionText({
+    const actionTranslation = getTransactionReviewModalActionTranslation({
         stakeType,
+        precomposedForm,
+        tradingToken,
         isBumpFeeRbfAction,
         isCancelRbfAction,
         isSending,
@@ -355,7 +359,7 @@ export const TransactionReviewModalContent = ({
                     variant={isCancelRbfAction ? 'destructive' : 'primary'}
                     onClick={handleSend}
                 >
-                    <Translation id={actionLabel} />
+                    <Translation {...actionTranslation} />
                 </Modal.Button>
             );
         }
@@ -407,7 +411,7 @@ export const TransactionReviewModalContent = ({
                     outputs={outputs}
                     buttonRequestsCount={buttonRequestsCount}
                     isRbfAction={isBumpFeeRbfAction}
-                    isTradingAction={!!precomposedForm.isTrading}
+                    isTradingAction={!!precomposedForm.activeTradingSection}
                     isSending={isSending}
                     stakeType={stakeType || undefined}
                     deadline={deadline}
@@ -431,7 +435,11 @@ export const TransactionReviewModalContent = ({
                 />
             )}
             <Modal.ModalBase
-                heading={<Translation id={areDetailsVisible ? 'TR_DETAIL' : actionLabel} />}
+                heading={
+                    <Translation
+                        {...(areDetailsVisible ? { id: 'TR_DETAIL' } : actionTranslation)}
+                    />
+                }
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
                 description={
                     !areDetailsVisible && (

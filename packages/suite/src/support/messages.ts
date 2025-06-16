@@ -1535,6 +1535,14 @@ export default defineMessages({
         defaultMessage: 'Swap unavailable',
         id: 'TR_TRADING_SWAP_UNAVAILABLE',
     },
+    TR_TRADING_APPROVE_TOKEN: {
+        defaultMessage: 'Approve {tokenSymbol}',
+        id: 'TR_TRADING_APPROVE_TOKEN',
+    },
+    TR_TRADING_REVOKE_TOKEN: {
+        defaultMessage: 'Revoke {tokenSymbol}',
+        id: 'TR_TRADING_REVOKE_TOKEN',
+    },
     TR_TRADING_TRANS_ID: {
         defaultMessage: 'Trans. ID:',
         id: 'TR_TRADING_TRANS_ID',
