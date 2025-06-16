@@ -15,7 +15,7 @@ set -euo pipefail
 
 # Ports
 # 9001  - websocket server, communication test case > user-env (setup etc...)
-# 21326 - trezord proxy. beacuse of trezord CORS check
+# 21326 - trezord proxy. because of trezord CORS check
 # 21325 - original trezord port redirected to trezor-user-env proxy
 
 ENVIRONMENT=$1
