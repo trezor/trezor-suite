@@ -2,9 +2,9 @@ import { HStack } from '@suite-native/atoms';
 
 import { ExchangeReceiveAmountInput } from './ExchangeReceiveAmountInput';
 import { ExchangeTradeableAssetsSheet } from './ExchangeTradeableAssetsSheet';
-import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
+import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { useSheetControls } from '../../../hooks/general/useSheetControls';
+import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 export const ExchangeTradeableAssetPicker = () => {
     const form = useExchangeFormContext();

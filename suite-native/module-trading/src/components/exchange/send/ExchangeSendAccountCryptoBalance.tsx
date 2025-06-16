@@ -1,6 +1,6 @@
-import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
-import { ReceiveAccountCryptoBalance } from '../general/ReceiveAccount/ReceiveAccountCryptoBalance';
+import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
+import { ReceiveAccountCryptoBalance } from '../../general/ReceiveAccount/ReceiveAccountCryptoBalance';
 
 export const SEND_ACCOUNT_BALANCE_TEST_ID = '@trading/exchange/send-account-balance';
 

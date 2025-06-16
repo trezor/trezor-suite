@@ -9,9 +9,9 @@ import {
 } from '@suite-native/test-utils';
 import { FirmwareType } from '@trezor/connect';
 
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../types/exchange';
+import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
+import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
+import { ExchangeFormType } from '../../../../types/exchange';
 import { ExchangeTradeableAssetPicker } from '../ExchangeTradeableAssetPicker';
 
 describe('ExchangeTradeableAssetPicker', () => {

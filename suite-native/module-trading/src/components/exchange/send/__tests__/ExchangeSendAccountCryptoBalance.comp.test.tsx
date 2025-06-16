@@ -5,9 +5,9 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../types/exchange';
+import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
+import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
+import { ExchangeFormType } from '../../../../types/exchange';
 import {
     ExchangeSendAccountCryptoBalance,
     SEND_ACCOUNT_BALANCE_TEST_ID,

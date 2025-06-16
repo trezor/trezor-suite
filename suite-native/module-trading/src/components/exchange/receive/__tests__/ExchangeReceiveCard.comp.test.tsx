@@ -5,18 +5,18 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { usdcAsset } from '../../../__fixtures__/tradeableAssets';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../types/exchange';
-import { ExchangeBuyCard } from '../ExchangeBuyCard';
+import { usdcAsset } from '../../../../__fixtures__/tradeableAssets';
+import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
+import { ExchangeFormType } from '../../../../types/exchange';
+import { ExchangeReceiveCard } from '../ExchangeReceiveCard';
 
-describe('ExchangeBuyCard', () => {
+describe('ExchangeReceiveCard', () => {
     let form: ExchangeFormType;
 
     const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
 
     const renderExchangeBuyCard = () =>
-        renderWithStoreProviderAsync(<ExchangeBuyCard />, {
+        renderWithStoreProviderAsync(<ExchangeReceiveCard />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

@@ -7,11 +7,11 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../types/exchange';
-import { ReceiveAccount, TradeableAsset } from '../../../types/general';
+import { getBtcAccount } from '../../../../__fixtures__/account';
+import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
+import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
+import { ExchangeFormType } from '../../../../types/exchange';
+import { ReceiveAccount, TradeableAsset } from '../../../../types/general';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
 
 const mockNavigate = jest.fn();

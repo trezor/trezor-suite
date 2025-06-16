@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { selectExchangeSelectedReceiveAccount } from '../../selectors/exchangeSelectors';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
-import { ReceiveAccountPicker } from '../general/ReceiveAccount/ReceiveAccountPicker';
+import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { selectExchangeSelectedReceiveAccount } from '../../../selectors/exchangeSelectors';
+import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
+import { ReceiveAccountPicker } from '../../general/ReceiveAccount/ReceiveAccountPicker';
 
 const RECEIVE_ACCOUNT_PICKER_TEST_ID = '@trading/exchange/receive-account';
 

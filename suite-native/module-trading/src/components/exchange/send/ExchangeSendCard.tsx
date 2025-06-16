@@ -8,12 +8,12 @@ import { Translation } from '@suite-native/intl';
 
 import { ExchangeSendAccountCryptoBalance } from './ExchangeSendAccountCryptoBalance';
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
-import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { useAnimatedBorderStyle } from '../../hooks/general/useAnimatedBorderStyle';
-import { TradeableAsset } from '../../types/general';
-import { CardTitle } from '../general/CardTitle';
-import { FiatAmountBadge } from '../general/FiatAmountBadge';
-import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
+import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { useAnimatedBorderStyle } from '../../../hooks/general/useAnimatedBorderStyle';
+import { TradeableAsset } from '../../../types/general';
+import { CardTitle } from '../../general/CardTitle';
+import { FiatAmountBadge } from '../../general/FiatAmountBadge';
+import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 export type ExchangeSendCardProps = {
     isAmountInputActive: boolean;
@@ -54,17 +54,17 @@ export const ExchangeSendCard = ({ isAmountInputActive }: ExchangeSendCardProps)
                     </CardTitle>
                     <FiatAmountBadge amount="123" />
                 </HStack>
+                <ExchangeSendAssetPicker />
+                <HStack
+                    justifyContent="space-between"
+                    alignItems="center"
+                    paddingVertical="sp4"
+                    spacing="sp4"
+                >
+                    <TradeableAssetNetworkInfo asset={asset} />
+                    <ExchangeSendAccountCryptoBalance />
+                </HStack>
             </VStack>
-            <ExchangeSendAssetPicker />
-            <HStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="sp4"
-                spacing="sp4"
-            >
-                <TradeableAssetNetworkInfo asset={asset} />
-                <ExchangeSendAccountCryptoBalance />
-            </HStack>
         </AnimatedCard>
     );
 };

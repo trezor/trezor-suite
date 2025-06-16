@@ -5,9 +5,9 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { usdcAsset } from '../../../__fixtures__/tradeableAssets';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../types/exchange';
+import { usdcAsset } from '../../../../__fixtures__/tradeableAssets';
+import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
+import { ExchangeFormType } from '../../../../types/exchange';
 import { ExchangeSendCard } from '../ExchangeSendCard';
 
 describe('ExchangeSendCard', () => {

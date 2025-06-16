@@ -4,9 +4,9 @@ import { TextInput } from 'react-native';
 import { HStack } from '@suite-native/atoms';
 
 import { ExchangeSendAmountInput } from './ExchangeSendAmountInput';
-import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
+import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { useSheetControls } from '../../../hooks/general/useSheetControls';
+import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 export const ExchangeSendAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);
