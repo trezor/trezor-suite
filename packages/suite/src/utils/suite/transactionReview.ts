@@ -1,40 +1,69 @@
-import { TranslationKey } from '@suite-common/intl-types';
-import { StakeFormState } from '@suite-common/wallet-types';
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { FormState, StakeFormState } from '@suite-common/wallet-types';
+import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
+import { TokenInfo } from '@trezor/blockchain-link-types';
 
-interface getTransactionReviewModalActionTextParams {
+interface GetTransactionReviewModalActionTranslationParams {
     stakeType: StakeFormState['stakeType'] | null;
+    precomposedForm: FormState | StakeFormState;
+    tradingToken: TokenInfo | undefined;
     isBumpFeeRbfAction: boolean;
     isCancelRbfAction: boolean;
     isSending?: boolean;
 }
 
-export const getTransactionReviewModalActionText = ({
+export const getTransactionReviewModalActionTranslation = ({
     stakeType,
+    precomposedForm,
+    tradingToken,
     isBumpFeeRbfAction,
     isCancelRbfAction,
     isSending,
-}: getTransactionReviewModalActionTextParams): TranslationKey => {
+}: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
     switch (stakeType) {
         case 'stake':
-            return 'TR_STAKE_STAKE';
+            return { id: 'TR_STAKE_STAKE' };
         case 'unstake':
-            return 'TR_STAKE_UNSTAKE';
+            return { id: 'TR_STAKE_UNSTAKE' };
         case 'claim':
-            return 'TR_STAKE_CLAIM';
+            return { id: 'TR_STAKE_CLAIM' };
         // no default
     }
 
+    if (precomposedForm.activeTradingSection === 'sell') {
+        return { id: 'TR_TRADING_SELL' };
+    }
+
+    if (precomposedForm.activeTradingSection === 'exchange') {
+        const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.ethereumDataHex);
+
+        switch (transactionPurpose) {
+            case 'approval':
+                return {
+                    id: 'TR_TRADING_APPROVE_TOKEN',
+                    values: { tokenSymbol: tradingToken?.symbol?.toUpperCase() },
+                };
+            case 'revoke':
+                return {
+                    id: 'TR_TRADING_REVOKE_TOKEN',
+                    values: { tokenSymbol: tradingToken?.symbol?.toUpperCase() },
+                };
+            default:
+                return { id: 'TR_TRADING_SWAP' };
+        }
+    }
+
     if (isBumpFeeRbfAction) {
-        return 'TR_REPLACE_TX';
+        return { id: 'TR_REPLACE_TX' };
     }
 
     if (isCancelRbfAction) {
-        return 'TR_CANCEL_TX_BUTTON';
+        return { id: 'TR_CANCEL_TX_BUTTON' };
     }
 
     if (isSending) {
-        return 'TR_CONFIRMING_TX';
+        return { id: 'TR_CONFIRMING_TX' };
     }
 
-    return 'SEND_TRANSACTION';
+    return { id: 'SEND_TRANSACTION' };
 };

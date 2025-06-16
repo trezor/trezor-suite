@@ -41,6 +41,7 @@ export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
+export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;

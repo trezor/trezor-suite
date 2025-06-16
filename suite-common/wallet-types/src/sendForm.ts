@@ -45,5 +45,5 @@ export interface FormState {
     anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
     utxoSorting?: UtxoSorting;
-    isTrading?: boolean;
+    activeTradingSection?: 'sell' | 'exchange';
 }

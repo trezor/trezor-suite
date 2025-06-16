@@ -60,6 +60,7 @@ redux-logger
 redux-mock-store
 redux-thunk
 reselect
+web3-eth-abi
 web3-utils
 webpack
 webpack-bundle-analyzer

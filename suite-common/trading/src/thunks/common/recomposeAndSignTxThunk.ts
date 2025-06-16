@@ -11,8 +11,15 @@ import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
 import { Success, Unsuccessful } from '@trezor/connect';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { selectTradingComposedTransactionInfo } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps, TradingSignAndPushSendFormTransactionProps } from '../../types';
+import {
+    selectTradingActiveSection,
+    selectTradingComposedTransactionInfo,
+} from '../../selectors/tradingSelectors';
+import type {
+    TradingSendRejectedProps,
+    TradingSignAndPushSendFormTransactionProps,
+    TradingTradeSellExchangeType,
+} from '../../types';
 
 type FulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
 
@@ -69,6 +76,9 @@ export const recomposeAndSignTxThunk = createThunk<
         const options: FormOptions[] = ['broadcast'];
         const network = getNetwork(account.symbol);
         const feeInfo = selectNetworkFeeInfo(getState(), account.symbol);
+        const activeTradingSection = selectTradingActiveSection(
+            getState(),
+        ) as TradingTradeSellExchangeType;
 
         if (!composed || !feeInfo) {
             return rejectWithValue({
@@ -104,7 +114,7 @@ export const recomposeAndSignTxThunk = createThunk<
             ethereumDataHex,
             ethereumAdjustGasLimit,
             selectedUtxos: [],
-            isTrading: true,
+            activeTradingSection,
         };
 
         // prepare form state for composeAction
