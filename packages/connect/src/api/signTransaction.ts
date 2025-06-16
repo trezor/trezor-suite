@@ -299,20 +299,25 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
         const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));
 
+        let outputScripts: Awaited<ReturnType<typeof deriveOutputScript>>[] = [];
+        if (params.options.serialize !== false) {
+            const getHDNode = (address_n: number[]) =>
+                device
+                    .getCommands()
+                    .getHDNode({ address_n }, { coinInfo, unlockPath: params.unlockPath });
+
+            outputScripts = await promiseAllSequence(
+                outputs.map(
+                    output => () => deriveOutputScript(getHDNode, output, coinInfo.network),
+                ),
+            );
+        }
+
         if (this.preauthorized) {
             await device.getCommands().preauthorize(true);
         } else if (params.unlockPath) {
             await device.getCommands().unlockPath(params.unlockPath);
         }
-
-        const getHDNode = (address_n: number[]) =>
-            device
-                .getCommands()
-                .getHDNode({ address_n }, { coinInfo, unlockPath: params.unlockPath });
-
-        const outputScripts = await promiseAllSequence(
-            outputs.map(output => () => deriveOutputScript(getHDNode, output, coinInfo.network)),
-        );
 
         const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
         const response = await signTxMethod({
