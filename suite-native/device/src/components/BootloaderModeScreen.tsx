@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { selectIsDeviceInBootloader } from '@suite-common/wallet-core';
 import { Button, Card, Pictogram, Text, TextDivider, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
@@ -14,6 +16,7 @@ import {
     Screen,
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -37,6 +40,8 @@ type NavigationProps = CompositeNavigationProp<
 export const BootloaderModeScreen = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
+    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleRedirectToFactoryReset = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
@@ -46,6 +51,13 @@ export const BootloaderModeScreen = () => {
             },
         });
     };
+
+    useEffect(() => {
+        // If user changes device through device switcher, navigate to the screen where user was before entering bootloader mode.
+        if (!isDeviceInBootloader) {
+            navigateToInitialScreen();
+        }
+    }, [isDeviceInBootloader, navigateToInitialScreen, navigation]);
 
     useEffect(() => {
         // Navigating back from the bootloader screen would get the user back to homescreen in incorrect state, so we'll avoid it by this.
