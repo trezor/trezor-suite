@@ -1472,6 +1472,37 @@ export enum DebugWaitType {
 export type EnumDebugWaitType = Static<typeof EnumDebugWaitType>;
 export const EnumDebugWaitType = Type.Enum(DebugWaitType);
 
+export type DebugLinkGetPairingInfo = Static<typeof DebugLinkGetPairingInfo>;
+export const DebugLinkGetPairingInfo = Type.Object(
+    {
+        channel_id: Type.Optional(Type.String()),
+        handshake_hash: Type.Optional(Type.String()),
+        nfc_secret_host: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkGetPairingInfo' },
+);
+
+export type DebugLinkPairingInfo = Static<typeof DebugLinkPairingInfo>;
+export const DebugLinkPairingInfo = Type.Object(
+    {
+        channel_id: Type.Optional(Type.String()),
+        handshake_hash: Type.Optional(Type.String()),
+        code_entry_code: Type.Optional(Type.Number()),
+        code_qr_code: Type.Optional(Type.String()),
+        nfc_secret_trezor: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkPairingInfo' },
+);
+
+export type DebugLinkToggleThpPairingDialog = Static<typeof DebugLinkToggleThpPairingDialog>;
+export const DebugLinkToggleThpPairingDialog = Type.Object(
+    {
+        channel_id: Type.Optional(Type.String()),
+        show_dialog: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'DebugLinkToggleThpPairingDialog' },
+);
+
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
 export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetDebugEvents' });
 
@@ -3545,6 +3576,9 @@ export const MessageType = Type.Object(
         SignedIdentity,
         GetECDHSessionKey,
         ECDHSessionKey,
+        DebugLinkGetPairingInfo,
+        DebugLinkPairingInfo,
+        DebugLinkToggleThpPairingDialog,
         DebugLinkResetDebugEvents,
         DebugLinkOptigaSetSecMax,
         DebugLinkGetGcInfo,
