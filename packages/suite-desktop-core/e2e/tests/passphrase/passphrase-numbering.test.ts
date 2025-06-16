@@ -11,32 +11,36 @@ test.describe('Passphrase numbering', { tag: ['@group=passphrase'] }, () => {
         const passphraseTwo = 'Second passphrase';
         const passphraseThree = 'Third passphrase';
 
-        // Add two hidden wallets
-        await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.addUnusedHiddenWallet(passphraseOne);
+        await test.step('Add two passphrase wallets', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.addUnusedHiddenWallet(passphraseOne);
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.addUnusedHiddenWallet(passphraseTwo);
+        });
 
-        await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.addUnusedHiddenWallet(passphraseTwo);
+        await test.step('verify wallet labels are correct', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await expect(dashboardPage.walletAtIndex(0)).toContainText('Standard wallet');
+            await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
+            await expect(dashboardPage.walletAtIndex(2)).toContainText('Passphrase wallet #2');
+        });
 
-        // assert that wallet labels are correct
-        await dashboardPage.openDeviceSwitcher();
-        await expect(dashboardPage.walletAtIndex(0)).toContainText('Standard wallet');
-        await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
-        await expect(dashboardPage.walletAtIndex(2)).toContainText('Passphrase wallet #2');
+        await test.step('eject standard and the first passphrase wallet', async () => {
+            await dashboardPage.ejectWallet();
+            await dashboardPage.ejectWallet();
+        });
 
-        // eject standard and the first hidden wallet
-        await dashboardPage.ejectWallet();
-        await dashboardPage.ejectWallet();
+        await test.step('add standard and another passphrase wallet', async () => {
+            await dashboardPage.addStandardWallet();
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.addUnusedHiddenWallet(passphraseThree);
+        });
 
-        // add standard and another hidden wallet
-        await dashboardPage.addStandardWallet();
-        await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.addUnusedHiddenWallet(passphraseThree);
-
-        // assert that wallet labels are correct
-        await dashboardPage.openDeviceSwitcher();
-        await expect(dashboardPage.walletAtIndex(0)).toContainText('Passphrase wallet #2');
-        await expect(dashboardPage.walletAtIndex(1)).toContainText('Standard wallet');
-        await expect(dashboardPage.walletAtIndex(2)).toContainText('Passphrase wallet #3');
+        await test.step('verify passphrase wallet labels are correct', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await expect(dashboardPage.walletAtIndex(0)).toContainText('Passphrase wallet #2');
+            await expect(dashboardPage.walletAtIndex(1)).toContainText('Standard wallet');
+            await expect(dashboardPage.walletAtIndex(2)).toContainText('Passphrase wallet #3');
+        });
     });
 });
