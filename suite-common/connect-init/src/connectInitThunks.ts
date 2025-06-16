@@ -72,13 +72,6 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 );
             }
 
-            if (
-                action.type === 'ui-close_window'
-                // && getState().wallet.discovery[getState().device?.selectedDevice?.path]?.status ==='progress'
-            ) {
-                // return;
-            }
-
             // dispatch event as action
             dispatch(action);
 
