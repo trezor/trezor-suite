@@ -6,7 +6,6 @@ import {
     TradingTradeBuyExchangeType,
     cryptoIdToNetwork,
     tradingActions,
-    tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -151,7 +150,6 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
             });
         }
 
-        dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
         confirmTrade({ receiveAddress: address, extraField });
     };
 

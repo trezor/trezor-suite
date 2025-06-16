@@ -2,8 +2,9 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, Text } from '@trezor/components';
+import { Icon, Text, TextVariant } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { TypographyStyle } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
@@ -63,6 +64,8 @@ interface IOAddressProps {
     explorerUrlQueryString?: string;
     shouldAllowCopy?: boolean;
     shouldChunk?: boolean;
+    variant?: TextVariant;
+    typographyStyle?: TypographyStyle;
 }
 
 export const TxAddress = ({
@@ -71,6 +74,8 @@ export const TxAddress = ({
     explorerUrlQueryString = '',
     shouldAllowCopy = true,
     shouldChunk = false,
+    variant = 'default',
+    typographyStyle = 'label',
 }: IOAddressProps) => {
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const [isClicked, setIsClicked] = useState(false);
@@ -97,7 +102,7 @@ export const TxAddress = ({
 
     // HiddenPlaceholder disableKeepingWidth: it isn't needed (no numbers to redact), but inline-block disrupts overflow behavior
     return (
-        <Text typographyStyle="label" variant="default">
+        <Text typographyStyle={typographyStyle} variant={variant}>
             <HiddenPlaceholder disableKeepingWidth>
                 <TextOverflowContainer
                     onMouseLeave={() => setIsClicked(false)}

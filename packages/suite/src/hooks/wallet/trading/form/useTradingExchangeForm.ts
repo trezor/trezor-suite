@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { ExchangeTrade, FiatCurrencyCode } from 'invity-api';
+import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -79,6 +79,7 @@ export const useTradingExchangeForm = ({
         transactionId,
         tradingAccountKey,
         selectedQuote,
+        preselectedQuote,
         amountLimits,
         isLoading,
     } = useSelector(selectTradingExchange);
@@ -106,6 +107,10 @@ export const useTradingExchangeForm = ({
         pageType,
         isLoading,
     });
+
+    const [approvalInitiated, setApprovalInitiated] = useState<boolean>(false);
+    const [isFetchingApprovalStatus, setIsFetchingApprovalStatus] = useState<boolean>(false);
+
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const {
         navigateToExchangeForm,
@@ -390,6 +395,7 @@ export const useTradingExchangeForm = ({
         receiveAddress,
         extraField,
         trade,
+        approvalFlow,
     }: TradingExchangeConfirmTradeProps): Promise<boolean> => {
         const commonFunctions = await getCommonFunctions(trade);
 
@@ -405,6 +411,7 @@ export const useTradingExchangeForm = ({
                 account,
                 extraField,
                 trade,
+                approvalFlow,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,
@@ -557,6 +564,46 @@ export const useTradingExchangeForm = ({
         [account, trade?.data, dispatch, getCommonFunctions],
     );
 
+    const approveTransaction = async (trade: ExchangeTrade) => {
+        setApprovalInitiated(true);
+
+        await confirmTrade({
+            trade,
+            receiveAddress: account.descriptor,
+            approvalFlow: true,
+        });
+    };
+
+    const revokeApproval = async (trade: ExchangeTrade) => {
+        if (!trade.receiveAddress) return false;
+
+        const approvalType: DexApprovalType = 'ZERO';
+        const updatedTrade = { ...trade, approvalType };
+
+        setApprovalInitiated(true);
+
+        dispatch(tradingExchangeActions.saveSelectedQuote(updatedTrade));
+
+        await confirmTrade({
+            receiveAddress: trade.receiveAddress,
+            extraField: undefined,
+            trade: updatedTrade,
+            approvalFlow: true,
+        });
+
+        return await sendTransaction();
+    };
+
+    const fetchApprovalStatus = async (trade?: ExchangeTrade) => {
+        if (!trade || !trade.isDex) return;
+
+        setIsFetchingApprovalStatus(true);
+
+        await confirmTrade({ trade, receiveAddress: account.descriptor, approvalFlow: true });
+
+        setIsFetchingApprovalStatus(false);
+    };
+
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
@@ -592,7 +639,6 @@ export const useTradingExchangeForm = ({
 
             return;
         }
-
         if (values.sendCryptoSelect && !values.sendCryptoSelect?.value) {
             removeDraft(exchangeDraftKey);
 
@@ -626,8 +672,10 @@ export const useTradingExchangeForm = ({
     }, [isNotFormPage, quotesRequest, navigateToExchangeForm]);
 
     useEffect(() => {
+        if (preselectedQuote || approvalInitiated) return;
+
         checkQuotesTimer(handleChange);
-    }, [checkQuotesTimer, handleChange]);
+    }, [checkQuotesTimer, handleChange, preselectedQuote, approvalInitiated]);
 
     useEffect(() => {
         if (isFromRedirect) {
@@ -639,6 +687,11 @@ export const useTradingExchangeForm = ({
             dispatch(tradingExchangeActions.setIsFromRedirect(false));
         }
     }, [dispatch, isFromRedirect, trade, transactionId]);
+
+    // reset when from/to/amount form values changes
+    useEffect(() => {
+        setApprovalInitiated(false);
+    }, [values.amountInCrypto, values.sendCryptoSelect, values.receiveCryptoSelect]);
 
     return {
         type,
@@ -670,9 +723,11 @@ export const useTradingExchangeForm = ({
         network,
         receiveAccount,
         selectedQuote,
+        preselectedQuote,
         verifiedAddress,
         shouldSendInSats,
         trade,
+        isFetchingApprovalStatus,
         setReceiveAccount,
         composeRequest,
         changeFeeLevel,
@@ -685,5 +740,8 @@ export const useTradingExchangeForm = ({
         selectQuote,
         confirmTrade,
         watchTradeApproval,
+        approveTransaction,
+        revokeApproval,
+        fetchApprovalStatus,
     };
 };

@@ -336,22 +336,6 @@ describe('confirmExchangeTradeThunk', () => {
     describe('should return true from confirmation for approval and sign transaction', () => {
         it.each([
             [
-                'when response.status is APPROVAL_REQ',
-                {
-                    status: 'APPROVAL_REQ',
-                    orderId: 'orderId',
-                },
-                'SEND_APPROVAL_TRANSACTION',
-            ],
-            [
-                'when response.status is APPROVAL_PENDING',
-                {
-                    status: 'APPROVAL_PENDING',
-                    orderId: 'orderId',
-                },
-                'SEND_APPROVAL_TRANSACTION',
-            ],
-            [
                 'when response.status is SIGN_DATA',
                 {
                     status: 'SIGN_DATA',
@@ -449,23 +433,7 @@ describe('confirmExchangeTradeThunk', () => {
     });
 
     describe('should return true from confirmation for trade, which is in to confirm state from dex and request approval transaction', () => {
-        it.each([
-            [
-                'when formStep is SEND_APPROVAL_TRANSACTION',
-                {
-                    status: 'CONFIRM',
-                    orderId: 'orderId',
-                    isDex: true,
-                },
-                'when trade.approvalType is ZERO',
-                {
-                    status: 'CONFIRM',
-                    orderId: 'orderId',
-                    isDex: true,
-                    approvalType: 'ZERO',
-                },
-            ],
-        ])('%s', async (_, mockResponse) => {
+        it('when trade.approvalType is ZERO', async () => {
             const {
                 store,
                 returnUrl,
@@ -477,7 +445,13 @@ describe('confirmExchangeTradeThunk', () => {
                 mockTriggerAnalyticsTradeConfirmation,
             } = getMocks();
 
-            const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+                isDex: true,
+                approvalType: 'ZERO',
+            } as ExchangeTrade;
 
             invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
@@ -498,11 +472,11 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.tradingNew;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(4);
+            expect(store.getActions().length).toEqual(5);
             expect(exchange.transactionId).toBeUndefined();
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
-            expect(exchange.formStep).toEqual('RECEIVING_ADDRESS');
+            expect(exchange.formStep).toEqual('SEND_TRANSACTION');
             expect(response).toBeTruthy();
         });
     });
@@ -517,9 +491,7 @@ describe('confirmExchangeTradeThunk', () => {
             mockProcessResponseData,
             mockNextStep,
             mockTriggerAnalyticsTradeConfirmation,
-        } = getMocks({
-            formStep: 'SEND_APPROVAL_TRANSACTION',
-        });
+        } = getMocks();
 
         const mockResponse = {
             status: 'CONFIRM',
@@ -548,7 +520,7 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.tradingNew;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(4);
+        expect(store.getActions().length).toEqual(5);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);

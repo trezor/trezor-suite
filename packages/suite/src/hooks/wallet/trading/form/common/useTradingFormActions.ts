@@ -17,6 +17,7 @@ import {
     type TradingSellFormProps,
     cryptoIdToSymbol,
     exchangeUtils,
+    tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
@@ -29,7 +30,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber, isChanged } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
@@ -62,6 +63,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     setAccountOnChange,
     setComposedLevels,
 }: TradingUseFormActionsProps<T>): TradingUseFormActionsReturnProps => {
+    const dispatch = useDispatch();
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const accounts = useSelector(selectAccounts);
@@ -221,16 +223,27 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
     };
 
+    // reset preselectedQuote when opening swap form
+    useEffect(() => {
+        const cryptoValue = values?.outputs?.[0]?.amount;
+        const previousCryptoValue = previousValues.current?.outputs?.[0].amount;
+
+        if (cryptoValue === '' && previousCryptoValue === undefined) {
+            dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        }
+    }, [values, previousValues, dispatch]);
+
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {
             const fiatValue = values?.outputs?.[0]?.fiat;
             const cryptoValue = values?.outputs?.[0]?.amount;
-            const fiatChanged = isChanged(previousValues.current?.outputs?.[0].fiat, fiatValue);
-            const cryptoChanged = isChanged(
-                previousValues.current?.outputs?.[0].amount,
-                cryptoValue,
-            );
+
+            const previousFiatValue = previousValues.current?.outputs?.[0].fiat;
+            const previousCryptoValue = previousValues.current?.outputs?.[0].amount;
+
+            const fiatChanged = isChanged(previousFiatValue, fiatValue);
+            const cryptoChanged = isChanged(previousCryptoValue, cryptoValue);
 
             // this will also update crypto amount
             // controlling setMaxOutputId prevents from double request
@@ -241,6 +254,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             // calculateCryptoAmountFromFiat will update crypto amount - avoiding double request
             if (cryptoChanged) {
                 handleSubmit(() => {
+                    dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
                     handleChange();
                 })();
 

@@ -4,7 +4,6 @@ import styled, { useTheme } from 'styled-components';
 import {
     TradingTradeMapProps,
     getTagAndInfoNote,
-    isSendingEvmNativeToken,
     sellUtils,
     tradingExchangeActions,
 } from '@suite-common/trading';
@@ -16,6 +15,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
@@ -107,6 +107,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
         form: {
             state: { isFormLoading },
         },
+        account,
     } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
@@ -116,38 +117,18 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
 
     const selectQuote = getSelectQuoteTyped(context);
 
+    const { navigateToExchangeForm } = useTradingNavigation(account);
+
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
-    const onSelectQuote = async () => {
-        // DEX swap
-        if (isTradingExchangeContext(context) && (quote as ExchangeTrade).isDex) {
-            const { confirmTrade, account } = context;
-
+    const onSelectQuote = () => {
+        if (isTradingExchangeContext(context)) {
             const trade = quote as ExchangeTrade;
-            const receiveAddress = account.descriptor;
-
-            if (!receiveAddress) {
-                return;
-            }
-
-            const result = await confirmTrade({ trade, receiveAddress });
-
-            if (!result) {
-                return;
-            }
-
-            dispatch(
-                tradingExchangeActions.setFormStep(
-                    isSendingEvmNativeToken(trade.send)
-                        ? 'RECEIVING_ADDRESS'
-                        : 'SEND_APPROVAL_TRANSACTION',
-                ),
-            );
+            dispatch(tradingExchangeActions.savePreselectedQuote(trade));
+            navigateToExchangeForm();
         } else {
-            dispatch(tradingExchangeActions.setFormStep('RECEIVING_ADDRESS'));
+            selectQuote(quote);
         }
-
-        selectQuote(quote);
     };
 
     const isSellVerificationRequired =

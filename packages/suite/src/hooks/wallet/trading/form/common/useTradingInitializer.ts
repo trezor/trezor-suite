@@ -1,9 +1,12 @@
 import { useCallback } from 'react';
 
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
+import {
+    INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
+    tradingExchangeActions,
+} from '@suite-common/trading';
 import { useTimer } from '@trezor/react-utils';
 
-import { useDevice } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { UseTradingCommonProps, UseTradingCommonReturnProps } from 'src/types/trading/trading';
 
@@ -12,6 +15,7 @@ export const useTradingInitializer = ({
     pageType,
     isLoading,
 }: UseTradingCommonProps): UseTradingCommonReturnProps => {
+    const dispatch = useDispatch();
     const timer = useTimer();
     const { account } = selectedAccount;
     const { device } = useDevice();
@@ -32,11 +36,12 @@ export const useTradingInitializer = ({
                 }
 
                 if (timer.timeSpent.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {
+                    dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
                     callback();
                 }
             }
         },
-        [timer, pageType, isLoading],
+        [timer, pageType, isLoading, dispatch],
     );
 
     useServerEnvironment();

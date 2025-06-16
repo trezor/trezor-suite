@@ -234,7 +234,9 @@ class InvityAPI {
         }
     };
 
-    doExchangeTrade = async (tradeRequest: ConfirmExchangeTradeRequest): Promise<ExchangeTrade> => {
+    doExchangeTrade = async (
+        tradeRequest: ConfirmExchangeTradeRequest & { approvalFlow?: boolean },
+    ): Promise<ExchangeTrade> => {
         try {
             const response: ExchangeTrade = await this.request(
                 this.EXCHANGE_DO_TRADE,

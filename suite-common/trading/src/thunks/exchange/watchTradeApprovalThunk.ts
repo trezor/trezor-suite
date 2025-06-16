@@ -68,6 +68,7 @@ export const watchTradeApprovalThunk = createThunk(
                 receiveAddress: updatedSelectedQuote.receiveAddress,
                 account,
                 trade: updatedSelectedQuote,
+                approvalFlow: true,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,
