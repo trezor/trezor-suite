@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { ZIndexValues, spacings, zIndices } from '@trezor/theme';
 
-import { useModalTarget } from './ModalProvider';
+import { useModalTarget, useNoBackdrop } from './ModalProvider';
 import { ModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
 import { Padding } from '../../utils/frameProps';
@@ -39,8 +39,11 @@ export const ModalBackdrop = ({
     zIndex = zIndices.modal,
 }: ModalBackdropProps) => {
     const modalTarget = useModalTarget();
+    const noBackdrop = useNoBackdrop();
 
-    const backdrop = (
+    const backdrop = noBackdrop ? (
+        children
+    ) : (
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
             <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndex}>
