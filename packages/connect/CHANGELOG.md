@@ -11,9 +11,9 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.6.1-beta.1
+# 9.6.1-beta.2
 
-This is a special beta release where we allow temporarily remove firmware version check. We do so to let users stuck with old devices that can't update their firmwares to send their funds out.
+Minor improvements and fixes regarding the [New Connect flow in Trezor Suite](https://connect.trezor.io/9/guides/new-connect-flow-in-trezor-suite/).
 
 ## Fixes
 
@@ -43,7 +43,7 @@ This is a special beta release where we allow temporarily remove firmware versio
 # 9.6.0
 
 Starting with Connect version 9.6.0, we are introducing a new integration with Trezor Suite. The new flow is designed to provide a more seamless and user-friendly experience for users interacting with Trezor devices.
-To learn more, please take a look at the full [New Connect flow in Trezor Suite](https://connect.trezor.io/9.6.0-beta.1/guides/new-connect-flow-in-trezor-suite/) article.
+To learn more, please take a look at the full [New Connect flow in Trezor Suite](https://connect.trezor.io/9/guides/new-connect-flow-in-trezor-suite/) article.
 We encourage you to try out the new flow to make sure everything works as expected. If you encounter any issues, please let us know.
 
 This requires one change in the manifest - there is an additional required field `appName` that is used in the permission prompt. Optionally, you can also provide an `appIcon` which will be shown in the future.
