@@ -6,12 +6,9 @@ import { cloneObject } from '@trezor/utils/src/cloneObject';
 import type { CoinInfo, FeeLevel } from '../../types';
 import { Blockchain } from '../Blockchain';
 
-export type Blocks = Array<string | undefined>;
-
 export class MiscFeeLevels {
     coinInfo: CoinInfo;
     levels: FeeLevel[];
-    blocks: Blocks = [];
     // indicates that this.levels are current rates from backend, otherwise they are only the default values from jsons
     wasFetchedSuccessfully: boolean = false;
 

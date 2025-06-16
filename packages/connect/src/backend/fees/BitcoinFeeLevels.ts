@@ -4,13 +4,12 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import type { BitcoinNetworkInfo } from '../../types';
 import { Blockchain } from '../Blockchain';
-import { Blocks, MiscFeeLevels } from './MiscFeeLevels';
+import { MiscFeeLevels } from './MiscFeeLevels';
 import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
 export class BitcoinFeeLevels extends MiscFeeLevels {
     coinInfo: BitcoinNetworkInfo;
     longTermFeeRate: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
-    blocks: Blocks = [];
 
     // override only to narrow down the coinInfo type
     constructor(coinInfo: BitcoinNetworkInfo) {

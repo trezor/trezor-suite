@@ -2,11 +2,10 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import type { EthereumNetworkInfo, FeeLevel } from '../../types';
 import { Blockchain } from '../Blockchain';
-import { Blocks, MiscFeeLevels } from './MiscFeeLevels';
+import { MiscFeeLevels } from './MiscFeeLevels';
 
 export class EthereumFeeLevels extends MiscFeeLevels {
     coinInfo: EthereumNetworkInfo;
-    blocks: Blocks = [];
 
     // override only to narrow down the coinInfo type
     constructor(coinInfo: EthereumNetworkInfo) {
