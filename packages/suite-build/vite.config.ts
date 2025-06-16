@@ -1,9 +1,9 @@
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
-import { readdirSync } from 'fs';
+import fs, { readdirSync } from 'fs';
 import { resolve } from 'path';
-import { Plugin, ViteDevServer, defineConfig } from 'vite';
+import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
 import { suiteVersion } from '../suite/package.json';
@@ -47,6 +47,167 @@ const htmlTemplatePlugin = (): Plugin => ({
         handler: (html: string) => processTemplate(html),
     },
 });
+
+// This helper creates aliases for all workspace packages
+const createWorkspaceAliases = () => {
+    const suiteCommonAliases = readdirSync(resolve(__dirname, '../../suite-common'), {
+        withFileTypes: true,
+    })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => ({
+            find: `@suite-common/${dirent.name}`,
+            replacement: resolve(__dirname, '../../suite-common', dirent.name),
+        }));
+
+    const trezorPackagesAliases = readdirSync(resolve(__dirname, '../'), { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory() && dirent.name !== 'suite-web')
+        .map(dirent => ({
+            find: `@trezor/${dirent.name}`,
+            replacement: resolve(__dirname, '../', dirent.name),
+        }));
+
+    return [...suiteCommonAliases, ...trezorPackagesAliases];
+};
+
+const alias = [
+    {
+        find: /@trezor\/connect$/,
+        replacement: '@trezor/connect-web/src/module',
+    },
+    {
+        find: 'src',
+        replacement: resolve(__dirname, '../suite/src'),
+    },
+    {
+        find: 'crypto',
+        replacement: require.resolve('crypto-browserify'),
+    },
+    {
+        find: 'buffer',
+        replacement: require.resolve('buffer'),
+    },
+    {
+        find: 'stream',
+        replacement: require.resolve('stream-browserify'),
+    },
+    {
+        find: 'vm',
+        replacement: require.resolve('vm-browserify'),
+    },
+    ...createWorkspaceAliases(),
+];
+
+// Plugin to serve sessions-background-sharedworker.js as a complete bundle to be used directly as a web worker
+const sessionsSharedWorkerPlugin = () => {
+    const workerOutDir = resolve(__dirname, '../suite-web/dist/workers');
+    const workerEntryPath = resolve(
+        __dirname,
+        '../transport/src/sessions/background-sharedworker.ts',
+    );
+    const workerFileName = 'sessions-background-sharedworker';
+    const workerOutputPath = resolve(workerOutDir, `${workerFileName}.js`);
+
+    let workerPath: string | null = null;
+
+    const buildWorker = async () => {
+        if (workerPath) {
+            return workerPath;
+        }
+        if (!fs.existsSync(workerOutDir)) {
+            fs.mkdirSync(workerOutDir, { recursive: true });
+        }
+
+        console.log(`Building shared worker from ${workerEntryPath}...`);
+
+        try {
+            await build({
+                configFile: false,
+                resolve: {
+                    alias,
+                },
+                build: {
+                    outDir: workerOutDir,
+                    emptyOutDir: false,
+                    lib: {
+                        entry: workerEntryPath,
+                        formats: ['iife'],
+                        fileName: () => `${workerFileName}.js`,
+                        name: 'TrezorSharedWorker',
+                    },
+                    rollupOptions: {
+                        output: {
+                            inlineDynamicImports: true,
+                        },
+                    },
+                    minify: false,
+                    target: 'es2020',
+                    write: true,
+                },
+                define: {
+                    'process.env.NODE_ENV': JSON.stringify('development'),
+                },
+            });
+
+            console.log(`SharedWorker built successfully at ${workerOutputPath}`);
+            workerPath = workerOutputPath;
+
+            return workerPath;
+        } catch (error) {
+            console.error('Failed to build shared worker:', error);
+
+            return null;
+        }
+    };
+
+    return {
+        name: 'sessions-shared-worker',
+        async configureServer(server: ViteDevServer) {
+            await buildWorker();
+
+            server.watcher.add(workerEntryPath);
+            server.watcher.on('change', async (changedPath: string) => {
+                if (changedPath === workerEntryPath) {
+                    console.log('Shared worker source changed, rebuilding...');
+                    await buildWorker();
+                }
+            });
+
+            // Create middleware to serve the built worker file
+            server.middlewares.use(async (req, res, next) => {
+                if (req.url && /workers\/sessions-background-sharedworker\.js/.test(req.url)) {
+                    console.log('Serving shared worker from middleware');
+                    const actualPath = await buildWorker();
+
+                    try {
+                        if (!actualPath) {
+                            throw new Error('Failed to build shared worker!!');
+                        }
+
+                        if (fs.existsSync(actualPath)) {
+                            const workerCode = fs.readFileSync(actualPath, 'utf-8');
+                            res.setHeader('Content-Type', 'application/javascript');
+                            res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+                            res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+                            res.end(workerCode);
+
+                            return;
+                        } else {
+                            throw new Error(`Worker file not found at ${actualPath}`);
+                        }
+                    } catch (error) {
+                        console.error('Error serving shared worker:', error);
+                        res.statusCode = 500;
+                        res.end(`Error serving shared worker: ${error.message}`);
+
+                        return;
+                    }
+                }
+                next();
+            });
+        },
+    };
+};
+
 // Plugin to handle workers similar to webpack's worker-loader
 const workerPlugin = (): Plugin => ({
     name: 'worker-loader',
@@ -89,27 +250,6 @@ const serveCorePlugin = () => ({
         });
     },
 });
-
-// This helper creates aliases for all workspace packages
-const createWorkspaceAliases = () => {
-    const suiteCommonAliases = readdirSync(resolve(__dirname, '../../suite-common'), {
-        withFileTypes: true,
-    })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => ({
-            find: `@suite-common/${dirent.name}`,
-            replacement: resolve(__dirname, '../../suite-common', dirent.name),
-        }));
-
-    const trezorPackagesAliases = readdirSync(resolve(__dirname, '../'), { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory() && dirent.name !== 'suite-web')
-        .map(dirent => ({
-            find: `@trezor/${dirent.name}`,
-            replacement: resolve(__dirname, '../', dirent.name),
-        }));
-
-    return [...suiteCommonAliases, ...trezorPackagesAliases];
-};
 
 const commitId = execSync('git rev-parse HEAD').toString().trim();
 
@@ -187,6 +327,7 @@ export default defineConfig({
         bufferPolyfillPlugin(),
         staticAliasPlugin(),
         serveCorePlugin(),
+        sessionsSharedWorkerPlugin(),
         viteCommonjs(),
         workerPlugin(),
         wasm(),
@@ -205,33 +346,7 @@ export default defineConfig({
         }),
     ],
     resolve: {
-        alias: [
-            {
-                find: /@trezor\/connect$/,
-                replacement: '@trezor/connect-web/src/module',
-            },
-            {
-                find: 'src',
-                replacement: resolve(__dirname, '../suite/src'),
-            },
-            {
-                find: 'crypto',
-                replacement: require.resolve('crypto-browserify'),
-            },
-            {
-                find: 'buffer',
-                replacement: require.resolve('buffer'),
-            },
-            {
-                find: 'stream',
-                replacement: require.resolve('stream-browserify'),
-            },
-            {
-                find: 'vm',
-                replacement: require.resolve('vm-browserify'),
-            },
-            ...createWorkspaceAliases(),
-        ],
+        alias,
         preserveSymlinks: true,
     },
     define: {
