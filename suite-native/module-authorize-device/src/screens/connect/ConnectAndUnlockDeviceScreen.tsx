@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 
 import { selectIsDeviceAuthorized, selectIsDeviceConnected } from '@suite-common/wallet-core';
-import { isBluetoothEnabled } from '@suite-native/bluetooth';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -24,6 +24,8 @@ export const ConnectAndUnlockDeviceScreen = ({
     AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
     RootStackParamList
 >) => {
+    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
+
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isFocused = useIsFocused();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);

@@ -18,7 +18,6 @@
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/bluetooth": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/firmware": "workspace:*",

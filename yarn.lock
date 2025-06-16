@@ -10484,8 +10484,8 @@ __metadata:
     "@suite-common/bluetooth": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -10496,7 +10496,6 @@ __metadata:
     react-native: "npm:0.76.1"
     react-native-permissions: "npm:5.2.5"
     react-native-reanimated: "npm:^3.16.7"
-    react-native-restart: "npm:0.0.27"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -11070,7 +11069,6 @@ __metadata:
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/bluetooth": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"

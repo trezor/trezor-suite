@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
-import { isBluetoothEnabled } from '@suite-native/bluetooth';
 import { DeviceImage } from '@suite-native/device';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
@@ -42,6 +42,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const EmptyPortfolioCrossroads = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
+    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
 
     const handleConnectDevice = () => {
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {

@@ -16,7 +16,6 @@ import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
-import { BluetoothCard } from '../components/BluetoothCard';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
@@ -51,7 +50,6 @@ export const DevUtilsScreen = () => {
                     </VStack>
                 </Card>
                 <FeatureFlags />
-                <BluetoothCard />
                 <Card>
                     <VStack spacing="sp16">
                         {isDevelopOrDebugEnv() && (

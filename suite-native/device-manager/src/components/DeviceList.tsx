@@ -19,7 +19,7 @@ import {
     TextDivider,
     VStack,
 } from '@suite-native/atoms';
-import { isBluetoothEnabled } from '@suite-native/bluetooth';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
@@ -29,9 +29,9 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
-import { useDeviceManager } from '../hooks/useDeviceManager';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,
@@ -130,6 +130,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
+    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
     const device = useSelector(selectSelectedDevice);
     const notSelectedInstancelessDevices = useSelector(selectInstacelessUnselectedDevices);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);

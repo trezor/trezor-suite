@@ -1,5 +1,4 @@
 export * from './types';
-export * from './featureFlag';
 export * from './bluetoothSlice';
 export * from './selectors';
 export * from './hooks/useBluetoothAdapter';

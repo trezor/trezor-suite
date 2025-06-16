@@ -4,6 +4,7 @@ import { isAndroid } from '@trezor/env-utils';
 
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
+    IsBluetoothEnabled: 'isBluetoothEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
     IsStellarSupportEnabled: 'isStellarSupportEnabled',
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
@@ -26,6 +27,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_DEVICE_CONNECT_ENABLED === 'true' ||
         (isAndroid() && process.env.EXPO_PUBLIC_FF_IS_DEVICE_CONNECT_ENABLED !== 'false'),
+    [FeatureFlag.IsBluetoothEnabled]: process.env.EXPO_PUBLIC_FF_IS_BLUETOOTH_ENABLED === 'true',
     [FeatureFlag.IsCardanoSendEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
     [FeatureFlag.IsStellarSupportEnabled]:
@@ -44,6 +46,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
+    FeatureFlag.IsBluetoothEnabled,
     FeatureFlag.IsCardanoSendEnabled,
     FeatureFlag.IsStellarSupportEnabled,
     FeatureFlag.IsConnectPopupEnabled,

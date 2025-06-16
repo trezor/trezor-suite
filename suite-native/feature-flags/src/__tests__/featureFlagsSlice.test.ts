@@ -17,6 +17,7 @@ describe('featureFlagsSlice', () => {
 
             expect(initialState).toEqual({
                 isDeviceConnectEnabled: true,
+                isBluetoothEnabled: false,
                 isCardanoSendEnabled: false,
                 isStellarSupportEnabled: false,
                 isConnectPopupEnabled: false,
@@ -40,6 +41,7 @@ describe('featureFlagsSlice', () => {
 
             expect(initialState).toEqual({
                 isDeviceConnectEnabled: false,
+                isBluetoothEnabled: false,
                 isCardanoSendEnabled: false,
                 isStellarSupportEnabled: false,
                 isConnectPopupEnabled: false,
