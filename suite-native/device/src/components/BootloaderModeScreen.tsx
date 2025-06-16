@@ -7,7 +7,6 @@ import { Button, Card, Pictogram, Text, TextDivider, VStack } from '@suite-nativ
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackRoutes,
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     RootStackParamList,
@@ -45,12 +44,6 @@ export const BootloaderModeScreen = () => {
             params: {
                 screen: WipeDeviceStackRoutes.FactoryReset,
             },
-        });
-    };
-
-    const handleNavigateToConnectAndUnlock = () => {
-        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
         });
     };
 
@@ -101,11 +94,6 @@ export const BootloaderModeScreen = () => {
                     <Text color="textSubdued" textAlign="center">
                         <Translation id="moduleDevice.bootloaderScreen.reconnectCard.description" />
                     </Text>
-                    <VStack style={applyStyle(buttonWrapperStyle)}>
-                        <Button colorScheme="blueBold" onPress={handleNavigateToConnectAndUnlock}>
-                            <Translation id="moduleDevice.bootloaderScreen.reconnectCard.buttonTitle" />
-                        </Button>
-                    </VStack>
                 </VStack>
             </VStack>
         </Screen>
