@@ -959,6 +959,8 @@ export const icons = {
     escalatorDownFilled: require('../assets/escalatorDownFilled.svg'),
     escalatorUp: require('../assets/escalatorUp.svg'),
     escalatorUpFilled: require('../assets/escalatorUpFilled.svg'),
+    everstakeLogo: require('../assets/everstakeLogo.svg'),
+    everstakeLogoText: require('../assets/everstakeLogoText.svg'),
     exam: require('../assets/exam.svg'),
     examFilled: require('../assets/examFilled.svg'),
     exclude: require('../assets/exclude.svg'),
