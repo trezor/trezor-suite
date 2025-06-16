@@ -27,9 +27,6 @@ const claimInterface = (deviceName: string, interfaceNumber: number) =>
 const releaseInterface = (deviceName: string, interfaceNumber: number) =>
     ReactNativeUsbModule.releaseInterface(deviceName, interfaceNumber);
 
-const selectConfiguration = (deviceName: string, configurationValue: number) =>
-    ReactNativeUsbModule.selectConfiguration(deviceName, configurationValue);
-
 const transferIn = async (deviceName: string, endpointNumber: number, length: number) => {
     const perf = performance.now();
     const data = await ReactNativeUsbModule.transferIn(deviceName, endpointNumber, length)
@@ -78,8 +75,7 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
     reset: () => reset(device.deviceName),
     close: () => close(device.deviceName),
     forget: createNoop('forget'),
-    selectConfiguration: (configurationValue: number) =>
-        selectConfiguration(device.deviceName, configurationValue),
+    selectConfiguration: createNoop('selectConfiguration'),
     claimInterface: (interfaceNumber: number) => claimInterface(device.deviceName, interfaceNumber),
     releaseInterface: (interfaceNumber: number) =>
         releaseInterface(device.deviceName, interfaceNumber),

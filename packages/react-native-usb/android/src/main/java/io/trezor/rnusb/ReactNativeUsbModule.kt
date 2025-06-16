@@ -80,10 +80,6 @@ class ReactNativeUsbModule : Module() {
             return@AsyncFunction closeDevice(deviceName)
         }
 
-        AsyncFunction("selectConfiguration") { deviceName: String, configurationIndex: Int ->
-            return@AsyncFunction selectConfiguration(deviceName, configurationIndex)
-        }
-
         AsyncFunction("claimInterface") { deviceName: String, interfaceNumber: Int ->
             return@AsyncFunction claimInterface(deviceName, interfaceNumber)
         }
@@ -272,21 +268,6 @@ class ReactNativeUsbModule : Module() {
         pendingRequests.clear()
         openedConnections.values.forEach { it.close() }
         openedConnections.clear()
-    }
-
-    private fun selectConfiguration(deviceName: String, configurationIndex: Int) {
-        Log.d(LOG_TAG, "Selecting configuration $configurationIndex for device $deviceName")
-        val device = getDeviceByName(deviceName)
-        val configurationValue = device.getConfiguration(configurationIndex)
-        if (configurationValue == null) {
-            Log.e(
-                LOG_TAG,
-                "Failed to get configuration $configurationIndex for device ${device.deviceName}"
-            )
-            throw Exception("Failed to get configuration $configurationIndex for device ${device.deviceName}")
-        }
-        val usbConnection = getOpenedConnection(deviceName)
-        usbConnection.setConfiguration(configurationValue)
     }
 
     private fun claimInterface(deviceName: String, interfaceNumber: Int) {
