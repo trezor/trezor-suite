@@ -25,7 +25,7 @@ type VariantMapArgs = {
 export const mapPaddingTypeToPadding = ({ paddingType }: PaddingMapArgs): Padding | undefined => {
     const paddingMap: Record<PaddingType, Padding | undefined> = {
         none: undefined,
-        tiny: { vertical: spacings.xxxs, horizontal: spacings.xxs },
+        tiny: { vertical: spacings.xs, horizontal: spacings.sm },
         small: { vertical: spacings.sm, horizontal: spacings.md },
         normal: { vertical: spacings.md, horizontal: spacings.lg },
         large: { vertical: spacings.lg, horizontal: spacings.xl },
