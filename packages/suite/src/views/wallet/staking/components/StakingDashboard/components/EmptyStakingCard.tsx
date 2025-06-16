@@ -19,17 +19,20 @@ import { spacings } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingFeature, Translation } from 'src/components/suite';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 
 export const EmptyStakingCard = () => {
     const { isBelowLaptop } = useLayoutSize();
     const account = useSelector(selectSelectedAccount);
+    const { device } = useDevice();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
+    const isDeviceConnected = device?.connected && device?.available;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
@@ -98,6 +101,7 @@ export const EmptyStakingCard = () => {
         <DashboardSection
             heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
         >
+            {!isDeviceConnected && <ConnectDeviceGenericPromo />}
             {isDiscoveryRunning && <DiscoveryWarning />}
             <Card>
                 <Column>
