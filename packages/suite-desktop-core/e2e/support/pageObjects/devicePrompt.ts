@@ -6,6 +6,7 @@ export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
     readonly connectDevicePrompt: Locator;
     readonly modal: Locator;
+    readonly modalCloseButton: Locator;
     private readonly paginatedText: Locator;
     private readonly paginatedTextSeparator: Locator;
     readonly chunkedText: Locator;
@@ -35,6 +36,7 @@ export class DevicePrompt {
     constructor(private page: Page) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
+        this.modalCloseButton = page.getByTestId('@modal/close-button');
         this.modal = page.getByTestId('@modal');
         this.paginatedText = page.locator("[data-testid-alt='@device-display/paginated-text']");
         this.paginatedTextSeparator = page.getByTestId('@device-display/paginated-text/separator');
@@ -182,5 +184,11 @@ export class DevicePrompt {
         }
 
         return lines[lines.length - 1];
+    }
+
+    @step()
+    async closeModal() {
+        await this.modalCloseButton.click();
+        await expect(this.modal).toBeHidden();
     }
 }

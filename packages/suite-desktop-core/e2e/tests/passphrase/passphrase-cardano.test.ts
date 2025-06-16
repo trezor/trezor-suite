@@ -61,7 +61,7 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
         await trezorUserEnvLink.pressYes(); // Confirm receive address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
-        await page.getByTestId('@modal/close-button').click();
+        await devicePrompt.closeModal();
         await expect(walletPage.revealAddressButton).toBeVisible();
 
         // restart device again

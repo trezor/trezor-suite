@@ -43,34 +43,42 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
         await expect(page.getByTestId('@metadata/copy-address-button')).not.toBeDisabled();
 
-        await page.getByTestId('@modal/close-button').click();
+        await devicePrompt.closeModal();
 
         // disconnect and reconnect device
         await trezorUserEnvLink.stopEmu();
         await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
+        await dashboardPage.deviceSwitchingOpenButton.click();
+        // Clicking on the device switcher button should either open the modal or show the "Unavailable while loading" message
+        await Promise.race([
+            expect(dashboardPage.deviceSwitcherModal).toBeVisible(),
+            expect(page.getByText('Unavailable while loading')).toBeVisible(),
+        ]);
+        const deviceSwitchUnavailable = page.getByText('Unavailable while loading').isVisible();
+        // If the device switcher is unavailable, we need to wait for discovery to finish and then open the device switcher again
+        if (await deviceSwitchUnavailable) {
+            await page.discoveryShouldFinish();
+            await dashboardPage.openDeviceSwitcher();
+        }
 
-        // Passphrase abc again. now it is cached in device
-        await dashboardPage.openDeviceSwitcher();
+        await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
         await dashboardPage.walletAtIndex(1).click();
         await walletPage.receiveButton.click();
         await expect(page.getByTestId('@wallet/receive/used-address/0')).not.toBeVisible();
         await expect(walletPage.revealAddressButton).not.toBeDisabled();
         await walletPage.revealAddressButton.click();
-
-        // re-enter passphrase
+        await expect(page.getByText('Confirm passphrase')).toBeVisible();
         await dashboardPage.passphraseInput.fill('abc');
         await dashboardPage.passphraseSubmitButton.click();
         await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-        await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
-
-        // check address
+        await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase, shows your address
         await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(abcAddr));
         await devicePrompt.confirmOnDevicePromptIsShown();
         await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
         await trezorUserEnvLink.pressYes(); // confirm address
-
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
         await expect(page.getByTestId('@metadata/copy-address-button')).not.toBeDisabled();
+        await devicePrompt.closeModal();
 
         await page.getByTestId('@modal/close-button').click();
 

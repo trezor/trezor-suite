@@ -49,7 +49,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).not.toBeDisabled();
 
-            await page.getByTestId('@modal/close-button').click();
+            await devicePrompt.closeModal();
 
             // add 2nd hidden wallet
             await dashboardPage.openDeviceSwitcher();
@@ -64,6 +64,9 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
 
             // go to receive
             await walletPage.receiveButton.click();
+            await test.step('Verify no address is yet in table', async () => {
+                await expect(page.getByTestId('@wallet/receive/used-address/0')).not.toBeVisible();
+            });
 
             // no address should be in table yet
             await expect(page.getByTestId('@wallet/receive/used-address/0')).not.toBeVisible();
@@ -80,7 +83,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).not.toBeDisabled();
 
-            await page.getByTestId('@modal/close-button').click();
+            await devicePrompt.closeModal();
 
             // now go back to the 1st wallet, which is cached in device
             await dashboardPage.openDeviceSwitcher();
@@ -102,7 +105,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).not.toBeDisabled();
 
-            await page.getByTestId('@modal/close-button').click();
+            await devicePrompt.closeModal();
         },
     );
 

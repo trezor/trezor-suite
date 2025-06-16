@@ -21,7 +21,7 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         async ({ page, settingsPage, devicePrompt, trezorUserEnvLink }) => {
             await test.step('Verify firmware modal', async () => {
                 await page.getByTestId('@settings/device/update-button').click();
-                await page.getByTestId('@modal/close-button').click();
+                await devicePrompt.closeModal();
             });
 
             await test.step("Change and verify device's name", async () => {

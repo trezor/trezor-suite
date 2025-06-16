@@ -82,7 +82,7 @@ export const PassphraseDuplicateModal = ({
                     <H3 data-testid="@passphrase-duplicate-header">
                         <Translation id="TR_WALLET_DUPLICATE_TITLE" />
                     </H3>
-                    <Text variant="tertiary">
+                    <Text data-testid="@passphrase-duplicate-description" variant="tertiary">
                         <Translation id="TR_WALLET_DUPLICATE_DESC" />
                     </Text>
                     <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="stretch">

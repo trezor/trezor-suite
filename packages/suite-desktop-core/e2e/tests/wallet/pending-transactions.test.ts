@@ -94,7 +94,7 @@ test.describe(
                     }
                     transaction.txid = txid;
 
-                    await page.getByTestId('@modal/close-button').click();
+                    await devicePrompt.closeModal();
                 }
             });
 

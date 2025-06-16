@@ -25,7 +25,14 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ page, onboardingPage, dashboardPage, walletPage, trezorUserEnvLink }) => {
+        async ({
+            page,
+            onboardingPage,
+            dashboardPage,
+            walletPage,
+            devicePrompt,
+            trezorUserEnvLink,
+        }) => {
             const discoveryBar = page.locator(
                 '[data-test="\\@wallet\\/discovery-progress-bar"] div',
             );
@@ -119,7 +126,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
                 await walletPage.receiveButton.click();
                 await walletPage.revealAddressButton.click();
                 await expect(page.getByTestId('@modal')).toBeVisible();
-                await page.getByTestId('@modal/close-button').click();
+                await devicePrompt.closeModal();
                 await expect(page.getByTestId('@modal')).not.toBeVisible();
             });
 

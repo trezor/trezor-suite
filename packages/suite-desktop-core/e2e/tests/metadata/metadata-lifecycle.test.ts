@@ -62,7 +62,7 @@ test.describe(
             await trezorUserEnvLink.pressYes();
 
             // Close connect to data provider modal
-            await page.getByTestId('@modal/close-button').click();
+            await devicePrompt.closeModal();
 
             // Forget device and reload
             await page.getByTestId('@menu/switch-device').click();
