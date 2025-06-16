@@ -32,14 +32,15 @@ describe('ExchangeTab', () => {
         mockHasBitcoinOnlyFirmware = false;
     });
 
-    it('should render tab placeholder', async () => {
+    it('should render exchange form', async () => {
         const { getByText } = await renderExchangeTab({
             featureFlags: {
                 [FeatureFlag.IsTradingExchangeEnabled]: true,
             },
         });
 
-        expect(getByText('Exchange Tab placeholder')).toBeOnTheScreen();
+        expect(getByText('You pay')).toBeOnTheScreen();
+        expect(getByText('You get')).toBeOnTheScreen();
     });
 
     it('should render disabled info when exchange FF is not enabled', async () => {

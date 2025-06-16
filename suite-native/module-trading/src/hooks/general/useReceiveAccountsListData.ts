@@ -7,7 +7,7 @@ import {
     DeviceRootState,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types/';
+import { Account } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 
 import { SectionListData } from './useSectionList';

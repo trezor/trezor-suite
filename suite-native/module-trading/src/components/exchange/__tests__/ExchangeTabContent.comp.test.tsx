@@ -36,11 +36,12 @@ describe('ExchangeTab', () => {
     };
 
     const expectExchangeForm = () => {
-        expect(screen.getByText('Exchange Tab placeholder')).toBeTruthy();
+        expect(screen.getByText('You pay')).toBeOnTheScreen();
+        expect(screen.getByText('You get')).toBeOnTheScreen();
     };
 
     const expectServerOffline = () => {
-        expect(screen.getByText("It's not you, it's us.")).toBeTruthy();
+        expect(screen.getByText("It's not you, it's us.")).toBeOnTheScreen();
     };
 
     it('should render Exchange skeleton when isLoading is true', async () => {

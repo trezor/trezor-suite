@@ -1,12 +1,5 @@
 import { Platform } from 'react-native';
-import {
-    FadeIn,
-    LinearTransition,
-    interpolateColor,
-    useAnimatedStyle,
-    useDerivedValue,
-    withTiming,
-} from 'react-native-reanimated';
+import { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -18,6 +11,7 @@ import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance
 import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useAnimatedBorderStyle } from '../../hooks/general/useAnimatedBorderStyle';
 import { CardTitle } from '../general/CardTitle';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 
@@ -38,20 +32,6 @@ const buySectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
         gap: spacings.sp8,
     }),
 );
-
-const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
-    const { utils } = useNativeStyles();
-    const progress = useDerivedValue(() => withTiming(isAmountInputActive ? 1 : 0));
-
-    return useAnimatedStyle(() => ({
-        borderColor: interpolateColor(
-            progress.value,
-            [0, 1],
-            [utils.colors.backgroundSurfaceElevation1, utils.colors.borderInputDefault],
-        ) as `rgba(${number}, ${number}, ${number}, ${number})`,
-        borderWidth: utils.borders.widths.large,
-    }));
-};
 
 export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardProps) => {
     const { applyStyle } = useNativeStyles();

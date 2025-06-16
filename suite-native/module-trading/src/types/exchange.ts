@@ -5,12 +5,14 @@ import type { UseFormReturn } from '@suite-native/forms';
 
 import { BaseFormValues, ReceiveAccount, TradeableAsset } from './general';
 
-export type ExchangeFormValues = BaseFormValues<'sendValue' | 'receiveValue', ExchangeTrade> & {
+export type ExchangeFormValues = BaseFormValues<
+    'sendCryptoAmount' | 'receiveCryptoAmount',
+    ExchangeTrade
+> & {
+    sendAsset: TradeableAsset | undefined;
     sendAccount: Account | undefined;
-    sendCryptoAmount: string;
     receiveAsset: TradeableAsset | undefined;
     receiveAccount: ReceiveAccount | undefined;
-    receiveCryptoAmount: string;
 };
 
 export type ExchangeFormType = UseFormReturn<ExchangeFormValues>;

@@ -50,7 +50,7 @@ describe('ExchangeForm', () => {
 
         it('should display Done button when any input is active', async () => {
             act(() => {
-                form.setValue('focusedValue', 'sendValue');
+                form.setValue('focusedValue', 'sendCryptoAmount');
             });
             const { getByText, queryByText } = await renderExchangeForm();
 

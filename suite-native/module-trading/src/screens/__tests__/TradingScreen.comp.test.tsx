@@ -93,7 +93,8 @@ describe('TradingScreen', () => {
     };
 
     const expectExchangeForm = () => {
-        expect(screen.getByText('Exchange Tab placeholder')).toBeOnTheScreen();
+        expect(screen.getByText('You pay')).toBeOnTheScreen();
+        expect(screen.getByText('You get')).toBeOnTheScreen();
     };
 
     const expectDeviceOffline = () => {
