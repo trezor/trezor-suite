@@ -314,4 +314,11 @@ export const routes = [
         pattern: '/notifications',
         app: 'notifications',
     },
+    {
+        name: 'connect-index',
+        pattern: '/connect',
+        app: 'connect',
+        isForegroundApp: true,
+        isFullscreenApp: true,
+    },
 ] as const;

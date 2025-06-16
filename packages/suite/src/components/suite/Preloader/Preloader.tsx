@@ -20,6 +20,7 @@ import {
     selectSuiteFlags,
 } from 'src/reducers/suite/suiteReducer';
 import type { AppState } from 'src/types/suite';
+import { Connect } from 'src/views/connect';
 import { Onboarding } from 'src/views/onboarding';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
@@ -49,6 +50,8 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
             return SuiteStart;
         case 'onboarding':
             return Onboarding;
+        case 'connect':
+            return Connect;
         default:
             return undefined;
     }

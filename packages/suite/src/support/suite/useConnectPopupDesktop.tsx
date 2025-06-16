@@ -13,8 +13,10 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { SUITE } from 'src/actions/suite/constants';
 import { CONTEXT_NONE, CONTEXT_USER } from 'src/actions/suite/constants/modalConstants';
 import { onCancel as cancelModal, openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
+import { selectRouterApp } from 'src/reducers/suite/routerReducer';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
@@ -119,6 +121,7 @@ export const useConnectPopupDesktop = () => {
     // Modal opening control
     const modalContext = useSelector(state => state.modal.context);
     const modalType = useSelector(selectModalType);
+    const routerApp = useSelector(selectRouterApp);
     useEffect(() => {
         const isConnectModal =
             modalContext === CONTEXT_USER &&
@@ -137,6 +140,10 @@ export const useConnectPopupDesktop = () => {
                 | 'connect-address-confirmation'
                 | 'connect-error',
         ) => {
+            // Router
+            if (routerApp !== 'connect') {
+                dispatch(goto('connect-index'));
+            }
             // Prevent duplicate opening of the same modal
             // And also prevent opening connect modals if different modal is already open
             if (modalType !== type && (modalContext === CONTEXT_NONE || isConnectModal)) {
@@ -166,10 +173,11 @@ export const useConnectPopupDesktop = () => {
             default: {
                 if (isConnectModal) {
                     dispatch(cancelModal());
+                    dispatch(goto('suite-index'));
                 }
 
                 return;
             }
         }
-    }, [popupCall?.state, modalType, modalContext, dispatch]);
+    }, [popupCall?.state, modalType, modalContext, dispatch, routerApp]);
 };
