@@ -1,8 +1,10 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
 import {
+    DeviceReducerState,
     composeSendFormTransactionFeeLevelsThunk,
     prepareDeviceReducer,
 } from '@suite-common/wallet-core';
@@ -57,6 +59,10 @@ const fees: FeesState = {
     },
 };
 
+jest.mock('../createPaymentRequestsThunk', () => ({
+    createPaymentRequestsThunk: jest.fn(),
+}));
+
 const mockedSuiteReducer = createReducer(
     {
         ...fees,
@@ -65,6 +71,16 @@ const mockedSuiteReducer = createReducer(
 );
 
 describe('recomposeAndSignTxThunk', () => {
+    beforeEach(() => {
+        // Mock createPaymentRequestsThunk to return empty array by default
+        jest.mocked(tradingThunks.createPaymentRequestsThunk).mockImplementation(
+            createThunk(
+                tradingThunks.createPaymentRequestsThunk.typePrefix,
+                (_, { fulfillWithValue }) => fulfillWithValue([]),
+            ),
+        );
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -84,6 +100,16 @@ describe('recomposeAndSignTxThunk', () => {
     const getMocks = (initialTradingState?: Partial<TradingState>) => {
         const account = accountBtc as Account;
         const device = testMocks.getSuiteDevice();
+
+        const deviceState: Partial<DeviceReducerState> = {
+            selectedDevice: {
+                features: {
+                    major_version: 2,
+                    minor_version: 8,
+                    patch_version: 11,
+                },
+            } as TrezorDevice,
+        };
 
         const store = configureMockStore({
             extra: {},
@@ -106,7 +132,10 @@ describe('recomposeAndSignTxThunk', () => {
                 },
                 device: {
                     devices: [device],
-                    selectedDevice: device,
+                    selectedDevice: {
+                        ...device,
+                        ...deviceState.selectedDevice,
+                    },
                 },
             },
         });
@@ -515,6 +544,140 @@ describe('recomposeAndSignTxThunk', () => {
             payload: {
                 txid: 'txid',
             },
+        });
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('should create payment requests when SLIP24 is active and conditions are met', async () => {
+        const { store, account } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+            },
+        });
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid-with-payment-requests',
+            },
+        });
+
+        const mockPaymentRequests = [
+            {
+                recipient_name: 'Test Exchange',
+                amount: '100000',
+                nonce: 'test-nonce',
+                signature: 'test-signature',
+                memos: [],
+            },
+        ];
+
+        // Mock createPaymentRequestsThunk to return payment requests
+        jest.mocked(tradingThunks.createPaymentRequestsThunk).mockImplementationOnce(
+            createThunk(
+                tradingThunks.createPaymentRequestsThunk.typePrefix,
+                (_, { fulfillWithValue }) => fulfillWithValue(mockPaymentRequests),
+            ),
+        );
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            data: {},
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: {
+                    ...account,
+                    networkType: 'bitcoin' as const,
+                } as Account,
+                address: 'address',
+                amount: '0.1',
+                isSlip24Active: true,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(response.payload).toEqual({
+            success: true,
+            payload: {
+                txid: 'txid-with-payment-requests',
+            },
+        });
+        expect(tradingThunks.createPaymentRequestsThunk).toHaveBeenCalledWith({
+            type: expect.any(String), // activeSection from state
+            account: expect.objectContaining({
+                networkType: 'bitcoin',
+            }),
+            composedLevels: expect.objectContaining({
+                type: 'final',
+            }),
+        });
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledWith({
+            formState: expect.any(Object),
+            precomposedTransaction: expect.any(Object),
+            selectedAccount: expect.any(Object),
+            paymentRequests: mockPaymentRequests,
+        });
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not create payment requests when SLIP24 is not active', async () => {
+        const { store, account } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+            },
+        });
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid-without-payment-requests',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            data: {},
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: {
+                    ...account,
+                    networkType: 'bitcoin',
+                } as Account,
+                address: 'address',
+                amount: '0.1',
+                isSlip24Active: false,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(tradingThunks.createPaymentRequestsThunk).not.toHaveBeenCalled();
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledWith({
+            formState: expect.any(Object),
+            precomposedTransaction: expect.any(Object),
+            selectedAccount: expect.any(Object),
+            paymentRequests: [],
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
     });
