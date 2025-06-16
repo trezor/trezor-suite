@@ -49,6 +49,7 @@ const Description = styled.div`
 
 type PassphraseTypeCardContentProps = {
     submitLabel: ReactNode;
+    submitting?: boolean;
     submitVariant?: ButtonVariant;
     type: WalletType;
     deviceLoading?: boolean;
@@ -78,6 +79,7 @@ export const PassphraseTypeCardContent = ({
     value,
     setValue,
     submitLabel,
+    submitting,
     submitVariant = 'primary',
     showAsciiBanner,
     showPassword,
@@ -209,6 +211,7 @@ export const PassphraseTypeCardContent = ({
                                             isPassphraseTooLong ||
                                             deviceLoading
                                         }
+                                        isLoading={submitting}
                                         variant={submitVariant}
                                         onClick={() => submit(value)}
                                         isFullWidth

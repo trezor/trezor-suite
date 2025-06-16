@@ -23,10 +23,19 @@ const update = (draft: Discovery, payload: { status: DiscoveryStatus; path: Devi
         (payload.status.status === 'progress' && payload.status.hasLoadedAnyNonEmptyAccount) ||
         undefined;
 
+    const statusChanged = payload.status.status && currentStatus.status !== payload.status.status;
+
     draft[payload.path] = {
         ...currentStatus,
         ...payload.status,
         ...{ hasLoadedAnyNonEmptyAccount },
+        ...{
+            passphraseSubmitted:
+                payload.status.passphraseSubmitted ?? currentStatus.passphraseSubmitted,
+        },
+        // NOTE: this flag is used for just one status, so whene status is changed, make it undefined
+        // eg. submitting "first" passphrase and then confirming the passphrase, then we want submitted false again
+        ...(statusChanged ? { passphraseSubmitted: undefined } : {}),
     };
 };
 

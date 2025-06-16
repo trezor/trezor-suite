@@ -16,6 +16,7 @@ type EnterPassphraseProps = {
     onDeviceOffer: boolean;
     device: TrezorDevice;
     deviceLoading?: boolean;
+    submitting?: boolean;
     onBack: () => void;
     onCancel: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
@@ -25,6 +26,7 @@ export const EnterPassphrase = ({
     device,
     deviceLoading,
     onDeviceOffer,
+    submitting,
     onBack,
     onCancel,
     onSubmit,
@@ -71,6 +73,7 @@ export const EnterPassphrase = ({
                     <PassphraseTypeCard
                         deviceLoading={deviceLoading}
                         submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
+                        submitting={submitting}
                         type="hidden"
                         singleColModal
                         offerPassphraseOnDevice={onDeviceOffer}

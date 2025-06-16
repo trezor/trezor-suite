@@ -61,6 +61,7 @@ export type PassphraseTypeCardProps = {
     description?: ReactNode;
     deviceLoading?: boolean;
     submitLabel: ReactNode;
+    submitting?: boolean;
     type: WalletType;
     offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
@@ -99,9 +100,11 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
     } = props;
     const submit = useCallback(
         (value2: string, passphraseOnDevice?: boolean) => {
-            onSubmit(value2, passphraseOnDevice);
+            if (!props.submitting) {
+                onSubmit(value2, passphraseOnDevice);
+            }
         },
-        [onSubmit],
+        [onSubmit, props.submitting],
     );
 
     const isBip39 = deviceBackup === 'Bip39';
@@ -159,6 +162,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                 <PassphraseTypeCardContent
                     deviceLoading={deviceLoading}
                     submitLabel={submitLabel}
+                    submitting={props.submitting}
                     submitVariant={nonAsciiChars && !isBip39 ? 'warning' : 'primary'}
                     value={value}
                     setValue={setValue}

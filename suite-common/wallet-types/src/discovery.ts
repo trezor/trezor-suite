@@ -18,6 +18,7 @@ type CommonDiscoveryStatus = {
     failed?: FailedAccount[];
     passphraseOnDevice?: boolean;
     startTimestamp?: number;
+    passphraseSubmitted?: boolean;
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &

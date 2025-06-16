@@ -12,6 +12,7 @@ type PassphraseWalletIsNotExistFlowProps = {
     passphraseState: string;
     loading: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
+    submittingPassphrase?: boolean;
 };
 
 export const PassphraseWalletIsNotExistFlow = ({
@@ -20,6 +21,7 @@ export const PassphraseWalletIsNotExistFlow = ({
     passphraseState,
     loading,
     onSubmit,
+    submittingPassphrase,
 }: PassphraseWalletIsNotExistFlowProps) => {
     const dispatch = useDispatch();
 
@@ -44,6 +46,7 @@ export const PassphraseWalletIsNotExistFlow = ({
             <EnterPassphrase
                 deviceLoading={loading}
                 device={device}
+                submitting={submittingPassphrase}
                 onDeviceOffer={deviceOffer}
                 onBack={() => {
                     dispatch(cancelDiscoveryThunk(device));

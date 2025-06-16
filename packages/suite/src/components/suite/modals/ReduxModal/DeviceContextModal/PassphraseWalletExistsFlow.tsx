@@ -17,6 +17,7 @@ type PassphraseWalletExistsFlowProps = {
     deviceOffer: boolean;
     authConfirmation?: boolean;
     passphraseState: string;
+    submittingPassphrase: boolean;
     loading: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
 };
@@ -26,6 +27,7 @@ export const PassphraseWalletExistsFlow = ({
     device,
     deviceOffer,
     passphraseState,
+    submittingPassphrase,
     loading,
     onSubmit,
 }: PassphraseWalletExistsFlowProps) => {
@@ -99,6 +101,7 @@ export const PassphraseWalletExistsFlow = ({
         <EnterPassphrase
             deviceLoading={loading}
             device={device}
+            submitting={submittingPassphrase}
             onDeviceOffer={deviceOffer}
             onBack={onCancel}
             onCancel={onCancel}

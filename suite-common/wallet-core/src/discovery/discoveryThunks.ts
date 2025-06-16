@@ -500,6 +500,18 @@ export const runDiscoveryThunk = createThunk(
                 console.warn('No networks to discover, todo: stop discovery');
             }
 
+            // NOTE: sync set discovery status to progress to make sure that there aren't some hanging states
+            // before asnyc onBundleProgress is called which sets progress
+            dispatch(
+                discoveryActions.updateDiscovery(
+                    {
+                        status: 'progress',
+                        total: Infinity,
+                        progress: 0,
+                    },
+                    device.path,
+                ),
+            );
             const result = await TrezorConnect.discoverAccounts({
                 device: {
                     instance,
@@ -792,19 +804,22 @@ export const submitPassphrase = createThunk(
             passphrase: string;
             passphraseOnDevice?: boolean;
         },
-        { dispatch },
+        { dispatch, getState },
     ) => {
-        dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'progress',
-                    progress: 0, // dummy value, otherwise it comes in progress event from trezor-connect
-                    total: 100,
-                    passphraseOnDevice,
-                },
-                device.path,
-            ),
-        );
+        const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
+
+        if (currentDiscovery) {
+            dispatch(
+                discoveryActions.updateDiscovery(
+                    {
+                        ...currentDiscovery,
+                        passphraseSubmitted: true,
+                        passphraseOnDevice,
+                    },
+                    device.path,
+                ),
+            );
+        }
 
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,

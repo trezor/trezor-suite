@@ -44,6 +44,7 @@ export const determinePassphraseFlowState = (
                 screen: 'exists-enter-passphrase',
                 discovery,
                 loading: isLoading,
+                isSubmitting: Boolean(discovery.passphraseSubmitted),
             } as const;
         }
 
@@ -79,6 +80,7 @@ export const determinePassphraseFlowState = (
             screen: 'not-exist-enter-passphrase',
             discovery,
             loading: isLoading,
+            isSubmitting: Boolean(discovery.passphraseSubmitted),
         } as const;
     }
 

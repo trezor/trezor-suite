@@ -128,6 +128,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                 loading={Boolean(passphraseState.loading)}
                 deviceOffer={deviceOffer}
                 authConfirmation={authConfirmation}
+                submittingPassphrase={Boolean(passphraseState.isSubmitting)}
                 onSubmit={onSubmit}
             />
         );
@@ -138,6 +139,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             passphraseState={passphraseState.screen}
             loading={Boolean(passphraseState.loading)}
             deviceOffer={deviceOffer}
+            submittingPassphrase={Boolean(passphraseState.isSubmitting)}
             onSubmit={onSubmit}
         />
     );
