@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Banner, Button, Card, Column, H3, Icon, List, Text } from '@trezor/components';
+import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
@@ -21,28 +21,33 @@ const PassphraseWalletBestPracticesContent = ({
     onNext,
 }: PassphraseWalletBestPracticesContentProps) => (
     <Column gap={spacings.sm}>
-        <H3>
-            <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE" />
-        </H3>
-        <Card paddingType="small">
+        <Column gap={spacings.md} padding={{ horizontal: spacings.xs }}>
+            <H3>
+                <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE" />
+            </H3>
             <List gap={spacings.sm} bulletGap={spacings.md} typographyStyle="hint">
                 <List.Item bulletComponent={<Icon name="newspaper" size={16} />}>
-                    <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION" />
+                    <Paragraph variant="tertiary">
+                        <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION" />
+                    </Paragraph>
                 </List.Item>
                 <List.Item bulletComponent={<Icon name="copy" size={16} />}>
-                    <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION" />
+                    <Paragraph variant="tertiary">
+                        <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION" />
+                    </Paragraph>
                 </List.Item>
                 <List.Item bulletComponent={<Icon name="eyeSlash" size={16} />}>
-                    <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION" />
+                    <Paragraph variant="tertiary">
+                        <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION" />
+                    </Paragraph>
                 </List.Item>
             </List>
-            <Banner margin={{ top: spacings.lg }}>
-                <Text variant="warning" typographyStyle="callout">
-                    <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
-                </Text>
-            </Banner>
-        </Card>
-
+        </Column>
+        <Banner margin={{ top: spacings.lg }}>
+            <Text variant="warning" typographyStyle="callout">
+                <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
+            </Text>
+        </Banner>
         <Button isFullWidth onClick={onNext} data-testid="@passphrase-confirmation/step2-button">
             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON" />
         </Button>
