@@ -1,13 +1,18 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
+import {
+    selectDeviceState,
+    selectIsDeviceInBootloader,
+    selectNumberOfDeviceInstances,
+} from '@suite-common/wallet-core';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
+import { BootloaderModeItemContent } from './BootloaderModeItemContent';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceItemContent } from './DeviceItem/DeviceItemContent';
 
@@ -42,12 +47,36 @@ export const DeviceSwitch = () => {
     const { applyStyle } = useNativeStyles();
 
     const deviceState = useSelector(selectDeviceState);
+    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
     const numberOfDevices = useSelector(selectNumberOfDeviceInstances);
 
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
 
     const toggleDeviceManager = () => {
         setIsDeviceManagerVisible(!isDeviceManagerVisible);
+    };
+
+    const getContent = () => {
+        if (deviceState) {
+            return (
+                <DeviceItemContent
+                    deviceState={deviceState ?? undefined}
+                    headerTextVariant="highlight"
+                    variant={numberOfDevices > 1 ? 'walletDetail' : 'simple'}
+                    isSubHeaderForceHidden={true}
+                />
+            );
+        }
+
+        if (isDeviceInBootloader) {
+            return <BootloaderModeItemContent />;
+        }
+
+        return (
+            <Text variant="highlight">
+                <Translation id="deviceManager.defaultHeader" />
+            </Text>
+        );
     };
 
     return (
@@ -58,18 +87,7 @@ export const DeviceSwitch = () => {
         >
             <HStack justifyContent="space-between" alignItems="center" spacing="sp16">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
-                    {deviceState ? (
-                        <DeviceItemContent
-                            deviceState={deviceState}
-                            headerTextVariant="highlight"
-                            variant={numberOfDevices > 1 ? 'walletDetail' : 'simple'}
-                            isSubHeaderForceHidden={true}
-                        />
-                    ) : (
-                        <Text variant="highlight">
-                            <Translation id="deviceManager.defaultHeader" />
-                        </Text>
-                    )}
+                    {getContent()}
                     <Icon name="caretUpDown" color="iconDefault" />
                 </Box>
             </HStack>

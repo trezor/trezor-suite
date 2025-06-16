@@ -553,7 +553,6 @@ export const en = {
                 title: 'Want to see your dashboard?',
                 description:
                     'If you want to see your dashboard, simply reconnect & unlock your Trezor.',
-                buttonTitle: 'Reconnect trezor',
             },
         },
         noBackupModal: {
@@ -664,7 +663,8 @@ export const en = {
                 },
             },
             loadingSuccessScreen: {
-                title: 'Device wiped',
+                wipedTitle: 'Device wiped',
+                factoryResetTitle: 'Trezor reset',
             },
             factoryResetScreen: {
                 title: 'Factory reset',

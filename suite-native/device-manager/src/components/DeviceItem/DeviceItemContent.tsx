@@ -19,6 +19,9 @@ import { DeviceItemIcon } from './DeviceItemIcon';
 import { SimpleDeviceItemContent } from './SimpleDeviceItemContent';
 import { WalletDetailDeviceItemContent } from './WalletDetailDeviceItemContent';
 
+export const DEVICE_SWITCHER_ITEM_CONTENT_HEIGHT = 46;
+const DEVICE_SWITCHER_ITEM_CONTENT_HEIGHT_LARGE = 56;
+
 export type DeviceItemContentVariant = 'simple' | 'walletDetail';
 
 export type DeviceItemContentProps = {
@@ -29,14 +32,14 @@ export type DeviceItemContentProps = {
     isSubHeaderForceHidden?: boolean;
 };
 
-const contentWrapperStyle = prepareNativeStyle<{ height: number }>((utils, { height }) => ({
+export const contentWrapperStyle = prepareNativeStyle<{ height: number }>((utils, { height }) => ({
     flexShrink: 1,
     height: height * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     alignItems: 'center',
     spacing: utils.spacings.sp16,
 }));
 
-const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((utils, { isCompact }) => ({
+export const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((utils, { isCompact }) => ({
     flexShrink: 1,
     extend: {
         condition: !isCompact,
@@ -92,7 +95,13 @@ export const DeviceItemContent = React.memo(
         }
 
         return (
-            <HStack style={applyStyle(contentWrapperStyle, { height: isCompact ? 46 : 56 })}>
+            <HStack
+                style={applyStyle(contentWrapperStyle, {
+                    height: isCompact
+                        ? DEVICE_SWITCHER_ITEM_CONTENT_HEIGHT
+                        : DEVICE_SWITCHER_ITEM_CONTENT_HEIGHT_LARGE,
+                })}
+            >
                 <DeviceItemIcon deviceId={hasOnlyEmptyPortfolioTracker ? undefined : device.id} />
                 <Box style={applyStyle(itemStyle, { isCompact })}>
                     {variant === 'simple' ? (

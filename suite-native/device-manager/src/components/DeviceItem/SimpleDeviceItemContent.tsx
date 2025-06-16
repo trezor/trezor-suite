@@ -22,7 +22,7 @@ export type SimpleDeviceItemContentProps = {
     isSubHeaderForceHidden: boolean;
 };
 
-const headerStyle = prepareNativeStyle(_ => ({
+export const headerStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
     overflow: 'visible',
 }));

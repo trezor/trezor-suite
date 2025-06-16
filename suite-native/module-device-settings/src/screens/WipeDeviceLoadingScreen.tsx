@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsDeviceInBootloader } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -20,6 +23,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const WipeDeviceLoadingScreen = () => {
     const navigation = useNavigation<NavigationProps>();
+    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
 
     const handleFinish = () => {
         navigation.navigate(RootStackRoutes.AppTabs, {
@@ -33,7 +37,11 @@ export const WipeDeviceLoadingScreen = () => {
     return (
         <LoadingSuccessScreen
             onFinish={handleFinish}
-            title={<Translation id="moduleDeviceSettings.wipeDevice.loadingSuccessScreen.title" />}
+            title={
+                <Translation
+                    id={`moduleDeviceSettings.wipeDevice.loadingSuccessScreen.${isDeviceInBootloader ? 'factoryResetTitle' : 'wipedTitle'}`}
+                />
+            }
         />
     );
 };
