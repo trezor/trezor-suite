@@ -127,7 +127,7 @@ const Content = styled.div<ContentProps>`
 export const CollapsibleBox = ({
     defaultIsOpen = false,
     toggleLabel,
-    toggleIconName,
+    toggleIconName = 'caretCircleDown',
     paddingType = 'normal',
     heading,
     subHeading,
@@ -174,7 +174,6 @@ export const CollapsibleBox = ({
                         </Text>
                     )}
                     <Collapsible.ToggleIcon
-                        isOpen={isOpen}
                         iconName={toggleIconName}
                         size={mapSizeToIconSize({ $headingSize: headingSize })}
                         data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}

@@ -6,6 +6,7 @@ import { useCollapsible } from './Collapsible';
 
 const Container = styled.div`
     display: contents;
+    cursor: pointer;
 `;
 
 type CollapsibleToggleProps = {

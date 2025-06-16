@@ -3,7 +3,6 @@ import { Meta, StoryObj } from '@storybook/react';
 import { spacings } from '@trezor/theme';
 
 import { Collapsible as CollapsibleComponent } from './Collapsible';
-import { Row } from '../Flex/Flex';
 import { Button } from '../buttons/Button/Button';
 
 const meta: Meta = {
@@ -19,20 +18,19 @@ export const Collapsible: StoryObj<typeof CollapsibleComponent> = {
                 <Button>Toggle</Button>
             </CollapsibleComponent.Toggle>
             <CollapsibleComponent.Content>
-                <Row padding={{ top: spacings.lg }}>
-                    <p>
-                        Lorem ipsum odor amet, consectetuer adipiscing elit. Vel hac cras ultrices
-                        nullam mattis proin. In rhoncus interdum molest. Inceptos nec, aenean, nunc,
-                        auctor ultricies, aenean. Velit, urna, amet, pellentesque. Ut, sit, nec,
-                        amet, etiam bibendum. Dolor, ut, nec, amet, etiam bibendum. Dolor, ut, nec,
-                        amet, etiam
-                    </p>
-                </Row>
+                <p>
+                    Lorem ipsum odor amet, consectetuer adipiscing elit. Vel hac cras ultrices
+                    nullam mattis proin. In rhoncus interdum molest. Inceptos nec, aenean, nunc,
+                    auctor ultricies, aenean. Velit, urna, amet, pellentesque. Ut, sit, nec, amet,
+                    etiam bibendum. Dolor, ut, nec, amet, etiam bibendum. Dolor, ut, nec, amet,
+                    etiam
+                </p>
             </CollapsibleComponent.Content>
         </CollapsibleComponent>
     ),
     args: {
         defaultIsOpen: false,
+        gap: spacings.lg,
     },
     argTypes: {
         defaultIsOpen: {
@@ -40,6 +38,10 @@ export const Collapsible: StoryObj<typeof CollapsibleComponent> = {
         },
         isOpen: {
             control: 'boolean',
+        },
+        gap: {
+            control: 'select',
+            options: Object.values(spacings),
         },
     },
 };
