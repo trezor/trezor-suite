@@ -5,12 +5,14 @@ import { Button, Card, Column, Icon, List, Modal, Text } from '@trezor/component
 import { spacings } from '@trezor/theme';
 
 import { startThpAutoconnectThunk } from '../../actions/thp/startThpAutoconnectThunk';
-import { useDispatch } from '../../hooks/suite';
+import { useDevice, useDispatch } from '../../hooks/suite';
 import { Translation } from '../suite/Translation';
 
 export const ThpAutoconnectInfoModal = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const { isLocked } = useDevice();
     const dispatch = useDispatch();
+    const isDeviceLocked = isLocked();
 
     const onTurnOn = () => {
         setIsLoading(true);
@@ -28,7 +30,7 @@ export const ThpAutoconnectInfoModal = () => {
             data-testid="@modal/thp-autoconnect-info"
             bottomContent={
                 <>
-                    <Button onClick={onTurnOn} isLoading={isLoading}>
+                    <Button onClick={onTurnOn} isLoading={isLoading || isDeviceLocked}>
                         <Translation id="TR_THP_TURN_ON_AUTO_CONNECT" />
                     </Button>
                     <Button onClick={onCancel} variant="tertiary" isDisabled={isLoading}>
