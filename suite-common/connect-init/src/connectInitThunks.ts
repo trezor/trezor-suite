@@ -191,24 +191,24 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             ? extra.selectors.selectDesktopBinDir(getState())
             : DATA_URL;
 
-    const { transports, showConnectLogs } = selectDebugSettings(getState());
+        const { transports, showConnectLogs } = selectDebugSettings(getState());
 
-    try {
-        await TrezorConnect.init({
-            ...connectInitSettings,
-            binFilesBaseUrl,
-            pendingTransportEvent: selectIsPendingTransportEvent(getState()),
-            transports,
-            debug: showConnectLogs,
-        });
-    } catch (error) {
-        let formattedError: string;
-        if (typeof error === 'string') {
-            formattedError = error;
-        } else {
-            formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
+        try {
+            await TrezorConnect.init({
+                ...connectInitSettings,
+                binFilesBaseUrl,
+                pendingTransportEvent: selectIsPendingTransportEvent(getState()),
+                transports,
+                debug: showConnectLogs,
+            });
+        } catch (error) {
+            let formattedError: string;
+            if (typeof error === 'string') {
+                formattedError = error;
+            } else {
+                formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
+            }
+            throw new Error(formattedError);
         }
-        throw new Error(formattedError);
-    }
-},
+    },
 );

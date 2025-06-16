@@ -16,10 +16,9 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await analyticsSection.continueButton.click();
 
-        // Because init-analytics is split from the rest (device initialization),
-        // superfast reload would probably stop during the initialization and bring
-        // the device into inconsistent state.
-        await page.waitForTimeout(1000);
+        await page.waitForSelector("button[data-testid='@onboarding/exit-app-button']", {
+            state: 'visible',
+        });
 
         await page.reload();
         await expect(analyticsSection.toggleSwitch).not.toBeVisible();
