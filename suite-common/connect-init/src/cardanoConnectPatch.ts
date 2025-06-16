@@ -44,7 +44,9 @@ export const cardanoConnectPatch = (getEnabledNetworks: () => string[]) => {
             if (!original) return;
             (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
                 const enabledNetworks = getEnabledNetworks();
-                const cardanoEnabled = !!enabledNetworks.find(a => a === 'ada' || a === 'tada');
+                const isCardanoMethod = key.startsWith('cardano');
+                const cardanoEnabled =
+                    !!enabledNetworks.find(a => a === 'ada' || a === 'tada') || isCardanoMethod;
                 const result = await original({
                     ...params,
                     useCardanoDerivation: cardanoEnabled,
