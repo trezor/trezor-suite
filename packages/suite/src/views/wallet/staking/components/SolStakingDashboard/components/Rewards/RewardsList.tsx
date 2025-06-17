@@ -39,6 +39,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
         itemsPerPage,
         showPagination,
         isLastPage,
+        selectedAccountRewards,
     } = useSolanaRewards(account);
 
     const isSolanaMainnet = !isTestnet(account.symbol);
@@ -51,13 +52,11 @@ export const RewardsList = ({ account }: RewardsListProps) => {
     };
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    if (!isStakingActive) return null;
 
-    if (!isSolanaMainnet || !totalItems) {
-        if (isStakingActive) {
-            return <RewardsEmpty />;
-        }
-
-        return null;
+    const noRewards = !isSolanaMainnet || selectedAccountRewards?.length === 0;
+    if (noRewards && !isLoading) {
+        return <RewardsEmpty />;
     }
 
     return (
@@ -66,7 +65,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
             heading={<Translation id="TR_REWARDS" />}
             data-testid="@wallet/accounts/rewards-list"
         >
-            {isLoading ? (
+            {isLoading || selectedAccountRewards === undefined ? (
                 <SkeletonStack $col $childMargin="0px 0px 16px 0px">
                     <SkeletonTransactionItem />
                     <SkeletonTransactionItem />

@@ -81,21 +81,16 @@ export const fetchEverstakeData = createThunk<
 });
 
 export const fetchEverstakeStakingInfo = createThunk<
-    { apy: number; totalRewards: TotalStakeRewardsByAccount },
+    { apy: number },
     {
         symbol: SupportedSolanaNetworkSymbols;
         endpointType: EverstakeAssetEndpointType;
-        address: string;
     },
     { rejectValue: string }
 >(
     `${STAKE_MODULE}/fetchEverstakeAssetData`,
     async (params, { fulfillWithValue, rejectWithValue }) => {
-        const { symbol, endpointType, address } = params;
-
-        const isSolanaMainnet = !isTestnet(symbol);
-
-        if (!isSolanaMainnet) return rejectWithValue('Only Solana mainnet is supported.');
+        const { symbol, endpointType } = params;
 
         const endpointSuffix = EVERSTAKE_ASSET_ENDPOINT_TYPES[endpointType];
         const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[symbol];
@@ -110,19 +105,8 @@ export const fetchEverstakeStakingInfo = createThunk<
             }
             const assetData = await assetResponse.json();
 
-            const rewardsResponse = await fetch(
-                `${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}/total?validator=${EVERSTAKE_VALIDATOR}`,
-            );
-            if (!rewardsResponse.ok) {
-                throw Error(rewardsResponse.statusText);
-            }
-            const rewardsData = await rewardsResponse.json();
-
             return fulfillWithValue({
                 apy: Number(assetData?.blockchain?.apr),
-                totalRewards: {
-                    [address]: rewardsData?.rewards?.toString(),
-                },
             });
         } catch (error) {
             return rejectWithValue(error.toString());
@@ -131,7 +115,7 @@ export const fetchEverstakeStakingInfo = createThunk<
 );
 
 export const fetchEverstakeRewards = createThunk<
-    { rewards: StakeRewardsByAccount },
+    { rewardsHistory: StakeRewardsByAccount; totalRewards: TotalStakeRewardsByAccount },
     {
         symbol: SupportedSolanaNetworkSymbols;
         endpointType: EverstakeRewardsEndpointType;
@@ -142,27 +126,45 @@ export const fetchEverstakeRewards = createThunk<
 >(
     `${STAKE_MODULE}/fetchEverstakeRewardsData`,
     async (params, { fulfillWithValue, rejectWithValue }) => {
-        const { address, signal } = params;
+        const { address, signal, symbol } = params;
+
+        const isSolanaMainnet = !isTestnet(symbol);
+
+        if (!isSolanaMainnet) return rejectWithValue('Only Solana mainnet is supported.');
 
         try {
-            const response = await fetch(`${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}`, {
-                method: 'POST',
-                body: `validator=${encodeURIComponent(EVERSTAKE_VALIDATOR)}`,
-                signal,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+            const rewardsHistoryResponse = await fetch(
+                `${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}`,
+                {
+                    method: 'POST',
+                    body: `validator=${encodeURIComponent(EVERSTAKE_VALIDATOR)}`,
+                    signal,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
                 },
-            });
+            );
 
-            if (!response.ok) {
-                throw Error(response.statusText);
+            if (!rewardsHistoryResponse.ok) {
+                throw Error(rewardsHistoryResponse.statusText);
             }
 
-            const data = await response.json();
+            const rewardsHistory = await rewardsHistoryResponse.json();
+
+            const totalRewardsResponse = await fetch(
+                `${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}/total?validator=${EVERSTAKE_VALIDATOR}`,
+            );
+            if (!totalRewardsResponse.ok) {
+                throw Error(totalRewardsResponse.statusText);
+            }
+            const totalRewardsData = await totalRewardsResponse.json();
 
             return fulfillWithValue({
-                rewards: {
-                    [address]: data,
+                rewardsHistory: {
+                    [address]: rewardsHistory,
+                },
+                totalRewards: {
+                    [address]: totalRewardsData?.rewards?.toString(),
                 },
             });
         } catch (error) {
@@ -206,7 +208,10 @@ export const initStakeDataThunk = createThunk(
                                 if (!address) return null;
 
                                 return dispatch(
-                                    fetchEverstakeStakingInfo({ symbol, endpointType, address }),
+                                    fetchEverstakeStakingInfo({
+                                        symbol,
+                                        endpointType,
+                                    }),
                                 );
                             }
 
