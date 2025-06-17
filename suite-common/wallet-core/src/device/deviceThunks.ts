@@ -272,13 +272,14 @@ export const acquireDevice = createThunk(
         { dispatch, getState },
     ) => {
         const device = requestedDevice ?? selectSelectedDevice(getState());
-
+        console.log('callig acquireDeviceThunk');
         if (!device) return;
 
         const response = await TrezorConnect.getFeatures({
             device,
             useEmptyPassphrase: true,
         });
+        console.log('features response', response);
 
         if (!response.success) {
             if (response.payload.code === 'Device_ThpPairingTagInvalid') {

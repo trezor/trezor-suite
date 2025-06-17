@@ -8,7 +8,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Device, DeviceState, Features, KnownDevice, StaticSessionId, UI } from '@trezor/connect';
+import { Device, DeviceState, Features, KnownDevice, StaticSessionId } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
 import { ConnectDeviceSettings, deviceActions } from './deviceActions';
@@ -412,21 +412,6 @@ const updatePassphraseMode = (
 };
 
 /**
- * Action handler: UI.REQUEST_PIN
- * Reset authFailed flag
- * @param {DeviceReducerState} draft
- * @returns
- */
-const resetAuthFailed = (draft: DeviceReducerState) => {
-    const device = draft.selectedDevice;
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    draft.devices[index].authFailed = false;
-};
-
-/**
  * Action handler: SUITE.CREATE_DEVICE_INSTANCE
  * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
@@ -525,7 +510,6 @@ const forget = (
     const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
     if (device.connected && others.length < 1) {
         // do not forget the last instance, just reset state
-        delete draft.devices[index].authFailed;
         draft.devices[index].state = undefined;
         draft.devices[index].walletNumber = undefined;
 
@@ -620,9 +604,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
             updatePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
-        })
-        .addCase(UI.REQUEST_PIN, state => {
-            resetAuthFailed(state);
         })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
             remember(state, payload.device, payload.remember, payload.forceRemember);

@@ -113,6 +113,7 @@ export const CreatePinScreen = () => {
                 secondaryButtonVariant: 'redElevation0',
                 onPressSecondaryButton: tryAgainAction,
                 onPressPrimaryButton: () => {
+                    console.log('Pin creation canceled');
                     hideAlert();
                     handlePinCreated();
                 },

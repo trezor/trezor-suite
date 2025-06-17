@@ -33,11 +33,6 @@ export const selectIsDeviceUnlocked = createMemoizedSelector(
     device => !!device?.features?.unlocked,
 );
 
-export const selectDeviceAuthFailed = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => !!device?.authFailed,
-);
-
 export const selectDeviceType = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.type,

@@ -40,6 +40,7 @@ export const deviceAuthorizationSlice = createSlice({
     },
     extraReducers: builder => {
         builder
+            // todo: can't we use usePin logic here?
             .addCase(UI.REQUEST_PIN, state => {
                 state.hasDeviceRequestedPin = true;
             })

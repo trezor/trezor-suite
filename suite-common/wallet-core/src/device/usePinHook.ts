@@ -12,6 +12,7 @@ const NEW_WIPE_CODE_REQUEST_TYPES = [
 export const usePin = (buttonRequests: ButtonRequest[]) => {
     const [pin, setPin] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [hasDepletedAllPinAttempts, setHasDepletedAllPinAttempts] = useState(false);
 
     const pinRequestType = buttonRequests[buttonRequests.length - 1];
     const isSettingNewWipeCode =
@@ -34,12 +35,24 @@ export const usePin = (buttonRequests: ButtonRequest[]) => {
         setSubmitted(false);
     }, [buttonRequests.length]);
 
+    useEffect(() => {
+        // we can't really rely on device.buttonRequests since they are flushed away quite often.
+        const handler = () => {
+            setHasDepletedAllPinAttempts(true);
+        };
+        TrezorConnect.on(UI.INVALID_PIN_ATTEMPTS_DEPLETED, handler);
+        return () => {
+            TrezorConnect.off(UI.INVALID_PIN_ATTEMPTS_DEPLETED, handler);
+        };
+    }, []);
+
     const invalidPinAttempts = buttonRequests.filter(r => r.code === UI.INVALID_PIN).length;
 
     return {
         isSettingNewWipeCode,
         isSettingNewPin,
         hasInvalidAttempts: invalidPinAttempts > 0,
+        hasDepletedAllPinAttempts,
         pin,
         setPin,
         handlePinSubmit,

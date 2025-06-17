@@ -32,13 +32,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         };
     }
 
-    if (device.authFailed) {
-        return {
-            status: 'exception',
-            loader: 'auth-failed',
-        };
-    }
-
     // waiting for discovery
     const discovery = selectDiscoveryForSelectedDevice(state);
 

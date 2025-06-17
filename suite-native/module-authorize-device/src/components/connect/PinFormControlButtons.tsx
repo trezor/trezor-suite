@@ -9,7 +9,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { selectDeviceAuthFailed } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
@@ -19,6 +18,7 @@ import TrezorConnect, { DEVICE, UI } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PIN_HELP_URL } from '../../constants/pinFormConstants';
+import { selectDeviceButtonRequests, usePin } from '@suite-common/wallet-core';
 
 const buttonsWrapperStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
@@ -41,7 +41,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
-    const hasDeviceAuthFailed = useSelector(selectDeviceAuthFailed);
+    const { hasDepletedAllPinAttempts } = usePin(useSelector(selectDeviceButtonRequests));
 
     const handleSuccess = useCallback(() => {
         onSuccess?.();
@@ -49,12 +49,12 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     }, [onSuccess, reset]);
 
     const handleDeviceChange = useCallback(() => {
-        if (hasDeviceAuthFailed) {
+        if (hasDepletedAllPinAttempts) {
             reset();
         } else {
             handleSuccess();
         }
-    }, [hasDeviceAuthFailed, reset, handleSuccess]);
+    }, [hasDepletedAllPinAttempts, reset, handleSuccess]);
 
     useEffect(() => {
         TrezorConnect.on(DEVICE.CHANGED, handleDeviceChange);
@@ -63,6 +63,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     }, [handleDeviceChange]);
 
     const handleInvalidPin = useCallback(() => {
+        console.log('handle invalid pin!');
         reset();
         showAlert({
             title: <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.title" />,
@@ -74,7 +75,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                 <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain" />
             ),
             onPressPrimaryButton: () => {
-                if (hasDeviceAuthFailed) {
+                if (hasDepletedAllPinAttempts) {
                     // Ask for new PIN entry after 3 wrong attempts.
                     // requestPrioritizedDeviceAccess({
                     //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
@@ -88,23 +89,15 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                 openLink(PIN_HELP_URL);
             },
         });
-    }, [hasDeviceAuthFailed, openLink, reset, showAlert]);
+    }, [hasDepletedAllPinAttempts, openLink, reset, showAlert]);
 
     useEffect(() => {
         // After third wrong PIN, UI.INVALID_PIN is no more reported
         // and selectedDevice.authFailed is set to true instead.
-        if (hasDeviceAuthFailed) {
+        if (hasDepletedAllPinAttempts) {
             handleInvalidPin();
         }
-    }, [handleInvalidPin, hasDeviceAuthFailed]);
-
-    useEffect(() => {
-        // UI.INVALID_PIN is emitted when user enters wrong PIN for first 3 attempts.
-        // See https://github.com/trezor/trezor-suite/blob/0498c2ef4c0a61ff56fc60cff0f545636592814d/packages/connect/src/core/index.ts#L598
-        TrezorConnect.on(UI.INVALID_PIN, handleInvalidPin);
-
-        return () => TrezorConnect.off(UI.INVALID_PIN, handleInvalidPin);
-    }, [handleInvalidPin]);
+    }, [handleInvalidPin, hasDepletedAllPinAttempts]);
 
     const onSubmit = handleSubmit(values => {
         TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: values.pin });

@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    selectDeviceButtonRequests,
+    selectHasRunningDiscovery,
+    usePin,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import {
@@ -44,6 +48,8 @@ export const ConnectDeviceScreenHeader = ({
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isAddingHiddenWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+
+    const { hasDepletedAllPinAttempts } = usePin(useSelector(selectDeviceButtonRequests));
 
     const handleCancel = useCallback(() => {
         if (hasDiscovery && !isAddingHiddenWallet) {
@@ -94,9 +100,15 @@ export const ConnectDeviceScreenHeader = ({
     // eslint-disable-next-line arrow-body-style
     useEffect(() => {
         return () => {
-            hideAlert();
+            console.log(
+                'ConnectDeviceScreenHeader unmounting, hiding alert: hasDepletedAllPinAttempts',
+                hasDepletedAllPinAttempts,
+            );
+            if (!hasDepletedAllPinAttempts) {
+                hideAlert();
+            }
         };
-    }, [hideAlert]);
+    }, [hideAlert, hasDepletedAllPinAttempts]);
 
     return (
         <ScreenHeaderWrapper>
