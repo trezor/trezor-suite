@@ -40,6 +40,8 @@ jest.mock('cross-fetch', () => ({
     default: () => Promise.resolve({ ok: false }),
 }));
 
+jest.mock('@suite-common/tx-simulation', () => ({}));
+
 // TrezorConnect.composeTransaction is trying to connect to blockchain, to get current block height.
 // Mock whole module to avoid internet connection.
 jest.mock('@trezor/blockchain-link', () => ({

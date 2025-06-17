@@ -55,6 +55,8 @@ jest.mock('@trezor/env-utils', () => ({
     isLinux: () => true,
 }));
 
+jest.mock('@suite-common/tx-simulation', () => ({}));
+
 const createTransportInfo = (transportInfo: Partial<TransportInfo>): TransportInfo => ({
     type: 'NodeUsbTransport',
     apiType: 'usb',

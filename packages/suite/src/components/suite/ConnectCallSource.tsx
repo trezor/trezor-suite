@@ -10,7 +10,11 @@ import { Translation } from './Translation';
 
 export const ConnectCallSource = () => {
     const connectPopupCall = useSelector(selectConnectPopupCall);
-    if (connectPopupCall?.state !== 'ongoing' && connectPopupCall?.state !== 'call-error')
+    if (
+        connectPopupCall?.state !== 'ongoing' &&
+        connectPopupCall?.state !== 'call-error' &&
+        connectPopupCall?.state !== 'tx-simulation'
+    )
         return null;
 
     return (
@@ -27,7 +31,7 @@ export const ConnectCallSource = () => {
             <Text typographyStyle="hint" variant="tertiary">
                 <Translation id="TR_CONNECTED_TO" />
                 {': '}
-                <Text variant="primary">
+                <Text variant="default">
                     {connectPopupCall.source?.manifest?.appName || connectPopupCall.source?.origin}
                 </Text>
             </Text>

@@ -78,14 +78,14 @@ export const connectPopupCallThunkInner = createThunk<
             );
 
             if (!isRemembered) {
-                const confirmation = createDeferred();
+                const decision = createDeferred();
                 dispatch(extra.actions.lockDevice(true));
                 dispatch(
                     connectPopupActions.requestPermissions({
-                        permissionDecision: confirmation,
+                        decision,
                     }),
                 );
-                await confirmation.promise;
+                await decision.promise;
             }
 
             const device = selectSelectedDevice(getState());

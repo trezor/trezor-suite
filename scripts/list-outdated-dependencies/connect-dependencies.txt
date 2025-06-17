@@ -1,3 +1,4 @@
+@blockaid/client
 @codemirror/state
 @hbsnow/rehype-sectionize
 @jest/globals

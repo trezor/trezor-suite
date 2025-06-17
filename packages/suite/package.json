@@ -53,6 +53,7 @@
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/trading": "workspace:*",
+        "@suite-common/tx-simulation": "workspace:^",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",

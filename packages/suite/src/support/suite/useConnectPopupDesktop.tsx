@@ -128,6 +128,7 @@ export const useConnectPopupDesktop = () => {
                 'connect-loading',
                 'connect-address-confirmation',
                 'connect-error',
+                'tx-simulation',
             ].includes(modalType);
 
         const openIfNeeded = (
@@ -135,7 +136,8 @@ export const useConnectPopupDesktop = () => {
                 | 'connect-popup'
                 | 'connect-loading'
                 | 'connect-address-confirmation'
-                | 'connect-error',
+                | 'connect-error'
+                | 'tx-simulation',
         ) => {
             // Prevent duplicate opening of the same modal
             // And also prevent opening connect modals if different modal is already open
@@ -153,6 +155,9 @@ export const useConnectPopupDesktop = () => {
             }
             case 'address-confirmation': {
                 return openIfNeeded('connect-address-confirmation');
+            }
+            case 'tx-simulation': {
+                return openIfNeeded('tx-simulation');
             }
             case 'error':
             case 'call-error': {

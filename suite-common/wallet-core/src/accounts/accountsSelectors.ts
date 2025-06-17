@@ -188,7 +188,7 @@ export const selectAccountsByNetworkAndDeviceState = createMemoizedSelector(
 
 export const selectAccountForNetworkSymbolAndPath = createMemoizedSelector(
     [
-        selectAccounts,
+        selectDeviceAccounts,
         (_state: AccountsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
         (_state: AccountsRootState, _networkSymbol: NetworkSymbol, path: Bip43Path) => path,
     ],

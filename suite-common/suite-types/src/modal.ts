@@ -212,4 +212,7 @@ export type UserContextPayload =
       }
     | {
           type: 'auto-start-before-quit';
+      }
+    | {
+          type: 'tx-simulation';
       };

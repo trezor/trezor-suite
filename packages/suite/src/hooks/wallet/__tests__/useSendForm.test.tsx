@@ -45,6 +45,8 @@ jest.mock('src/actions/suite/routerActions', () => ({
 // render only Translation['id']
 jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
 
+jest.mock('@suite-common/tx-simulation', () => ({}));
+
 type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
 interface Args {
     send?: Partial<RootReducerState['wallet']['send']>;
