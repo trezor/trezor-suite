@@ -126,12 +126,19 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             await page.getByTestId('@passphrase-confirmation/step2-button').click();
         });
 
-        await test.step('Confirm wrong passphrase', async () => {
-            await dashboardPage.passphraseInput.fill('cba');
-            await dashboardPage.passphraseSubmitButton.click();
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
-        });
+        // confirm - input wrong passphrase
+        await dashboardPage.passphraseInput.fill('cba');
+
+        // toggle passphrase visibility
+        await expect(dashboardPage.passphraseInput).toHaveAttribute('type', 'password');
+        await dashboardPage.passphraseShowButton.click();
+        await expect(dashboardPage.passphraseInput).toHaveAttribute('type', 'text');
+        await dashboardPage.passphraseShowButton.click();
+        await expect(dashboardPage.passphraseInput).toHaveAttribute('type', 'password');
+
+        await dashboardPage.passphraseSubmitButton.click();
+        await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
+        await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
         await test.step('Retry passphrase confirmation', async () => {
             await page.getByTestId('@passphrase-mismatch/start-over').click();
@@ -144,15 +151,14 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
         await page.getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button').click();
         await page.getByTestId('@passphrase-confirmation/step2-button').click();
 
-        await test.step('Confirm correct passphrase', async () => {
-            await dashboardPage.passphraseInput.fill('abc');
-            await dashboardPage.passphraseSubmitButton.click();
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+        // confirm - input wrong passphrase
+        await dashboardPage.passphraseInput.fill('abc');
+        await dashboardPage.passphraseSubmitButton.click();
+        await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
+        await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
-            await dashboardPage.modal.waitFor({ state: 'detached' });
-            await dashboardPage.openDeviceSwitcher();
-            await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
-        });
+        await dashboardPage.modal.waitFor({ state: 'detached' });
+        await dashboardPage.openDeviceSwitcher();
+        await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
     });
 });
