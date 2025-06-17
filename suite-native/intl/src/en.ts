@@ -533,6 +533,12 @@ export const en = {
                 },
             },
         },
+        noBackupModal: {
+            title: 'Your Trezor wallet is not backed up',
+            subtitle: 'If your Trezor is lost or damaged, your funds may be irreversibly lost.',
+            cta: 'Create wallet backup',
+            continue: 'Continue anyway'
+        },
         confirmOnDeviceSheetTitle: 'Confirm on Trezor',
     },
     moduleDeviceSettings: {
