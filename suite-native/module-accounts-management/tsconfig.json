@@ -28,12 +28,10 @@
         { "path": "../graph" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../tokens" },
         { "path": "../transactions" },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }
     ]

@@ -1,8 +1,6 @@
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { getDerivationType } from '@suite-common/wallet-utils';
-import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
+import { selectSelectedDevice, showXpubOnDevice } from '@suite-common/wallet-core';
 
 import { onCancel, openModal, preserve } from 'src/actions/suite/modalActions';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -29,33 +27,7 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
     // Prevent flickering screen when modal changes.
     dispatch(preserve());
 
-    const params = {
-        device,
-        path: account.path,
-        useEmptyPassphrase: device.useEmptyPassphrase,
-        showOnTrezor: true,
-        derivationType: getDerivationType(account.accountType),
-        coin: account.symbol, // must be here to distinguish between testnet and regtest
-    };
-
-    let response: Success<unknown> | Unsuccessful;
-
-    switch (account.networkType) {
-        case 'bitcoin':
-            response = await TrezorConnect.getPublicKey(params);
-            break;
-        case 'cardano':
-            response = await TrezorConnect.cardanoGetPublicKey(params);
-            break;
-        case 'solana':
-            response = await TrezorConnect.solanaGetPublicKey(params);
-            break;
-        default:
-            response = {
-                success: false,
-                payload: { error: 'Method for getPublicKey not defined', code: undefined },
-            };
-    }
+    const response = await showXpubOnDevice(device, account);
 
     if (response.success) {
         // Show second part of the "confirm XPUB" modal.
