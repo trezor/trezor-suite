@@ -1,18 +1,30 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountByKey,
+    selectIsDeviceBackupRequired,
+} from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box, ErrorMessage, InlineAlertBox, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    ErrorMessage,
+    InlineAlertBox,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import {
     ConfirmOnTrezorImage,
     selectHasFirmwareAuthenticityCheckHardFailed,
 } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
+import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
 import { CloseActionType, Screen } from '@suite-native/navigation';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
@@ -35,10 +47,25 @@ export const ReceiveAddressScreen = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
+
     const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
         useAccountReceiveAddress(accountKey);
+
+    const handleShowReceiveAddress = useCallback(() => {
+        handleShowAddress();
+
+        if (isDeviceBackupRequired) {
+            openModal();
+        }
+    }, [handleShowAddress, openModal, isDeviceBackupRequired]);
+
+    const closeNoBackupBottomSheet = useCallback(() => {
+        closeModal();
+    }, [closeModal]);
 
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
@@ -110,10 +137,17 @@ export const ReceiveAddressScreen = ({
                         isTokenAddress={!!tokenContract}
                         isReceiveApproved={isReceiveApproved}
                         isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
-                        onShowAddress={handleShowAddress}
+                        onShowAddress={handleShowReceiveAddress}
                     />
                 </VStack>
             </Box>
+            {isDeviceBackupRequired && (
+                <WalletBackupNotSetWarningBottomSheet
+                    ref={bottomSheetRef}
+                    onConfirm={closeNoBackupBottomSheet}
+                    onClose={closeModal}
+                />
+            )}
         </Screen>
     );
 };
