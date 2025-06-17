@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Card, Column, IconName, motionAnimation } from '@trezor/components';
+import { Card, Column, motionAnimation } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
@@ -18,7 +18,6 @@ type CardWithDeviceProps = {
     isFullHeaderVisible?: boolean;
     isFindTrezorVisible?: boolean;
     onBackButtonClick?: () => void;
-    icon?: IconName;
 };
 
 export const CardWithDevice = ({
@@ -28,7 +27,6 @@ export const CardWithDevice = ({
     isFullHeaderVisible = false,
     onBackButtonClick,
     isFindTrezorVisible,
-    icon,
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
 
@@ -45,7 +43,6 @@ export const CardWithDevice = ({
                     isFullHeaderVisible={isFullHeaderVisible}
                     onBackButtonClick={onBackButtonClick}
                     forceConnectionInfo
-                    icon={icon}
                 />
 
                 {needsAttention && (

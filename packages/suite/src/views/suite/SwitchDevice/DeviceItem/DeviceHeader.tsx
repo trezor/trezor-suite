@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { IconButton, IconName, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation, WebUsbButton } from 'src/components/suite';
@@ -26,7 +26,6 @@ type DeviceHeaderProps = {
     onBackButtonClick?: () => void;
     isFindTrezorVisible?: boolean;
     forceConnectionInfo: boolean;
-    icon?: IconName;
 };
 
 export const DeviceHeader = ({
@@ -36,7 +35,6 @@ export const DeviceHeader = ({
     onBackButtonClick,
     isFindTrezorVisible = false,
     forceConnectionInfo,
-    icon = 'caretCircleDown',
 }: DeviceHeaderProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
@@ -51,7 +49,7 @@ export const DeviceHeader = ({
 
     return (
         <Container onClick={onHeaderClick} $isFullHeaderVisible={isFullHeaderVisible}>
-            <Row gap={spacings.xs} flex="1" padding={{ left: onBackButtonClick ? 0 : 0 }}>
+            <Row gap={spacings.xs} flex="1">
                 {onBackButtonClick && (
                     <IconButton
                         icon="caretLeft"
@@ -83,8 +81,7 @@ export const DeviceHeader = ({
                 {isFullHeaderVisible && (
                     <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
                         <IconButton
-                            icon={icon}
-                            iconSize={20}
+                            icon="x"
                             size="small"
                             variant="tertiary"
                             onClick={() => onCancel?.()}

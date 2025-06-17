@@ -1,5 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { UI } from '@trezor/connect-web';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -25,7 +26,8 @@ export const PassphraseWalletIsNotExistFlow = ({
 }: PassphraseWalletIsNotExistFlowProps) => {
     const dispatch = useDispatch();
 
-    const onConfirmPassphraseDialogCancel = () => {
+    const onCancel = () => {
+        dispatch({ type: UI.CLOSE_UI_WINDOW });
         dispatch(cancelDiscoveryThunk(device));
     };
 
@@ -33,7 +35,7 @@ export const PassphraseWalletIsNotExistFlow = ({
         return (
             <PassphraseWalletConfirmation
                 deviceLoading={loading}
-                onCancel={onConfirmPassphraseDialogCancel}
+                onCancel={onCancel}
                 onSubmit={onSubmit}
                 device={device}
                 onDeviceOffer={deviceOffer}
@@ -58,7 +60,7 @@ export const PassphraseWalletIsNotExistFlow = ({
                         }),
                     );
                 }}
-                onCancel={() => dispatch(cancelDiscoveryThunk(device))}
+                onCancel={onCancel}
                 onSubmit={onSubmit}
             />
         );
