@@ -4,6 +4,7 @@ import {
     DEVICE,
     DeviceButtonRequest,
     FirmwareProgress,
+    FirmwareProgressUnexpectedDelay,
     FirmwareReconnect,
     FirmwareType,
     UI,
@@ -11,13 +12,18 @@ import {
 
 import { firmwareActions } from './firmwareActions';
 
+type FirmwwareUpdateUiEvent =
+    | DeviceButtonRequest
+    | FirmwareProgress
+    | FirmwareReconnect
+    | FirmwareProgressUnexpectedDelay;
 type FirmwareUpdateCommon = {
     // Device before installation begun. Used to display the original firmware type and version during the installation.
     cachedDevice?: TrezorDevice;
     // Stores firmware type currently being installed so that it can be displayed to the user during installation
     targetType?: FirmwareType;
     useDevkit: boolean;
-    uiEvent?: DeviceButtonRequest | FirmwareProgress | FirmwareReconnect;
+    uiEvent?: FirmwwareUpdateUiEvent;
 };
 
 export type FirmwareUpdateState =
@@ -68,10 +74,11 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
         .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
             state.cachedDevice = payload;
         })
-        .addMatcher<FirmwareProgress | FirmwareReconnect | DeviceButtonRequest>(
-            action =>
+        .addMatcher<FirmwwareUpdateUiEvent>(
+            (action: FirmwwareUpdateUiEvent) =>
                 action.type === UI.FIRMWARE_RECONNECT ||
                 action.type === UI.FIRMWARE_PROGRESS ||
+                action.type === UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
                 action.type === DEVICE.BUTTON,
             (state, action) => {
                 // DEVICE.BUTTON can be dispatched outside the firmware update flow and that should not change the uiEvent,
@@ -85,4 +92,3 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, b
 
 export const selectFirmware = (state: RootState) => state.firmware;
 export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
-export const selectCachedDevice = (state: RootState) => state.firmware.cachedDevice;

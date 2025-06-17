@@ -28,6 +28,8 @@ const postProgressMessage = (
     );
 };
 
+const FIRMWARE_ERASE_TIMEOUT_MILLISECONDS = 15_000;
+
 export const uploadFirmware = async (
     typedCall: TypedCall,
     postMessage: (message: CoreEventMessage) => void,
@@ -36,7 +38,15 @@ export const uploadFirmware = async (
 ) => {
     if (device.features.major_version === 1) {
         postConfirmationMessage(device);
+
+        // If FirmwareErase takes too long, it can be simply because we're waiting for the user pressing the confirm button,
+        // but it may also indicate that something is wrong with the device, so inform Suite which can then display warning.
+        // this may be removed in future if we confirm that the issue was resolved
+        const timeoutId = setTimeout(() => {
+            postMessage(createUiMessage(UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
+        }, FIRMWARE_ERASE_TIMEOUT_MILLISECONDS);
         await typedCall('FirmwareErase', 'Success', {});
+        clearTimeout(timeoutId);
 
         postProgressMessage(device, 0, postMessage);
 
