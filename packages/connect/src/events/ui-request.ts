@@ -32,6 +32,7 @@ export const UI_REQUEST = {
     FIRMWARE_NOT_COMPATIBLE: 'ui-device_firmware_not_compatible',
     FIRMWARE_NOT_INSTALLED: 'ui-device_firmware_not_installed',
     FIRMWARE_PROGRESS: 'ui-firmware-progress',
+    FIRMWARE_PROGRESS_UNEXPECTED_DELAY: 'ui-firmware-progress-unexpected-delay',
 
     /** connect is waiting for device to be automatically reconnected */
     FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
@@ -308,6 +309,11 @@ export interface FirmwareProgress {
     };
 }
 
+export interface FirmwareProgressUnexpectedDelay {
+    type: typeof UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY;
+    payload: {};
+}
+
 /**
  * Prompt user to reconnect device during firmware installation.
  */
@@ -344,6 +350,7 @@ export type UiEvent =
     | UpdateCustomFee
     | BundleProgress<any>
     | FirmwareProgress
+    | FirmwareProgressUnexpectedDelay
     | FirmwareException
     | FirmwareReconnect
     | FirmwareDisconnect
