@@ -138,7 +138,7 @@ export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
 
 export const selectIsDeviceAuthorized = createMemoizedSelector(
     [selectSelectedDevice],
-    device => !!device?.state,
+    device => !!device?.state?.staticSessionId,
 );
 
 export const selectIsDeviceConnectedAndAuthorized = createMemoizedSelector(

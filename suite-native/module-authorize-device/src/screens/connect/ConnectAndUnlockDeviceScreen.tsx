@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useIsFocused } from '@react-navigation/native';
 
@@ -13,6 +13,7 @@ import {
     Screen,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { restartDiscoveryThunk } from '@suite-common/wallet-core';
 
 import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
 
@@ -29,6 +30,7 @@ export const ConnectAndUnlockDeviceScreen = ({
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isFocused = useIsFocused();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const dispatch = useDispatch();
 
     const navigateBack = useCallback(() => {
         if (navigation.canGoBack()) {
@@ -40,6 +42,8 @@ export const ConnectAndUnlockDeviceScreen = ({
         navigation.replace(AuthorizeDeviceStackRoutes.ConnectBluetoothDevice);
     };
 
+    console.log('ConnectAndUnlockDeviceScreen: isDeviceAuthorized', isDeviceAuthorized);
+
     useEffect(() => {
         if (!isFocused || !isDeviceConnected) return;
 
@@ -47,7 +51,8 @@ export const ConnectAndUnlockDeviceScreen = ({
             // When selected device become connected, we need to navigate out of this screen.
             navigateBack();
         } else {
-            console.warn(' == meow == authorize device thnk needs to be replaced here ');
+            console.log('ConnectAndUnlockDeviceScreen: restartDiscoveryThunk');
+            dispatch(restartDiscoveryThunk());
             // If user cancelled the authorization, we need to authorize the device again.
             // requestPrioritizedDeviceAccess({
             //     deviceCallback: () => dispatch(authorizeDeviceThunk()),
