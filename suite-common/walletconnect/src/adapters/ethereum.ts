@@ -82,7 +82,7 @@ const ethereumRequestThunk = createThunk<
                 throw new Error('personal_sign error');
             }
 
-            return response.payload.signature;
+            return `0x${response.payload.signature}`;
         }
         case 'eth_signTypedData_v4': {
             const [address, data] = event.params.request.params;
@@ -103,7 +103,7 @@ const ethereumRequestThunk = createThunk<
                 throw new Error('eth_signTypedData_v4 error');
             }
 
-            return response.payload.signature;
+            return `0x${response.payload.signature}`;
         }
         case 'eth_sendTransaction': {
             const chainId = Number(event.params.chainId.replace('eip155:', ''));
