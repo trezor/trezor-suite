@@ -1,7 +1,7 @@
 import { DeviceAuthenticityConfig } from '@trezor/connect/src/data/deviceAuthenticityConfigTypes';
 
 import TrezorConnect from '../../../src';
-import { getController, initTrezorConnect, setup } from '../../common.setup';
+import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
 
@@ -56,7 +56,7 @@ describe('TrezorConnect.authenticateDevice', () => {
         },
     };
 
-    it('validation successful', async () => {
+    conditionalTest(['!T2T1'], 'validation successful', async () => {
         const result = await TrezorConnect.authenticateDevice({
             config,
         });
@@ -67,14 +67,26 @@ describe('TrezorConnect.authenticateDevice', () => {
         });
     });
 
-    it('validation unsuccessful (rootPubKey not found)', async () => {
+    conditionalTest(['!T2T1'], 'validation unsuccessful (rootPubKey not found)', async () => {
         const result = await TrezorConnect.authenticateDevice({
             config: {
                 ...config,
-                T3B1: {
-                    ...config.T3B1,
-                    rootPubKeys: [],
-                },
+                ...Object.fromEntries(
+                    Object.entries(config)
+                        .filter(
+                            ([_, value]) =>
+                                typeof value === 'object' &&
+                                value !== null &&
+                                'rootPubKeys' in value,
+                        )
+                        .map(([key, value]) => [
+                            key,
+                            {
+                                ...value,
+                                rootPubKeys: [],
+                            },
+                        ]),
+                ),
             },
         });
 
@@ -84,14 +96,26 @@ describe('TrezorConnect.authenticateDevice', () => {
         });
     });
 
-    it('sanity check unsuccessful (caPubkey not found)', async () => {
+    conditionalTest(['!T2T1'], 'sanity check unsuccessful (caPubkey not found)', async () => {
         const result = await TrezorConnect.authenticateDevice({
             config: {
                 ...config,
-                T3B1: {
-                    ...config.T3B1,
-                    caPubKeys: [],
-                },
+                ...Object.fromEntries(
+                    Object.entries(config)
+                        .filter(
+                            ([_, value]) =>
+                                typeof value === 'object' &&
+                                value !== null &&
+                                'rootPubKeys' in value,
+                        )
+                        .map(([key, value]) => [
+                            key,
+                            {
+                                ...value,
+                                caPubKeys: [],
+                            },
+                        ]),
+                ),
             },
         });
 
