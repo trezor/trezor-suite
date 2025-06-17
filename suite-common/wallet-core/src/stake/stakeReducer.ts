@@ -38,13 +38,16 @@ export interface StakeState {
                 error: boolean | string;
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
-                data: { apy?: number; totalRewards?: TotalStakeRewardsByAccount };
+                data: { apy?: number };
             };
             stakingRewards?: {
                 error: boolean | string;
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
-                data: { rewards?: StakeRewardsByAccount };
+                data: {
+                    rewardsHistory?: StakeRewardsByAccount;
+                    totalRewards?: TotalStakeRewardsByAccount;
+                };
             };
         };
     };
@@ -180,9 +183,11 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             }
         })
         .addCase(fetchEverstakeRewards.pending, (state, action) => {
-            const { symbol, endpointType } = action.meta.arg;
+            const { symbol, endpointType, address } = action.meta.arg;
 
-            if (!state.data[symbol]?.[endpointType]) {
+            const data = state.data[symbol]?.[endpointType]?.data;
+
+            if (!data?.totalRewards?.[address] || !data.rewardsHistory?.[address]) {
                 state.data[symbol] = {
                     ...state.data[symbol],
                     stakingRewards: {

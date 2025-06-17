@@ -48,12 +48,21 @@ export const selectValidatorsQueue = (state: StakeRootState, symbol?: NetworkSym
     return state.wallet.stake?.data?.[symbol]?.validatorsQueue;
 };
 
-export const selectStakingRewardsHistory = (state: StakeRootState, symbol?: NetworkSymbol) => {
-    if (!symbol) {
+export const selectStakingRewardsHistory = (
+    state: StakeRootState,
+    symbol?: NetworkSymbol,
+    descriptor?: string,
+) => {
+    const { data } = state.wallet.stake ?? {};
+
+    if (!data || !symbol || !descriptor) {
         return undefined;
     }
 
-    return state.wallet.stake?.data?.[symbol]?.stakingRewards;
+    const stakingRewards = data?.[symbol]?.stakingRewards;
+    const rewardsHistory = stakingRewards?.data?.rewardsHistory?.[descriptor];
+
+    return { ...stakingRewards, ...{ data: rewardsHistory } };
 };
 
 export const selectStakingTotalRewards = (
@@ -61,9 +70,14 @@ export const selectStakingTotalRewards = (
     symbol?: NetworkSymbol,
     descriptor?: string,
 ) => {
-    if (!symbol || !descriptor) {
+    const { data } = state.wallet.stake ?? {};
+
+    if (!data || !symbol || !descriptor) {
         return undefined;
     }
 
-    return state.wallet.stake?.data?.[symbol]?.stakingInfo?.data?.totalRewards?.[descriptor];
+    const stakingRewards = data?.[symbol]?.stakingRewards;
+    const totalRewards = stakingRewards?.data?.totalRewards?.[descriptor];
+
+    return { ...stakingRewards, ...{ data: totalRewards } };
 };

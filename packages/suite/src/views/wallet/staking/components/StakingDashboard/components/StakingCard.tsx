@@ -21,6 +21,7 @@ import {
     InfoItem,
     Paragraph,
     Row,
+    SkeletonRectangle,
     Tooltip,
 } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -44,6 +45,7 @@ type ItemProps = {
     cryptoAmount: string;
     fiatAmount: string;
     isReward?: boolean;
+    isLoading?: boolean;
     'data-testid': string;
 };
 
@@ -54,20 +56,33 @@ const Item = ({
     fiatAmount,
     iconName,
     isReward = false,
+    isLoading = false,
     'data-testid': dataTestId,
 }: ItemProps) => (
     <InfoItem label={label} iconName={iconName}>
-        <Paragraph typographyStyle="titleSmall" variant={isReward ? 'primary' : 'default'}>
-            <FormattedCryptoAmount data-testid={dataTestId} value={cryptoAmount} symbol={symbol} />
-        </Paragraph>
-        <Paragraph typographyStyle="hint" variant="tertiary">
-            <FiatValue amount={fiatAmount} symbol={symbol} showApproximationIndicator>
-                {({ value }) => (value ? <span>{value}</span> : null)}
-            </FiatValue>
-        </Paragraph>
+        {isLoading ? (
+            <>
+                <SkeletonRectangle width="150px" height="32px" animate />
+                <SkeletonRectangle width="50px" height="18px" animate />
+            </>
+        ) : (
+            <>
+                <Paragraph typographyStyle="titleSmall" variant={isReward ? 'primary' : 'default'}>
+                    <FormattedCryptoAmount
+                        data-testid={dataTestId}
+                        value={cryptoAmount}
+                        symbol={symbol}
+                    />
+                </Paragraph>
+                <Paragraph typographyStyle="hint" variant="tertiary">
+                    <FiatValue amount={fiatAmount} symbol={symbol} showApproximationIndicator>
+                        {({ value }) => (value ? <span>{value}</span> : null)}
+                    </FiatValue>
+                </Paragraph>
+            </>
+        )}
     </InfoItem>
 );
-
 type StakingCardProps = {
     isValidatorsQueueLoading?: boolean;
     daysToAddToPool?: number;
@@ -82,10 +97,12 @@ export const StakingCard = ({
     const selectedAccount = useSelector(selectSelectedAccount);
     const { isBelowLaptop } = useLayoutSize();
 
-    const solanaTotalRewards =
+    const { data, isLoading: isSolanaTotalRewardsLoading } =
         useSelector((state: StakeRootState) =>
             selectStakingTotalRewards(state, selectedAccount?.symbol, selectedAccount?.descriptor),
-        ) ?? '0';
+        ) ?? {};
+    const solanaTotalRewards = data ?? '0';
+    const isTotalRewardsLoading = isSolanaTotalRewardsLoading || data === undefined;
 
     const {
         isStakingDisabled,
@@ -233,6 +250,7 @@ export const StakingCard = ({
                         fiatAmount={stakingReward}
                         data-testid="@account/staking/rewards"
                         symbol={selectedAccount.symbol}
+                        isLoading={isTotalRewardsLoading}
                     />
                     {isPendingUnstakeShown && (
                         <Item

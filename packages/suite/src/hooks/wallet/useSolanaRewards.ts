@@ -15,13 +15,10 @@ import { Account } from 'src/types/wallet';
 const PAGE_SIZE_DEFAULT = 10;
 
 export const useSolanaRewards = (account: Account) => {
-    const { data, isLoading } =
+    const { data: selectedAccountRewards, isLoading } =
         useSelector((state: StakeRootState) =>
-            selectStakingRewardsHistory(state, account.symbol),
+            selectStakingRewardsHistory(state, account.symbol, account.descriptor),
         ) || {};
-
-    const { rewards } = data ?? {};
-    const selectedAccountRewards = rewards?.[account.descriptor];
 
     const dispatch = useDispatch();
     const debounce = useDebounce();
@@ -84,5 +81,6 @@ export const useSolanaRewards = (account: Account) => {
         itemsPerPage,
         showPagination,
         isLastPage,
+        selectedAccountRewards,
     };
 };
