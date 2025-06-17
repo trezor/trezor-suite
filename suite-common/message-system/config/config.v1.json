@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-05-10T00:00:00+00:00",
-    "sequence": 90,
+    "timestamp": "2025-06-16T00:00:00+00:00",
+    "sequence": 91,
     "actions": [
         {
             "conditions": [
@@ -388,6 +388,69 @@
                     "tr": "Güncelleme gerekiyor! Bu Trezor Suite sürümü cihazınızla uyumlu değil. Devam etmek için güncelleyin.",
                     "pt": "Atualização necessária! Esta versão do Trezor Suite não é compatível com o seu dispositivo. Atualize para continuar.",
                     "uk": "Потрібне оновлення! Ця версія Trezor Suite несумісна з вашим пристроєм. Оновіть програму, щоб продовжити."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Aggiorna Suite",
+                        "fr": "Mettre à jour Suite",
+                        "de": "Suite aktualisieren",
+                        "tr": "Suite'i Güncelle",
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<25.6.1",
+                        "mobile": "!",
+                        "web": "!"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "2.1.10",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "90906f36-9a37-45ad-a83f-3b8d52a88efe",
+                "priority": 98,
+                "dismissible": false,
+                "variant": "critical",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "An update is required! This version of Trezor Suite isn't compatible with your device. Please update to continue.",
+                    "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Please update to continue.",
+                    "es": "¡Actualización necesaria! Esta versión de Trezor Suite no es compatible con tu dispositivo. Por favor, actualiza para continuar.",
+                    "cs": "Je vyžadována aktualizace! Tato verze Trezor Suite není kompatibilní s vaším zařízením. Pro pokračování prosím aktualizujte.",
+                    "ru": "Требуется обновление! Эта версия Trezor Suite несовместима с вашим устройством. Пожалуйста, обновите программу, чтобы продолжить.",
+                    "ja": "アップデートが必要です。このバージョンのTrezor Suiteはお使いのデバイスと互換性がありません。続行するにはアップデートしてください。",
+                    "hu": "Frissítés szükséges! A Trezor Suite jelenlegi verziója nem kompatibilis az eszközével. Kérjük, frissítsen a folytatáshoz.",
+                    "it": "È necessario un aggiornamento! Questa versione di Trezor Suite non è compatibile con il tuo dispositivo. Aggiorna per continuare.",
+                    "fr": "Mise à jour requise ! Cette version de Trezor Suite n’est pas compatible avec votre appareil. Veuillez la mettre à jour pour continuer.",
+                    "de": "Update erforderlich! Diese Version von Trezor Suite ist nicht mit deinem Gerät kompatibel. Bitte aktualisiere, um fortzufahren.",
+                    "tr": "Güncelleme gerekli! Bu Trezor Suite sürümü cihazınızla uyumlu değil. Devam etmek için lütfen güncelleyin.",
+                    "pt": "Atualização necessária! Esta versão do Trezor Suite não é compatível com seu dispositivo. Atualize para continuar.",
+                    "uk": "Потрібне оновлення! Ця версія Trezor Suite несумісна з вашим пристроєм. Будь ласка, оновіть програму, щоб продовжити."
                 },
                 "cta": {
                     "action": "internal-link",
