@@ -185,9 +185,18 @@ export const switchSelectedAccountThunk = createThunk<
         if (!session) {
             return console.warn(`Session with topic ${sessionTopic} not found`);
         }
+        const approvedNamespaces = buildApprovedNamespaces({
+            // @ts-expect-error originally only takes proposal, but this works
+            proposal: {
+                requiredNamespaces: session.requiredNamespaces,
+                optionalNamespaces: session.optionalNamespaces,
+            },
+            supportedNamespaces: updatedNamespaces,
+        });
+
         await walletKit.updateSession({
             topic: sessionTopic,
-            namespaces: updatedNamespaces,
+            namespaces: approvedNamespaces,
         });
         const namespace = account.networkType === 'solana' ? 'solana' : 'eip155';
         const { chains } = session.namespaces[namespace];
