@@ -20,6 +20,7 @@ import {
     AuthorizeDeviceStackRoutes,
     DevUtilsStackRoutes,
     DeviceAuthenticityStackRoutes,
+    DeviceNameStackRoutes,
     DeviceOnboardingStackRoutes,
     DevicePinProtectionStackRoutes,
     DeviceSettingsStackRoutes,
@@ -202,6 +203,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceSettingsStackRoutes.FirmwareInstallation]: undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
+    [DeviceSettingsStackRoutes.DeviceNameStack]: undefined;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
     [DeviceSettingsStackRoutes.PinProtection]: undefined;
 };
@@ -217,6 +219,12 @@ export type WipeDeviceStackParamList = {
     [WipeDeviceStackRoutes.WipeDevice]: undefined;
     [WipeDeviceStackRoutes.ContinueOnTrezor]: undefined;
     [WipeDeviceStackRoutes.WipeDeviceLoadingScreen]: undefined;
+};
+
+export type DeviceNameStackParamList = {
+    [DeviceNameStackRoutes.DeviceName]: undefined;
+    [DeviceNameStackRoutes.ContinueOnTrezor]: undefined;
+    [DeviceNameStackRoutes.DeviceNameLoadingScreen]: undefined;
 };
 
 export type DeviceAuthenticityStackParamList = {

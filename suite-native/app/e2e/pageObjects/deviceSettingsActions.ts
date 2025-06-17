@@ -5,6 +5,12 @@ const redirectToDeviceAuthenticityScreenButton = element(
 );
 
 class DeviceSettingsActions {
+    async waitForSettingsScreen() {
+        await waitFor(element(by.id('@screen/DeviceSettings')))
+            .toBeVisible()
+            .withTimeout(10000);
+    }
+
     async waitForPinProtectionScreen() {
         await waitFor(element(by.id('@screen/PinProtection')))
             .toBeVisible()
@@ -55,6 +61,23 @@ class DeviceSettingsActions {
 
     async scrollUntilCheckAuthenticityButtonIsVisible() {
         await scrollUntilVisible(redirectToDeviceAuthenticityScreenButton);
+    }
+
+    async tapChangeDeviceNameButton() {
+        const changeDeviceNameButton = element(by.id('@device-name/change-button'));
+
+        await waitFor(changeDeviceNameButton).toBeVisible().withTimeout(10000);
+        await changeDeviceNameButton.tap();
+    }
+
+    async submitNewDeviceName(value: string) {
+        const changeDeviceNameInput = element(by.id('@device-name/input'));
+        const changeDeviceNameSubmitButton = element(by.id('@device-name/submit-button'));
+
+        await waitFor(changeDeviceNameInput).toBeVisible().withTimeout(10000);
+        await changeDeviceNameInput.tap();
+        await changeDeviceNameInput.replaceText(value);
+        await changeDeviceNameSubmitButton.tap();
     }
 
     async tapCheckAuthenticityButton() {

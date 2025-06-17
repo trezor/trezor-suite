@@ -21,8 +21,9 @@ const labelStyle = prepareNativeStyle(utils => ({
 }));
 
 const hintStyle = prepareNativeStyle(
-    (_, { error, hint }: Pick<InputWrapperProps, 'error' | 'hint'>) => ({
+    (utils, { error, hint }: Pick<InputWrapperProps, 'error' | 'hint'>) => ({
         marginTop: 0,
+        marginLeft: utils.spacings.sp12,
         extend: {
             condition: !!error || !!hint,
             style: {
