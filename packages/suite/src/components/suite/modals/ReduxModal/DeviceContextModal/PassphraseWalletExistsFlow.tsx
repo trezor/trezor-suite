@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { UI } from '@trezor/connect-web';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -36,11 +37,8 @@ export const PassphraseWalletExistsFlow = ({
         'exists-empty-wallet' | 'exists-best-practices' | 'exists-confirm-passphrase'
     >('exists-empty-wallet');
 
-    const onConfirmPassphraseDialogCancel = () => {
-        dispatch(cancelDiscoveryThunk(device));
-    };
-
     const onCancel = () => {
+        dispatch({ type: UI.CLOSE_UI_WINDOW });
         dispatch(cancelDiscoveryThunk(device));
     };
 
@@ -59,7 +57,7 @@ export const PassphraseWalletExistsFlow = ({
             case 'exists-empty-wallet':
                 return (
                     <PassphraseWalletIsEmpty
-                        onCancel={onConfirmPassphraseDialogCancel}
+                        onCancel={onCancel}
                         onNext={() => {
                             // Navigate to best practices
                             setConfirmPassphraseFlowState('exists-best-practices');
@@ -72,7 +70,7 @@ export const PassphraseWalletExistsFlow = ({
             case 'exists-best-practices':
                 return (
                     <PassphraseWalletBestPractices
-                        onCancel={onConfirmPassphraseDialogCancel}
+                        onCancel={onCancel}
                         onNext={() => {
                             // Navigate to confirm passphrase
                             setConfirmPassphraseFlowState('exists-confirm-passphrase');
@@ -89,7 +87,7 @@ export const PassphraseWalletExistsFlow = ({
                     <PassphraseWalletConfirmation
                         deviceLoading={loading}
                         device={device}
-                        onCancel={onConfirmPassphraseDialogCancel}
+                        onCancel={onCancel}
                         onDeviceOffer={deviceOffer}
                         onSubmit={onSubmit}
                     />

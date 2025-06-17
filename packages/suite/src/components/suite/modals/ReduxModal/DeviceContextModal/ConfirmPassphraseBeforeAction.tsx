@@ -52,7 +52,6 @@ export const ConfirmPassphraseBeforeAction = () => {
                 onCancel={onEnterPassphraseDialogCancel}
                 device={device}
                 isFullHeaderVisible
-                icon="x"
             >
                 <Column gap={spacings.sm}>
                     <H3>
