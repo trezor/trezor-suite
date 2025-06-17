@@ -544,8 +544,11 @@ export const en = {
         confirmOnDeviceSheetTitle: 'Confirm on Trezor',
     },
     moduleDeviceSettings: {
-        title: 'Device settings',
-        dangerZoneDivider: 'DANGER ZONE',
+        sectionTitles: {
+            general: 'General',
+            checks: 'Checks',
+            dangerZone: 'Danger Zone',
+        },
         pinProtection: {
             title: 'PIN protection',
             content: 'PIN protects your device against physical attack.',
