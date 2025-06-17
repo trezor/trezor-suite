@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { isSameYear } from 'date-fns';
 import { ComposedChart, ResponsiveContainer } from 'recharts';
 import { useTheme } from 'styled-components';
@@ -11,42 +9,43 @@ import { renderFiatBalanceLine } from './renderFiatBalanceLine';
 import { renderLinearGradient } from './renderLinearGradient';
 import { renderReferenceLines } from './renderReferenceLines';
 import { renderTooltip } from './renderTooltip';
-import { MetaData, RawDataItem } from './types';
-import { calculateMetaData, calculateSegments } from './utils';
+import { RawDataItem } from './types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { useGraphData } from '../../../../../views/wallet/transactions/components/useGraphData';
+import { GraphRange } from '../../../../../types/wallet/graph';
 import { GraphSkeleton } from '../../GraphSkeleton';
+import { renderCryptoInvestmentBalanceLine } from './renderCryptoInvestmentBalanceLine';
 
 type TransactionsGraphProps = {
-    data: RawDataItem[];
-    localCurrency: string;
-    segments: RawDataItem[][];
-    setSegments: (verticalSegments: RawDataItem[][]) => void;
-    verticalSegments: RawDataItem[][];
-    setVerticalSegments: (verticalSegments: RawDataItem[][]) => void;
-    ticks: string[];
-    setTicks: (verticalSegments: string[]) => void;
-    metaData: MetaData;
+    localCurrency: FiatCurrencyCode;
+    selectedRange: GraphRange;
+    balanceGraphData: RawDataItem[];
+    startBalance: number;
+    fiatRates: RawDataItem[];
+    isLoading?: boolean;
 };
 
 export const TransactionsGraph = ({
-    data,
     localCurrency,
-    segments,
-
-    verticalSegments,
-
-    ticks,
-    metaData,
+    selectedRange,
+    balanceGraphData,
+    startBalance,
+    fiatRates,
+    isLoading,
 }: TransactionsGraphProps) => {
+    const graphData = useGraphData({
+        selectedRange,
+        balanceGraphData,
+        startBalance,
+        fiatRates,
+    });
+    const { data, metaData, segments, verticalSegments, ticks } = graphData;
+
     const theme = useTheme();
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
-    //
-    //
-    //
-    //
-    // if (isLoading) {
-    //     return <GraphSkeleton animate />;
-    // }
+    if (isLoading) {
+        return <GraphSkeleton animate />;
+    }
 
     const shouldShowYearInXAxis =
         data.length > 1
@@ -62,7 +61,8 @@ export const TransactionsGraph = ({
                     {renderLinearGradient({ theme })}
                     {renderFiatBalanceLine({ segments, theme })}
                     {renderFiatBalanceJumps({ verticalSegments, theme })}
-                    {renderCryptoBalanceLine({ theme })}
+                    {/*{renderCryptoBalanceLine({ theme })}*/}
+                    {renderCryptoInvestmentBalanceLine({ theme })}
                     {renderReferenceLines({ metaData, theme, localCurrency })}
                 </ComposedChart>
             </ResponsiveContainer>

@@ -8,6 +8,7 @@ export type RawDataItem = {
     date: string;
     value: number;
     fiatValue?: number;
+    fiatValueInvestment?: number;
 };
 
 export type MetaData = {

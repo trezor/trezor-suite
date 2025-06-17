@@ -1,30 +1,26 @@
 import { useEffect, useState } from 'react';
 
-import { eachDayOfInterval, getUnixTime, isAfter, isBefore, isSameDay } from 'date-fns';
+import { eachDayOfInterval, isSameDay } from 'date-fns';
 
 import { selectLocalCurrency } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
 
-import { demoData } from '../../../../components/suite/graph/TransactionsGraph/newGraph/data';
 import {
-    ApiData,
     MetaData,
     RawDataItem,
 } from '../../../../components/suite/graph/TransactionsGraph/newGraph/types';
 import {
     calculateMetaData,
     calculateSegments,
-    sanitizeCoinData,
 } from '../../../../components/suite/graph/TransactionsGraph/newGraph/utils';
 import { useSelector } from '../../../../hooks/suite';
 import { GraphRange } from '../../../../types/wallet/graph';
+import { calculateValues } from './calculateValues';
 
-const getCurrentRange = (selectedRange: GraphRange) => {
+// @TODO: move somewhere else, CAN'T BE DATE HERE
+export const getCurrentRange = (selectedRange: GraphRange) => {
     if (selectedRange.label === 'all') {
-        const startDate = new Date(2020, 0, 1);
-        const endDate = new Date();
+        const startDate = new Date(2025, 0, 1).toISOString();
+        const endDate = new Date().toISOString();
 
         return {
             ...selectedRange,
@@ -36,46 +32,14 @@ const getCurrentRange = (selectedRange: GraphRange) => {
     return selectedRange;
 };
 
-const fetchMockData = (selectedRange: GraphRange) => {
-    const currentRange = getCurrentRange(selectedRange);
-    const rawData = sanitizeCoinData(demoData, selectedRange);
-    const filteredRawData = rawData.filter(
-        item =>
-            isBefore(new Date(item.date), currentRange.endDate) &&
-            isAfter(new Date(item.date), currentRange.startDate),
-    );
-
-    return filteredRawData;
-};
-
-const fetchData = async (selectedRange: GraphRange, localCurrency: string) => {
-    //getBalanceHistory
-    // zpub6rpZ3Q1MYUfqGRRDjsjMLxQ1NiTanLrbeJDRaqf7PdMnPW4dpnUaAcNLQRZyebJCoV6WUBfXQieDikrWMKqk8mmCRSvPSG1JgABxB5DNyJg
-    // 1575288000
-    // 1749739726
-    const currentRange = getCurrentRange(selectedRange);
-    const fromTimestamp = getUnixTime(new Date(currentRange.startDate));
-    const toTimestamp = getUnixTime(new Date(currentRange.endDate));
-    const response = await fetch(
-        `https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/market_chart/range?vs_currency=${localCurrency}&from=${fromTimestamp}&to=${toTimestamp}`,
-    );
-    const fetchedData = (await response.json()) as ApiData;
-
-    return sanitizeCoinData(fetchedData, selectedRange);
-};
-
 export const enhanceBalanceGraphDataForEachStep = (
     startBalance: number,
-    currentRange: {
-        startDate: Date;
-        endDate: Date;
-    },
+    currentRange: GraphRange,
     balanceGraphData: RawDataItem[],
 ) => {
-    console.log('___', startBalance);
     const interval = eachDayOfInterval({
-        start: currentRange.startDate,
-        end: currentRange.endDate,
+        start: new Date(currentRange.startDate!), // TODO fix type
+        end: new Date(currentRange.endDate!),
     });
 
     const newValues = interval.reduce<RawDataItem[]>((acc, intervalDate: Date) => {
@@ -105,22 +69,23 @@ export const enhanceBalanceGraphDataForEachStep = (
 type UseGraphDataProps = {
     selectedRange: GraphRange;
     balanceGraphData: RawDataItem[];
-    account: Account;
+    startBalance: number;
+    fiatRates: RawDataItem[];
 };
 
-const SATS_TO_BTC = 100000000;
-
-export const useGraphData = ({ selectedRange, balanceGraphData, account }: UseGraphDataProps) => {
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [fiatRates, setFiatRates] = useState<RawDataItem[]>([]);
+export const useGraphData = ({
+    selectedRange,
+    balanceGraphData,
+    startBalance,
+    fiatRates,
+}: UseGraphDataProps) => {
     const [graphData, setGraphData] = useState<RawDataItem[]>([]);
-    const [startBalance, setStartBalance] = useState<number | null>(null);
-    const [hasError, setHasError] = useState<boolean>(false);
     const localCurrency = useSelector(selectLocalCurrency);
     const currentRange = getCurrentRange(selectedRange);
     const [segments, setSegments] = useState<RawDataItem[][]>([]);
     const [verticalSegments, setVerticalSegments] = useState<RawDataItem[][]>([]);
     const [ticks, setTicks] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [metaData, setMetaData] = useState<MetaData>({
         min: null,
         max: null,
@@ -135,73 +100,18 @@ export const useGraphData = ({ selectedRange, balanceGraphData, account }: UseGr
     };
 
     useEffect(() => {
-        const fetchStartBalance = async () => {
-            const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-                coin: account.symbol,
-                identity: tryGetAccountIdentity(account),
-                descriptor: account.descriptor,
-                to: currentRange.endDate.getTime(),
-                groupBy: 1000000000,
-                currencies: ['usd'],
-            });
-
-            const value =
-                connectBalanceHistory?.success === true
-                    ? (parseFloat(connectBalanceHistory.payload[0]?.sent) ||
-                          0 + parseFloat(connectBalanceHistory.payload[0]?.received) ||
-                          0) / SATS_TO_BTC
-                    : null;
-
-            if (value === null) {
-                setHasError(true);
-            } else {
-                setStartBalance(value);
-            }
-        };
-
-        fetchStartBalance();
-    }, [account, currentRange.endDate]);
-
-    useEffect(() => {
-        console.log('___', { currentRange, selectedRange });
-        if (startBalance === null || hasError) return;
-
-        // setIsLoading(true);
+        setIsLoading(true);
         removeData();
 
-        setFiatRates(fetchMockData(selectedRange));
-        // setFiatRates(await fetchData(selectedRange,localCurrency).catch(console.error)); // tohle je možná blbě
-
-        const balanceGraphDataForEachStep = enhanceBalanceGraphDataForEachStep(
+        const combinedData = calculateValues({
+            fiatRates,
             startBalance,
             currentRange,
             balanceGraphData,
-        );
-        console.log('___', { balanceGraphDataForEachStep });
-
-        const combinedData = fiatRates.map(rate => {
-            const balanceValueForThisStep = balanceGraphDataForEachStep.find(balanceItem =>
-                isSameDay(new Date(rate.date), new Date(balanceItem.date)),
-            );
-
-            return {
-                date: rate.date,
-                value: balanceValueForThisStep ? balanceValueForThisStep.value : 0,
-                fiatValue: balanceValueForThisStep ? rate.value * balanceValueForThisStep.value : 0,
-            };
         });
-        console.log('___', { combinedData });
+
         setGraphData(combinedData);
-    }, [
-        selectedRange,
-        currentRange,
-        localCurrency,
-        startBalance,
-        // removeData, // špatný
-        // balanceGraphData, // špatný
-        // fiatRates // špatný
-        hasError,
-    ]);
+    }, [selectedRange, currentRange, localCurrency, startBalance, balanceGraphData, fiatRates]);
 
     useEffect(() => {
         const { newSegments, newVerticalSegments, filteredTicks } = calculateSegments(graphData);
@@ -211,13 +121,12 @@ export const useGraphData = ({ selectedRange, balanceGraphData, account }: UseGr
         setTicks(filteredTicks);
 
         setMetaData(calculateMetaData(graphData));
-        // setIsLoading(false);
+        setIsLoading(false);
     }, [graphData, setSegments, setTicks, setVerticalSegments]);
 
     return {
-        // isLoading,
+        isLoading,
         data: graphData,
-        hasError,
         metaData,
         segments,
         verticalSegments,

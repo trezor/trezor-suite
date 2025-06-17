@@ -1,16 +1,14 @@
 import { Line, YAxis } from 'recharts';
 import { DefaultTheme } from 'styled-components';
 
-export type RenderCryptoBalanceLine = {
+export type RenderCryptoInvestmentBalanceLine = {
     theme: DefaultTheme;
 };
-export const renderCryptoBalanceLine = ({ theme }: RenderCryptoBalanceLine) => (
+export const renderCryptoInvestmentBalanceLine = ({ theme }: RenderCryptoInvestmentBalanceLine) => (
     <>
-        <YAxis yAxisId="renderCryptoBalanceLine" domain={['auto', 'auto']} hide />
         <Line
-            yAxisId="renderCryptoBalanceLine"
             type="linear"
-            dataKey="value"
+            dataKey="fiatValueInvestment"
             stroke={theme.baseBorderWarning}
             dot={false}
             strokeWidth={1}

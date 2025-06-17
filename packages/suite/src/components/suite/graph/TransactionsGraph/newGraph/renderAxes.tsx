@@ -21,7 +21,13 @@ export const renderAxes = ({ ticks, shouldShowYearInXAxis }: RenderAxesProps) =>
                 interval="preserveStartEnd"
                 ticks={[...new Set(ticks)]}
             />
-            <YAxis type="number" domain={[0, 'auto']} ticks={[]} hide={true} allowDataOverflow />
+            <YAxis
+                type="number"
+                domain={['auto', 'auto']}
+                ticks={[]}
+                hide={true}
+                allowDataOverflow
+            />
         </>
     );
 };

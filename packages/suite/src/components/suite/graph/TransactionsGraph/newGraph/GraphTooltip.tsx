@@ -88,19 +88,47 @@ export const GraphTooltip = (props: GraphTooltip) => {
                         </>
                     ) : (
                         <Paragraph>
+                            <Paragraph variant="tertiary" typographyStyle="hint">
+                                Portfolio value
+                            </Paragraph>
                             <FiatAmountFormatter
                                 value={from.toFixed()}
                                 currency={localCurrency}
                                 minimumFractionDigits={0}
                             />
-                            <div>{fromItem.value}</div>
+                            <br />
+                            <Paragraph
+                                variant="tertiary"
+                                typographyStyle="hint"
+                                margin={{ top: 12 }}
+                            >
+                                Investment
+                            </Paragraph>
+                            <FiatAmountFormatter
+                                value={(fromItem?.fiatValueInvestment || 0).toFixed()}
+                                currency={localCurrency}
+                                minimumFractionDigits={0}
+                            />
+                            {/*<div>{fromItem.value}</div>*/}
+                            <br />
+                            <br />
+                            <div>
+                                <Paragraph variant="tertiary" typographyStyle="hint">
+                                    Diff
+                                </Paragraph>
+                                <FiatAmountFormatter
+                                    value={(from - (fromItem?.fiatValueInvestment || 0)).toFixed()}
+                                    currency={localCurrency}
+                                    minimumFractionDigits={0}
+                                />
+                            </div>
                         </Paragraph>
                     )}
 
                     <Paragraph
                         variant="tertiary"
                         typographyStyle="label"
-                        margin={{ top: spacings.xs }}
+                        margin={{ top: spacings.xl }}
                     >
                         {dateFormatterWithYear(fromItem.date)}
                     </Paragraph>

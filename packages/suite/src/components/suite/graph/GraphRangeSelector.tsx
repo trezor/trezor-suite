@@ -102,6 +102,13 @@ const RANGES = [
         visible: true,
     },
     {
+        label: 'four-years',
+        startDate: startOfDay(subYears(END_OF_TODAY, 4)),
+        endDate: END_OF_TODAY,
+        groupBy: 'month',
+        visible: true,
+    },
+    {
         label: 'all',
         startDate: null,
         endDate: null,
@@ -116,6 +123,8 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
             return <Translation id="TR_RANGE" />;
         case 'all':
             return <Translation id="TR_ALL" />;
+        case 'four-years':
+            return '4Y';
         case 'two-years':
             return '2Y';
         case 'year':

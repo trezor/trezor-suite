@@ -11,6 +11,7 @@ export type graphRangeOptions =
     | 'six-months'
     | 'year'
     | 'two-years'
+    | 'four-years'
     | 'range'
     | 'all';
 
