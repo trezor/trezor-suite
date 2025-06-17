@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics';
 import { FirmwareUpdateState } from '@suite-common/firmware/libDev/src';
@@ -439,6 +439,7 @@ describe('Preloader component', () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
         expect(screen.getAllByText('TR_ACQUIRE_DEVICE_TITLE').length).toBe(2);
 
         unmount();
@@ -490,6 +491,7 @@ describe('Preloader component', () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
         expect(findByTestId('@connect-device-prompt/unreadable-udev')).not.toBeNull();
 
         unmount();
@@ -564,6 +566,7 @@ describe('Preloader component', () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
         expect(findByTestId(/TR_UNKNOWN_DEVICE/)).not.toBeNull();
 
         unmount();
@@ -588,6 +591,7 @@ describe('Preloader component', () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
         expect(findByTestId(/TR_YOUR_DEVICE_IS_SEEDLESS/)).not.toBeNull();
         expect(findByTestId('TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE')).not.toBeNull();
 
