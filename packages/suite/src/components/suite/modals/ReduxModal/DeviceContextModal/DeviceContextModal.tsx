@@ -97,6 +97,8 @@ export const DeviceContextModal = ({
                 />
             ) : null;
         case 'ButtonRequest_PublicKey':
+            console.log('ButtonRequest_PublicKey in DeviceContextModal');
+            console.log('data', data);
             return <ConfirmXpubModal onCancel={abort} />;
         default:
             return null;

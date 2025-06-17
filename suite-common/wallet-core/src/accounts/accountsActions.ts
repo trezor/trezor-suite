@@ -57,6 +57,8 @@ const composeCreateAccountActionPayload = ({
             ? `${accountInfo.descriptor}-${chainId}`
             : accountInfo.legacyXpub || accountInfo.descriptor;
 
+        console.log('accountInfo', accountInfo);
+
         const result: Account = {
             deviceState,
             accountLabel,

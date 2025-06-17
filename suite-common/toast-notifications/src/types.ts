@@ -92,6 +92,7 @@ export type ToastPayload = (
               | 'discovery-error'
               | 'verify-address-error'
               | 'verify-xpub-error'
+              | 'verify-descriptor-error'
               | 'sign-message-error'
               | 'verify-message-error'
               | 'sign-tx-error'

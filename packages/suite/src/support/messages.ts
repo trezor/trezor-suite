@@ -186,6 +186,10 @@ export default defineMessages({
         defaultMessage: 'Public key (XPUB)',
         id: 'TR_XPUB',
     },
+    TR_DESCRIPTOR: {
+        defaultMessage: 'Descriptor (BIP 380)',
+        id: 'TR_DESCRIPTOR',
+    },
     TR_ADDRESS: {
         id: 'TR_ADDRESS',
         defaultMessage: 'Address',
@@ -3265,6 +3269,10 @@ export default defineMessages({
         defaultMessage: 'Show unverified public key',
         id: 'TR_SHOW_UNVERIFIED_XPUB',
     },
+    TR_SHOW_UNVERIFIED_DESCRIPTOR: {
+        defaultMessage: 'Show unverified descriptor',
+        id: 'TR_SHOW_UNVERIFIED_DESCRIPTOR',
+    },
     TR_PROCEED_UNVERIFIED_ADDRESS: {
         defaultMessage: 'Proceed with unverified address',
         id: 'TR_PROCEED_UNVERIFIED_ADDRESS',
@@ -3484,6 +3492,11 @@ export default defineMessages({
         defaultMessage:
             'To prevent phishing attacks, verify the public key on your Trezor. {claim}',
         id: 'TR_XPUB_PHISHING_WARNING',
+    },
+    TR_DESCRIPTOR_PHISHING_WARNING: {
+        defaultMessage:
+            'To prevent phishing attacks, verify the descriptor on your Trezor. {claim}',
+        id: 'TR_DESCRIPTOR_PHISHING_WARNING',
     },
     TR_TOO_LONG: {
         id: 'TR_TOO_LONG',
@@ -3835,14 +3848,27 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
         defaultMessage: 'Public key (XPUB)',
     },
+    TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380_HEADER',
+        defaultMessage: 'Descriptor (BIP 380)',
+    },
     TR_ACCOUNT_DETAILS_XPUB: {
         id: 'TR_ACCOUNT_DETAILS_XPUB',
         defaultMessage:
             'Handle your account public key (XPUB) carefully. When exposed, a third party will be able to see your entire transaction history.',
     },
+    TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380: {
+        id: 'TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380',
+        defaultMessage:
+            'Handle your descriptor (BIP 380) carefully. When exposed, a third party will be able to see your entire transaction history.',
+    },
     TR_ACCOUNT_DETAILS_XPUB_BUTTON: {
         id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
         defaultMessage: 'Show public key',
+    },
+    TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380_BUTTON: {
+        id: 'TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380_BUTTON',
+        defaultMessage: 'Show descriptor',
     },
     TR_ACCOUNT_TYPE_NO_CAPABILITY: {
         id: 'TR_ACCOUNT_TYPE_NO_CAPABILITY',
@@ -4025,6 +4051,10 @@ export default defineMessages({
     TOAST_VERIFY_XPUB_ERROR: {
         id: 'TOAST_VERIFY_XPUB_ERROR',
         defaultMessage: 'Public key verification error: {error}',
+    },
+    TOAST_VERIFY_DESCRIPTOR_ERROR: {
+        id: 'TOAST_VERIFY_DESCRIPTOR_ERROR',
+        defaultMessage: 'Descriptor verification error: {error}',
     },
     TOAST_SIGN_MESSAGE_SUCCESS: {
         id: 'TOAST_SIGN_MESSAGE_SUCCESS',

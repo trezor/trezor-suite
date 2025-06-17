@@ -14,6 +14,9 @@ export type ReduxModalProps<
 
 /** Modals initiated by redux state.modal */
 export const ReduxModal = (modal: ReduxModalProps) => {
+    console.log('ReduxModal');
+    console.log('modal', modal);
+    console.log('modal.context', modal.context);
     switch (modal.context) {
         case MODAL.CONTEXT_DEVICE: // Modals requested by Device from `trezor-connect`
             return <DeviceContextModal {...modal} />;

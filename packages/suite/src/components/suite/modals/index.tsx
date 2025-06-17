@@ -10,6 +10,7 @@ export { ConfirmFingerprintModal } from './ReduxModal/DeviceContextModal/Confirm
 export { TradingTermsModal } from './ReduxModal/UserContextModal/TradingTermsModal';
 export { ConfirmAddressModal } from './ReduxModal/ConfirmAddressModal';
 export { ConfirmXpubModal } from './ReduxModal/ConfirmXpubModal';
+export { ConfirmDescriptorBip380Modal } from './ReduxModal/ConfirmDescriptorModal';
 export { NoBackupModal } from './ReduxModal/DeviceConfirmationModal/NoBackupModal';
 export { TransactionReviewModal } from './ReduxModal/TransactionReviewModal/TransactionReviewModal';
 export { ImportTransactionModal } from './ReduxModal/UserContextModal/ImportTransactionModal/ImportTransactionModal';

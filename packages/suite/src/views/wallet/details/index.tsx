@@ -29,6 +29,7 @@ import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reduc
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
+import { showDescriptor } from 'src/actions/wallet/descriptorActions';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
@@ -96,7 +97,15 @@ const Details = () => {
     const shouldDisplayXpubSection =
         account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
+    // TODO: it should not work for model 1.
+    const shouldDisplayDescriptorSection = account.networkType === 'bitcoin';
+
     const handleXpubClick = () => dispatch(showXpub());
+
+    const handleDescriptorClick = () => {
+        console.log('handleDescriptorClick in details section button');
+        return dispatch(showDescriptor());
+    };
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
@@ -164,6 +173,25 @@ const Details = () => {
                         )
                     ) : (
                         <RescanAccount account={account} />
+                    )}
+                    {shouldDisplayDescriptorSection && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380_HEADER"
+                            description={<Translation id="TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380" />}
+                            // learnMoreUrl={HELP_CENTER_XPUB_URL}
+                        >
+                            <Button
+                                variant="tertiary"
+                                data-testid="@wallets/details/show-descriptor-button"
+                                onClick={handleDescriptorClick}
+                                isDisabled={disabled}
+                                isLoading={locked}
+                                size="small"
+                                minWidth={140}
+                            >
+                                <Translation id="TR_ACCOUNT_DETAILS_DESCRIPTOR_BIP380_BUTTON" />
+                            </Button>
+                        </DetailsRow>
                     )}
                 </Column>
             </Card>

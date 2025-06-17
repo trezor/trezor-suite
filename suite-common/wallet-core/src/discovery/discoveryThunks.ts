@@ -664,6 +664,7 @@ export const startDiscoveryThunk = createThunk(
         },
         { dispatch, getState },
     ): void => {
+        console.log('startDiscoveryThunk');
         const selectedDevice = selectSelectedDevice(getState());
 
         const actualDevice = device ?? selectedDevice;

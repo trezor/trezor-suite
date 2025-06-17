@@ -12,6 +12,8 @@ export const DeviceConfirmationModal = ({
     windowType,
     data,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE_CONFIRMATION>) => {
+    console.log('DeviceConfirmationModal in suite/modals/ReduxModal');
+    console.log('windowType', windowType);
     switch (windowType) {
         case UI.SELECT_ACCOUNT:
             return data ? <SelectAccountModal data={data} /> : null;

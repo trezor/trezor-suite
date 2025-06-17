@@ -5,6 +5,7 @@ import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 
 export const ConfirmUnverifiedXpubModal = () => {
+    console.log('ConfirmUnverifiedXpubModal');
     const event = useCallback(() => openXpubModal(), []);
     const verifyProcess = useCallback(() => showXpub(), []);
 

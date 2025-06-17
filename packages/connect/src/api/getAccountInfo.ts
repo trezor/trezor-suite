@@ -35,6 +35,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             ? { ...this.payload, bundle: [this.payload] }
             : this.payload;
 
+        console.log('payload in GetAccountInfo init()', payload);
+
         // validate bundle type
         validateParams(payload, [{ name: 'bundle', type: 'array' }]);
 
@@ -269,6 +271,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     marker: request.marker,
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
                 });
+
+                console.log('info from getAccountInfo in connect api', info);
 
                 if (this.disposed) break;
 

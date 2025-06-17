@@ -17,6 +17,7 @@ import {
     ClaimModal,
     CoinjoinSuccessModal,
     ConfirmAddressModal,
+    ConfirmDescriptorBip380Modal,
     ConfirmUnverifiedAddressModal,
     ConfirmUnverifiedProceedModal,
     ConfirmUnverifiedXpubModal,
@@ -59,6 +60,7 @@ import { TradingDCAModal } from './TradingDCAModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
+import { ConfirmUnverifiedDescriptorModal } from './ConfirmUnverifiedDescriptorModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
@@ -87,12 +89,18 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             );
         case 'unverified-xpub':
             return <ConfirmUnverifiedXpubModal />;
+        case 'unverified-descriptor':
+            return <ConfirmUnverifiedDescriptorModal />;
         case 'unverified-address-proceed':
             return <ConfirmUnverifiedProceedModal value={payload.value} />;
         case 'address':
             return <ConfirmAddressModal {...payload} onCancel={onCancel} />;
         case 'xpub':
+            console.log('xput in UserContextModal');
             return <ConfirmXpubModal {...payload} onCancel={onCancel} />;
+        case 'descriptorBip380':
+            // TODO: change this !!!
+            return <ConfirmDescriptorBip380Modal {...payload} onCancel={onCancel} />;
         case 'device-background-gallery':
             return <BackgroundGalleryModal onCancel={onCancel} />;
         case 'device-authenticity-check-opt-out':

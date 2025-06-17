@@ -20,6 +20,9 @@ export type UserContextPayload =
           type: 'unverified-xpub';
       }
     | {
+          type: 'unverified-descriptor';
+      }
+    | {
           type: 'unverified-address-proceed';
           value: string;
       }
@@ -32,6 +35,11 @@ export type UserContextPayload =
     | {
           type: 'xpub';
           isConfirmed?: boolean;
+      }
+    | {
+          type: 'descriptorBip380';
+          isConfirmed?: boolean;
+          descriptorBip380: string | undefined;
       }
     | {
           type: 'add-account';

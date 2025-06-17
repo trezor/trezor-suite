@@ -2,7 +2,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { convertTaprootXpub } from '@trezor/utils';
 
-import { showXpub } from 'src/actions/wallet/publicKeyActions';
+import { showDescriptor } from 'src/actions/wallet/descriptorActions';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -11,13 +11,14 @@ import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/C
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 
-export const ConfirmXpubModal = (
+export const ConfirmDescriptorBip380Modal = (
     props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'> & {
-        descriptor?: string;
+        descriptorBip380?: string;
         descriptorChecksum?: string;
     },
 ) => {
-    console.log('ConfirmXpubModal');
+    console.log('ConfirmDescriptorBip380Modal');
+    console.log('descriptorBip380', props.descriptorBip380);
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectSelectedAccount);
     const isConnectPopup = useSelector(
@@ -28,15 +29,6 @@ export const ConfirmXpubModal = (
     if (!device) return null;
     // TODO: special case for Connect Popup
     if (!account) return <ConfirmActionModal device={device} />;
-
-    console.log('account', account);
-    // TODO(karliatto): I think we should use this modal for descriptor bip380 as well instead of the "new" one that I created
-    // since it is displayed based on `ButtonRequest_PublicKey`
-    // comming from the device which is same method used for getting xpub. We might find a way to make a difference when user requests
-    // xpub and when user request descriptor, or maybe display xpub and descriptor together. :thinking:
-    // But actually it is possible that the best solution would be to add `descriptorBip380` to getAccountInfo so it will be present
-    // in the account info and then we can display it.
-    // Ideally it should come with the device also displaying it.
 
     const xpub =
         account.descriptorChecksum !== undefined
@@ -50,18 +42,15 @@ export const ConfirmXpubModal = (
         direction: 'apostrophe-to-h',
     });
 
-    console.log('xpubWithReplacedApostropheWithH', xpubWithReplacedApostropheWithH);
-    console.log('xpub', xpub);
-
     return (
         <ConfirmValueModal
             account={account}
-            heading={<Translation id="TR_XPUB" />}
-            validateOnDevice={showXpub}
+            heading={<Translation id="TR_DESCRIPTOR" />}
+            validateOnDevice={showDescriptor}
             isCopyButtonVisible={true}
-            value={xpubWithReplacedApostropheWithH ?? xpub}
+            value={props.descriptorBip380 || ''}
             isValueChunked={false}
-            data-testid="@metadata/copy-xpub-button"
+            data-testid="@metadata/copy-descriptor-button"
             {...props}
         />
     );
