@@ -42,7 +42,6 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
     const isFilledValidAddress = !!addressValue && !!symbol && isAddressValid(addressValue, symbol);
 
     const networkType = symbol ? getNetworkType(symbol) : null;
-    const isEthereumNetwork = networkType === 'ethereum';
 
     useEffect(() => {
         if (!isFilledValidAddress) {
@@ -56,12 +55,14 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         const shouldShowTokenAlert = !!tokenContract && !wasTokenAlertDisplayed;
 
         const shouldChecksumAddress =
-            isEthereumNetwork &&
+            networkType === 'ethereum' &&
             !checkAddressCheckSum(addressValue || '') &&
             !wasAddressChecksummed;
 
         const shouldCheckContractAddress =
-            wasTokenAlertDisplayed && isEthereumNetwork && !wasContractAlertDisplayed;
+            wasTokenAlertDisplayed &&
+            ['eth', 'tsep', 'thol'].includes(symbol) &&
+            !wasContractAlertDisplayed;
 
         if (shouldShowTokenAlert) {
             handleTokenAlert();
@@ -89,7 +90,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         wasContractAlertDisplayed,
         handleContractAddressCheck,
         handleTokenAlert,
-        isEthereumNetwork,
+        networkType,
         addressValue,
         symbol,
         resetContractAlert,
