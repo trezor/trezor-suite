@@ -53,7 +53,10 @@ export const RecoveryInstructionsScreen = ({
                     <RecoveryCardSvg />
                 </Box>
                 <VStack spacing="sp12" alignItems="stretch">
-                    <Button onPress={handleContinueButtonPress}>
+                    <Button
+                        onPress={handleContinueButtonPress}
+                        testID="@deviceOnboarding/RecoveryInstructionsScreen/continueButton"
+                    >
                         <Translation id="generic.buttons.continue" />
                     </Button>
                     <Button colorScheme="tertiaryElevation0" onPress={openModal}>

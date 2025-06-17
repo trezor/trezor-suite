@@ -99,7 +99,11 @@ export const CreateOrRecoverCrossroadsScreen = ({
                                 <Translation id="moduleDeviceOnboarding.createOrRecoverCrossroadsScreen.recover.subtitle" />
                             }
                         />
-                        <Button onPress={handleRecoverButtonPress} colorScheme="tertiaryElevation0">
+                        <Button
+                            onPress={handleRecoverButtonPress}
+                            testID="@deviceOnboarding/CreateOrRecoverCrossroadsScreen/recoverWalletBtn"
+                            colorScheme="tertiaryElevation0"
+                        >
                             <Translation id="moduleDeviceOnboarding.createOrRecoverCrossroadsScreen.recover.button" />
                         </Button>
                     </VStack>
