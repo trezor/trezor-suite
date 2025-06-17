@@ -23,6 +23,7 @@ export const FirmwareInstallationStandalone = ({
 }: FirmwareInstallationStandaloneProps) => {
     const { status, showReconnectPrompt, uiEvent, targetType } = useFirmwareInstallation();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+
     // Device needs to be paired twice when using web usb transport. // Once in
     // bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
     // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time
