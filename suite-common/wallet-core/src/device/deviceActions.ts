@@ -26,9 +26,12 @@ const connectUnacquiredDevice = createAction(
     (payload: DeviceConnectActionPayload) => ({ payload }),
 );
 
-const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device | TrezorDevice) => ({
-    payload,
-}));
+const deviceChanged = createAction(
+    DEVICE.CHANGED,
+    (payload: { device: Device; shouldUpdateState?: boolean }) => ({
+        payload,
+    }),
+);
 
 const setDeviceState = createAction(
     `${DEVICE_MODULE_PREFIX}/set-device-state`,

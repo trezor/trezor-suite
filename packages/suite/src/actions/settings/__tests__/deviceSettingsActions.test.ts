@@ -52,7 +52,8 @@ describe('DeviceSettings Actions', () => {
             // this action have influence on reducers and forget device process
             const mock = () => {
                 if (f.deviceChange) {
-                    store.dispatch(deviceActions.deviceChanged(f.deviceChange));
+                    // @ts-expect-error
+                    store.dispatch(deviceActions.deviceChanged({ device: f.deviceChange }));
                     store.dispatch(deviceActions.updateSelectedDevice(f.deviceChange));
                 }
 
