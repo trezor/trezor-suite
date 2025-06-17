@@ -1,15 +1,24 @@
 import { WalletBackupType } from '@suite-native/device';
 
-import { scrollUntilVisible, wait, waitForElementByIdToBeVisible } from '../utils';
+import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../utils';
 
 class DeviceOnboardingActions {
     async selectCreateWalletOption() {
-        await waitForElementByIdToBeVisible(
-            '@deviceOnboarding/CreateOrRecoverCrossroadsScreen/createWalletBtn',
-        );
-        await element(
-            by.id('@deviceOnboarding/CreateOrRecoverCrossroadsScreen/createWalletBtn'),
-        ).tap();
+        const buttonId = '@deviceOnboarding/CreateOrRecoverCrossroadsScreen/createWalletBtn';
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
+    }
+
+    async selectRecoverWalletOption() {
+        const buttonId = '@deviceOnboarding/CreateOrRecoverCrossroadsScreen/recoverWalletBtn';
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
+    }
+
+    async confirmRecoveryInstructions() {
+        const buttonId = '@deviceOnboarding/RecoveryInstructionsScreen/continueButton';
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
     }
 
     async waitForCreateOrRecoverCrossroadsScreen() {
@@ -29,28 +38,35 @@ class DeviceOnboardingActions {
     }
 
     async gotToNextWalletBackupTutorialStep(step: number) {
-        await waitForElementByIdToBeVisible(
-            `@deviceOnboarding/walletBackupTutorialStep${step}/nextButton`,
-        );
-        await element(by.id(`@deviceOnboarding/walletBackupTutorialStep${step}/nextButton`)).tap();
+        const buttonId = `@deviceOnboarding/walletBackupTutorialStep${step}/nextButton`;
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
     }
 
     async goToNextWalletBackupRecapStep(step: number) {
-        await waitForElementByIdToBeVisible(
-            `@deviceOnboarding/walletBackupRecapStep${step}/nextButton`,
-        );
-        await element(by.id(`@deviceOnboarding/walletBackupRecapStep${step}/nextButton`)).tap();
+        const buttonId = `@deviceOnboarding/walletBackupRecapStep${step}/nextButton`;
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
+    }
+
+    async goToNextWalletRecoveryRecapStep(step: number) {
+        const buttonId = `@deviceOnboarding/walletRecoveryRecapStep${step}/nextButton`;
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
     }
 
     async waitForWalletBackupRecapScreen() {
         await waitForElementByIdToBeVisible('@screen/WalletBackupRecap');
     }
 
+    async waitForWalletRecoveryRecapScreen() {
+        await waitForElementByIdToBeVisible('@screen/WalletRecoveryRecap');
+    }
+
     async openWalletBackupTypeMenu() {
-        await waitForElementByIdToBeVisible(
-            '@deviceOnboarding/WalletBackupTutorialStep5/moreOptionsButton',
-        );
-        await element(by.id('@deviceOnboarding/WalletBackupTutorialStep5/moreOptionsButton')).tap();
+        const buttonId = '@deviceOnboarding/WalletBackupTutorialStep5/moreOptionsButton';
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
     }
 
     async validateSelectedBackupType(selectedType: WalletBackupType) {
@@ -71,9 +87,9 @@ class DeviceOnboardingActions {
     }
 
     async pressHoldToConfirmButton() {
-        await wait(5000);
-        const holdToConfirmButton = element(by.id('@deviceOnboarding/HoldToConfirmButton'));
-        await waitForElementByIdToBeVisible('@deviceOnboarding/HoldToConfirmButton');
+        const buttonId = '@deviceOnboarding/HoldToConfirmButton';
+        await waitForElementByIdToBeVisible(buttonId);
+        const holdToConfirmButton = element(by.id(buttonId));
         await holdToConfirmButton.longPress(3000);
     }
 
@@ -86,8 +102,9 @@ class DeviceOnboardingActions {
     }
 
     async dismissDeviceAuthenticitySuccess() {
-        await waitForElementByIdToBeVisible('@device-authenticity/continue-button');
-        await element(by.id('@device-authenticity/continue-button')).tap();
+        const buttonId = '@device-authenticity/continue-button';
+        await waitForElementByIdToBeVisible(buttonId);
+        await element(by.id(buttonId)).tap();
     }
 
     async dismissTheUninitializedDeviceLanding() {
@@ -97,7 +114,7 @@ class DeviceOnboardingActions {
     async skipFirmwareUpdate() {
         const testId = '@firmware/skip-button';
         try {
-            await waitForElementByIdToBeVisible(testId, 10000);
+            await waitForElementByIdToBeVisible(testId, 5000);
             await element(by.id(testId)).tap();
         } catch {
             console.warn(

@@ -10,12 +10,54 @@ import {
     openApp,
     prepareTrezorEmulator,
     scrollUntilVisible,
+    wait,
 } from '../utils';
-conditionalDescribe(device.getPlatform() === 'android', 'Create Wallet', () => {
-    beforeAll(async () => {
-        await prepareTrezorEmulator('');
 
+const proceedToCreateOrRecoverCrossroads = async () => {
+    await onDeviceOnboarding.waitForUninitializedDeviceLanding();
+    await onDeviceOnboarding.dismissTheUninitializedDeviceLanding();
+    await onDeviceOnboarding.skipFirmwareUpdate();
+
+    await TrezorUserEnvLink.pressYes();
+
+    await onDeviceOnboarding.waitForDeviceAuthenticitySuccess();
+    await onDeviceOnboarding.dismissDeviceAuthenticitySuccess();
+
+    await TrezorUserEnvLink.pressYes();
+
+    await onDeviceOnboarding.waitForCreateOrRecoverCrossroadsScreen();
+};
+
+const finishOnboardingFlow = async () => {
+    // Create Pin
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.inputEmu('123');
+    await TrezorUserEnvLink.inputEmu('123');
+    await TrezorUserEnvLink.pressYes();
+
+    // Coin Enabling
+    await onCoinEnabling.waitForInitScreen();
+    await onCoinEnabling.toggleNetwork('btc');
+    await onCoinEnabling.clickOnConfirmButton();
+
+    await onAlertSheet.skipViewOnlyMode();
+
+    // Check if Bitcoin is enabled
+    const bitcoinNetworkElement = element(by.text('Bitcoin'));
+    await scrollUntilVisible(bitcoinNetworkElement);
+};
+
+conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () => {
+    beforeEach(async () => {
+        await prepareTrezorEmulator('');
         await openApp({ newInstance: true });
+        await onOnboarding.skipOnboarding();
+        await proceedToCreateOrRecoverCrossroads();
+    });
+
+    afterEach(async () => {
+        await device.uninstallApp(); // wipe app data
+        await device.installApp();
     });
 
     afterAll(async () => {
@@ -24,21 +66,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Create Wallet', () => {
         await device.terminateApp();
     });
 
-    it('Should create Wallet without issues', async () => {
-        await onOnboarding.skipOnboarding();
-
-        await onDeviceOnboarding.waitForUninitializedDeviceLanding();
-        await onDeviceOnboarding.dismissTheUninitializedDeviceLanding();
-        await onDeviceOnboarding.skipFirmwareUpdate();
-
-        await TrezorUserEnvLink.pressYes();
-
-        await onDeviceOnboarding.waitForDeviceAuthenticitySuccess();
-        await onDeviceOnboarding.dismissDeviceAuthenticitySuccess();
-
-        await TrezorUserEnvLink.pressYes();
-
-        await onDeviceOnboarding.waitForCreateOrRecoverCrossroadsScreen();
+    it('Create Wallet', async () => {
         await onDeviceOnboarding.selectCreateWalletOption();
 
         await onDeviceOnboarding.waitForCreateWalletLoadingScreen();
@@ -52,6 +80,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Create Wallet', () => {
         await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(4);
         await onDeviceOnboarding.validateSelectedBackupType('shamir-single');
         await onDeviceOnboarding.gotToNextWalletBackupTutorialStep(5);
+        await wait(5000); // wait for entering animation to finish
+
         await onDeviceOnboarding.pressHoldToConfirmButton();
         await onDeviceOnboarding.waitForWalletCreationScreen();
 
@@ -69,21 +99,26 @@ conditionalDescribe(device.getPlatform() === 'android', 'Create Wallet', () => {
 
         await onDeviceOnboarding.pressHoldToConfirmButton();
 
-        // Create Pin
+        await finishOnboardingFlow();
+    });
+
+    it('Recover Wallet', async () => {
+        await onDeviceOnboarding.selectRecoverWalletOption();
+        await onDeviceOnboarding.confirmRecoveryInstructions();
+
+        // On device recovery
         await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.inputEmu('123');
-        await TrezorUserEnvLink.inputEmu('123');
+        await TrezorUserEnvLink.selectNumOfWordsEmu(12);
+        await TrezorUserEnvLink.pressYes();
+        for (let i = 0; i < 12; i++) {
+            await TrezorUserEnvLink.inputEmu('all');
+        }
         await TrezorUserEnvLink.pressYes();
 
-        // Coin Enabling
-        await onCoinEnabling.waitForInitScreen();
-        await onCoinEnabling.toggleNetwork('btc');
-        await onCoinEnabling.clickOnConfirmButton();
+        await onDeviceOnboarding.waitForWalletRecoveryRecapScreen();
+        await onDeviceOnboarding.goToNextWalletRecoveryRecapStep(1);
+        await onDeviceOnboarding.pressHoldToConfirmButton();
 
-        await onAlertSheet.skipViewOnlyMode();
-
-        // Check if Bitcoin is enabled
-        const bitcoinNetworkElement = element(by.text('Bitcoin'));
-        await scrollUntilVisible(bitcoinNetworkElement);
+        await finishOnboardingFlow();
     });
 });
