@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   coinjoin-backend:
     image: ghcr.io/trezor/coinjoin-backend:latest
