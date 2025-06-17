@@ -3,6 +3,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import {
     deviceActions,
     deviceConnectThunks,
+    selectDeviceByStaticSessionId,
     selectDevices,
     selectEnabledNetworks,
     selectIsPendingTransportEvent,
@@ -58,8 +59,26 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 if (connectInitHooks && eventData.type in connectInitHooks) {
                     connectInitHooks[eventData.type]?.(eventData.payload, connectedDevices);
                 }
-            } else {
-                // dispatch event as action
+            } else if (eventData.type === DEVICE.CHANGED) {
+                // this is not nice - during passphrase/discovery refactor, I made a decision that we are not going to update device.state in reducer
+                // in any other case than as a result of device authorization (passphrase+discovery). But later we realized that we need to update device.state.sessionId
+                // for saved devices too https://github.com/trezor/trezor-suite/issues/19411 so I am adding this as a quick fix that should work until we come up with a better solution.
+                const staticSessionId = eventData.payload?.state;
+                const device = staticSessionId
+                    ? selectDeviceByStaticSessionId(getState(), staticSessionId)
+                    : undefined;
+                const shouldUpdateState = !!device && device.remember && !device.useEmptyPassphrase;
+
+                dispatch({
+                    type: eventData.type,
+                    payload: {
+                        device: eventData.payload,
+                        shouldUpdateState,
+                    },
+                });
+            }
+            // dispatch event as action
+            else {
                 dispatch({ type: eventData.type, payload: eventData.payload });
             }
         });
