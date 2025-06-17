@@ -222,11 +222,13 @@ export const config = {
             min: { T1B1: '1.12.1', T2T1: '2.5.3' },
         },
         {
+            capabilities: ['tutorial'],
             methods: ['showDeviceTutorial', 'authenticateDevice'],
             min: {
                 T1B1: '0',
                 T2T1: '0',
                 T3T1: '2.8.0',
+                T3W1: '0',
             },
         },
         {
