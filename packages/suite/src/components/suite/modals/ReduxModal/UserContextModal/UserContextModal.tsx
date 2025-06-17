@@ -56,6 +56,7 @@ import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { TradingDCAModal } from './TradingDCAModal';
+import { TxSimulationModal } from './TxSimulationModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
@@ -227,6 +228,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ConnectLoadingModal />;
         case 'auto-start-before-quit':
             return <AutoStartBeforeQuitModal />;
+        case 'tx-simulation':
+            return <TxSimulationModal />;
         default:
             return exhaustive(payload);
     }

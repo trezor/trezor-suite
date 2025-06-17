@@ -2,12 +2,14 @@ import { Bip43Path, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
+    selectSelectedDevice,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import type { EthereumSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
+import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { createPlaceholderAccount } from './utils';
@@ -22,6 +24,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
     getState,
     dispatch,
     txSigningPrecomposed,
+    source,
 }: PreCallHookParams<M>) => {
     try {
         if (method === 'ethereumSignTransaction' && txSigningPrecomposed) {
@@ -72,9 +75,41 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                 }),
             );
         }
+
+        if (
+            (method === 'ethereumSignTransaction' || method === 'ethereumSignTypedData') &&
+            source.type !== 'desktop-ws'
+        ) {
+            // Display simulation
+            const device = selectSelectedDevice(getState());
+            if (!device) throw new Error('No device selected');
+            const accountAddress = await TrezorConnect.ethereumGetAddress({
+                path: (payload as any).path,
+                device: {
+                    path: device.path,
+                    instance: device.instance,
+                    state: device.state,
+                },
+                useEmptyPassphrase: device.useEmptyPassphrase,
+                showOnTrezor: false,
+            });
+            if (!accountAddress.success) throw new Error(accountAddress.payload.error);
+            const decision = createDeferred();
+            dispatch(
+                connectPopupActions.txSimulation({
+                    decision,
+                    fromAddress: accountAddress.payload.address,
+                }),
+            );
+            await decision.promise;
+        }
     } catch (error) {
         // If an error occurs it's not a problem, we just fall back to generic UI
         console.error(`Error in Connect Popup ${method} hook:`, error);
+        if (error.code === 'Method_Cancel') {
+            // User cancelled the operation
+            throw error;
+        }
     }
 };
 

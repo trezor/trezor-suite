@@ -1,0 +1,455 @@
+import { useState } from 'react';
+
+import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useFormatters } from '@suite-common/formatters';
+import { AssetDiff, AssetExposure, useTxSimulationConnectPopup } from '@suite-common/tx-simulation';
+import { Network, getExplorerUrl } from '@suite-common/wallet-config';
+import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
+import {
+    AssetLogo,
+    Banner,
+    Card,
+    Checkbox,
+    CollapsibleBox,
+    Column,
+    H4,
+    IconCircle,
+    Link,
+    Modal,
+    Row,
+    Spinner,
+    Text,
+} from '@trezor/components';
+import { ERRORS } from '@trezor/connect';
+import { CoinLogo } from '@trezor/product-components';
+import { isCoinSymbol } from '@trezor/product-components/src/components/CoinLogo/coins';
+import { spacings } from '@trezor/theme';
+
+import { AccountLabel } from 'src/components/suite/AccountLabel';
+import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
+import { Translation } from 'src/components/suite/Translation';
+import { TxAddress } from 'src/components/suite/copy/TxAddress';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
+
+const TxSimulationAsset = ({
+    assetDiff,
+    assetExposure,
+    network,
+}: {
+    assetDiff?: AssetDiff;
+    assetExposure?: AssetExposure;
+    network: Network;
+}) => {
+    const { FiatAmountFormatter } = useFormatters();
+
+    const AssetIcon = () => {
+        const asset = (assetDiff || assetExposure)?.asset;
+        const assetType = (assetDiff || assetExposure)?.asset_type;
+        const coinSymbol = asset?.symbol?.toLowerCase();
+        if (assetType === 'NATIVE' && coinSymbol && isCoinSymbol(coinSymbol)) {
+            return <CoinLogo symbol={coinSymbol} size={32} />;
+        }
+        if (asset?.symbol && 'address' in asset && network.coingeckoId) {
+            return (
+                <AssetLogo
+                    coingeckoId={network.coingeckoId}
+                    contractAddress={asset.address.toLowerCase()}
+                    size={32}
+                    shouldTryToFetch={true}
+                    placeholder={asset.name ?? asset.symbol}
+                    placeholderWithTooltip={true}
+                />
+            );
+        }
+
+        return <IconCircle name="coins" size={32} variant="tertiary" hasBorder={false} />;
+    };
+
+    const getSummary = (amount: AssetDiff['in'][number]) => {
+        if (amount.summary) {
+            return amount.summary;
+        }
+        if (assetDiff?.asset_type === 'NATIVE' && 'value' in amount) {
+            return `${amount.value} ${assetDiff.asset.symbol}`;
+        }
+        if (assetDiff?.asset && 'address' in assetDiff.asset) {
+            return `${assetDiff?.asset.type} ${assetDiff.asset.address}`;
+        }
+    };
+
+    return (
+        <Row columnGap={spacings.xs} padding={{ horizontal: spacings.md, vertical: spacings.sm }}>
+            <AssetIcon />
+
+            {assetDiff?.in.map((inAmount, inIndex) => (
+                <>
+                    <Text
+                        key={`in-${inIndex}`}
+                        variant="primary"
+                        data-testid={`@sign-message-modal/tx-simulation-in-${inIndex}`}
+                        flex="1"
+                    >
+                        {getSummary(inAmount)}
+                    </Text>
+                    {inAmount.usd_price && (
+                        <Text variant="tertiary" key={`in-usd-${inIndex}`}>
+                            {`+ `}
+                            <FiatAmountFormatter value={inAmount.usd_price} currency="USD" />
+                        </Text>
+                    )}
+                </>
+            ))}
+            {assetDiff?.out.map((outAmount, outIndex) => (
+                <>
+                    <Text
+                        key={`out-${outIndex}`}
+                        variant="destructive"
+                        data-testid={`@sign-message-modal/tx-simulation-out-${outIndex}`}
+                        flex="1"
+                    >
+                        {getSummary(outAmount)}
+                    </Text>
+                    {outAmount.usd_price && (
+                        <Text variant="tertiary" key={`out-usd-${outIndex}`}>
+                            {`- `}
+                            <FiatAmountFormatter value={outAmount.usd_price} currency="USD" />
+                        </Text>
+                    )}
+                </>
+            ))}
+            {assetExposure?.spenders &&
+                Object.values(assetExposure.spenders).map((spender, index) => (
+                    <>
+                        <Text
+                            key={`spender-${index}`}
+                            variant="tertiary"
+                            data-testid={`@sign-message-modal/tx-simulation-spender-${index}`}
+                        >
+                            {getSummary(spender)}
+                        </Text>
+                        {spender.exposure.usd_price && (
+                            <Text variant="tertiary" key={`spender-usd-${index}`}>
+                                <FiatAmountFormatter
+                                    value={spender.exposure.usd_price}
+                                    currency="USD"
+                                />
+                            </Text>
+                        )}
+                    </>
+                ))}
+        </Row>
+    );
+};
+
+const TxSimulationBanner = ({
+    title,
+    description,
+    type = 'error',
+    disclaimerAccepted,
+    setDisclaimerAccepted,
+}: {
+    title: React.ReactNode;
+    description: React.ReactNode;
+    type: 'error' | 'warning';
+    disclaimerAccepted: boolean;
+    setDisclaimerAccepted: (value: boolean) => void;
+}) => (
+    <Banner
+        variant={type === 'warning' ? 'warning' : 'destructive'}
+        data-testid="@tx-simulation-modal/error-banner"
+    >
+        <Column width="100%" padding={{ vertical: spacings.xxs }}>
+            <Text typographyStyle="callout">{title}</Text>
+            <Text>{description}</Text>
+
+            <Card margin={{ top: spacings.sm }} paddingType="small">
+                <Checkbox
+                    data-testid="@tx-simulation-modal/disclaimer-checkbox"
+                    isChecked={disclaimerAccepted}
+                    onClick={() => setDisclaimerAccepted(!disclaimerAccepted)}
+                    verticalAlignment="center"
+                >
+                    <Text variant="default" typographyStyle="hint">
+                        <Translation id="TR_SIMULATION_DISCLAIMER_OVERRIDE" />
+                    </Text>
+                </Checkbox>
+            </Card>
+        </Column>
+    </Banner>
+);
+
+export const TxSimulationModal = () => {
+    const dispatch = useDispatch();
+    const popupCall = useSelector(selectConnectPopupCall);
+    const accounts = useSelector(selectDeviceAccounts);
+    const accountLabels = useSelector(selectAccountLabels);
+    const account = accounts.find(
+        a => popupCall?.state === 'tx-simulation' && a.key === popupCall?.selectedAccountKey,
+    );
+    const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+    const { isLoading, simulationResult, error, needsDisclaimer, network, targetContract } =
+        useTxSimulationConnectPopup(popupCall);
+    const explorer = useSelector(state => selectExplorer(state, network?.symbol));
+
+    const onConfirm = () => {
+        dispatch(connectPopupActions.approvePermissions());
+    };
+    const onCancel = () => {
+        dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
+    };
+
+    return (
+        <Modal.Backdrop>
+            <Modal.ModalBase
+                size="small"
+                heading={
+                    popupCall?.state === 'tx-simulation' &&
+                    popupCall?.method === 'ethereumSignTypedData' ? (
+                        <Translation id="TR_SIGN_EIP712_TYPED_DATA" />
+                    ) : (
+                        <Translation id="TR_REVIEW_TRANSACTION" />
+                    )
+                }
+                description={
+                    <Row
+                        columnGap={spacings.md}
+                        rowGap={spacings.xxs}
+                        flexWrap="wrap"
+                        margin={{ top: spacings.xs }}
+                    >
+                        {account && (
+                            <Row gap={spacings.xxs}>
+                                <CoinLogo size={14} symbol={account.symbol} />
+                                <AccountLabel
+                                    accountLabel={
+                                        accountLabels[account.key] || account.accountLabel
+                                    }
+                                    accountType={account.accountType}
+                                    symbol={account.symbol}
+                                    index={account.index}
+                                />
+                            </Row>
+                        )}
+                        <ConnectCallSource />
+                    </Row>
+                }
+                bottomContent={
+                    <>
+                        <Modal.Button
+                            variant="primary"
+                            onClick={onConfirm}
+                            data-testid="@tx-simulation-modal/confirm-button"
+                            isDisabled={isLoading || (needsDisclaimer && !disclaimerAccepted)}
+                        >
+                            <Translation id="TR_CONFIRM" />
+                        </Modal.Button>
+                        <Modal.Button
+                            variant="tertiary"
+                            onClick={onCancel}
+                            data-testid="@tx-simulation-modal/cancel-button"
+                        >
+                            <Translation id="TR_CANCEL" />
+                        </Modal.Button>
+                    </>
+                }
+            >
+                <Column gap={spacings.xs}>
+                    {isLoading && <Spinner size={50} />}
+
+                    {simulationResult && (
+                        <>
+                            {simulationResult.simulation?.status === 'Success' && (
+                                <>
+                                    <Card
+                                        header={
+                                            <H4
+                                                margin={{ left: spacings.xxs }}
+                                                typographyStyle="callout"
+                                            >
+                                                <Translation id="TR_SIMULATION" />
+                                            </H4>
+                                        }
+                                        paddingType="small"
+                                    >
+                                        <Column
+                                            margin={{
+                                                // @ts-expect-error - negative margins to align with card
+                                                horizontal: -spacings.md,
+                                                // @ts-expect-error - negative margins to align with card
+                                                vertical: -spacings.sm,
+                                            }}
+                                            hasDivider
+                                        >
+                                            {simulationResult.simulation.account_summary.assets_diffs.map(
+                                                (assetDiff, index) => (
+                                                    <TxSimulationAsset
+                                                        key={index}
+                                                        assetDiff={assetDiff}
+                                                        network={network}
+                                                    />
+                                                ),
+                                            )}
+                                            {simulationResult.simulation.account_summary.exposures.map(
+                                                (assetExposure, index) => (
+                                                    <TxSimulationAsset
+                                                        key={index}
+                                                        assetExposure={assetExposure}
+                                                        network={network}
+                                                    />
+                                                ),
+                                            )}
+                                            {simulationResult.simulation.account_summary
+                                                .assets_diffs.length === 0 &&
+                                                simulationResult.simulation.account_summary
+                                                    .exposures.length === 0 && (
+                                                    <Row
+                                                        padding={{
+                                                            horizontal: spacings.md,
+                                                            vertical: spacings.sm,
+                                                        }}
+                                                        justifyContent="center"
+                                                    >
+                                                        <Text variant="tertiary">
+                                                            <Translation id="TR_SIMULATION_NO_ASSETS" />
+                                                        </Text>
+                                                    </Row>
+                                                )}
+                                        </Column>
+                                    </Card>
+
+                                    <CollapsibleBox
+                                        heading={
+                                            <Row
+                                                gap={spacings.xs}
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                                flex="1"
+                                            >
+                                                <H4 typographyStyle="callout" flex="1">
+                                                    <Translation id="TR_CONTRACT_INFO" />
+                                                </H4>
+                                            </Row>
+                                        }
+                                    >
+                                        {targetContract && (
+                                            <Column
+                                                hasDivider
+                                                margin={{
+                                                    // @ts-expect-error - negative margins to align with collapsible box
+                                                    horizontal: -spacings.md,
+                                                    // @ts-expect-error - negative margins to align with collapsible box
+                                                    vertical: -spacings.lg,
+                                                }}
+                                            >
+                                                {[
+                                                    {
+                                                        label: <Translation id="TR_PROTOCOL" />,
+                                                        value: Object.entries(
+                                                            simulationResult.simulation
+                                                                .address_details,
+                                                        ).find(
+                                                            ([address]) =>
+                                                                address.toLowerCase() ===
+                                                                targetContract.toLowerCase(),
+                                                        )?.[1]?.name_tag,
+                                                    },
+                                                    {
+                                                        label: <Translation id="TR_ADDRESS" />,
+                                                        value: (
+                                                            <TxAddress
+                                                                txAddress={targetContract}
+                                                                explorerUrl={getExplorerUrl(
+                                                                    explorer,
+                                                                    'address',
+                                                                )}
+                                                                explorerUrlQueryString={
+                                                                    explorer?.queryString
+                                                                }
+                                                                shouldAllowCopy
+                                                            />
+                                                        ),
+                                                    },
+                                                    {
+                                                        label: (
+                                                            <Translation id="TR_CONTRACT_FUNCTION" />
+                                                        ),
+                                                        value: simulationResult.simulation.params
+                                                            ?.calldata?.function_signature,
+                                                    },
+                                                ].map((item, index) =>
+                                                    item.value ? (
+                                                        <Row
+                                                            key={index}
+                                                            gap={spacings.xs}
+                                                            padding={{
+                                                                horizontal: spacings.md,
+                                                                vertical: spacings.sm,
+                                                            }}
+                                                            alignItems="center"
+                                                            justifyContent="space-between"
+                                                        >
+                                                            <Text>{item.label}</Text>
+                                                            <Text>{item.value}</Text>
+                                                        </Row>
+                                                    ) : null,
+                                                )}
+                                            </Column>
+                                        )}
+                                    </CollapsibleBox>
+                                </>
+                            )}
+
+                            {simulationResult.validation?.result_type === 'Malicious' && (
+                                <TxSimulationBanner
+                                    type="error"
+                                    title={<Translation id="TR_SIMULATION_MALICIOUS" />}
+                                    description={simulationResult.validation?.description}
+                                    disclaimerAccepted={disclaimerAccepted}
+                                    setDisclaimerAccepted={setDisclaimerAccepted}
+                                />
+                            )}
+
+                            {simulationResult.validation?.result_type === 'Warning' && (
+                                <TxSimulationBanner
+                                    type="warning"
+                                    title={<Translation id="TR_SIMULATION_WARNING" />}
+                                    description={simulationResult.validation?.description}
+                                    disclaimerAccepted={disclaimerAccepted}
+                                    setDisclaimerAccepted={setDisclaimerAccepted}
+                                />
+                            )}
+
+                            {simulationResult.simulation?.status === 'Error' && (
+                                <TxSimulationBanner
+                                    type="error"
+                                    title={<Translation id="TR_SIMULATION_ERROR" />}
+                                    description={simulationResult.simulation.error}
+                                    disclaimerAccepted={disclaimerAccepted}
+                                    setDisclaimerAccepted={setDisclaimerAccepted}
+                                />
+                            )}
+                        </>
+                    )}
+
+                    {error && (
+                        <TxSimulationBanner
+                            type="error"
+                            title={<Translation id="TR_SIMULATION_ERROR" />}
+                            description={error.message}
+                            disclaimerAccepted={disclaimerAccepted}
+                            setDisclaimerAccepted={setDisclaimerAccepted}
+                        />
+                    )}
+
+                    <Text variant="tertiary" margin={{ left: spacings.xs }}>
+                        <Translation
+                            id="TR_SIMULATION_POWERED_BY"
+                            values={{ provider: <Link href="https://blockaid.io">Blockaid</Link> }}
+                        />
+                    </Text>
+                </Column>
+            </Modal.ModalBase>
+        </Modal.Backdrop>
+    );
+};

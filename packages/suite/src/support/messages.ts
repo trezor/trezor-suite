@@ -10478,4 +10478,50 @@ export default defineMessages({
         id: 'TR_DOMAIN',
         defaultMessage: 'Domain',
     },
+    TR_REVIEW_TRANSACTION: {
+        id: 'TR_REVIEW_TRANSACTION',
+        defaultMessage: 'Review transaction',
+    },
+    TR_SIMULATION: {
+        id: 'TR_SIMULATION',
+        defaultMessage: 'Simulation',
+    },
+    TR_SIMULATION_POWERED_BY: {
+        id: 'TR_SIMULATION_POWERED_BY',
+        defaultMessage: 'Simulation powered by {provider}',
+    },
+    TR_SIMULATION_ERROR: {
+        id: 'TR_SIMULATION_ERROR',
+        defaultMessage: 'Unable to simulate transaction. Proceed at your own risk.',
+    },
+    TR_SIMULATION_WARNING: {
+        id: 'TR_SIMULATION_WARNING',
+        defaultMessage:
+            'This transaction is potentially risky! Please make sure you trust the source.',
+    },
+    TR_SIMULATION_MALICIOUS: {
+        id: 'TR_SIMULATION_MALICIOUS',
+        defaultMessage:
+            'This transaction is likely malicious! We recommend not to engage with this app.',
+    },
+    TR_SIMULATION_DISCLAIMER_OVERRIDE: {
+        id: 'TR_SIMULATION_DISCLAIMER_OVERRIDE',
+        defaultMessage: 'I want to ignore the warning and proceed anyways',
+    },
+    TR_CONTRACT_INFO: {
+        id: 'TR_CONTRACT_INFO',
+        defaultMessage: 'Contract info',
+    },
+    TR_PROTOCOL: {
+        id: 'TR_PROTOCOL',
+        defaultMessage: 'Protocol',
+    },
+    TR_CONTRACT_FUNCTION: {
+        id: 'TR_CONTRACT_FUNCTION',
+        defaultMessage: 'Contract function',
+    },
+    TR_SIMULATION_NO_ASSETS: {
+        id: 'TR_SIMULATION_NO_ASSETS',
+        defaultMessage: 'No asset changes detected',
+    },
 } as const);

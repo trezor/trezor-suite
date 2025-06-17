@@ -54,21 +54,27 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     };
             })
             .addCase(connectPopupActions.approvePermissions, state => {
-                if (state.activeCall?.state === 'permission-request') {
-                    state.activeCall.permissionDecision?.resolve();
+                if (
+                    state.activeCall?.state === 'permission-request' ||
+                    state.activeCall?.state === 'tx-simulation'
+                ) {
+                    state.activeCall.decision?.resolve();
                     state.activeCall = {
                         ...state.activeCall,
-                        permissionDecision: undefined,
+                        decision: undefined,
                         state: 'ongoing',
                     };
                 }
             })
             .addCase(connectPopupActions.rejectPermissions, (state, { payload }) => {
-                if (state.activeCall?.state === 'permission-request') {
-                    state.activeCall.permissionDecision?.reject(payload);
+                if (
+                    state.activeCall?.state === 'permission-request' ||
+                    state.activeCall?.state === 'tx-simulation'
+                ) {
+                    state.activeCall.decision?.reject(payload);
                     state.activeCall = {
                         ...state.activeCall,
-                        permissionDecision: undefined,
+                        decision: undefined,
                         state: 'finished',
                     };
                 }
@@ -128,6 +134,15 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             })
             .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
                 state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+            })
+            .addCase(connectPopupActions.txSimulation, (state, { payload }) => {
+                if (state.activeCall?.state === 'ongoing') {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'tx-simulation',
+                        ...payload,
+                    };
+                }
             });
     },
 );

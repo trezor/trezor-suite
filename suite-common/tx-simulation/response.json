@@ -1,0 +1,330 @@
+[
+    {
+        "validation": {
+            "status": "Error",
+            "result_type": "Error",
+            "description": "",
+            "reason": "",
+            "features": [],
+            "error": "Simulation Error: invalid opcode: INVALID",
+            "labels": []
+        },
+        "simulation": {
+            "status": "Error",
+            "error": "invalid opcode: INVALID",
+            "description": "Your transaction can not be completed due to insufficient funds in your account.",
+            "error_details": {
+                "code": "GENERAL_INSUFFICIENT_FUNDS",
+                "account_address": "0x73d0385f4d8e00c5e6504c6030f47bf6212736a8",
+                "current_balance": "0x0",
+                "required_balance": "0x97f6b2",
+                "asset": {
+                    "type": "ERC20",
+                    "details": {
+                        "type": "ERC20",
+                        "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+                        "logo_url": "https://cdn.blockaid.io/token/0xdAC17F958D2ee523a2206206994597C13D831ec7/ethereum",
+                        "decimals": 6,
+                        "name": "Tether USD",
+                        "symbol": "USDT"
+                    }
+                }
+            }
+        },
+        "block": "22673350",
+        "chain": "ethereum",
+        "account_address": "0x73d0385F4d8E00C5e6504C6030F47BF6212736A8"
+    },
+    {
+        "validation": {
+            "status": "Success",
+            "result_type": "Benign",
+            "description": "",
+            "reason": "",
+            "classification": "",
+            "features": []
+        },
+        "simulation": {
+            "status": "Success",
+            "assets_diffs": {
+                "0x000000000004444c5dc75cB358380D2e3dE08A90": [
+                    {
+                        "asset_type": "NATIVE",
+                        "asset": {
+                            "type": "NATIVE",
+                            "chain_name": "Ethereum Mainnet",
+                            "decimals": 18,
+                            "chain_id": 1,
+                            "logo_url": "https://cdn.blockaid.io/chain/ethereum",
+                            "name": "Ether",
+                            "symbol": "ETH"
+                        },
+                        "in": [
+                            {
+                                "usd_price": "26.936700000000001864",
+                                "summary": "Receiving 0.01 ETH",
+                                "value": "0.01",
+                                "raw_value": "0x2386f26fc10000"
+                            }
+                        ],
+                        "out": []
+                    },
+                    {
+                        "asset_type": "ERC20",
+                        "asset": {
+                            "type": "ERC20",
+                            "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+                            "logo_url": "https://cdn.blockaid.io/token/0x6982508145454Ce325dDbE47a25d4ec3d2311933/ethereum",
+                            "decimals": 18,
+                            "name": "Pepe",
+                            "symbol": "PEPE"
+                        },
+                        "in": [],
+                        "out": [
+                            {
+                                "usd_price": "26.783987121520105745",
+                                "summary": "Sending 2084356.974 PEPE",
+                                "value": "2084356.974437362281605601",
+                                "raw_value": "0x1b96137ce963b533861f2"
+                            }
+                        ]
+                    }
+                ],
+                "0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3": [
+                    {
+                        "asset_type": "NATIVE",
+                        "asset": {
+                            "type": "NATIVE",
+                            "chain_name": "Ethereum Mainnet",
+                            "decimals": 18,
+                            "chain_id": 1,
+                            "logo_url": "https://cdn.blockaid.io/chain/ethereum",
+                            "name": "Ether",
+                            "symbol": "ETH"
+                        },
+                        "in": [],
+                        "out": [
+                            {
+                                "usd_price": "26.936700000000001864",
+                                "summary": "Sending 0.01 ETH",
+                                "value": "0.01",
+                                "raw_value": "0x2386f26fc10000"
+                            }
+                        ]
+                    },
+                    {
+                        "asset_type": "ERC20",
+                        "asset": {
+                            "type": "ERC20",
+                            "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+                            "logo_url": "https://cdn.blockaid.io/token/0x6982508145454Ce325dDbE47a25d4ec3d2311933/ethereum",
+                            "decimals": 18,
+                            "name": "Pepe",
+                            "symbol": "PEPE"
+                        },
+                        "in": [
+                            {
+                                "usd_price": "26.717027153716305321",
+                                "summary": "Receiving 2079146.082 PEPE",
+                                "value": "2079146.082001268863677979",
+                                "raw_value": "0x1b846bc25c0189de466d3"
+                            }
+                        ],
+                        "out": []
+                    }
+                ],
+                "0x000000fee13a103A10D593b9AE06b3e05F2E7E1c": [
+                    {
+                        "asset_type": "ERC20",
+                        "asset": {
+                            "type": "ERC20",
+                            "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+                            "logo_url": "https://cdn.blockaid.io/token/0x6982508145454Ce325dDbE47a25d4ec3d2311933/ethereum",
+                            "decimals": 18,
+                            "name": "Pepe",
+                            "symbol": "PEPE"
+                        },
+                        "in": [
+                            {
+                                "usd_price": "0.066959967803800258",
+                                "summary": "Receiving 5210.892 PEPE",
+                                "value": "5210.892436093405194697",
+                                "raw_value": "0x11a7ba8d622b553fb1f"
+                            }
+                        ],
+                        "out": []
+                    }
+                ]
+            },
+            "params": {
+                "from": "0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3",
+                "to": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af",
+                "value": "0x2386f26fc10000",
+                "data": "0x3593564c000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000684816490000000000000000000000000000000000000000000000000000000000000003100604000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000044000000000000000000000000000000000000000000000000000000000000004c000000000000000000000000000000000000000000000000000000000000003c0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000003070b0e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000006982508145454ce325ddbe47a25d4ec3d231193300000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000600000000000000000000000006982508145454ce325ddbe47a25d4ec3d23119330000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000006982508145454ce325ddbe47a25d4ec3d2311933000000000000000000000000000000fee13a103a10d593b9ae06b3e05f2e7e1c000000000000000000000000000000000000000000000000000000000000001900000000000000000000000000000000000000000000000000000000000000600000000000000000000000006982508145454ce325ddbe47a25d4ec3d23119330000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae300000000000000000000000000000000000000000001a69212dbacf21b8f51760c",
+                "block_tag": "latest",
+                "chain": "ethereum",
+                "calldata": {
+                    "function_selector": "0x3593564c",
+                    "function_signature": "execute(bytes,bytes[],uint256)"
+                }
+            },
+            "total_usd_diff": {
+                "0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3": {
+                    "in": "26.717027153716305321",
+                    "out": "26.936700000000001864",
+                    "total": "-0.219672846283696543"
+                },
+                "0x000000000004444c5dc75cB358380D2e3dE08A90": {
+                    "in": "26.936700000000001864",
+                    "out": "26.783987121520105745",
+                    "total": "0.152712878479896119"
+                },
+                "0x000000fee13a103A10D593b9AE06b3e05F2E7E1c": {
+                    "in": "0.066959967803800258",
+                    "out": "0.0",
+                    "total": "0.066959967803800258"
+                }
+            },
+            "exposures": {},
+            "total_usd_exposure": {},
+            "address_details": {
+                "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af": {
+                    "name_tag": "Uniswap V4: Universal Router",
+                    "contract_name": "UniversalRouter"
+                },
+                "0x000000fee13a103A10D593b9AE06b3e05F2E7E1c": {
+                    "name_tag": "Uniswap: Fee Collector",
+                    "contract_name": "FeeCollector"
+                },
+                "0x6982508145454Ce325dDbE47a25d4ec3d2311933": {
+                    "name_tag": "Pepe: PEPE Token",
+                    "contract_name": "PepeToken"
+                },
+                "0x000000000004444c5dc75cB358380D2e3dE08A90": {
+                    "name_tag": "Uniswap V4: Pool Manager",
+                    "contract_name": "PoolManager"
+                }
+            },
+            "account_summary": {
+                "assets_diffs": [
+                    {
+                        "asset_type": "NATIVE",
+                        "asset": {
+                            "type": "NATIVE",
+                            "chain_name": "Ethereum Mainnet",
+                            "decimals": 18,
+                            "chain_id": 1,
+                            "logo_url": "https://cdn.blockaid.io/chain/ethereum",
+                            "name": "Ether",
+                            "symbol": "ETH"
+                        },
+                        "in": [],
+                        "out": [
+                            {
+                                "usd_price": "26.936700000000001864",
+                                "summary": "Sending 0.01 ETH",
+                                "value": "0.01",
+                                "raw_value": "0x2386f26fc10000"
+                            }
+                        ],
+                        "balance_changes": {
+                            "before": {
+                                "usd_price": "604.39221337949804834",
+                                "value": "0.224375002646759999",
+                                "raw_value": "0x31d23e0493cca3f"
+                            },
+                            "after": {
+                                "usd_price": "577.455513379498046476",
+                                "value": "0.214375002646759999",
+                                "raw_value": "0x2f99cedd97bca3f"
+                            }
+                        }
+                    },
+                    {
+                        "asset_type": "ERC20",
+                        "asset": {
+                            "type": "ERC20",
+                            "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+                            "logo_url": "https://cdn.blockaid.io/token/0x6982508145454Ce325dDbE47a25d4ec3d2311933/ethereum",
+                            "decimals": 18,
+                            "name": "Pepe",
+                            "symbol": "PEPE"
+                        },
+                        "in": [
+                            {
+                                "usd_price": "26.717027153716305321",
+                                "summary": "Receiving 2079146.082 PEPE",
+                                "value": "2079146.082001268863677979",
+                                "raw_value": "0x1b846bc25c0189de466d3"
+                            }
+                        ],
+                        "out": [],
+                        "balance_changes": {
+                            "before": {
+                                "usd_price": "0.118727128717935078",
+                                "value": "9239.465269878215696866",
+                                "raw_value": "0x1f4df56a62b51b861e2"
+                            },
+                            "after": {
+                                "usd_price": "26.835754282434240399",
+                                "value": "2088385.547271147007822005",
+                                "raw_value": "0x1ba3b9b7c6643ef9cc8b5"
+                            }
+                        }
+                    }
+                ],
+                "traces": [
+                    {
+                        "type": "NativeAssetTrace",
+                        "trace_type": "AssetTrace",
+                        "from_address": "0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3",
+                        "to_address": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af",
+                        "asset": {
+                            "type": "NATIVE",
+                            "chain_name": "Ethereum Mainnet",
+                            "decimals": 18,
+                            "chain_id": 1,
+                            "logo_url": "https://cdn.blockaid.io/chain/ethereum",
+                            "name": "Ether",
+                            "symbol": "ETH"
+                        },
+                        "diff": {
+                            "usd_price": "26.936700000000001864",
+                            "value": "0.01",
+                            "raw_value": "0x2386f26fc10000"
+                        }
+                    },
+                    {
+                        "type": "ERC20AssetTrace",
+                        "trace_type": "AssetTrace",
+                        "from_address": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af",
+                        "to_address": "0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3",
+                        "asset": {
+                            "type": "ERC20",
+                            "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+                            "logo_url": "https://cdn.blockaid.io/token/0x6982508145454Ce325dDbE47a25d4ec3d2311933/ethereum",
+                            "decimals": 18,
+                            "name": "Pepe",
+                            "symbol": "PEPE"
+                        },
+                        "diff": {
+                            "usd_price": "26.717027153716305321",
+                            "value": "2079146.082001268863677979",
+                            "raw_value": "0x1b846bc25c0189de466d3"
+                        }
+                    }
+                ],
+                "total_usd_diff": {
+                    "in": "26.717027153716305321",
+                    "out": "26.936700000000001864",
+                    "total": "-0.219672846283696543"
+                },
+                "exposures": [],
+                "total_usd_exposure": {}
+            }
+        },
+        "block": "22673770",
+        "chain": "ethereum",
+        "account_address": "0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3"
+    }
+]

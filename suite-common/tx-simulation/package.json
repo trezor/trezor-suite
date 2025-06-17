@@ -1,0 +1,18 @@
+{
+    "name": "@suite-common/tx-simulation",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@blockaid/client": "^0.56.0",
+        "@suite-common/connect-popup": "workspace:^",
+        "@trezor/connect": "workspace:^",
+        "react": "18.2.0"
+    }
+}
