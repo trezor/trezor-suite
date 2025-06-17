@@ -4,6 +4,7 @@ import {
     deviceConnectThunks,
     selectDevices,
     selectEnabledNetworks,
+    selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
@@ -52,8 +53,21 @@ export const connectInitThunk = createThunk<
             dispatch(deviceConnectThunks({ type: eventData.type, device: eventData.payload }));
 
             connectInitHooks?.[eventData.type]?.(eventData.payload, connectedDevices);
-        } else {
-            // dispatch event as action
+        } else if (eventData.type === DEVICE.CHANGED) {
+            // this is not nice - during passphrase/discovery refactor, I made a decision that we are not going to update device.state in reducer
+            // in any other case than as a result of device authorization (passphrase+discovery). But later we realized that we need to update device.state.sessionId
+            // for saved devices too https://github.com/trezor/trezor-suite/issues/19411 so I am adding this as a quick fix that should work until we come up with a better solution.
+            const isDiscoveryInProgress = selectHasRunningDiscovery(getState());
+            dispatch({
+                type: eventData.type,
+                payload: {
+                    device: eventData.payload,
+                    shouldUpdateState: !isDiscoveryInProgress,
+                },
+            });
+        }
+        // dispatch event as action
+        else {
             dispatch({ type: eventData.type, payload: eventData.payload });
         }
     });

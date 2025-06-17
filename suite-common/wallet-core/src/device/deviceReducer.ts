@@ -233,15 +233,18 @@ const addAuthorizedDevice = (draft: DeviceReducerState, device: TrezorDevice) =>
 const changeDevice = (
     draft: DeviceReducerState,
     device: Device | TrezorDevice,
-    extended?: Partial<AcquiredDevice>,
+    extended: Partial<AcquiredDevice>,
+    shouldUpdateState = false,
 ) => {
     // change only acquired devices
     if (!device.features) return;
 
-    // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
-    delete device.state;
-    // @ts-expect-error - connect feeds this but we don't work with it
-    delete device._state;
+    if (!shouldUpdateState) {
+        // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
+        delete device.state;
+        // @ts-expect-error - connect feeds this but we don't work with it
+        delete device._state;
+    }
 
     // find devices with the same "device_id"
     const affectedDevices = draft.devices.filter(
@@ -592,7 +595,8 @@ export const setDeviceAuthenticity = (
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(deviceActions.deviceChanged, (state, { payload }) => {
-            changeDevice(state, payload, { connected: true, available: true });
+            const { device, shouldUpdateState } = payload;
+            changeDevice(state, device, { connected: true, available: true }, shouldUpdateState);
         })
         .addCase(deviceActions.setDeviceState, (state, { payload }) => {
             setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);

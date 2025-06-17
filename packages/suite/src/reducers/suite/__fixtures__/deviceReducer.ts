@@ -521,15 +521,17 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         actions: [
             {
                 type: DEVICE.CHANGED,
-                payload: getConnectDevice(
-                    {
-                        path: '1',
-                        status: 'occupied',
-                    },
-                    {
-                        device_id: 'different-device-id',
-                    },
-                ),
+                payload: {
+                    device: getConnectDevice(
+                        {
+                            path: '1',
+                            status: 'occupied',
+                        },
+                        {
+                            device_id: 'different-device-id',
+                        },
+                    ),
+                },
             },
         ],
         result: [
@@ -547,10 +549,12 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         actions: [
             {
                 type: DEVICE.CHANGED,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                        path: '1',
+                    }),
+                },
             },
         ],
         result: [],
@@ -568,9 +572,11 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         actions: [
             {
                 type: DEVICE.CHANGED,
-                payload: getConnectDevice({
-                    status: 'occupied',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        status: 'occupied',
+                    }),
+                },
             },
         ],
         result: [
@@ -594,14 +600,16 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         actions: [
             {
                 type: DEVICE.CHANGED,
-                payload: getConnectDevice(
-                    {
-                        status: 'occupied',
-                    },
-                    {
-                        passphrase_protection: true,
-                    },
-                ),
+                payload: {
+                    device: getConnectDevice(
+                        {
+                            status: 'occupied',
+                        },
+                        {
+                            passphrase_protection: true,
+                        },
+                    ),
+                },
             },
         ],
         result: [
@@ -619,7 +627,9 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         actions: [
             {
                 type: DEVICE.CHANGED,
-                payload: CONNECT_DEVICE,
+                payload: {
+                    device: CONNECT_DEVICE,
+                },
             },
         ],
         result: [],
@@ -639,10 +649,12 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         actions: [
             {
                 type: DEVICE.CHANGED,
-                payload: getConnectDevice(undefined, {
-                    unlocked: false,
-                    safety_checks: null,
-                }),
+                payload: {
+                    device: getConnectDevice(undefined, {
+                        unlocked: false,
+                        safety_checks: null,
+                    }),
+                },
             },
         ],
         result: [
