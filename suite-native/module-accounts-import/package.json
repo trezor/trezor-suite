@@ -38,7 +38,6 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
-        "@suite-native/test-utils": "workspace:*",
         "@suite-native/video-assets": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
@@ -49,5 +48,8 @@
         "react-native": "0.76.9",
         "react-native-reanimated": "^3.16.7",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

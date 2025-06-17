@@ -5,12 +5,12 @@
         { "path": "../../suite-common/trading" },
         { "path": "../analytics" },
         { "path": "../navigation" },
-        { "path": "../test-utils" },
         {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]
 }

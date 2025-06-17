@@ -38,12 +38,12 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../test-utils" },
         { "path": "../video-assets" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utils" },
-        { "path": "../../packages/utxo-lib" }
+        { "path": "../../packages/utxo-lib" },
+        { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]
 }
