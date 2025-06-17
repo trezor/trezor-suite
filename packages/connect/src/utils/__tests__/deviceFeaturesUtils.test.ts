@@ -172,6 +172,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 chunkify: 'no-support',
                 evmApproval: 'no-support',
                 slip24: 'no-support',
+                tutorial: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });
@@ -196,6 +197,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 chunkify: 'update-required',
                 evmApproval: 'update-required',
                 slip24: 'update-required',
+                tutorial: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });
@@ -308,6 +310,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 chunkify: 'update-required',
                 evmApproval: 'update-required',
                 slip24: 'update-required',
+                tutorial: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });
@@ -334,6 +337,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 chunkify: 'no-support',
                 evmApproval: 'no-support',
                 slip24: 'no-support',
+                tutorial: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });
@@ -361,6 +365,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 chunkify: 'no-support',
                 evmApproval: 'no-support',
                 slip24: 'no-support',
+                tutorial: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });
