@@ -91,4 +91,14 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
         await onDeviceSettings.waitForDeviceAuthenticityScreen();
     });
+
+    test('Change Device Name', async () => {
+        await onDeviceSettings.tapChangeDeviceNameButton();
+        await onDeviceSettings.submitNewDeviceName('new name');
+        await TrezorUserEnvLink.pressYes();
+
+        await onDeviceSettings.waitForSettingsScreen();
+
+        expect(element(by.label('new name'))).toBeVisible();
+    });
 });

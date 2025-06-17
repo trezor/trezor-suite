@@ -1,19 +1,12 @@
-import Animated, {
-    FadeInDown,
-    FadeOutDown,
-    SlideInDown,
-    SlideOutDown,
-    useAnimatedStyle,
-    withTiming,
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { BottomSheet, Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BottomSheet, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { useFormContext } from '@suite-native/forms';
+import { FormSubmitButton, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
@@ -58,13 +51,6 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
         onClose();
     });
 
-    const animatedButtonContainerStyle = useAnimatedStyle(
-        () => ({
-            height: withTiming(isSubmittable && isVisible ? 50 : 0),
-        }),
-        [isSubmittable, isVisible],
-    );
-
     if (!symbol) return null;
 
     return (
@@ -108,19 +94,13 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
                         />
                     </Animated.View>
                 )}
-
-                <Animated.View style={animatedButtonContainerStyle}>
-                    {isSubmittable && (
-                        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
-                            <Button
-                                onPress={handleSetCustomFee}
-                                testID="@send/custom-fee-submit-button"
-                            >
-                                <Translation id="moduleSend.fees.custom.bottomSheet.confirmButton" />
-                            </Button>
-                        </Animated.View>
-                    )}
-                </Animated.View>
+                <FormSubmitButton
+                    onPress={handleSetCustomFee}
+                    isVisible={isSubmittable && isVisible}
+                    testID="@send/custom-fee-submit-button"
+                >
+                    <Translation id="moduleSend.fees.custom.bottomSheet.confirmButton" />
+                </FormSubmitButton>
             </VStack>
         </BottomSheet>
     );

@@ -10443,6 +10443,7 @@ __metadata:
     react: "npm:19.0.0"
     react-hook-form: "npm:^7.56.3"
     react-native: "npm:0.79.3"
+    react-native-reanimated: "npm:^3.18.0"
     yup: "npm:^1.6.1"
   languageName: unknown
   linkType: soft
@@ -10844,6 +10845,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
     react-redux: "npm:9.2.0"

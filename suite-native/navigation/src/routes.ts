@@ -79,6 +79,7 @@ export enum DeviceSettingsStackRoutes {
     FirmwareInstallation = 'FirmwareInstallation',
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceStack = 'WipeDeviceStack',
+    DeviceNameStack = 'DeviceNameStack',
 }
 
 export enum DevicePinProtectionStackRoutes {
@@ -97,6 +98,12 @@ export enum WipeDeviceStackRoutes {
     WipeDevice = 'WipeDevice',
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
+}
+
+export enum DeviceNameStackRoutes {
+    DeviceName = 'DeviceName',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+    DeviceNameLoadingScreen = 'DeviceNameLoadingScreen',
 }
 
 export enum AuthorizeDeviceStackRoutes {

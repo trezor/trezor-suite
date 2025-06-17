@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { DeviceAuthenticityStackNavigator } from './DeviceAuthenticityStackNavigator';
+import { DeviceNameStackNavigator } from './DeviceNameStackNavigator';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
 import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
@@ -58,6 +59,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.FirmwareInstallation}
             component={FirmwareInstallationScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceNameStack}
+            component={DeviceNameStackNavigator}
         />
     </DeviceSettingsStack.Navigator>
 );

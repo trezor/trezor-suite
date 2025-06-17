@@ -41,6 +41,7 @@ export type InputProps = TextInputProps &
             leftIcon?: ReactNode;
             rightIcon?: ReactNode;
             elevation?: SurfaceElevation;
+            keepPlaceholderOnFocus?: boolean;
         },
         'label' | 'placeholder'
     >;
@@ -244,10 +245,11 @@ export const Input = forwardRef<TextInput, InputProps>(
             leftIcon,
             rightIcon,
             style,
+            editable,
             hasError = false,
             hasWarning = false,
             elevation = '0',
-            editable,
+            keepPlaceholderOnFocus = false,
             ...props
         }: InputProps,
         ref,
@@ -273,6 +275,10 @@ export const Input = forwardRef<TextInput, InputProps>(
             setIsFocused(false);
             onBlur?.(event);
         };
+
+        const shouldShowPlaceholder = keepPlaceholderOnFocus
+            ? S.isEmpty(value)
+            : !isFocused && S.isEmpty(value);
 
         return (
             <>
@@ -310,7 +316,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                             {label}
                         </Animated.Text>
                     )}
-                    {!isFocused && S.isEmpty(value) && placeholder && (
+                    {shouldShowPlaceholder && placeholder && (
                         <Animated.View
                             entering={labelEnteringAnimation}
                             exiting={labelExitingAnimation}

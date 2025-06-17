@@ -549,6 +549,18 @@ export const en = {
             checks: 'Checks',
             dangerZone: 'Danger Zone',
         },
+        changeDeviceName: {
+            title: `Rename your Trezor`,
+            validations: {
+                noSpecialCharacters: 'Your Trezor’s name can’t contain special characters',
+                maxLengthInfo: 'The name can be 16 characters long at most',
+                englishLettersOnly: 'Your Trezor’s name can only contain english letters',
+            },
+            submitButton: 'Confirm',
+            loadingSuccessScreen: {
+                title: 'Name changed!',
+            },
+        },
         pinProtection: {
             title: 'PIN protection',
             content: 'PIN protects your device against physical attack.',

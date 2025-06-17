@@ -2,18 +2,19 @@ import { useSelector } from 'react-redux';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
+    selectDeviceLabel,
     selectDeviceModel,
     selectDeviceName,
     selectIsDeviceConnectedViaBluetooth,
 } from '@suite-common/wallet-core';
-import { Text, VStack } from '@suite-native/atoms';
-import { DeviceImage } from '@suite-native/device';
+import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceBluetoothCard } from '../components/DeviceBluetoothCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
+import { DeviceInfo } from '../components/DeviceInfo';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
 import { DeviceSettingsSection } from '../components/DeviceSettingsSection';
 import { WipeDeviceCard } from '../components/WipeDeviceCard';
@@ -24,6 +25,7 @@ export const DeviceSettingsModalScreen = () => {
 
     const deviceModel = useSelector(selectDeviceModel);
     const deviceName = useSelector(selectDeviceName);
+    const deviceLabel = useSelector(selectDeviceLabel);
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
 
     if (!deviceModel || !deviceName) {
@@ -33,10 +35,7 @@ export const DeviceSettingsModalScreen = () => {
     return (
         <Screen header={<ScreenHeader closeActionType="close" />}>
             <VStack spacing="sp40">
-                <VStack marginTop="sp24" spacing="sp24" alignItems="center">
-                    <DeviceImage deviceModel={deviceModel} />
-                    <Text variant="titleMedium">{deviceName}</Text>
-                </VStack>
+                <DeviceInfo deviceName={deviceLabel || deviceName} deviceModel={deviceModel} />
                 <DeviceSettingsSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.general" />}
                 >
