@@ -1,3 +1,4 @@
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -24,6 +25,7 @@ export const StakeButton = () => {
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -49,7 +51,7 @@ export const StakeButton = () => {
         <Tooltip content={stakingMessageContent}>
             <Modal.Button
                 isDisabled={isDisabled || isStakingDisabled}
-                isLoading={isComposing || isSubmitting}
+                isLoading={isComposing || isSubmitting || isDiscoveryRunning}
                 onClick={onStakeClick}
                 icon={isStakingDisabled ? 'info' : undefined}
             >

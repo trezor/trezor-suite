@@ -1,3 +1,4 @@
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Button, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -32,6 +33,7 @@ export const UnstakeButton = () => {
 
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const onUnstakeClick = () => {
         handleSubmit(signTx)();
@@ -52,7 +54,7 @@ export const UnstakeButton = () => {
             <Button
                 type="submit"
                 isDisabled={isDisabled || isUnstakingDisabled}
-                isLoading={isComposing || isSubmitting}
+                isLoading={isComposing || isSubmitting || isDiscoveryRunning}
                 onClick={onUnstakeClick}
                 icon={isUnstakingDisabled ? 'info' : undefined}
             >

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, Modal, Paragraph, Tooltip } from '@trezor/components';
@@ -52,6 +53,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
     const { claimableAmount = '0' } = getStakingDataForNetwork(selectedAccount.account) ?? {};
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     useEffect(() => {
         onClaimChange(claimableAmount);
@@ -100,7 +102,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                         <Modal.Button
                             type="submit"
                             isDisabled={isDisabled || isClaimingDisabled}
-                            isLoading={isComposing || isSubmitting}
+                            isLoading={isComposing || isSubmitting || isDiscoveryRunning}
                             onClick={onClaimClick}
                             icon={isClaimingDisabled ? 'info' : undefined}
                         >

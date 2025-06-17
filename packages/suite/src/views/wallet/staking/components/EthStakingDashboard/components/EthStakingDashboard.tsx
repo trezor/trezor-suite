@@ -6,6 +6,7 @@ import {
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
+    selectHasRunningDiscovery,
     selectPoolStatsApyData,
     selectPoolStatsNextRewardPayout,
     selectValidatorsQueue,
@@ -25,6 +26,7 @@ import { InstantStakeBanner } from './InstantStakeBanner';
 import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../../StakingDashboard/components/ClaimCard';
+import { DiscoveryWarning } from '../../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../../StakingDashboard/components/EmptyStakingCard';
 import { PayoutCard } from '../../StakingDashboard/components/PayoutCard';
 import { StakingCard } from '../../StakingDashboard/components/StakingCard';
@@ -41,6 +43,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const accountKey = account?.key ?? '';
     const { isBelowLaptop } = useLayoutSize();
     const isDeviceConnected = device?.connected && device?.available;
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { data, isLoading } =
         useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
@@ -91,6 +94,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                         >
                             <Column gap={spacings.sm}>
                                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
+                                {isDiscoveryRunning && <DiscoveryWarning />}
 
                                 <InstantStakeBanner
                                     txs={txs}

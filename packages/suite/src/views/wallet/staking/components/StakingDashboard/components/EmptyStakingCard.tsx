@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
     Button,
     Card,
@@ -23,11 +23,14 @@ import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
+import { DiscoveryWarning } from './DiscoveryWarning';
+
 export const EmptyStakingCard = () => {
     const { isBelowLaptop } = useLayoutSize();
     const account = useSelector(selectSelectedAccount);
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
 
@@ -95,6 +98,7 @@ export const EmptyStakingCard = () => {
         <DashboardSection
             heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
         >
+            {isDiscoveryRunning && <DiscoveryWarning />}
             <Card>
                 <Column>
                     <section>

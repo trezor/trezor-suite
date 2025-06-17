@@ -7723,6 +7723,14 @@ export default defineMessages({
         defaultMessage: 'Shelley',
         id: 'TR_ACCOUNT_TYPE_SHELLEY',
     },
+    TR_DISCOVERY_WARNING_TITLE: {
+        id: 'TR_DISCOVERY_WARNING_TITLE',
+        defaultMessage: 'Trezor discovery',
+    },
+    TR_DISCOVERY_WARNING_DESCRIPTION: {
+        id: 'TR_DISCOVERY_WARNING_DESCRIPTION',
+        defaultMessage: 'Just a moment - almost done!',
+    },
     TR_STAKING_REWARDS_TITLE: {
         id: 'TR_STAKING_REWARDS_TITLE',
         defaultMessage: 'Cardano staking is active',

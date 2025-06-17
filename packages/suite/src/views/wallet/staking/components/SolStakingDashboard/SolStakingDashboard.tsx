@@ -3,6 +3,7 @@ import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     StakeRootState,
     selectAccountIsStakingActive,
+    selectHasRunningDiscovery,
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -22,6 +23,7 @@ import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCar
 import { PayoutCard } from '../StakingDashboard/components/PayoutCard';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
 import { RewardsList } from './components/Rewards/RewardsList';
+import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 
 interface SolStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
@@ -33,6 +35,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
 
     const { isBelowLaptop } = useLayoutSize();
     const isDeviceConnected = device?.connected && device?.available;
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
@@ -58,6 +61,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                         >
                             <Column alignItems="normal" gap={spacings.sm}>
                                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
+                                {isDiscoveryRunning && <DiscoveryWarning />}
 
                                 <Grid
                                     columns={isBelowLaptop || !canClaim ? 1 : 2}
