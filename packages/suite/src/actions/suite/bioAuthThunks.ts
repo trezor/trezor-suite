@@ -1,5 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import {
@@ -125,7 +126,7 @@ export const requestBioAuthValidationThunk = createThunk(
 export const checkBioAuthAvailableThunk = createThunk(
     `${BIO_AUTH_PREFIX}/checkBioAuthAvailableThunk`,
     async (_, { dispatch, getState }) => {
-        if (selectIsBioAuthAvailableStateKnown(getState())) {
+        if (selectIsBioAuthAvailableStateKnown(getState()) || isWeb()) {
             return;
         }
 
