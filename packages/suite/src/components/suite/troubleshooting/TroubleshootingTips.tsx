@@ -53,7 +53,6 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
     toggleText,
     'data-testid': dataTest,
 }: TroubleshootingTipsWithSectionsProps<K, T>) => {
-    const [isOpened, setIsOpened] = useState(initiallyIsOpen === true);
     const firstSectionKey = Object.keys(items)[0] as K;
     const [selectedSection, setSelectedSection] = useState<K>(defaultSection ?? firstSectionKey);
 
@@ -102,15 +101,13 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
             )}
 
             <Collapsible
-                isOpen={isOpened}
+                defaultIsOpen={initiallyIsOpen === true}
                 data-testid={dataTest || '@onboarding/expand-troubleshooting-tips'}
             >
                 <Column gap={spacings.md}>
-                    <Collapsible.Toggle onClick={() => setIsOpened(!isOpened)}>
+                    <Collapsible.Toggle>
                         <Row justifyContent="center" flex="1" margin={{ bottom: spacings.xs }}>
-                            <TroubleshootingTipsToggle isOpen={isOpened}>
-                                {toggleText}
-                            </TroubleshootingTipsToggle>
+                            <TroubleshootingTipsToggle>{toggleText}</TroubleshootingTipsToggle>
                         </Row>
                     </Collapsible.Toggle>
                     <Collapsible.Content>
