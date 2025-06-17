@@ -12,7 +12,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';
@@ -25,6 +25,7 @@ import { StepThpPairing } from './Steps/StepThpPairing';
 import { StepThpPairingRequest } from './Steps/StepThpPairingRequest';
 import { StepThpStart } from './Steps/StepThpStart';
 import * as modalActions from '../../actions/suite/modalActions';
+import { FirmwareInstallationProgressCheck } from '../../components/firmware';
 
 type FirmwareModalProps = {
     children: ReactNode;
@@ -60,6 +61,8 @@ export const FirmwareModal = ({
     const [isChecked, setIsChecked] = useState(false);
     const uiEventDevice =
         uiEvent && 'device' in uiEvent.payload ? uiEvent.payload.device : undefined;
+    const { isProgressCheckDisplayed, handleDismissProgressCheck } =
+        useFirmwareInstallationProgressCheck();
 
     // The 'started' is NOT cancellable as the FW is streamed into the device.
     // It can be canceled only via `trezorCancel`
@@ -135,6 +138,16 @@ export const FirmwareModal = ({
                     />
                 );
             case 'started':
+                if (isProgressCheckDisplayed) {
+                    return (
+                        <Modal size="large">
+                            <FirmwareInstallationProgressCheck
+                                handleDismiss={handleDismissProgressCheck}
+                            />
+                        </Modal>
+                    );
+                }
+
                 return (
                     <StepStarted
                         modalHeading={heading}

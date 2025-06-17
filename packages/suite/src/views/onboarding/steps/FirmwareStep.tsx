@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import { selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -11,11 +12,12 @@ import {
     Fingerprint,
     FirmwareContinueButton,
     FirmwareInitial,
+    FirmwareInstallationProgressCheck,
     FirmwareRetryButton,
 } from 'src/components/firmware';
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { PrerequisitesGuide, Translation } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 import { FirmwareInstallation } from './FirmwareInstallation';
@@ -30,6 +32,8 @@ export const FirmwareStep = () => {
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const { status, error, resetReducer, firmwareUpdate, targetType } = useFirmwareInstallation();
     const thpStep = useSelector(selectThpStep);
+    const { isProgressCheckDisplayed, handleDismissProgressCheck } =
+        useFirmwareInstallationProgressCheck();
 
     const install = () => firmwareUpdate({ firmwareType: targetType });
     const goToNextStepAndResetReducer = useCallback(() => {
@@ -165,6 +169,16 @@ export const FirmwareStep = () => {
             return <FirmwareInitial />;
         case 'started': // called from firmwareUpdate()
         case 'done': // This is shown only for NON-THP devices, THP device goes directly to the next step after successful THP pairing
+            if (isProgressCheckDisplayed) {
+                return (
+                    <Card>
+                        <FirmwareInstallationProgressCheck
+                            handleDismiss={handleDismissProgressCheck}
+                        />
+                    </Card>
+                );
+            }
+
             return (
                 <FirmwareInstallation install={install} onSuccess={goToNextStepAndResetReducer} />
             );

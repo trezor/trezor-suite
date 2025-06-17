@@ -7421,6 +7421,10 @@ export default defineMessages({
         id: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
         defaultMessage: 'Your device firmware revision check failed.',
     },
+    TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT',
+        defaultMessage: 'Your device rejects firmware installation.',
+    },
     TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT',
         defaultMessage: 'Your device authentication check failed.',
@@ -7622,6 +7626,26 @@ export default defineMessages({
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR_AGAIN',
         defaultMessage:
             'Verification failed multiple times. Your Trezor device might not be genuine.',
+    },
+    TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_HEADING: {
+        id: 'TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_HEADING',
+        defaultMessage: 'Check the displayed message on your Trezor Model One',
+    },
+    TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_TEXT_BEFORE_IMAGE: {
+        id: 'TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_TEXT_BEFORE_IMAGE',
+        defaultMessage: 'Your Trezor Model One should display this screen:',
+    },
+    TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_TEXT_AFTER_IMAGE: {
+        id: 'TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_TEXT_AFTER_IMAGE',
+        defaultMessage: 'Do you see this message?',
+    },
+    TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_NO_BUTTON: {
+        id: 'TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_NO_BUTTON',
+        defaultMessage: 'I see something else',
+    },
+    TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_YES_BUTTON: {
+        id: 'TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_YES_BUTTON',
+        defaultMessage: 'Yes, I see it',
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
