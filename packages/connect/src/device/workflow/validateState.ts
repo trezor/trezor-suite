@@ -39,7 +39,7 @@ const getState = async ({ device, method }: WorkflowContext) => {
     }
 };
 
-const MAX_PIN_TRIES = 3;
+const MAX_PIN_TRIES = 1;
 
 /** Including up to 3 pin tries **/
 const getInvalidDeviceState = async (
