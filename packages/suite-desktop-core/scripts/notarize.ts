@@ -1,7 +1,7 @@
 import { notarize } from '@electron/notarize';
 import type { Hooks } from 'app-builder-lib';
 
-const notarizeAfterSignHook: Hooks['afterSign'] = context => {
+export const notarizeAfterSignHook: Hooks['afterSign'] = context => {
     const { electronPlatformName, appOutDir } = context;
 
     if (electronPlatformName !== 'darwin') {
@@ -15,7 +15,7 @@ const notarizeAfterSignHook: Hooks['afterSign'] = context => {
     const appName = context.packager.appInfo.productFilename;
     const appPath = `${appOutDir}/${appName}.app`;
 
-    console.log(`notarizing ${appPath} ...`);
+    console.warn(`notarizing ${appPath} ...`);
 
     return notarize({
         appPath,
@@ -24,5 +24,3 @@ const notarizeAfterSignHook: Hooks['afterSign'] = context => {
         teamId: process.env.APPLETEAMID,
     });
 };
-
-export default notarizeAfterSignHook;

@@ -52,7 +52,9 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
             await dashboardPage.deviceSwitchingOpenButton.click();
             // Clicking on the device switcher button should either open the modal or show the "Unavailable while loading" message
             await Promise.race([
+                // eslint-disable-next-line playwright/missing-playwright-await
                 expect(dashboardPage.deviceSwitcherModal).toBeVisible(),
+                // eslint-disable-next-line playwright/missing-playwright-await
                 expect(page.getByText('Unavailable while loading')).toBeVisible(),
             ]);
             const deviceSwitchUnavailable = page.getByText('Unavailable while loading').isVisible();

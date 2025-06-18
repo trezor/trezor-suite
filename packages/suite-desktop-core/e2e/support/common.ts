@@ -66,7 +66,7 @@ export const formatAddress = (address: string) => splitStringEveryNCharacters(ad
 
 // This function is used to override automatic fixtures that we want to skip in specific tests.
 /* eslint-disable react-hooks/rules-of-hooks */
-export async function skipFixture(_noFixturesNeeded: unknown, use: (r: void) => Promise<void>) {
+export async function skipFixture({}, use: (r: void) => Promise<void>) {
     await use();
 }
 /* eslint-enable react-hooks/rules-of-hooks */

@@ -43,6 +43,7 @@
         "@types/react": "18.2.55",
         "babel-loader": "^10.0.0",
         "copy-webpack-plugin": "^13.0.0",
+        "eslint-plugin-playwright": "^2.2.0",
         "html-webpack-plugin": "^5.6.3",
         "rimraf": "^6.0.1",
         "terser-webpack-plugin": "^5.3.14",
