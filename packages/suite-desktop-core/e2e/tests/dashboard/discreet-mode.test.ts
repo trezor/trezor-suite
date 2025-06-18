@@ -74,7 +74,7 @@ test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
                 });
             });
 
-            test.step('Verify analytics event', () => {
+            await test.step('Verify analytics event', () => {
                 const menuToggleDiscreetEvent = analytics.findAnalyticsEventByType<
                     ExtractByEventType<EventType.MenuToggleDiscreet>
                 >(EventType.MenuToggleDiscreet);

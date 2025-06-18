@@ -124,7 +124,7 @@ export const openPopup = (
 };
 
 export const checkHasLogs = async (logPage: Page) => {
-    const locator = await logPage.locator("button[data-testid='@log-container/download-button']");
+    const locator = logPage.locator("button[data-testid='@log-container/download-button']");
     if (await locator.isVisible()) {
         return true;
     }

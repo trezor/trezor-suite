@@ -87,6 +87,9 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
 
                     return metadataOutputLabel.textContent();
                 });
+            if (!originalTxLabel) {
+                throw new Error('Original transaction label is empty');
+            }
 
             await test.step('Remember the wallet and stop Emulator', async () => {
                 await page.locator('[data-test="@menu/switch-device"]').click();
@@ -116,8 +119,8 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
                 await dashboardPage.deviceSwitchingCloseButton.click();
                 const firstTxLabel = page.getByTestId('@wallet/transaction/target-address').first();
                 await expect(firstTxLabel).toBeVisible();
-                const afterMigrationTxLabel = await firstTxLabel.textContent();
-                expect(afterMigrationTxLabel).toBe(originalTxLabel);
+                const afterMigrationTxLabel = firstTxLabel;
+                await expect(afterMigrationTxLabel).toHaveText(originalTxLabel);
             });
 
             // go to receive tab, trigger show address to make sure passphrase is properly cached

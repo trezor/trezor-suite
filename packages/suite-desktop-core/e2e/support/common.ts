@@ -65,11 +65,11 @@ export const isEqualWithOmit = (param: { object1: any; object2: any; mask: strin
 export const formatAddress = (address: string) => splitStringEveryNCharacters(address, 4).join(' ');
 
 // This function is used to override automatic fixtures that we want to skip in specific tests.
-/* eslint-disable no-empty-pattern, react-hooks/rules-of-hooks */
-export async function skipFixture({}, use: (r: void) => Promise<void>) {
+/* eslint-disable react-hooks/rules-of-hooks */
+export async function skipFixture(_noFixturesNeeded: unknown, use: (r: void) => Promise<void>) {
     await use();
 }
-/* eslint-enable no-empty-pattern, react-hooks/rules-of-hooks */
+/* eslint-enable react-hooks/rules-of-hooks */
 
 export const getVideoPath = (videoFolder: string) => {
     const videoFilenames = readdirSync(videoFolder).filter(file => file.endsWith('.webm'));

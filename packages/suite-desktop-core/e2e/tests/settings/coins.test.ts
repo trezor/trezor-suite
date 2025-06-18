@@ -52,7 +52,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
 
             // check dashboard with all coins disabled
             await dashboardPage.navigateTo();
-            expect(page.getByTestId('@exception/discovery-empty')).toContainText(
+            await expect(page.getByTestId('@exception/discovery-empty')).toContainText(
                 'All coins are disabled in Settings.',
             );
 

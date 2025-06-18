@@ -71,14 +71,16 @@ test('outdated browser', async ({ browser }) => {
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
     // In Firefox it should display Install Bridge page.
-    await popup.getByRole('heading', { name: "Browser can't communicate with device" });
+    await expect(
+        popup.getByRole('heading', { name: "Browser can't communicate with device" }),
+    ).toBeVisible();
     await popup.close({ runBeforeUnload: true });
     await page.close();
     await context.close();
 });
 
 // test mobile browsers
-test(`env: web, device: mobile/iPhone => not allowed `, async ({ browser }) => {
+test(`env: web, device: mobile/iPhone => not allowed`, async ({ browser }) => {
     const context = await browser.newContext({
         ...iPhone,
     });
@@ -95,7 +97,7 @@ test(`env: web, device: mobile/iPhone => not allowed `, async ({ browser }) => {
     await context.close();
 });
 
-test(`env: web, device: mobile/Android => allowed `, async ({ browser }) => {
+test(`env: web, device: mobile/Android => allowed`, async ({ browser }) => {
     const context = await browser.newContext({
         ...android,
     });

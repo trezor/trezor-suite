@@ -32,7 +32,7 @@ test.describe('Application Logs', { tag: ['@group=settings'] }, () => {
                     return exportedLogsPath;
                 });
 
-            test.step('Compare displayed and exported logs', () => {
+            await test.step('Compare displayed and exported logs', () => {
                 const exportedLogs = readFileSync(exportedLogPath, 'utf-8');
                 expect(exportedLogs).toBe(displayedLogs);
                 testInfo.attachments.push({

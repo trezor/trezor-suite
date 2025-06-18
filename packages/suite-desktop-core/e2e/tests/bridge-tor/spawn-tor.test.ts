@@ -36,8 +36,7 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
 };
 
 test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly'] }, () => {
-    /* eslint-disable-next-line no-empty-pattern */
-    test('Tor loading screen: happy path', async ({}, testInfo) => {
+    test('Tor loading screen: happy path', async (_noFixturesNeeded: unknown, testInfo) => {
         const suiteArgs = {
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
@@ -61,8 +60,7 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
         suite.electronApp.close();
     });
 
-    /* eslint-disable-next-line no-empty-pattern */
-    test('Tor loading screen: making sure that all the request go throw Tor', async ({}, testInfo) => {
+    test('Tor loading screen: making sure that all the request go throw Tor', async (_noFixturesNeeded: unknown, testInfo) => {
         const suiteArgs = {
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
@@ -94,8 +92,7 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
         suite.electronApp.close();
     });
 
-    /* eslint-disable-next-line no-empty-pattern */
-    test('Tor loading screen: disable tor while loading', async ({}, testInfo) => {
+    test('Tor loading screen: disable tor while loading', async (_noFixturesNeeded: unknown, testInfo) => {
         const suiteArgs = {
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,

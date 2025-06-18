@@ -423,16 +423,16 @@ export class TradingPage {
         const displayedQuotes = await this.quotes.all();
         for (const [index, quote] of displayedQuotes.entries()) {
             //validate provider of the quote row
-            const provider = await quote.getByTestId(quoteProviderLocator).textContent();
+            const provider = quote.getByTestId(quoteProviderLocator);
             const expectedProvider = getCompanyNameFromList(
                 expectedQuotes[index].exchange,
                 listType,
             );
-            expect.soft(provider).toBe(expectedProvider);
+            await expect.soft(provider).toHaveText(expectedProvider);
             //validate amount of the quote row
-            const amount = await quote.getByTestId('@trading/offers/quote/amount').textContent();
+            const amount = quote.getByTestId('@trading/offers/quote/amount');
             const expectedAmount = formatExpectedAmount(expectedQuotes[index]);
-            expect.soft(amount).toBe(expectedAmount);
+            await expect.soft(amount).toHaveText(expectedAmount);
         }
     }
 
