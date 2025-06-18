@@ -71,6 +71,7 @@ export enum AccountsImportStackRoutes {
 
 export enum DeviceSettingsStackRoutes {
     DeviceSettings = 'DeviceSettings',
+    PinProtection = 'PinProtection',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',

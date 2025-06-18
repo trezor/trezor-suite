@@ -1,12 +1,21 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceProtectedByPin, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Box, CardWithIconLayout, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { useNavigation } from '@react-navigation/native';
 
-import { DevicePinActionButton } from './DevicePinActionButton';
+import {
+    selectHasRunningDiscovery,
+    selectIsDeviceProtectedByPin,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { InlineAlertBoxProps } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { DeviceSettingsStackRoutes } from '@suite-native/navigation';
+
+import { SettingsItemCard } from './SettingsItemCard';
 
 export const DevicePinProtectionCard = () => {
+    const navigation = useNavigation<any>();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const device = useSelector(selectSelectedDevice);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
 
@@ -14,32 +23,40 @@ export const DevicePinProtectionCard = () => {
         return;
     }
 
+    const navigateToPinStack = () => {
+        navigation.navigate(DeviceSettingsStackRoutes.DevicePinProtectionStack, {
+            type: 'enable',
+        });
+    };
+
+    const pinAlertBoxProps = ((): InlineAlertBoxProps | undefined => {
+        if (!isDeviceProtectedByPin) {
+            return {
+                title: <Translation id="moduleDeviceSettings.pinProtection.alertBoxTitle" />,
+                variant: 'warning',
+                buttonLabel: <Translation id="moduleDeviceSettings.pinProtection.buttons.setPin" />,
+                onButtonPress: navigateToPinStack,
+                buttonProps: {
+                    isDisabled: isDiscoveryRunning,
+                    isLoading: isDiscoveryRunning,
+                },
+            } as const;
+        }
+
+        return undefined;
+    })();
+
+    const handleOnPress = () => {
+        navigation.navigate(DeviceSettingsStackRoutes.PinProtection);
+    };
+
     return (
-        <CardWithIconLayout
+        <SettingsItemCard
             icon="password"
             title={<Translation id="moduleDeviceSettings.pinProtection.title" />}
-        >
-            <VStack marginTop="sp2" spacing="sp16">
-                <Text variant="body" color="textSubdued">
-                    <Translation id="moduleDeviceSettings.pinProtection.content" />
-                </Text>
-                {!isDeviceProtectedByPin ? (
-                    <DevicePinActionButton type="enable">
-                        <Translation id="generic.buttons.enable" />
-                    </DevicePinActionButton>
-                ) : (
-                    <HStack>
-                        <DevicePinActionButton type="disable" colorScheme="redElevation0">
-                            <Translation id="generic.buttons.disable" />
-                        </DevicePinActionButton>
-                        <Box flex={1}>
-                            <DevicePinActionButton type="change" colorScheme="tertiaryElevation0">
-                                <Translation id="moduleDeviceSettings.pinProtection.changeButton" />
-                            </DevicePinActionButton>
-                        </Box>
-                    </HStack>
-                )}
-            </VStack>
-        </CardWithIconLayout>
+            subtitle={<Translation id="moduleDeviceSettings.pinProtection.cardSubtitle" />}
+            alertBoxProps={pinAlertBoxProps}
+            onPress={handleOnPress}
+        />
     );
 };

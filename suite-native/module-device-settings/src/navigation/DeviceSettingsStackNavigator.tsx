@@ -13,6 +13,7 @@ import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScr
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
+import { PinProtectionScreen } from '../screens/PinProtectionScreen';
 const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
 
 export const DeviceSettingsStackNavigator = () => (
@@ -27,6 +28,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DevicePinProtectionStack}
             component={DevicePinProtectionStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.PinProtection}
+            component={PinProtectionScreen}
         />
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceAuthenticityStack}
