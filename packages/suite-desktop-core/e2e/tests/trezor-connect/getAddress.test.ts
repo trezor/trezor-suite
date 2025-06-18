@@ -110,7 +110,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             await page.waitForTimeout(1000);
             await trezorUserEnvLink.pressYes();
 
-            expect(
+            await expect(
                 page.getByTestId('@connect-address-confirmation/verified-badge/0'),
             ).toBeVisible();
 

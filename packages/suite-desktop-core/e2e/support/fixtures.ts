@@ -103,8 +103,8 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
         await use(metadataMock);
         await metadataMock.stop();
     },
-    /* eslint-disable-next-line no-empty-pattern */
-    blockbookMock: async ({}, use) => {
+
+    blockbookMock: async (_noFixturesNeeded: unknown, use) => {
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
         blockbookMock.stop();

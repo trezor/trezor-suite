@@ -42,7 +42,7 @@ test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
 
         await expect(page.getByTestId('@safety-checks-apply')).toBeDisabled();
         await page.locator('[data-testid*="@radio-button"][data-checked="false"]').click();
-        await expect(page.getByTestId('@safety-checks-apply')).not.toBeDisabled();
+        await expect(page.getByTestId('@safety-checks-apply')).toBeEnabled();
     });
 
     test('Device safety_check setting is changed after pressing the apply button', async ({
