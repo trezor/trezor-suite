@@ -1,4 +1,11 @@
-import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import {
+    BuyTrade,
+    CryptoId,
+    ExchangeProviderInfo,
+    ExchangeTrade,
+    SellFiatTrade,
+    SellProviderInfo,
+} from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -9,16 +16,19 @@ import {
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
 } from '@suite-common/wallet-config';
-import type { Account } from '@suite-common/wallet-types';
+import type { Account, FormStateTrading } from '@suite-common/wallet-types';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './constants';
 import { regional } from './regional';
 import {
     TradingAccountOptionsGroupOptionProps,
+    TradingExchangeType,
     TradingParsedCryptoIdProps,
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
+    TradingSellType,
     TradingTradeBuySellMapProps,
     TradingTradeBuySellType,
     TradingTradeMapProps,
@@ -246,4 +256,109 @@ export const getBestRatedQuote = <T extends TradingType>(
     });
 
     return bestRatedQuotes[0];
+};
+
+type TradingGetFormStateSellProps = {
+    activeSection: TradingSellType;
+    trade: SellFiatTrade;
+};
+
+type TradingGetFormStateExchangeProps = {
+    activeSection: TradingExchangeType;
+    trade: ExchangeTrade;
+};
+
+type TradingGetFormStateProps = {
+    providers: Record<string, ExchangeProviderInfo | SellProviderInfo> | undefined;
+    isSlip24Active?: boolean;
+} & (TradingGetFormStateSellProps | TradingGetFormStateExchangeProps);
+
+export const getTradingFormState = ({
+    activeSection,
+    trade,
+    providers,
+    isSlip24Active,
+}: TradingGetFormStateProps): FormStateTrading => {
+    const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
+
+    // Support for SLIP-24
+    switch (activeSection) {
+        case 'sell': {
+            const defaultState = {
+                activeSection,
+            };
+
+            if (
+                !trade.fiatStringAmount ||
+                !trade.fiatCurrency ||
+                !trade.cryptoCurrency ||
+                !trade.cryptoStringAmount ||
+                !provider?.companyName ||
+                !isSlip24Active
+            ) {
+                return defaultState;
+            }
+
+            const networkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
+
+            if (!networkData || !networkData.network) {
+                return defaultState;
+            }
+
+            return {
+                activeSection,
+                recipientName: provider.companyName,
+                send: {
+                    symbol: networkData.network.symbol,
+                    contractAddress: networkData.contractAddress,
+                    amount: trade.cryptoStringAmount,
+                },
+                receive: {
+                    amount: trade.fiatStringAmount,
+                    fiatCurrency: trade.fiatCurrency,
+                },
+            };
+        }
+        case 'exchange': {
+            const defaultState = {
+                activeSection,
+            };
+
+            if (
+                !trade.receive ||
+                !trade.receiveStringAmount ||
+                !trade.send ||
+                !trade.sendStringAmount ||
+                !provider?.companyName ||
+                !isSlip24Active
+            ) {
+                return defaultState;
+            }
+
+            const receiveNetworkData = cryptoIdToNetworkAndContractAddress(trade.receive);
+            const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
+
+            if (!receiveNetworkData?.network || !sendNetworkData?.network) {
+                return defaultState;
+            }
+
+            return {
+                activeSection,
+                recipientName: provider.companyName,
+                send: {
+                    symbol: sendNetworkData.network.symbol,
+                    contractAddress: sendNetworkData.contractAddress,
+                    amount: trade.sendStringAmount,
+                },
+                receive: {
+                    symbol: receiveNetworkData.network.symbol,
+                    contractAddress: receiveNetworkData.contractAddress,
+                    amount: trade.receiveStringAmount,
+                },
+            };
+        }
+        /* istanbul ignore next */
+        default:
+            return exhaustive(activeSection);
+    }
 };

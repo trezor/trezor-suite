@@ -2,7 +2,10 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type {
+    FormStateTrading,
+    GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { BulletList, Card, Column, H3, H4 } from '@trezor/components';
@@ -24,7 +27,7 @@ export type TransactionReviewOutputListProps = {
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
-    isTradingAction: boolean;
+    tradingFormState: FormStateTrading | undefined;
     isSending?: boolean;
     stakeType?: StakeType;
     deadline?: number;
@@ -73,7 +76,7 @@ export const TransactionReviewOutputList = ({
     outputs,
     buttonRequestsCount,
     isRbfAction,
-    isTradingAction,
+    tradingFormState,
     stakeType,
     deadline,
     onTryAgain,
@@ -89,6 +92,7 @@ export const TransactionReviewOutputList = ({
     const isStaking = stakeType;
     const isInternalTransfer =
         isFirstOutputAddress &&
+        typeof outputs[0]?.value === 'string' &&
         findAccountsByAddress(symbol, outputs[0]?.value, accounts).length > 0;
 
     const summaryIndex = outputs.findIndex(
@@ -108,7 +112,7 @@ export const TransactionReviewOutputList = ({
         isFirstOutputAddress &&
         isFirstStep &&
         !isStaking &&
-        !isTradingAction &&
+        !tradingFormState &&
         !isInternalTransfer &&
         !signedTx
     ) {
@@ -186,7 +190,7 @@ export const TransactionReviewOutputList = ({
                                 state={getState(index, buttonRequestsCount, !!signedTx)}
                                 account={account}
                                 isRbf={isRbfAction}
-                                isTrading={isTradingAction}
+                                isTrading={!!tradingFormState}
                                 stakeType={stakeType}
                             />
                         </Column>

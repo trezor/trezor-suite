@@ -76,6 +76,9 @@ export const sendDexTransactionThunk = createThunk<
                 ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
+                tradingFormState: {
+                    activeSection: 'exchange',
+                },
             }),
         );
 
