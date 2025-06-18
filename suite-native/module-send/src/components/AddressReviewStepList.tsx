@@ -29,7 +29,7 @@ import {
 } from '../selectors';
 
 const NUMBER_OF_STEPS = 3;
-const OVERLAY_INITIAL_POSITION = 170;
+const OVERLAY_INITIAL_POSITION = 120;
 const LIST_VERTICAL_SPACING = nativeSpacings.sp16;
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];

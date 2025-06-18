@@ -1674,10 +1674,10 @@ export const en = {
                 sendTxnFailed: 'Failed to send transaction',
             },
             address: {
-                title: 'Check the address on your Trezor against the original to make sure it’s correct.',
+                title: 'Before you confirm on your Trezor',
                 step1: 'Go to the app or place where you originally got the address.',
-                step2: 'Compare that address with what’s on your Trezor and confirm.',
-                step3: 'Come back to Trezor Suite Lite',
+                step2: 'Compare the original address with what’s on your Trezor.',
+                step3: 'If they match exactly, confirm on your Trezor.',
 
                 originBottomSheet: {
                     title: 'What’s the place of origin?',
