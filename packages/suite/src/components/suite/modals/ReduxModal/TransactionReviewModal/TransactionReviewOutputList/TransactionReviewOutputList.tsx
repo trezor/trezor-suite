@@ -102,6 +102,8 @@ export const TransactionReviewOutputList = ({
     const summaryIndex = outputs.findIndex(
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
     );
+    const isSLIP24Active =
+        !!tradingFormState && 'send' in tradingFormState && 'receive' in tradingFormState;
 
     useEffect(() => {
         if (buttonRequestsCount - 1 === outputs.length || signedTx) {
@@ -219,6 +221,7 @@ export const TransactionReviewOutputList = ({
                             precomposedForm={precomposedForm}
                             stakeType={stakeType}
                             isRbf={isRbfAction}
+                            isSLIP24Active={isSLIP24Active}
                         />
                     </Column>
                 </Wrapper>

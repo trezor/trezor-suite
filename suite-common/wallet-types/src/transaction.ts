@@ -18,6 +18,7 @@ import {
 import { RequiredKey } from '@trezor/type-utils';
 
 import { Account } from './account';
+import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
 
@@ -307,12 +308,15 @@ export type ReviewOutput =
               | 'amount'
               | 'gas'
               | 'contract'
+              | 'regular_legacy'
               | 'approve_data'
-              | 'regular_legacy';
+              | 'recipient_name';
           label?: string;
           value: string;
           value2?: string;
           token?: TokenInfo;
+          send?: undefined;
+          receive?: undefined;
       }
     | {
           type: 'fee-replace';
@@ -320,6 +324,8 @@ export type ReviewOutput =
           value: string;
           value2: string;
           token?: undefined;
+          send?: undefined;
+          receive?: undefined;
       }
     | {
           type: 'reduce-output';
@@ -327,6 +333,17 @@ export type ReviewOutput =
           value: string;
           value2: string;
           token?: undefined;
+          send?: undefined;
+          receive?: undefined;
+      }
+    | {
+          type: 'traded_assets';
+          value: string;
+          value2: string;
+          label?: undefined;
+          token?: undefined;
+          send: FormStateTradingCryptoCurrency;
+          receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
       };
 
 export type ReviewOutputType = ReviewOutput['type'];

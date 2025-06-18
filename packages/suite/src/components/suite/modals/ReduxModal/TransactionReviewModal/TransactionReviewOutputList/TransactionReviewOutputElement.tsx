@@ -9,9 +9,7 @@ import {
     Box,
     Card,
     Column,
-    DotIndicator,
     H4,
-    Icon,
     InfoItem,
     Note,
     Row,
@@ -29,6 +27,7 @@ import {
     FormattedCryptoAmount,
     Translation,
 } from 'src/components/suite';
+import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 import { Account } from 'src/types/wallet';
 
 const getCardanoFingerprint = (
@@ -112,17 +111,6 @@ const Data = ({ value }: { value: string }) => {
             </Row>
         </Box>
     );
-};
-
-const Status = ({ state }: { state: TransactionReviewOutputElementProps['state'] }) => {
-    switch (state) {
-        case 'confirmed':
-            return <Icon size={spacings.md} variant="primary" name="check" />;
-        case 'unconfirmed':
-            return <DotIndicator />;
-        default:
-            return <DotIndicator isActive={true} />;
-    }
 };
 
 type ValueProps = {
@@ -222,7 +210,7 @@ export const TransactionReviewOutputElement = ({
             fillType={state === 'confirmed' ? 'flat' : 'default'}
             header={
                 <Row gap={spacings.sm}>
-                    <Status state={state} />
+                    <TransactionReviewOutputStatus state={state} />
                     <H4
                         margin={{ left: spacings.xxs }}
                         typographyStyle={state !== 'unconfirmed' ? 'callout' : 'hint'}

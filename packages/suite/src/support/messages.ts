@@ -1577,6 +1577,10 @@ export default defineMessages({
         defaultMessage: 'Sell with {providerName}',
         id: 'TR_TRADING_OTC_LINK_SELL',
     },
+    TR_TRADING_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_TRADING_PROVIDER',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
