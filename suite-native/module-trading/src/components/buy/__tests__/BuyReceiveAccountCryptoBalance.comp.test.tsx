@@ -5,6 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { getBtcAccount } from '../../../__fixtures__/account';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyFormType } from '../../../types/buy';
@@ -42,11 +43,11 @@ describe('BuyReceiveAccountCryptoBalance', () => {
 
     it('should use receiveAccount form field to obtain account', async () => {
         act(() => {
+            buyForm.setValue('asset', btcAsset);
+        });
+        act(() => {
             buyForm.setValue('receiveAccount', {
-                account: {
-                    symbol: 'btc',
-                    balance: '1000000',
-                } as any,
+                account: getBtcAccount(),
             });
         });
         const { getByTestId } = await renderComponent();

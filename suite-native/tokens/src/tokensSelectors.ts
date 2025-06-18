@@ -46,10 +46,12 @@ export const selectAccountTokenInfo = createMemoizedSelector(
             return null;
         }
 
+        const lowerCaseTokenAddress = tokenAddress?.toLowerCase();
+
         return (
             (A.find(
                 account.tokens,
-                (token: TokenInfo) => token.contract === tokenAddress,
+                (token: TokenInfo) => token.contract.toLowerCase() === lowerCaseTokenAddress,
             ) as TokenInfoBranded) ?? null
         );
     },

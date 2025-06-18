@@ -38,6 +38,6 @@ describe('ExchangeReceiveCard', () => {
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You get')).toHaveDisplayValue('100');
         expect(getByText('Balance:')).toBeOnTheScreen();
-        expect(getByText('- ETH')).toBeOnTheScreen();
+        expect(getByText('- USDC')).toBeOnTheScreen();
     });
 });

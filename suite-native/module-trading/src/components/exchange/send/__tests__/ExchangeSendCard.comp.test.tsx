@@ -41,6 +41,6 @@ describe('ExchangeSendCard', () => {
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You pay')).toHaveDisplayValue('100');
         expect(getByText('Balance:')).toBeOnTheScreen();
-        expect(getByText('- ETH')).toBeOnTheScreen();
+        expect(getByText('- USDC')).toBeOnTheScreen();
     });
 });

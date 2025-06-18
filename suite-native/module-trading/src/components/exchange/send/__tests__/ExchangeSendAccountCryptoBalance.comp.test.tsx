@@ -5,6 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { getBtcAccount } from '../../../../__fixtures__/account';
 import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeFormType } from '../../../../types/exchange';
@@ -42,10 +43,10 @@ describe('ExchangeSendAccountCryptoBalance', () => {
 
     it('should use sendAccount form field to obtain account', async () => {
         act(() => {
-            exchangeForm.setValue('sendAccount', {
-                symbol: 'btc',
-                balance: '1000000',
-            } as any);
+            exchangeForm.setValue('sendAsset', btcAsset);
+        });
+        act(() => {
+            exchangeForm.setValue('sendAccount', getBtcAccount());
         });
         const { getByTestId } = await renderComponent();
 
