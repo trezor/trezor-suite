@@ -7,7 +7,6 @@ import {
     ConnectDeviceSettings,
     acquireDevice,
     deviceActions,
-    forgetDisconnectedDevices,
     handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
@@ -187,18 +186,7 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.forgetDisconnectedDevices.forEach(f => {
-        it(`forgetDisconnectedDevices: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.device);
-            const store = initStore(state);
-            store.dispatch(forgetDisconnectedDevices(f.device));
-            const actions = filterThunkActionTypes(store.getActions());
-            expect(actions.length).toEqual(f.result.length);
-            actions.forEach((a, i) => {
-                expect(a.payload.device).toMatchObject(f.result[i]);
-            });
-        });
-    });
+    // forgetDisconnectedDevices tests removed - auto-eject logic is now handled directly in middleware
 
     fixtures.observeSelectedDevice.forEach(f => {
         it(`observeSelectedDevice: ${f.description}`, () => {

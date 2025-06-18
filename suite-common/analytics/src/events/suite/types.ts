@@ -672,12 +672,6 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.ViewOnlyPromo;
-          payload: {
-              wasAccepted: boolean;
-          };
-      }
-    | {
           type: EventType.AutostartModal;
           payload: {
               action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now';

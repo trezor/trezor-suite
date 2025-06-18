@@ -22,10 +22,8 @@ test.describe(
 
             if (onboardingPage.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
-                await onboardingPage.optionallyDismissFwHashCheckError();
             }
 
-            await onboardingPage.onboardingViewOnlyEnableButton.click();
             await expect(page.getByTestId('@suite-layout/body')).toBeVisible();
             await walletPage.openAccount();
             await expect(page.getByTestId('@wallet/menu/wallet-send')).toBeVisible();

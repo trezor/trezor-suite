@@ -35,12 +35,6 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
             await dashboardPage.addUnusedHiddenWallet(passphrase);
         });
 
-        await test.step('Turn on view-only on the hidden wallet', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await dashboardPage.setViewOnlyForWallet(1, 'enabled');
-            await dashboardPage.deviceSwitchingCloseButton.click();
-        });
-
         await restartEmulator();
 
         await test.step('Reveal cardano address', async () => {

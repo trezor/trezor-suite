@@ -80,26 +80,6 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
     },
 );
 
-/**
- * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
- * and if it is remembered it will be forgotten.
- * @param forceRemember can be set to `true` to remember given device regardless of its current state.
- *
- * Use `forgetDevice` to forget a device regardless if its current state.
- */
-export const toggleRememberDevice = createThunk(
-    `${DEVICE_MODULE_PREFIX}/toggleRememberDevice`,
-    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) =>
-        dispatch(
-            deviceActions.rememberDevice({
-                device,
-                remember: !device.remember || !!forceRemember,
-                // if device is already remembered, do not force it, it would remove the remember on return to suite
-                forceRemember: device.remember ? undefined : forceRemember,
-            }),
-        ),
-);
-
 export type CreateDeviceInstanceError = {
     error: 'passphrase-enabling-cancelled' | 'features-unavailable';
 };
@@ -213,19 +193,24 @@ export const handleDeviceDisconnect = createThunk(
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT` via suiteMiddleware
- * Remove all data related to all instances of disconnected device if they are not remembered
- * @param {Device} device
+ * Remove all data related to all instances of disconnected device
+ * @param {Device | TrezorDevice} device
+ * @param {boolean} forceForget - If true, forget devices even if they would normally be remembered
  */
 export const forgetDisconnectedDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
-    (device: Device | TrezorDevice, { dispatch, getState, extra }) => {
+    (
+        { device, forceForget = false }: { device: Device | TrezorDevice; forceForget?: boolean },
+        { dispatch, getState, extra },
+    ) => {
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
 
         const settings = extra.selectors.selectSuiteSettings(getState());
 
         deviceInstances.forEach(d => {
-            if (d.features && !d.remember) {
+            // Only forget devices if auto-eject is enabled (forceForget = true)
+            if (d.features && forceForget) {
                 dispatch(deviceActions.forgetDevice({ device: d, settings }));
             }
         });
@@ -361,15 +346,10 @@ export const initDevices = createThunk(
         const device = selectSelectedDevice(getState());
 
         if (!device && devices && devices[0]) {
-            // if there are force remember devices, forget them and pick the first one of them as selected device
-            const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
-            forcedDevices.forEach(d => {
-                dispatch(toggleRememberDevice({ device: d }));
-            });
-
+            // just pick the first one
             dispatch(
                 selectDeviceThunk({
-                    device: forcedDevices.length ? forcedDevices[0] : sortDevices(devices)[0],
+                    device: sortDevices(devices)[0],
                 }),
             );
         }

@@ -59,7 +59,7 @@ const updatePassphraseMode = createAction(
 
 const rememberDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/rememberDevice`,
-    (payload: { device: TrezorDevice; remember: boolean; forceRemember?: true }) => ({
+    (payload: { device: TrezorDevice; remember: boolean }) => ({
         payload,
     }),
 );

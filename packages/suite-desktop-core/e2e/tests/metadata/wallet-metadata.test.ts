@@ -7,7 +7,7 @@ const hiddenWalletIndex = 1;
 test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.beforeEach(async ({ onboardingPage, metadataMock }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
-        await onboardingPage.completeOnboarding({ enableViewOnly: true });
+        await onboardingPage.completeOnboarding();
     });
 
     test.use({
@@ -58,8 +58,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
             'wallet not for drugs',
         );
 
-        // Remember wallet and reload app
-        await dashboardPage.setViewOnlyForWallet(hiddenWalletIndex, 'enabled');
+        // Reload app to verify persistence
         await page.waitForTimeout(1000); // wait for changes to db
         await page.reload();
         await metadataMock.setupWindowStubs();

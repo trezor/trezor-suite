@@ -366,7 +366,6 @@ const disconnect = [
             devices: [
                 getSuiteDevice({
                     path: '1',
-                    remember: true,
                     state: '1stTestnet@device_id:0',
                 }),
             ],
@@ -396,12 +395,10 @@ const disconnect = [
             devices: [
                 getSuiteDevice({
                     path: '1',
-                    remember: true,
                     state: '1stTestnet@device_id:0',
                 }),
                 getSuiteDevice({
                     path: '1',
-                    remember: true,
                     instance: 1,
                     state: '1stTestnet@device_id_2:0',
                 }),
@@ -1071,158 +1068,18 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
 
 const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     {
-        description: `Remember unacquired device`,
+        description: `Remember functionality is deprecated - action is now a no-op`,
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: deviceActions.rememberDevice.type,
                 payload: {
-                    device: getSuiteDevice({ type: 'unacquired' }),
-                    remember: false,
-                    forceRemember: undefined,
+                    device: SUITE_DEVICE,
+                    remember: true,
                 },
             },
         ],
         result: [SUITE_DEVICE],
-    },
-    {
-        description: `Remember stateless device`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {
-                    device: SUITE_DEVICE,
-                    remember: true,
-                    forceRemember: undefined,
-                },
-            },
-        ],
-        result: [{ ...SUITE_DEVICE, remember: true }],
-    },
-    {
-        description: `Force remember device`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {
-                    device: SUITE_DEVICE,
-                    remember: true,
-                    forceRemember: true,
-                },
-            },
-        ],
-        result: [getSuiteDevice({ remember: true, forceRemember: true })],
-    },
-    {
-        description: `Remember device success`,
-        initialState: {
-            devices: [
-                getSuiteDevice({
-                    state: '1stTestnet@device_id:0',
-                }),
-            ],
-        },
-        actions: [
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {
-                    device: getSuiteDevice({
-                        state: '1stTestnet@device_id:0',
-                    }),
-                    remember: true,
-                    forceRemember: undefined,
-                },
-            },
-        ],
-        result: [
-            getSuiteDevice({
-                state: '1stTestnet@device_id:0',
-                remember: true,
-            }),
-        ],
-    },
-    {
-        description: `Remember device with multiple instances (few are stateless)`,
-        initialState: {
-            devices: [
-                getSuiteDevice({
-                    state: '1stTestnet@device_id:0',
-                }),
-                getSuiteDevice({
-                    state: '1stTestnet@device_id:0',
-                    instance: 1,
-                }),
-                getSuiteDevice({
-                    instance: 2,
-                }),
-                getSuiteDevice({
-                    state: '1stTestnet@device_id:0',
-                    instance: 3,
-                }),
-                getSuiteDevice(
-                    {
-                        state: '1stTestnet@device_id:0',
-                        path: '2',
-                    },
-                    {
-                        device_id: 'ignored-device',
-                    },
-                ),
-            ],
-        },
-        actions: [
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {
-                    device: getSuiteDevice({
-                        state: '1stTestnet@device_id:0',
-                    }),
-                    remember: true,
-                    forceRemember: undefined,
-                },
-            },
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {
-                    device: getSuiteDevice({
-                        state: '1stTestnet@device_id:0',
-                        instance: 3,
-                    }),
-                    remember: true,
-                    forceRemember: undefined,
-                },
-            },
-        ],
-        result: [
-            getSuiteDevice({
-                state: '1stTestnet@device_id:0',
-                remember: true,
-            }),
-            getSuiteDevice({
-                state: '1stTestnet@device_id:0',
-                instance: 1,
-                remember: false,
-            }),
-            getSuiteDevice({
-                instance: 2,
-            }),
-            getSuiteDevice({
-                state: '1stTestnet@device_id:0',
-                instance: 3,
-                remember: true,
-            }),
-            getSuiteDevice(
-                {
-                    state: '1stTestnet@device_id:0',
-                    path: '2',
-                },
-                {
-                    device_id: 'ignored-device',
-                },
-            ),
-        ],
     },
 ];
 

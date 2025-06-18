@@ -23,7 +23,6 @@ import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConf
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { ContentType } from '../types';
 import { EjectButton } from './EjectButton';
-import { ViewOnly } from './ViewOnly';
 
 interface WalletInstanceProps {
     instance: AcquiredDevice;
@@ -93,7 +92,6 @@ export const WalletInstance = ({
         }
     };
 
-    const isViewOnlyRendered = contentType === 'default' && enabled;
     const isEjectConfirmationRendered = contentType === 'eject-confirmation';
     const isDisablingViewOnlyEjectsWalletRendered =
         contentType === 'disabling-view-only-ejects-wallet';
@@ -171,18 +169,13 @@ export const WalletInstance = ({
                     />
                 </Column>
 
-                {(isViewOnlyRendered ||
-                    isEjectConfirmationRendered ||
-                    isDisablingViewOnlyEjectsWalletRendered) && (
+                {(isEjectConfirmationRendered || isDisablingViewOnlyEjectsWalletRendered) && (
                     <Divider
                         margin={{ vertical: spacings.sm, horizontal: negativeSpacings.sm }}
                         width="auto"
                     />
                 )}
 
-                {isViewOnlyRendered && (
-                    <ViewOnly setContentType={setContentType} instance={instance} />
-                )}
                 {isEjectConfirmationRendered && (
                     <EjectConfirmation
                         instance={instance}

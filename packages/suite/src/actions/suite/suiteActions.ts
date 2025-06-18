@@ -97,6 +97,10 @@ export type SuiteAction =
     | {
           type: typeof SUITE.SET_IS_COINS_FILTER_VISIBLE;
           payload: { isCoinsFilterVisible: boolean };
+      }
+    | {
+          type: typeof SUITE.SET_AUTO_EJECT_DEVICE;
+          payload: { autoEjectDevice: boolean };
       };
 
 export const appChanged = createAction(SUITE.APP_CHANGED, (payload: AppState['router']['app']) => ({
@@ -158,6 +162,11 @@ export const setIsCoinsFilterVisible = (payload: {
 }): SuiteAction => ({
     type: SUITE.SET_IS_COINS_FILTER_VISIBLE,
     payload: { isCoinsFilterVisible: payload.isCoinsFilterVisible },
+});
+
+export const setAutoEjectDevice = (payload: { autoEjectDevice: boolean }): SuiteAction => ({
+    type: SUITE.SET_AUTO_EJECT_DEVICE,
+    payload: { autoEjectDevice: payload.autoEjectDevice },
 });
 
 export const setDismissedTradingTerms = (tradingType: TradingType): SuiteAction => ({

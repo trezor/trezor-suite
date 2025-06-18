@@ -7,7 +7,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     createDeviceInstanceThunk,
     deviceActions,
-    forgetDisconnectedDevices,
     handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
@@ -57,7 +56,20 @@ const suite =
         // this action needs to be processed before propagation to deviceReducer
         // otherwise device will not be accessible and related data will not be removed (accounts, txs...)
         if (action.type === DEVICE.DISCONNECT) {
-            api.dispatch(forgetDisconnectedDevices(action.payload));
+            const autoEjectEnabled = api.getState().suite.settings.autoEjectDevice;
+
+            // If auto-eject is enabled, forget all device instances before disconnect
+            if (autoEjectEnabled) {
+                const { devices } = api.getState().device;
+                const deviceInstances = devices.filter(d => d.id === action.payload.id);
+                const { settings } = api.getState().suite;
+
+                deviceInstances.forEach(d => {
+                    if (d.features) {
+                        api.dispatch(deviceActions.forgetDevice({ device: d, settings }));
+                    }
+                });
+            }
         }
 
         // pass action to reducers

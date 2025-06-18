@@ -180,16 +180,11 @@ const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: st
     return db.removeItemByPK('formDrafts', getFormDraftKey(prefix, accountKey));
 };
 
-export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
+export const saveDevice = async (device: TrezorDevice) => {
     if (!(await db.isAccessible())) return;
     if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
 
-    return db.addItem(
-        'devices',
-        serializeDevice(device, forceRemember),
-        device.state.staticSessionId,
-        true,
-    );
+    return db.addItem('devices', serializeDevice(device), device.state.staticSessionId, true);
 };
 
 const removeAccount = async (account: Account) => {
@@ -293,11 +288,11 @@ export const saveAccountTransactions =
     };
 
 export const rememberDevice =
-    (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    (device: TrezorDevice, remember: boolean) => async (dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
         if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
         if (!remember) {
+            // Device forget functionality - still supported for manual forget
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             dispatch(forgetDeviceMetadataError(device));
 
@@ -331,7 +326,7 @@ export const rememberDevice =
 
         try {
             await Promise.all([
-                saveDevice(device, forcedRemember),
+                saveDevice(device),
                 saveAccounts(accounts),
                 saveGraph(graphData),
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
@@ -539,8 +534,8 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     const devices = selectDevices(getState());
     const settings = selectSuiteSettings(getState());
 
-    const rememberedDevices = devices.filter(d => d.remember);
-    // forget all remembered devices
+    const rememberedDevices = devices.filter(d => d.features);
+    // forget all devices with features
     rememberedDevices.forEach(d => {
         dispatch(deviceActions.forgetDevice({ device: d, settings }));
     });

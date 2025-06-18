@@ -79,8 +79,6 @@ export interface Flags {
     stakeSolBannerClosed: boolean; // banner in account view (Overview tab) presenting SOL staking feature
     showDashboardStakingPromoBanner: boolean;
     isDashboardPassphraseBannerVisible: boolean;
-    viewOnlyPromoClosed: boolean;
-    viewOnlyTooltipClosed: boolean;
     suspiciousTransactionsTooltipClosed: boolean;
     showUnhideTokenModal: boolean;
     showCopyAddressModal: boolean;
@@ -121,6 +119,7 @@ export interface SuiteSettings {
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
+    autoEjectDevice: boolean;
 }
 
 export interface TransportState extends InstallerInfo {
@@ -164,8 +163,6 @@ const initialState: SuiteState = {
         stakeEthBannerClosed: false,
         stakeSolBannerClosed: false,
         showDashboardStakingPromoBanner: true,
-        viewOnlyPromoClosed: false,
-        viewOnlyTooltipClosed: false,
         suspiciousTransactionsTooltipClosed: false,
         isDashboardPassphraseBannerVisible: true,
         showCopyAddressModal: true,
@@ -214,6 +211,7 @@ const initialState: SuiteState = {
         defaultWalletLoading: WalletType.STANDARD,
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
+        autoEjectDevice: false,
     },
 };
 
@@ -342,6 +340,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_IS_COINS_FILTER_VISIBLE:
                 draft.settings.isCoinsFilterVisible = action.payload.isCoinsFilterVisible;
+                break;
+
+            case SUITE.SET_AUTO_EJECT_DEVICE:
+                draft.settings.autoEjectDevice = action.payload.autoEjectDevice;
                 break;
 
             case TRANSPORT.START: {
@@ -511,6 +513,9 @@ export const selectSuiteSettings = (state: SuiteRootState) => ({
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>
         state.suite.settings.experimental?.includes(feature) ?? false;
+
+export const selectAutoEjectDevice = (state: SuiteRootState) =>
+    state.suite.settings.autoEjectDevice;
 
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.deviceAuthenticity;

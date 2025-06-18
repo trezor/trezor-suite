@@ -41,19 +41,19 @@ const dev1 = getSuiteDevice({
     state: '1stTestnetAddress@device_a_id:0',
     path: '1',
     instance: 1,
-    remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
+
 });
 const dev2 = getSuiteDevice({
     state: '1stTestnetAddress@device_b_id:0',
     path: '2',
     instance: 1,
-    remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
+
 });
 const dev2Instance1 = getSuiteDevice({
     state: '1stTestnetAddress@device_c_id:0',
     path: '2',
     instance: 2,
-    remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
+
 });
 const devNotRemembered = getSuiteDevice({
     state: '1stTestnetAddress@device_a_id:0',
@@ -446,7 +446,7 @@ describe('Storage actions', () => {
         expect(store.getState().wallet.graph.data[0].account.symbol).toBe('ltc');
     });
 
-    it('remember device with forceRemember', async () => {
+    it('remember device functionality is deprecated - action is now a no-op', async () => {
         const store = mockStore(
             getInitialState({
                 device: {
@@ -456,10 +456,14 @@ describe('Storage actions', () => {
         );
         updateStore(store);
 
-        // store in db
+        // store in db - this action is now a no-op since remember functionality is deprecated
         await store.dispatch(storageActions.rememberDevice(devNotRemembered, true, true));
         store.dispatch(await preloadStore());
-        expect(selectDevices(store.getState())[0].remember).toBe(true);
-        expect(selectDevices(store.getState())[0].forceRemember).toBe(true);
+    
+        expect(selectDevices(store.getState())[0]).toEqual(
+            expect.objectContaining({
+                state: devNotRemembered.state,
+            }),
+        );
     });
 });

@@ -58,7 +58,8 @@ const eventsMiddleware =
                         device,
                     }),
                 );
-            } else if (!device.remember) {
+            } else {
+                // device with features - all devices are now considered remembered
                 api.dispatch(notificationsActions.addEvent({ type: DEVICE.CONNECT, seen, device }));
             }
         }
@@ -105,14 +106,12 @@ const eventsMiddleware =
                   )
                 : devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {
-                if (!d.remember) {
-                    const toRemove = notifications.filter(n =>
-                        d.features
-                            ? deviceUtils.isSelectedInstance(d, n.device)
-                            : deviceUtils.isSelectedDevice(d, n.device),
-                    );
-                    api.dispatch(notificationsActions.remove(toRemove));
-                }
+                const toRemove = notifications.filter(n =>
+                    d.features
+                        ? deviceUtils.isSelectedInstance(d, n.device)
+                        : deviceUtils.isSelectedDevice(d, n.device),
+                );
+                api.dispatch(notificationsActions.remove(toRemove));
             });
         }
 

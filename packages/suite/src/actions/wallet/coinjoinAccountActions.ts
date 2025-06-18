@@ -897,7 +897,7 @@ export const stopCoinjoinSessionByDeviceId =
         const state = getState();
 
         const devices = selectDevices(state);
-        const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
+        const disconnectedDevices = devices.filter(d => d.id === deviceID && d.features);
         const affectedAccounts = disconnectedDevices.flatMap(d =>
             state.wallet.accounts.filter(
                 a => a.accountType === 'coinjoin' && a.deviceState === d.state?.staticSessionId,

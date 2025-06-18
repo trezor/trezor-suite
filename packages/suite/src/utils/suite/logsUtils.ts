@@ -194,9 +194,9 @@ const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) => ({
     instanceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.instanceId,
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,
     transports: state.suite.transport?.transports.map(({ type, version }) => ({ type, version })),
-    rememberedStandardWallets: selectDevices(state).filter(d => d.remember && d.useEmptyPassphrase)
+    rememberedStandardWallets: selectDevices(state).filter(d => d.features && d.useEmptyPassphrase)
         .length,
-    rememberedHiddenWallets: selectDevices(state).filter(d => d.remember && !d.useEmptyPassphrase)
+    rememberedHiddenWallets: selectDevices(state).filter(d => d.features && !d.useEmptyPassphrase)
         .length,
     enabledNetworks: state.wallet.settings.enabledNetworks,
     customBackends: getCustomBackends(state.wallet.blockchain)
@@ -233,7 +233,7 @@ const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) => ({
                     : selectLabelingDataForWallet(state).walletLabel
                 : '',
         connected: device.connected,
-        remember: device.remember,
+
         useEmptyPassphrase: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.useEmptyPassphrase,
     })),
 });

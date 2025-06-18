@@ -340,19 +340,19 @@ export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
 
 export const selectIsDeviceRemembered = createMemoizedSelector(
     [selectSelectedDevice],
-    device => !!device?.remember,
+    device => !!device?.features, // devices with features are considered remembered
 );
 
 export const selectIsDeviceForceRemembered = createMemoizedSelector(
     [selectSelectedDevice],
-    device => !!device?.forceRemember,
+    device => false, // forceRemember functionality removed
 );
 
 export const selectRememberedStandardWalletsCount = createMemoizedSelector(
     [selectPhysicalDevices],
     devices =>
         returnStableArrayIfEmpty(
-            devices.filter(device => device.remember && device.useEmptyPassphrase),
+            devices.filter(device => device.features && device.useEmptyPassphrase),
         ).length,
 );
 
@@ -360,7 +360,7 @@ export const selectRememberedHiddenWalletsCount = createMemoizedSelector(
     [selectPhysicalDevices],
     devices =>
         returnStableArrayIfEmpty(
-            devices.filter(device => device.remember && !device.useEmptyPassphrase),
+            devices.filter(device => device.features && !device.useEmptyPassphrase),
         ).length,
 );
 

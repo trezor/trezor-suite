@@ -183,8 +183,6 @@ const connectDevice = (
         ...deviceCommonFields,
         state: device._state,
         useEmptyPassphrase,
-        remember: false,
-        temporaryRemember: false,
         available: true,
         instance: deviceInstance,
     };
@@ -249,8 +247,8 @@ const changeDevice = (
             d.features &&
             ((d.connected &&
                 (d.id === device.id || (d.path.length > 0 && d.path === device.path))) ||
-                // update "disconnected" remembered devices if in bootloader mode
-                (d.mode === 'bootloader' && d.remember && d.id === device.id)),
+                // update "disconnected" devices if in bootloader mode (all disconnected devices are now kept)
+                (d.mode === 'bootloader' && d.id === device.id)),
     ) as AcquiredDevice[];
 
     const otherDevices = draft.devices.filter(
@@ -314,8 +312,8 @@ const setDeviceState = (
             d.instance === device.instance &&
             (d.id === device.id || (d.path.length > 0 && d.path === device.path));
 
-        // update "disconnected" remembered devices if in bootloader mode
-        const isRememberedDeviceMatch = d.mode === 'bootloader' && d.remember && d.id === device.id;
+        // update "disconnected" devices if in bootloader mode (all disconnected devices are now kept)
+        const isRememberedDeviceMatch = d.mode === 'bootloader' && d.id === device.id;
 
         return isConnectedDeviceMatch || isRememberedDeviceMatch;
     });
@@ -340,14 +338,15 @@ const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
     // find all devices with "path"
     const affectedDevices = draft.devices.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
-        // do not remove devices with state, they are potential candidates to remember if not remembered already
-        const skip = d.features && d.remember;
-        if (skip) {
+        // All devices with features are kept by default (disconnected but remembered)
+        // Auto-eject logic is handled at middleware level
+        if (d.features) {
             d.connected = false;
             d.available = false;
             // @ts-expect-error
             d.path = '';
         } else {
+            // Remove devices without features (unacquired devices)
             draft.devices.splice(draft.devices.indexOf(d), 1);
         }
     });
@@ -440,7 +439,6 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
-        remember: isPortfolioTrackerDevice,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
         state: isPortfolioTrackerDevice ? device.state : undefined,
@@ -455,52 +453,21 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
 };
 
 /**
- * Action handler: SUITE.REMEMBER_DEVICE
- * Set `remember` field for a single device instance
- * @param {DeviceReducerState} draft
- * @param {TrezorDevice} device
- * @param {boolean} remember
+ * DEPRECATED: remember device functionality removed
  */
-const remember = (
-    draft: DeviceReducerState,
-    device: TrezorDevice,
-    shouldRemember: boolean,
-    forceRemember?: true,
-) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    draft.devices.forEach(d => {
-        if (deviceUtils.isSelectedInstance(device, d)) {
-            d.remember = shouldRemember;
-            if (forceRemember) d.forceRemember = true;
-            else delete d.forceRemember;
-        }
-    });
+const remember = (draft: DeviceReducerState, device: TrezorDevice, shouldRemember: boolean) => {
+    // No-op: remember functionality removed
 };
 
 /**
- * This actions is used to temporary remember device for fw update
- * @param {DeviceReducerState} draft
- * @param {TrezorDevice} device
- * @param {boolean} temporaryRemember
+ * DEPRECATED: temporary remember functionality removed
  */
 const setTemporaryRememberedDevice = (
     draft: DeviceReducerState,
     device: TrezorDevice,
     temporaryRemember: boolean,
 ) => {
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    const selectedInstance = draft.devices[index];
-    if (!selectedInstance) return;
-
-    if (temporaryRemember && !selectedInstance.remember) {
-        selectedInstance.temporaryRemember = true;
-        selectedInstance.remember = true;
-    } else if (!temporaryRemember && selectedInstance.temporaryRemember) {
-        selectedInstance.temporaryRemember = false;
-        selectedInstance.remember = false;
-    }
+    // No-op: temporary remember functionality removed
 };
 
 /**
@@ -533,8 +500,6 @@ const forget = (
         );
 
         draft.devices[index].passphraseOnDevice = false;
-        // set remember to false to make it disappear after device is disconnected
-        draft.devices[index].remember = false;
         draft.devices[index].metadata = {};
         draft.devices[index].passwords = {};
     } else {
@@ -611,7 +576,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             resetAuthFailed(state);
         })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
-            remember(state, payload.device, payload.remember, payload.forceRemember);
+            remember(state, payload.device, payload.remember);
         })
         .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
             setTemporaryRememberedDevice(state, payload.device, payload.temporaryRemember);

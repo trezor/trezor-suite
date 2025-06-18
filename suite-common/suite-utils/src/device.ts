@@ -128,7 +128,7 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceSta
     }
 };
 
-export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
+export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.features;
 
 export const isDeviceAccessible = (device?: TrezorDevice) => {
     if (!device || !device.features) return false;
@@ -311,12 +311,6 @@ const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
     if (!b.features && !a.features) return 0;
     if (!b.features && a.features) return 1;
     if (!b.features || !a.features) return -1;
-
-    // 2
-    if (a.forceRemember !== b.forceRemember) {
-        if (!a.forceRemember && b.forceRemember) return 1;
-        if (a.forceRemember && !b.forceRemember) return -1;
-    }
 
     // 3
     if (a.mode !== 'normal' && b.mode !== 'normal') return 0;

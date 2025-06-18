@@ -108,7 +108,6 @@ const sentryMiddleware =
                         : undefined,
                     mode: action.payload?.mode,
                     model: action.payload?.features?.internal_model,
-                    remember: action.payload?.remember,
                 });
                 break;
             }

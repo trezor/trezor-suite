@@ -33,7 +33,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
                 metadataMock.defaultAesKey,
             );
 
-            await onboardingPage.completeOnboarding({ enableViewOnly: true });
+            await onboardingPage.completeOnboarding();
 
             await page.getByTestId('@account-menu/btc/normal/0/label').click();
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(

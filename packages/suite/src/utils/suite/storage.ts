@@ -31,20 +31,16 @@ const filterInconclusiveAuthenticityChecks = (checks: AuthenticityChecks): Authe
  * Strip fields from Device
  * @param {AcquiredDevice} device
  */
-export const serializeDevice = (
-    device: AcquiredDevice,
-    forceRemember?: true,
-): DeviceWithEmptyPath => {
+export const serializeDevice = (device: AcquiredDevice): DeviceWithEmptyPath => {
     const sd: DeviceWithEmptyPath = {
         ...device,
         path: '',
-        remember: true,
+
         connected: false,
         buttonRequests: [],
         authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
         thp: undefined,
     };
-    if (forceRemember) sd.forceRemember = true;
 
     return sd;
 };

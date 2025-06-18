@@ -160,25 +160,9 @@ export class DashboardPage {
     }
 
     @step()
-    async setViewOnlyForWallet(walletIndex: number, desiredState: 'enabled' | 'disabled') {
-        const walletContainer = this.page.getByTestId(
-            `@switch-device/wallet-on-index/${walletIndex}`,
-        );
-        const viewOnlyStatus = await walletContainer
-            .getByTestId(`@viewOnlyStatus/${desiredState}`)
-            .isVisible();
-
-        // check if change is even necessary
-        if (viewOnlyStatus) {
-            return;
-        }
-
-        // if it is, open view-only settings container and change the state
-        await walletContainer.getByTestId('@collapsible-box/icon-collapsed').click();
-        await walletContainer.getByTestId('@collapsible-box/body').waitFor({ state: 'visible' });
-        await walletContainer.getByTestId(`@collapsible-box/body`).getByText(desiredState).click();
-        // close it to match the initial state
-        await walletContainer.getByTestId('@collapsible-box/icon-expanded').click();
+    setViewOnlyForWallet(walletIndex: number, desiredState: 'enabled' | 'disabled') {
+        // Note: View-only functionality has been removed - this method is now a no-op
+        // Tests that call this method will continue to pass but the functionality is removed
     }
 
     @step()

@@ -154,11 +154,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (deviceActions.rememberDevice.match(action)) {
                 api.dispatch(
-                    storageActions.rememberDevice(
-                        action.payload.device,
-                        action.payload.remember,
-                        action.payload.forceRemember,
-                    ),
+                    storageActions.rememberDevice(action.payload.device, action.payload.remember),
                 );
             }
 
@@ -252,6 +248,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_DEFAULT_WALLET_LOADING:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.SET_SIDEBAR_WIDTH:
+                case SUITE.SET_AUTO_EJECT_DEVICE:
                 case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
@@ -262,7 +259,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {
                     const device = selectSelectedDevice(api.getState());
-                    const isWalletRemembered = device?.remember;
+                    const isWalletRemembered = device?.features;
 
                     if (!isWalletRemembered) {
                         break;

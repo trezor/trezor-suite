@@ -28,7 +28,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         devicePrompt,
         trezorUserEnvLink,
     }) => {
-        await onboardingPage.completeOnboarding({ enableViewOnly: true });
+        await onboardingPage.completeOnboarding();
 
         await page.getByTestId('@account-menu/btc/normal/0/label').click();
 

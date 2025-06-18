@@ -5,7 +5,7 @@ test.describe(
     { tag: ['@group=settings'] },
     () => {
         test.beforeEach(async ({ onboardingPage }) => {
-            await onboardingPage.completeOnboarding({ enableViewOnly: true });
+            await onboardingPage.completeOnboarding();
         });
 
         test('Settings navigation', async ({ page, walletPage, trezorUserEnvLink }) => {

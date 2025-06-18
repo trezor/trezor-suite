@@ -15,6 +15,7 @@ import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';
 import { Analytics } from './Analytics';
+import { AutoEjectDevice } from './AutoEjectDevice';
 import { AutoStart } from './AutoStart';
 import { AutomaticUpdate } from './AutomaticUpdate';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
@@ -23,7 +24,6 @@ import { ConnectLabelingProvider } from './ConnectLabelingProvider';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
 import { EarlyAccess } from './EarlyAccess';
-import { EnableViewOnly } from './EnableViewOnly';
 import { Experimental } from './Experimental';
 import { Fiat } from './Fiat';
 import { Labeling } from './Labeling';
@@ -104,8 +104,8 @@ export const SettingsGeneral = () => {
                 <VersionWithUpdate />
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="link">
-                <EnableViewOnly />
+            <SettingsSection title="Privacy" icon="shield">
+                <AutoEjectDevice />
             </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_EXPERIMENTAL_FEATURES" />} icon="atom">

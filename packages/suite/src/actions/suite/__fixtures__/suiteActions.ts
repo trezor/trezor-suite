@@ -181,8 +181,6 @@ const initialRun = [
                 stakeSolBannerClosed: false,
                 suspiciousTransactionsTooltipClosed: false,
                 showDashboardStakingPromoBanner: true,
-                viewOnlyPromoClosed: true,
-                viewOnlyTooltipClosed: true,
                 isDashboardPassphraseBannerVisible: true,
                 showCopyAddressModal: true,
                 showUnhideTokenModal: true,
@@ -362,7 +360,6 @@ const handleDeviceDisconnect = [
                     getSuiteDevice({
                         path: '1',
                         state: '1stTestnetAddress@device_b_id:0',
-                        remember: true,
                     }),
                 ],
             },
@@ -381,13 +378,11 @@ const handleDeviceDisconnect = [
                         path: '1',
                         state: '1stTestnetAddress@device_a_id:0',
                         instance: 2,
-                        remember: true,
                     }),
                     getSuiteDevice({
                         path: '1',
                         state: '1stTestnetAddress@device_b_id:0',
                         instance: 1,
-                        remember: true,
                     }),
                 ],
             },
@@ -398,7 +393,6 @@ const handleDeviceDisconnect = [
             payload: getSuiteDevice({
                 state: '1stTestnetAddress@device_b_id:0',
                 instance: 1,
-                remember: true,
             }),
         },
     },
@@ -592,7 +586,6 @@ const forgetDisconnectedDevices = [
                     getSuiteDevice({
                         path: '1',
                         instance: 2,
-                        remember: true,
                     }),
                     getSuiteDevice({
                         path: '2',

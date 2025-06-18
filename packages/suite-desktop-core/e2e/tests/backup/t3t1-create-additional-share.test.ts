@@ -10,7 +10,7 @@ test.describe('Create additional share', { tag: ['@group=device-management'] }, 
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
-        await onboardingPage.completeOnboarding({ enableViewOnly: true });
+        await onboardingPage.completeOnboarding();
     });
 
     test(
