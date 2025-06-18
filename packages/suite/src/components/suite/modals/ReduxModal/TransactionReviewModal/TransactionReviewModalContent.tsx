@@ -89,7 +89,7 @@ const isStakeState = (state: SendState | StakeState): state is StakeState => 'da
 
 const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormState) => {
     const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
-    const tradeType = precomposedForm.activeTradingSection ? 'trade' : undefined;
+    const tradeType = precomposedForm.trading?.activeSection ? 'trade' : undefined;
 
     return stakeType ?? tradeType;
 };
@@ -136,7 +136,7 @@ export const TransactionReviewModalContent = ({
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity =
         account?.networkType === 'solana' &&
-        !precomposedForm?.activeTradingSection &&
+        !precomposedForm?.trading?.activeSection &&
         createdTxTimestamp !== 0;
     const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
 
@@ -412,7 +412,7 @@ export const TransactionReviewModalContent = ({
                     outputs={outputs}
                     buttonRequestsCount={buttonRequestsCount}
                     isRbfAction={isBumpFeeRbfAction}
-                    isTradingAction={!!precomposedForm.activeTradingSection}
+                    tradingFormState={precomposedForm?.trading}
                     isSending={isSending}
                     stakeType={stakeType || undefined}
                     deadline={deadline}

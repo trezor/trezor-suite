@@ -8,20 +8,18 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     selectNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
+import { Account, FormOptions, FormState, FormStateTrading } from '@suite-common/wallet-types';
 import { Success, Unsuccessful } from '@trezor/connect';
 
 import { tradingThunks } from '../';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import {
-    selectTradingActiveSection,
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
 } from '../../selectors/tradingSelectors';
 import type {
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
-    TradingTradeSellExchangeType,
 } from '../../types';
 import { cryptoIdToNetwork } from '../../utils';
 
@@ -42,6 +40,7 @@ export type RecomposeAndSignTxThunkProps = {
      * Important: should not be used for DEX trades.
      */
     isSlip24Active?: boolean;
+    tradingFormState: FormStateTrading;
 
     signAndPushSendFormTransaction: ({
         formState,
@@ -81,20 +80,22 @@ export const recomposeAndSignTxThunk = createThunk<
             ethereumAdjustGasLimit,
             setMaxOutputId,
             isSlip24Active = false,
+            tradingFormState,
             signAndPushSendFormTransaction,
         }: RecomposeAndSignTxThunkProps,
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
-        const activeSection = selectTradingActiveSection(
-            getState(),
-        ) as TradingTradeSellExchangeType; // used only in the sell and exchange sections
         const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
         const options: FormOptions[] = ['broadcast'];
         const network = getNetwork(account.symbol);
         const feeInfo = selectNetworkFeeInfo(getState(), account.symbol);
-        const activeTradingSection = selectTradingActiveSection(
+        const receiveNetwork = receiveCryptoId && cryptoIdToNetwork(receiveCryptoId);
+        const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
             getState(),
-        ) as TradingTradeSellExchangeType;
+            account,
+            isSlip24Active,
+            receiveNetwork,
+        );
 
         if (!composed || !feeInfo) {
             return rejectWithValue({
@@ -130,7 +131,11 @@ export const recomposeAndSignTxThunk = createThunk<
             ethereumDataHex,
             ethereumAdjustGasLimit,
             selectedUtxos: [],
-            activeTradingSection,
+            trading: isPaymentRequestsAllowed
+                ? tradingFormState
+                : {
+                      activeSection: tradingFormState.activeSection,
+                  },
         };
 
         // prepare form state for composeAction
@@ -207,18 +212,10 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
-        const receiveNetwork = receiveCryptoId && cryptoIdToNetwork(receiveCryptoId);
-        const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
-            getState(),
-            account,
-            isSlip24Active,
-            receiveNetwork,
-        );
-
         const paymentRequests = isPaymentRequestsAllowed
             ? await dispatch(
                   tradingThunks.createPaymentRequestsThunk({
-                      type: activeSection,
+                      type: tradingFormState.activeSection,
                       account,
                       composedLevels: precomposedToSign,
                   }),
