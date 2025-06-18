@@ -21,7 +21,7 @@ test.describe(
                 page.getByRole('heading', { name: 'Suite doesn’t work on iOS yet' }),
             ).toBeVisible();
             await expect(page.locator('body')).toMatchAriaSnapshot(iosAria);
-            await expect(page.getByText('Continue at my own risk')).not.toBeVisible();
+            await expect(page.getByText('Continue at my own risk')).toBeHidden();
         });
     },
 );

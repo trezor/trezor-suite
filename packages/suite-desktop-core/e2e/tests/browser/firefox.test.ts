@@ -6,6 +6,6 @@ test.use({ startEmulator: false, ...devices['Desktop Firefox'], channel: 'firefo
 test.describe('Firefox', { tag: ['@group=other', '@webOnly'] }, () => {
     test('Suite does support Firefox', async ({ page, onboardingPage }) => {
         await onboardingPage.verifySuiteIsLoaded();
-        await expect(page.getByText('Continue at my own risk')).not.toBeVisible();
+        await expect(page.getByText('Continue at my own risk')).toBeHidden();
     });
 });

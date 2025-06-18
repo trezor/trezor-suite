@@ -21,7 +21,7 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         });
 
         await page.reload();
-        await expect(analyticsSection.toggleSwitch).not.toBeVisible();
+        await expect(analyticsSection.toggleSwitch).toBeHidden();
         await expect(onboardingPage.onboardingContinueButton).toBeVisible();
     });
 

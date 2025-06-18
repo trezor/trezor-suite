@@ -45,7 +45,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@we
             await expect(
                 page.getByText('No offers available for your request. Change country or amount.'),
             ).toBeVisible();
-            await expect(tradingPage.selectThisQuoteButton).not.toBeVisible();
+            await expect(tradingPage.selectThisQuoteButton).toBeHidden();
         });
     });
 });

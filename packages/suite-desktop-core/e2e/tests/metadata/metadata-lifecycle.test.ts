@@ -57,7 +57,7 @@ test.describe(
             await page.getByTestId('@menu/switch-device').click();
             await dashboardPage.addUnusedHiddenWallet('abc');
 
-            await expect(page.getByTestId('@passphrase/input')).not.toBeVisible();
+            await expect(page.getByTestId('@passphrase/input')).toBeHidden();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
 

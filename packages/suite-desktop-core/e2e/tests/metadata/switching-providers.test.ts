@@ -61,9 +61,9 @@ test.describe(
             await expect(page.getByTestId('@modal/metadata-provider')).toBeVisible();
             await expect(
                 page.getByTestId('@modal/metadata-provider/file-system-button'),
-            ).not.toBeVisible();
+            ).toBeHidden();
             await page.getByTestId('@modal/metadata-provider/google-button').click();
-            await expect(page.getByTestId('@modal/metadata-provider')).not.toBeVisible();
+            await expect(page.getByTestId('@modal/metadata-provider')).toBeHidden();
 
             await metadataPage.account.metadataInput.fill(googleLabel);
             await page.keyboard.press('Enter');

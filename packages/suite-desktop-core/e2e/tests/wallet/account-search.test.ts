@@ -26,7 +26,7 @@ test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
         async ({ dashboardPage, walletPage }) => {
             await dashboardPage.navigateTo();
             await walletPage.accountSearch.fill('bitcoin');
-            await expect(walletPage.accountButton({ symbol: 'ltc' })).not.toBeVisible();
+            await expect(walletPage.accountButton({ symbol: 'ltc' })).toBeHidden();
             await expect(walletPage.accountButton({ symbol: 'btc' })).toBeVisible();
             await walletPage.accountSearch.clear();
             await expect(walletPage.accountButton({ symbol: 'ltc' })).toBeVisible();

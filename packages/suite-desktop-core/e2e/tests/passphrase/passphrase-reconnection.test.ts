@@ -68,7 +68,7 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
         await test.step('Displaying receive address should prompt for passphrase', async () => {
             await dashboardPage.walletAtIndex(1).click();
             await walletPage.receiveButton.click();
-            await expect(page.getByTestId('@wallet/receive/used-address/0')).not.toBeVisible();
+            await expect(page.getByTestId('@wallet/receive/used-address/0')).toBeHidden();
             await expect(walletPage.revealAddressButton).not.toBeDisabled();
             await walletPage.revealAddressButton.click();
             await expect(page.getByText('Confirm passphrase')).toBeVisible();

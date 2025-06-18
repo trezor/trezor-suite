@@ -110,7 +110,7 @@ export class DashboardPage {
 
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
-        await expect(this.passphraseInput).not.toBeVisible();
+        await expect(this.passphraseInput).toBeHidden();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
@@ -136,7 +136,7 @@ export class DashboardPage {
         await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
-        await expect(this.passphraseInput).not.toBeVisible();
+        await expect(this.passphraseInput).toBeHidden();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();

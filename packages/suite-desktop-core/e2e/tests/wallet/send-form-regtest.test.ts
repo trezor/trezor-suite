@@ -40,7 +40,7 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
         await page.getByTestId('outputs.0.remove').click();
 
         await expect(tradingPage.sendAmountInput).toBeVisible();
-        await expect(page.getByTestId('outputs.1.amount')).not.toBeVisible();
+        await expect(page.getByTestId('outputs.1.amount')).toBeHidden();
 
         await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
 
@@ -68,7 +68,7 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
         await page.getByTestId('outputs.0.remove').click();
 
         await expect(tradingPage.sendAmountInput).toBeVisible();
-        await expect(page.getByTestId('outputs.1.amount')).not.toBeVisible();
+        await expect(page.getByTestId('outputs.1.amount')).toBeHidden();
 
         await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
     });

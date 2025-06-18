@@ -47,7 +47,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         ).toBeVisible();
         await expect(
             metadataPage.account.successLabel(AccountLabelId.BitcoinDefault1),
-        ).not.toBeVisible();
+        ).toBeHidden();
 
         // Discard changes via escape
         await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).click();
@@ -64,7 +64,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         await searchInput.fill('even cooler');
         await expect(page.getByTestId('@account-menu/btc/normal/0')).toBeVisible();
         await searchInput.fill('something retarded');
-        await expect(page.getByTestId('@account-menu/btc/normal/0')).not.toBeVisible();
+        await expect(page.getByTestId('@account-menu/btc/normal/0')).toBeHidden();
         await searchInput.clear();
 
         // Remove metadata by clearing input
@@ -85,12 +85,8 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
 
         await walletPage.openAccount({ symbol: 'btc', type: 'segwit', atIndex: 1 });
 
-        await expect(
-            metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit2),
-        ).not.toBeVisible();
-        await expect(
-            metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
-        ).not.toBeVisible();
+        await expect(metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit2)).toBeHidden();
+        await expect(metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1)).toBeHidden();
 
         // Check metadata requests when switching routes
         await page.getByTestId('@suite/menu/suite-index').click();
