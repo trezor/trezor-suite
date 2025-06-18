@@ -5,22 +5,13 @@ import styled from 'styled-components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
-import {
-    Card,
-    Column,
-    DotIndicator,
-    H4,
-    Icon,
-    InfoItem,
-    Note,
-    Row,
-    Text,
-} from '@trezor/components';
+import { Card, Column, H4, InfoItem, Note, Row, Text } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { Address, FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 import { Account } from 'src/types/wallet';
 
 const getCardanoFingerprint = (
@@ -41,17 +32,6 @@ const DataWrapper = styled.p`
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
 `;
-
-const Status = ({ state }: { state: TransactionReviewOutputElementProps['state'] }) => {
-    switch (state) {
-        case 'confirmed':
-            return <Icon size={spacings.md} variant="primary" name="check" />;
-        case 'unconfirmed':
-            return <DotIndicator />;
-        default:
-            return <DotIndicator isActive={true} />;
-    }
-};
 
 type ValueProps = {
     value: string;
@@ -150,7 +130,7 @@ export const TransactionReviewOutputElement = ({
             fillType={state === 'confirmed' ? 'flat' : 'default'}
             header={
                 <Row gap={spacings.sm}>
-                    <Status state={state} />
+                    <TransactionReviewOutputStatus state={state} />
                     <H4
                         margin={{ left: spacings.xxs }}
                         typographyStyle={state !== 'unconfirmed' ? 'callout' : 'hint'}

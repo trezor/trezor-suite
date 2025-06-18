@@ -251,6 +251,7 @@ const constructNewFlow = ({
 
     const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
     const hasDestinationTag = 'destinationTag' in precomposedForm;
+    const trading = precomposedForm?.trading;
 
     if (networkType === 'stellar') {
         // stellar displays requests on device:
@@ -340,6 +341,15 @@ const constructNewFlow = ({
                     });
                 }
             }
+        });
+    } else if (trading && 'send' in trading && 'receive' in trading) {
+        outputs.push({ type: 'recipient_name', value: trading.recipientName });
+        outputs.push({
+            type: 'traded_assets',
+            value: '', // placeholder
+            value2: '', // placeholder
+            send: trading.send,
+            receive: trading.receive,
         });
     } else {
         precomposedTx.outputs.forEach(o => {
