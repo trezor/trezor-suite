@@ -27,6 +27,8 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
 const contentWrapperStyle = prepareNativeStyle(() => ({
     width: '90%',
     alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
 }));
 
 type NavigationProps = CompositeNavigationProp<
@@ -74,12 +76,7 @@ export const BootloaderModeScreen = () => {
         <Screen header={<DeviceManagerScreenHeader />}>
             <VStack spacing="sp24">
                 <Card>
-                    <VStack
-                        spacing="sp32"
-                        alignItems="center"
-                        justifyContent="center"
-                        style={applyStyle(contentWrapperStyle)}
-                    >
+                    <VStack spacing="sp32" style={applyStyle(contentWrapperStyle)}>
                         <Pictogram variant="critical" />
                         <Text variant="highlight" textAlign="center">
                             <Translation id="moduleDevice.bootloaderScreen.factoryResetCard.title" />
@@ -95,11 +92,7 @@ export const BootloaderModeScreen = () => {
                     </VStack>
                 </Card>
                 <TextDivider />
-                <VStack
-                    justifyContent="center"
-                    alignItems="center"
-                    style={applyStyle(contentWrapperStyle)}
-                >
+                <VStack style={applyStyle(contentWrapperStyle)}>
                     <Text variant="highlight" textAlign="center">
                         <Translation id="moduleDevice.bootloaderScreen.reconnectCard.title" />
                     </Text>

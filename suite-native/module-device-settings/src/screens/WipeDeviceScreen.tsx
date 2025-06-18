@@ -5,7 +5,7 @@ import { useWipeDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
-import { cardStepperContentMap } from '../constants';
+import { wipeDeviceStepToContentMap } from '../constants';
 
 export const WipeDeviceScreen = () => {
     const navigation = useNavigation();
@@ -32,7 +32,7 @@ export const WipeDeviceScreen = () => {
                     primaryButtonText={<Translation id="generic.buttons.understand" />}
                     buttonsActionType="destructive"
                     onPressSecondaryButton={handleSecondaryButtonPress}
-                    stepToContentMap={cardStepperContentMap}
+                    stepToContentMap={wipeDeviceStepToContentMap}
                 />
             </VStack>
         </Screen>
