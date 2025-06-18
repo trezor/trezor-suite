@@ -76,6 +76,47 @@ window.addEventListener('load', () => {
     </div>
     `;
 
+    // this should match browserslist config (packages/suite-build/browserslist)
+    const supportedBrowsers = [
+        {
+            name: 'chrome',
+            version: '109',
+            mobile: true,
+        },
+        {
+            name: 'chromium',
+            version: '109',
+            mobile: true,
+        },
+        // in UAParser v2, chrome is differently identified between desktop & mobile version
+        {
+            name: 'mobilechrome',
+            version: '109',
+            mobile: true,
+        },
+        {
+            name: 'firefox',
+            version: '115',
+            mobile: false, // no webusb support
+        },
+        // Other Chromium based browsers
+        {
+            name: 'brave',
+            version: '1.47.0', // Brave 1.47.x corresponds to Chromium 109
+            mobile: true,
+        },
+        {
+            name: 'edge',
+            version: '109', // Edge 109 is based on Chromium 109
+            mobile: true,
+        },
+        {
+            name: 'opera',
+            version: '95',
+            mobile: true,
+        },
+    ] as const;
+
     const desktop = {
         name: 'Desktop App',
         urlDownload: SUITE_URL,
@@ -83,8 +124,10 @@ window.addEventListener('load', () => {
         isPreferred: true,
     };
 
+    const chromeVersion = supportedBrowsers.find(item => item.name === 'chrome')?.version;
+
     const chrome = {
-        name: 'Chrome 92+',
+        name: `Chrome ${chromeVersion}+`,
         urlDownload: CHROME_URL,
         urlUpdate: CHROME_UPDATE_URL,
         icon: iconChrome,
@@ -144,47 +187,6 @@ window.addEventListener('load', () => {
             'We’re working hard to bring the Trezor Suite mobile web app to iOS. In the meantime, you can use Trezor Suite on the following platforms:',
         supportedDevicesList: true,
     });
-
-    // this should match browserslist config (packages/suite-build/browserslist)
-    const supportedBrowsers = [
-        {
-            name: 'chrome',
-            version: '109',
-            mobile: true,
-        },
-        {
-            name: 'chromium',
-            version: '109',
-            mobile: true,
-        },
-        // in UAParser v2, chrome is differently identified between desktop & mobile version
-        {
-            name: 'mobilechrome',
-            version: '109',
-            mobile: true,
-        },
-        {
-            name: 'firefox',
-            version: '115',
-            mobile: false, // no webusb support
-        },
-        // Other Chromium based browsers
-        {
-            name: 'brave',
-            version: '1.47.0', // Brave 1.47.x corresponds to Chromium 109
-            mobile: true,
-        },
-        {
-            name: 'edge',
-            version: '109', // Edge 109 is based on Chromium 109
-            mobile: true,
-        },
-        {
-            name: 'opera',
-            version: '95',
-            mobile: true,
-        },
-    ] as const;
 
     const browserName = getBrowserName();
     const browserVersion = getBrowserVersion();
