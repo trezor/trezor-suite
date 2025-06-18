@@ -111,7 +111,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
 
     const submitLabel = getSubmitLabel({ nonAsciiChars, label: submitLabelProp, showPassword });
 
-    const canSubmit = (singleColModal || type === 'hidden') && !isPassphraseTooLong;
+    const canSubmit = (singleColModal || type === 'hidden') && !isPassphraseTooLong && value;
 
     // Trigger submit on pressing Enter in case of single col modal (creating/confirming passphrase wallet)
     // In case of two-col modal (selecting between standard and passphrase wallet)
