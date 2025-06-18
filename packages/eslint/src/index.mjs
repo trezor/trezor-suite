@@ -1,4 +1,5 @@
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
 import { chaiFriendlyConfig } from './chaiFriendlyConfig.mjs';
@@ -69,3 +70,18 @@ export const eslint = [
         },
     },
 ];
+
+export const playwrightEslint = {
+    ...playwright.configs['flat/recommended'],
+    files: ['e2e/**'],
+    rules: {
+        ...playwright.configs['flat/recommended'].rules,
+        'playwright/no-skipped-test': 'off',
+        'playwright/no-nested-step': 'off',
+        'playwright/expect-expect': 'off',
+        'playwright/no-wait-for-timeout': 'off',
+        'playwright/no-conditional-in-test': 'off',
+        'playwright/no-force-option': 'off',
+        'playwright/valid-title': 'off',
+    },
+};

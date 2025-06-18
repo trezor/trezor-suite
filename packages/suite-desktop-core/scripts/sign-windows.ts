@@ -3,10 +3,10 @@ import { execSync } from 'node:child_process';
 
 // electron-builder TS requires the function to return Promise, but jsign MUST be called with execSync!
 // eslint-disable-next-line require-await
-const signWindows: CustomWindowsSign = async configuration => {
+export const signWindows: CustomWindowsSign = async configuration => {
     // Check if IS_CODESIGN_BUILD is set and true
     if (!process.env.IS_CODESIGN_BUILD || process.env.IS_CODESIGN_BUILD.toLowerCase() !== 'true') {
-        console.log('This is DEV build, not signing');
+        console.warn('This is DEV build, not signing');
 
         return;
     }
@@ -23,5 +23,3 @@ const signWindows: CustomWindowsSign = async configuration => {
         },
     );
 };
-
-export default signWindows;

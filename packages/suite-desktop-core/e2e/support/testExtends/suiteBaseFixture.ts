@@ -131,11 +131,11 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
     emulatorSetupConf: {},
     electronConf: {},
 
-    url: async (_noFixturesNeeded: unknown, use, testInfo) => {
+    url: async ({}, use, testInfo) => {
         await use(getUrl(testInfo));
     },
 
-    trezorUserEnvLink: async (_noFixturesNeeded: unknown, use) => {
+    trezorUserEnvLink: async ({}, use) => {
         await use(TrezorUserEnvLinkProxy);
     },
     page: async (

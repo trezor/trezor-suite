@@ -1,4 +1,8 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import {
+    eslint,
+    globalNoExtraneousDependenciesDevDependencies,
+    playwrightEslint,
+} from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -20,11 +24,5 @@ export default [
     {
         ignores: ['**/playwright-report/', '**/test-results/'],
     },
-    {
-        files: ['**/scripts/**'],
-        rules: {
-            'no-console': 'off',
-            'import/no-default-export': 'off',
-        },
-    },
+    playwrightEslint,
 ];

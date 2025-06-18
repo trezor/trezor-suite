@@ -104,7 +104,7 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
         await metadataMock.stop();
     },
 
-    blockbookMock: async (_noFixturesNeeded: unknown, use) => {
+    blockbookMock: async ({}, use) => {
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
         blockbookMock.stop();

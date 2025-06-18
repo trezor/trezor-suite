@@ -12296,6 +12296,7 @@ __metadata:
     "@types/react": "npm:18.2.55"
     babel-loader: "npm:^10.0.0"
     copy-webpack-plugin: "npm:^13.0.0"
+    eslint-plugin-playwright: "npm:^2.2.0"
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:^5.6.3"
     react-dom: "npm:18.2.0"
@@ -12362,6 +12363,7 @@ __metadata:
     "@types/chrome": "npm:^0.0.299"
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^10.0.0"
+    eslint-plugin-playwright: "npm:^2.2.0"
     html-webpack-plugin: "npm:^5.6.3"
     rimraf: "npm:^6.0.1"
     selfsigned: "npm:^2.4.1"
@@ -12857,6 +12859,7 @@ __metadata:
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
     electron-updater: "npm:6.6.4"
+    eslint-plugin-playwright: "npm:^2.2.0"
     fs-extra: "npm:^11.3.0"
     glob: "npm:^11.0.2"
     jest-diff: "npm:^29.7.0"
@@ -22533,6 +22536,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-playwright@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "eslint-plugin-playwright@npm:2.2.0"
+  dependencies:
+    globals: "npm:^13.23.0"
+  peerDependencies:
+    eslint: ">=8.40.0"
+  checksum: 10/f17255ab715a7b57b30080d3b279b4088041bcc4733c4727ba495052ce500a5bd020b4235287da48e4251281d39039e1d55ab37904cbc4522dcf0a1ae6775b39
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-react-hooks@npm:^5.2.0":
   version: 5.2.0
   resolution: "eslint-plugin-react-hooks@npm:5.2.0"
@@ -25338,6 +25352,15 @@ __metadata:
   version: 11.12.0
   resolution: "globals@npm:11.12.0"
   checksum: 10/9f054fa38ff8de8fa356502eb9d2dae0c928217b8b5c8de1f09f5c9b6c8a96d8b9bd3afc49acbcd384a98a81fea713c859e1b09e214c60509517bb8fc2bc13c2
+  languageName: node
+  linkType: hard
+
+"globals@npm:^13.23.0":
+  version: 13.24.0
+  resolution: "globals@npm:13.24.0"
+  dependencies:
+    type-fest: "npm:^0.20.2"
+  checksum: 10/62c5b1997d06674fc7191d3e01e324d3eda4d65ac9cc4e78329fa3b5c4fd42a0e1c8722822497a6964eee075255ce21ccf1eec2d83f92ef3f06653af4d0ee28e
   languageName: node
   linkType: hard
 

@@ -73,6 +73,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
 
                 if (!enableViewOnly) {
                     await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
+                        // eslint-disable-next-line playwright/no-conditional-expect
                         await expect(devicePrompt.connectDevicePrompt).toHaveText(
                             'Failed to communicate with your Trezor',
                         );

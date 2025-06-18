@@ -69,12 +69,9 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
         await test.step('Verify fees on modal and emulator', async () => {
             await expect(devicePrompt.ethereumGasLimit).toHaveText(`Gas limit: ${gasLimit}`);
             await expect(devicePrompt.ethereumFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
-            // TODO: Investigate why this fee value is displayed only in CI run
-            if (process.env.GITHUB_ACTION) {
-                await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
-                    `${maxPriorityFeePerGasRounded} Gwei`,
-                );
-            }
+            await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
+                `${maxPriorityFeePerGasRounded} Gwei`,
+            );
             await expect(
                 devicePrompt.cryptoAmountWithSymbolOf('fee'),
                 errorMessageMaxCalculation,

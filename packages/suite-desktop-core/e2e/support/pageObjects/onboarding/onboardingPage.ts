@@ -92,6 +92,7 @@ export class OnboardingPage {
     async optionallyDismissFwHashCheckError() {
         await this.verifySuiteIsLoaded();
         // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
+        // eslint-disable-next-line playwright/no-element-handle
         this.page
             .$('[data-testid="@device-compromised/dismiss-button"]')
             .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
