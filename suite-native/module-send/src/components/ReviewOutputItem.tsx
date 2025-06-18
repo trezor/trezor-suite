@@ -28,7 +28,8 @@ const isTranslationDefined = (
 ): type is keyof typeof outputLabelTranslationMap => type in outputLabelTranslationMap;
 
 export const ReviewOutputItem = ({ reviewOutput, onLayout }: ReviewOutputItemProps) => {
-    const { state, type, value } = reviewOutput;
+    const { state = 'success', type, value } = reviewOutput;
+
     const { translate } = useTranslate();
 
     const titleTxKey = isTranslationDefined(type) ? outputLabelTranslationMap[type] : null;
