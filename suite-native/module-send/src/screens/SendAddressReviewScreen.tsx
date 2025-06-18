@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
@@ -24,7 +24,6 @@ export const SendAddressReviewScreen = ({
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>) => {
     const { accountKey, tokenContract } = route.params;
-    const { translate } = useTranslate();
 
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
@@ -45,16 +44,13 @@ export const SendAddressReviewScreen = ({
     return (
         <Screen
             header={
-                <ScreenHeader
-                    content={translate('moduleSend.review.outputs.title')}
-                    closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
-                />
+                <ScreenHeader closeActionType={isTransactionReviewInProgress ? 'close' : 'back'} />
             }
             // TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965
             footer={isTransactionReviewInProgress && <SendConfirmOnDeviceImage />}
         >
             <Box flex={1} justifyContent="space-between" marginTop="sp16">
-                <VStack justifyContent="center" alignItems="center" spacing="sp24">
+                <VStack justifyContent="center" spacing="sp24">
                     <Text variant="titleSmall">
                         <Translation id="moduleSend.review.address.title" />
                     </Text>
