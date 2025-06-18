@@ -1,11 +1,10 @@
 import { View } from 'react-native';
-import { useSelector } from 'react-redux';
 
-import { selectIsDeviceInBootloader } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type ConnectionDotProps = {
     isConnected: boolean;
+    isDeviceInBootloaderMode?: boolean;
 };
 
 const dotStyle = prepareNativeStyle<{ isConnected: boolean; isDeviceInBootloaderMode: boolean }>(
@@ -31,9 +30,11 @@ const dotStyle = prepareNativeStyle<{ isConnected: boolean; isDeviceInBootloader
     }),
 );
 
-export const ConnectionDot = ({ isConnected }: ConnectionDotProps) => {
+export const ConnectionDot = ({
+    isConnected,
+    isDeviceInBootloaderMode = false,
+}: ConnectionDotProps) => {
     const { applyStyle } = useNativeStyles();
-    const isDeviceInBootloaderMode = useSelector(selectIsDeviceInBootloader);
 
     return <View style={applyStyle(dotStyle, { isConnected, isDeviceInBootloaderMode })} />;
 };

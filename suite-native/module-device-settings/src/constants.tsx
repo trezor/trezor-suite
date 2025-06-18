@@ -1,7 +1,7 @@
 import { CardStepperMap } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-export const cardStepperContentMap = {
+export const wipeDeviceStepToContentMap = {
     1: {
         header: (
             <Translation id="moduleDeviceSettings.wipeDevice.confirmationCards.eraseAllData.title" />

@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles';
 
 import { DeviceConnectionStatus } from './DeviceItem/DeviceConnectionStatus';
@@ -12,7 +11,7 @@ import {
     itemStyle,
 } from './DeviceItem/DeviceItemContent';
 import { DeviceItemIcon } from './DeviceItem/DeviceItemIcon';
-import { SimpleDeviceItemContent, headerStyle } from './DeviceItem/SimpleDeviceItemContent';
+import { headerStyle } from './DeviceItem/SimpleDeviceItemContent';
 
 export const BootloaderModeItemContent = () => {
     const { applyStyle } = useNativeStyles();
@@ -27,26 +26,17 @@ export const BootloaderModeItemContent = () => {
         >
             <DeviceItemIcon deviceId={null} />
             <Box style={applyStyle(itemStyle, { isCompact: true })}>
-                <SimpleDeviceItemContent
-                    deviceState={undefined}
-                    headerTextVariant="highlight"
-                    header={<Translation id="deviceManager.status.bootloader" />}
-                    isPortfolioTrackerDevice={false}
-                    isSubHeaderForceHidden={true}
-                />
-                <>
-                    <Text
-                        variant="highlight"
-                        ellipsizeMode="tail"
-                        numberOfLines={1}
-                        style={applyStyle(headerStyle)}
-                    >
-                        {device.name}
-                    </Text>
-                    <Box>
-                        <DeviceConnectionStatus isConnected={false} />
-                    </Box>
-                </>
+                <Text
+                    variant="highlight"
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                    style={applyStyle(headerStyle)}
+                >
+                    {device.name}
+                </Text>
+                <Box>
+                    <DeviceConnectionStatus isConnected={false} isDeviceInBootloaderMode={true} />
+                </Box>
             </Box>
         </HStack>
     );

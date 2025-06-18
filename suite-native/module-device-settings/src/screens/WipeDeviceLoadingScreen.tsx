@@ -38,9 +38,11 @@ export const WipeDeviceLoadingScreen = () => {
         <LoadingSuccessScreen
             onFinish={handleFinish}
             title={
-                <Translation
-                    id={`moduleDeviceSettings.wipeDevice.loadingSuccessScreen.${isDeviceInBootloader ? 'factoryResetTitle' : 'wipedTitle'}`}
-                />
+                isDeviceInBootloader ? (
+                    <Translation id="moduleDeviceSettings.wipeDevice.loadingSuccessScreen.factoryResetTitle" />
+                ) : (
+                    <Translation id="moduleDeviceSettings.wipeDevice.loadingSuccessScreen.wipedTitle" />
+                )
             }
         />
     );
