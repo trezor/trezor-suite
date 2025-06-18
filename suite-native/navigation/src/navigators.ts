@@ -202,6 +202,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.FirmwareInstallation]: undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
+    [DeviceSettingsStackRoutes.PinProtection]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {

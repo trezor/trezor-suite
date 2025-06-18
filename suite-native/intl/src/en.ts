@@ -553,6 +553,8 @@ export const en = {
             title: 'PIN protection',
             content: 'PIN protects your device against physical attack.',
             changeButton: 'Change',
+            alertBoxTitle: 'Pin not set',
+            cardSubtitle: 'Set a PIN for your Trezor',
             actions: {
                 enable: {
                     success: 'Device PIN has been enabled.',
@@ -570,6 +572,11 @@ export const en = {
             errors: {
                 pinInvalid: 'The PIN you’ve entered as current is incorrect.',
                 pinMismatch: 'The PINs you’ve entered do not match.',
+            },
+            buttons: {
+                setPin: 'Set PIN',
+                changePin: 'Change PIN',
+                removePin: 'Remove PIN',
             },
         },
         authenticity: {
@@ -595,9 +602,7 @@ export const en = {
         },
         wipeDevice: {
             title: 'Wipe device',
-            subtitle: 'This will reset all of your device’s data. Proceed with caution.',
-            content: 'This will reset all stored data on your Trezor. Proceed with caution.',
-            buttonTitle: 'Wipe device',
+            subtitle: 'This will reset all stored data',
             confirmationCards: {
                 eraseAllData: {
                     title: 'Erase all data',

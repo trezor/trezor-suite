@@ -5,7 +5,6 @@ import {
     selectDeviceModel,
     selectDeviceName,
     selectIsDeviceConnectedViaBluetooth,
-    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
@@ -25,7 +24,6 @@ export const DeviceSettingsModalScreen = () => {
 
     const deviceModel = useSelector(selectDeviceModel);
     const deviceName = useSelector(selectDeviceName);
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
 
     if (!deviceModel || !deviceName) {
@@ -42,8 +40,8 @@ export const DeviceSettingsModalScreen = () => {
                 <DeviceSettingsSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.general" />}
                 >
-                    <DeviceFirmwareCard />
                     <DevicePinProtectionCard />
+                    <DeviceFirmwareCard />
                 </DeviceSettingsSection>
                 <DeviceSettingsSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.checks" />}
