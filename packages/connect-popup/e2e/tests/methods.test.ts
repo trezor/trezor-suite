@@ -122,9 +122,7 @@ filteredFixtures.forEach(f => {
         await code.screenshot({ path: `${screenshotsPath}/1-request.png` });
 
         log(f.url, 'submitting in connect explorer');
-        await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-            state: 'visible',
-        });
+        await expect(explorerPage.getByTestId('@submit-button').getByRole('button')).toBeVisible();
         log(f.url, 'waiting for popup promise');
         const [popup] = await openPopup(context, explorerPage, isWebExtension);
         await popup.waitForLoadState('load');
