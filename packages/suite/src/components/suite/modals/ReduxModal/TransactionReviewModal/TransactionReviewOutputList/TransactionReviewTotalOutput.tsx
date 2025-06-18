@@ -32,6 +32,7 @@ const getLines = (
     precomposedForm: FormState | StakeFormState,
     isRbfAction?: boolean,
     stakeType?: StakeType,
+    isSLIP24Active?: boolean,
 ): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType, stakeType);
@@ -55,6 +56,17 @@ const getLines = (
     const amountWithoutFee = new BigNumber(precomposedTx.totalSpent)
         .minus(precomposedTx.fee)
         .toString();
+
+    if (isSLIP24Active) {
+        return [
+            {
+                id: 'fee',
+                label: <Translation id={feeLabelId} />,
+                value: precomposedTx.fee,
+                type: 'amount',
+            },
+        ];
+    }
 
     if (isUpdatedEthereumSendFlow) {
         const isUnknownStakingValue = isRbfAction && stakeType !== 'stake';
@@ -111,6 +123,7 @@ export type TransactionReviewTotalOutputProps = {
     precomposedTx: GeneralPrecomposedTransactionFinal;
     precomposedForm: FormState | StakeFormState;
     account: Account;
+    isSLIP24Active: boolean;
     isRbf: boolean;
     stakeType?: StakeType;
 };
@@ -121,6 +134,7 @@ export const TransactionReviewTotalOutput = ({
     precomposedTx,
     precomposedForm,
     stakeType,
+    isSLIP24Active,
     isRbf,
 }: TransactionReviewTotalOutputProps) => {
     const device = useSelector(selectSelectedDevice);
@@ -130,11 +144,25 @@ export const TransactionReviewTotalOutput = ({
     }
 
     const { networkType, symbol } = account;
-    const lines = getLines(device, networkType, precomposedTx, precomposedForm, isRbf, stakeType);
+    const lines = getLines(
+        device,
+        networkType,
+        precomposedTx,
+        precomposedForm,
+        isRbf,
+        stakeType,
+        isSLIP24Active,
+    );
 
     return (
         <TransactionReviewOutputElement
-            title={<Translation id="TR_TOTAL_INCLUDING_FEE" />}
+            title={
+                isSLIP24Active ? (
+                    <Translation id="TR_SUMMARY" />
+                ) : (
+                    <Translation id="TR_TOTAL_INCLUDING_FEE" />
+                )
+            }
             account={account}
             lines={lines}
             state={state}
