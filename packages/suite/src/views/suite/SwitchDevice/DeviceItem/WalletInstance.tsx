@@ -84,7 +84,11 @@ export const WalletInstance = ({
                 account =>
                     account.symbol === selectedAccount.params?.symbol &&
                     account.index === selectedAccount.params?.accountIndex &&
-                    account.accountType === selectedAccount.params?.accountType,
+                    account.accountType === selectedAccount.params?.accountType &&
+                    // NOTE: do not switch to empty accounts, but only if the current account is first or all accounts are empty
+                    (!account.empty ||
+                        (selectedAccount.params.accountIndex === 0 &&
+                            nextDeviceAccounts.every(account => account.empty))),
             );
 
             dispatch(selectDeviceThunk({ device: instance }));
