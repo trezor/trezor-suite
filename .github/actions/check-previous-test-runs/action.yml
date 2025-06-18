@@ -71,8 +71,9 @@ runs:
       uses: peter-evans/find-comment@v3
       id: find-comment
       with:
+        token: ${{ inputs.github_token }}
         issue-number: ${{ github.event.pull_request.number }}
-        comment-author: "trezor-ci"
+        comment-author: "trezor-bot[bot]"
         body-includes: ✅ Previously successful run of **${{ inputs.workflow_name }}**
 
     - name: Post skipped tests comment
