@@ -28,6 +28,7 @@ import { useTranslation } from 'src/hooks/suite';
 type PassphraseInputCardProps = {
     deviceModel?: DeviceModelInternal;
     deviceLoading?: boolean;
+    isLoading?: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     offerPassphraseOnDevice: boolean;
     allowNonAsciiCharacters?: boolean;
@@ -45,6 +46,7 @@ const getErrorMessage = (isPassphraseTooLong: boolean, isUsingNonAsciiCharacters
 export const PassphraseInputCard = ({
     deviceModel,
     deviceLoading,
+    isLoading,
     onSubmit,
     offerPassphraseOnDevice,
     allowNonAsciiCharacters = false,
@@ -146,6 +148,7 @@ export const PassphraseInputCard = ({
                             isUsingNonAsciiCharacters
                         }
                         isFullWidth
+                        isLoading={isLoading}
                     >
                         Confirm
                     </Button>

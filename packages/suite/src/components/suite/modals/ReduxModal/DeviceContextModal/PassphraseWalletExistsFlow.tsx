@@ -38,6 +38,7 @@ export const PassphraseWalletExistsFlow = ({
     >('exists-empty-wallet');
 
     const onCancel = () => {
+        // To close any dangling modals in the passphrase flow
         dispatch({ type: UI.CLOSE_UI_WINDOW });
         dispatch(cancelDiscoveryThunk(device));
     };
