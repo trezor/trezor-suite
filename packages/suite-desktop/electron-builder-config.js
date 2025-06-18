@@ -40,6 +40,10 @@ module.exports = {
             to: 'images/desktop/512x512.png',
         },
         {
+            from: 'build/static/images/desktop/512x512.ico',
+            to: 'images/desktop/512x512.ico',
+        },
+        {
             from: 'build/static/images/favicons',
             to: 'images/favicons',
         },
@@ -129,7 +133,7 @@ module.exports = {
                 to: 'bin/coinjoin',
             },
         ],
-        icon: 'build/static/images/desktop/512x512.png',
+        icon: 'build/static/images/desktop/512x512.ico',
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
         signtoolOptions: {
