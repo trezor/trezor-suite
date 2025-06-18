@@ -88,7 +88,7 @@ const shouldShowTxValidityTimer = ({
 
 const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormState) => {
     const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
-    const tradeType = precomposedForm.activeTradingSection ? 'trade' : undefined;
+    const tradeType = precomposedForm.trading?.activeSection ? 'trade' : undefined;
 
     return stakeType ?? tradeType;
 };
@@ -132,6 +132,7 @@ export const TransactionReviewModalContent = ({
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
+
     const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
 
     // check if transaction is still valid
@@ -215,7 +216,7 @@ export const TransactionReviewModalContent = ({
         stakeType,
         shouldCheckTxTimeValidity,
         isInternalTransfer,
-        isTrading: !!precomposedForm.activeTradingSection,
+        isTrading: !!precomposedForm.trading?.activeSection,
     });
 
     const actionTranslation = getTransactionReviewModalActionTranslation({
@@ -409,7 +410,7 @@ export const TransactionReviewModalContent = ({
                     outputs={outputs}
                     buttonRequestsCount={buttonRequestsCount}
                     isRbfAction={isBumpFeeRbfAction}
-                    isTradingAction={!!precomposedForm.activeTradingSection}
+                    tradingFormState={precomposedForm?.trading}
                     isSending={isSending}
                     stakeType={stakeType || undefined}
                     deadline={deadline}

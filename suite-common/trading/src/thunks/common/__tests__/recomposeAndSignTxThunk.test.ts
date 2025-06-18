@@ -139,19 +139,23 @@ describe('recomposeAndSignTxThunk', () => {
                 },
             },
         });
+        const tradingFormState = {
+            activeSection: 'exchange' as const,
+        };
 
         const mockSignAndPushSendFormTransaction = jest.fn();
 
         return {
             store,
             account,
+            tradingFormState,
 
             mockSignAndPushSendFormTransaction,
         };
     };
 
     it('should return error when missing composed data', async () => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks({
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
                 composed: undefined,
@@ -163,6 +167,7 @@ describe('recomposeAndSignTxThunk', () => {
                 account,
                 address: 'address',
                 amount: '0.1',
+                tradingFormState,
 
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
@@ -179,7 +184,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return error when missing feeInfo', async () => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks();
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks();
 
         const response = await store.dispatch(
             tradingThunks.recomposeAndSignTxThunk({
@@ -189,6 +194,7 @@ describe('recomposeAndSignTxThunk', () => {
                 } as Account,
                 address: 'address',
                 amount: '0.1',
+                tradingFormState,
 
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
@@ -223,7 +229,7 @@ describe('recomposeAndSignTxThunk', () => {
             'TR_ERROR',
         ],
     ])('should return error for custom fees %s', async (_, levels, errorId) => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks({
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
                 selectedFee: 'custom',
@@ -243,6 +249,7 @@ describe('recomposeAndSignTxThunk', () => {
                 address: 'address',
                 amount: '0.1',
                 recalculateCustomLimit: true,
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -258,7 +265,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return error when selectedFee is undefined', async () => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks({
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
                 selectedFee: undefined,
@@ -280,6 +287,7 @@ describe('recomposeAndSignTxThunk', () => {
                 account,
                 address: 'address',
                 amount: '0.1',
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -296,7 +304,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return error when composedLevels are undefined', async () => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks();
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks();
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
@@ -310,6 +318,7 @@ describe('recomposeAndSignTxThunk', () => {
                 account,
                 address: 'address',
                 amount: '0.1',
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -326,7 +335,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return error when selectedFee is not in composedLevels', async () => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks({
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
                 selectedFee: 'economy',
@@ -348,6 +357,7 @@ describe('recomposeAndSignTxThunk', () => {
                 account,
                 address: 'address',
                 amount: '0.1',
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -364,7 +374,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return error when composedLevels type is not final', async () => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks();
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks();
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
@@ -381,6 +391,7 @@ describe('recomposeAndSignTxThunk', () => {
                 account,
                 address: 'address',
                 amount: '0.1',
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -397,7 +408,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return custom error when composedLevels type is not final with passed error data', async () => {
-        const { store, account, mockSignAndPushSendFormTransaction } = getMocks();
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks();
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
@@ -422,6 +433,7 @@ describe('recomposeAndSignTxThunk', () => {
                 account,
                 address: 'address',
                 amount: '0.1',
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -441,7 +453,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return successful recomposed and signed transaction', async () => {
-        const { store, account } = getMocks({
+        const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
                 composed: {
@@ -483,6 +495,7 @@ describe('recomposeAndSignTxThunk', () => {
                 ethereumDataHex: '0x123456',
                 ethereumAdjustGasLimit: '1',
                 setMaxOutputId: 0,
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -498,7 +511,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should return successful recomposed and signed transaction using custom fees', async () => {
-        const { store, account } = getMocks({
+        const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
                 selectedFee: 'custom',
@@ -534,6 +547,7 @@ describe('recomposeAndSignTxThunk', () => {
                 address: 'address',
                 amount: '0.1',
                 recalculateCustomLimit: true,
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -549,7 +563,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should create payment requests when SLIP24 is active and conditions are met', async () => {
-        const { store, account } = getMocks({
+        const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
             },
@@ -602,6 +616,7 @@ describe('recomposeAndSignTxThunk', () => {
                 address: 'address',
                 amount: '0.1',
                 isSlip24Active: true,
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );
@@ -632,7 +647,7 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should not create payment requests when SLIP24 is not active', async () => {
-        const { store, account } = getMocks({
+        const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
             },
@@ -667,6 +682,7 @@ describe('recomposeAndSignTxThunk', () => {
                 address: 'address',
                 amount: '0.1',
                 isSlip24Active: false,
+                tradingFormState,
                 signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
             }),
         );

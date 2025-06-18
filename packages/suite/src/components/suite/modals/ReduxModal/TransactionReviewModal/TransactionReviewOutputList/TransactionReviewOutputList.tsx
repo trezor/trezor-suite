@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import type {
     FormState,
+    FormStateTrading,
     GeneralPrecomposedTransactionFinal,
     StakeFormState,
 } from '@suite-common/wallet-types';
@@ -29,7 +30,7 @@ export type TransactionReviewOutputListProps = {
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
-    isTradingAction: boolean;
+    tradingFormState: FormStateTrading | undefined;
     isSending?: boolean;
     stakeType?: StakeType;
     deadline?: number;
@@ -79,7 +80,7 @@ export const TransactionReviewOutputList = ({
     outputs,
     buttonRequestsCount,
     isRbfAction,
-    isTradingAction,
+    tradingFormState,
     stakeType,
     deadline,
     onTryAgain,
@@ -95,6 +96,7 @@ export const TransactionReviewOutputList = ({
     const isStaking = stakeType;
     const isInternalTransfer =
         isFirstOutputAddress &&
+        typeof outputs[0]?.value === 'string' &&
         findAccountsByAddress(symbol, outputs[0]?.value, accounts).length > 0;
 
     const summaryIndex = outputs.findIndex(
@@ -114,7 +116,7 @@ export const TransactionReviewOutputList = ({
         isFirstOutputAddress &&
         isFirstStep &&
         !isStaking &&
-        !isTradingAction &&
+        !tradingFormState &&
         !isInternalTransfer &&
         !signedTx
     ) {
@@ -192,7 +194,7 @@ export const TransactionReviewOutputList = ({
                                 state={getState(index, buttonRequestsCount, !!signedTx)}
                                 account={account}
                                 isRbf={isRbfAction}
-                                isTrading={isTradingAction}
+                                isTrading={!!tradingFormState}
                                 stakeType={stakeType}
                                 evmTxType={getEvmTransactionTextSignature(
                                     precomposedForm.ethereumDataHex,

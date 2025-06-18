@@ -52,8 +52,8 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
 
     const isRbfConfirmedError = type === 'review-transaction-rbf-previous-transaction-mined-error';
     const isSelectedAccountLoaded = selectedAccount.status === 'loaded';
-    const isExchange = precomposedForm?.activeTradingSection === 'exchange';
-    const isSell = precomposedForm?.activeTradingSection === 'sell';
+    const isExchange = precomposedForm?.trading?.activeSection === 'exchange';
+    const isSell = precomposedForm?.trading?.activeSection === 'sell';
 
     const handleCancelSignTx = () => {
         if (isSend) {
