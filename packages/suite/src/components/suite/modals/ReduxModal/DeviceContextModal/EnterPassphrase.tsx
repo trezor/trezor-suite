@@ -34,6 +34,7 @@ export const EnterPassphrase = ({
     deviceLoading,
     onDeviceOffer,
     isExistingWallet = false,
+    submitting,
     onBack,
     onCancel,
     onSubmit,
@@ -197,6 +198,7 @@ export const EnterPassphrase = ({
                     <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
                         deviceLoading={deviceLoading}
+                        isLoading={submitting}
                         onSubmit={onSubmit}
                         offerPassphraseOnDevice={onDeviceOffer}
                         allowNonAsciiCharacters={isExistingWallet}
