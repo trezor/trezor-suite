@@ -21,7 +21,7 @@ test.describe('safety_checks Warnings', { tag: ['@group=suite'] }, () => {
 
     test('Dismiss button hides the warning when safety_checks to prompt', async ({ page }) => {
         await page.getByTestId('@banner/safety-checks/dismiss').click();
-        await expect(page.getByTestId('@banner/safety-checks/button')).not.toBeVisible();
+        await expect(page.getByTestId('@banner/safety-checks/button')).toBeHidden();
     });
 
     test('Warning disappears when safety_checks are set to strict from prompt', async ({
@@ -30,7 +30,7 @@ test.describe('safety_checks Warnings', { tag: ['@group=suite'] }, () => {
     }) => {
         await settingsPage.changeSafetyChecksLevel('strict');
 
-        await expect(page.getByTestId('@banner/safety-checks/button')).not.toBeVisible();
+        await expect(page.getByTestId('@banner/safety-checks/button')).toBeHidden();
     });
 
     test('Dismissed warning re-appears when safety_checks are set to strict and then to Prompt again', async ({
@@ -39,7 +39,7 @@ test.describe('safety_checks Warnings', { tag: ['@group=suite'] }, () => {
     }) => {
         await settingsPage.changeSafetyChecksLevel('strict');
 
-        await expect(page.getByTestId('@banner/safety-checks/button')).not.toBeVisible();
+        await expect(page.getByTestId('@banner/safety-checks/button')).toBeHidden();
         // Set safety_checks back to PromptTemporarily
         await settingsPage.changeSafetyChecksLevel('prompt');
 

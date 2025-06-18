@@ -54,7 +54,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
             });
 
             await tradingPage.youPayCryptoInput.clear();
-            await expect.soft(tradingPage.cryptoInputBottomText).not.toBeVisible();
+            await expect.soft(tradingPage.cryptoInputBottomText).toBeHidden();
         });
 
         await test.step('Try all % inputs for Bitcoin', async () => {

@@ -56,7 +56,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         // At this moment, there are no labels. But we still can see "add label" button, which inits metadata flow but without obtaining keys from device (they are saved!)
         await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
         await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
-        await expect(metadataPage.metadataModal).not.toBeVisible();
+        await expect(metadataPage.metadataModal).toBeHidden();
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
             'already existing label',
         );
@@ -101,7 +101,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         // Still possible to reconnect provider, we have keys still saved
         await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
         await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
-        await expect(metadataPage.metadataModal).not.toBeVisible();
+        await expect(metadataPage.metadataModal).toBeHidden();
         await metadataPage.account.fillLabelInput('mnau');
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText('mnau');
 
@@ -113,6 +113,6 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         // Now it is not possible to add labels, keys are gone and device is not connected
         await expect(
             metadataPage.account.addLabelButton(AccountLabelId.BitcoinDefault1),
-        ).not.toBeVisible();
+        ).toBeHidden();
     });
 });

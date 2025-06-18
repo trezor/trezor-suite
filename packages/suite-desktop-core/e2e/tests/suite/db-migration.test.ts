@@ -41,7 +41,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
                 await page.goto(`${suiteDevInstance}/${migrateFromVersion}`);
                 await page.locator('[data-test="@onboarding/continue-button"]').click();
                 await page.locator('[data-test="@onboarding/exit-app-button"]').click();
-                await expect(page.locator('[data-test="@suite/loading"]')).not.toBeVisible();
+                await expect(page.locator('[data-test="@suite/loading"]')).toBeHidden();
                 await page.locator('[data-test="@passphrase-type/standard"]').click();
                 await discoveryBar.waitFor({ state: 'visible', timeout: 45000 });
                 await discoveryBar.waitFor({ state: 'hidden', timeout: 45000 });
@@ -127,7 +127,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
                 await walletPage.revealAddressButton.click();
                 await expect(page.getByTestId('@modal')).toBeVisible();
                 await devicePrompt.closeModal();
-                await expect(page.getByTestId('@modal')).not.toBeVisible();
+                await expect(page.getByTestId('@modal')).toBeHidden();
             });
 
             await test.step('Reconnect Emulator', async () => {

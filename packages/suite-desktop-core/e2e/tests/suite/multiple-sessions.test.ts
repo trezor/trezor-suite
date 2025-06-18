@@ -54,7 +54,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                     await dashboardPage.deviceSwitchingOpenButton.click();
                     // TODO: #16601 Uncomment once fixed
                     // await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Refresh');
-                    await expect(dashboardPage.walletAtIndex(0)).not.toBeVisible();
+                    await expect(dashboardPage.walletAtIndex(0)).toBeHidden();
                 });
 
                 await test.step('Take Bridge session back', async () => {

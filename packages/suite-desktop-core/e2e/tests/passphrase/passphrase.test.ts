@@ -69,9 +69,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             await test.step('Open receive address of wallet #2', async () => {
                 await walletPage.receiveButton.click();
                 await test.step('Verify no address is yet in table', async () => {
-                    await expect(
-                        page.getByTestId('@wallet/receive/used-address/0'),
-                    ).not.toBeVisible();
+                    await expect(page.getByTestId('@wallet/receive/used-address/0')).toBeHidden();
                 });
 
                 await expect(walletPage.revealAddressButton).not.toBeDisabled();
@@ -96,7 +94,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             });
 
             await test.step('No address is yet in table of wallet #1', async () => {
-                await expect(page.getByTestId('@wallet/receive/used-address/0')).not.toBeVisible();
+                await expect(page.getByTestId('@wallet/receive/used-address/0')).toBeHidden();
                 await expect(walletPage.revealAddressButton).not.toBeDisabled();
 
                 await walletPage.revealAddressButton.click();
