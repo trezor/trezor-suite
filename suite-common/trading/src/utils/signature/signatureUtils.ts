@@ -8,7 +8,7 @@ import {
 } from 'invity-api';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 
 import { cryptoIdToNetwork, cryptoIdToNetworkAndContractAddress } from '../../utils';
@@ -60,11 +60,11 @@ export const tradingExchangeCreatePaymentRequest = ({
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
     const receiveNetworkData = cryptoIdToNetworkAndContractAddress(trade.receive);
-    const sendAmount = amountToSmallestUnit(
+    const sendAmount = convertAmountUnitsToSubunits(
         trade.sendStringAmount,
         sendNetworkData.network?.decimals ?? getNetwork('btc').decimals,
     );
-    const receiveAmount = amountToSmallestUnit(
+    const receiveAmount = convertAmountUnitsToSubunits(
         trade.receiveStringAmount,
         receiveNetworkData?.network?.decimals ?? getNetwork('btc').decimals,
     );
@@ -121,7 +121,7 @@ export const tradingSellCreatePaymentRequest = ({
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
-    const sendAmount = amountToSmallestUnit(
+    const sendAmount = convertAmountUnitsToSubunits(
         trade.cryptoStringAmount,
         sendNetworkData.network?.decimals ?? getNetwork('btc').decimals,
     );

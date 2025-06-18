@@ -1,4 +1,4 @@
-import type { CryptoId } from 'invity-api';
+import { CryptoId, ExchangeProviderInfo, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
@@ -7,7 +7,11 @@ import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
 import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
 import * as SELL_FIXTURE from '../__fixtures__/sellUtils';
 import { accountBtc, accountEth } from '../__fixtures__/utils';
-import type { TradingAccountOptionsGroupOptionProps } from '../types';
+import type {
+    TradingAccountOptionsGroupOptionProps,
+    TradingExchangeType,
+    TradingSellType,
+} from '../types';
 import {
     addIdsToQuotes,
     cryptoIdToNetwork,
@@ -17,6 +21,7 @@ import {
     getBestRatedQuote,
     getDefaultCountry,
     getTagAndInfoNote,
+    getTradingFormState,
     getTradingNetworkDecimals,
     getTradingPaymentMethods,
     getTradingQuotesByPaymentMethod,
@@ -347,5 +352,405 @@ describe('isFinalStatus', () => {
         ['exchange', undefined, false],
     ])('should return %s for %s trade with %s status', (tradeType, status, expectedResult) => {
         expect(isFinalStatus(tradeType as any, status as any)).toBe(expectedResult);
+    });
+});
+
+describe('getTradingFormState', () => {
+    const mockProvider: ExchangeProviderInfo = {
+        name: 'test-exchange',
+        companyName: 'Test Exchange',
+        logo: 'test.svg',
+        isActive: true,
+        isFixedRate: false,
+        isDex: false,
+        buyTickers: [],
+        sellTickers: [],
+        addressFormats: {},
+        statusUrl: 'https://test.com/status',
+        supportUrl: 'https://test.com/support',
+        kycUrl: 'https://test.com/kyc',
+        kycPolicy: 'No KYC required',
+        kycPolicyType: 'noKYC',
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('sell section', () => {
+        const activeSection: TradingSellType = 'sell';
+
+        it('should return default state when required fields are missing', () => {
+            const incompleteTrade = {
+                exchange: 'test-exchange',
+                // Missing required fields
+            } as SellFiatTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade: incompleteTrade,
+                providers,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+            });
+        });
+
+        it('should return default state when provider is not found', () => {
+            const trade = {
+                exchange: 'unknown-exchange',
+                fiatStringAmount: '1000',
+                fiatCurrency: 'USD',
+                cryptoCurrency: 'bitcoin' as CryptoId,
+                cryptoStringAmount: '0.025',
+            } as SellFiatTrade;
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers: {},
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+            });
+        });
+
+        it('should return default state when network is not found', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                fiatStringAmount: '1000',
+                fiatCurrency: 'USD',
+                cryptoCurrency: 'unknown-crypto' as CryptoId,
+                cryptoStringAmount: '0.025',
+            } as SellFiatTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+            });
+        });
+
+        it('should return complete form state for valid sell trade', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                fiatStringAmount: '1000',
+                fiatCurrency: 'USD',
+                cryptoCurrency: 'bitcoin' as CryptoId,
+                cryptoStringAmount: '0.025',
+            } as SellFiatTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+                recipientName: 'Test Exchange',
+                send: {
+                    symbol: 'btc',
+                    contractAddress: undefined,
+                    amount: '0.025',
+                },
+                receive: {
+                    amount: '1000',
+                    fiatCurrency: 'USD',
+                },
+            });
+        });
+
+        it('should handle token trades with contract address', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                fiatStringAmount: '500',
+                fiatCurrency: 'EUR',
+                cryptoCurrency: 'ethereum--0x123456789' as CryptoId,
+                cryptoStringAmount: '100',
+            } as SellFiatTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+                recipientName: 'Test Exchange',
+                send: {
+                    symbol: 'eth',
+                    contractAddress: '0x123456789',
+                    amount: '100',
+                },
+                receive: {
+                    amount: '500',
+                    fiatCurrency: 'EUR',
+                },
+            });
+        });
+    });
+
+    describe('exchange section', () => {
+        const activeSection: TradingExchangeType = 'exchange';
+
+        it('should return default state when required fields are missing', () => {
+            const incompleteTrade = {
+                exchange: 'test-exchange',
+                // Missing required fields
+            } as ExchangeTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade: incompleteTrade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+            });
+        });
+
+        it('should return default state when provider is not found', () => {
+            const trade = {
+                exchange: 'unknown-exchange',
+                receive: 'ethereum' as CryptoId,
+                receiveStringAmount: '1',
+                send: 'bitcoin' as CryptoId,
+                sendStringAmount: '0.025',
+            } as ExchangeTrade;
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers: {},
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+            });
+        });
+
+        it('should return default state when receive network is not found', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                receive: 'unknown-crypto' as CryptoId,
+                receiveStringAmount: '1',
+                send: 'bitcoin' as CryptoId,
+                sendStringAmount: '0.025',
+            } as ExchangeTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+            });
+        });
+
+        it('should return default state when send network is not found', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                receive: 'ethereum' as CryptoId,
+                receiveStringAmount: '1',
+                send: 'unknown-crypto' as CryptoId,
+                sendStringAmount: '0.025',
+            } as ExchangeTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+            });
+        });
+
+        it('should return complete form state for valid exchange trade', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                receive: 'ethereum' as CryptoId,
+                receiveStringAmount: '1',
+                send: 'bitcoin' as CryptoId,
+                sendStringAmount: '0.025',
+            } as ExchangeTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+                recipientName: 'Test Exchange',
+                send: {
+                    symbol: 'btc',
+                    contractAddress: undefined,
+                    amount: '0.025',
+                },
+                receive: {
+                    symbol: 'eth',
+                    contractAddress: undefined,
+                    amount: '1',
+                },
+            });
+        });
+
+        it('should handle token-to-token exchange with contract addresses', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                receive: 'ethereum--0xreceive123' as CryptoId,
+                receiveStringAmount: '100',
+                send: 'ethereum--0xsend456' as CryptoId,
+                sendStringAmount: '50',
+            } as ExchangeTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+                recipientName: 'Test Exchange',
+                send: {
+                    symbol: 'eth',
+                    contractAddress: '0xsend456',
+                    amount: '50',
+                },
+                receive: {
+                    symbol: 'eth',
+                    contractAddress: '0xreceive123',
+                    amount: '100',
+                },
+            });
+        });
+    });
+
+    describe('edge cases', () => {
+        it('should handle undefined providers', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                fiatStringAmount: '1000',
+                fiatCurrency: 'USD',
+                cryptoCurrency: 'bitcoin' as CryptoId,
+                cryptoStringAmount: '0.025',
+            } as SellFiatTrade;
+
+            const result = getTradingFormState({
+                activeSection: 'sell',
+                trade,
+                providers: undefined,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+            });
+        });
+
+        it('should handle trade without exchange property', () => {
+            const trade = {
+                // exchange property missing
+                fiatStringAmount: '1000',
+                fiatCurrency: 'USD',
+                cryptoCurrency: 'bitcoin' as CryptoId,
+                cryptoStringAmount: '0.025',
+            } as SellFiatTrade;
+
+            const result = getTradingFormState({
+                activeSection: 'sell',
+                trade,
+                providers: { 'test-exchange': mockProvider },
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+            });
+        });
+
+        it('should handle empty strings in trade amounts', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                fiatStringAmount: '',
+                fiatCurrency: 'USD',
+                cryptoCurrency: 'bitcoin' as CryptoId,
+                cryptoStringAmount: '0.025',
+            } as SellFiatTrade;
+
+            const providers = {
+                'test-exchange': mockProvider,
+            };
+
+            const result = getTradingFormState({
+                activeSection: 'sell',
+                trade,
+                providers,
+                isSlip24Active: true,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'sell',
+            });
+        });
     });
 });

@@ -1,3 +1,4 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel } from '@trezor/connect';
 
 import { Output, RbfTransactionParams } from './transaction';
@@ -11,6 +12,41 @@ export type FormOptions =
     | 'destinationTag';
 
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
+
+export type FormStateTradingCryptoCurrency = {
+    symbol: NetworkSymbol;
+    contractAddress?: string;
+    amount: string;
+};
+
+export type FormStateTradingFiatCurrency = {
+    amount: string;
+    fiatCurrency: string;
+};
+
+type FormStateTradingDefault = {
+    activeSection: 'sell' | 'exchange';
+};
+
+type FormStateTradingCommon = {
+    recipientName: string;
+    send: FormStateTradingCryptoCurrency;
+};
+
+type FormStateTradingSell = {
+    activeSection: 'sell';
+    receive: FormStateTradingFiatCurrency;
+} & FormStateTradingCommon;
+
+type FormStateTradingExchange = {
+    activeSection: 'exchange';
+    receive: FormStateTradingCryptoCurrency;
+} & FormStateTradingCommon;
+
+export type FormStateTrading =
+    | FormStateTradingSell
+    | FormStateTradingExchange
+    | FormStateTradingDefault;
 
 export interface FormState {
     outputs: Output[]; // output arrays, each element is corresponding with single Output item
@@ -46,5 +82,5 @@ export interface FormState {
     anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
     utxoSorting?: UtxoSorting;
-    activeTradingSection?: 'sell' | 'exchange';
+    trading?: FormStateTrading;
 }

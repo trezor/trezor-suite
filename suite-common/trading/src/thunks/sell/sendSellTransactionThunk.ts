@@ -12,9 +12,11 @@ import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
     selectTradingSellInfo,
+    selectTradingSellProviders,
     selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { TradingSellFormProps } from '../../types';
+import { getTradingFormState } from '../../utils';
 import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendSellTransactionThunkProps = {
@@ -46,6 +48,7 @@ export const sendSellTransactionThunk = createThunk(
     ) => {
         const selectedQuote = selectTradingSellSelectedQuote(getState());
         const sellInfo = selectTradingSellInfo(getState());
+        const providers = selectTradingSellProviders(getState());
         const selectedTrade = trade ?? selectedQuote;
         // destinationAddress may be set by useTradingWatchTrade hook to the trade object
         const destinationAddress = selectedTrade?.destinationAddress ?? trade?.destinationAddress;
@@ -65,7 +68,12 @@ export const sendSellTransactionThunk = createThunk(
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
         }
-
+        const tradingFormState = getTradingFormState({
+            activeSection: 'sell',
+            providers,
+            trade: selectedTrade,
+            isSlip24Active,
+        });
         const cryptoStringAmount = shouldSendInSats
             ? convertAmountUnitsToSubunits(selectedTrade.cryptoStringAmount, decimals)
             : selectedTrade.cryptoStringAmount;
@@ -81,6 +89,7 @@ export const sendSellTransactionThunk = createThunk(
                 signAndPushSendFormTransaction,
                 // when lockSendAmount is true, the amount should not be recomputed based on the maximum balance.
                 setMaxOutputId: lockSendAmount ? undefined : formValues.setMaxOutputId,
+                tradingFormState,
             }),
         );
 

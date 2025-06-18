@@ -11,7 +11,7 @@ jest.mock('@suite-common/wallet-config', () => ({
 }));
 
 jest.mock('@suite-common/wallet-utils', () => ({
-    amountToSmallestUnit: jest
+    convertAmountUnitsToSubunits: jest
         .fn()
         .mockImplementation((amount, decimals) => amount * Math.pow(10, decimals)),
 }));

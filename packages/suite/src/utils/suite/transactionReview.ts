@@ -30,11 +30,11 @@ export const getTransactionReviewModalActionTranslation = ({
         // no default
     }
 
-    if (precomposedForm.activeTradingSection === 'sell') {
+    if (precomposedForm?.trading?.activeSection === 'sell') {
         return { id: 'TR_TRADING_SELL' };
     }
 
-    if (precomposedForm.activeTradingSection === 'exchange') {
+    if (precomposedForm?.trading?.activeSection === 'exchange') {
         const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.ethereumDataHex);
 
         switch (transactionPurpose) {
