@@ -1,4 +1,4 @@
-import { BrowserContext, Page, test } from '@playwright/test';
+import { BrowserContext, Page, expect, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { addDashesToSpaces, resolveAfter } from '@trezor/utils';
@@ -91,9 +91,7 @@ const setup = async ({
     await explorerPage.click("a[href$='/methods/bitcoin/getAddress/']");
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
 
-    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
-    });
+    await expect(explorerPage.getByTestId('@submit-button')).toBeVisible();
 
     log('beforeEach', 'waiting for popup promise');
     const [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
@@ -204,7 +202,7 @@ test(`device dialog canceled ON DEVICE by user`, async ({ page, context }) => {
 
     await popupClosedPromise;
 
-    await explorerPage.waitForSelector('text=Failure_ActionCancelled');
+    await expect(explorerPage.getByText('Failure_ActionCancelled')).toBeVisible();
 });
 
 test(`device disconnected during device interaction`, async ({ page, context }) => {
@@ -226,7 +224,7 @@ test(`device disconnected during device interaction`, async ({ page, context }) 
     await popupClosedPromise;
 
     log('waiting for selector text=device disconnected during action');
-    await explorerPage.waitForSelector('text=device disconnected during action');
+    await expect(explorerPage.getByText('device disconnected during action')).toBeVisible();
 });
 
 test('when user cancels permissions in popup it closes automatically', async ({
@@ -291,7 +289,7 @@ test('popup should close and open new one when popup is in error state and user 
 
     // Wait for popup to close.
     await popupClosedPromise;
-    await explorerPage.waitForSelector('text=Permissions not granted');
+    await expect(explorerPage.getByText('Permissions not granted')).toBeVisible();
 });
 
 test('popup should be focused when a call is in progress and user triggers new call', async ({
@@ -314,9 +312,7 @@ test('popup should be focused when a call is in progress and user triggers new c
         ),
     );
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
-    });
+    await expect(explorerPage.getByTestId('@submit-button').getByRole('button')).toBeVisible();
 
     log('waiting for popup open');
     [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
@@ -330,7 +326,7 @@ test('popup should be focused when a call is in progress and user triggers new c
     await waitAndClick(popup, ['@permissions/confirm-button']);
 
     // Click in 3rd party to trigger new call. But instead of new call it should focus on open popup.
-    await explorerPage.waitForSelector(`[data-testid='@submit-button']`, { state: 'visible' });
+    await expect(explorerPage.getByTestId('@submit-button')).toBeVisible();
     await explorerPage.click(`[data-testid='@submit-button']`, {
         // submit button is disabled in connect-explorer if there is a call in progress. we want to simulate what happens if 3rd party
         // does not respect this and tries to call connect-api again.

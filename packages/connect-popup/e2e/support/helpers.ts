@@ -1,19 +1,20 @@
-import { BrowserContext, Page, chromium } from '@playwright/test';
+import { BrowserContext, Page, chromium, expect } from '@playwright/test';
 import path from 'path';
 
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {
     for (const button of buttons) {
-        await page.waitForSelector(`[data-testid='${button}']`, { state: 'visible' });
-        await page.click(`[data-testid='${button}']`);
+        const locator = page.getByTestId(button);
+        await expect(locator).toBeVisible();
+        await locator.click();
     }
 };
 
 // Helper to use data-test attributes to find elements.
 export const findElementByDataTest = async (page: Page, dataTestId: string, timeout?: number) => {
-    await page.waitForSelector(`[data-testid='${dataTestId}']`, { state: 'visible', timeout });
+    await expect(page.getByTestId(dataTestId)).toBeVisible({ timeout });
 
-    return page.$(`[data-testid='${dataTestId}']`);
+    return page.getByTestId(dataTestId);
 };
 
 export const log = (...val: string[]) => {
@@ -118,7 +119,8 @@ export const openPopup = (
     }
     triggerPopup.push(explorerPage.getByTestId('@api-playground/collapsible-box').click());
     triggerPopup.push(explorerPage.getByTestId('@submit-button').click());
-    triggerPopup.push(explorerPage.waitForSelector("[data-testid='@submit-button/spinner']"));
+    // eslint-disable-next-line playwright/missing-playwright-await
+    triggerPopup.push(expect(explorerPage.getByTestId('@submit-button/spinner')).toBeVisible());
 
     return Promise.all(triggerPopup) as Promise<Page[]>;
 };
@@ -164,9 +166,9 @@ export const setConnectSettings = async (
         await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
     }
     if (connectSrc) {
-        (await explorerPage.waitForSelector("input[data-testid='@input/connectSrc']")).fill(
-            connectSrc,
-        );
+        const input = explorerPage.getByTestId('@input/connectSrc');
+        await expect(input).toBeVisible();
+        await input.fill(connectSrc);
     }
     if (isCoreInPopup) {
         await waitAndClick(explorerPage, ['@select/coreMode/input']);

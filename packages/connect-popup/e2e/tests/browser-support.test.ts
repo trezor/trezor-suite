@@ -41,9 +41,9 @@ test('unsupported browser', async ({ browser }) => {
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'visible' });
+    await expect(page.getByTestId('@submit-button').getByRole('button')).toBeVisible();
     popup = await openPopup(page);
-    await popup.waitForSelector('text=Unsupported browser');
+    await expect(popup.getByText('Unsupported browser')).toBeVisible();
     await popup.screenshot({ path: `${dir}/browser-not-supported.png` });
     await popup.close({ runBeforeUnload: true });
     await page.close();
@@ -58,16 +58,16 @@ test('outdated browser', async ({ browser }) => {
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'visible' });
+    await expect(page.getByTestId('@submit-button').getByRole('button')).toBeVisible();
     popup = await openPopup(page);
     await popup.waitForLoadState('load');
-    await popup.waitForSelector('text=Outdated browser');
+    await expect(popup.getByText('Outdated browser')).toBeVisible();
     // no react is rendering yet only browser check
     expect(await popup.locator('#reactRenderIn').count()).toEqual(0);
     await popup.screenshot({ path: `${dir}/outdated-browser-1.png` });
     await popup.click('text=I acknowledge and wish to continue');
     // only after this check react renders
-    await popup.waitForSelector('#reactRenderIn');
+    await expect(popup.locator('#reactRenderIn')).toBeVisible();
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
     // In Firefox it should display Install Bridge page.
@@ -89,7 +89,7 @@ test(`env: web, device: mobile/iPhone => not allowed`, async ({ browser }) => {
 
     popup = await openPopup(page);
     // unfortunately webusb now does not work for connect-popup, so mobile chrome won't run even if it technically could
-    await popup.waitForSelector('text=Smartphones not supported yet');
+    await expect(popup.getByText('Smartphones not supported yet')).toBeVisible();
     await popup.screenshot({ path: `${dir}/mobile-iphone-not-supported.png` });
 
     await popup.click('text=Close');

@@ -72,30 +72,29 @@ test('Basic web extension MV2', async () => {
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
 
     // Wait for connect to be ready.
-    await page.waitForSelector("div[data-testid='connect-loaded']");
+    await expect(page.getByTestId('connect-loaded')).toBeVisible();
 
-    await page.waitForSelector("button[data-testid='get-address']");
+    await expect(page.getByTestId('get-address').getByRole('button')).toBeVisible();
     await page.click("button[data-testid='get-address']");
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
-    await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-        state: 'visible',
+    await expect(popup.getByTestId('@analytics/continue-button').getByRole('button')).toBeVisible({
         timeout: 40000,
     });
     await popup.click("button[data-testid='@analytics/continue-button']");
 
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+    await expect(popup.locator('button.confirm')).toBeVisible({ timeout: 40000 });
     await popup.click('button.confirm');
 
-    await popup.waitForSelector('.export-address >> visible=true');
+    await expect(popup.locator('.export-address')).toBeVisible();
     await popup.locator('button.confirm >> visible=true').click();
 
-    await popup.waitForSelector('text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX');
+    await expect(popup.getByText('3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX')).toBeVisible();
 
     await Promise.all([popup.waitForEvent('close'), TrezorUserEnvLink.pressYes()]);
 
-    await page.waitForSelector('text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX');
+    await expect(popup.getByText('3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX')).toBeVisible();
 
     await browserContext.close();
 });
@@ -124,7 +123,7 @@ test('Basic web extension MV3', async () => {
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
     await page.screenshot({ path: `${dir}/web-extension-mv3-1.png` });
 
-    await (await page.waitForSelector("button[data-testid='get-address']")).click();
+    await expect(page.getByTestId('get-address').getByRole('button')).toBeVisible();
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');

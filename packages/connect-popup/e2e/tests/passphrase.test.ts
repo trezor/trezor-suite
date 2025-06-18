@@ -1,4 +1,4 @@
-import { BrowserContext, Page, test } from '@playwright/test';
+import { BrowserContext, Page, expect, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -184,7 +184,7 @@ test('introduce passphrase in popup and device rejects it', async () => {
 
     await waitAndClick(popup, ['@connect-ui/error-close-button']);
 
-    await explorerPage.waitForSelector('text=Failure_ActionCancelled');
+    await expect(explorerPage.getByText('Failure_ActionCancelled')).toBeVisible();
 });
 
 test('introduce passphrase successfully next time should not ask for it', async () => {
@@ -272,7 +272,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await TrezorUserEnvLink.pressYes();
 
     // Wait for success message before reloading page.
-    await explorerPage.waitForSelector('text=success: true');
+    await expect(explorerPage.getByText('success: true')).toBeVisible();
 
     // Reload explorer page
     await explorerPage.reload();

@@ -136,15 +136,13 @@ fixtures.forEach(f => {
         await page.goto(formattedUrl);
         log('waiting for explorer to load');
         await waitAndClick(page, ['@api-playground/collapsible-box']);
-        await page.waitForSelector("button[data-testid='@submit-button']", {
-            state: 'visible',
-        });
+        await expect(page.getByTestId('@submit-button').getByRole('button')).toBeVisible();
 
         log('opening popup');
         [popup] = await Promise.all([
             context.waitForEvent('page'),
-            page.locator("button[data-testid='@submit-button']").click({ timeout: 30000 }),
-            page.waitForSelector("[data-testid='@submit-button/spinner']"),
+            page.getByTestId('@submit-button').click({ timeout: 30000 }),
+            expect(page.getByTestId('@submit-button/spinner')).toBeVisible(),
         ]);
         log('waiting for analytics');
         await waitAndClick(popup, ['@analytics/continue-button']);
