@@ -123,7 +123,6 @@ class TradingBuyActions {
             expectedValue,
         );
     }
-
     async expectValidBuyForm() {
         await detoxExpect(element(by.text('Payment method'))).toBeVisible();
         await detoxExpect(element(by.text('Provider'))).toBeVisible();

@@ -1,18 +1,16 @@
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
-import { ReceiveAccountCryptoBalance } from '../general/ReceiveAccount/ReceiveAccountCryptoBalance';
+import { TradeableAssetAccountBalance } from '../general/TradeableAssetAccountBalance';
 
 export const RECEIVE_ACCOUNT_BALANCE_TEST_ID = '@trading/buy/receive-account-balance';
 
 export const BuyReceiveAccountCryptoBalance = () => {
     const { watch } = useBuyFormContext();
     const [asset, receiveAccount] = watch(['asset', 'receiveAccount']);
-    const selectedSymbol = getSymbolFromTradeableAsset(asset);
 
     return (
-        <ReceiveAccountCryptoBalance
+        <TradeableAssetAccountBalance
             account={receiveAccount?.account}
-            defaultSymbol={selectedSymbol}
+            asset={asset}
             testID={RECEIVE_ACCOUNT_BALANCE_TEST_ID}
         />
     );
