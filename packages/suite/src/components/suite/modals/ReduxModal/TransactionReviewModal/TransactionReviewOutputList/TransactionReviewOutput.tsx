@@ -10,6 +10,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
+import { TransactionReviewOutputAssets } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
@@ -102,6 +103,10 @@ const getOutputTitle = (
             return <Translation id="OP_RETURN" />;
         case 'timebounds':
             return <Translation id="TIME_BOUNDS" />;
+        case 'recipient_name':
+            return <Translation id="TR_TRADING_PROVIDER" />;
+        case 'traded_assets':
+            return <Translation id="TR_MY_ASSETS" />;
         default:
             return exhaustive(type);
     }
@@ -195,6 +200,7 @@ const getOutputLines = (
         case 'locktime':
         case 'timebounds':
         case 'network':
+        case 'recipient_name':
         case 'signing-with':
             return [
                 {
@@ -212,6 +218,9 @@ const getOutputLines = (
                     type: 'amount',
                 },
             ];
+        // independent component
+        case 'traded_assets':
+            return [];
         default:
             return exhaustive(type);
     }
@@ -231,6 +240,8 @@ export const TransactionReviewOutput = ({
     label,
     value,
     value2,
+    send,
+    receive,
     token,
     account,
     stakeType,
@@ -296,6 +307,17 @@ export const TransactionReviewOutput = ({
     const ignoredRbfTypes = ['address', 'regular_legacy'];
     if (isRbf && stakeType && ignoredRbfTypes.includes(type)) {
         return null;
+    }
+
+    if (type === 'traded_assets') {
+        return (
+            <TransactionReviewOutputAssets
+                title={outputTitle}
+                state={state}
+                send={send}
+                receive={receive}
+            />
+        );
     }
 
     return (
