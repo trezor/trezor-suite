@@ -40,18 +40,16 @@ const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number
     ${withFrameProps}
 `;
 
-const Logo = styled.img<{ $size: number; $isVisible: boolean; $elevation: Elevation }>`
+const Logo = styled.img<{ $size: number; $elevation: Elevation }>`
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
     border-radius: ${borders.radii.full};
-    visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
     box-shadow: inset 0 0 0 1px ${mapElevationToBorder};
     background-color: ${mapElevationToBackground};
 `;
 
 interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     $size: number;
-    $isVisible: boolean;
 }
 
 const ElevatedLogo = (props: LogoProps) => {
@@ -93,7 +91,6 @@ export const AssetLogo = ({
     'data-testid': dataTest,
     ...rest
 }: AssetLogoProps) => {
-    const [isLoading, setIsLoading] = useState(true);
     const [isPlaceholder, setIsPlaceholder] = useState(!shouldTryToFetch);
     const { coingeckoId: coingeckoIdLogo, contractAddress: contractAddressLogo } =
         getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddress);
@@ -110,9 +107,6 @@ export const AssetLogo = ({
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
 
-    const handleLoad = () => {
-        setIsLoading(false);
-    };
     const handleError = () => {
         setIsPlaceholder(true);
     };
@@ -133,12 +127,9 @@ export const AssetLogo = ({
                         src={logoUrl}
                         srcSet={`${logoUrl} 1x, ${logoUrl2x} 2x`}
                         $size={size}
-                        onLoad={handleLoad}
                         onError={handleError}
-                        $isVisible={!isLoading}
                         data-testid={dataTest}
                         alt={placeholder}
-                        loading="lazy"
                     />
                 </ElevationUp>
             )}
