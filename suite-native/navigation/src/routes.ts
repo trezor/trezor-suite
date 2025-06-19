@@ -73,6 +73,7 @@ export enum DeviceSettingsStackRoutes {
     DeviceSettings = 'DeviceSettings',
     PinProtection = 'PinProtection',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
+    DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',

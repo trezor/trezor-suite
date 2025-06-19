@@ -581,13 +581,13 @@ export const en = {
         },
         authenticity: {
             title: 'Device authenticity',
-            content: 'Check the integrity of the device & authenticity of the chip.',
+            subtitle: 'This check is essential to ensure your device’s reliability and security.',
+            content: 'Check the integrity of the device',
             checkButton: 'Check authenticity',
             info: {
                 title: 'Check device authenticity',
-                item1: 'This check is essential to ensure your device’s reliability and security.',
-                item2: 'This confirms that the chip inside your hardware wallet is genuine and from Trezor.',
-                item3: 'Once your device has been given a clean bill of health, you’re all set to Trezor with confidence.',
+                item1: 'This confirms that the chip inside your hardware wallet is genuine.',
+                item2: 'Once your device has been given a clean bill of health, you’re all set.',
                 letsDoItButton: 'Let’s do it',
             },
             success: {
