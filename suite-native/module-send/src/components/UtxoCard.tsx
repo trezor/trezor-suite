@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Button, Card, CheckBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
-import { FiatAmountFormatter } from '@suite-native/formatters';
+import { AccountAddressFormatter , FiatAmountFormatter } from '@suite-native/formatters';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -87,7 +87,9 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, isSelected = false }: Pro
                             />
                         </HStack>
 
-                        <Text variant="hint">{utxo.address}</Text>
+                        <AccountAddressFormatter style={{
+                            maxWidth: '80%',
+                        }} value={utxo.address} variant='hint' />
                     </VStack>
                     <CheckBox isChecked={isSelected} onChange={() => onToggle(utxo)} />
                 </HStack>
