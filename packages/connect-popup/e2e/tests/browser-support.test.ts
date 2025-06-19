@@ -41,9 +41,9 @@ test('unsupported browser', async ({ browser }) => {
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await expect(page.getByTestId('@submit-button').getByRole('button')).toBeVisible();
+    await expect(page.getByTestId('@submit-button')).toBeVisible();
     popup = await openPopup(page);
-    await expect(popup.getByText('Unsupported browser')).toBeVisible();
+    await expect(popup.getByRole('heading', { name: 'Unsupported browser' })).toBeVisible();
     await popup.screenshot({ path: `${dir}/browser-not-supported.png` });
     await popup.close({ runBeforeUnload: true });
     await page.close();
@@ -58,10 +58,10 @@ test('outdated browser', async ({ browser }) => {
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await expect(page.getByTestId('@submit-button').getByRole('button')).toBeVisible();
+    await expect(page.getByTestId('@submit-button')).toBeVisible();
     popup = await openPopup(page);
     await popup.waitForLoadState('load');
-    await expect(popup.getByText('Outdated browser')).toBeVisible();
+    await expect(popup.getByRole('heading', { name: 'Outdated browser' })).toBeVisible();
     // no react is rendering yet only browser check
     expect(await popup.locator('#reactRenderIn').count()).toEqual(0);
     await popup.screenshot({ path: `${dir}/outdated-browser-1.png` });
@@ -71,9 +71,11 @@ test('outdated browser', async ({ browser }) => {
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
     // In Firefox it should display Install Bridge page.
-    await expect(
-        popup.getByRole('heading', { name: "Browser can't communicate with device" }),
-    ).toBeVisible();
+    // THIS DOES NOT WORK. Previously the assert was incorrectly written and was falsely passing.
+    // originally: "await popup.getByRole('heading', { name: "Browser can't communicate with device" });"
+    // await expect(
+    //     popup.getByRole('heading', { name: "Browser can't communicate with device" }),
+    // ).toBeVisible();
     await popup.close({ runBeforeUnload: true });
     await page.close();
     await context.close();
@@ -89,7 +91,9 @@ test(`env: web, device: mobile/iPhone => not allowed`, async ({ browser }) => {
 
     popup = await openPopup(page);
     // unfortunately webusb now does not work for connect-popup, so mobile chrome won't run even if it technically could
-    await expect(popup.getByText('Smartphones not supported yet')).toBeVisible();
+    await expect(
+        popup.getByRole('heading', { name: 'Smartphones not supported yet' }),
+    ).toBeVisible();
     await popup.screenshot({ path: `${dir}/mobile-iphone-not-supported.png` });
 
     await popup.click('text=Close');

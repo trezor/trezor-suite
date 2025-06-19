@@ -83,13 +83,13 @@ test('popup should display error page when device disconnected and debug mode', 
     log('waiting for explorer to load');
     await waitAndClick(page, ['@api-playground/collapsible-box']);
     await page.getByTestId('@api-playground/collapsible-box').waitFor({ state: 'visible' });
-    await expect(explorerPage.getByTestId('@submit-button').getByRole('button')).toBeVisible();
+    await expect(explorerPage.getByTestId('@submit-button')).toBeVisible();
 
     log('opening popup');
     [popup] = await openPopup(persistentContext, explorerPage, isWebExtension);
 
     log('waiting for popup analytics to load');
-    await expect(popup.getByTestId('@analytics/continue-button').getByRole('button')).toBeVisible({
+    await expect(popup.getByTestId('@analytics/continue-button')).toBeVisible({
         timeout: 40000,
     });
     log('clicking on analytics continue button');
@@ -167,9 +167,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     log(`loaded: ${logsUrl}`);
 
     log('waiting for download-button to be visible');
-    await expect(
-        logsPage.getByTestId('@log-container/download-button').getByRole('button'),
-    ).toBeVisible({
+    await expect(logsPage.getByTestId('@log-container/download-button')).toBeVisible({
         timeout: 40 * 1000,
     });
 

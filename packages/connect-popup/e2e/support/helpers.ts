@@ -4,15 +4,20 @@ import path from 'path';
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {
     for (const button of buttons) {
-        const locator = page.getByTestId(button);
-        await expect(locator).toBeVisible();
-        await locator.click();
+        // This is risky approach, I have identify duplicate elements with same data-testid.
+        // TODO: deduplicate elements with same data-testid. and switch to using `getByTestId` and expect to be visible.
+        // eslint-disable-next-line playwright/no-wait-for-selector
+        await page.waitForSelector(`[data-testid='${button}']`, { state: 'visible' });
+        await page.click(`[data-testid='${button}']`);
     }
 };
 
 // Helper to use data-test attributes to find elements.
 export const findElementByDataTest = async (page: Page, dataTestId: string, timeout?: number) => {
-    await expect(page.getByTestId(dataTestId)).toBeVisible({ timeout });
+    // This is risky approach, I have identify duplicate elements with same data-testid.
+    // TODO: deduplicate elements with same data-testid. and switch to using `getByTestId` and expect to be visible.
+    // eslint-disable-next-line playwright/no-wait-for-selector
+    await page.waitForSelector(`[data-testid='${dataTestId}']`, { state: 'visible', timeout });
 
     return page.getByTestId(dataTestId);
 };

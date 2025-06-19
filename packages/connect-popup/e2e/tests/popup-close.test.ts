@@ -312,7 +312,7 @@ test('popup should be focused when a call is in progress and user triggers new c
         ),
     );
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
-    await expect(explorerPage.getByTestId('@submit-button').getByRole('button')).toBeVisible();
+    await expect(explorerPage.getByTestId('@submit-button')).toBeVisible();
 
     log('waiting for popup open');
     [popup] = await openPopup(browserContext, explorerPage, isWebExtension);

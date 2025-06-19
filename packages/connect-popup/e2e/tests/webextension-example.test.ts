@@ -74,12 +74,12 @@ test('Basic web extension MV2', async () => {
     // Wait for connect to be ready.
     await expect(page.getByTestId('connect-loaded')).toBeVisible();
 
-    await expect(page.getByTestId('get-address').getByRole('button')).toBeVisible();
+    await expect(page.getByTestId('get-address')).toBeVisible();
     await page.click("button[data-testid='get-address']");
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
-    await expect(popup.getByTestId('@analytics/continue-button').getByRole('button')).toBeVisible({
+    await expect(popup.getByTestId('@analytics/continue-button')).toBeVisible({
         timeout: 40000,
     });
     await popup.click("button[data-testid='@analytics/continue-button']");
@@ -123,7 +123,7 @@ test('Basic web extension MV3', async () => {
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
     await page.screenshot({ path: `${dir}/web-extension-mv3-1.png` });
 
-    await expect(page.getByTestId('get-address').getByRole('button')).toBeVisible();
+    await expect(page.getByTestId('get-address')).toBeVisible();
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');

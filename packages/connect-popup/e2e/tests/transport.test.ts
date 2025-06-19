@@ -136,7 +136,7 @@ fixtures.forEach(f => {
         await page.goto(formattedUrl);
         log('waiting for explorer to load');
         await waitAndClick(page, ['@api-playground/collapsible-box']);
-        await expect(page.getByTestId('@submit-button').getByRole('button')).toBeVisible();
+        await expect(page.getByTestId('@submit-button')).toBeVisible();
 
         log('opening popup');
         [popup] = await Promise.all([
