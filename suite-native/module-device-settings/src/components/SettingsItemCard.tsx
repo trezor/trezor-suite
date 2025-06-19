@@ -23,8 +23,8 @@ type SettingsItemCardProps = {
     title: ReactNode;
     subtitle: ReactNode;
     alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
-    onPress: () => void;
-    variant: CardVariant;
+    onPress?: () => void;
+    variant?: CardVariant;
 };
 
 const contentStyle = prepareNativeStyle(() => ({

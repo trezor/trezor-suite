@@ -1,10 +1,8 @@
-import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
-import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import {
     selectDeviceModel,
     selectDeviceReleaseInfo,
@@ -12,7 +10,7 @@ import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { CardWithIconLayout, HStack, InlineAlertBoxProps, Text, VStack } from '@suite-native/atoms';
+import { InlineAlertBoxProps } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -21,30 +19,9 @@ import {
     DeviceSettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
-const firmwareInfoStyle = prepareNativeStyle(() => ({
-    flexGrow: 1,
-}));
-
-type DeviceInfoProps = {
-    label: ReactNode;
-    value: ReactNode;
-};
-
-const FirmwareInfo = ({ label, value }: DeviceInfoProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <VStack spacing="sp2" style={applyStyle(firmwareInfoStyle)}>
-            <Text variant="hint" color="textSubdued">
-                {label}
-            </Text>
-            <Text variant="callout">{value}</Text>
-        </VStack>
-    );
-};
+import { SettingsItemCard } from './SettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -66,9 +43,10 @@ export const DeviceFirmwareCard = () => {
     }
 
     const firmwareVersion = getFirmwareVersion(device);
-    const firmwareTypeTranslationId = hasBitcoinOnlyFirmware(device)
-        ? 'firmware.typeBitcoinOnly'
-        : 'firmware.typeUniversal';
+
+    const handleOnPress = () => {
+        navigation.navigate(DeviceSettingsStackRoutes.ConfirmFirmwareUpdate);
+    };
 
     const firmwareUpdateProps = ((): InlineAlertBoxProps | undefined => {
         if (!isFirmwareUpdateEnabled || !isDeviceBackedUp) {
@@ -80,49 +58,32 @@ export const DeviceFirmwareCard = () => {
 
             if (isUpgradable) {
                 return {
-                    title: (
-                        <Translation
-                            id="firmware.updateCard.newVersionAvailable"
-                            values={{ version: getFwUpdateVersion(device) }}
-                        />
-                    ),
+                    title: <Translation id="firmware.updateCard.newVersionAvailable" />,
                     variant: 'info',
                     buttonLabel: <Translation id="firmware.updateCard.updateButton" />,
-                    onButtonPress: () => {
-                        navigation.navigate(DeviceSettingsStackRoutes.ConfirmFirmwareUpdate);
-                    },
+                    onButtonPress: handleOnPress,
                     buttonProps: {
                         isDisabled: isDiscoveryRunning,
                         isLoading: isDiscoveryRunning,
                     },
                 } as const;
             }
-
-            return {
-                title: <Translation id="firmware.updateCard.upToDate" />,
-                variant: 'success',
-            } as const;
         }
 
         return undefined;
     })();
 
     return (
-        <CardWithIconLayout
+        <SettingsItemCard
             icon={deviceModelToIconName(deviceModel)}
             title={<Translation id="firmware.title" />}
             alertBoxProps={firmwareUpdateProps}
-        >
-            <HStack marginTop="sp12" spacing="sp2">
-                <FirmwareInfo
-                    label={<Translation id="firmware.version" />}
-                    value={firmwareVersion}
-                />
-                <FirmwareInfo
-                    label={<Translation id="firmware.type" />}
-                    value={<Translation id={firmwareTypeTranslationId} />}
-                />
-            </HStack>
-        </CardWithIconLayout>
+            subtitle={
+                <>
+                    <Translation id="firmware.version" /> {firmwareVersion}
+                </>
+            }
+            onPress={handleOnPress}
+        />
     );
 };
