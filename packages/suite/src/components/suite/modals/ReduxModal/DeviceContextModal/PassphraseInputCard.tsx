@@ -73,87 +73,94 @@ export const PassphraseInputCard = ({
     );
 
     return (
-        <Card
-            paddingType="none"
-            footer={
-                offerPassphraseOnDevice ? (
-                    <Row
-                        gap={spacings.lg}
-                        padding={spacings.md}
-                        onClick={() => submit(value, true)}
-                        data-testid="@passphrase/enter-on-device-button"
-                        cursor="pointer"
-                    >
-                        {deviceModel && (
-                            <Image alt="Trezor" image={`TREZOR_${deviceModel}`} height={34} />
-                        )}
-                        <Text variant="tertiary">
-                            <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
-                        </Text>
-                        <Icon margin={{ left: 'auto' }} name="caretRight" variant="tertiary" />
-                    </Row>
-                ) : null
-            }
+        <form
+            onSubmit={e => {
+                e.preventDefault();
+                submit(value);
+            }}
         >
-            <Column gap={spacings.sm} padding={spacings.sm}>
-                <Column>
-                    <Input
-                        data-testid="@passphrase/input"
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder={translationString('TR_ENTER_PASSPHRASE')}
-                        onChange={e => setValue(e.target.value)}
-                        // eslint-disable-next-line jsx-a11y/no-autofocus
-                        autoFocus={!isAndroid()}
-                        value={value}
-                        bottomText={errorMessage}
-                        inputState={errorMessage ? 'error' : undefined}
-                        innerAddon={
-                            <Icon
-                                size={18}
-                                variant="tertiary"
-                                name={showPassword ? 'eyeClosed' : 'eye'}
-                                onClick={() => setShowPassword(!showPassword)}
-                                data-testid="@passphrase/show-toggle"
-                            />
-                        }
-                    />
-                    <AnimatePresence initial={false}>
-                        {value && !errorMessage && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{
-                                    duration: 0.2,
-                                    ease: motionEasing.transition,
-                                }}
-                                style={{ overflow: 'hidden' }}
-                            >
-                                <Box padding={{ top: spacings.xs }}>
-                                    <PasswordStrengthIndicator password={value} />
-                                </Box>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+            <Card
+                paddingType="none"
+                footer={
+                    offerPassphraseOnDevice ? (
+                        <Row
+                            gap={spacings.lg}
+                            padding={spacings.md}
+                            onClick={() => submit(value, true)}
+                            data-testid="@passphrase/enter-on-device-button"
+                            cursor="pointer"
+                        >
+                            {deviceModel && (
+                                <Image alt="Trezor" image={`TREZOR_${deviceModel}`} height={34} />
+                            )}
+                            <Text variant="tertiary">
+                                <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
+                            </Text>
+                            <Icon margin={{ left: 'auto' }} name="caretRight" variant="tertiary" />
+                        </Row>
+                    ) : null
+                }
+            >
+                <Column gap={spacings.sm} padding={spacings.sm}>
+                    <Column>
+                        <Input
+                            data-testid="@passphrase/input"
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder={translationString('TR_ENTER_PASSPHRASE')}
+                            onChange={e => setValue(e.target.value)}
+                            // eslint-disable-next-line jsx-a11y/no-autofocus
+                            autoFocus={!isAndroid()}
+                            value={value}
+                            bottomText={errorMessage}
+                            inputState={errorMessage ? 'error' : undefined}
+                            innerAddon={
+                                <Icon
+                                    size={18}
+                                    variant="tertiary"
+                                    name={showPassword ? 'eyeClosed' : 'eye'}
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    data-testid="@passphrase/show-toggle"
+                                />
+                            }
+                        />
+                        <AnimatePresence initial={false}>
+                            {value && !errorMessage && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{
+                                        duration: 0.2,
+                                        ease: motionEasing.transition,
+                                    }}
+                                    style={{ overflow: 'hidden' }}
+                                >
+                                    <Box padding={{ top: spacings.xs }}>
+                                        <PasswordStrengthIndicator password={value} />
+                                    </Box>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </Column>
+                    <Tooltip content={errorMessage}>
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            data-testid="@passphrase/hidden/submit-button"
+                            isDisabled={
+                                !value ||
+                                isPassphraseTooLong ||
+                                deviceLoading ||
+                                isUsingNonAsciiCharacters
+                            }
+                            isFullWidth
+                            isLoading={isLoading}
+                        >
+                            Confirm
+                        </Button>
+                    </Tooltip>
                 </Column>
-                <Tooltip content={errorMessage}>
-                    <Button
-                        variant="primary"
-                        onClick={() => submit(value)}
-                        data-testid="@passphrase/hidden/submit-button"
-                        isDisabled={
-                            !value ||
-                            isPassphraseTooLong ||
-                            deviceLoading ||
-                            isUsingNonAsciiCharacters
-                        }
-                        isFullWidth
-                        isLoading={isLoading}
-                    >
-                        Confirm
-                    </Button>
-                </Tooltip>
-            </Column>
-        </Card>
+            </Card>
+        </form>
     );
 };
