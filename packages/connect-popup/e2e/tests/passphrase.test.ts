@@ -272,7 +272,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await TrezorUserEnvLink.pressYes();
 
     // Wait for success message before reloading page.
-    await expect(explorerPage.getByText('success: true')).toBeVisible();
+    await expect(explorerPage.getByText('success: true').first()).toBeVisible();
 
     // Reload explorer page
     await explorerPage.reload();

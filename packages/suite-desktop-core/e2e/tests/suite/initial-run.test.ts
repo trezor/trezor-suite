@@ -16,9 +16,7 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await analyticsSection.continueButton.click();
 
-        await expect(
-            page.getByTestId('@onboarding/exit-app-button').getByRole('button'),
-        ).toBeVisible();
+        await expect(page.getByTestId('@onboarding/exit-app-button')).toBeVisible();
 
         await page.reload();
         await expect(analyticsSection.toggleSwitch).toBeHidden();

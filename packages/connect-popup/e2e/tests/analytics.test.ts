@@ -31,7 +31,7 @@ test('reporting', async ({ page }) => {
     await page.goto(`${url}#/method/getAddress`);
 
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await expect(page.getByTestId('@submit-button').getByRole('button')).toBeVisible();
+    await expect(page.getByTestId('@submit-button')).toBeVisible();
     const [popup] = await Promise.all([
         // It is important to call waitForEvent before click to set up waiting.
         page.waitForEvent('popup'),
