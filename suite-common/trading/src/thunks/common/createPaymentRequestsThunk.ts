@@ -34,6 +34,7 @@ type CreateSignatureThunkProps = {
     type: TradingTradeSellExchangeType;
     account: Account;
     composedLevels: GeneralPrecomposedTransaction;
+    formattedMaxAmount: string | undefined;
 };
 
 export const createPaymentRequestsThunk = createThunk<
@@ -45,13 +46,11 @@ export const createPaymentRequestsThunk = createThunk<
 >(
     `${TRADING_THUNK_PREFIX}/createPaymentRequests`,
     async (
-        { type, account, composedLevels },
+        { type, account, composedLevels, formattedMaxAmount },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const { mac: macRefund } = await dispatch(getRefundAddress({ account })).unwrap();
         const nonce = await dispatch(getNonce()).unwrap();
-
-        // const { composed } = selectTradingComposedTransactionInfo(getState()); // TODO: slip24 - use after update fees during swaps/sells
 
         if (!('outputs' in composedLevels)) {
             return rejectWithValue({
@@ -134,7 +133,10 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const paymentRequest = tradingExchangeCreatePaymentRequest({
-                    trade,
+                    trade: {
+                        ...trade,
+                        sendStringAmount: formattedMaxAmount ?? trade.sendStringAmount,
+                    },
                     provider,
                     macPurchase: verifiedAddress.mac,
                     macRefund,
@@ -199,7 +201,10 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const paymentRequest = tradingSellCreatePaymentRequest({
-                    trade,
+                    trade: {
+                        ...trade,
+                        cryptoStringAmount: formattedMaxAmount ?? trade.cryptoStringAmount,
+                    },
                     provider,
                     macRefund,
                     nonce,

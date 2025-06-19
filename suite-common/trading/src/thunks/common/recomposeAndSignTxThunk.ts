@@ -9,6 +9,7 @@ import {
     selectNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { Account, FormOptions, FormState, FormStateTrading } from '@suite-common/wallet-types';
+import { formatAmount } from '@suite-common/wallet-utils';
 import { Success, Unsuccessful } from '@trezor/connect';
 
 import { tradingThunks } from '../';
@@ -49,6 +50,16 @@ export type RecomposeAndSignTxThunkProps = {
         paymentRequests,
     }: TradingSignAndPushSendFormTransactionProps) => Promise<FulfillValue>;
 };
+
+const getTradingFormStateAccordingRestriction = (
+    tradingFormState: FormStateTrading,
+    isPaymentRequestsAllowed: boolean,
+): FormStateTrading =>
+    isPaymentRequestsAllowed
+        ? tradingFormState
+        : {
+              activeSection: tradingFormState.activeSection,
+          };
 
 /**
  * This thunk is particularly useful for scenarios where transaction details (e.g., fees, outputs) need to be recalculated
@@ -106,6 +117,10 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
+        const restrictedTradingFormState = getTradingFormStateAccordingRestriction(
+            tradingFormState,
+            isPaymentRequestsAllowed,
+        );
         // prepare the fee levels, set custom values from composed
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
         const formState: FormState = {
@@ -131,11 +146,7 @@ export const recomposeAndSignTxThunk = createThunk<
             ethereumDataHex,
             ethereumAdjustGasLimit,
             selectedUtxos: [],
-            trading: isPaymentRequestsAllowed
-                ? tradingFormState
-                : {
-                      activeSection: tradingFormState.activeSection,
-                  },
+            trading: restrictedTradingFormState,
         };
 
         // prepare form state for composeAction
@@ -212,18 +223,48 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
+        /*
+            SLIP-24 to achieve the consistent trade data
+            --- 
+            If the transaction is a trade of whole balance, we need to set the amount to 
+            the formState (displayed in the UI) and for the payment requests to
+            ensure that the payment requests are created with the correct amount.
+        */
+        const { decimals } = getNetwork(account.symbol);
+        const isTradedWholeBalance = precomposedToSign.outputs.length === 1; // sending whole balance
+        const sendAmount = isTradedWholeBalance
+            ? precomposedToSign.outputs[0].amount.toString()
+            : undefined;
+        const formattedMaxAmount = sendAmount ? formatAmount(sendAmount, decimals) : undefined;
+
+        const formStateUpdated: FormState = {
+            ...formState,
+            trading: {
+                ...restrictedTradingFormState,
+                ...('send' in restrictedTradingFormState
+                    ? {
+                          send: {
+                              ...restrictedTradingFormState.send,
+                              amount: formattedMaxAmount ?? restrictedTradingFormState.send.amount,
+                          },
+                      }
+                    : {}),
+            },
+        };
+
         const paymentRequests = isPaymentRequestsAllowed
             ? await dispatch(
                   tradingThunks.createPaymentRequestsThunk({
-                      type: tradingFormState.activeSection,
+                      type: restrictedTradingFormState.activeSection,
                       account,
                       composedLevels: precomposedToSign,
+                      formattedMaxAmount,
                   }),
               ).unwrap()
             : [];
 
         const resultOfSignedTransaction = await signAndPushSendFormTransaction({
-            formState,
+            formState: formStateUpdated,
             precomposedTransaction: precomposedToSign,
             selectedAccount: account,
             paymentRequests,
