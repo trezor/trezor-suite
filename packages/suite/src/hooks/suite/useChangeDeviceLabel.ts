@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { UseFormReturn, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -29,7 +29,18 @@ const changeDeviceLabelSchema = (t: TranslationFunction) =>
             }),
     });
 
-export const useChangeDeviceLabel = () => {
+export const useChangeDeviceLabel = (): {
+    form: UseFormReturn<
+        {
+            deviceLabel: string | undefined;
+        },
+        unknown,
+        {
+            deviceLabel?: string | undefined;
+        }
+    >;
+    handleSubmit: (onSuccess?: () => void) => void;
+} => {
     const { translationString } = useTranslation();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();

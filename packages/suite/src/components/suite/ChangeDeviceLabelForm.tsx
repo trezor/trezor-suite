@@ -25,7 +25,7 @@ const Container = styled.form<{ $isVertical?: boolean }>`
 type ChangeDeviceLabelProps = {
     isDeviceLocked: boolean;
     isVertical?: boolean;
-    onClick?: () => void;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export const ChangeDeviceLabelForm = ({

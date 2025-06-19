@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { SettingsSectionItem } from 'src/components/settings';
@@ -14,6 +15,14 @@ type DeviceLabelProps = {
 export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
     const { form, handleSubmit } = useChangeDeviceLabel();
 
+    const onSubmit = useCallback(
+        (event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            handleSubmit();
+        },
+        [handleSubmit],
+    );
+
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.DeviceLabel}>
             <TextColumn
@@ -27,7 +36,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                     <ChangeDeviceLabelForm
                         isVertical
                         isDeviceLocked={isDeviceLocked}
-                        onClick={handleSubmit}
+                        onClick={onSubmit}
                     />
                 </FormProvider>
             </ActionColumn>
