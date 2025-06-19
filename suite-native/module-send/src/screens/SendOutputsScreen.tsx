@@ -1,7 +1,7 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box, Button } from '@suite-native/atoms';
+import { Box, Button, HStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -15,6 +15,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SendOutputFields } from '../components/SendOutputFields';
+import { SwitchCoinControlButton } from '../components/SwitchCoinControlButton';
 import { useSendForm } from '../hooks/useSendForm';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
@@ -81,6 +82,9 @@ export const SendOutputsScreen = ({
                 <Box marginTop="sp32">
                     <Form form={form}>
                         <SendOutputFields accountKey={accountKey} />
+                        <HStack justifyContent="center" marginTop="sp24">
+                            <SwitchCoinControlButton accountKey={accountKey} />
+                        </HStack>
                     </Form>
                 </Box>
             </>
