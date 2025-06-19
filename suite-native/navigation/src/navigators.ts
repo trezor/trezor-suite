@@ -197,6 +197,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
     };
+    [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: undefined;
     [DeviceSettingsStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceSettingsStackRoutes.FirmwareInstallation]: undefined;
