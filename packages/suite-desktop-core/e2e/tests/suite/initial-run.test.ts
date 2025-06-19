@@ -1,15 +1,13 @@
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
-    test.beforeEach(async ({ onboardingPage }) => {
-        await onboardingPage.disableNecessaryFirmwareChecks();
-    });
-
     test('Until user passed through initial run, it will be there after reload', async ({
         page,
         analyticsSection,
         onboardingPage,
     }) => {
+        await onboardingPage.disableNecessaryFirmwareChecks();
+        await onboardingPage.optionallyDismissFwHashCheckError();
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await page.reload();
         // analytics screen is there until user confirms his choice
