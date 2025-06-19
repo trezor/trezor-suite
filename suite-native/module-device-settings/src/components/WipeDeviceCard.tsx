@@ -1,9 +1,5 @@
-import { useSelector } from 'react-redux';
-
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Box, Button, CardWithIconLayout, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -12,6 +8,8 @@ import {
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 
+import { SettingsItemCard } from './SettingsItemCard';
+
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes.DeviceSettings
@@ -19,7 +17,6 @@ type NavigationProp = StackNavigationProps<
 
 export const WipeDeviceCard = () => {
     const navigation = useNavigation<NavigationProp>();
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const handleRedirect = () => {
         navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
@@ -28,26 +25,12 @@ export const WipeDeviceCard = () => {
     };
 
     return (
-        <CardWithIconLayout
+        <SettingsItemCard
             title={<Translation id="moduleDeviceSettings.wipeDevice.title" />}
             icon="arrowsClockwise"
-        >
-            <VStack marginTop="sp2" spacing="sp16">
-                <Text variant="body" color="textSubdued">
-                    <Translation id="moduleDeviceSettings.wipeDevice.content" />
-                </Text>
-                <Box flex={1}>
-                    <Button
-                        size="small"
-                        colorScheme="redBold"
-                        onPress={handleRedirect}
-                        isDisabled={isDiscoveryRunning}
-                        isLoading={isDiscoveryRunning}
-                    >
-                        <Translation id="moduleDeviceSettings.wipeDevice.buttonTitle" />
-                    </Button>
-                </Box>
-            </VStack>
-        </CardWithIconLayout>
+            subtitle="This will reset all stored data"
+            onPress={handleRedirect}
+            variant="danger"
+        />
     );
 };
