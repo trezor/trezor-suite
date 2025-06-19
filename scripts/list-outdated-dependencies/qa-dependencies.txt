@@ -6,6 +6,7 @@
 @playwright/browser-webkit
 @playwright/test
 dotenv
+eslint-plugin-playwright
 jest-diff
 jest-junit
 chai
