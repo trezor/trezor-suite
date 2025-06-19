@@ -14,7 +14,6 @@
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
         "@reduxjs/toolkit": "2.8.2",
-        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
