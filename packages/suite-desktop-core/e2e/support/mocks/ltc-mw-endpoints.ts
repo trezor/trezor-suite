@@ -131,18 +131,7 @@ export const fixtures = [
         method: 'estimateFee',
         default: true,
         response: {
-            data: [
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-                { feePerUnit: '999' },
-            ],
+            data: [{ feePerUnit: '999' }],
         },
     },
     {

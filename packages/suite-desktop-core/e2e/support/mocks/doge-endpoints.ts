@@ -183,18 +183,7 @@ export const fixtures = [
         method: 'estimateFee',
         default: true,
         response: {
-            data: [
-                { feePerUnit: '-100000000' },
-                { feePerUnit: '6418769' },
-                { feePerUnit: '1003782' },
-                { feePerUnit: '1003782' },
-                { feePerUnit: '1003782' },
-                { feePerUnit: '1003782' },
-                { feePerUnit: '1003782' },
-                { feePerUnit: '1003782' },
-                { feePerUnit: '1003782' },
-                { feePerUnit: '1003782' },
-            ],
+            data: [{ feePerUnit: '6418773' }],
         },
     },
     {
