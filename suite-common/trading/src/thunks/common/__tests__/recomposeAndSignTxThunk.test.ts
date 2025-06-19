@@ -238,7 +238,7 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) => fulfillWithValue(levels),
             ),
         );
@@ -274,7 +274,7 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         type: 'final',
@@ -308,7 +308,7 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { rejectWithValue }) => rejectWithValue({ error: 'fee-levels-compose-failed' }),
             ),
         );
@@ -344,7 +344,7 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         type: 'final',
@@ -378,7 +378,7 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         type: 'nonfinal',
@@ -412,7 +412,7 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         normal: {
@@ -475,12 +475,16 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         normal: {
                             type: 'final',
-                            data: {},
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
                         },
                     }),
             ),
@@ -527,15 +531,25 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementation(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         normal: {
                             type: 'final',
                             feeLimit: '1111',
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
                         },
                         custom: {
                             type: 'final',
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
                         },
                     }),
             ),
@@ -596,12 +610,16 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         normal: {
                             type: 'final',
-                            data: {},
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
                         },
                     }),
             ),
@@ -636,6 +654,7 @@ describe('recomposeAndSignTxThunk', () => {
             composedLevels: expect.objectContaining({
                 type: 'final',
             }),
+            formattedMaxAmount: '0.1',
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledWith({
             formState: expect.any(Object),
@@ -662,12 +681,16 @@ describe('recomposeAndSignTxThunk', () => {
 
         (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
             createThunk(
-                '@common/wallet-core/send/composeSendFormTransactionThunk',
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
                 (_, { fulfillWithValue }) =>
                     fulfillWithValue({
                         normal: {
                             type: 'final',
-                            data: {},
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
                         },
                     }),
             ),

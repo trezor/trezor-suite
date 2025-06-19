@@ -259,6 +259,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'exchange',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockExchangeQuote.sendStringAmount,
                 }),
             );
 
@@ -281,6 +282,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'exchange',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockExchangeQuote.sendStringAmount,
                 }),
             );
 
@@ -305,6 +307,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'exchange',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockExchangeQuote.sendStringAmount,
                 }),
             );
 
@@ -331,6 +334,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'exchange',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockExchangeQuote.sendStringAmount,
                 }),
             );
 
@@ -363,6 +367,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'exchange',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockExchangeQuote.sendStringAmount,
                 }),
             );
 
@@ -413,6 +418,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'sell',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
                 }),
             );
 
@@ -434,6 +440,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'sell',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
                 }),
             );
 
@@ -464,6 +471,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'sell',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
                 }),
             );
 
@@ -491,6 +499,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'exchange',
                     account: mockAccount,
                     composedLevels: invalidTransaction as any,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
                 }),
             );
 
@@ -539,6 +548,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'sell',
                     account: mockAccount,
                     composedLevels: transactionWithOnlyDirectOutputs,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
                 }),
             );
 
@@ -572,6 +582,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'exchange',
                     account: mockAccount,
                     composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
                 }),
             );
 
