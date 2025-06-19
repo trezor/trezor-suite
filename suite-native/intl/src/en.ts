@@ -2026,8 +2026,8 @@ export const en = {
         firmwareUpdateScreen: {
             updateButton: 'Update firmware',
             skipButton: 'Skip for now',
-            title: 'Firmware update',
-            subtitle: 'New firmware is now available. Update your device now.',
+            title: 'Firmware',
+            subtitle: "Firware is your Trezor's operating system",
             changelog: {
                 button: 'What’s new?',
                 title: 'What’s new?',

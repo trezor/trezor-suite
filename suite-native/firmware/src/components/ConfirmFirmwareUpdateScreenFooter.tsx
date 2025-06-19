@@ -40,6 +40,7 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
         <VStack spacing="sp12" marginHorizontal="sp16" marginBottom="sp16">
             <Button
                 onPress={handleShowSeedBottomSheet}
+                colorScheme="blueBold"
                 isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                 isLoading={isDiscoveryRunning}
             >
