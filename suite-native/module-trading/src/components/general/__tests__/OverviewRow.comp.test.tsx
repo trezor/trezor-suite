@@ -27,4 +27,24 @@ describe('OverviewRow', () => {
 
         expect(onPress).toHaveBeenCalledWith();
     });
+
+    it('should render warning when added', () => {
+        const { queryByHintText } = renderWithBasicProvider(
+            <OverviewRow title="Title" warning="Warning message">
+                <Text>Child</Text>
+            </OverviewRow>,
+        );
+
+        expect(queryByHintText('Warning')).toHaveTextContent(/^.Warning message$/);
+    });
+
+    it('should not render warning when not added', () => {
+        const { queryByHintText } = renderWithBasicProvider(
+            <OverviewRow title="Title">
+                <Text>Child</Text>
+            </OverviewRow>,
+        );
+
+        expect(queryByHintText('Warning')).not.toBeOnTheScreen();
+    });
 });

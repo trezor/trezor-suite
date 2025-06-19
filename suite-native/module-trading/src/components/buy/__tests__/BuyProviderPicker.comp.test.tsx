@@ -95,6 +95,20 @@ describe('BuyProviderPicker', () => {
             expect(getByText('Mercuryo')).toBeOnTheScreen();
         });
 
+        it('should display kyc warning when not loading', async () => {
+            const { getByText } = await renderTradingProviderPicker(preloadedState);
+
+            expect(getByText('This provider requires to know your identity.')).toBeOnTheScreen();
+        });
+
+        it('should not display kyc warning when loading', async () => {
+            preloadedState!.wallet!.tradingNew!.buy!.isLoading = true;
+            const { queryByText } = await renderTradingProviderPicker(preloadedState);
+            expect(
+                queryByText('This provider requires to know your identity.'),
+            ).not.toBeOnTheScreen();
+        });
+
         describe('analytics', () => {
             const analyticsSpy = jest.spyOn(analytics, 'report');
 

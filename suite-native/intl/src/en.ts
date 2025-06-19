@@ -1816,6 +1816,8 @@ export const en = {
                 sell: 'Sell',
                 exchange: 'Swap',
             },
+            kycWarning: 'This provider requires to know your identity.',
+            warning: 'Warning',
         },
         selectFiat: {
             title: 'You pay',

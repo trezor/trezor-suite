@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { Box, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
+import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type TradeOverviewOptionProps = {
@@ -12,6 +13,7 @@ export type TradeOverviewOptionProps = {
     noBottomBorder?: boolean;
     noCaret?: boolean;
     testID?: string;
+    warning?: string;
 };
 
 const pressableStyle = prepareNativeStyle<{ noBottomBorder: boolean }>(
@@ -35,8 +37,10 @@ export const OverviewRow = ({
     noBottomBorder = false,
     noCaret = false,
     testID,
+    warning,
 }: TradeOverviewOptionProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
 
     return (
         <Pressable
@@ -47,23 +51,34 @@ export const OverviewRow = ({
             style={applyStyle(pressableStyle, { noBottomBorder })}
             testID={testID}
         >
-            <HStack paddingHorizontal="sp12" justifyContent="space-between">
-                <Box paddingVertical="sp20" paddingHorizontal="sp8" flex={0}>
-                    <Text color="textDefault" variant="body">
-                        {title}
-                    </Text>
-                </Box>
-                <HStack flex={1} justifyContent="flex-end" alignItems="center">
-                    <Box flex={1} justifyContent="flex-end" alignItems="flex-end">
-                        {children}
+            <VStack spacing={0}>
+                <HStack paddingHorizontal="sp12" justifyContent="space-between">
+                    <Box paddingVertical="sp20" paddingHorizontal="sp8" flex={0}>
+                        <Text color="textDefault" variant="body">
+                            {title}
+                        </Text>
                     </Box>
-                    {!noCaret && (
-                        <Box flex={0}>
-                            <Icon name="caretDown" size="medium" color="textSubdued" />
+                    <HStack flex={1} justifyContent="flex-end" alignItems="center">
+                        <Box flex={1} justifyContent="flex-end" alignItems="flex-end">
+                            {children}
                         </Box>
-                    )}
+                        {!noCaret && (
+                            <Box flex={0}>
+                                <Icon name="caretDown" size="medium" color="textSubdued" />
+                            </Box>
+                        )}
+                    </HStack>
                 </HStack>
-            </HStack>
+                {warning && (
+                    <Box paddingHorizontal="sp16" paddingBottom="sp12">
+                        <InlineAlertBox
+                            variant="warning"
+                            title={warning}
+                            accessibilityHint={translate('moduleTrading.tradingScreen.warning')}
+                        />
+                    </Box>
+                )}
+            </VStack>
         </Pressable>
     );
 };

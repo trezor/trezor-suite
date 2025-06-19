@@ -5,6 +5,7 @@ import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { isBuyTrade } from '../../../utils/general/utils';
 import { ProviderLogo } from '../ProviderLogo';
 import { InfoLineItem } from './InfoLineItem';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
@@ -50,6 +51,8 @@ export const ProviderListItem = <T extends TradingTradeType>({
 
         isAnonymous = kycPolicy === 'noKYC' || isDex;
         requiresKyc = ['KYC-required', 'KYC-norefund', 'KYC-yesrefund'].includes(kycPolicy);
+    } else if (isBuyTrade(quote)) {
+        requiresKyc = true;
     }
 
     return (

@@ -101,4 +101,18 @@ describe('ProviderListItem', () => {
 
         expect(queryByText('TestProvider')).toBeNull();
     });
+
+    it('should render KYC warning for buy quote', async () => {
+        const preloadedState = { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } };
+        const quote = preloadedState.wallet.tradingNew.buy.quotes[0];
+
+        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+            provider: {
+                companyName: 'TestProvider',
+                logo: '',
+            } as TradingProviderInfo,
+        });
+
+        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+    });
 });
