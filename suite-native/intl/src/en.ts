@@ -2009,7 +2009,6 @@ export const en = {
     firmware: {
         title: 'Firmware',
         version: 'Version',
-        type: 'Type',
         typeUniversal: 'Universal',
         typeBitcoinOnly: 'Bitcoin-only',
         seedBottomSheet: {
@@ -2021,7 +2020,7 @@ export const en = {
         },
         updateCard: {
             upToDate: 'You’re all up to date',
-            newVersionAvailable: 'New version available ({version})',
+            newVersionAvailable: 'Update available',
             updateButton: 'Update',
         },
         firmwareUpdateScreen: {
