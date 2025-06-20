@@ -1,33 +1,35 @@
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { UnstakeFormState } from '@suite-common/wallet-core';
-import { getInputState, getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Column, FractionButtonProps, Text } from '@trezor/components';
+import { StakeFormState } from '@suite-common/wallet-types';
+import { getInputState, getStakingLimitsByNetwork } from '@suite-common/wallet-utils';
+import { Banner, Column, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { FiatValue, Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
-import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { validateStakingMax } from 'src/utils/suite/staking';
 import {
     validateCryptoLimits,
     validateDecimals,
     validateFiatLimits,
     validateMin,
+    validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 
-export const Inputs = () => {
+export const StakeInputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
-
     const locale = useSelector(selectLanguage);
 
     const {
-        account,
         control,
+        account,
         network,
         formState: { errors },
         amountLimits,
@@ -35,28 +37,23 @@ export const Inputs = () => {
         onCryptoAmountChange,
         onFiatAmountChange,
         localCurrency,
+        isAmountForWithdrawalWarningShown,
+        isLessAmountForWithdrawalWarningShown,
+        isAdviceForWithdrawalWarningShown,
         currentRate,
         setRatioAmount,
+        setMax,
         setCurrency,
-    } = useUnstakeEthFormContext();
+    } = useStakeFormContext();
 
-    const {
-        autocompoundBalance = '0',
-        depositedBalance = '0',
-        restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
-
-    const isRewardsVisible = restakedReward != '';
-    const isRewardsDisabled = restakedReward === '0';
-
-    const { symbol } = account;
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
-
-    const { outputs } = getValues();
-    const amount = outputs?.[0]?.amount;
+    const { MIN_FOR_WITHDRAWALS, MAX_AMOUNT_FOR_STAKING, MIN_AMOUNT_FOR_STAKING } =
+        getStakingLimitsByNetwork(account);
 
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
+
+    const { outputs } = getValues();
+    const amount = outputs?.[0]?.amount;
 
     const fiatInputRules = {
         validate: {
@@ -76,7 +73,11 @@ export const Inputs = () => {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
+            max: validateStakingMax(translationString, { maxAmount: MAX_AMOUNT_FOR_STAKING }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
+            reserveOrBalance: validateReserveOrBalance(translationString, {
+                account,
+            }),
             limits: validateCryptoLimits(translationString, {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
@@ -84,20 +85,47 @@ export const Inputs = () => {
         },
     };
 
-    const labelLeft = <Translation id="AMOUNT" />;
+    const shouldShowAmountForWithdrawalWarning =
+        isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
+
+    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+
+    const isFractionButtonDisabled = (divisor: number) => {
+        if (!account.formattedBalance || !network.decimals) return false;
+
+        return new BigNumber(account.formattedBalance)
+            .dividedBy(divisor)
+            .decimalPlaces(network.decimals)
+            .lte(MIN_AMOUNT_FOR_STAKING);
+    };
+
+    const tooltip = (
+        <Translation
+            id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
+            values={{
+                amount: MIN_AMOUNT_FOR_STAKING.toString(),
+                networkDisplaySymbol,
+            }}
+        />
+    );
+
+    const isBalanceBelowMinStake = new BigNumber(account.formattedBalance || '0').lt(
+        MIN_AMOUNT_FOR_STAKING,
+    );
 
     return (
         <Column gap={spacings.sm} alignItems="center">
-            <InputWithOptions<UnstakeFormState>
+            <InputWithOptions<StakeFormState>
                 onCurrencyChange={setCurrency}
                 cryptoInputProps={{
-                    name: OUTPUT_AMOUNT,
+                    name: CRYPTO_INPUT,
                     locale,
-                    labelLeft,
+                    labelLeft: <Translation id="AMOUNT" />,
                     control,
                     rules: cryptoInputRules,
                     maxLength: formInputsMaxLength.amount,
                     innerAddon: <Text variant="tertiary">{networkDisplaySymbol}</Text>,
+                    bottomText: errors[CRYPTO_INPUT]?.message ?? null,
                     inputState: getInputState(cryptoError || fiatError),
                     onChange: onCryptoAmountChange,
                 }}
@@ -106,13 +134,14 @@ export const Inputs = () => {
                         ? {
                               name: FIAT_INPUT,
                               locale,
-                              labelLeft,
+                              labelLeft: <Translation id="AMOUNT" />,
                               control,
                               rules: fiatInputRules,
                               maxLength: formInputsMaxLength.fiat,
                               innerAddon: (
                                   <Text variant="tertiary">{localCurrency.toUpperCase()}</Text>
                               ),
+                              bottomText: errors[FIAT_INPUT]?.message ?? null,
                               inputState: getInputState(fiatError || cryptoError),
                               onChange: onFiatAmountChange,
                           }
@@ -133,7 +162,7 @@ export const Inputs = () => {
                     ),
                 }}
                 fiatValue={
-                    <FiatValue amount={amount} symbol={symbol} showApproximationIndicator>
+                    <FiatValue amount={amount} symbol={account.symbol} showApproximationIndicator>
                         {({ value }) =>
                             value ? (
                                 <Text typographyStyle="label" variant="tertiary">
@@ -147,74 +176,59 @@ export const Inputs = () => {
                     {
                         id: 'TR_FRACTION_BUTTONS_10_PERCENT',
                         children: <Translation id="TR_FRACTION_BUTTONS_10_PERCENT" />,
+                        tooltip: isFractionButtonDisabled(10) && tooltip,
+                        isDisabled: isFractionButtonDisabled(10),
                         onClick: () => setRatioAmount(10),
                     },
                     {
                         id: 'TR_FRACTION_BUTTONS_25_PERCENT',
                         children: <Translation id="TR_FRACTION_BUTTONS_25_PERCENT" />,
+                        tooltip: isFractionButtonDisabled(4) && tooltip,
+                        isDisabled: isFractionButtonDisabled(4),
                         onClick: () => setRatioAmount(4),
                     },
                     {
                         id: 'TR_FRACTION_BUTTONS_50_PERCENT',
                         children: <Translation id="TR_FRACTION_BUTTONS_50_PERCENT" />,
+                        tooltip: isFractionButtonDisabled(2) && tooltip,
+                        isDisabled: isFractionButtonDisabled(2),
                         onClick: () => setRatioAmount(2),
                     },
                     {
                         id: 'TR_FRACTION_BUTTONS_MAX',
                         children: <Translation id="TR_FRACTION_BUTTONS_MAX" />,
-                        tooltip: (
-                            <Column alignItems="flex-end">
-                                <FormattedCryptoAmount
-                                    value={autocompoundBalance}
-                                    symbol={symbol}
-                                />
-                                <Text typographyStyle="hint">
-                                    <FiatValue amount={depositedBalance} symbol={symbol}>
-                                        {({ value }) => value && <span>{value}</span>}
-                                    </FiatValue>
-                                    {isRewardsVisible && (
-                                        <>
-                                            {' + '}
-                                            <Text variant="primary">
-                                                <FiatValue
-                                                    amount={restakedReward}
-                                                    symbol={symbol}
-                                                />
-                                            </Text>
-                                        </>
-                                    )}
-                                </Text>
-                            </Column>
-                        ),
-                        onClick: () => onCryptoAmountChange(autocompoundBalance),
+                        tooltip: isBalanceBelowMinStake && tooltip,
+                        isDisabled: isBalanceBelowMinStake,
+                        onClick: () => setMax(),
                     },
-                    ...(isRewardsVisible
-                        ? [
-                              {
-                                  id: 'TR_FRACTION_BUTTONS_REWARDS',
-                                  children: <Translation id="TR_FRACTION_BUTTONS_REWARDS" />,
-                                  tooltip: isRewardsDisabled ? (
-                                      <Translation id="TR_STAKE_NO_REWARDS" />
-                                  ) : (
-                                      <Column alignItems="flex-end">
-                                          <FormattedCryptoAmount
-                                              value={restakedReward}
-                                              symbol={symbol}
-                                          />
-                                          <Text variant="primary">
-                                              <FiatValue amount={restakedReward} symbol={symbol} />
-                                          </Text>
-                                      </Column>
-                                  ),
-                                  isSubtle: true,
-                                  variant: 'primary',
-                                  isDisabled: isRewardsDisabled,
-                                  onClick: () => onCryptoAmountChange(restakedReward),
-                              } as FractionButtonProps,
-                          ]
-                        : []),
                 ]}
             />
+            {shouldShowAmountForWithdrawalWarning && (
+                <Banner variant="info" width="100%">
+                    <Translation
+                        id={
+                            isLessAmountForWithdrawalWarningShown
+                                ? 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL'
+                                : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
+                        }
+                        values={{
+                            amount: MIN_FOR_WITHDRAWALS.toString(),
+                            networkDisplaySymbol,
+                        }}
+                    />
+                </Banner>
+            )}
+            {isAdviceForWithdrawalWarningShown && (
+                <Banner variant="info" width="100%">
+                    <Translation
+                        id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
+                        values={{
+                            amount: MIN_FOR_WITHDRAWALS.toString(),
+                            networkDisplaySymbol,
+                        }}
+                    />
+                </Banner>
+            )}
         </Column>
     );
 };

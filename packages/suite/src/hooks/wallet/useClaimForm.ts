@@ -9,18 +9,16 @@ import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT, UseStakeFormsProps } from 'src/types/wallet/stakeForms';
-import {
-    getEthNetworkAddresses,
-    getStakeFormsDefaultValues,
-} from 'src/utils/suite/ethereumStaking';
+import { getStakeFormsDefaultValues } from 'src/utils/suite/ethereumStaking';
+import { getStakingContractAddress } from 'src/utils/suite/staking';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
 
-export const ClaimEthFormContext = createContext<ClaimContextValues | null>(null);
-ClaimEthFormContext.displayName = 'ClaimEthFormContext';
+export const ClaimFormContext = createContext<ClaimContextValues | null>(null);
+ClaimFormContext.displayName = 'ClaimFormContext';
 
-export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimContextValues => {
+export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimContextValues => {
     const dispatch = useDispatch();
 
     const localCurrency = useSelector(selectLocalCurrency);
@@ -29,15 +27,15 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     const symbolFees = useSelector(state => state.wallet.fees[account.symbol]);
 
     const defaultValues = useMemo(() => {
-        const { addressContractAccounting } = getEthNetworkAddresses(account.symbol);
+        const stakingContractAddress = getStakingContractAddress(account, 'claim');
 
         return {
             ...getStakeFormsDefaultValues({
-                address: addressContractAccounting,
+                address: stakingContractAddress,
                 stakeType: 'claim',
             }),
         } as ClaimFormState;
-    }, [account.symbol]);
+    }, [account]);
 
     const state = useMemo(() => {
         const feeInfo = getFeeInfo({
@@ -150,9 +148,9 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     };
 };
 
-export const useClaimEthFormContext = () => {
-    const ctx = useContext(ClaimEthFormContext);
-    if (ctx === null) throw Error('useClaimEthFormContext used without Context');
+export const useClaimFormContext = () => {
+    const ctx = useContext(ClaimFormContext);
+    if (ctx === null) throw Error('useClaimFormContext used without Context');
 
     return ctx;
 };

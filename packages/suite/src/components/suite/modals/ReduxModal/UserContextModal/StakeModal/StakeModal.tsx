@@ -6,11 +6,11 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { StakeEthFormContext, useStakeEthForm } from 'src/hooks/wallet/useStakeEthForm';
+import { StakeFormContext, useStakeForm } from 'src/hooks/wallet/useStakeForm';
 
-import { StakeButton } from './StakeEthForm/StakeButton';
-import { StakeEthForm } from './StakeEthForm/StakeEthForm';
-import { StakingInfoCards } from './StakingInfoCards/StakingInfoCards';
+import { StakeButton } from './StakeForm/StakeButton';
+import { StakeForm } from './StakeForm/StakeForm';
+import { StakeInfoCards } from './StakeInfoCards/StakeInfoCards';
 
 interface StakeModalModalProps {
     onCancel?: () => void;
@@ -20,7 +20,7 @@ interface StakeModalModalProps {
 export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalProps) => {
     const { account } = selectedAccount;
 
-    const stakeEthContextValues = useStakeEthForm({ selectedAccount });
+    const stakeContextValues = useStakeForm({ selectedAccount });
     const { isBelowTablet } = useLayoutSize();
 
     const onCancelClick = () => {
@@ -37,7 +37,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
     };
 
     return (
-        <StakeEthFormContext.Provider value={stakeEthContextValues}>
+        <StakeFormContext.Provider value={stakeContextValues}>
             <Modal
                 size="huge"
                 heading={
@@ -50,11 +50,11 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
                 bottomContent={<StakeButton />}
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
-                    <StakeEthForm />
-                    <StakingInfoCards />
+                    <StakeForm />
+                    <StakeInfoCards />
                 </Grid>
             </Modal>
-        </StakeEthFormContext.Provider>
+        </StakeFormContext.Provider>
     );
 };
 

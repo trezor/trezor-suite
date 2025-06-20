@@ -2,13 +2,13 @@ import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
+import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 
-import { AvailableBalance } from './AvailableBalance';
-import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
-import { Inputs } from './Inputs';
+import { ConfirmStakeModal } from './ConfirmStakeModal';
+import { StakeAvailableBalance } from './StakeAvailableBalance';
+import { StakeInputs } from './StakeInputs';
 
-export const StakeEthForm = () => {
+export const StakeForm = () => {
     const {
         account,
         isConfirmModalOpen,
@@ -24,14 +24,14 @@ export const StakeEthForm = () => {
         feeInfo,
         composedLevels,
         trigger,
-    } = useStakeEthFormContext();
+    } = useStakeFormContext();
 
     const { formattedBalance, symbol } = account;
 
     return (
         <>
             {isConfirmModalOpen && (
-                <ConfirmStakeEthModal
+                <ConfirmStakeModal
                     isLoading={isLoading}
                     onConfirm={signTx}
                     onCancel={closeConfirmModal}
@@ -39,9 +39,9 @@ export const StakeEthForm = () => {
             )}
 
             <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
-                <AvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
+                <StakeAvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
 
-                <Inputs />
+                <StakeInputs />
 
                 <Fees
                     control={control}
