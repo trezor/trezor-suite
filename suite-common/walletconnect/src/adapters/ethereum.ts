@@ -210,7 +210,7 @@ const ethereumRequestThunk = createThunk<
 
 export const getChainId = (network: Network) => [`eip155:${network.chainId}`];
 
-export const getNamespace = (accounts: Account[]) => {
+export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
     const eip155 = {
         chains: [],
         accounts: [],
@@ -235,6 +235,10 @@ export const getNamespace = (accounts: Account[]) => {
             }
         }
     });
+
+    if (eip155.chains.length === 0) {
+        return {};
+    }
 
     return { eip155 };
 };
