@@ -1,10 +1,16 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { numberToHex, toWei } from 'web3-utils';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useFormatters } from '@suite-common/formatters';
 import { AssetDiff, AssetExposure, useTxSimulationConnectPopup } from '@suite-common/tx-simulation';
 import { Network, getExplorerUrl } from '@suite-common/wallet-config';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
+import { FormState } from '@suite-common/wallet-types';
+import { getFeeInfo } from '@suite-common/wallet-utils';
 import {
     AssetLogo,
     Banner,
@@ -29,7 +35,9 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { Translation } from 'src/components/suite/Translation';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
+import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 const TxSimulationAsset = ({
@@ -191,8 +199,73 @@ export const TxSimulationModal = () => {
     const { isLoading, simulationResult, error, needsDisclaimer, network, targetContract } =
         useTxSimulationConnectPopup(popupCall);
     const explorer = useSelector(state => selectExplorer(state, network?.symbol));
+    const defaultGasLimit =
+        (popupCall?.state === 'tx-simulation' && popupCall.payload?.transaction?.gasLimit) ||
+        ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+
+    const methods = useForm<FormState>({
+        defaultValues: {
+            feeLimit: defaultGasLimit,
+            estimatedFeeLimit: defaultGasLimit,
+            outputs: [],
+        },
+    });
+    const fees = useSelector(state => state.wallet.fees);
+    const feeInfo = getFeeInfo({
+        networkType: account?.networkType ?? 'ethereum',
+        feeInfo: fees[account?.symbol ?? 'eth']?.data,
+    });
+    const { changeFeeLevel } = useFees({
+        ...methods,
+        defaultValue: 'normal',
+        feeInfo,
+        composeRequest: () => {},
+    });
+    const {
+        control,
+        register,
+        setValue,
+        getValues,
+        formState: { isDirty, errors },
+        trigger,
+    } = methods;
+    const isSigningTransaction =
+        popupCall?.state === 'tx-simulation' && popupCall?.method === 'ethereumSignTransaction';
 
     const onConfirm = () => {
+        if (isSigningTransaction) {
+            const values = methods.getValues();
+            const selectedFeeInfo = feeInfo.levels.find(
+                level => level.label === (values.selectedFee ?? 'normal'),
+            );
+            const maxFeePerGas = values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas;
+            const maxPriorityFeePerGas =
+                values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas;
+            const gasPrice = values.feePerUnit ?? selectedFeeInfo?.feePerUnit;
+            if (maxFeePerGas && maxPriorityFeePerGas) {
+                dispatch(
+                    connectPopupActions.setSelectedFee({
+                        selectedFee: {
+                            gasLimit: numberToHex(values.feeLimit),
+                            gasPrice: undefined,
+                            maxFeePerGas: numberToHex(toWei(maxFeePerGas, 'gwei')),
+                            maxPriorityFeePerGas: numberToHex(toWei(maxPriorityFeePerGas, 'gwei')),
+                        },
+                    }),
+                );
+            } else if (gasPrice) {
+                dispatch(
+                    connectPopupActions.setSelectedFee({
+                        selectedFee: {
+                            gasLimit: numberToHex(values.feeLimit),
+                            gasPrice: numberToHex(toWei(gasPrice, 'gwei')),
+                            maxFeePerGas: undefined,
+                            maxPriorityFeePerGas: undefined,
+                        },
+                    }),
+                );
+            }
+        }
         dispatch(connectPopupActions.approvePermissions());
     };
     const onCancel = () => {
@@ -448,6 +521,21 @@ export const TxSimulationModal = () => {
                             values={{ provider: <Link href="https://blockaid.io">Blockaid</Link> }}
                         />
                     </Text>
+
+                    {isSigningTransaction && account && (
+                        <Fees
+                            account={account}
+                            feeInfo={feeInfo}
+                            control={control}
+                            register={register}
+                            setValue={setValue}
+                            getValues={getValues}
+                            errors={errors}
+                            isDirty={isDirty}
+                            changeFeeLevel={changeFeeLevel}
+                            trigger={trigger}
+                        />
+                    )}
                 </Column>
             </Modal.ModalBase>
         </Modal.Backdrop>

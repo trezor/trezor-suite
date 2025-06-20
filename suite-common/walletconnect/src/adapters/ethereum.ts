@@ -134,10 +134,14 @@ const ethereumRequestThunk = createThunk<
                 if (!feeLevels.success) {
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
-                transaction.maxFeePerGas =
-                    feeLevels.payload.levels[0]?.eip1559?.medium?.maxFeePerGas;
-                transaction.maxPriorityFeePerGas =
-                    feeLevels.payload.levels[0]?.eip1559?.medium?.maxPriorityFeePerGas;
+                if (feeLevels.payload.levels[0]?.eip1559) {
+                    transaction.maxFeePerGas =
+                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxFeePerGas;
+                    transaction.maxPriorityFeePerGas =
+                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxPriorityFeePerGas;
+                } else {
+                    transaction.gasPrice = feeLevels.payload.levels[0]?.feePerUnit;
+                }
             }
             if (!transaction.gas) {
                 const estimatedFee = await TrezorConnect.blockchainEstimateFee({
