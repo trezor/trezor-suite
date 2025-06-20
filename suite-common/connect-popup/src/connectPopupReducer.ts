@@ -143,6 +143,17 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         ...payload,
                     };
                 }
+            })
+            .addCase(connectPopupActions.setSelectedFee, (state, { payload }) => {
+                if (
+                    state.activeCall?.state === 'tx-simulation' ||
+                    state.activeCall?.state === 'ongoing'
+                ) {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        selectedFee: payload.selectedFee,
+                    };
+                }
             });
     },
 );

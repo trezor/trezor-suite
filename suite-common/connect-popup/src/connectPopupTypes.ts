@@ -49,6 +49,19 @@ export type ConnectPopupCallLoaded = {
     };
     source: ConnectCallSource;
     payload: any;
+    selectedFee?:
+        | {
+              gasPrice: undefined;
+              maxFeePerGas: string;
+              maxPriorityFeePerGas: string;
+              gasLimit: string;
+          }
+        | {
+              gasPrice: string;
+              maxFeePerGas: undefined;
+              maxPriorityFeePerGas: undefined;
+              gasLimit: string;
+          };
 } & (
     | {
           state: 'ongoing';

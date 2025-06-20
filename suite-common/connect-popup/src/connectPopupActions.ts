@@ -81,6 +81,13 @@ const txSimulation = createAction(
     }),
 );
 
+const setSelectedFee = createAction(
+    `${ACTION_PREFIX}/txSimulationSetFee`,
+    (payload: Pick<ConnectPopupCall & { state: 'tx-simulation' | 'ongoing' }, 'selectedFee'>) => ({
+        payload,
+    }),
+);
+
 export const connectPopupActions = {
     initiateCall,
     requestPermissions,
@@ -94,4 +101,5 @@ export const connectPopupActions = {
     rememberAppPermissions,
     forgetAppPermissions,
     txSimulation,
+    setSelectedFee,
 } as const;
