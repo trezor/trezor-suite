@@ -9,7 +9,7 @@ const binaryExtensionByPlaformNameMap = {
     linux: '',
 } as const;
 
-export const afterPackHookSetElectronFuses: Hooks['afterPack'] = async context => {
+const afterPackHookSetElectronFuses: Hooks['afterPack'] = async context => {
     const { electronPlatformName, appOutDir } = context;
 
     /*
@@ -19,7 +19,7 @@ export const afterPackHookSetElectronFuses: Hooks['afterPack'] = async context =
      So we only set the appropriate fuses for Windows
     */
     if (electronPlatformName !== 'win32') {
-        console.warn('Skipping electron fuses ');
+        console.log('Skipping electron fuses ');
 
         return;
     }
@@ -29,7 +29,7 @@ export const afterPackHookSetElectronFuses: Hooks['afterPack'] = async context =
     const binaryFilename = `${appName}${ext}`;
     const binaryPath = path.join(appOutDir, binaryFilename);
 
-    console.warn(`Setting electron fuses on ${binaryPath}`);
+    console.log(`Setting electron fuses on ${binaryPath}`);
 
     await flipFuses(binaryPath, {
         version: FuseVersion.V1,
@@ -37,5 +37,7 @@ export const afterPackHookSetElectronFuses: Hooks['afterPack'] = async context =
         [FuseV1Options.OnlyLoadAppFromAsar]: true,
     });
 
-    console.warn('Successfully set electron fuses');
+    console.log('Successfully set electron fuses');
 };
+
+export default afterPackHookSetElectronFuses;
