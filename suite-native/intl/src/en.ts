@@ -855,7 +855,6 @@ export const en = {
                 'Didn’t find what you’re looking for? Check if it’s not a token running one of the listed coin’s network.',
             toasts: {
                 coinEnabled: '{coin} will load once you connect Trezor.',
-                coinDisabled: '{coin} disabled',
             },
             btcOnly: {
                 title: 'Your Trezor is BTC only.',

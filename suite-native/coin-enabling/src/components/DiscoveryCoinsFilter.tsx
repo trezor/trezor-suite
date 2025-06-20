@@ -1,38 +1,70 @@
 import { useSelector } from 'react-redux';
 
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
-import {
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-    selectDiscoverySupportedNetworks,
-} from '@suite-native/discovery';
+import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
 
 import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
 
 type DiscoveryCoinsFilterProps = {
-    allowDeselectLastCoin?: boolean; // If true, the last coin can be deselected
-    allowChangeAnalytics?: boolean; // If true, analytics will be sent
+    networkSymbols: NetworkSymbol[];
+    onDisablingLastCoin?: () => void;
 };
 
 export const DiscoveryCoinsFilter = ({
-    allowDeselectLastCoin = false,
-    allowChangeAnalytics = true,
+    networkSymbols,
+    onDisablingLastCoin,
 }: DiscoveryCoinsFilterProps) => {
-    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
-    const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { showToast } = useToast();
 
-    const uniqueNetworkSymbols = [...new Set(availableNetworks.map(n => n.symbol))];
+    const { setValue, watch } = useFormContext();
+    const enabledSymbols: NetworkSymbol[] = watch('enabledCoins');
+
+    const handleToggle = (symbol: NetworkSymbol, isEnabled: boolean) => {
+        if (
+            !isEnabled &&
+            onDisablingLastCoin &&
+            enabledSymbols.length === 1 &&
+            enabledSymbols.includes(symbol)
+        ) {
+            onDisablingLastCoin();
+
+            return;
+        }
+
+        if (!isDeviceConnected && isEnabled) {
+            const { name } = getNetwork(symbol);
+            showToast({
+                variant: 'default',
+                message: (
+                    <Translation
+                        id="moduleSettings.coinEnabling.toasts.coinEnabled"
+                        values={{ coin: name }}
+                    />
+                ),
+            });
+        }
+
+        const newEnabledSymbols = isEnabled
+            ? [...enabledSymbols, symbol]
+            : enabledSymbols.filter(s => s !== symbol);
+
+        setValue('enabledCoins', newEnabledSymbols, { shouldDirty: true, shouldValidate: true });
+    };
 
     return (
         <VStack spacing="sp12">
-            {uniqueNetworkSymbols.map(symbol => (
+            {networkSymbols.map(symbol => (
                 <NetworkSymbolSwitchItem
                     key={symbol}
                     symbol={symbol}
-                    isEnabled={enabledNetworkSymbols.includes(symbol)}
-                    allowDeselectLastCoin={allowDeselectLastCoin}
-                    allowChangeAnalytics={allowChangeAnalytics}
+                    isEnabled={enabledSymbols?.includes(symbol)}
+                    onToggle={isEnabled => handleToggle(symbol, isEnabled)}
                 />
             ))}
             <VStack paddingVertical="sp8" alignItems="center">
