@@ -25,3 +25,4 @@ export * from './tokenUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
 export * from './filterAndCategorizeUtxosUtils';
+export * from './hooks/useExcludedUtxos';
