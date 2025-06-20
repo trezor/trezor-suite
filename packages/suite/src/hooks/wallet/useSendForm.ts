@@ -18,7 +18,7 @@ import {
     formatAmount,
     getDefaultValues,
     getFeeInfo,
-} from '@suite-common/wallet-utils';
+ useExcludedUtxos } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { fillSendForm } from 'src/actions/suite/protocolActions';
@@ -33,7 +33,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
-import { useExcludedUtxos } from './form/useExcludedUtxos';
 import { useFees } from './form/useFees';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';

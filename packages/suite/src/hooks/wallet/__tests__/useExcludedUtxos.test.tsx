@@ -4,8 +4,7 @@ import { render, screen } from '@testing-library/react';
 
 import { testMocks } from '@suite-common/test-utils';
 import * as walletUtils from '@suite-common/wallet-utils';
-
-import { useExcludedUtxos } from '../form/useExcludedUtxos';
+import { useExcludedUtxos } from '@suite-common/wallet-utils';
 
 type Props = Parameters<typeof useExcludedUtxos>[0];
 
