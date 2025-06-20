@@ -26,18 +26,18 @@ export const SettingsConnectedApps = () => {
 
     const tabs = [
         {
-            id: 'trezor-connect',
-            icon: 'trezorLogo' as const,
-            title: <Translation id="TR_TREZOR_CONNECT" />,
-            component: <ConnectPermissions />,
-            isEnabled: connectFeatureFlag,
-        },
-        {
             id: 'walletconnect',
             icon: 'walletConnect' as const,
             title: <Translation id="TR_WALLETCONNECT" />,
             component: <WalletConnectList />,
             isEnabled: wcEnabled,
+        },
+        {
+            id: 'trezor-connect',
+            icon: 'trezorLogo' as const,
+            title: <Translation id="TR_TREZOR_CONNECT" />,
+            component: <ConnectPermissions />,
+            isEnabled: connectFeatureFlag,
         },
     ].filter(tab => tab.isEnabled);
     const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id ?? 0);
