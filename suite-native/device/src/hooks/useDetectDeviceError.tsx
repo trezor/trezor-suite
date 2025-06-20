@@ -8,7 +8,6 @@ import {
     deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
-    selectIsDeviceInBootloader,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
     selectIsUnacquiredDevice,
@@ -38,6 +37,7 @@ import {
     selectDeviceError,
     selectIsDeviceFirmwareSupported,
     selectIsDeviceSetupSupported,
+    selectShouldDeviceBeTreatedAsBootloaderMode,
 } from '../selectors';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -59,7 +59,7 @@ export const useDetectDeviceError = () => {
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
-    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
+    const isDeviceInBootloader = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
@@ -213,7 +213,6 @@ export const useDetectDeviceError = () => {
     useEffect(() => {
         if (
             isDeviceInBootloader &&
-            hasDeviceFirmwareInstalled &&
             !isFirmwareInstallationRunning &&
             !wasDeviceEjectedByUser &&
             isOnboardingFinished
@@ -221,7 +220,6 @@ export const useDetectDeviceError = () => {
             navigation.navigate(RootStackRoutes.BootloaderMode);
         }
     }, [
-        hasDeviceFirmwareInstalled,
         isDeviceInBootloader,
         isFirmwareInstallationRunning,
         isOnboardingFinished,

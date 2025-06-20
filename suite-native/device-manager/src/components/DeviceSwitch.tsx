@@ -22,7 +22,6 @@ const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManag
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-
     extends: {
         condition: isDeviceManagerVisible,
         style: {

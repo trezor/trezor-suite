@@ -1,11 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import {
-    selectDeviceState,
-    selectIsDeviceInBootloader,
-    selectNumberOfDeviceInstances,
-} from '@suite-common/wallet-core';
+import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
+import { selectShouldDeviceBeTreatedAsBootloaderMode } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 
 import { BootloaderModeItemContent } from './BootloaderModeItemContent';
@@ -13,8 +10,10 @@ import { DeviceItemContent } from './DeviceItem/DeviceItemContent';
 
 export const DeviceSwitchContent = () => {
     const deviceState = useSelector(selectDeviceState);
-    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
     const numberOfDevices = useSelector(selectNumberOfDeviceInstances);
+    const shouldDeviceBeTreatedAsBootloaderMode = useSelector(
+        selectShouldDeviceBeTreatedAsBootloaderMode,
+    );
 
     if (deviceState) {
         return (
@@ -27,7 +26,7 @@ export const DeviceSwitchContent = () => {
         );
     }
 
-    if (isDeviceInBootloader) {
+    if (shouldDeviceBeTreatedAsBootloaderMode) {
         return <BootloaderModeItemContent />;
     }
 
