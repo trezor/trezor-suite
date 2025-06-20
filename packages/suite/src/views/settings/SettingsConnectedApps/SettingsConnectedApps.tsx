@@ -4,6 +4,7 @@ import { selectDevices } from '@suite-common/wallet-core';
 import { selectSessions } from '@suite-common/walletconnect';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -37,7 +38,7 @@ export const SettingsConnectedApps = () => {
             icon: 'trezorLogo' as const,
             title: <Translation id="TR_TREZOR_CONNECT" />,
             component: <ConnectPermissions />,
-            isEnabled: connectFeatureFlag,
+            isEnabled: connectFeatureFlag && isDesktop(),
         },
     ].filter(tab => tab.isEnabled);
     const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id ?? 0);

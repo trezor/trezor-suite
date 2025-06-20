@@ -59,6 +59,5 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     walletconnect: {
         title: 'TR_WALLETCONNECT',
         description: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
-        isDisabled: () => !isDesktop(),
     },
 };
