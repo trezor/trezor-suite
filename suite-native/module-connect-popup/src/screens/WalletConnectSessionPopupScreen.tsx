@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
@@ -45,7 +45,7 @@ export const WalletConnectSessionPopupScreen = () => {
 
     const dispatch = useDispatch();
     const pendingProposal = useSelector(selectPendingProposal);
-    const accounts = useSelector(selectVisibleSortedDeviceAccounts);
+    const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
         () =>
             pendingProposal?.networks

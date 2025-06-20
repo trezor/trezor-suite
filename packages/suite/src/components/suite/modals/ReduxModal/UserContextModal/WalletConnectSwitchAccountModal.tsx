@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     getSessionNetworks,
@@ -29,7 +29,7 @@ export const WalletConnectSwitchAccountModal = ({
     const dispatch = useDispatch();
     const sessions = useSelector(selectSessions);
     const session = sessions.find(s => s.topic === sessionTopic);
-    const accounts = useSelector(selectVisibleSortedDeviceAccounts);
+    const accounts = useSelector(selectAllAccountsToList);
     const accountLabels = useSelector(selectAccountLabels);
     const selectableAccounts = useMemo<Account[]>(
         () =>

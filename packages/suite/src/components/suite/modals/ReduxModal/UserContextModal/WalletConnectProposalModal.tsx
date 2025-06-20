@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
@@ -50,7 +50,7 @@ interface WalletConnectProposalModalProps {
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
     const dispatch = useDispatch();
     const pendingProposal = useSelector(selectPendingProposal);
-    const accounts = useSelector(selectVisibleSortedDeviceAccounts);
+    const accounts = useSelector(selectAllAccountsToList);
     const accountLabels = useSelector(selectAccountLabels);
     const selectableAccounts = useMemo<Account[]>(
         () =>
