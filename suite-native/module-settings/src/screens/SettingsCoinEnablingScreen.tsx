@@ -3,13 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    changeNetworks,
-    selectEnabledNetworks,
-    selectHasBitcoinOnlyFirmware,
-} from '@suite-common/wallet-core';
-import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
-import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
+import { selectEnabledNetworks, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { BtcOnlyCoinEnablingContent, CoinEnablingForm } from '@suite-native/coin-enabling';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -23,20 +18,9 @@ export const SettingsCoinEnablingScreen = () => {
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const availableNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const viewOnlyDevicesAccountsNetworkSymbols = useSelector(
-        selectViewOnlyDevicesAccountsNetworkSymbols,
-    );
 
     //testnets can be enabled and we want to show networks that case
     const showNetworks = availableNetworkSymbols.length > 1 || !hasBitcoinOnlyFirmware;
-
-    useEffect(() => {
-        // in case the user has view only devices and gets to the settings
-        // before the Coin Enabling has been initialized, we need to set the networks
-        if (enabledNetworkSymbols.length === 0) {
-            dispatch(changeNetworks(viewOnlyDevicesAccountsNetworkSymbols));
-        }
-    }, [enabledNetworkSymbols.length, dispatch, viewOnlyDevicesAccountsNetworkSymbols]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
@@ -54,7 +38,7 @@ export const SettingsCoinEnablingScreen = () => {
                 <ScreenHeader content={translate('moduleSettings.coinEnabling.settings.title')} />
             }
         >
-            {showNetworks ? <DiscoveryCoinsFilter /> : <BtcOnlyCoinEnablingContent />}
+            {showNetworks ? <CoinEnablingForm /> : <BtcOnlyCoinEnablingContent />}
         </Screen>
     );
 };
