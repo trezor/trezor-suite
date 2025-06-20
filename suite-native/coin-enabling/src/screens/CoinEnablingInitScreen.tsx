@@ -1,12 +1,13 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
+import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
-import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -20,6 +21,7 @@ import {
 } from '@suite-native/navigation';
 import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
+import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>;
@@ -29,28 +31,37 @@ export const CoinEnablingInitScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     useHandleHardwareBackNavigation();
 
-    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
+    const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 
-    const handleSave = () => {
+    const form = useForm<CoinEnablingFormValues>({
+        defaultValues: {
+            enabledCoins: [],
+        },
+        validation: coinEnablingFormValidationSchema,
+    });
+    const {
+        formState: { isValid },
+    } = form;
+
+    const handleSubmit = form.handleSubmit(values => {
+        values.enabledCoins.forEach(symbol => {
+            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true }));
+        });
+
         dispatch(setIsCoinEnablingInitFinished(true));
-        if (enabledNetworkSymbols.length > 0) {
-            analytics.report({
-                type: EventType.CoinEnablingInitState,
-                payload: { enabledNetworks: enabledNetworkSymbols },
-            });
 
-            // TODO: COSMETIC IMPROVEMENT: redirect to home after 2.5 seconds timeout so user can see some assets already there.
-            // until then change button state to `loading`.
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-        }
-    };
+        analytics.report({
+            type: EventType.CoinEnablingInitState,
+            payload: { enabledNetworks: values.enabledCoins },
+        });
 
-    const canBeSaved = A.isNotEmpty(enabledNetworkSymbols);
+        navigation.navigate(RootStackRoutes.AppTabs, {
+            screen: AppTabsRoutes.HomeStack,
+            params: {
+                screen: HomeStackRoutes.Home,
+            },
+        });
+    });
 
     return (
         <Screen
@@ -65,11 +76,11 @@ export const CoinEnablingInitScreen = () => {
                 </VStack>
             }
             footer={
-                canBeSaved && (
+                isValid && (
                     <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
                         <ScreenFooterGradient />
                         <Box marginHorizontal="sp16" marginBottom="sp16">
-                            <Button onPress={handleSave} testID="@coin-enabling/button-save">
+                            <Button onPress={handleSubmit} testID="@coin-enabling/button-save">
                                 <Translation id="moduleSettings.coinEnabling.initialSetup.button" />
                             </Button>
                         </Box>
@@ -77,9 +88,11 @@ export const CoinEnablingInitScreen = () => {
                 )
             }
         >
-            <Box>
-                <DiscoveryCoinsFilter allowDeselectLastCoin={true} allowChangeAnalytics={false} />
-            </Box>
+            <Form form={form}>
+                <Box>
+                    <DiscoveryCoinsFilter networkSymbols={networkSymbols} />
+                </Box>
+            </Form>
         </Screen>
     );
 };
