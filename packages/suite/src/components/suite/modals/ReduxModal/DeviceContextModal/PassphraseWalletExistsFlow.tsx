@@ -86,6 +86,7 @@ export const PassphraseWalletExistsFlow = ({
             case 'exists-confirm-passphrase':
                 return (
                     <PassphraseWalletConfirmation
+                        isExistingWallet={true}
                         deviceLoading={loading}
                         device={device}
                         onCancel={onCancel}
