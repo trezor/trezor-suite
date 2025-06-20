@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 57 (25.7.0)
+
+- introduce new object store `bioAuth`
+
 ## 56 (25.6.1)
 
 - renamed from _coinmarketTrades_ to _tradingTrades_
