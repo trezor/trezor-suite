@@ -27,11 +27,8 @@ import {
     OUTPUT_AMOUNT,
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
-import {
-    getEthNetworkAddresses,
-    getStakeFormsDefaultValues,
-    simulateUnstake,
-} from 'src/utils/suite/ethereumStaking';
+import { getStakeFormsDefaultValues, simulateUnstake } from 'src/utils/suite/ethereumStaking';
+import { getStakingContractAddress } from 'src/utils/suite/staking';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
@@ -46,12 +43,10 @@ type UnstakeContextValues = UnstakeContextValuesBase & {
     setCurrency: (currency: 'crypto' | 'fiat') => void;
 };
 
-export const UnstakeEthFormContext = createContext<UnstakeContextValues | null>(null);
-UnstakeEthFormContext.displayName = 'UnstakeEthFormContext';
+export const UnstakeFormContext = createContext<UnstakeContextValues | null>(null);
+UnstakeFormContext.displayName = 'UnstakeFormContext';
 
-export const useUnstakeEthForm = ({
-    selectedAccount,
-}: UseStakeFormsProps): UnstakeContextValues => {
+export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): UnstakeContextValues => {
     const dispatch = useDispatch();
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
@@ -81,18 +76,18 @@ export const useUnstakeEthForm = ({
     };
 
     const defaultValues = useMemo(() => {
-        const { addressContractPool } = getEthNetworkAddresses(account.symbol);
+        const stakingContractAddress = getStakingContractAddress(account, 'unstake');
 
         return {
             ...getStakeFormsDefaultValues({
-                address: addressContractPool,
+                address: stakingContractAddress,
                 stakeType: 'unstake',
                 amount: autocompoundBalance,
             }),
         } as UnstakeFormState;
-    }, [account.symbol, autocompoundBalance]);
+    }, [account, autocompoundBalance]);
 
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<UnstakeFormState>('unstake-eth');
+    const { saveDraft, getDraft, removeDraft } = useFormDraft<UnstakeFormState>('unstake');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
@@ -298,9 +293,9 @@ export const useUnstakeEthForm = ({
     };
 };
 
-export const useUnstakeEthFormContext = () => {
-    const ctx = useContext(UnstakeEthFormContext);
-    if (ctx === null) throw Error('useUnstakeEthFormContext used without Context');
+export const useUnstakeFormContext = () => {
+    const ctx = useContext(UnstakeFormContext);
+    if (ctx === null) throw Error('useUnstakeFormContext used without Context');
 
     return ctx;
 };

@@ -6,7 +6,7 @@ import { Translation } from 'src/components/suite/Translation';
 
 import { EstimatedGains } from './EstimatedGains';
 
-export const StakingInfoCards = () => {
+export const StakeInfoCards = () => {
     const cards = [
         {
             heading: <Translation id="TR_STAKING_ONCE_YOU_CONFIRM" />,

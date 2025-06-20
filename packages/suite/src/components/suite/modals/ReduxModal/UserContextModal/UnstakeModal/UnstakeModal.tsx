@@ -6,10 +6,10 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { UnstakeEthFormContext, useUnstakeEthForm } from 'src/hooks/wallet/useUnstakeEthForm';
+import { UnstakeFormContext, useUnstakeForm } from 'src/hooks/wallet/useUnstakeForm';
 
-import { UnstakeButton } from './UnstakeEthForm/UnstakeButton';
-import { UnstakeEthForm } from './UnstakeEthForm/UnstakeEthForm';
+import { UnstakeButton } from './UnstakeForm/UnstakeButton';
+import { UnstakeForm } from './UnstakeForm/UnstakeForm';
 
 interface UnstakeModalModalProps {
     onCancel?: () => void;
@@ -19,7 +19,7 @@ interface UnstakeModalModalProps {
 export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalModalProps) => {
     const { account } = selectedAccount;
 
-    const unstakeEthContextValues = useUnstakeEthForm({ selectedAccount });
+    const unstakeContextValues = useUnstakeForm({ selectedAccount });
     const { isBelowTablet } = useLayoutSize();
 
     const onCancelClick = () => {
@@ -36,7 +36,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
     };
 
     return (
-        <UnstakeEthFormContext.Provider value={unstakeEthContextValues}>
+        <UnstakeFormContext.Provider value={unstakeContextValues}>
             <Modal
                 size="huge"
                 heading={<Translation id="TR_STAKE_UNSTAKE" />}
@@ -45,7 +45,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                 bottomContent={<UnstakeButton />}
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
-                    <UnstakeEthForm />
+                    <UnstakeForm />
                     <Column gap={spacings.lg}>
                         <CollapsibleBox
                             heading={
@@ -61,7 +61,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                     </Column>
                 </Grid>
             </Modal>
-        </UnstakeEthFormContext.Provider>
+        </UnstakeFormContext.Provider>
     );
 };
 

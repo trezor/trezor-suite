@@ -12,7 +12,7 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useClaimEthForm } from 'src/hooks/wallet/useClaimEthForm';
+import { useClaimForm } from 'src/hooks/wallet/useClaimForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
 import { SolanaStakingLimitBanner } from '../SolanaStakingLimitBanner';
@@ -44,7 +44,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         onClaimChange,
         signTx,
         trigger,
-    } = useClaimEthForm({ selectedAccount });
+    } = useClaimForm({ selectedAccount });
 
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors

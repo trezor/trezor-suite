@@ -1,48 +1,46 @@
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Button, Tooltip } from '@trezor/components';
+import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
-export const UnstakeButton = () => {
+export const StakeButton = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(
         state => state.wallet.selectedAccount,
     ) as SelectedAccountLoaded;
-    const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
+    const {
+        onSubmit,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        isComposing,
+        watch,
+        currency,
+    } = useStakeFormContext();
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
-
-    const {
-        isComposing,
-        formState: { isSubmitting, errors },
-        handleSubmit,
-        watch,
-        signTx,
-        currency,
-    } = useUnstakeEthFormContext();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const onUnstakeClick = () => {
-        handleSubmit(signTx)();
+    const onStakeClick = () => {
+        handleSubmit(onSubmit)();
 
         analytics.report({
-            type: EventType.StakingUnstake,
+            type: EventType.StakingStake,
             payload: {
                 action: 'continue',
-                step: 'unstake-form-modal',
+                step: 'stake-form-modal',
                 currency,
                 networkSymbol: selectedAccount.account.symbol,
             },
@@ -50,16 +48,15 @@ export const UnstakeButton = () => {
     };
 
     return (
-        <Tooltip content={unstakingMessageContent}>
-            <Button
-                type="submit"
-                isDisabled={isDisabled || isUnstakingDisabled}
+        <Tooltip content={stakingMessageContent}>
+            <Modal.Button
+                isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isComposing || isSubmitting || isDiscoveryRunning}
-                onClick={onUnstakeClick}
-                icon={isUnstakingDisabled ? 'info' : undefined}
+                onClick={onStakeClick}
+                icon={isStakingDisabled ? 'info' : undefined}
             >
-                <Translation id="TR_STAKE_UNSTAKE" />
-            </Button>
+                <Translation id="TR_CONTINUE" />
+            </Modal.Button>
         </Tooltip>
     );
 };

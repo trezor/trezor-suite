@@ -8,12 +8,12 @@ import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
 
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
+import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { calculateGains } from 'src/utils/suite/staking';
 
 export const EstimatedGains = () => {
-    const { account, getValues, formState } = useStakeEthFormContext();
+    const { account, getValues, formState } = useStakeFormContext();
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =

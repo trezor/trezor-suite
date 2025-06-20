@@ -20,17 +20,13 @@ const getStakeEnteringMessage = (networkType?: NetworkType) => {
     return 'TR_STAKE_ACTIVATION_COULD_TAKE';
 };
 
-interface ConfirmStakeEthModalProps {
+interface ConfirmStakeModalProps {
     isLoading: boolean;
     onConfirm: () => void;
     onCancel: () => void;
 }
 
-export const ConfirmStakeEthModal = ({
-    isLoading,
-    onConfirm,
-    onCancel,
-}: ConfirmStakeEthModalProps) => {
+export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmStakeModalProps) => {
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);

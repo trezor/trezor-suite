@@ -28,21 +28,18 @@ import {
     OUTPUT_AMOUNT,
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
-import {
-    getEthNetworkAddresses,
-    getStakeFormsDefaultValues,
-} from 'src/utils/suite/ethereumStaking';
+import { getStakeFormsDefaultValues } from 'src/utils/suite/ethereumStaking';
+import { getStakingContractAddress } from 'src/utils/suite/staking';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
 
-export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
-StakeEthFormContext.displayName = 'StakeEthFormContext';
+export const StakeFormContext = createContext<StakeContextValues | null>(null);
+StakeFormContext.displayName = 'StakeFormContext';
 
-// TODO: refactor this hook to support both ethereum and solana
-export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
+export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
     const dispatch = useDispatch();
 
     const { account, network } = selectedAccount;
@@ -69,19 +66,18 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     };
 
     const defaultValues = useMemo(() => {
-        // TODO: get the address for solana here
-        const { addressContractPool } = getEthNetworkAddresses(account.symbol);
+        const stakingContractAddress = getStakingContractAddress(account, 'stake');
 
         return {
             ...getStakeFormsDefaultValues({
-                address: addressContractPool,
+                address: stakingContractAddress,
                 stakeType: 'stake',
             }),
             setMaxOutputId: undefined,
         } as StakeFormState;
-    }, [account.symbol]);
+    }, [account]);
 
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<StakeFormState>('stake-eth');
+    const { saveDraft, getDraft, removeDraft } = useFormDraft<StakeFormState>('stake');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
@@ -428,9 +424,9 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     };
 };
 
-export const useStakeEthFormContext = () => {
-    const ctx = useContext(StakeEthFormContext);
-    if (ctx === null) throw Error('useStakeEthFormContext used without Context');
+export const useStakeFormContext = () => {
+    const ctx = useContext(StakeFormContext);
+    if (ctx === null) throw Error('useStakeFormContext used without Context');
 
     return ctx;
 };

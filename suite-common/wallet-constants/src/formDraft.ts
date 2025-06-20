@@ -2,6 +2,6 @@ export const FormDraftPrefixKeyValues = [
     'trading-buy',
     'trading-sell',
     'trading-exchange',
-    'stake-eth',
-    'unstake-eth',
+    'stake',
+    'unstake',
 ] as const;

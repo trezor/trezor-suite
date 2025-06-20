@@ -721,3 +721,20 @@ export const simulateUnstake = async ({
 
     return fromWei(approximatedAmount, 'ether');
 };
+
+export const getEthereumStakingAddressByType = (
+    symbol: NetworkSymbol,
+    stakeType: StakeType,
+): string => {
+    const { addressContractPool, addressContractAccounting } = getEthNetworkAddresses(symbol) ?? {};
+
+    switch (stakeType) {
+        case 'stake':
+        case 'unstake':
+            return addressContractPool || '';
+        case 'claim':
+            return addressContractAccounting || '';
+        default:
+            return '';
+    }
+};

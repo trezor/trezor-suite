@@ -8,16 +8,16 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useSelector } from 'src/hooks/suite';
-import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateInstantEthAmount';
 
-import { Inputs } from './Inputs';
+import { UnstakeInputs } from './UnstakeInputs';
 import { SolanaStakingLimitBanner } from '../../SolanaStakingLimitBanner';
-import { AvailableBalance } from '../../StakeModal/StakeEthForm/AvailableBalance';
+import { StakeAvailableBalance } from '../../StakeModal/StakeForm/StakeAvailableBalance';
 
-export const UnstakeEthForm = () => {
+export const UnstakeForm = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
 
     const {
@@ -34,7 +34,7 @@ export const UnstakeEthForm = () => {
         feeInfo,
         composedLevels,
         trigger,
-    } = useUnstakeEthFormContext();
+    } = useUnstakeFormContext();
 
     const { symbol, networkType } = account;
 
@@ -76,10 +76,10 @@ export const UnstakeEthForm = () => {
                     />
                 </Column>
 
-                <AvailableBalance formattedBalance={autocompoundBalance} symbol={symbol} />
+                <StakeAvailableBalance formattedBalance={autocompoundBalance} symbol={symbol} />
 
                 <Column gap={spacings.lg}>
-                    <Inputs />
+                    <UnstakeInputs />
                     {showError && <Banner variant="destructive">{inputError?.message}</Banner>}
                 </Column>
 
