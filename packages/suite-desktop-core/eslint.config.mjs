@@ -24,5 +24,12 @@ export default [
     {
         ignores: ['**/playwright-report/', '**/test-results/'],
     },
+    {
+        files: ['**/scripts/**'],
+        rules: {
+            'no-console': 'off',
+            'import/no-default-export': 'off',
+        },
+    },
     playwrightEslint,
 ];
