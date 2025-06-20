@@ -378,6 +378,8 @@
   "TR_BLOCK_BASE_FEE": "Blok taban ücreti",
   "TR_BLUETOOTH": "Bluetooth",
   "TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE": "Bluetooth ayarları açılamıyor. Lütfen cihazınızın ayarlarına manuel olarak gidin. Trezor'unuz Bluetooth listesinde görünüyorsa, onu kaldırın ve ardından tekrar eşleştirin.",
+  "TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR": "Eşleşmeyi kaldır",
+  "TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS": "Bluetooth ayarlarını aç",
   "TR_BLUETOOTH_TIP_CABLE_HEADER": "Kablo ile bağlan",
   "TR_BLUETOOTH_TIP_CABLE_TEXT": "Trezor Safe 7 cihazınızı USB-C kablosunu kullanarak bağlayın.",
   "TR_BLUETOOTH_TIP_PARING_MODE_HEADER": "Trezor Safe 7'niz için eşleştirme modunu açın",

@@ -103,7 +103,6 @@
   "RECEIVE_ADDRESS": "Adresa",
   "RECEIVE_ADDRESS_COINJOIN_DISALLOW": "To create additional addresses for a coinjoin account, you must ensure that you have already received bitcoin at the initial address.",
   "RECEIVE_ADDRESS_FRESH": "Nová adresa",
-  "RECEIVE_ADDRESS_LIMIT_REACHED": "You've reached the maximum limit of 20 fresh, unused addresses",
   "RECEIVE_ADDRESS_REVEAL": "Zobraziť celú adresu",
   "RECEIVE_ADDRESS_UNAVAILABLE": "Unavailable",
   "RECEIVE_DESC_BITCOIN": "Ak chcete získať akékoľvek finančné prostriedky, musíte získať novú adresu na prijímanie. Odporúča sa používať vždy novú adresu, pretože to zabráni tomu, aby niekto iný sledoval vaše transakcie. Adresu môžete použiť opakovane, ale odporúčame to nerobiť, pokiaľ to nie je absolútne nevyhnutné.",
