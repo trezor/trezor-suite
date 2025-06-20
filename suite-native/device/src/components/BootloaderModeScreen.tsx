@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { selectIsDeviceInBootloader } from '@suite-common/wallet-core';
 import { Button, Card, Pictogram, Text, TextDivider, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
@@ -19,6 +18,8 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { selectShouldDeviceBeTreatedAsBootloaderMode } from '../selectors';
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -42,7 +43,7 @@ type NavigationProps = CompositeNavigationProp<
 export const BootloaderModeScreen = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
-    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
+    const isDeviceInBootloader = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleRedirectToFactoryReset = () => {

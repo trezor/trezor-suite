@@ -24,8 +24,10 @@ import {
     selectDeviceInstances,
     selectDeviceModel,
     selectDevices,
+    selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceInBootloader,
     selectIsDiscoveredDeviceAccountless,
     selectIsEntropyCheckFailed,
     selectIsUnacquiredDevice,
@@ -236,4 +238,10 @@ export const selectIsDeviceSetupSupported = createMemoizedSelector(
         G.isNotNullable(model) &&
         (isDeviceSetupSupported(model) ||
             (isModelTDeviceOnboardingFeatureFlagEnabled && model === DeviceModelInternal.T2T1)),
+);
+
+export const selectShouldDeviceBeTreatedAsBootloaderMode = createMemoizedSelector(
+    [selectIsDeviceInBootloader, selectHasDeviceFirmwareInstalled],
+    (isDeviceInBootloader, hasDeviceFirmwareInstalled) =>
+        isDeviceInBootloader && hasDeviceFirmwareInstalled,
 );
