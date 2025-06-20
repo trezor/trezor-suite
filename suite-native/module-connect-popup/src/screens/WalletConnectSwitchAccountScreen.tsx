@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     getSessionNetworks,
@@ -31,7 +31,7 @@ export const WalletConnectSwitchAccountScreen = ({ route }: NavigationProps) => 
     const { sessionTopic } = route.params;
     const sessions = useSelector(selectSessions);
     const session = sessions.find(s => s.topic === sessionTopic);
-    const accounts = useSelector(selectVisibleSortedDeviceAccounts);
+    const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
         () =>
             session
