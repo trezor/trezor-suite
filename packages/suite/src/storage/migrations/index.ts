@@ -1288,7 +1288,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         db.deleteObjectStore('discovery');
     }
 
-    if (oldVersion < 58) {
+    if (oldVersion < 57) {
         db.createObjectStore('bioAuth');
     }
 };
