@@ -43,7 +43,7 @@ const PassphraseWalletBestPracticesContent = ({
                 </List.Item>
             </List>
         </Column>
-        <Banner margin={{ top: spacings.lg }}>
+        <Banner margin={{ top: spacings.sm }}>
             <Text variant="warning" typographyStyle="callout">
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
             </Text>
