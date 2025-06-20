@@ -2,7 +2,7 @@
 import { Provider as ReduxProvider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { init as initSentry } from '@sentry/browser';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
