@@ -167,7 +167,7 @@ export const getChainId = (network: Network) =>
         ? [SolanaChainIds.TESTNET]
         : [SolanaChainIds.MAINNET, SolanaChainIds.MAINNET_LEGACY];
 
-export const getNamespace = (accounts: Account[]) => {
+export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
     const solana = {
         chains: [],
         accounts: [],
@@ -189,6 +189,10 @@ export const getNamespace = (accounts: Account[]) => {
             solana.accounts.push(`${walletConnectChainId}:${account.descriptor}`);
         }
     });
+
+    if (solana.chains.length === 0) {
+        return {};
+    }
 
     return { solana };
 };
