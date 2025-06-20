@@ -9,8 +9,10 @@ import {
     selectDeviceByState,
     selectDeviceLabelOrNameById,
     selectHasOnlyEmptyPortfolioTracker,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
+import { selectShouldDeviceBeTreatedAsBootloaderMode } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
@@ -59,17 +61,33 @@ export const DeviceItemContent = React.memo(
     }: DeviceItemContentProps) => {
         const { translate } = useTranslate();
         const { applyStyle } = useNativeStyles();
+        const isDeviceInBootloader = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
+        const selectedDevice = useSelector(selectSelectedDevice);
 
         const device = useSelectorDeepComparison((state: DeviceRootState) => {
             // select only what is needed to avoid unnecessary rerenders
             const d = selectDeviceByState(state, deviceState);
+
+            if (!d && isDeviceInBootloader)
+                return {
+                    id: 'bootloader_device',
+                    name: selectedDevice?.name,
+                    label: selectedDevice?.label,
+                    walletNumber: 1,
+                    isConnected: true,
+                    isDeviceInBootloaderMode: true,
+                    useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
+                };
+
             if (!d) return null;
 
             return {
                 id: d.id,
                 name: d.name,
+                isConnected: d.connected,
                 label: selectDeviceLabelOrNameById(state, d.id),
                 walletNumber: d.walletNumber,
+                isDeviceInBootloaderMode: false,
                 useEmptyPassphrase: d.useEmptyPassphrase,
             };
         });
@@ -106,18 +124,20 @@ export const DeviceItemContent = React.memo(
                 <Box style={applyStyle(itemStyle, { isCompact })}>
                     {variant === 'simple' ? (
                         <SimpleDeviceItemContent
-                            deviceState={deviceState}
+                            isConnected={device.isConnected}
                             headerTextVariant={headerTextVariant}
                             header={deviceHeader}
+                            isDeviceInBootloader={device.isDeviceInBootloaderMode}
                             isPortfolioTrackerDevice={isPortfolioTrackerDevice}
                             isSubHeaderForceHidden={isSubHeaderForceHidden}
                         />
                     ) : (
                         <WalletDetailDeviceItemContent
-                            deviceState={deviceState}
                             headerTextVariant={headerTextVariant}
+                            isConnected={device.isConnected}
                             header={deviceHeader}
                             subHeader={walletNameLabel}
+                            isDeviceInBootloader={device.isDeviceInBootloaderMode}
                             isPortfolioTrackerDevice={isPortfolioTrackerDevice}
                         />
                     )}

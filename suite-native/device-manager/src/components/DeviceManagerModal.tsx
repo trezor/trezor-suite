@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 import { selectDeviceState } from '@suite-common/wallet-core';
 import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
+import { selectShouldDeviceBeTreatedAsBootloaderMode } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeBorders } from '@trezor/theme';
 
@@ -58,6 +59,7 @@ export const DeviceManagerModal = ({
 }: DeviceManagerModalProps) => {
     const { applyStyle } = useNativeStyles();
     const deviceState = useSelector(selectDeviceState);
+    const isDeviceInBootloader = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
 
     const insets = useSafeAreaInsets();
 
@@ -95,16 +97,15 @@ export const DeviceManagerModal = ({
                                     spacing="sp16"
                                     flex={1}
                                 >
-                                    {deviceState && (
+                                    {(deviceState || isDeviceInBootloader) && (
                                         <Box flexShrink={1}>
                                             <DeviceItemContent
-                                                deviceState={deviceState}
+                                                deviceState={deviceState ?? undefined}
                                                 headerTextVariant="titleSmall"
                                                 isCompact={false}
                                             />
                                         </Box>
                                     )}
-
                                     {customSwitchRightView}
                                 </HStack>
                             </ScreenHeaderWrapper>
