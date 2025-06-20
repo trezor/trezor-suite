@@ -1,7 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 
 import { Column } from '@trezor/components';
-import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -59,7 +58,7 @@ const SettingsHeader = () => {
                 id: 'settings-connected-apps',
                 title: <Translation id="TR_CONNECTED_APPS" />,
                 position: 'primary',
-                isHidden: !isDesktop() || !(enabledTrezorConnectWS || enabledWalletConnect),
+                isHidden: !(enabledTrezorConnectWS || enabledWalletConnect),
                 'data-testid': '@settings/menu/connected-apps',
                 callback: () => dispatch(goto('settings-connected-apps', { preserveParams: true })),
             },
