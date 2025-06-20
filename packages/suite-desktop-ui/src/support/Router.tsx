@@ -1,5 +1,5 @@
 import { ComponentType, createElement, memo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
 import { PageName } from '@suite-common/suite-types';
 

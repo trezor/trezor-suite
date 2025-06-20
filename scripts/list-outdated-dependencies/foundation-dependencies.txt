@@ -55,7 +55,7 @@ nx
 openpgp
 prettier
 react-hook-form
-react-router-dom
+react-router
 rimraf
 sort-package-json
 tar

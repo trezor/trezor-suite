@@ -2,7 +2,7 @@
 // Historically, this functionality was accessed via the history dependency, which is no longer available in React Router 6 or higher.
 // Refactoring the whole thing would be too big, that is why this unorthodox approach is used.
 
-import { Location, NavigateFunction, NavigateOptions, To } from 'react-router-dom';
+import { Location, NavigateFunction, NavigateOptions, To } from 'react-router';
 
 let navigateFn: NavigateFunction | null = null;
 let locationRef: Location | null = null;
