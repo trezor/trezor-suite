@@ -5,10 +5,13 @@ import path from 'path';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 
-export const clearAppCache = () =>
+export const clearAppData = () =>
     new Promise<void>((resolve, reject) => {
         const cachePath = path.join(app.getPath('userData'), 'Cache');
+        const indexedDBPath = path.join(app.getPath('userData'), 'IndexedDB');
+
         fs.rm(cachePath, { recursive: true }, err => (err ? reject(err) : resolve()));
+        fs.rm(indexedDBPath, { recursive: true }, err => (err ? reject(err) : resolve()));
     });
 
 /**

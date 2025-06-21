@@ -20,7 +20,7 @@ import { createInterceptor } from './libs/request-interceptor';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
-import { clearAppCache, initUserData } from './libs/user-data';
+import { clearAppData, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules, mainThreadEmitter } from './modules';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
 import { initBioAuthModule } from './modules/bioAuthModule';
@@ -373,9 +373,12 @@ const init = async () => {
         }
 
         if (handshakeResult === 'reload') {
-            logger.info('hang-detect', 'Deleting cache');
-            await clearAppCache().catch(err =>
-                logger.error('hang-detect', `Couldn't clear cache: ${err.message}`),
+            logger.info('hang-detect', 'Deleting cache and indexedDB');
+            await clearAppData().catch(err =>
+                logger.error(
+                    'hang-detect',
+                    `Couldn't clear app cache and indexedDB: ${err.message}`,
+                ),
             );
             restartApp();
         }

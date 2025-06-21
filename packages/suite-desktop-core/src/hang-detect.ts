@@ -15,7 +15,7 @@ const showDialog = async (mainWindow: BrowserWindow) => {
     const resp = await dialog.showMessageBox(mainWindow, {
         type: 'warning',
         message: 'The application seems to be hanging...',
-        buttons: ['Wait', 'Quit', 'Clear cache & restart'],
+        buttons: ['Wait', 'Quit', 'Clear app data & restart'],
     });
 
     return (['wait', 'quit', 'reload'] as const)[resp.response];
