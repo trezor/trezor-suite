@@ -69,7 +69,14 @@ export interface FeeInfo {
     levels: FeeLevel[]; // fee levels are predefined in @trezor/connect > trezor-firmware/common
 }
 
-export type NetworksFees = Record<NetworkSymbol, FeeInfo>;
+export type FeesStatus = 'preloaded' | 'loading' | 'loaded' | 'error';
+
+export type FeesState = {
+    [key in NetworkSymbol]?: {
+        status: FeesStatus;
+        data?: FeeInfo;
+    };
+};
 
 export type EthTransactionData = {
     token?: TokenInfo;

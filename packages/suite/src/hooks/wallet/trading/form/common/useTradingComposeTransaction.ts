@@ -44,13 +44,14 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     >;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
     const { symbol, networkType } = account;
+    const rawFeeInfo = fees[symbol]?.data;
     const feeInfo = useMemo(
         () =>
             getFeeInfo({
                 networkType,
-                feeInfo: fees[symbol],
+                feeInfo: rawFeeInfo,
             }),
-        [networkType, symbol, fees],
+        [networkType, rawFeeInfo],
     );
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
     const outputAddress = values?.outputs?.[0].address;

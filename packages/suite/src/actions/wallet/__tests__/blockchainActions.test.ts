@@ -210,8 +210,21 @@ describe('Blockchain Actions', () => {
                     btc: { blockHeight: 109 },
                 },
                 fees: {
-                    // @ts-expect-error partial params
-                    btc: { blockHeight: 100, levels: [] },
+                    btc: {
+                        status: 'loaded',
+                        data: {
+                            minPriorityFee: 0,
+                            minFee: 1,
+                            maxFee: 100,
+                            blockHeight: 100,
+                            blockTime: 1,
+                            levels: [
+                                { label: 'high', feePerUnit: '40', blocks: 1 },
+                                { label: 'normal', feePerUnit: '4', blocks: 1 },
+                                { label: 'economy', feePerUnit: '1', blocks: 1 },
+                            ],
+                        },
+                    },
                 },
             }),
         );

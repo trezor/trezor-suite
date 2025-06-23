@@ -174,7 +174,7 @@ const actions = [
     blockchainActions.connected.type,
     discoveryActions.updateDiscovery.type,
     feesActions.updateFee.type,
-    feesActions.removeFee.type,
+    feesActions.updateMultipleFees.type,
 ];
 
 /*

@@ -189,47 +189,63 @@ const DEVICE = testMocks.getSuiteDevice({
 
 const DEFAULT_FEES = {
     btc: {
-        minFee: 1,
-        maxFee: 100,
-        blockHeight: 1,
-        blockTime: 1,
-        levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
+        status: 'loaded',
+        data: {
+            minPriorityFee: 0,
+            minFee: 1,
+            maxFee: 100,
+            blockHeight: 1,
+            blockTime: 1,
+            levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
+        },
     },
     eth: {
-        minFee: 1,
-        maxFee: 100,
-        blockHeight: 1,
-        blockTime: 1,
-        levels: [
-            {
-                label: 'normal',
-                feePerUnit: '3300000000',
-                feeLimit: '21000',
-                blocks: -1,
-            },
-        ],
+        status: 'loaded',
+        data: {
+            minPriorityFee: 0,
+            minFee: 1,
+            maxFee: 100,
+            blockHeight: 1,
+            blockTime: 1,
+            levels: [
+                {
+                    label: 'normal',
+                    feePerUnit: '3300000000',
+                    feeLimit: '21000',
+                    blocks: -1,
+                },
+            ],
+        },
     },
     xrp: {
-        minFee: 1,
-        maxFee: 100,
-        blockHeight: 1,
-        blockTime: 1,
-        levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
+        status: 'loaded',
+        data: {
+            minPriorityFee: 0,
+            minFee: 1,
+            maxFee: 100,
+            blockHeight: 1,
+            blockTime: 1,
+            levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
+        },
     },
     sol: {
-        minFee: -1,
-        maxFee: -1,
-        blockHeight: -1,
-        blockTime: -1,
-        levels: [
-            {
-                label: 'normal',
-                feePerUnit: '100000',
-                feeLimit: '50000',
-                feePerTx: '10000',
-                blocks: -1,
-            },
-        ],
+        status: 'loaded',
+        data: {
+            minPriorityFee: 0,
+            minFee: -1,
+            maxFee: -1,
+            blockHeight: -1,
+            blockTime: -1,
+            levels: [
+                {
+                    label: 'normal',
+                    feePerUnit: '100000',
+                    feeLimit: '50000',
+                    feePerTx: '10000',
+                    blocks: -1,
+                },
+            ],
+        },
     },
 };
 
@@ -1720,16 +1736,20 @@ export const feeChange = [
             },
             fees: {
                 btc: {
-                    minFee: 1,
-                    maxFee: 100,
-                    blockHeight: 1,
-                    blockTime: 1,
-                    // add more levels
-                    levels: [
-                        { label: 'high', feePerUnit: '40', blocks: 1 },
-                        { label: 'normal', feePerUnit: '4', blocks: 1 },
-                        { label: 'economy', feePerUnit: '1', blocks: 1 },
-                    ],
+                    status: 'loaded',
+                    data: {
+                        minPriorityFee: 0,
+                        minFee: 1,
+                        maxFee: 100,
+                        blockHeight: 1,
+                        blockTime: 1,
+                        // add more levels
+                        levels: [
+                            { label: 'high', feePerUnit: '40', blocks: 1 },
+                            { label: 'normal', feePerUnit: '4', blocks: 1 },
+                            { label: 'economy', feePerUnit: '1', blocks: 1 },
+                        ],
+                    },
                 },
             },
         },

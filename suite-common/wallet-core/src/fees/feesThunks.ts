@@ -1,6 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, getNetworkOptional, networksCollection } from '@suite-common/wallet-config';
-import type { NetworksFees } from '@suite-common/wallet-types';
+import { FeeInfo, FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
@@ -33,13 +33,13 @@ export const preloadFeeInfoThunk = createThunk(
         );
         const levels = await Promise.all(promises);
 
-        const partial: Partial<NetworksFees> = {};
+        const partial: Partial<FeesState> = {};
         networks.forEach((network, index) => {
             const result = levels[index];
 
             if (result.success) {
                 const { payload } = result;
-                partial[network.symbol] = {
+                const feeInfo: FeeInfo = {
                     blockHeight: 0,
                     ...payload,
                     levels: sortLevels(
@@ -52,29 +52,45 @@ export const preloadFeeInfoThunk = createThunk(
                         label: level.label || 'normal',
                     })),
                 };
+                partial[network.symbol] = {
+                    status: 'preloaded',
+                    data: feeInfo,
+                };
             }
         });
 
-        dispatch(feesActions.updateFee(partial));
+        dispatch(feesActions.updateMultipleFees(partial));
     },
 );
 
+type UpdateFeeInfoThunkProps = {
+    networkSymbol: NetworkSymbol;
+};
+
 export const updateFeeInfoThunk = createThunk(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
-    async ({ networkSymbol }: { networkSymbol: NetworkSymbol }, { dispatch, getState }) => {
+    async ({ networkSymbol }: UpdateFeeInfoThunkProps, { dispatch, getState }) => {
         const network = getNetworkOptional(networkSymbol.toLowerCase());
         if (!network) return;
-        const blockchainInfo = selectNetworkBlockchainInfo(getState(), network.symbol);
+        const { symbol } = network;
+        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
         const device = selectSelectedDevice(getState());
 
-        const newFeeInfo = await getNewFeeInfo({ network, device });
-        if (newFeeInfo === undefined) return;
+        dispatch(feesActions.updateFee({ symbol, status: 'loading' }));
 
-        const partialFees: Partial<NetworksFees> = {};
-        partialFees[network.symbol] = {
-            blockHeight: blockchainInfo.blockHeight,
-            ...newFeeInfo,
-        };
-        dispatch(feesActions.updateFee(partialFees));
+        const newFeeInfo = await getNewFeeInfo({ network, device });
+
+        if (newFeeInfo === undefined) {
+            return dispatch(feesActions.updateFee({ symbol, status: 'error' }));
+        }
+        const backfilledNewFeeInfo = { blockHeight: blockchainInfo.blockHeight, ...newFeeInfo };
+
+        dispatch(
+            feesActions.updateFee({
+                symbol,
+                status: 'loaded',
+                data: backfilledNewFeeInfo,
+            }),
+        );
     },
 );

@@ -451,11 +451,15 @@ export const composeAndSign: ComposeAndSignFixture[] = [
             },
             fees: {
                 btc: {
-                    minFee: 1,
-                    maxFee: 100,
-                    blockHeight: 1,
-                    blockTime: 1,
-                    levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    status: 'loaded',
+                    data: {
+                        minPriorityFee: 0,
+                        minFee: 1,
+                        maxFee: 100,
+                        blockHeight: 1,
+                        blockTime: 1,
+                        levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    },
                 },
             },
         },
@@ -527,11 +531,15 @@ export const composeAndSign: ComposeAndSignFixture[] = [
             },
             fees: {
                 btc: {
-                    minFee: 1,
-                    maxFee: 100,
-                    blockHeight: 1,
-                    blockTime: 1,
-                    levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    status: 'loaded',
+                    data: {
+                        minPriorityFee: 0,
+                        minFee: 1,
+                        maxFee: 100,
+                        blockHeight: 1,
+                        blockTime: 1,
+                        levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    },
                 },
             },
         },
@@ -596,11 +604,15 @@ export const composeAndSign: ComposeAndSignFixture[] = [
             },
             fees: {
                 btc: {
-                    minFee: 4, // this is essential for this test
-                    maxFee: 100,
-                    blockHeight: 1,
-                    blockTime: 1,
-                    levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    status: 'loaded',
+                    data: {
+                        minPriorityFee: 0,
+                        minFee: 4, // this is essential for this test
+                        maxFee: 100,
+                        blockHeight: 1,
+                        blockTime: 1,
+                        levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    },
                 },
             },
         },
@@ -672,11 +684,15 @@ export const composeAndSign: ComposeAndSignFixture[] = [
             },
             fees: {
                 btc: {
-                    minFee: 1,
-                    maxFee: 100,
-                    blockHeight: 1,
-                    blockTime: 1,
-                    levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    status: 'loaded',
+                    data: {
+                        minPriorityFee: 0,
+                        minFee: 1,
+                        maxFee: 100,
+                        blockHeight: 1,
+                        blockTime: 1,
+                        levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+                    },
                 },
             },
         },
