@@ -20,14 +20,18 @@
         "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-        "types": ["jest", "node"],
+        "types": [
+            "jest",
+            "node"
+        ],
         "esModuleInterop": true,
         "composite": true,
         "declaration": true,
         "declarationMap": true,
         "incremental": true,
         "noEmitOnError": true,
-        "emitDeclarationOnly": true
+        "emitDeclarationOnly": true,
+        "exactOptionalPropertyTypes": true
     },
     "exclude": [
         "**/node_modules",
