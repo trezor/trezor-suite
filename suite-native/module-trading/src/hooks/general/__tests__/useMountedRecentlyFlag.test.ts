@@ -15,6 +15,9 @@ describe('useMountedRecentlyFlag', () => {
     });
 
     afterEach(() => {
+        act(() => {
+            jest.runOnlyPendingTimers();
+        });
         jest.useRealTimers();
     });
 

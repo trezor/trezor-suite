@@ -11,6 +11,8 @@ import { BuyFormType } from '../../../types/buy';
 import { useBuyForm } from '../../buy/useBuyForm';
 import { useFocusedValueWatch } from '../useFocusedValueWatch';
 
+jest.mock('../useFocusedValueWatch', () => jest.requireActual('../useFocusedValueWatch'));
+
 describe('useFocusedValueWatch', () => {
     let form: BuyFormType;
     let store: TestStore;

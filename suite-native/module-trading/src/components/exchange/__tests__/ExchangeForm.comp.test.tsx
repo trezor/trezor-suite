@@ -12,6 +12,10 @@ import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeFormType } from '../../../types/exchange';
 import { ExchangeForm } from '../ExchangeForm';
 
+jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
+    jest.requireActual('../../../hooks/general/useFocusedValueWatch'),
+);
+
 describe('ExchangeForm', () => {
     let form: ExchangeFormType;
 

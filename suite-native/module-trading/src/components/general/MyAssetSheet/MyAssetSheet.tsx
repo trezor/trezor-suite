@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Account } from '@suite-common/wallet-types';
@@ -25,7 +26,7 @@ const renderItem = (
     onAssetSelect: MyAssetListItemProps['onPress'],
 ) => <MyAssetListItem asset={asset} account={sectionData} onPress={onAssetSelect} />;
 
-export const MyAssetSheet = ({ isVisible, onClose, onAssetSelect }: MyAssetSheetProps) => {
+export const MyAssetSheet = memo(({ isVisible, onClose, onAssetSelect }: MyAssetSheetProps) => {
     const onAssetSelectCallback = (asset: TradeableAsset, account: Account) => {
         onAssetSelect(asset, account);
         onClose();
@@ -64,4 +65,4 @@ export const MyAssetSheet = ({ isVisible, onClose, onAssetSelect }: MyAssetSheet
             }}
         />
     );
-};
+});

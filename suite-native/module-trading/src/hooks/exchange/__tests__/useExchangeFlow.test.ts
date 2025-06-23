@@ -39,11 +39,15 @@ describe('useExchangeFlow', () => {
 
                 useEffect(() => {
                     // Set all provided form values
-                    Object.entries(formValues).forEach(([key, value]) => {
-                        act(() => {
-                            setValue(key as keyof ExchangeFormValues, value);
+                    (async () => {
+                        await act(() => {
+                            Object.entries(formValues).forEach(([key, value]) => {
+                                setValue(key as keyof ExchangeFormValues, value);
+                            });
+
+                            return Promise.resolve();
                         });
-                    });
+                    })();
                 }, [setValue]);
 
                 return useExchangeFlow(form);
