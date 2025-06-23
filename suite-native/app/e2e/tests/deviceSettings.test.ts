@@ -46,23 +46,21 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 
     test('Enable, change & disable PIN', async () => {
-        await onDeviceSettings.tapEnablePinProtectionButton();
+        await onDeviceSettings.redirectToPinProtectionScreen();
 
+        await onDeviceSettings.tapEnablePinProtectionButton();
         await TrezorUserEnvLink.pressNo();
         await onAlertSheet.tapPrimaryButton();
-
         await TrezorUserEnvLink.pressYes();
         await TrezorUserEnvLink.inputEmu('42');
         await TrezorUserEnvLink.inputEmu('42');
         await TrezorUserEnvLink.pressYes();
 
         await onDeviceSettings.tapChangePinProtectionButton();
-
         await TrezorUserEnvLink.pressNo();
         await onAlertSheet.tapSecondaryButton();
 
         await onDeviceSettings.tapChangePinProtectionButton();
-
         await TrezorUserEnvLink.pressYes();
         await TrezorUserEnvLink.inputEmu('42');
         await TrezorUserEnvLink.inputEmu('21');
@@ -70,29 +68,27 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         await TrezorUserEnvLink.pressYes();
 
         await onDeviceSettings.tapDisablePinProtectionButton();
-
         await TrezorUserEnvLink.pressYes();
         await TrezorUserEnvLink.inputEmu('21');
         await TrezorUserEnvLink.pressYes();
 
-        await onDeviceSettings.waitForScreen();
+        await onDeviceSettings.waitForPinProtectionScreen();
     });
 
     test('Check device authenticity', async () => {
         await onDeviceSettings.scrollUntilCheckAuthenticityButtonIsVisible();
-        await onDeviceSettings.tapCheckAuthenticityButton();
 
-        await onAlertSheet.tapPrimaryButton();
+        await onDeviceSettings.redirectToDeviceAuthenticityScreen();
+
+        await onDeviceSettings.tapCheckAuthenticityButton();
         await TrezorUserEnvLink.pressNo();
 
         await onDeviceSettings.tapCheckAuthenticityButton();
-
-        await onAlertSheet.tapPrimaryButton();
         await TrezorUserEnvLink.pressYes();
 
         await onDeviceAuthenticitySuccess.waitForScreen();
         await onDeviceAuthenticitySuccess.tapCloseButton();
 
-        await onDeviceSettings.waitForScreen();
+        await onDeviceSettings.waitForDeviceAuthenticityScreen();
     });
 });

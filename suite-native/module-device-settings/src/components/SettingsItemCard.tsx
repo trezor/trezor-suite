@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ActivityIndicator, Pressable } from 'react-native';
+import { ActivityIndicator, Pressable, PressableProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -18,7 +18,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 const ICON_WRAPPER_SIZE = 48;
 
 type CardVariant = 'normal' | 'danger';
-type SettingsItemCardProps = {
+type SettingsItemCardProps = Omit<PressableProps, 'onPress'> & {
     icon: IconName;
     title: ReactNode;
     subtitle: ReactNode;
@@ -54,12 +54,13 @@ export const SettingsItemCard = ({
     alertBoxProps,
     onPress,
     variant = 'normal',
+    ...pressableProps
 }: SettingsItemCardProps) => {
     const { applyStyle } = useNativeStyles();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     return (
-        <Pressable onPress={onPress} disabled={isDiscoveryRunning}>
+        <Pressable onPress={onPress} disabled={isDiscoveryRunning} {...pressableProps}>
             <Card borderColor="borderElevation1" noPadding>
                 <HStack padding="sp16" spacing="sp12" alignItems="center">
                     <Box marginVertical="sp2" style={applyStyle(iconWrapperStyle, { variant })}>
