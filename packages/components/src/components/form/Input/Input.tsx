@@ -39,6 +39,7 @@ interface StyledInputProps extends BaseInputProps {
     $leftAddonWidth?: number;
     $rightAddonWidth?: number;
     $isWithLabel: boolean;
+    $isMasked?: boolean;
 }
 
 const getExtraAddonPadding = (size: InputSize) =>
@@ -53,6 +54,7 @@ const StyledInput = styled.input<StyledInputProps & TransientProps<AllowedTextPr
     height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     ${baseInputStyle}
     ${({ $size }) => $size === 'small' && typography.hint};
+    ${({ $isMasked }) => $isMasked && `-webkit-text-security: disc;`}
 
     &:disabled {
         pointer-events: auto;
@@ -108,6 +110,7 @@ export type InputProps = InputHTMLProps &
          */
         showClearButton?: 'hover' | 'always';
         onClear?: () => void;
+        isMasked?: boolean;
     };
 
 const Input = ({
@@ -121,6 +124,7 @@ const Input = ({
     showClearButton,
     placeholder,
     onClear,
+    isMasked,
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -189,6 +193,7 @@ const Input = ({
                     $leftAddonWidth={leftAddonWidth}
                     $rightAddonWidth={rightAddonWidth}
                     $isWithLabel={!!label}
+                    $isMasked={isMasked}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     data-testid={dataTest}
                     {...textProps}

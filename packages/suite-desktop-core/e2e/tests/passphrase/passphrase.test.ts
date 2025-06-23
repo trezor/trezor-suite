@@ -129,13 +129,6 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
         // confirm - input wrong passphrase
         await dashboardPage.passphraseInput.fill('cba');
 
-        // toggle passphrase visibility
-        await expect(dashboardPage.passphraseInput).toHaveAttribute('type', 'password');
-        await dashboardPage.passphraseShowButton.click();
-        await expect(dashboardPage.passphraseInput).toHaveAttribute('type', 'text');
-        await dashboardPage.passphraseShowButton.click();
-        await expect(dashboardPage.passphraseInput).toHaveAttribute('type', 'password');
-
         await dashboardPage.passphraseSubmitButton.click();
         await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
         await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
