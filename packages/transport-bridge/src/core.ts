@@ -228,7 +228,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
-        return api.runInIsolation({ lock: { read: true, write: true }, path }, async () => {
+        return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
             logger?.debug('core: call: writeUtil');
             const writeResult = await writeUtil({ path, data, signal, protocol });
             if (!writeResult.success) {
