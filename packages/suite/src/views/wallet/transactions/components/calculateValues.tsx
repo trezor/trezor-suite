@@ -1,12 +1,13 @@
 import { isSameDay } from 'date-fns';
-import { RawDataItem } from '../../../../components/suite/graph/TransactionsGraph/newGraph/types';
+
 import { enhanceBalanceGraphDataForEachStep } from './useGraphData';
+import { RawDataItem } from '../../../../components/suite/graph/TransactionsGraph/newGraph/types';
 import { GraphRange } from '../../../../types/wallet/graph';
 
 type CalculateValuesProps = {
     fiatRates: RawDataItem[];
-    startBalance: number;
-    currentRange: GraphRange;
+    startBalance: number | null;
+    selectedRange: GraphRange;
     balanceGraphData: RawDataItem[];
 };
 
@@ -41,12 +42,12 @@ export const getInvestmentChain = (
 export const calculateValues = ({
     fiatRates,
     startBalance,
-    currentRange,
+    selectedRange,
     balanceGraphData,
 }: CalculateValuesProps) => {
     const balanceData = enhanceBalanceGraphDataForEachStep(
         startBalance,
-        currentRange,
+        selectedRange,
         balanceGraphData,
     );
 

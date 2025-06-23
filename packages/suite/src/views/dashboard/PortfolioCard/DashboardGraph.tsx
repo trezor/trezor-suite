@@ -15,8 +15,6 @@ import { Account } from 'src/types/wallet';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
 
-import { TransactionsGraph } from '../../../components/suite/graph/TransactionsGraph/newGraph/TransactionsGraph';
-
 const Wrapper = styled.div`
     display: flex;
     flex: 1 1 auto;
@@ -135,44 +133,22 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         </Button>
                     </ErrorMessage>
                 ) : (
-                    <>
-                        {/*<TransactionsGraph*/}
-                        {/*    selectedRange={graph.selectedRange}*/}
-                        {/*    portfolioData={data}*/}
-                        {/*    localCurrency={localCurrency}*/}
-                        {/*/>*/}
-                        {/*<LegacyTransactionsGraph*/}
-                        {/*    hideToolbar*/}
-                        {/*    variant="all-assets"*/}
-                        {/*    onRefresh={onRefresh}*/}
-                        {/*    isLoading={graph.isLoading || isProcessing}*/}
-                        {/*    localCurrency={localCurrency}*/}
-                        {/*    xTicks={xTicks}*/}
-                        {/*    minMaxValues={minMaxValues}*/}
-                        {/*    data={data}*/}
-                        {/*    selectedRange={graph.selectedRange}*/}
-                        {/*    receivedValueFn={receivedValueFn}*/}
-                        {/*    sentValueFn={sentValueFn}*/}
-                        {/*    balanceValueFn={balanceValueFn}*/}
-                        {/*/>*/}
-                    </>
+                    <LegacyTransactionsGraph
+                        hideToolbar
+                        variant="all-assets"
+                        onRefresh={onRefresh}
+                        isLoading={graph.isLoading || isProcessing}
+                        localCurrency={localCurrency}
+                        xTicks={xTicks}
+                        minMaxValues={minMaxValues}
+                        data={data}
+                        selectedRange={graph.selectedRange}
+                        receivedValueFn={receivedValueFn}
+                        sentValueFn={sentValueFn}
+                        balanceValueFn={balanceValueFn}
+                    />
                 )}
             </GraphWrapper>
         </Wrapper>
     );
 });
-
-// <LegacyTransactionsGraph
-//     hideToolbar
-//     variant="all-assets"
-//     onRefresh={onRefresh}
-//     isLoading={graph.isLoading || isProcessing}
-//     localCurrency={localCurrency}
-//     xTicks={xTicks}
-//     minMaxValues={minMaxValues}
-//     data={data}
-//     selectedRange={graph.selectedRange}
-//     receivedValueFn={receivedValueFn}
-//     sentValueFn={sentValueFn}
-//     balanceValueFn={balanceValueFn}
-// />

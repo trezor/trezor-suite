@@ -77,7 +77,7 @@ export const PortfolioCard = memo(() => {
         discovery && discoveryStatus?.status === 'exception' ? null : (
             <Box margin={{ horizontal: spacings.xl, vertical: spacings.xs }}>
                 <PortfolioCardHeader
-                discovery={discovery}
+                    discovery={discovery}
                     showGraphControls={showGraphControls}
                     fiatAmount={walletBalance}
                     localCurrency={localCurrency}
@@ -129,7 +129,7 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card header={body ? header : null} paddingType="none">
+            <Card header={body ? header : null} paddingType="none" overflow="visible">
                 {body ? (
                     <Column justifyContent="center" minHeight={329}>
                         {body}

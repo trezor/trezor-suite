@@ -223,6 +223,7 @@ export const LegacyTransactionsGraph = memo(
                                             />
                                         ) : (
                                             <GraphTooltipDashboard
+                                                chartWidth={1000} // TODO
                                                 sentValueFn={sentValueFn}
                                                 receivedValueFn={receivedValueFn}
                                                 {...tooltipContentProps}
@@ -264,7 +265,7 @@ export const LegacyTransactionsGraph = memo(
                                 >
                                     {extendedDataForInterval.map((entry, index) => (
                                         <Cell
-                                            key={`cell-${entry}`}
+                                            key={`cell-${entry.time}`}
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
                                                 isBarColored(index)
@@ -281,7 +282,7 @@ export const LegacyTransactionsGraph = memo(
                                 >
                                     {extendedDataForInterval.map((entry, index) => (
                                         <Cell
-                                            key={`cell-${entry}`}
+                                            key={`cell-${entry.time}`}
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
                                                 isBarColored(index)

@@ -86,6 +86,7 @@ export const GraphTooltipAccount = ({
             {...props}
             active={active}
             payload={payload}
+            chartWidth={1000} // TODO
             sentAmount={formatAmount(
                 sentAmountString,
                 symbol,

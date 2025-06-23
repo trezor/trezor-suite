@@ -1,24 +1,31 @@
 import { useEffect, useState } from 'react';
 
+import { getUnixTime } from 'date-fns';
+
+import { FiatCurrencyCode } from '@suite-common/suite-config/libDev/src';
 import { Account } from '@suite-common/wallet-types/libDev/src';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { GraphRange } from '../../../../../types/wallet/graph';
-import { getCurrentRange } from '../../../../../views/wallet/transactions/components/useGraphData';
 
 const SATS_TO_BTC = 100000000;
 
 type UseFetchStartBalance = {
     selectedRange: GraphRange;
     account: Account;
+    localCurrency: FiatCurrencyCode;
 };
 
-export const useFetchStartBalance = ({ account, selectedRange }: UseFetchStartBalance) => {
+export const useFetchStartBalance = ({
+    account,
+    selectedRange,
+    localCurrency,
+}: UseFetchStartBalance) => {
     const [startBalance, setStartBalance] = useState<number | null>(null);
     const [hasError, setHasError] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const currentRange = getCurrentRange(selectedRange);
+    // const currentRange = getCurrentRange(selectedRange);
 
     useEffect(() => {
         const fetchStartBalance = async () => {
@@ -26,36 +33,31 @@ export const useFetchStartBalance = ({ account, selectedRange }: UseFetchStartBa
                 coin: account.symbol,
                 identity: tryGetAccountIdentity(account),
                 descriptor: account.descriptor,
-                to: new Date(currentRange.endDate).getTime(),
+                to: selectedRange.startDate ? getUnixTime(selectedRange.startDate) : undefined,
                 groupBy: 1000000000,
-                currencies: ['usd'],
+                currencies: [localCurrency],
             });
 
-            const value =
-                connectBalanceHistory?.success === true
-                    ? ((parseFloat(connectBalanceHistory.payload[0]?.received) || 0) -
-                          (parseFloat(connectBalanceHistory.payload[0]?.sent) || 0)) /
-                      SATS_TO_BTC
-                    : null;
-
-            console.log(
-                '___',
-                parseFloat(connectBalanceHistory.payload[0]?.received) || 0,
-                parseFloat(connectBalanceHistory.payload[0]?.sent) || 0,
-                (parseFloat(connectBalanceHistory.payload[0]?.received) || 0) -
-                    (parseFloat(connectBalanceHistory.payload[0]?.sent) || 0),
-            );
-            if (value === null) {
-                setHasError(true);
-            } else {
+            if (connectBalanceHistory?.success === true) {
+                if (connectBalanceHistory.payload.length === 0) {
+                    setStartBalance(0);
+                }
+                const value =
+                    (parseFloat(connectBalanceHistory.payload[0].received) -
+                        parseFloat(connectBalanceHistory.payload[0].sent)) /
+                    SATS_TO_BTC;
+                // const rate = connectBalanceHistory.payload[0].rates[localCurrency] || 1;
                 setStartBalance(value);
+            } else {
+                console.log('___ERROR', connectBalanceHistory);
+                setHasError(true);
             }
-            console.log('___', { connectBalanceHistory, value });
+
             setIsLoading(false);
         };
         setIsLoading(true);
         fetchStartBalance();
-    }, [account, currentRange.endDate]);
+    }, [account, localCurrency, selectedRange.startDate]);
 
     return { startBalance, hasError, isLoading };
 };

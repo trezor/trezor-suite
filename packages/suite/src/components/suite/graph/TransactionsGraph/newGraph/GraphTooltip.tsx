@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { Column, Icon, Paragraph, Row, Text, hexToRgba } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { RawDataItem } from './types';
 
 const TooltipContainer = styled.div`
@@ -97,31 +98,8 @@ export const GraphTooltip = (props: GraphTooltip) => {
                                 minimumFractionDigits={0}
                             />
                             <br />
-                            <Paragraph
-                                variant="tertiary"
-                                typographyStyle="hint"
-                                margin={{ top: 12 }}
-                            >
-                                Investment
-                            </Paragraph>
-                            <FiatAmountFormatter
-                                value={(fromItem?.fiatValueInvestment || 0).toFixed()}
-                                currency={localCurrency}
-                                minimumFractionDigits={0}
-                            />
-                            {/*<div>{fromItem.value}</div>*/}
-                            <br />
-                            <br />
-                            <div>
-                                <Paragraph variant="tertiary" typographyStyle="hint">
-                                    Diff
-                                </Paragraph>
-                                <FiatAmountFormatter
-                                    value={(from - (fromItem?.fiatValueInvestment || 0)).toFixed()}
-                                    currency={localCurrency}
-                                    minimumFractionDigits={0}
-                                />
-                            </div>
+
+                            <div>{fromItem.value}</div>
                         </Paragraph>
                     )}
 

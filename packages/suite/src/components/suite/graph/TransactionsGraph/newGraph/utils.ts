@@ -1,14 +1,18 @@
 import { format, fromUnixTime } from 'date-fns';
 
+import { Account } from '@suite-common/wallet-types';
+
 import { ApiData, RawDataItem } from './types';
-import { GraphData, GraphRange } from '../../../../../types/wallet/graph';
+import { getGraphDataForInterval } from '../../../../../actions/wallet/graphActions';
+import { State } from '../../../../../reducers/wallet/graphReducer';
+import { GraphRange } from '../../../../../types/wallet/graph';
 
-const getNewValue = (previousValue: number) => {
-    const howClose = 0.52 - Math.random();
-    const value = Math.floor(previousValue + Math.random() + 15000 * howClose);
-
-    return value > 0 ? value : 0;
-};
+// const getNewValue = (previousValue: number) => {
+//     const howClose = 0.52 - Math.random();
+//     const value = Math.floor(previousValue + Math.random() + 15000 * howClose);
+//
+//     return value > 0 ? value : 0;
+// };
 
 export const calculateSegments = (raw: RawDataItem[]) => {
     const newSegments: RawDataItem[][] = [];
@@ -71,23 +75,23 @@ export const sanitizePortfolioData = data =>
         value: parseFloat(item.balanceFiat.usd),
         date: fromUnixTime(item.time).toISOString(),
     }));
-
-const getProbabilityOfTransaction = (selectedRange: GraphRange) => {
-    switch (selectedRange.label) {
-        case 'all':
-            return 0.99;
-        case 'two-years':
-            return 0.98;
-        case 'year':
-            return 0.97;
-        case 'six-months':
-            return 0.95;
-        case 'month':
-            return 0.8;
-        default:
-            return 0.9;
-    }
-};
+//
+// const getProbabilityOfTransaction = (selectedRange: GraphRange) => {
+//     switch (selectedRange.label) {
+//         case 'all':
+//             return 0.99;
+//         case 'two-years':
+//             return 0.98;
+//         case 'year':
+//             return 0.97;
+//         case 'six-months':
+//             return 0.95;
+//         case 'month':
+//             return 0.8;
+//         default:
+//             return 0.9;
+//     }
+// };
 
 export const sanitizeCoinData = (data: ApiData, selectedRange: GraphRange): RawDataItem[] => {
     const newArray: RawDataItem[] = [];
@@ -113,7 +117,17 @@ export const sanitizeCoinData = (data: ApiData, selectedRange: GraphRange): RawD
     return newArray;
 };
 
-export const getBalanceGraphData = (intervalGraphData: GraphData[]): RawDataItem[] => {
+type GetBalanceGraphDataProps = {
+    account?: Account;
+    graph: State;
+};
+
+export const getBalanceGraphData = ({
+    account,
+    graph,
+}: GetBalanceGraphDataProps): RawDataItem[] => {
+    const intervalGraphData = getGraphDataForInterval({ account, graph });
+
     return intervalGraphData.reduce<RawDataItem[]>((acc, data) => {
         if (data.data) {
             const balanceData = data.data.map(d => ({

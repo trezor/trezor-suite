@@ -2,6 +2,8 @@ import { isSameYear } from 'date-fns';
 import { ComposedChart, ResponsiveContainer } from 'recharts';
 import { useTheme } from 'styled-components';
 
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+
 import { renderAxes } from './renderAxes';
 import { renderCryptoBalanceLine } from './renderCryptoBalanceLine';
 import { renderFiatBalanceJumps } from './renderFiatBalanceJumps';
@@ -10,17 +12,15 @@ import { renderLinearGradient } from './renderLinearGradient';
 import { renderReferenceLines } from './renderReferenceLines';
 import { renderTooltip } from './renderTooltip';
 import { RawDataItem } from './types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { useGraphData } from '../../../../../views/wallet/transactions/components/useGraphData';
 import { GraphRange } from '../../../../../types/wallet/graph';
+import { useGraphData } from '../../../../../views/wallet/transactions/components/useGraphData';
 import { GraphSkeleton } from '../../GraphSkeleton';
-import { renderCryptoInvestmentBalanceLine } from './renderCryptoInvestmentBalanceLine';
 
 type TransactionsGraphProps = {
     localCurrency: FiatCurrencyCode;
     selectedRange: GraphRange;
     balanceGraphData: RawDataItem[];
-    startBalance: number;
+    startBalance: number | null;
     fiatRates: RawDataItem[];
     isLoading?: boolean;
 };
@@ -43,7 +43,7 @@ export const TransactionsGraph = ({
 
     const theme = useTheme();
 
-    if (isLoading) {
+    if (isLoading || startBalance === null) {
         return <GraphSkeleton animate />;
     }
 
@@ -61,8 +61,8 @@ export const TransactionsGraph = ({
                     {renderLinearGradient({ theme })}
                     {renderFiatBalanceLine({ segments, theme })}
                     {renderFiatBalanceJumps({ verticalSegments, theme })}
-                    {/*{renderCryptoBalanceLine({ theme })}*/}
-                    {renderCryptoInvestmentBalanceLine({ theme })}
+                    {renderCryptoBalanceLine({ theme })}
+                    {/*{renderCryptoInvestmentBalanceLine({ theme })}*/}
                     {renderReferenceLines({ metaData, theme, localCurrency })}
                 </ComposedChart>
             </ResponsiveContainer>

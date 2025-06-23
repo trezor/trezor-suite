@@ -4,6 +4,7 @@ import { eachDayOfInterval, isSameDay } from 'date-fns';
 
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 
+import { calculateValues } from './calculateValues';
 import {
     MetaData,
     RawDataItem,
@@ -14,7 +15,6 @@ import {
 } from '../../../../components/suite/graph/TransactionsGraph/newGraph/utils';
 import { useSelector } from '../../../../hooks/suite';
 import { GraphRange } from '../../../../types/wallet/graph';
-import { calculateValues } from './calculateValues';
 
 // @TODO: move somewhere else, CAN'T BE DATE HERE
 export const getCurrentRange = (selectedRange: GraphRange) => {
@@ -33,10 +33,11 @@ export const getCurrentRange = (selectedRange: GraphRange) => {
 };
 
 export const enhanceBalanceGraphDataForEachStep = (
-    startBalance: number,
-    currentRange: GraphRange,
+    startBalance: number | null,
+    selectedRange: GraphRange,
     balanceGraphData: RawDataItem[],
 ) => {
+    const currentRange = getCurrentRange(selectedRange); // TODO refactor
     const interval = eachDayOfInterval({
         start: new Date(currentRange.startDate!), // TODO fix type
         end: new Date(currentRange.endDate!),
@@ -63,13 +64,13 @@ export const enhanceBalanceGraphDataForEachStep = (
         ];
     }, []);
 
-    return newValues.map(item => ({ ...item, value: item.value + startBalance }));
+    return newValues.map(item => ({ ...item, value: item.value + (startBalance ?? 0) }));
 };
 
 type UseGraphDataProps = {
     selectedRange: GraphRange;
     balanceGraphData: RawDataItem[];
-    startBalance: number;
+    startBalance: number | null;
     fiatRates: RawDataItem[];
 };
 
@@ -81,7 +82,6 @@ export const useGraphData = ({
 }: UseGraphDataProps) => {
     const [graphData, setGraphData] = useState<RawDataItem[]>([]);
     const localCurrency = useSelector(selectLocalCurrency);
-    const currentRange = getCurrentRange(selectedRange);
     const [segments, setSegments] = useState<RawDataItem[][]>([]);
     const [verticalSegments, setVerticalSegments] = useState<RawDataItem[][]>([]);
     const [ticks, setTicks] = useState<string[]>([]);
@@ -106,12 +106,12 @@ export const useGraphData = ({
         const combinedData = calculateValues({
             fiatRates,
             startBalance,
-            currentRange,
+            selectedRange,
             balanceGraphData,
         });
 
         setGraphData(combinedData);
-    }, [selectedRange, currentRange, localCurrency, startBalance, balanceGraphData, fiatRates]);
+    }, [selectedRange, localCurrency, startBalance, balanceGraphData, fiatRates]);
 
     useEffect(() => {
         const { newSegments, newVerticalSegments, filteredTicks } = calculateSegments(graphData);

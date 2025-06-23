@@ -3,12 +3,11 @@ import { Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
 import { TransactionsGraph } from './TransactionsGraph';
+import { useFetchFiatRates } from './useFetchFiatRates';
+import { useFetchStartBalance } from './useFetchStartBalance';
 import { getBalanceGraphData } from './utils';
-import { getGraphDataForInterval } from '../../../../../actions/wallet/graphActions';
 import { useSelector } from '../../../../../hooks/suite';
 import { GraphRange } from '../../../../../types/wallet/graph';
-import { useFetchStartBalance } from './useFetchStartBalance';
-import { useFetchFiatRates } from './useFetchFiatRates';
 
 type TransactionsGraphWithDataProps = {
     account: Account;
@@ -22,17 +21,21 @@ export const TransactionsGraphWithData = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const graph = useSelector(state => state.wallet.graph);
 
-    const intervalGraphData = getGraphDataForInterval({ account, graph });
-    const balanceGraphData = getBalanceGraphData(intervalGraphData);
+    const balanceGraphData = getBalanceGraphData({ account, graph });
 
     const {
         startBalance,
         hasError,
         isLoading: isStartBalanceLoading,
-    } = useFetchStartBalance({ account, selectedRange });
-    const { fiatRates, isLoading: isFiatRatesLoading } = useFetchFiatRates({ selectedRange });
+    } = useFetchStartBalance({ account, selectedRange, localCurrency });
+    const { fiatRates, isLoading: isFiatRatesLoading } = useFetchFiatRates({
+        account,
+        selectedRange,
+        localCurrency,
+    });
+    console.log('___', { selectedRange, startBalance, balanceGraphData, fiatRates });
 
-    if (hasError || startBalance === null) {
+    if (hasError) {
         return <Text>Error while loading graph</Text>;
     }
 

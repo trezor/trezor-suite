@@ -5211,6 +5211,14 @@ export default defineMessages({
         id: 'TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION',
         defaultMessage: 'Include the Stellar network in coin settings',
     },
+    TR_NEW_TRANSACTION_CHART: {
+        id: 'TR_NEW_TRANSACTION_CHART',
+        defaultMessage: 'New transaction chart',
+    },
+    TR_NEW_TRANSACTION_CHART_DESCRIPTION: {
+        id: 'TR_NEW_TRANSACTION_CHART_DESCRIPTION',
+        defaultMessage: 'Show new transaction chart in BTC-like networks',
+    },
     TR_GO_TO_EXP_FEATURE: {
         id: 'TR_GO_TO_EXP_FEATURE',
         defaultMessage: 'Open',
