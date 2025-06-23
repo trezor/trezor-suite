@@ -3,16 +3,21 @@
 ## 57 (25.7.0)
 
 - introduce new object store `bioAuth`
+- remove `discovery` object store
 
-## 56 (25.6.1)
+## 56 (25.6.3)
 
 - renamed from _coinmarketTrades_ to _tradingTrades_
-- updated from _coinmarket_ formDraft to _trading_
+- drop formDrafts instead of migration from prefix _coinmarket_ to _trading_
 - changed `tradingTrades` - add `sendAccountKey`, `receiveAccountKey`, `selectedAccountKey` to each buy, sell, and exchange trade
 - added `explorer` store for custom explorer configuration
 - created `thp` and `bluetooth` object store
 - remove saved solana txs to force refetch
 - remove saved evm txs to force refetch due to bug in migration v52
+
+## 55
+
+- migration was merged into 56 migration (2 migration versions within 1 Suite version)
 
 ## 54
 
