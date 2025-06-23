@@ -79,7 +79,7 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
 
     // 1. Migration coinmarketTrades to tradingTrades
     // @ts-expect-error - old type
-    if (db.objectStoreNames.contains(oldStoreName)) {
+    if (db.objectStoreNames.contains(oldStoreName) && !db.objectStoreNames.contains(newStoreName)) {
         // @ts-expect-error - old type
         const trades = transaction.objectStore(oldStoreName);
         let tradesCursor = await trades.openCursor();
@@ -186,8 +186,12 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     // 5. add thp and bluetooth object stores
+    if (!db.objectStoreNames.contains('thp')) {
     db.createObjectStore('thp');
+    }
+    if (!db.objectStoreNames.contains('bluetooth')) {
     db.createObjectStore('bluetooth');
+    }
 
     // 6. refetch solana txs
     const accountsToUpdate = ['sol', 'dsol'];
