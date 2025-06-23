@@ -2804,6 +2804,46 @@
                 }
             }
         },
+        "DebugLinkGetPairingInfo": {
+            "fields": {
+                "channel_id": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "handshake_hash": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "nfc_secret_host": {
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
+        "DebugLinkPairingInfo": {
+            "fields": {
+                "channel_id": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "handshake_hash": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "code_entry_code": {
+                    "type": "uint32",
+                    "id": 3
+                },
+                "code_qr_code": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "nfc_secret_trezor": {
+                    "type": "bytes",
+                    "id": 5
+                }
+            }
+        },
         "DebugLinkStop": {
             "fields": {}
         },
@@ -4070,6 +4110,28 @@
                 "encoded_token": {
                     "type": "bytes",
                     "id": 2
+                }
+            }
+        },
+        "EvoluGetKeys": {
+            "fields": {}
+        },
+        "EvoluKeys": {
+            "fields": {
+                "owner_id": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "write_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "encryption_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
                 }
             }
         },
@@ -6663,6 +6725,8 @@
                 "DebugLinkOptigaSetSecMax": 9008,
                 "DebugLinkGetGcInfo": 9009,
                 "DebugLinkGcInfo": 9010,
+                "DebugLinkGetPairingInfo": 9011,
+                "DebugLinkPairingInfo": 9012,
                 "EthereumGetPublicKey": 450,
                 "EthereumPublicKey": 451,
                 "EthereumGetAddress": 56,
@@ -6756,7 +6820,9 @@
                 "SolanaGetAddress": 902,
                 "SolanaAddress": 903,
                 "SolanaSignTx": 904,
-                "SolanaTxSignature": 905
+                "SolanaTxSignature": 905,
+                "EvoluGetKeys": 3000,
+                "EvoluKeys": 3001
             }
         }
     }

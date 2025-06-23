@@ -977,6 +977,20 @@ export enum DebugWaitType {
     CURRENT_LAYOUT = 2,
 }
 
+export type DebugLinkGetPairingInfo = {
+    channel_id?: string;
+    handshake_hash?: string;
+    nfc_secret_host?: string;
+};
+
+export type DebugLinkPairingInfo = {
+    channel_id?: string;
+    handshake_hash?: string;
+    code_entry_code?: number;
+    code_qr_code?: string;
+    nfc_secret_trezor?: string;
+};
+
 export type DebugLinkResetDebugEvents = {};
 
 export type DebugLinkOptigaSetSecMax = {};
@@ -1348,6 +1362,14 @@ export type EthereumSignTypedHash = {
 export type EthereumTypedDataSignature = {
     signature: string;
     address: string;
+};
+
+export type EvoluGetKeys = {};
+
+export type EvoluKeys = {
+    owner_id: string;
+    write_key: string;
+    encryption_key: string;
 };
 
 export enum Enum_BackupType {
@@ -2332,6 +2354,8 @@ export type MessageType = {
     SignedIdentity: SignedIdentity;
     GetECDHSessionKey: GetECDHSessionKey;
     ECDHSessionKey: ECDHSessionKey;
+    DebugLinkGetPairingInfo: DebugLinkGetPairingInfo;
+    DebugLinkPairingInfo: DebugLinkPairingInfo;
     DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
     DebugLinkOptigaSetSecMax: DebugLinkOptigaSetSecMax;
     DebugLinkGetGcInfo: DebugLinkGetGcInfo;
@@ -2390,6 +2414,8 @@ export type MessageType = {
     EthereumVerifyMessage: EthereumVerifyMessage;
     EthereumSignTypedHash: EthereumSignTypedHash;
     EthereumTypedDataSignature: EthereumTypedDataSignature;
+    EvoluGetKeys: EvoluGetKeys;
+    EvoluKeys: EvoluKeys;
     Initialize: Initialize;
     GetFeatures: GetFeatures;
     RecoveryDevice: RecoveryDevice;
