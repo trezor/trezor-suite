@@ -51,7 +51,10 @@ export const DeviceAuthenticityScreen = () => {
                 </VStack>
 
                 <Box>
-                    <Button onPress={navigateToDeviceAuthenticityStack}>
+                    <Button
+                        onPress={navigateToDeviceAuthenticityStack}
+                        testID="@device-authenticity/check-button"
+                    >
                         <Translation id="moduleDeviceSettings.authenticity.info.letsDoItButton" />
                     </Button>
                 </Box>

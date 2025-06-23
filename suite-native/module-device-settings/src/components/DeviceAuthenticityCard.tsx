@@ -30,6 +30,7 @@ export const DeviceAuthenticityCard = () => {
             onPress={handleOnPress}
             title={<Translation id="moduleDeviceSettings.authenticity.title" />}
             subtitle={<Translation id="moduleDeviceSettings.authenticity.content" />}
+            testID="@device-authenticity/redirectToDeviceAuthenticityScreen"
         />
     );
 };

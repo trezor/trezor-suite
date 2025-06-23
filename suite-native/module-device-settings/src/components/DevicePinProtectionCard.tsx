@@ -57,6 +57,7 @@ export const DevicePinProtectionCard = () => {
             subtitle={<Translation id="moduleDeviceSettings.pinProtection.cardSubtitle" />}
             alertBoxProps={pinAlertBoxProps}
             onPress={handleOnPress}
+            testID="@device-pin-protection/redirectToPinScreen"
         />
     );
 };
