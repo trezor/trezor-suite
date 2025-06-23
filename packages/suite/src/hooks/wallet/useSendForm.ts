@@ -99,13 +99,14 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { localCurrencyOption } = state;
 
     const { symbol, networkType } = state.account;
+    const rawFeeInfo = props.fees[symbol]?.data;
     const feeInfo = useMemo(
         () =>
             getFeeInfo({
                 networkType,
-                feeInfo: props.fees[symbol],
+                feeInfo: rawFeeInfo,
             }),
-        [networkType, props.fees, symbol],
+        [networkType, rawFeeInfo],
     );
 
     // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block

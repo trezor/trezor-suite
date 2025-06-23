@@ -54,7 +54,7 @@ export const TransactionReviewSummary = ({
     const { symbol, accountType, index, networkType } = account;
     const network = networks[symbol];
     const fee = getFee(account.networkType, tx);
-    const estimateTime = getEstimatedTime(networkType, fees[account.symbol], tx);
+    const estimateTime = getEstimatedTime(networkType, fees[account.symbol]?.data, tx);
     const connectPopupCall = useSelector(selectConnectPopupCall);
 
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;

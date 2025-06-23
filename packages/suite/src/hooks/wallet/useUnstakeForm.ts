@@ -59,7 +59,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
     const fees = useSelector(state => state.wallet.fees);
     const feeInfo = getFeeInfo({
         networkType: account.networkType,
-        feeInfo: fees[account.symbol],
+        feeInfo: fees[account.symbol]?.data,
     });
 
     const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);

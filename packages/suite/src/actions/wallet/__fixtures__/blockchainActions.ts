@@ -359,7 +359,7 @@ export const init = [
         initialState: {
             blockchain: seedBackends([]),
         },
-        actions: [{ type: feesActions.updateFee.type }],
+        actions: [{ type: feesActions.updateMultipleFees.type }],
         blockchainSetCustomBackend: 0,
     },
     {
@@ -368,7 +368,7 @@ export const init = [
             accounts: [{ symbol: 'btc' }],
             blockchain: seedBackends(['btc']),
         },
-        actions: [{ type: feesActions.updateFee.type }],
+        actions: [{ type: feesActions.updateMultipleFees.type }],
         blockchainSetCustomBackend: 1,
     },
     {
@@ -383,7 +383,7 @@ export const init = [
             ],
             blockchain: seedBackends(['btc', 'ltc', 'eth']),
         },
-        actions: [{ type: feesActions.updateFee.type }],
+        actions: [{ type: feesActions.updateMultipleFees.type }],
         blockchainSetCustomBackend: 3,
     },
 ];

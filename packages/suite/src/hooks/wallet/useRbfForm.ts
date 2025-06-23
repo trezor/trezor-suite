@@ -7,7 +7,7 @@ import {
     DEFAULT_VALUES,
     ETH_SPEED_UP_TX_MULTIPLIER,
 } from '@suite-common/wallet-constants';
-import { DEFAULT_FEE_INFO } from '@suite-common/wallet-core';
+import { DEFAULT_FEE_INFO, selectNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
     ChainedTransactions,
     FeeInfo,
@@ -120,7 +120,7 @@ const getRbfFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParams) => {
 const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) => {
     const { account, network } = selectedAccount;
 
-    const symbolFees = useSelector(state => state.wallet.fees[account.symbol]);
+    const symbolFees = useSelector(state => selectNetworkFeeInfo(state, account.symbol));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
 
