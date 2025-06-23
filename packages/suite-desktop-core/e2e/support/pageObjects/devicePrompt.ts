@@ -59,11 +59,11 @@ export class DevicePrompt {
     }
 
     @step()
-    async confirmOnDevicePromptIsShown() {
+    async confirmOnDevicePromptIsShown(params?: { timeout?: number }) {
         await expect(
             this.confirmOnDevicePrompt,
             "'confirm on device' prompt should be visible",
-        ).toBeVisible();
+        ).toBeVisible({ timeout: params?.timeout });
     }
 
     @step()

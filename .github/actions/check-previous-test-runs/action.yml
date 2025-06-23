@@ -33,6 +33,12 @@ runs:
         GH_TOKEN: ${{ inputs.github_token }}
       shell: bash
       run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          echo "Manually triggered workflow. Running all tests."
+          echo "skip_tests=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
         PR_BRANCH="${{ inputs.pr_branch }}"
         PR_CREATED_TIMESTAMP="${{ inputs.pr_created }}"
         REPO="${{ inputs.repo }}"
@@ -68,6 +74,7 @@ runs:
         echo "skip_tests=true" >> $GITHUB_OUTPUT
 
     - name: Find skipped tests comment
+      if: ${{ steps.check-previous-runs.outputs.skip_tests == 'true' }}
       uses: peter-evans/find-comment@v3
       id: find-comment
       with:

@@ -73,8 +73,6 @@ jobs:
           run_attempt: ${{ github.run_attempt }}
 
   build-web:
-    needs:
-      - check-previous-runs
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:

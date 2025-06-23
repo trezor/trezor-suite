@@ -16,8 +16,7 @@ test.describe(
             await metadataMock.start(MetadataProvider.DROPBOX);
         });
 
-        //TODO: #17855 Fix unstable test
-        test.skip('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
+        test('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
             page,
             onboardingPage,
             dashboardPage,
@@ -43,7 +42,7 @@ test.describe(
 
             // Reload app, cancel metadata again, and remember device
             await page.reload();
-            await devicePrompt.confirmOnDevicePromptIsShown();
+            await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
             await trezorUserEnvLink.pressNo();
 
             await page.discoveryShouldFinish();
@@ -74,7 +73,7 @@ test.describe(
             await page.reload();
 
             // Enable labeling dialogue appears again
-            await devicePrompt.confirmOnDevicePromptIsShown();
+            await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
             await trezorUserEnvLink.pressNo();
         });
 
