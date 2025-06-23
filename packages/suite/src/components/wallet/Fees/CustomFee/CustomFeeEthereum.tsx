@@ -89,9 +89,9 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
             range: (value: string) => {
                 const customFee = new BigNumber(value);
 
-                if (customFee.isGreaterThan(maxFee) || customFee.isLessThan(minFee)) {
+                if (customFee.isGreaterThan(maxFee) || customFee.isLessThan(0)) {
                     return translationString('CUSTOM_FEE_NOT_IN_RANGE', {
-                        minFee: new BigNumber(minFee).toString(),
+                        minFee: new BigNumber(0).toString(),
                         maxFee: new BigNumber(maxFee).toString(),
                     });
                 }
