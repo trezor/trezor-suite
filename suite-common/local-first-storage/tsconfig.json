@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "exactOptionalPropertyTypes": true
+    },
+    "references": [
+        { "path": "../suite-config" },
+        { "path": "../suite-types" },
+        { "path": "../wallet-core" }
+    ]
+}
