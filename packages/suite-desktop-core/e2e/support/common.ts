@@ -1,4 +1,4 @@
-import test, { TestInfo } from '@playwright/test';
+import test, { Locator, TestInfo } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
@@ -6,7 +6,7 @@ import path from 'node:path';
 import { regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { splitStringEveryNCharacters } from '@trezor/utils';
+import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import releases from '../../../../submodules/trezor-common/releases.json';
 import { PlaywrightProjects } from '../playwright.config';
@@ -132,4 +132,20 @@ export const countDecimalPlaces = (value: string | number) => {
     }
 
     return value.toString().split('.')[1].length || 0;
+};
+
+export const getBigNumberFromBalance = async (locator: Locator) => {
+    let originalBalanceText = await locator.textContent();
+    if (!originalBalanceText) {
+        throw new Error('Balance text content is empty');
+    }
+
+    const hasEllipsis = originalBalanceText?.endsWith('…');
+    if (hasEllipsis) {
+        originalBalanceText = originalBalanceText.slice(0, -1);
+    }
+
+    const originalBalance = BigNumber(originalBalanceText);
+
+    return { originalBalance, hasEllipsis };
 };
