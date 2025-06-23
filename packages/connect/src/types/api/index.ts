@@ -39,6 +39,7 @@ import { ethereumSignMessage } from './ethereumSignMessage';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { ethereumSignTypedData } from './ethereumSignTypedData';
 import { ethereumVerifyMessage } from './ethereumVerifyMessage';
+import { evoluGetKeys } from './evoluGetKeys';
 import { firmwareUpdate } from './firmwareUpdate';
 import { getAccountDescriptor } from './getAccountDescriptor';
 import { getAccountInfo } from './getAccountInfo';
@@ -180,6 +181,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/other/cipherKeyValue/
     cipherKeyValue: typeof cipherKeyValue;
+
+    // https://connect.trezor.io/9/methods/other/evoluGetKeys/
+    evoluGetKeys: typeof evoluGetKeys;
 
     // https://connect.trezor.io/9/methods/bitcoin/composeTransaction/
     composeTransaction: typeof composeTransaction;
