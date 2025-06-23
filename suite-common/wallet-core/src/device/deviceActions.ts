@@ -123,10 +123,16 @@ const setThpCredentials = createAction(
     }),
 );
 
+export type EvoluKeys = {
+    ownerId: string;
+    writeKey: string;
+    encryptionKey: string;
+};
+
 const setLocalFirstStorageSecret = createAction(
     `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecret`,
-    ({ device, secret }: { device: TrezorDevice; secret: string }) => ({
-        payload: { device, secret },
+    ({ device, evoluKeys }: { device: TrezorDevice; evoluKeys: EvoluKeys }) => ({
+        payload: { device, evoluKeys },
     }),
 );
 

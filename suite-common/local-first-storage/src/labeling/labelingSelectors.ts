@@ -60,6 +60,17 @@ export const findAddressLabel = ({ addressLabels, address }: FindAddressLabelPar
 
 export const selectAddressLabels = (state: WithLabelingState) => state.labeling.addressLabels;
 
+type SelectAddressLabelParams = {
+    state: WithLabelingState;
+    address: string;
+};
+
+export const selectAddressLabel = ({ state, address }: SelectAddressLabelParams) =>
+    findAddressLabel({
+        addressLabels: state.labeling.addressLabels,
+        address,
+    });
+
 export const selectOutputLabels = (state: WithLabelingState) => state.labeling.outputLabels;
 
 type FindOutputLabelParams = {

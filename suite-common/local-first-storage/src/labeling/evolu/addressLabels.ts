@@ -25,14 +25,14 @@ export class AddressLabels {
     constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
 
     update = ({ address, label }: LabelData) => {
-        // Todo: replace getOrThrow wit some nice error propagation
-        getOrThrow(
-            this.evolu.upsert('addressLabel', {
-                id: getOrThrow(createAddressLabelId(address)),
-                address,
-                label,
-            }),
-        );
+        const result = this.evolu.upsert('addressLabel', {
+            // Todo: replace getOrThrow wit some nice error propagation
+            id: getOrThrow(createAddressLabelId(address)),
+            address,
+            label,
+        });
+
+        console.log('______AddressLabels:update', result);
     };
 
     private getQuery = () =>

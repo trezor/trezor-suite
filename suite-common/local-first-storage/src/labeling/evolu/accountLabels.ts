@@ -28,15 +28,15 @@ export class AccountLabels {
     constructor(private evolu: Evolu<typeof AccountLabelSchema>) {}
 
     update = ({ deviceStaticSessionId, accountKey, label }: LabelData) => {
-        // Todo: replace getOrThrow wit some nice error propagation
-        getOrThrow(
-            this.evolu.upsert('accountLabel', {
-                id: getOrThrow(createAccountLabelId(deviceStaticSessionId, accountKey)),
-                deviceStaticSessionId,
-                accountKey,
-                label,
-            }),
-        );
+        const result = this.evolu.upsert('accountLabel', {
+            // Todo: replace getOrThrow wit some nice error propagation
+            id: getOrThrow(createAccountLabelId(deviceStaticSessionId, accountKey)),
+            deviceStaticSessionId,
+            accountKey,
+            label,
+        });
+
+        console.log('______AccountLabels:update', result);
     };
 
     private getQuery = () =>

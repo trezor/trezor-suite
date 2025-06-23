@@ -154,6 +154,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             'cardanoSignTransaction',
             'changePin',
             'cipherKeyValue',
+            'evoluGetKeys',
             'discoverAccounts',
             'ethereumGetAddress',
             'ethereumSignTransaction',

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectAddressLabels } from '@suite-common/local-first-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -133,6 +134,8 @@ export const UsedAddresses = ({
     const dispatch = useDispatch();
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
 
+    const localFirstAddressLabels = useSelector(selectAddressLabels);
+
     if (!account) {
         return null;
     }
@@ -196,7 +199,10 @@ export const UsedAddresses = ({
                                     type: 'addressLabel',
                                     entityKey: account.key,
                                     defaultValue: addr.address,
-                                    value: addressLabels[addr.address],
+                                    value:
+                                        localFirstAddressLabels.find(
+                                            it => it.address === addr.address,
+                                        )?.label ?? addressLabels[addr.address],
                                 }}
                                 onClick={() => dispatch(showAddress(addr.path, addr.address))}
                             />

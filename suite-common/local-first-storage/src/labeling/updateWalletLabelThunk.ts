@@ -11,19 +11,21 @@ type UpdateWalletLabelThunkParams = {
 
 export const updateWalletLabelThunk = createThunk<void, UpdateWalletLabelThunkParams, void>(
     `${LABELING_PREFIX}/updateWalletLabelThunk`,
-    ({ deviceStaticSessionId, label }, { getState, rejectWithValue }) => {
+    ({ deviceStaticSessionId, label }, { getState }) => {
         console.log('_____updateWalletLabelThunk');
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
-        if (device === undefined || device.localFirstStorageSecret === undefined) {
-            console.log(`device undefined / no secret`);
+        const evoluKeys = device?.localFirstStorageSecret?.evoluKeys;
 
-            return rejectWithValue(`device undefined / no secret`);
+        if (evoluKeys === undefined) {
+            console.log('_____no evoluKeys keys');
+
+            return;
         }
 
-        const storage = getLocalFirstStorageProvider(device.localFirstStorageSecret);
+        const storage = getLocalFirstStorageProvider(evoluKeys);
 
         storage.walletLabels.update({ deviceStaticSessionId, label });
     },

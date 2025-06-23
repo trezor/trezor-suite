@@ -1,10 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { EvoluKeys } from '@suite-common/wallet-core';
 
 import { LABELING_PREFIX, clearAllLabels, labelingActions } from './labelingActions';
 import { getLocalFirstStorageProvider, subscriptionStorage } from '../storage/sharedObjects';
 
 type SubscribeLabelingUpdatesThunkParams = {
-    localFirstStorageSecret: string;
+    evoluKeys: EvoluKeys;
     deviceStaticSessionId: string;
 };
 
@@ -14,8 +15,8 @@ export const subscribeLabelingUpdatesThunk = createThunk<
     void
 >(
     `${LABELING_PREFIX}/subscribeLabelingUpdatesThunk`,
-    ({ localFirstStorageSecret, deviceStaticSessionId }, { dispatch }) => {
-        const storage = getLocalFirstStorageProvider(localFirstStorageSecret);
+    ({ evoluKeys, deviceStaticSessionId }, { dispatch }) => {
+        const storage = getLocalFirstStorageProvider(evoluKeys);
 
         const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
             dispatch(labelingActions.setWalletLabel(payload));

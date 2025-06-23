@@ -679,11 +679,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(
             deviceActions.setLocalFirstStorageSecret,
-            (state, { payload: { device, secret } }) => {
+            (state, { payload: { device, evoluKeys } }) => {
                 if (!device.features) return;
                 const index = deviceUtils.findInstanceIndex(state.devices, device);
                 if (!state.devices[index]) return;
-                state.devices[index].localFirstStorageSecret = secret;
+                state.devices[index].localFirstStorageSecret = { evoluKeys };
             },
         )
         .addMatcher(

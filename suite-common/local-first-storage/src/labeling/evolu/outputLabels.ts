@@ -1,7 +1,7 @@
 import {
     Evolu,
     NonEmptyString1000,
-    PositiveNumber,
+    NonNegativeNumber,
     QueryRows,
     getOrThrow,
     id,
@@ -22,7 +22,7 @@ export const OutputLabelSchema = {
         id: OutputLabelId,
         label: nullOr(NonEmptyString1000), // Todo: 1000 enough?
         txId: NonEmptyString1000, // Todo: is it ok?
-        outputIndex: PositiveNumber,
+        outputIndex: NonNegativeNumber,
     },
 };
 
@@ -36,15 +36,15 @@ export class OutputLabels {
     constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
 
     update = ({ txId, outputIndex, label }: LabelData) => {
-        // Todo: replace getOrThrow wit some nice error propagation
-        getOrThrow(
-            this.evolu.upsert('outputLabel', {
-                id: getOrThrow(createOutputLabelId(txId, outputIndex)),
-                txId,
-                outputIndex,
-                label,
-            }),
-        );
+        const result = this.evolu.upsert('outputLabel', {
+            // Todo: replace getOrThrow wit some nice error propagation
+            id: getOrThrow(createOutputLabelId(txId, outputIndex)),
+            txId,
+            outputIndex,
+            label,
+        });
+
+        console.log('______OutputLabels:update', result);
     };
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('outputLabel').selectAll());

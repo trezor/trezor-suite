@@ -1,6 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { initCipherKeyThunk, selectDevices } from '@suite-common/wallet-core';
+import { initEvoluKeysThunk, selectDevices } from '@suite-common/wallet-core';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import { subscriptionStorage } from './sharedObjects';
@@ -34,7 +34,7 @@ export const subscribeLocalFirstStorageThunk = createThunk<
         console.log('____subscribeLabelingUpdatesThunk', deviceStaticSessionId);
 
         if (device.localFirstStorageSecret === undefined) {
-            await dispatch(initCipherKeyThunk({ device }));
+            await dispatch(initEvoluKeysThunk({ device }));
         }
 
         // Reselect the device to get the correct secret (cipherKey)
@@ -42,18 +42,12 @@ export const subscribeLocalFirstStorageThunk = createThunk<
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
-        if (
-            reselectedDevice === undefined ||
-            reselectedDevice?.localFirstStorageSecret === undefined
-        ) {
+        const evoluKeys = reselectedDevice?.localFirstStorageSecret?.evoluKeys;
+
+        if (evoluKeys === undefined) {
             return;
         }
 
-        dispatch(
-            subscribeLabelingUpdatesThunk({
-                localFirstStorageSecret: reselectedDevice.localFirstStorageSecret,
-                deviceStaticSessionId,
-            }),
-        );
+        dispatch(subscribeLabelingUpdatesThunk({ evoluKeys, deviceStaticSessionId }));
     },
 );

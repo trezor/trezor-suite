@@ -4,16 +4,17 @@ import { selectDevices } from '@suite-common/wallet-core';
 import { LABELING_PREFIX } from './labelingActions';
 import { getLocalFirstStorageProvider } from '../storage/sharedObjects';
 
-type UpdateAccountLabelThunkParams = {
+type UpdateOutputLabelThunkParams = {
     deviceStaticSessionId: string;
-    accountKey: string;
+    txId: string;
+    outputIndex: number;
     label: string | null;
 };
 
-export const updateAccountLabelThunk = createThunk<void, UpdateAccountLabelThunkParams, void>(
-    `${LABELING_PREFIX}/updateAccountLabelThunk`,
-    ({ deviceStaticSessionId, accountKey, label }, { getState }) => {
-        console.log('____updateAccountLabelThunk');
+export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkParams, void>(
+    `${LABELING_PREFIX}/updateOutputLabelThunk`,
+    ({ deviceStaticSessionId, txId, outputIndex, label }, { getState }) => {
+        console.log('____updateOutputLabelThunk');
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
@@ -26,6 +27,6 @@ export const updateAccountLabelThunk = createThunk<void, UpdateAccountLabelThunk
 
         const storage = getLocalFirstStorageProvider(evoluKeys);
 
-        storage.accountLabels.update({ deviceStaticSessionId, accountKey, label });
+        storage.outputLabels.update({ txId, outputIndex, label });
     },
 );

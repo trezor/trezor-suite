@@ -30,14 +30,12 @@ export class WalletLabels {
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('walletLabel').selectAll());
 
     update = ({ deviceStaticSessionId, label }: LabelData) => {
-        // Todo: replace getOrThrow wit some nice error propagation
-        const result = getOrThrow(
-            this.evolu.upsert('walletLabel', {
-                id: getOrThrow(createWalletLabelId(deviceStaticSessionId)),
-                deviceStaticSessionId,
-                label,
-            }),
-        );
+        const result = this.evolu.upsert('walletLabel', {
+            // Todo: replace getOrThrow wit some nice error propagation
+            id: getOrThrow(createWalletLabelId(deviceStaticSessionId)),
+            deviceStaticSessionId,
+            label,
+        });
 
         console.log('______WalletLabels:update', result);
     };

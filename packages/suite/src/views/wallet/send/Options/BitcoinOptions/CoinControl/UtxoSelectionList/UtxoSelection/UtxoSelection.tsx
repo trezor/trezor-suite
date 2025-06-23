@@ -2,6 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
+import { selectAddressLabels } from '@suite-common/local-first-storage';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Row, Spinner, Text, TextButton, Tooltip } from '@trezor/components';
 import { CheckContainer } from '@trezor/components/src/components/form/Checkbox/Checkbox';
@@ -175,6 +176,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     } = useSendFormContext();
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const localFirstAddressLabels = useSelector(selectAddressLabels);
 
     const dispatch = useDispatch();
 
@@ -263,7 +265,9 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 type: 'addressLabel',
                                 entityKey: account.key,
                                 defaultValue: utxo.address,
-                                value: addressLabels[utxo.address],
+                                value:
+                                    localFirstAddressLabels.find(it => it.address === utxo.address)
+                                        ?.label ?? addressLabels[utxo.address],
                             }}
                             isDisabled
                             defaultVisibleValue={<Address>{utxo.address}</Address>}

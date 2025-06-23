@@ -2,11 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { updateAccountLabelThunk, updateWalletLabelThunk } from '@suite-common/local-first-storage';
+import {
+    updateAccountLabelThunk,
+    updateAddressLabelThunk,
+    updateOutputLabelThunk,
+    updateWalletLabelThunk,
+} from '@suite-common/local-first-storage';
 import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
-import type { TimerId } from '@trezor/type-utils';
+import { TimerId, exhaustive } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { Translation } from 'src/components/suite';
@@ -364,23 +369,60 @@ export const MetadataLabeling = ({
         setPending(true);
 
         if (isLocalFirstStorageEnabled) {
-            if (payload.type === 'walletLabel') {
-                await dispatch(
-                    updateWalletLabelThunk({ deviceStaticSessionId, label: value ?? null }),
-                );
-            }
+            const labelType = payload.type;
 
-            if (payload.type === 'accountLabel') {
-                await dispatch(
-                    updateAccountLabelThunk({
-                        deviceStaticSessionId,
-                        accountKey: payload.entityKey,
-                        label: value ?? null,
-                    }),
-                );
+            console.log('______labelType', labelType);
+
+            switch (labelType) {
+                case 'walletLabel':
+                    await dispatch(
+                        updateWalletLabelThunk({ deviceStaticSessionId, label: value ?? null }),
+                    );
+                    break;
+
+                case 'accountLabel':
+                    await dispatch(
+                        updateAccountLabelThunk({
+                            deviceStaticSessionId,
+                            accountKey: payload.entityKey,
+                            label: value ?? null,
+                        }),
+                    );
+                    break;
+
+                case 'addressLabel':
+                    console.log('___addressLabel::payload', payload, value);
+
+                    await dispatch(
+                        updateAddressLabelThunk({
+                            deviceStaticSessionId,
+                            address: payload.defaultValue, // WTF, but yet, this is the address fore example: `"bc1q9mnl3ae6dra54uu2n9hp3d4jwkt0c2ux5l79ja"`
+                            // entityKey is for example `zpub6rY6av7j6m7Lnd6rgqw5jffjX2rgeirDWWivEmFDMCKxt7FkWD5XQSrXCSW2Vsh3vnqUo1r9XjoGZiW41jqfEBkrxxdPnS15QhwJFjwfZ1U-btc-momP8m1p6w1nteR3hNREZjNc48buvpPv8K@BCCD2503E021276E78A8EBB2:2`
+                            label: value ?? null,
+                        }),
+                    );
+                    break;
+
+                case 'outputLabel':
+                    await dispatch(
+                        updateOutputLabelThunk({
+                            deviceStaticSessionId,
+                            txId: payload.txid,
+                            outputIndex: Number(payload.outputIndex),
+                            label: value ?? null,
+                        }),
+                    );
+                    break;
+
+                default:
+                    exhaustive(labelType);
             }
 
             setShowSuccess(true);
+            timeout = setTimeout(() => {
+                setShowSuccess(false);
+            }, 2000);
+            setPending(false);
         } else {
             const result = await dispatch(addMetadata({ ...payload, value: value || undefined }));
 

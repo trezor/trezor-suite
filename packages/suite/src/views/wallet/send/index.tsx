@@ -22,6 +22,7 @@ import { SendFees } from './SendFees';
 import { SendHeader } from './SendHeader';
 import { SendRaw } from './SendRaw';
 import { TotalSent } from './TotalSent/TotalSent';
+import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 const FormGrid = styled.div`
     gap: ${spacingsPx.md};
@@ -58,12 +59,15 @@ interface SendLoadedProps extends SendProps {
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
+    const { isLocalFirstStorageEnabled } = useSelector(selectSuiteFlags);
+
     const props = useSelector(state => ({
         localCurrency: state.wallet.settings.localCurrency,
         fees: state.wallet.fees,
         online: state.suite.online,
         sendRaw: state.wallet.send.sendRaw,
-        metadataEnabled: state.metadata.enabled && !!state.metadata.providers[0],
+        metadataEnabled:
+            (state.metadata.enabled && !!state.metadata.providers[0]) || isLocalFirstStorageEnabled,
         targetAnonymity: selectTargetAnonymityByAccountKey(state, selectedAccount.account.key),
         prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
     }));

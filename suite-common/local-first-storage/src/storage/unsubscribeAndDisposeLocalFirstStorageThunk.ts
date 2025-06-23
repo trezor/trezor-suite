@@ -25,14 +25,14 @@ export const unsubscribeAndDisposeLocalFirstStorageThunk = createThunk<
         return;
     }
 
-    const secret = device.localFirstStorageSecret;
+    const ownerId = device.localFirstStorageSecret?.evoluKeys?.ownerId;
 
-    if (secret === undefined) {
+    if (ownerId === undefined) {
         return;
     }
 
     Object.values(subscriptionStorage[deviceStaticSessionId]).forEach(callback => callback());
 
     delete subscriptionStorage[deviceStaticSessionId];
-    localFirstStorageProvider.deleteStorage(secret);
+    localFirstStorageProvider.deleteStorage(ownerId);
 });

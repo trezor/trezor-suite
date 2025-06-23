@@ -1,3 +1,5 @@
+import { EvoluKeys } from '@suite-common/wallet-core';
+
 import { LocalFirstStorageProvider } from './LocalFirstStorageProvider';
 
 type DeviceStaticSessionId = string;
@@ -14,11 +16,11 @@ export const setLocalFirstStorageProvider = (provider: LocalFirstStorageProvider
     localFirstStorageProvider = provider;
 };
 
-export const getLocalFirstStorageProvider = (secret: string) => {
+export const getLocalFirstStorageProvider = (evoluKeys: EvoluKeys) => {
     if (localFirstStorageProvider === null) {
         console.log('____initLocalFirstStorageThunk() must be called before this!');
         throw Error('initLocalFirstStorageThunk() must be called before this!');
     }
 
-    return localFirstStorageProvider.getStorage(secret);
+    return localFirstStorageProvider.getStorage(evoluKeys);
 };

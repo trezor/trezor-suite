@@ -7,6 +7,8 @@ export { unsubscribeAndDisposeLocalFirstStorageThunk } from './storage/unsubscri
 // Labeling
 export { updateWalletLabelThunk } from './labeling/updateWalletLabelThunk';
 export { updateAccountLabelThunk } from './labeling/updateAccountLabelThunk';
+export { updateOutputLabelThunk } from './labeling/updateOutputLabelThunk';
+export { updateAddressLabelThunk } from './labeling/updateAddressLabelThunk';
 export {
     selectWalletLabel,
     selectAccountLabels,
