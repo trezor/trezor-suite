@@ -3,6 +3,21 @@ import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-nat
 
 import { TradingScreen } from '../TradingScreen';
 
+jest.mock('@trezor/react-utils', () => ({
+    ...jest.requireActual('@trezor/react-utils'),
+    useTimer: () => ({
+        timeSpent: {
+            seconds: 0,
+        },
+        resetCount: 0,
+        isStopped: false,
+        isLoading: false,
+        stop: () => {},
+        reset: () => {},
+        loading: () => {},
+    }),
+}));
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () => ({ name: 'TradingScreen' }),

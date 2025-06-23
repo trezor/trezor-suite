@@ -99,6 +99,7 @@ export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
             platforms: platforms as Platforms,
         },
         trades: [{ tradeType }],
+        activeTradingType: tradeType,
     }) as TradingState;
 
 export const getInitializedTradingStateWithQuotes = () => {

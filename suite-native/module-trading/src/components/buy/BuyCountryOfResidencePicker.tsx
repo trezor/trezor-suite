@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { TradingCountryOption } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
@@ -16,19 +18,22 @@ export const BuyCountryOfResidencePicker = () => {
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'country');
 
-    const handleCountrySelect = (country: TradingCountryOption) => {
-        setSelectedValue(country);
+    const handleCountrySelect = useCallback(
+        (country: TradingCountryOption) => {
+            setSelectedValue(country);
 
-        if (selectedValue === country) return;
+            if (selectedValue === country) return;
 
-        analytics.report({
-            type: EventType.TradingParameterChanged,
-            payload: {
-                type: 'buy',
-                parameter: 'country',
-            },
-        });
-    };
+            analytics.report({
+                type: EventType.TradingParameterChanged,
+                payload: {
+                    type: 'buy',
+                    parameter: 'country',
+                },
+            });
+        },
+        [selectedValue, setSelectedValue],
+    );
 
     return (
         <>

@@ -11,3 +11,7 @@ jest.mock('react-native-webview', () => ({
 jest.mock('./hooks/general/useMountedRecentlyFlag', () => ({
     useMountedRecentlyFlag: () => false,
 }));
+
+jest.mock('./hooks/general/useFocusedValueWatch', () => ({
+    useFocusedValueWatch: () => false,
+}));

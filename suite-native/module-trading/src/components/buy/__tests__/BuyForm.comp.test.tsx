@@ -12,6 +12,10 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyFormType } from '../../../types/buy';
 import { BuyForm } from '../BuyForm';
 
+jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
+    jest.requireActual('../../../hooks/general/useFocusedValueWatch'),
+);
+
 describe('BuyForm', () => {
     const renderFormHook = (preloadedState: PreloadedState) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), { preloadedState });
