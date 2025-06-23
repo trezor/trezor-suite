@@ -47,7 +47,7 @@ const FormGrid = styled.div`
 `;
 
 interface SendProps {
-    children: ReactNode;
+    children?: ReactNode;
 }
 
 interface SendLoadedProps extends SendProps {
