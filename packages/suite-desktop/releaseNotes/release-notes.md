@@ -11,3 +11,4 @@
 ### 🔧 Bug fixes
 
 - Fixed minor bugs, improved usability, and optimized performance for a smoother experience.
+- Fixed an issue with the “App is hanging” error modal appearing after startup.
