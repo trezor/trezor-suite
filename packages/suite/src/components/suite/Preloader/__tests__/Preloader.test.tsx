@@ -108,6 +108,7 @@ const getInitialState = ({
             defaultWalletLoading: 'passphrase',
             sidebarWidth: 0,
             isCoinsFilterVisible: false,
+            localFirstStorageRelayUrl: null,
         },
         online: true,
         locks: {
@@ -138,6 +139,8 @@ const getInitialState = ({
             isBluetoothEnabled: false,
             showBluetoothDebugInfo: false,
             stellarLimitedHistoryBannerClosed: false,
+            isLocalFirstStorageEnabled: false,
+            isLocalFirstStorageDebugEnabled: false,
         },
         torStatus: 'Disabled' as TorStatus.Disabled,
         torBootstrap: null,
@@ -262,6 +265,12 @@ const getInitialState = ({
         bioAuthValidationRequired: false,
         windowBlurred: false,
         bioAuthAvailable: null,
+    },
+    labeling: {
+        walletLabels: [],
+        accountLabels: [],
+        addressLabels: [],
+        outputLabels: [],
     },
 });
 

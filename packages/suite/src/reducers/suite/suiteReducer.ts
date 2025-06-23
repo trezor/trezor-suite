@@ -32,6 +32,7 @@ import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/p
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 import { RouterRootState, selectRouter } from './routerReducer';
+import { setLocalFirstStorageRelayAction } from '../../actions/settings/settingsActions';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -88,6 +89,8 @@ export interface Flags {
     isBluetoothEnabled: boolean;
     showBluetoothDebugInfo: boolean;
     stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
+    isLocalFirstStorageEnabled: boolean;
+    isLocalFirstStorageDebugEnabled: boolean;
 }
 
 export interface EvmSettings {
@@ -121,6 +124,7 @@ export interface SuiteSettings {
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
+    localFirstStorageRelayUrl: string | null;
 }
 
 export interface TransportState extends InstallerInfo {
@@ -174,6 +178,8 @@ const initialState: SuiteState = {
         isBluetoothEnabled: false,
         showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
+        isLocalFirstStorageEnabled: false,
+        isLocalFirstStorageDebugEnabled: false,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},
@@ -214,6 +220,7 @@ const initialState: SuiteState = {
         defaultWalletLoading: WalletType.STANDARD,
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
+        localFirstStorageRelayUrl: null,
     },
 };
 
@@ -405,6 +412,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
 
+            case setLocalFirstStorageRelayAction.type:
+                draft.settings.localFirstStorageRelayUrl = action.payload.url;
+
             // no default
         }
     });
@@ -432,6 +442,9 @@ export const selectLanguage = (state: SuiteRootState) => state.suite.settings.la
 
 export const selectAddressDisplayType = (state: SuiteRootState) =>
     state.suite.settings.addressDisplayType;
+
+export const selectLocalFirstStorageRelayUrl = (state: SuiteRootState) =>
+    state.suite.settings.localFirstStorageRelayUrl;
 
 export const selectIsDeviceLocked = (state: SuiteRootState) =>
     !!state.suite.locks[SUITE.LOCK_TYPE.DEVICE];
@@ -506,6 +519,8 @@ export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 
 export const selectSuiteSettings = (state: SuiteRootState) => ({
     defaultWalletLoading: state.suite.settings.defaultWalletLoading,
+    localFirstStorageRelayUrl: state.suite.settings.localFirstStorageRelayUrl,
+    isLocalFirstStorageEnabled: state.suite.flags.isLocalFirstStorageEnabled,
 });
 
 export const selectHasExperimentalFeature =

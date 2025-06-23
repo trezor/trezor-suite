@@ -20,6 +20,7 @@ export interface Props {
     visible?: boolean;
     placeholder?: string;
     updateFlag?: any;
+    deviceStaticSessionId: string;
 }
 
 export interface ExtendedProps extends Props {

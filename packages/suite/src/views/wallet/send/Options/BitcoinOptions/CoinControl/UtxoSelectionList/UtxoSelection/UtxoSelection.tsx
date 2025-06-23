@@ -258,6 +258,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     )}
                     <Text typographyStyle="hint">
                         <MetadataLabeling
+                            deviceStaticSessionId={account.deviceState}
                             payload={{
                                 type: 'addressLabel',
                                 entityKey: account.key,
@@ -298,6 +299,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         <LabelPart>
                             <span>•</span>
                             <MetadataLabeling
+                                deviceStaticSessionId={account.deviceState}
                                 visible
                                 payload={{
                                     type: 'outputLabel',

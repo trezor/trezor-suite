@@ -10,6 +10,7 @@ export const BIO_AUTH_WINDOW_BLUR = '@suite/bio-auth-window-blur';
 export const BIO_AUTH_WINDOW_FOCUS = '@suite/bio-auth-window-focus';
 export const TOGGLE_BIO_AUTH_VALIDATION_REQUESTED = '@suite/toggle-bio-auth-validation-requested';
 export const SET_LANGUAGE = '@suite/set-language';
+export const SET_LOCAL_FIRST_STORAGE_RELAY = '@suite/set-local-first-storage-relay';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';
 export const SET_FLAG = '@suite/set-flag';
 export const ONLINE_STATUS = '@suite/online-status';

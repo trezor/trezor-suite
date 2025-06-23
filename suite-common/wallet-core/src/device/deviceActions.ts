@@ -123,6 +123,13 @@ const setThpCredentials = createAction(
     }),
 );
 
+const setLocalFirstStorageSecret = createAction(
+    `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecret`,
+    ({ device, secret }: { device: TrezorDevice; secret: string }) => ({
+        payload: { device, secret },
+    }),
+);
+
 export const deviceActions = {
     connectDevice,
     createDeviceInstance,
@@ -143,4 +150,5 @@ export const deviceActions = {
     removeButtonRequests,
     setEntropyCheckFail,
     setThpCredentials,
+    setLocalFirstStorageSecret,
 };

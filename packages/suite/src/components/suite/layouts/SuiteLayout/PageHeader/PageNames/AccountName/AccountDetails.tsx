@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
+import { selectAccountLabel } from '@suite-common/local-first-storage';
 import { Account } from '@suite-common/wallet-types';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -93,8 +94,20 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const [shouldAnimate, setShouldAnimate] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
+
+    const localFirstAccountLabel = useSelector(state =>
+        selectAccountLabel({
+            state,
+            accountKey: selectedAccount.key,
+            deviceStaticSessionId: selectedAccount.deviceState,
+        }),
+    );
+
+    const label = localFirstAccountLabel?.label ?? selectedAccountLabels.accountLabel;
+
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const { symbol, key, path, index, accountType, formattedBalance } = selectedAccount;
+    const { symbol, key, path, index, accountType, formattedBalance, deviceState } =
+        selectedAccount;
 
     useEffect(() => {
         setHasMounted(true);
@@ -119,7 +132,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         defaultVisibleValue={
                             <AccountLabel
                                 showAccountTypeBadge
-                                accountLabel={selectedAccountLabels.accountLabel}
+                                accountLabel={label}
                                 accountType={accountType}
                                 symbol={selectedAccount.symbol}
                                 index={index}
@@ -131,8 +144,9 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             type: 'accountLabel',
                             entityKey: key,
                             defaultValue: path,
-                            value: selectedAccountLabels.accountLabel,
+                            value: label,
                         }}
+                        deviceStaticSessionId={deviceState}
                         defaultEditableValue={getDefaultAccountLabel({
                             accountType,
                             symbol,

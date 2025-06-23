@@ -74,8 +74,23 @@ const initNewDeviceStateMetadataThunk = createThunk(
         const isMetadataEnabled = extra.selectors.selectMetadata(getState()).enabled;
         const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
         const metadataPresentOnDevice = device?.metadata[1];
+
         if (isMetadataEnabled && !metadataPresentOnDevice) {
             await dispatch(extra.thunks.initMetadata(false));
+        }
+
+        const { isLocalFirstStorageEnabled } = extra.selectors.selectSuiteSettings(getState());
+
+        if (isLocalFirstStorageEnabled && device !== undefined) {
+            const reselectDeviceForSecret = selectDeviceByStaticSessionId(
+                getState(),
+                staticSessionId,
+            );
+            if (reselectDeviceForSecret !== undefined) {
+                dispatch(
+                    extra.thunks.subscribeLocalFirstStorage({ device: reselectDeviceForSecret }),
+                );
+            }
         }
     },
 );
@@ -144,13 +159,16 @@ const applyDeviceStatesThunk = createThunk(
                             useEmptyPassphrase: !isAddingHiddenWallet,
                             remember: false,
                             state: newDeviceState,
+                            localFirstStorageSecret: undefined, // Todo: WTF this spread???
                         },
                     }),
                 );
 
                 // select the device after deviceReducer updates it (it's a new object reference)
                 const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
-                if (newlyAddedDevice === undefined) return;
+                if (newlyAddedDevice === undefined) {
+                    return;
+                }
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
             }
 

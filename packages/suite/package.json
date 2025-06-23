@@ -81,6 +81,7 @@
         "@trezor/suite-analytics": "workspace:*",
         "@trezor/suite-data": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
+        "@trezor/suite-local-first-storage": "workspace:*",
         "@trezor/suite-storage": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",

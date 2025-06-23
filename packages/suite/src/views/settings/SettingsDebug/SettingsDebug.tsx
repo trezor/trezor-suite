@@ -13,6 +13,7 @@ import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
+import { LocalFirstStorageDebug } from './LocalFirstStorageDebug';
 import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
@@ -105,6 +106,7 @@ export const SettingsDebug = () => {
             <SettingsSection title="TrezorConnect">
                 <TrezorConnectLogs />
             </SettingsSection>
+            <LocalFirstStorageDebug />
         </SettingsLayout>
     );
 };

@@ -1,3 +1,4 @@
+import { findAccountLabel, selectAccountLabels } from '@suite-common/local-first-storage';
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -7,7 +8,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
+import { selectAccountLabels as selectAccountLabelsOld } from 'src/reducers/suite/metadataReducer';
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
@@ -37,10 +38,12 @@ const Accounts = ({
     discoveryInProgress,
     type,
 }: AccountsProps) => {
-    const accountLabels = useSelector(selectAccountLabels);
+    const accountLabels = useSelector(selectAccountLabelsOld);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { params } = selectedAccount;
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
+
+    const localFirstAccountLabels = useSelector(selectAccountLabels);
 
     return (
         <>
@@ -53,12 +56,19 @@ const Accounts = ({
 
                 const selected = !!isSelected(account);
 
+                const label =
+                    findAccountLabel({
+                        accountLabels: localFirstAccountLabels,
+                        accountKey: account.key,
+                        deviceStaticSessionId: account.deviceState,
+                    })?.label ?? accountLabels[account.key];
+
                 return (
                     <AccountSection
                         key={account.key}
                         account={account}
                         selected={selected}
-                        accountLabel={accountLabels[account.key]}
+                        accountLabel={label}
                         onItemClick={onItemClick}
                     />
                 );
@@ -73,7 +83,8 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const accounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
-    const accountLabels = useSelector(selectAccountLabels);
+    const accountLabels = useSelector(selectAccountLabelsOld);
+    const localFirstAccountLabels = useSelector(selectAccountLabels);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isSidebarCollapsed = useIsSidebarCollapsed();
     const { coinFilter, searchString } = useAccountSearch();
@@ -88,9 +99,16 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         searchString || coinFilter
             ? accounts.filter(account => {
                   const { key, accountType, symbol, index } = account;
-                  const accountLabel = Object.prototype.hasOwnProperty.call(accountLabels, key)
+                  const accountLabelOld = Object.prototype.hasOwnProperty.call(accountLabels, key)
                       ? accountLabels[key]
                       : getDefaultAccountLabel({ accountType, symbol, index });
+
+                  const accountLabel =
+                      findAccountLabel({
+                          accountLabels: localFirstAccountLabels,
+                          accountKey: account.key,
+                          deviceStaticSessionId: account.deviceState,
+                      })?.label ?? accountLabelOld;
 
                   return accountSearchFn(account, searchString, coinFilter, accountLabel);
               })

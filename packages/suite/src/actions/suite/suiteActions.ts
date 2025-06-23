@@ -22,6 +22,7 @@ import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite
 import { isOnionUrl } from 'src/utils/suite/tor';
 
 import { SUITE } from './constants';
+import { setLocalFirstStorageRelayAction } from '../settings/settingsActions';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -33,6 +34,7 @@ export type SuiteAction =
           locale: Locale;
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
+    | ReturnType<typeof setLocalFirstStorageRelayAction>
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }

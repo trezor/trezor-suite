@@ -3,6 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -46,9 +47,10 @@ type ItemProps = {
     symbol: NetworkSymbol;
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
+    account: Account;
 };
 
-const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
+const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     const isAuthenticityCheckFailed = useSelector(
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     );
@@ -67,6 +69,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
             <Table.Cell>
                 <Text typographyStyle="hint" data-testid={`@wallet/receive/used-address/${index}`}>
                     <MetadataLabeling
+                        deviceStaticSessionId={account.deviceState}
                         payload={{
                             ...metadataPayload,
                         }}
@@ -183,6 +186,7 @@ export const UsedAddresses = ({
                     <Table.Body>
                         {list.slice(0, limit).map((addr, index) => (
                             <Item
+                                account={account}
                                 index={index}
                                 key={addr.path}
                                 addr={addr}

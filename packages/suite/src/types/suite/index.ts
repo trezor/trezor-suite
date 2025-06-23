@@ -6,6 +6,7 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { firmwareActions } from '@suite-common/firmware';
 import { geolocationActions } from '@suite-common/geolocation';
+import { labelingActions } from '@suite-common/local-first-storage';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';
@@ -78,6 +79,7 @@ type BluetoothActionDesktop = ReturnType<
     (typeof bluetoothSlice.actions)[keyof typeof bluetoothSlice.actions]
 >;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
+type LabelingAction = ReturnType<(typeof labelingActions)[keyof typeof labelingActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 
 // all actions from all apps used to properly type Dispatch.
@@ -108,6 +110,7 @@ export type Action =
     | BluetoothAction
     | BluetoothActionDesktop
     | ThpAction
+    | LabelingAction
     | GeolocationAction
     | BioAuthAction;
 

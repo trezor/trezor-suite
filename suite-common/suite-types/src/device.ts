@@ -42,6 +42,7 @@ export interface ExtendedDevice {
     firstConnectedTimestamp: number;
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
+    localFirstStorageSecret?: string;
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice

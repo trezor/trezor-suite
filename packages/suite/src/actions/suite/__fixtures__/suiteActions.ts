@@ -6,6 +6,7 @@ import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import { TorStatus } from 'src/types/suite';
 
+import { SuiteState } from '../../../reducers/suite/suiteReducer';
 import * as suiteActions from '../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = testMocks;
@@ -159,7 +160,7 @@ const reducerActions = [
     },
 ];
 
-const initialRun = [
+const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = [
     {
         description: `initialRunCompleted (initialRun = true)`,
     },
@@ -168,7 +169,6 @@ const initialRun = [
         state: {
             flags: {
                 initialRun: false,
-                initialWebRun: false,
                 discreetModeCompleted: false,
                 taprootBannerClosed: false,
                 firmwareTypeBannerClosed: false,
@@ -190,6 +190,8 @@ const initialRun = [
                 isBluetoothEnabled: false,
                 showBluetoothDebugInfo: false,
                 stellarLimitedHistoryBannerClosed: false,
+                isLocalFirstStorageEnabled: false,
+                isLocalFirstStorageDebugEnabled: false,
             },
         },
     },

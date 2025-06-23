@@ -28,6 +28,7 @@ import history from 'src/support/history';
 import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
+import { initLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 const MainWeb = () => {
     usePlaywright();
@@ -77,6 +78,9 @@ export const init = async (container: HTMLElement) => {
 
     const preloadAction = await preloadStore();
     const store = initStore(preloadAction);
+
+    // This needs to be initialized to subscribe to all Remembered Wallets
+    await store.dispatch(initLocalFirstStorageThunk());
 
     root.render(
         <ReduxProvider store={store}>

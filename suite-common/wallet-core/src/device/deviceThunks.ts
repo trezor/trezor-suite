@@ -57,8 +57,8 @@ type SelectDeviceThunkParams = {
  */
 export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void>(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
-    ({ device }, { dispatch, getState }) => {
-        let payload: TrezorDevice | typeof undefined;
+    ({ device }, { dispatch, getState, extra }) => {
+        let trezorDevice: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
 
         if (device) {
@@ -66,17 +66,29 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
             // (device from connect doesn't have timestamp but suite device has)
             if ('ts' in device) {
                 // requested device is a @suite TrezorDevice type. get exact instance from reducer
-                payload = getSelectedDevice(device, devices);
+                trezorDevice = getSelectedDevice(device, devices);
             } else {
                 // requested device is a @trezor/connect Device type
                 // find all instances and select recently used
                 const instances = devices.filter(d => d.path === device.path);
 
-                payload = sortByTimestamp(instances)[0];
+                trezorDevice = sortByTimestamp(instances)[0];
             }
         }
 
-        dispatch(deviceActions.selectDevice(payload));
+        dispatch(deviceActions.selectDevice(trezorDevice));
+
+        const { isLocalFirstStorageEnabled } = extra.selectors.selectSuiteSettings(getState());
+
+        if (isLocalFirstStorageEnabled) {
+            if (trezorDevice !== undefined) {
+                console.log(
+                    '____SUBSCRIBE via selectDeviceThunk',
+                    trezorDevice?.state?.staticSessionId,
+                );
+                dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));
+            }
+        }
     },
 );
 
@@ -182,6 +194,8 @@ export const handleDeviceDisconnect = createThunk(
         const devices = selectDevices(getState());
         if (!selectedDevice) return;
         if (selectedDevice.path !== device.path) return;
+
+        dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device: selectedDevice }));
 
         /**
          * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)

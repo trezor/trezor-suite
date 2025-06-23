@@ -240,6 +240,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case setLocalCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                     api.dispatch(storageActions.saveWalletSettings());
+
                     break;
 
                 case SUITE.SET_LANGUAGE:
@@ -258,6 +259,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
                 case SUITE.DISMISSED_TRADING_TERMS:
+                case SUITE.SET_LOCAL_FIRST_STORAGE_RELAY:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {

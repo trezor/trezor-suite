@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectWalletLabel } from '@suite-common/local-first-storage';
 import {
     getAccountsByDeviceState,
     selectCurrentFiatRates,
@@ -23,6 +24,7 @@ import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConf
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { ContentType } from '../types';
 import { EjectButton } from './EjectButton';
+import { LocalFirstStorageDebug } from './LocalFirstStorageDebug';
 import { ViewOnly } from './ViewOnly';
 
 interface WalletInstanceProps {
@@ -46,6 +48,7 @@ export const WalletInstance = ({
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
+
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
 
@@ -56,9 +59,16 @@ export const WalletInstance = ({
     const walletBalance = useTotalFiatBalance(deviceAccounts, localCurrency, currentFiatRates);
 
     const isSelected = enabled && selected;
-    const { walletLabel } = useSelector(state =>
+    const { walletLabel: oldWalletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),
     );
+
+    const localFirstWalletLabel = useSelector(state =>
+        selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
+    );
+
+    const walletLabel = localFirstWalletLabel?.label ?? oldWalletLabel;
+
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
@@ -130,28 +140,34 @@ export const WalletInstance = ({
                                     </Tooltip>
                                 )}
                                 {instance.state?.staticSessionId ? (
-                                    <MetadataLabeling
-                                        defaultVisibleValue={
-                                            walletLabel === undefined || walletLabel.trim() === ''
-                                                ? defaultWalletLabel
-                                                : walletLabel
-                                        }
-                                        payload={{
-                                            type: 'walletLabel',
-                                            entityKey: instance.state.staticSessionId,
-                                            defaultValue: instance.state.staticSessionId,
-                                            value: instance?.metadata[
-                                                METADATA_LABELING.ENCRYPTION_VERSION
-                                            ]
-                                                ? walletLabel
-                                                : '',
-                                        }}
-                                        defaultEditableValue={defaultWalletLabel}
-                                    />
+                                    <Column>
+                                        <MetadataLabeling
+                                            deviceStaticSessionId={instance.state.staticSessionId}
+                                            defaultVisibleValue={
+                                                walletLabel === undefined ||
+                                                walletLabel.trim() === ''
+                                                    ? defaultWalletLabel
+                                                    : walletLabel
+                                            }
+                                            payload={{
+                                                type: 'walletLabel',
+                                                entityKey: instance.state.staticSessionId,
+                                                defaultValue: instance.state.staticSessionId,
+                                                value: instance?.metadata[
+                                                    METADATA_LABELING.ENCRYPTION_VERSION
+                                                ]
+                                                    ? walletLabel
+                                                    : '',
+                                            }}
+                                            defaultEditableValue={defaultWalletLabel}
+                                        />
+                                        <LocalFirstStorageDebug device={instance} />
+                                    </Column>
                                 ) : (
                                     <WalletLabeling device={instance} />
                                 )}
                             </Row>
+
                             <Box
                                 position={{
                                     type: 'absolute',

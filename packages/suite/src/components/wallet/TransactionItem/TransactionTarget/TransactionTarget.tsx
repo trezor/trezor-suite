@@ -184,6 +184,7 @@ export const TransactionTarget = ({
             useHiddenPlaceholder={!isBeingEdited}
             addressLabel={
                 <MetadataLabeling
+                    deviceStaticSessionId={transaction.deviceState}
                     isDisabled={isActionDisabled}
                     defaultVisibleValue={label}
                     dropdownOptions={[

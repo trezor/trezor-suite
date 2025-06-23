@@ -45,13 +45,16 @@ export const Translation = (props: MsgType) => {
 
     const defaultTagName = props.isNested ? undefined : 'span';
 
+    // pass undefined to a 'values' prop in case of an empty values object
+    const propsValues = Object.keys(values).length === 0 ? undefined : values;
+
     return (
         <FormattedMessage
             id={props.id}
-            tagName={defaultTagName}
             defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
-            // pass undefined to a 'values' prop in case of an empty values object
-            values={Object.keys(values).length === 0 ? undefined : values}
+            // exactOptionalPropertyTypes: true, in local-first-storage forces not passing the `undefined`
+            {...(defaultTagName !== undefined ? { tagName: defaultTagName } : {})}
+            {...(propsValues !== undefined ? { values: propsValues } : {})}
         />
     );
 };

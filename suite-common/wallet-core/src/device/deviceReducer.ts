@@ -187,6 +187,7 @@ const connectDevice = (
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
+        localFirstStorageSecret: undefined, // Todo: WTF???
     };
 
     // update affected devices
@@ -367,7 +368,6 @@ const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
  * @returns
  */
 const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
-    // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
@@ -453,6 +453,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         buttonRequests: [],
         metadata: {},
         passwords: {},
+        localFirstStorageSecret: undefined,
     };
     draft.devices.push(newDevice);
 };
@@ -676,6 +677,15 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
             createInstance(state, payload.device);
         })
+        .addCase(
+            deviceActions.setLocalFirstStorageSecret,
+            (state, { payload: { device, secret } }) => {
+                if (!device.features) return;
+                const index = deviceUtils.findInstanceIndex(state.devices, device);
+                if (!state.devices[index]) return;
+                state.devices[index].localFirstStorageSecret = secret;
+            },
+        )
         .addMatcher(
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
             (state, { payload: { device, settings } }) => {
