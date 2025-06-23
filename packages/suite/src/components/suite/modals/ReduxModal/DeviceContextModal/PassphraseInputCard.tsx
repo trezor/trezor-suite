@@ -105,11 +105,11 @@ export const PassphraseInputCard = ({
                     <Column>
                         <Input
                             data-testid="@passphrase/input"
-                            type={showPassword ? 'text' : 'password'}
                             placeholder={translationString('TR_ENTER_PASSPHRASE')}
                             onChange={e => setValue(e.target.value)}
                             // eslint-disable-next-line jsx-a11y/no-autofocus
                             autoFocus={!isAndroid()}
+                            isMasked={!showPassword}
                             value={value}
                             bottomText={errorMessage}
                             inputState={errorMessage ? 'error' : undefined}
