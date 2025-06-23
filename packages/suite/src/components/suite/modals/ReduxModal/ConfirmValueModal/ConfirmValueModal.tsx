@@ -54,7 +54,7 @@ export const ConfirmValueModal = ({
     heading,
     label,
     isConfirmed,
-    isValueChunked = true,
+    isValueChunked,
     isCopyButtonVisible,
     areStepsVisible,
     onCancel,
