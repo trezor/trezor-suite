@@ -14,7 +14,12 @@ import TrezorConnect from '@trezor/connect';
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { Metadata } from 'src/components/suite/Metadata';
-import { Preloader, ToastContainer, TrafficLightDraggableWindowHeader } from 'src/components/suite';
+import {
+    AppRouter,
+    Preloader,
+    ToastContainer,
+    TrafficLightDraggableWindowHeader,
+} from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
 import Autodetect from 'src/support/suite/Autodetect';
@@ -34,10 +39,10 @@ import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
-import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
+import { desktopComponents } from './support/desktopComponents';
 
 const MainDesktop = () => {
     useTor();
@@ -67,7 +72,7 @@ const MainDesktop = () => {
                                         <ToastContainer />
                                         <BioAuthGuard>
                                             <Preloader>
-                                                <AppRouter />
+                                                <AppRouter components={desktopComponents} />
                                             </Preloader>
                                         </BioAuthGuard>
                                     </DesktopUpdater>

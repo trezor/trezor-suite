@@ -1,12 +1,8 @@
-import { ComponentType, LazyExoticComponent, Suspense, createElement, lazy, memo } from 'react';
-import { Route, Routes } from 'react-router';
+import { ComponentType, LazyExoticComponent, lazy } from 'react';
 
 import { PageName } from '@suite-common/suite-types';
 
-import { BundleLoader } from 'src/components/suite';
-import routes from 'src/constants/suite/routes';
-
-const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
+export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>> = {
     'suite-index': lazy(() =>
         import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/index').then(
             ({ Dashboard }) => ({ default: Dashboard }),
@@ -154,21 +150,3 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
         ).then(({ SettingsConnectedApps }) => ({ default: SettingsConnectedApps })),
     ),
 };
-
-const AppRouter = () => (
-    <Suspense fallback={<BundleLoader />}>
-        <Routes>
-            {routes
-                .filter(route => Object.keys(components).includes(route.name))
-                .map(route => (
-                    <Route
-                        key={route.name}
-                        path={`${process.env.ASSET_PREFIX}${route.pattern}${route.hasNestedRoutes ? '/*' : ''}`}
-                        element={createElement(components[route.name as PageName])}
-                    />
-                ))}
-        </Routes>
-    </Suspense>
-);
-
-export default memo(AppRouter);

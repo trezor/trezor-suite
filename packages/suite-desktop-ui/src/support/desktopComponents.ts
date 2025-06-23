@@ -1,9 +1,7 @@
-import { ComponentType, createElement, memo } from 'react';
-import { Route, Routes } from 'react-router';
+import { ComponentType } from 'react';
 
 import { PageName } from '@suite-common/suite-types';
 
-import routes from 'src/constants/suite/routes';
 import { Dashboard } from 'src/views/dashboard';
 import PasswordManager from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
@@ -37,7 +35,7 @@ import { TradingSellOffers } from 'src/views/wallet/trading/sell/TradingSellOffe
 import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
-const components: Record<PageName, ComponentType<any>> = {
+export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
     'notifications-index': Notification,
 
@@ -74,17 +72,3 @@ const components: Record<PageName, ComponentType<any>> = {
     'settings-device': SettingsDevice,
     'settings-connected-apps': SettingsConnectedApps,
 };
-
-export const AppRouter = memo(() => (
-    <Routes>
-        {routes
-            .filter(route => Object.keys(components).includes(route.name))
-            .map(route => (
-                <Route
-                    key={route.name}
-                    path={`${process.env.ASSET_PREFIX}${route.pattern}${route.hasNestedRoutes ? '/*' : ''}`}
-                    element={createElement(components[route.name as PageName])}
-                />
-            ))}
-    </Routes>
-));

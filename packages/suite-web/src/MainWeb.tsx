@@ -10,7 +10,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
-import { Metadata, Preloader, ToastContainer } from 'src/components/suite';
+import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
 import Protocol from 'src/support/suite/Protocol';
@@ -24,9 +24,10 @@ import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 
-import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
+import { Suspense } from 'react';
+import { webComponents } from './support/webComponents';
 
 const MainWeb = () => {
     usePlaywright();
@@ -53,7 +54,9 @@ const MainWeb = () => {
                                     <Metadata />
                                     <ToastContainer />
                                     <Preloader>
-                                        <AppRouter />
+                                        <Suspense fallback={<BundleLoader />}>
+                                            <AppRouter components={webComponents} />
+                                        </Suspense>
                                     </Preloader>
                                 </FormatterProvider>
                             </ConnectedIntlProvider>

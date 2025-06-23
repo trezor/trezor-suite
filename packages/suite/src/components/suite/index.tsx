@@ -52,6 +52,7 @@ import { PinMatrix } from './PinMatrix/PinMatrix';
 import { StakingFeature } from './StakingFeature';
 import { StakeAmountWrapper } from './StakeAmountWrapper';
 import { MarkdownWithComponents } from './MarkdownWithComponents';
+import { AppRouter } from './AppRouter';
 
 export {
     Address,
@@ -105,6 +106,7 @@ export {
     StakingFeature,
     StakeAmountWrapper,
     MarkdownWithComponents,
+    AppRouter,
 };
 export * from './graph';
 export * from './notifications';
