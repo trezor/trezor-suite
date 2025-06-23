@@ -165,20 +165,8 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
         return trade;
     });
 
-    // 3. Update draft keys to trading
-    const formDrafts = transaction.objectStore('formDrafts');
-    const formDraftsKeys = (await formDrafts.getAllKeys()).filter(key =>
-        key.includes('coinmarket'),
-    );
-
-    formDraftsKeys.forEach(async key => {
-        const draft = await formDrafts.get(key);
-
-        if (draft) {
-            formDrafts.add(draft, key.replace('coinmarket', 'trading'));
-            formDrafts.delete(key);
-        }
-    });
+    // 3. Remove form drafts
+    transaction.objectStore('formDrafts').clear();
 
     // 4. add explorer object store, if it does not exist
     if (!db.objectStoreNames.contains('explorer')) {
@@ -187,10 +175,10 @@ export const migrateToV56: OnUpgradeFunc<SuiteDBSchema> = async (
 
     // 5. add thp and bluetooth object stores
     if (!db.objectStoreNames.contains('thp')) {
-    db.createObjectStore('thp');
+        db.createObjectStore('thp');
     }
     if (!db.objectStoreNames.contains('bluetooth')) {
-    db.createObjectStore('bluetooth');
+        db.createObjectStore('bluetooth');
     }
 
     // 6. refetch solana txs
