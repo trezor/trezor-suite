@@ -1,11 +1,37 @@
+import { IDBPDatabase, IDBPTransaction, StoreNames } from 'idb';
+
+import { idbVersionToSemver, semverToIDBVersion } from '@suite/idb-migration-utils';
 import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
 
 import { reloadApp } from 'src/utils/suite/reload';
 
 import type { SuiteDBSchema } from './definitions';
-import { migrate } from './migrations';
+import { runLegacyMigrations } from './migrations';
+import * as migrations from './migrations/versions';
 
-const VERSION = 57; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = semverToIDBVersion(process.env.VERSION);
+const LAST_LEGACY_VERSION = 57;
+
+const MIGRATIONS = Object.values(migrations).sort((a, b) => a.threshold - b.threshold);
+
+const runMigrations = async (
+    db: IDBPDatabase<SuiteDBSchema>,
+    oldVersion: number,
+    tx: IDBPTransaction<SuiteDBSchema, StoreNames<SuiteDBSchema>[], 'versionchange'>,
+) => {
+    if (MIGRATIONS.length) {
+        console.log(`Current DB version: ${idbVersionToSemver(oldVersion)}`);
+
+        for (const migration of MIGRATIONS) {
+            if (oldVersion < migration.threshold) {
+                console.log(
+                    `Running migration for version ${idbVersionToSemver(migration.threshold)}`,
+                );
+                await migration.migrate(db, tx);
+            }
+        }
+    }
+};
 
 /**
  *  If the object stores don't already exist then creates them.
@@ -15,15 +41,18 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     if (oldVersion > 0 && oldVersion < 13) {
         // just delete whole db as migrations from version older than 13 (internal releases) are not implemented
         try {
-            await SuiteDB.removeStores(db);
+            SuiteDB.removeStores(db);
         } catch (err) {
             console.error('Storage: Error during removing all stores', err);
             throw err;
         }
     }
 
-    // migrate functions
-    await migrate(db, oldVersion, newVersion, transaction);
+    if (oldVersion < LAST_LEGACY_VERSION) {
+        await runLegacyMigrations(db, oldVersion, newVersion, transaction);
+    }
+
+    await runMigrations(db, oldVersion, transaction);
 };
 
 export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade, reloadApp);

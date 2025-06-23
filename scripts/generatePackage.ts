@@ -21,6 +21,11 @@ const scopes = {
         templatePath: 'package-template-native/',
         templatePackageJson: templatePackageJsonNative,
     },
+    '@suite': {
+        path: 'suite/',
+        templatePath: 'package-template/',
+        templatePackageJson: templatePackageJsonWeb,
+    },
     '@trezor': {
         path: 'packages/',
         templatePath: 'package-template/',

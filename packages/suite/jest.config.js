@@ -1,8 +1,10 @@
+const version = require('./package.json').suiteVersion;
 const baseConfig = require('../../jest.config.base');
 
 // all tests have same UTC timezone
 process.env.TZ = 'UTC';
 process.env.LANG = 'en-US';
+process.env.VERSION = version;
 
 const babelConfig = {
     presets: [

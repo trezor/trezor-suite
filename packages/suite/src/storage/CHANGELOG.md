@@ -1,6 +1,6 @@
 # Storage changelog
 
-## 57 (25.7.0)
+## 25.7.0
 
 - introduce new object store `bioAuth`
 - remove `discovery` object store

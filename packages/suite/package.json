@@ -13,6 +13,7 @@
         "translations:backport-en": "yarn g:tsx ../suite-data/src/translations/backport-en.ts && yarn g:prettier --write \"./src/support/messages.ts\"",
         "translations:list-duplicates": "yarn g:tsx ../suite-data/src/translations/list-duplicates.ts",
         "translations:list-unused": "yarn g:tsx ../suite-data/src/translations/list-unused.ts",
+        "make:migration": "yarn workspace @suite/idb-migration-utils make:migration",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch"
@@ -59,6 +60,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-common/walletconnect": "workspace:*",
+        "@suite/idb-migration-utils": "workspace:*",
         "@testing-library/jest-dom": "^6.6.3",
         "@trezor/address-validator": "workspace:*",
         "@trezor/analytics": "workspace:*",

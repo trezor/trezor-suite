@@ -97,6 +97,9 @@
         {
             "path": "../../suite-common/walletconnect"
         },
+        {
+            "path": "../../suite/idb-migration-utils"
+        },
         { "path": "../address-validator" },
         { "path": "../analytics" },
         { "path": "../blockchain-link" },
