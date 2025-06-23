@@ -1280,15 +1280,13 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         db.createObjectStore('connect');
     }
 
-    // Note: 55 migration is merged into 56 migration
-
     if (oldVersion < 56) {
         await migrateToV56(db, oldVersion, newVersion, transaction);
-        // @ts-expect-error
-        db.deleteObjectStore('discovery');
     }
 
     if (oldVersion < 57) {
         db.createObjectStore('bioAuth');
+        // @ts-expect-error
+        db.deleteObjectStore('discovery');
     }
 };
