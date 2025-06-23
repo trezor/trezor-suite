@@ -59,7 +59,7 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
 
         const result = await device.getCurrentSession().receive({
             signal,
-            timeout: cancelTimeout,
+            timeout: cancelTimeout, // need longer timeout for bridge?
         });
 
         // Older T1 don't respond to Cancel message which seems to be recoverable only by reacquiring
