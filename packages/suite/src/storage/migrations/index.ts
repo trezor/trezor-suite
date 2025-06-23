@@ -20,8 +20,8 @@ import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { migrateToV56 } from 'src/storage/migrations/legacyVersions/migrateToV56';
 import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
-import { migrateToV56 } from 'src/storage/migrations/versions/migrateToV56';
 import type { BlockbookUrl, CustomBackend } from 'src/types/wallet/backend';
 
 import { updateAll } from './utils';
@@ -36,7 +36,7 @@ export type DBWalletAccountTransactionCompatible = {
     tx: DBWalletAccountTransaction['tx'] & { totalSpent: string };
 };
 
-export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
+export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     db,
     oldVersion,
     newVersion,
@@ -1284,9 +1284,6 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         await migrateToV56(db, oldVersion, newVersion, transaction);
     }
 
-    if (oldVersion < 57) {
-        db.createObjectStore('bioAuth');
-        // @ts-expect-error
-        db.deleteObjectStore('discovery');
-    }
+    // !!! DO NOT ADD ANY MORE MIGRATION CODE BELOW !!!
+    // These are legacy migrations, instead follow the instructions in /suite/idb-migration-utils/MIGRATION.md
 };
