@@ -18,7 +18,8 @@ const compareTextAndNumber = async (
 ) => {
     await baseExpect(locator).toBeVisible();
     const text = await locator.textContent();
-    const numericValue = Number(text);
+    const textWithoutEllipsis = text?.endsWith('…') ? text.slice(0, -1) : text;
+    const numericValue = Number(textWithoutEllipsis);
     const isNumber = Number.isFinite(numericValue);
 
     return {
