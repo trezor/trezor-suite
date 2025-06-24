@@ -26,7 +26,7 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
-import { useRefetchFees } from 'src/hooks/wallet/useRefetchFees';
+import { useFetchFeesOnce, useRefetchFees } from 'src/hooks/wallet/useRefetchFees';
 import { Account } from 'src/types/wallet';
 
 import { CustomFee } from './CustomFee/CustomFee';
@@ -156,7 +156,10 @@ export const Fees = <TFieldValues extends FormState>({
 
     const supportsCustomFee = networkType !== 'solana';
 
-    useRefetchFees({ networkSymbol: symbol });
+    useFetchFeesOnce({ networkSymbol: symbol });
+    // this component is used under different contexts & form states, but `setMaxOutputId` will be compatible (see `FormState` type)
+    const isRefetchDisabled = getValues().setMaxOutputId !== undefined;
+    useRefetchFees({ networkSymbol: symbol, isDisabled: isRefetchDisabled });
 
     const feeLabelId = useMemo(() => {
         switch (networkType) {

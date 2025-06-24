@@ -10,18 +10,24 @@ import {
 
 import { useDispatch } from 'src/hooks/suite';
 
-type UseRefetchFeesProps = { networkSymbol: NetworkSymbol };
+type UseRefetchFeesProps = { networkSymbol: NetworkSymbol; isDisabled?: boolean };
 
-export const useRefetchFees = ({ networkSymbol }: UseRefetchFeesProps) => {
+// Fetch fees only once when component mounts, or when it is enabled at a later time.
+export const useFetchFeesOnce = ({ networkSymbol, isDisabled }: UseRefetchFeesProps) => {
     const dispatch = useDispatch();
 
-    // Initial fetch only when component mounts
     useEffect(() => {
+        if (isDisabled === true) return;
         dispatch(updateFeeInfoThunk({ networkSymbol }));
-    }, [dispatch, networkSymbol]);
+    }, [dispatch, networkSymbol, isDisabled]);
+};
 
-    // Refetch fees periodically incl. loading behavior
+// Refetch fees periodically, incl. loading behavior
+export const useRefetchFees = ({ networkSymbol, isDisabled }: UseRefetchFeesProps) => {
+    const dispatch = useDispatch();
+
     useInterval(() => {
+        if (isDisabled === true) return;
         dispatch(
             updateFeeInfoThunk({ networkSymbol, artificialDelay: FEE_UPDATE_DELAY_MILLISECONDS }),
         );
