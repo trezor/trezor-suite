@@ -1,31 +1,73 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { FormattedList } from 'react-intl';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import { TradingOTC, TradingTradeBuySellType, invityAPI } from '@suite-common/trading';
+import {
+    TradingOTC,
+    TradingTradeBuySellType,
+    cryptoIdToNetworkAndContractAddress,
+    invityAPI,
+} from '@suite-common/trading';
+import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { isTradingBuyContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+import {
+    isTradingBuyContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
     const context = useTradingFormContext<TradingTradeBuySellType>();
     const locale = useSelector(selectLanguage);
-
+    const localCurrency = useSelector(selectLocalCurrency);
     const { amountInCrypto } = context.getValues();
-    const fiatAmount = isTradingBuyContext(context)
+
+    const fiatInput = isTradingBuyContext(context)
         ? context.getValues().fiatInput
         : context.getValues().outputs[0].fiat;
-    const currencySelect = isTradingBuyContext(context)
+
+    let fiatCurrency = isTradingBuyContext(context)
         ? context.getValues().currencySelect.value
         : context.getValues().outputs[0].currency.value;
+    if (amountInCrypto) {
+        fiatCurrency = localCurrency;
+    }
+
+    const cryptoAmount = isTradingBuyContext(context)
+        ? context.getValues().cryptoInput
+        : context.getValues().outputs[0].amount;
+
+    let cryptoCurrency;
+    if (isTradingBuyContext(context)) {
+        cryptoCurrency = context.getValues().cryptoSelect.value;
+    } else if (isTradingSellContext(context)) {
+        cryptoCurrency = context.getValues().sendCryptoSelect?.value;
+    }
+
+    const { network, contractAddress } = cryptoCurrency
+        ? cryptoIdToNetworkAndContractAddress(cryptoCurrency)
+        : { network: undefined, contractAddress: undefined };
+
+    const countrySelect = context.getValues().countrySelect.value;
     const [otcData, setOtcData] = useState<TradingOTC | null>(null);
     const apiKey = invityAPI.getCurrentApiKey();
+
+    const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
+        amount: cryptoAmount || '0',
+        symbol: network?.symbol || 'btc',
+        tokenAddress: contractAddress as TokenAddress | undefined,
+    });
+
+    const fiatAmount = amountInCrypto ? fiatAmountConverted : fiatInput;
 
     useEffect(() => {
         if (!apiKey) return;
@@ -41,30 +83,30 @@ export const TradingFormOfferOTC = () => {
         getOtcData();
     }, [apiKey]);
 
-    const isCurrencyAllowed = otcData?.allowedCurrencies?.includes(
-        currencySelect as FiatCurrencyCode,
-    );
-
-    if (
-        !otcData ||
-        amountInCrypto ||
-        !isCurrencyAllowed ||
-        !fiatAmount ||
-        Number(fiatAmount) <= Number(otcData.minimumFiat)
-    ) {
+    if (!otcData || !otcData.minFiatLimits || !otcData.links || !fiatAmount) {
         return null;
     }
 
-    const apiUrl = new URL(otcData.apiUrl);
-    const params = new URLSearchParams({
-        widget_id: otcData.idWidget,
-        otc_id: otcData.idOtcUser,
-        fiat_amount: fiatAmount,
-        fiat_currency: currencySelect,
-        type: context.type,
-    });
+    const minFiatLimit = otcData.minFiatLimits[fiatCurrency.toLowerCase() as FiatCurrencyCode];
+    if (!minFiatLimit || Number(fiatAmount) < Number(minFiatLimit)) {
+        return null;
+    }
 
-    apiUrl.search = params.toString();
+    const displayedFiatCurrency = 'eur';
+    const displayedFiatLimit = otcData.minFiatLimits[displayedFiatCurrency];
+    if (!displayedFiatLimit) {
+        return null;
+    }
+
+    const links = otcData.links.filter(
+        link =>
+            countrySelect === 'unknown' ||
+            link.allowedCountries.includes(countrySelect.toUpperCase()),
+    );
+
+    if (links.length === 0) {
+        return null;
+    }
 
     return (
         <Banner variant="info">
@@ -76,19 +118,29 @@ export const TradingFormOfferOTC = () => {
                             : 'TR_TRADING_OTC_INFO_SELL'
                     }
                     values={{
-                        minimumFiat: localizeNumber(otcData.minimumFiat, locale),
-                        fiatSymbol: currencySelect.toUpperCase(),
+                        minimumFiat: localizeNumber(displayedFiatLimit, locale),
+                        fiatSymbol: displayedFiatCurrency.toUpperCase(),
                     }}
                 />{' '}
-                <TrezorLink href={apiUrl.toString()} target="_blank" typographyStyle="hint">
-                    <Translation
-                        id={
-                            context.type === 'buy'
-                                ? 'TR_TRADING_OTC_LINK_BUY'
-                                : 'TR_TRADING_OTC_LINK_SELL'
-                        }
-                    />
-                </TrezorLink>
+                <FormattedList
+                    type="disjunction"
+                    value={links.map((link, index) => (
+                        <Fragment key={index}>
+                            <TrezorLink href={link.url} target="_blank" typographyStyle="hint">
+                                <Translation
+                                    id={
+                                        context.type === 'buy'
+                                            ? 'TR_TRADING_OTC_LINK_BUY'
+                                            : 'TR_TRADING_OTC_LINK_SELL'
+                                    }
+                                    values={{
+                                        providerName: link.name,
+                                    }}
+                                />
+                            </TrezorLink>
+                        </Fragment>
+                    ))}
+                />
             </Text>
         </Banner>
     );

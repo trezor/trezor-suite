@@ -173,12 +173,15 @@ export interface TradingAccountOptionsGroupOptionProps {
     accountType?: AccountType;
 }
 
+export interface OTCLink {
+    name: string;
+    url: string;
+    allowedCountries: string[];
+}
+
 export type TradingOTC = {
-    idWidget: string;
-    idOtcUser: string;
-    apiUrl: string;
-    minimumFiat: string;
-    allowedCurrencies: FiatCurrencyCode[];
+    minFiatLimits: Record<FiatCurrencyCode, number>;
+    links: OTCLink[];
 };
 
 export type TradingProviderInfo = BuyProviderInfo | ExchangeProviderInfo | SellProviderInfo;
