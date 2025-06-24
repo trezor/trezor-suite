@@ -1,5 +1,5 @@
-import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
+import { useArgs } from 'storybook/preview-api';
 
 import { Range as RangeComponent, RangeProps } from './Range';
 

@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
 
-import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
+import { useArgs } from 'storybook/preview-api';
 
 import {
     Input as InputComponent,
