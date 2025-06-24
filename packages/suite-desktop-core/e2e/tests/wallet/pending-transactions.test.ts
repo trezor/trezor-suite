@@ -56,10 +56,13 @@ test.describe(
                 .accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 0 })
                 .click();
 
-            await test.step('Create 2 transactions (one self, one fund another account of mine)', async () => {
+            await test.step('Create 2 transactions (first to fund another account of mine, second to self)', async () => {
+                // Order needs to be first transaction that we will mine, then the one that will stay pending
+                // otherwise there is risk of mining transaction that has input a not-confirmed UTXO
+                // which specifically happens with freshly started regtest
                 for (const [index, transaction] of [
-                    accounts.account1,
                     accounts.account2,
+                    accounts.account1,
                 ].entries()) {
                     await walletPage.openSendFormButton.click();
                     await tradingPage.sendAmountInput.fill('0.3');
@@ -104,10 +107,10 @@ test.describe(
                 );
                 await expect(
                     pendingTransactionsAccount1.getByTestId('@transaction-item/0/heading'),
-                ).toContainText('Sending REGTEST');
+                ).toContainText('Sending REGTEST to myself');
                 await expect(
                     pendingTransactionsAccount1.getByTestId('@transaction-item/1/heading'),
-                ).toContainText('Sending REGTEST to myself');
+                ).toContainText('Sending REGTEST');
             });
 
             await test.step('Verify account #2 has 1 pending transaction (receive)', async () => {
@@ -122,7 +125,7 @@ test.describe(
                 ).toContainText('Receiving REGTEST');
             });
 
-            await test.step('Generate Block and verify account #1 transaction has NOT changed', async () => {
+            await test.step('Generate empty Block and verify account #1 transaction has NOT changed', async () => {
                 await trezorUserEnvLink.generateBlock({
                     address: accounts.miner_account.address,
                     txids: [],
@@ -136,10 +139,10 @@ test.describe(
                 );
                 await expect(
                     pendingTransactionsAccount1AfterMine.getByTestId('@transaction-item/0/heading'),
-                ).toContainText('Sending REGTEST');
+                ).toContainText('Sending REGTEST to myself');
                 await expect(
                     pendingTransactionsAccount1AfterMine.getByTestId('@transaction-item/1/heading'),
-                ).toContainText('Sending REGTEST to myself');
+                ).toContainText('Sending REGTEST');
             });
 
             await test.step('Mine the "not-self" transaction', async () => {
