@@ -1,10 +1,12 @@
 import { Account } from '@suite-common/wallet-types';
 
-export const getBtcAccount = () =>
+export const getBtcAccount = (key = 'btc-account-1') =>
     ({
+        key,
         symbol: 'btc',
         accountType: 'normal',
         accountLabel: 'BTC Account #1',
+        descriptor: 'descriptor-' + key,
         balance: '1000000',
         availableBalance: '1000000',
         formattedBalance: '0.01',

@@ -13,6 +13,7 @@ import { StaticSessionId } from '@trezor/connect';
 import fixturesAccounts from '../../../../__fixtures__/accounts.json';
 import { selectBuySelectedReceiveAccount } from '../../../../selectors/buySelectors';
 import { selectExchangeSelectedReceiveAccount } from '../../../../selectors/exchangeSelectors';
+import { initialState } from '../../../../tradingSlice';
 import { ReceiveAccount } from '../../../../types/general';
 import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 
@@ -36,8 +37,11 @@ const getStateMockupBuy = (selectedAccount: ReceiveAccount) => ({
     wallet: {
         accounts: defaultPreloadedState.wallet.accounts,
         tradingNew: {
+            ...initialState,
             buy: {
-                selectedReceiveAccount: selectedAccount,
+                ...initialState.buy,
+                receiveAddress: selectedAccount?.address,
+                tradingAccountKey: selectedAccount.account.key,
             },
         },
     },
@@ -48,8 +52,11 @@ const getStateMockupExchange = (selectedAccount: ReceiveAccount) => ({
     wallet: {
         accounts: defaultPreloadedState.wallet.accounts,
         tradingNew: {
+            ...initialState,
             exchange: {
-                selectedReceiveAccount: selectedAccount,
+                ...initialState.exchange,
+                receiveAddress: selectedAccount?.address,
+                receiveAccountKey: selectedAccount.account.key,
             },
         },
     },

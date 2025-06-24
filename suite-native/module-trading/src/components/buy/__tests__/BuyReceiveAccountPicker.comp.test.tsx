@@ -10,6 +10,7 @@ import {
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
+import { initialState } from '../../../tradingSlice';
 import { BuyFormType } from '../../../types/buy';
 import { ReceiveAccount, TradeableAsset } from '../../../types/general';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
@@ -25,13 +26,17 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
+const getTradingState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
     wallet: {
         tradingNew: {
+            ...initialState,
             buy: {
-                selectedReceiveAccount,
+                ...initialState.buy,
+                receiveAddress: selectedReceiveAccount?.address,
+                tradingAccountKey: selectedReceiveAccount?.account.key,
             },
         },
+        accounts: [getBtcAccount()],
     },
 });
 
@@ -78,7 +83,7 @@ describe('BuyReceiveAccountPicker', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
-            preloadedState: getBuyState({
+            preloadedState: getTradingState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],
             }),
@@ -92,7 +97,7 @@ describe('BuyReceiveAccountPicker', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
-            preloadedState: getBuyState({
+            preloadedState: getTradingState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],
             }),

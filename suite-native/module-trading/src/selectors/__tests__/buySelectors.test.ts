@@ -10,11 +10,13 @@ import { Platform } from 'react-native';
 import { BuyTrade, CryptoId } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
+import { TradingRootState as CommonTradingRootState } from '@suite-common/trading';
+import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount } from '../../__fixtures__/account';
 import quotes from '../../__fixtures__/quotes.json';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { TradingState, tradingSlice } from '../../tradingSlice';
+import { TradingRootState, TradingState, tradingSlice } from '../../tradingSlice';
 import {
     selectBuyAmountLimits,
     selectBuyBestQuotesForAvailablePaymentMethods,
@@ -41,13 +43,54 @@ describe('buySelectors', () => {
         expect(selectTradingBuy({ wallet: { tradingNew: prevState } })).toEqual(prevState.buy);
     });
 
-    it('selectBuySelectedReceiveAccount should select receiveAccount', () => {
-        const receiveAccount = { account: getBtcAccount(), address: undefined };
-        prevState.buy.selectedReceiveAccount = receiveAccount;
+    describe('selectBuySelectedReceiveAccount', () => {
+        let account: Account;
 
-        expect(selectBuySelectedReceiveAccount({ wallet: { tradingNew: prevState } })).toEqual(
-            receiveAccount,
-        );
+        beforeEach(() => {
+            account = getBtcAccount();
+            prevState.buy.tradingAccountKey = account.key;
+            prevState.buy.receiveAddress = account.addresses?.used[0];
+        });
+
+        it('should be undefined when no tradingAccountKey is defined', () => {
+            prevState.buy.tradingAccountKey = undefined;
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+
+            expect(selectBuySelectedReceiveAccount(state)).toBeUndefined();
+        });
+
+        it('should select receiveAccount and receiveAddress', () => {
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+
+            expect(selectBuySelectedReceiveAccount(state)).toEqual({
+                account,
+                address: account.addresses?.used[0],
+            });
+        });
+
+        it('should be stable', () => {
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+            expect(selectBuySelectedReceiveAccount(state)).toBe(
+                selectBuySelectedReceiveAccount(state),
+            );
+        });
+
+        it('should throw when no account with given key exists', () => {
+            prevState.buy.tradingAccountKey = 'unknown_account_key';
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+
+            expect(() => selectBuySelectedReceiveAccount(state)).toThrow(
+                'Unknown tradingAccountKey: [unknown_account_key]',
+            );
+        });
     });
 
     describe('selectBuyTradeableAssetsSorted', () => {

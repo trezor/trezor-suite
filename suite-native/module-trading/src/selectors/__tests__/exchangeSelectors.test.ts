@@ -1,10 +1,12 @@
 import { CryptoId } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
+import { TradingRootState as CommonTradingRootState } from '@suite-common/trading';
+import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount } from '../../__fixtures__/account';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { TradingState, tradingSlice } from '../../tradingSlice';
+import { TradingRootState, TradingState, tradingSlice } from '../../tradingSlice';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeTradeableAssetsSorted,
@@ -26,13 +28,53 @@ describe('exchangeSelectors', () => {
         );
     });
 
-    it('selectExchangeSelectedReceiveAccount should select receiveAccount', () => {
-        const receiveAccount = { account: getBtcAccount(), address: undefined };
-        prevState.exchange.selectedReceiveAccount = receiveAccount;
+    describe('selectExchangeSelectedReceiveAccount', () => {
+        let account: Account;
 
-        expect(selectExchangeSelectedReceiveAccount({ wallet: { tradingNew: prevState } })).toEqual(
-            receiveAccount,
-        );
+        beforeEach(() => {
+            account = getBtcAccount();
+            prevState.exchange.receiveAccountKey = account.key;
+            prevState.exchange.receiveAddress = account.addresses?.used[0];
+        });
+
+        it('should be undefined when no receiveAccountKey is defined', () => {
+            prevState.exchange.receiveAccountKey = undefined;
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+
+            expect(selectExchangeSelectedReceiveAccount(state)).toBeUndefined();
+        });
+
+        it('should select receiveAccount and receiveAddress', () => {
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+            expect(selectExchangeSelectedReceiveAccount(state)).toEqual({
+                account,
+                address: account.addresses?.used[0],
+            });
+        });
+
+        it('should be stable', () => {
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+            expect(selectExchangeSelectedReceiveAccount(state)).toBe(
+                selectExchangeSelectedReceiveAccount(state),
+            );
+        });
+
+        it('should throw when no account with given key exists', () => {
+            prevState.exchange.receiveAccountKey = 'unknown_account_key';
+            const state = {
+                wallet: { tradingNew: prevState, accounts: [account] },
+            } as unknown as CommonTradingRootState & TradingRootState;
+
+            expect(() => selectExchangeSelectedReceiveAccount(state)).toThrow(
+                'Unknown receiveAccountKey: [unknown_account_key]',
+            );
+        });
     });
 
     describe('selectExchangeTradeableAssetsSorted', () => {

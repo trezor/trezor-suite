@@ -11,16 +11,15 @@ import {
     initialState as commonInitialState,
     prepareTradingReducer,
 } from '@suite-common/trading';
-import { deviceActions } from '@suite-common/wallet-core';
-
-import { ReceiveAccount } from './types/general';
+import { AccountsRootState, deviceActions } from '@suite-common/wallet-core';
+import { Address } from '@trezor/blockchain-link-types';
 
 export interface TradingBuyState extends CommonTradingBuyState {
-    selectedReceiveAccount: ReceiveAccount | undefined;
+    receiveAddress: Address | undefined;
 }
 
 export interface TradingExchangeState extends CommonTradingExchangeState {
-    selectedReceiveAccount: ReceiveAccount | undefined;
+    receiveAddress: Address | undefined;
 }
 
 export interface TradingState extends CommonTradingState {
@@ -41,8 +40,8 @@ export type TradingRootState = {
 
 export const initialState: TradingState = {
     ...commonInitialState,
-    buy: { ...commonInitialState.buy, selectedReceiveAccount: undefined },
-    exchange: { ...commonInitialState.exchange, selectedReceiveAccount: undefined },
+    buy: { ...commonInitialState.buy, receiveAddress: undefined },
+    exchange: { ...commonInitialState.exchange, receiveAddress: undefined },
     favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
@@ -54,11 +53,11 @@ export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
     initialState,
     reducers: {
-        setBuySelectedReceiveAccount: (
-            state,
-            { payload }: PayloadAction<{ selectedReceiveAccount: ReceiveAccount | undefined }>,
-        ) => {
-            state.buy.selectedReceiveAccount = payload.selectedReceiveAccount;
+        setBuyReceiveAddress: (state, { payload }: PayloadAction<Address | undefined>) => {
+            state.buy.receiveAddress = payload;
+        },
+        setExchangeReceiveAddress: (state, { payload }: PayloadAction<Address | undefined>) => {
+            state.exchange.receiveAddress = payload;
         },
         addTradeableAssetToFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
             state.favouriteAssets[payload] = true;
@@ -69,7 +68,8 @@ export const tradingSlice = createSliceWithExtraDeps({
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
             // clear buy state so everything is fetched for new environment
-            state.buy.selectedReceiveAccount = undefined;
+            state.buy.tradingAccountKey = undefined;
+            state.buy.receiveAddress = undefined;
             state.buy.quotesRequest = undefined;
             state.buy.quotes = [];
             state.buy.selectedQuote = undefined;
@@ -77,7 +77,8 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.tradeOrderIdToBeOpened = undefined;
         },
         clearBuyState: state => {
-            state.buy.selectedReceiveAccount = undefined;
+            state.buy.tradingAccountKey = undefined;
+            state.buy.receiveAddress = undefined;
             state.buy.quotesRequest = undefined;
             state.buy.quotes = [];
             state.buy.selectedQuote = undefined;
@@ -95,7 +96,8 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.tradeOrderIdToBeOpened = undefined;
         },
         buyAssetChanged: state => {
-            state.buy.selectedReceiveAccount = undefined;
+            state.buy.tradingAccountKey = undefined;
+            state.buy.receiveAddress = undefined;
             state.buy.amountLimits = undefined;
             state.buy.quotesRequest = undefined;
         },
@@ -112,19 +114,15 @@ export const tradingSlice = createSliceWithExtraDeps({
         clearActiveTradingType: state => {
             state.activeTradingType = undefined;
         },
-        setExchangeSelectedReceiveAccount: (
-            state,
-            { payload }: PayloadAction<{ selectedReceiveAccount: ReceiveAccount | undefined }>,
-        ) => {
-            state.exchange.selectedReceiveAccount = payload.selectedReceiveAccount;
-        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
         builder
             .addCase(deviceActions.selectDevice, state => {
-                state.buy.selectedReceiveAccount = undefined;
-                state.exchange.selectedReceiveAccount = undefined;
+                state.buy.tradingAccountKey = undefined;
+                state.buy.receiveAddress = undefined;
+                state.exchange.receiveAccountKey = undefined;
+                state.exchange.receiveAddress = undefined;
             })
             // In case that this reducer does not match the action, try to handle it by suite-common tradingReducer.
             .addDefaultCase((state, action) => {
@@ -136,3 +134,6 @@ export const tradingSlice = createSliceWithExtraDeps({
 export const tradingActions = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
+export const createMemoizedSelectorWithAccounts = createWeakMapSelector.withTypes<
+    TradingRootState & AccountsRootState
+>();

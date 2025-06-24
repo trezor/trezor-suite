@@ -10,6 +10,7 @@ import {
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/quotes.json';
 import { bnbAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
@@ -45,11 +46,9 @@ jest.mock('@suite-common/trading', () => ({
 describe('useBuyQuotes', () => {
     const getInitializedStore = async () => {
         const preloadedState: PreloadedState = {
-            wallet: { tradingNew: getInitializedTradingState() },
+            wallet: { tradingNew: getInitializedTradingState(), accounts: [getBtcAccount()] },
         };
-        preloadedState.wallet!.tradingNew!.buy!.selectedReceiveAccount = {
-            account: { key: 'btc1' } as Account,
-        };
+        preloadedState.wallet!.tradingNew!.buy!.tradingAccountKey = 'btc-account-1';
 
         return await initStore(preloadedState);
     };
@@ -261,17 +260,13 @@ describe('useBuyQuotes', () => {
             store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
         });
 
+        dispatchSpy.mockClear();
         // clear some value to make form invalid
         act(() => {
             result.current.setValue('fiatValue', undefined);
         });
 
-        // 1st call - trading/buyAssetChanged
-        // 2nd call - trading/buyFiatCurrencyChanged
-        // 3rd call - initial handleRequestThunkMock
-        // 4th call - manual saveQuotes
-        // 5th call - clearQuotesAndQuotesRequest
-        expect(dispatchSpy).toHaveBeenCalledTimes(5);
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenLastCalledWith({
             payload: undefined,
             type: 'trading/clearQuotesAndQuotesRequest',

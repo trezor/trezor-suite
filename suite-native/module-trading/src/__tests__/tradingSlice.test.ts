@@ -2,10 +2,10 @@ import { BuyTrade, CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { tradingBuyActions } from '@suite-common/trading';
+import { tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
+import { Address } from '@trezor/blockchain-link-types';
 
-import { getBtcAccount } from '../__fixtures__/account';
 import quotes from '../__fixtures__/quotes.json';
 import { adaAsset, btcAsset, usdcAsset } from '../__fixtures__/tradeableAssets';
 import { TradingState, initialState, tradingActions, tradingSlice } from '../tradingSlice';
@@ -38,107 +38,97 @@ describe('tradingSlice', () => {
         });
     });
 
-    describe('buy', () => {
-        it('setBuySelectedReceiveAccount should set selectedReceiveAccount', () => {
-            const receiveAccount = { account: getBtcAccount(), address: undefined };
-            const state = tradingReducer(
-                undefined,
-                tradingActions.setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: receiveAccount,
-                }),
-            );
-
-            expect(state.buy.selectedReceiveAccount).toBe(receiveAccount);
-        });
-
-        it('setBuySelectedReceiveAccount should set and clear selectedReceiveAccount', () => {
+    describe('favouriteAssets', () => {
+        it('addTradeableAssetToFavourites should add asset to favourites', () => {
             const actions = [
-                tradingActions.setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
-                }),
-                tradingActions.setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: undefined,
-                }),
+                tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
+                tradingActions.addTradeableAssetToFavourites(usdcAsset.cryptoId),
+                tradingActions.addTradeableAssetToFavourites(adaAsset.cryptoId),
             ];
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
-            expect(state.buy.selectedReceiveAccount).toBeUndefined();
+            expect(state.favouriteAssets).toEqual({
+                bitcoin: true,
+                cardano: true,
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': true,
+            });
         });
 
-        describe('favouriteAssets', () => {
-            it('addTradeableAssetToFavourites should add asset to favourites', () => {
-                const actions = [
+        describe('given state with one favourite asset', () => {
+            let prevState: TradingState;
+
+            beforeEach(() => {
+                prevState = tradingReducer(
+                    undefined,
                     tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
-                    tradingActions.addTradeableAssetToFavourites(usdcAsset.cryptoId),
-                    tradingActions.addTradeableAssetToFavourites(adaAsset.cryptoId),
-                ];
-                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+                );
+            });
+
+            it('addTradeableAssetToFavourites should not add same asset twice', () => {
+                const state = tradingReducer(
+                    prevState,
+                    tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
+                );
 
                 expect(state.favouriteAssets).toEqual({
                     bitcoin: true,
-                    cardano: true,
-                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': true,
                 });
             });
 
-            describe('given state with one favourite asset', () => {
-                let prevState: TradingState;
+            it('removeTradeableAssetFromFavourites should remove asset from favourites', () => {
+                const state = tradingReducer(
+                    prevState,
+                    tradingActions.removeTradeableAssetFromFavourites(btcAsset.cryptoId),
+                );
 
-                beforeEach(() => {
-                    prevState = tradingReducer(
-                        undefined,
-                        tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
-                    );
-                });
+                expect(state.favouriteAssets).toEqual({});
+            });
+        });
+    });
 
-                it('addTradeableAssetToFavourites should not add same asset twice', () => {
-                    const state = tradingReducer(
-                        prevState,
-                        tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
-                    );
+    describe('buy', () => {
+        describe('setBuyReceiveAddress', () => {
+            it('should set buy receive address', () => {
+                const address = { address: 'bc1qxyz' } as Address;
+                const state = tradingReducer(
+                    undefined,
+                    tradingActions.setBuyReceiveAddress(address),
+                );
 
-                    expect(state.favouriteAssets).toEqual({
-                        bitcoin: true,
-                    });
-                });
+                expect(state.buy.receiveAddress).toEqual(address);
+            });
 
-                it('removeTradeableAssetFromFavourites should remove asset from favourites', () => {
-                    const state = tradingReducer(
-                        prevState,
-                        tradingActions.removeTradeableAssetFromFavourites(btcAsset.cryptoId),
-                    );
+            it('should set buy receive address to undefined', () => {
+                const state = tradingReducer(
+                    undefined,
+                    tradingActions.setBuyReceiveAddress(undefined),
+                );
 
-                    expect(state.favouriteAssets).toEqual({});
-                });
+                expect(state.buy.receiveAddress).toBeUndefined();
             });
         });
     });
 
     describe('exchange', () => {
-        it('setExchangeSelectedReceiveAccount should set selectedReceiveAccount', () => {
-            const receiveAccount = { account: getBtcAccount(), address: undefined };
-            const state = tradingReducer(
-                undefined,
-                tradingActions.setExchangeSelectedReceiveAccount({
-                    selectedReceiveAccount: receiveAccount,
-                }),
-            );
+        describe('setExchangeReceiveAddress', () => {
+            it('should set exchange receive address', () => {
+                const address = { address: 'bc1qxyz' } as Address;
+                const state = tradingReducer(
+                    undefined,
+                    tradingActions.setExchangeReceiveAddress(address),
+                );
 
-            expect(state.exchange.selectedReceiveAccount).toBe(receiveAccount);
-        });
+                expect(state.exchange.receiveAddress).toEqual(address);
+            });
 
-        it('setExchangeSelectedReceiveAccount should set and clear selectedReceiveAccount', () => {
-            const actions = [
-                tradingActions.setExchangeSelectedReceiveAccount({
-                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
-                }),
-                tradingActions.setExchangeSelectedReceiveAccount({
-                    selectedReceiveAccount: undefined,
-                }),
-            ];
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+            it('should set exchange receive address to undefined', () => {
+                const state = tradingReducer(
+                    undefined,
+                    tradingActions.setExchangeReceiveAddress(undefined),
+                );
 
-            expect(state.exchange.selectedReceiveAccount).toBeUndefined();
+                expect(state.exchange.receiveAddress).toBeUndefined();
+            });
         });
     });
 
@@ -154,11 +144,7 @@ describe('tradingSlice', () => {
 
             expect(state.tradingEnvironment).toBe('dev');
             expect(state.buy).toEqual({
-                selectedReceiveAccount: undefined,
-                quotesRequest: undefined,
                 quotes: [],
-                selectedQuote: undefined,
-                amountLimits: undefined,
                 isFromRedirect: false,
                 isLoading: false,
             });
@@ -171,7 +157,10 @@ describe('tradingSlice', () => {
                 ...initialState,
                 buy: {
                     ...initialState.buy,
-                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                    tradingAccountKey: 'account-key',
+                    receiveAddress: {
+                        address: 'bc1qxyz',
+                    } as Address,
                     quotesRequest: {
                         wantCrypto: true,
                         receiveCurrency: 'btc' as CryptoId,
@@ -190,7 +179,8 @@ describe('tradingSlice', () => {
             const state = tradingReducer(tradingInitialState, tradingSlice.actions.clearBuyState());
 
             expect(state.buy).toEqual({
-                selectedReceiveAccount: undefined,
+                receiveAddress: undefined,
+                tradingAccountKey: undefined,
                 quotesRequest: undefined,
                 quotes: [],
                 selectedQuote: undefined,
@@ -207,7 +197,10 @@ describe('tradingSlice', () => {
                 ...initialState,
                 buy: {
                     ...initialState.buy,
-                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
+                    tradingAccountKey: 'account-key',
+                    receiveAddress: {
+                        address: 'address',
+                    } as Address,
                     quotesRequest: {
                         wantCrypto: true,
                         receiveCurrency: 'btc' as CryptoId,
@@ -226,7 +219,7 @@ describe('tradingSlice', () => {
 
             expect(state.buy).toEqual({
                 ...tradingInitialState.buy,
-                selectedReceiveAccount: expect.any(Object),
+                receiveAddress: expect.any(Object),
                 quotesRequest: undefined,
                 quotes: [],
                 selectedQuote: expect.any(Object),
@@ -265,36 +258,56 @@ describe('tradingSlice', () => {
     });
 
     describe('@suite/device/selectDevice', () => {
-        it('should clear selectedReceiveAccount', () => {
+        it('should clear receiveAddress', () => {
             const actions = [
-                tradingActions.setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
-                }),
-                tradingActions.setExchangeSelectedReceiveAccount({
-                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
-                }),
+                tradingActions.setBuyReceiveAddress({
+                    address: 'address',
+                } as Address),
+                tradingActions.setExchangeReceiveAddress({
+                    address: 'address',
+                } as Address),
                 deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
-            expect(state.buy.selectedReceiveAccount).toBeUndefined();
-            expect(state.exchange.selectedReceiveAccount).toBeUndefined();
+            expect(state.buy.receiveAddress).toBeUndefined();
+            expect(state.exchange.receiveAddress).toBeUndefined();
+        });
+
+        it('should clear buy.tradingAccountKey', () => {
+            const actions = [
+                tradingBuyActions.setTradingAccountKey('account-key'),
+                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+            expect(state.buy.tradingAccountKey).toBeUndefined();
+        });
+
+        it('should clear exchange.receiveAccountKey', () => {
+            const actions = [
+                tradingExchangeActions.setReceiveAccountKey('account-key'),
+                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+            expect(state.exchange.receiveAccountKey).toBeUndefined();
         });
     });
 
     describe('buyAssetChanged', () => {
-        it('should clear selectedReceiveAccount', () => {
+        it('should clear tradingAccountKey and receiveAddress', () => {
             const actions = [
-                tradingActions.setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: { account: getBtcAccount(), address: undefined },
-                }),
+                tradingBuyActions.setTradingAccountKey('account-key'),
+                tradingActions.setBuyReceiveAddress({ address: 'address' } as Address),
                 tradingActions.buyAssetChanged(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
-            expect(state.buy.selectedReceiveAccount).toBeUndefined();
+            expect(state.buy.tradingAccountKey).toBeUndefined();
+            expect(state.buy.receiveAddress).toBeUndefined();
         });
 
         it('should clear buy amountLimits', () => {
