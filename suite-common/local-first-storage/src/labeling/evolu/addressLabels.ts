@@ -43,7 +43,7 @@ export class AddressLabels {
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
             for (const label of labels) {
-                if (!label.address) {
+                if (label.address === null) {
                     continue;
                 }
 

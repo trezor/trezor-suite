@@ -1,16 +1,13 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
 
 import { labelingActions } from './labelingActions';
 import { findAccountLabel, findAddressLabel, findOutputLabel } from './labelingSelectors';
 
-export type WalletLabel = {
-    deviceStaticSessionId: string;
-    label: string | null;
-};
-
 export type AccountLabel = {
-    deviceStaticSessionId: string;
-    accountKey: string;
+    accountDescriptor: AccountDescriptor;
+    networkSymbol: NetworkSymbol;
     label: string | null;
 };
 
@@ -25,18 +22,37 @@ export type OutputLabel = {
     label: string | null;
 };
 
-export type LabelingState = {
-    walletLabels: WalletLabel[];
+export type WalletLabelState = {
+    walletLabel: string | null;
     accountLabels: AccountLabel[];
     addressLabels: AddressLabel[];
     outputLabels: OutputLabel[];
 };
 
+export type LabelingState = {
+    walletsLabels: Record<WalletDescriptor, WalletLabelState>; // key: WalletDescriptor = First btc testnet address
+};
+
 const initialState: LabelingState = {
-    walletLabels: [] as WalletLabel[],
-    accountLabels: [] as AccountLabel[],
-    addressLabels: [] as AddressLabel[],
-    outputLabels: [] as OutputLabel[],
+    walletsLabels: {},
+};
+
+const getOrCreateWalletsLabelsState = (
+    state: LabelingState,
+    walletDescriptor: WalletDescriptor,
+) => {
+    const walletLabelState = state.walletsLabels[walletDescriptor];
+
+    if (walletLabelState === undefined) {
+        state.walletsLabels[walletDescriptor] = {
+            walletLabel: null,
+            accountLabels: [] as AccountLabel[],
+            addressLabels: [] as AddressLabel[],
+            outputLabels: [] as OutputLabel[],
+        };
+    }
+
+    return state.walletsLabels[walletDescriptor];
 };
 
 export const prepareLabelingReducer = createReducerWithExtraDeps<LabelingState>(
@@ -44,44 +60,56 @@ export const prepareLabelingReducer = createReducerWithExtraDeps<LabelingState>(
     builder =>
         builder
             .addCase(labelingActions.setWalletLabel, (state, { payload }) => {
-                const existing = state.walletLabels.find(
-                    it => it.deviceStaticSessionId === payload.deviceStaticSessionId,
+                const walletLabelState = getOrCreateWalletsLabelsState(
+                    state,
+                    payload.walletDescriptor,
                 );
 
-                if (existing !== undefined) {
-                    existing.label = payload.label;
-                } else {
-                    state.walletLabels.push(payload);
-                }
+                walletLabelState.walletLabel = payload.label;
             })
             .addCase(labelingActions.setAccountLabel, (state, { payload }) => {
+                const walletLabelState = getOrCreateWalletsLabelsState(
+                    state,
+                    payload.walletDescriptor,
+                );
+
                 const existing = findAccountLabel({
-                    accountLabels: state.accountLabels,
-                    accountKey: payload.accountKey,
-                    deviceStaticSessionId: payload.deviceStaticSessionId,
+                    accountLabels: walletLabelState.accountLabels,
+                    accountDescriptor: payload.accountDescriptor,
+                    networkSymbol: payload.networkSymbol,
                 });
 
                 if (existing !== undefined) {
                     existing.label = payload.label;
                 } else {
-                    state.accountLabels.push(payload);
+                    walletLabelState.accountLabels.push(payload);
                 }
             })
             .addCase(labelingActions.setAddressLabel, (state, { payload }) => {
+                const walletLabelState = getOrCreateWalletsLabelsState(
+                    state,
+                    payload.walletDescriptor,
+                );
+
                 const existing = findAddressLabel({
-                    addressLabels: state.addressLabels,
+                    addressLabels: walletLabelState.addressLabels,
                     address: payload.address,
                 });
 
                 if (existing !== undefined) {
                     existing.label = payload.label;
                 } else {
-                    state.addressLabels.push(payload);
+                    walletLabelState.addressLabels.push(payload);
                 }
             })
             .addCase(labelingActions.setOutputLabel, (state, { payload }) => {
+                const walletLabelState = getOrCreateWalletsLabelsState(
+                    state,
+                    payload.walletDescriptor,
+                );
+
                 const existing = findOutputLabel({
-                    outputLabels: state.outputLabels,
+                    outputLabels: walletLabelState.outputLabels,
                     txId: payload.txId,
                     outputIndex: payload.outputIndex,
                 });
@@ -89,13 +117,18 @@ export const prepareLabelingReducer = createReducerWithExtraDeps<LabelingState>(
                 if (existing !== undefined) {
                     existing.label = payload.label;
                 } else {
-                    state.outputLabels.push(payload);
+                    walletLabelState.outputLabels.push(payload);
                 }
             })
-            .addCase(labelingActions.clearAllLabels, state => {
-                state.walletLabels = [];
-                state.accountLabels = [];
-                state.addressLabels = [];
-                state.outputLabels = [];
+            .addCase(labelingActions.clearAllLabels, (state, { payload }) => {
+                const walletLabelState = getOrCreateWalletsLabelsState(
+                    state,
+                    payload.walletDescriptor,
+                );
+
+                walletLabelState.walletLabel = null;
+                walletLabelState.accountLabels = [];
+                walletLabelState.addressLabels = [];
+                walletLabelState.outputLabels = [];
             }),
 );

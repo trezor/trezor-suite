@@ -67,7 +67,7 @@ export const WalletInstance = ({
         selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
     );
 
-    const walletLabel = localFirstWalletLabel?.label ?? oldWalletLabel;
+    const walletLabel = localFirstWalletLabel ?? oldWalletLabel;
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 

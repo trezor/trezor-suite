@@ -38,7 +38,7 @@ const DeviceStatusVisible = ({ device, connected, forceConnectionInfo }: DeviceS
         selectWalletLabel({ state, deviceStaticSessionId: device?.state?.staticSessionId }),
     );
 
-    const walletLabel = localFirstWalletLabel?.label ?? walletLabelOld;
+    const walletLabel = localFirstWalletLabel ?? walletLabelOld;
     const isWalletLabelEmpty = walletLabel === undefined || walletLabel.trim() === '';
     const walletText = isWalletLabelEmpty ? defaultWalletLabel : walletLabel;
 

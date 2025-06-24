@@ -1,4 +1,15 @@
-import { Evolu, NonEmptyString1000, QueryRows, getOrThrow, id, nullOr } from '@evolu/common';
+import {
+    Evolu,
+    NonEmptyString100,
+    NonEmptyString1000,
+    QueryRows,
+    getOrThrow,
+    id,
+    nullOr,
+} from '@evolu/common';
+
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../../evoluUtils';
 import { toNanoId } from '../../toNanoId';
@@ -6,33 +17,33 @@ import { toNanoId } from '../../toNanoId';
 export const AccountLabelId = id('AccountLabelId');
 export type AccountLabelId = typeof AccountLabelId.Type;
 
-export const createAccountLabelId = (deviceStaticSessionId: string, accountKey: string) =>
-    AccountLabelId.from(toNanoId(`${deviceStaticSessionId}-${accountKey}`));
+export const createAccountLabelId = (accountKey: string, coinSymbol: string) =>
+    AccountLabelId.from(toNanoId(`${accountKey}-${coinSymbol}`));
 
 export const AccountLabelSchema = {
     accountLabel: {
         id: AccountLabelId,
-        deviceStaticSessionId: NonEmptyString1000, // Todo: is it ok?
-        accountKey: NonEmptyString1000, // Todo: is it ok?
+        accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
+        networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
         label: nullOr(NonEmptyString1000), // Todo: 1000 enough?
     },
 };
 
 type LabelData = {
-    deviceStaticSessionId: string;
-    accountKey: string;
+    accountDescriptor: AccountDescriptor;
+    networkSymbol: NetworkSymbol;
     label: string | null;
 };
 
 export class AccountLabels {
     constructor(private evolu: Evolu<typeof AccountLabelSchema>) {}
 
-    update = ({ deviceStaticSessionId, accountKey, label }: LabelData) => {
+    update = ({ networkSymbol, accountDescriptor, label }: LabelData) => {
         const result = this.evolu.upsert('accountLabel', {
             // Todo: replace getOrThrow wit some nice error propagation
-            id: getOrThrow(createAccountLabelId(deviceStaticSessionId, accountKey)),
-            deviceStaticSessionId,
-            accountKey,
+            id: getOrThrow(createAccountLabelId(accountDescriptor, networkSymbol)),
+            accountDescriptor,
+            networkSymbol,
             label,
         });
 
@@ -47,13 +58,13 @@ export class AccountLabels {
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
             for (const label of labels) {
-                if (!label.deviceStaticSessionId || !label.accountKey) {
+                if (label.accountDescriptor === null || label.networkSymbol === null) {
                     continue;
                 }
 
                 onChange({
-                    deviceStaticSessionId: label.deviceStaticSessionId,
-                    accountKey: label.accountKey,
+                    accountDescriptor: label.accountDescriptor as unknown as AccountDescriptor,
+                    networkSymbol: label.networkSymbol as NetworkSymbol,
                     label: label.label,
                 });
             }

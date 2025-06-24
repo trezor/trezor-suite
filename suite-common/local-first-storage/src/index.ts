@@ -3,6 +3,7 @@ export { disposeAllLocalFirstStorageThunk } from './storage/disposeAllLocalFirst
 export { initLocalFirstStorageThunkFactory } from './storage/initLocalFirstStorageThunk';
 export { subscribeLocalFirstStorageThunk } from './storage/subscribeLocalFirstStorageThunk';
 export { unsubscribeAndDisposeLocalFirstStorageThunk } from './storage/unsubscribeAndDisposeLocalFirstStorageThunk';
+export { DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL } from './storage/LocalFirstStorageProvider';
 
 // Labeling
 export { updateWalletLabelThunk } from './labeling/updateWalletLabelThunk';
@@ -18,7 +19,6 @@ export {
     selectAddressLabels,
     selectAccountLabel,
     selectOutputLabels,
-    selectWalletLabels,
 } from './labeling/labelingSelectors';
 export { labelingActions } from './labeling/labelingActions';
 export { prepareLabelingReducer } from './labeling/labelingReducer';

@@ -371,8 +371,6 @@ export const MetadataLabeling = ({
         if (isLocalFirstStorageEnabled) {
             const labelType = payload.type;
 
-            console.log('______labelType', labelType);
-
             switch (labelType) {
                 case 'walletLabel':
                     await dispatch(
@@ -391,8 +389,6 @@ export const MetadataLabeling = ({
                     break;
 
                 case 'addressLabel':
-                    console.log('___addressLabel::payload', payload, value);
-
                     await dispatch(
                         updateAddressLabelThunk({
                             deviceStaticSessionId,

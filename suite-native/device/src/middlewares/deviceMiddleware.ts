@@ -3,10 +3,10 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
-    accountsActions,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
     deviceActions,
+    forgetAccountsThunk,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
@@ -68,8 +68,8 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
             const deviceState = action.payload.device.state;
             if (deviceState) {
-                const accounts = selectAccountsByDeviceState(getState(), deviceState);
-                dispatch(accountsActions.removeAccount(accounts));
+                const accountsToRemove = selectAccountsByDeviceState(getState(), deviceState);
+                dispatch(forgetAccountsThunk({ accountsToRemove }));
             }
         }
 

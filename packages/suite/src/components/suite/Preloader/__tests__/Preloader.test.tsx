@@ -267,10 +267,7 @@ const getInitialState = ({
         bioAuthAvailable: null,
     },
     labeling: {
-        walletLabels: [],
-        accountLabels: [],
-        addressLabels: [],
-        outputLabels: [],
+        walletsLabels: {},
     },
 });
 

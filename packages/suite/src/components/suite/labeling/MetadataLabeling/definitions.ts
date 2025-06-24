@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import { AccountType, Bip43Path, NetworkType } from '@suite-common/wallet-config';
 import { DropdownMenuItemProps } from '@trezor/components';
+import type { StaticSessionId } from '@trezor/connect';
 
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
@@ -20,7 +21,7 @@ export interface Props {
     visible?: boolean;
     placeholder?: string;
     updateFlag?: any;
-    deviceStaticSessionId: string;
+    deviceStaticSessionId: StaticSessionId;
 }
 
 export interface ExtendedProps extends Props {

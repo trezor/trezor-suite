@@ -2,11 +2,11 @@ import { EvoluKeys } from '@suite-common/wallet-core';
 
 import { LocalFirstStorageProvider } from './LocalFirstStorageProvider';
 
-type DeviceStaticSessionId = string;
+type WalletDescriptor = string; // First btc testnet address
 type SubscriptionKey = string; // for example: "labeling", ...
 
 export const subscriptionStorage: Record<
-    DeviceStaticSessionId,
+    WalletDescriptor,
     Record<SubscriptionKey, () => void>
 > = {};
 

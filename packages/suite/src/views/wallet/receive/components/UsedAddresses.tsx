@@ -118,7 +118,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
 };
 
 interface UsedAddressesProps {
-    account: AppState['wallet']['selectedAccount']['account'];
+    account: Account;
     addresses: AppState['wallet']['receive'];
     locked: boolean;
     pendingAddresses: string[];
@@ -134,11 +134,9 @@ export const UsedAddresses = ({
     const dispatch = useDispatch();
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
 
-    const localFirstAddressLabels = useSelector(selectAddressLabels);
-
-    if (!account) {
-        return null;
-    }
+    const localFirstAddressLabels = useSelector(state =>
+        selectAddressLabels(state, account.deviceState),
+    );
 
     if (
         (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||

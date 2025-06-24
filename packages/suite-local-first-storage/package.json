@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@evolu/web": "^1.0.1-preview.0",
+        "@evolu/web": "^1.0.1-preview.2",
         "@suite-common/local-first-storage": "workspace:*"
     }
 }

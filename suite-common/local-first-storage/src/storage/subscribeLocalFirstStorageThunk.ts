@@ -1,6 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { initEvoluKeysThunk, selectDevices } from '@suite-common/wallet-core';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import { subscriptionStorage } from './sharedObjects';
@@ -48,6 +49,8 @@ export const subscribeLocalFirstStorageThunk = createThunk<
             return;
         }
 
-        dispatch(subscribeLabelingUpdatesThunk({ evoluKeys, deviceStaticSessionId }));
+        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+        dispatch(subscribeLabelingUpdatesThunk({ evoluKeys, walletDescriptor }));
     },
 );

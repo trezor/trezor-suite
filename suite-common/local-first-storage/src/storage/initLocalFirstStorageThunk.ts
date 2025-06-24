@@ -26,7 +26,6 @@ export const initLocalFirstStorageThunkFactory = (evoluDeps: EvoluDeps) =>
 
             const devices = selectDevices(getState());
 
-            console.log('____devices', devices);
             for (const device of devices) {
                 dispatch(subscribeLocalFirstStorageThunk({ device }));
             }

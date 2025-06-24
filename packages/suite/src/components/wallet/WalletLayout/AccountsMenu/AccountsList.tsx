@@ -2,8 +2,9 @@ import { findAccountLabel, selectAccountLabels } from '@suite-common/local-first
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { accountSearchFn } from '@suite-common/wallet-utils';
+import { accountSearchFn, parseAccountKey } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
+import type { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -29,6 +30,7 @@ type AccountsProps = {
     coinjoinIsPreloading?: boolean;
     discoveryInProgress?: boolean;
     type: AccountType;
+    deviceStaticSessionId: StaticSessionId;
 };
 
 const Accounts = ({
@@ -37,13 +39,16 @@ const Accounts = ({
     coinjoinIsPreloading,
     discoveryInProgress,
     type,
+    deviceStaticSessionId,
 }: AccountsProps) => {
     const accountLabels = useSelector(selectAccountLabelsOld);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { params } = selectedAccount;
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
 
-    const localFirstAccountLabels = useSelector(selectAccountLabels);
+    const localFirstAccountLabels = useSelector(state =>
+        selectAccountLabels(state, deviceStaticSessionId),
+    );
 
     return (
         <>
@@ -56,11 +61,13 @@ const Accounts = ({
 
                 const selected = !!isSelected(account);
 
+                const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
+
                 const label =
                     findAccountLabel({
                         accountLabels: localFirstAccountLabels,
-                        accountKey: account.key,
-                        deviceStaticSessionId: account.deviceState,
+                        accountDescriptor,
+                        networkSymbol,
                     })?.label ?? accountLabels[account.key];
 
                 return (
@@ -84,7 +91,13 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabelsOld);
-    const localFirstAccountLabels = useSelector(selectAccountLabels);
+
+    const localFirstAccountLabels = useSelector(state =>
+        device?.state?.staticSessionId !== undefined
+            ? selectAccountLabels(state, device?.state?.staticSessionId)
+            : [],
+    );
+
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isSidebarCollapsed = useIsSidebarCollapsed();
     const { coinFilter, searchString } = useAccountSearch();
@@ -103,11 +116,13 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
                       ? accountLabels[key]
                       : getDefaultAccountLabel({ accountType, symbol, index });
 
+                  const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
+
                   const accountLabel =
                       findAccountLabel({
                           accountLabels: localFirstAccountLabels,
-                          accountKey: account.key,
-                          deviceStaticSessionId: account.deviceState,
+                          accountDescriptor,
+                          networkSymbol,
                       })?.label ?? accountLabelOld;
 
                   return accountSearchFn(account, searchString, coinFilter, accountLabel);
@@ -146,12 +161,18 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
             return;
         }
 
-        const accountProps = {
+        const deviceStaticSessionId = device.state?.staticSessionId;
+        if (deviceStaticSessionId === undefined) {
+            return;
+        }
+
+        const accountProps: AccountsProps = {
             accounts,
             onItemClick,
             coinjoinIsPreloading,
             discoveryInProgress: false,
             type,
+            deviceStaticSessionId,
         };
 
         return (

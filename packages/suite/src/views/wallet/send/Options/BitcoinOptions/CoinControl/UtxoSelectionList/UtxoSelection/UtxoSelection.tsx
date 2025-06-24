@@ -176,8 +176,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     } = useSendFormContext();
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
-    const localFirstAddressLabels = useSelector(selectAddressLabels);
-    const localFirstOutputLabels = useSelector(selectOutputLabels);
+    const localFirstAddressLabels = useSelector(state =>
+        selectAddressLabels(state, account.deviceState),
+    );
+    const localFirstOutputLabels = useSelector(state =>
+        selectOutputLabels(state, account.deviceState),
+    );
 
     const dispatch = useDispatch();
 

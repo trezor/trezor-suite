@@ -1,5 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectDevices } from '@suite-common/wallet-core';
+import { parseAccountKey } from '@suite-common/wallet-utils';
 
 import { LABELING_PREFIX } from './labelingActions';
 import { getLocalFirstStorageProvider } from '../storage/sharedObjects';
@@ -26,6 +27,8 @@ export const updateAccountLabelThunk = createThunk<void, UpdateAccountLabelThunk
 
         const storage = getLocalFirstStorageProvider(evoluKeys);
 
-        storage.accountLabels.update({ deviceStaticSessionId, accountKey, label });
+        const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
+
+        storage.accountLabels.update({ accountDescriptor, networkSymbol, label });
     },
 );

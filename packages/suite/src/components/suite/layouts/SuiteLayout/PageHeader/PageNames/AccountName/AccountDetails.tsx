@@ -4,6 +4,7 @@ import styled, { keyframes } from 'styled-components';
 
 import { selectAccountLabel } from '@suite-common/local-first-storage';
 import { Account } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, typography, zIndices } from '@trezor/theme';
@@ -95,11 +96,13 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const [hasMounted, setHasMounted] = useState(false);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
 
+    const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
+
     const localFirstAccountLabel = useSelector(state =>
         selectAccountLabel({
             state,
+            walletDescriptor,
             accountKey: selectedAccount.key,
-            deviceStaticSessionId: selectedAccount.deviceState,
         }),
     );
 

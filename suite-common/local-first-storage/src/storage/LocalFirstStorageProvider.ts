@@ -7,6 +7,10 @@ import { Schema } from '../schema';
 import { LocalFirstStorage } from '../storage';
 import { toNanoId } from '../toNanoId';
 
+// This is a way how to force change of the SQL files.
+// This shall NEVER change in production!!!
+const VERSION = 2;
+
 type CreateEvoluInstanceProps = {
     relayUrl: string;
     evoluKeys: EvoluKeys;
@@ -16,7 +20,7 @@ type CreateEvoluInstanceProps = {
 const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
     // Todo: replace this once https://github.com/evoluhq/evolu/issues/537 is implemented
 
-    const name = SimpleName.from(`trezor-suite-${toNanoId(evoluKeys.ownerId)}`);
+    const name = SimpleName.from(`trezor-suite-v${VERSION}-${toNanoId(evoluKeys.ownerId)}`);
     if (!name.ok) {
         console.error(name.error);
 
@@ -30,7 +34,7 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
         throw evoluMnemonic.error;
     }
 
-    console.log('____createEvoluInstance', evoluMnemonic.value);
+    console.log('____createEvoluInstance', evoluMnemonic.value, relayUrl);
 
     const evolu = createEvolu(evoluDeps)(Schema, {
         name: name.value,
@@ -55,7 +59,7 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
 type OwnerId = string;
 
-const DEFAULT_RELAY_URL = 'https://free.evoluhq.com';
+export const DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL = 'https://free.evoluhq.com';
 
 export class LocalFirstStorageProvider {
     private storages = new Map<OwnerId, LocalFirstStorage>();
@@ -70,7 +74,7 @@ export class LocalFirstStorageProvider {
 
         if (storage === undefined) {
             const evolu = createEvoluInstance({
-                relayUrl: this.relayUrl ?? DEFAULT_RELAY_URL,
+                relayUrl: this.relayUrl ?? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
                 evoluKeys,
                 evoluDeps: this.evoluDeps,
             });

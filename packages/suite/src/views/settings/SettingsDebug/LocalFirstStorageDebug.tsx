@@ -1,8 +1,12 @@
 import { useState } from 'react';
 
-import { disposeAllLocalFirstStorageThunk } from '@suite-common/local-first-storage';
-import { Button, Checkbox, Input } from '@trezor/components';
+import {
+    DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
+    disposeAllLocalFirstStorageThunk,
+} from '@suite-common/local-first-storage';
+import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { initLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
+import { spacings } from '@trezor/theme';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 
@@ -70,20 +74,25 @@ export const LocalFirstStorageDebug = () => {
                     <SectionItem>
                         <TextColumn title="Relay URL" />
                         <ActionColumn>
-                            <Input
-                                isDisabled={isLoading}
-                                value={relayUrl}
-                                onChange={e => setRelayUrl(e.target.value)}
-                                innerAddon={
-                                    <Button
-                                        isLoading={isLoading}
-                                        onClick={onRelayUrlSave}
-                                        size="small"
-                                    >
-                                        Save
-                                    </Button>
-                                }
-                            />
+                            <Column gap={spacings.xxs}>
+                                <Input
+                                    isDisabled={isLoading}
+                                    value={relayUrl}
+                                    onChange={e => setRelayUrl(e.target.value)}
+                                    innerAddon={
+                                        <Button
+                                            isLoading={isLoading}
+                                            onClick={onRelayUrlSave}
+                                            size="small"
+                                        >
+                                            Save
+                                        </Button>
+                                    }
+                                />
+                                <Text typographyStyle="hint" variant="tertiary">
+                                    Default is: <Code>{DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL}</Code>
+                                </Text>
+                            </Column>
                         </ActionColumn>
                     </SectionItem>
                     <SectionItem>

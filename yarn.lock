@@ -3549,7 +3549,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/common@npm:^6.0.1-preview.0":
+"@evolu/common@npm:^6.0.1-preview.8":
   version: 6.0.1-preview.8
   resolution: "@evolu/common@npm:6.0.1-preview.8"
   dependencies:
@@ -3564,7 +3564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/web@npm:^1.0.1-preview.0":
+"@evolu/web@npm:^1.0.1-preview.2":
   version: 1.0.1-preview.2
   resolution: "@evolu/web@npm:1.0.1-preview.2"
   dependencies:
@@ -9598,11 +9598,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/local-first-storage@workspace:suite-common/local-first-storage"
   dependencies:
-    "@evolu/common": "npm:^6.0.1-preview.0"
+    "@evolu/common": "npm:^6.0.1-preview.8"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@scure/bip39": "npm:^1.5.1"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12679,7 +12680,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-local-first-storage@workspace:packages/suite-local-first-storage"
   dependencies:
-    "@evolu/web": "npm:^1.0.1-preview.0"
+    "@evolu/web": "npm:^1.0.1-preview.2"
     "@suite-common/local-first-storage": "workspace:*"
   languageName: unknown
   linkType: soft

@@ -18,6 +18,7 @@ import {
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
+import { forgetAccountsThunk } from '../accounts/accountsThunks';
 import { deviceActions } from '../device/deviceActions';
 import {
     selectDeviceByStaticSessionId,
@@ -768,7 +769,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const accountsToRemove = selectAccountsToBeForgotten(getState());
         if (accountsToRemove.length > 0) {
-            dispatch(accountsActions.removeAccount(accountsToRemove));
+            dispatch(forgetAccountsThunk({ accountsToRemove }));
         }
 
         const isRediscoverNeeded = selectIsRediscoverNeeded(

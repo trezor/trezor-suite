@@ -53,8 +53,10 @@ export class OutputLabels {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            console.log('_____OutputLabels::labels', labels);
+
             for (const label of labels) {
-                if (!label.txId || !label.outputIndex) {
+                if (label.txId === null || label.outputIndex === null) {
                     continue;
                 }
 

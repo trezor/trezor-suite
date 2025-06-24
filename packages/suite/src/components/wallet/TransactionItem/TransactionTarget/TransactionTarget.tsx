@@ -66,7 +66,9 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
-    const localFirstOutputLabels = useSelector(selectOutputLabels);
+    const localFirstOutputLabels = useSelector(state =>
+        selectOutputLabels(state, transaction.deviceState),
+    );
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
 
     const amount = useMemo(() => {
@@ -130,7 +132,9 @@ export const TransactionTarget = ({
                 return `internal-${payload.to}`;
         }
     }, [type, payload]);
+
     const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[metadataId];
+
     const defaultMetadataValue = `${transaction.txid}-${metadataId}`;
     const isBeingEdited = defaultMetadataValue === labelingValueBeingEdited;
 
@@ -156,8 +160,6 @@ export const TransactionTarget = ({
     };
 
     const label = useMemo(() => {
-        console.log('____type', type);
-
         switch (type) {
             case 'target':
                 return (
@@ -166,6 +168,7 @@ export const TransactionTarget = ({
                         accountMetadata={accountMetadata}
                         target={payload}
                         type={transaction.type}
+                        deviceSessionStaticId={transaction.deviceState}
                     />
                 );
             case 'token':

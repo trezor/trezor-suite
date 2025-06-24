@@ -1,11 +1,12 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectDevices } from '@suite-common/wallet-core';
+import type { StaticSessionId } from '@trezor/connect';
 
 import { LABELING_PREFIX } from './labelingActions';
 import { getLocalFirstStorageProvider } from '../storage/sharedObjects';
 
 type UpdateOutputLabelThunkParams = {
-    deviceStaticSessionId: string;
+    deviceStaticSessionId: StaticSessionId;
     txId: string;
     outputIndex: number;
     label: string | null;

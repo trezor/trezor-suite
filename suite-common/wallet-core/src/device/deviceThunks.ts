@@ -195,8 +195,6 @@ export const handleDeviceDisconnect = createThunk(
         if (!selectedDevice) return;
         if (selectedDevice.path !== device.path) return;
 
-        dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device: selectedDevice }));
-
         /**
          * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
          * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
