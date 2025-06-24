@@ -34,7 +34,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "tsx": "^4.19.3"
+        "tsx": "^4.20.3"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
