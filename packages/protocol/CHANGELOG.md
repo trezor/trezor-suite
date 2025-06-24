@@ -1,3 +1,12 @@
+# 1.2.7
+
+- npm-prerelease: @trezor/protocol 1.2.7-beta.1 (381415fe44)
+- feat(protocol): add `THP` protobuf definitions and types (b5cb747767)
+- chore(protocol): rename getChunkHeader to getHeaders and return [header, chunkHeader] (b893516894)
+- feat(protocol): add `THP` cryptography (b3056f54d2)
+- feat(protocol): add THP encoding/decoding logic (b33b491b40)
+- feat(protocol): add credentials to ThpState (c883e604c1)
+
 # 1.2.6
 
 - npm-prerelease: @trezor/protocol 1.2.6-beta.1 (14db93b8d9)
