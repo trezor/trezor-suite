@@ -1,3 +1,9 @@
+# 1.4.1
+
+- npm-prerelease: @trezor/blockchain-link-utils 1.4.1-beta.1 (ffe79aba3c)
+- chore: update trends deps (a9f09975f2)
+- chore(blockchain-link-utils): add block height to solana txs (196d993caf)
+
 # 1.4.0
 
 - npm-prerelease: @trezor/blockchain-link-utils 1.4.0-beta.1 (a8c0bd5e29)
