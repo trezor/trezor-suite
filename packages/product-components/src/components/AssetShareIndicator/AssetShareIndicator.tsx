@@ -1,6 +1,6 @@
 import { SVGProps } from 'react';
 
-import { AnimationProps, SVGMotionProps, motion } from 'framer-motion';
+import { SVGMotionProps, type Transition, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -59,7 +59,7 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
     };
 
     const delayModifier = 0.13;
-    const transition: AnimationProps['transition'] = {
+    const transition: Transition = {
         duration: 0.8,
         ease: motionEasing.transition,
         delay: index * delayModifier,
