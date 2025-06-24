@@ -1,4 +1,6 @@
 import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import { TRANSPORT_ERROR } from '@trezor/transport';
+import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import { DataManager } from '../../data/DataManager';
 import { WorkflowContext } from '../../types/workflow';
@@ -14,6 +16,10 @@ type Context = {
     signal: AbortSignal;
     logger?: Log;
 };
+
+const isLegacyBridge = (transport: Context['device']['transport']) =>
+    transport.name === 'BridgeTransport' &&
+    !versionUtils.isNewerOrEqual(transport.version, '3.0.0');
 
 // note 1: clear communication with the device using Cancel message. This causes any remaining messages in its transport stack to get flushed.
 //         this case may happen when communication with the device was abruptly interrupted by unloading connect unexpectedly (example window reload)
@@ -55,6 +61,16 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
             signal,
             timeout: cancelTimeout,
         });
+
+        // Older T1 don't respond to Cancel message which seems to be recoverable only by reacquiring
+        if (!result.success && result.error.message === TRANSPORT_ERROR.ABORTED_BY_TIMEOUT) {
+            // On trezord, session is lost when request is aborted from outside, so we should wait
+            // for the session change before we reacquire
+            if (isLegacyBridge(device.transport)) {
+                await resolveAfter(501);
+            }
+            await device.acquire();
+        }
 
         // Malformed protocol is thrown if received chunk:
         // 1. is empty message (empty buffer)
