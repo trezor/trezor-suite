@@ -91,6 +91,7 @@ export class DashboardPage {
     @step()
     async ejectWallet(walletIndex: number = 0) {
         const ejectedWallet = await this.walletAtIndex(walletIndex).elementHandle();
+        await this.walletAtIndex(walletIndex).hover();
         await this.walletAtIndexEjectButton(walletIndex).click();
         await this.confirmDeviceEjectButton.click();
         await ejectedWallet?.waitForElementState('hidden');
@@ -157,28 +158,6 @@ export class DashboardPage {
             this.devicePrompt.confirmOnDevicePrompt,
             'expected Device Prompt to be hidden. pressYes may failed.',
         ).toBeHidden();
-    }
-
-    @step()
-    async setViewOnlyForWallet(walletIndex: number, desiredState: 'enabled' | 'disabled') {
-        const walletContainer = this.page.getByTestId(
-            `@switch-device/wallet-on-index/${walletIndex}`,
-        );
-        const viewOnlyStatus = await walletContainer
-            .getByTestId(`@viewOnlyStatus/${desiredState}`)
-            .isVisible();
-
-        // check if change is even necessary
-        if (viewOnlyStatus) {
-            return;
-        }
-
-        // if it is, open view-only settings container and change the state
-        await walletContainer.getByTestId('@collapsible-box/icon-collapsed').click();
-        await walletContainer.getByTestId('@collapsible-box/body').waitFor({ state: 'visible' });
-        await walletContainer.getByTestId(`@collapsible-box/body`).getByText(desiredState).click();
-        // close it to match the initial state
-        await walletContainer.getByTestId('@collapsible-box/icon-expanded').click();
     }
 
     @step()

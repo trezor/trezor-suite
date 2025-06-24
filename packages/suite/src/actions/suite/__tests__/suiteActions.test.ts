@@ -191,7 +191,7 @@ describe('Suite Actions', () => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
-            store.dispatch(forgetDisconnectedDevices(f.device));
+            store.dispatch(forgetDisconnectedDevices({ device: f.device }));
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {

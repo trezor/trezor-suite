@@ -26,7 +26,7 @@ test.describe(
             devicePrompt,
             trezorUserEnvLink,
         }) => {
-            await onboardingPage.completeOnboarding({ enableViewOnly: false });
+            await onboardingPage.completeOnboarding();
 
             await settingsPage.navigateTo('application');
             await expect(
@@ -46,9 +46,6 @@ test.describe(
             await trezorUserEnvLink.pressNo();
 
             await page.discoveryShouldFinish();
-            await dashboardPage.deviceSwitchingOpenButton.click();
-            await page.getByTestId('@viewOnlyStatus/disabled').click();
-            await page.getByTestId('@viewOnly/radios/enabled').click();
 
             await page.reload();
 

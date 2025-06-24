@@ -23,6 +23,7 @@ export const SettingsAnchor = {
     EarlyAccess: '@general-settings/early-access',
     AutoStart: '@general-settings/auto-start',
     AutomaticUpdate: '@general-settings/automatic-update',
+    AutoEject: '@general-settings/auto-eject',
 
     BackupFailed: '@device-settings/backup-failed',
     BackupRecoverySeed: '@device-settings/backup-recovery-seed',

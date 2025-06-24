@@ -43,7 +43,7 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         dashboardPage,
         onboardingPage,
     }) => {
-        await onboardingPage.completeOnboarding({ enableViewOnly: true });
+        await onboardingPage.completeOnboarding();
         await page.reload();
         await expect(dashboardPage.deviceSwitchingOpenButton).toContainText('Connected');
     });

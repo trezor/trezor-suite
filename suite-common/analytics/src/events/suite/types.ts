@@ -580,6 +580,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsGeneralAutoEject;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
           type: EventType.SettingsGeneralLabelingProvider;
           payload: {
               provider:

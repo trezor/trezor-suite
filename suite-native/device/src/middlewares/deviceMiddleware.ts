@@ -47,7 +47,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
         const isDeviceForceRemembered = selectIsDeviceForceRemembered(getState());
 
         if (isDeviceEventAction(action, DEVICE.DISCONNECT) && !isDeviceForceRemembered) {
-            dispatch(forgetDisconnectedDevices(action.payload));
+            dispatch(forgetDisconnectedDevices({ device: action.payload }));
         }
         /* The `next` function has to be executed here, because the further dispatched actions of this middleware
          expect that the state was already changed by the action stored in the `action` variable. */

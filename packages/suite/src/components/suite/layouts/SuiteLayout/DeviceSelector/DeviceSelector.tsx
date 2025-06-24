@@ -7,7 +7,6 @@ import { borders, spacingsPx } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
@@ -77,32 +76,30 @@ export const DeviceSelector = () => {
 
     return (
         <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
-            <ViewOnlyTooltip>
-                <Tooltip
-                    isActive={isDiscoveryRunning}
-                    isFullWidth
-                    placement="bottom"
-                    cursor={isDiscoveryRunning ? 'not-allowed' : undefined}
-                    content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
+            <Tooltip
+                isActive={isDiscoveryRunning}
+                isFullWidth
+                placement="bottom"
+                cursor={isDiscoveryRunning ? 'not-allowed' : undefined}
+                content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
+            >
+                <InnerContainer
+                    onClick={handleSwitchDeviceClick}
+                    $isDisabled={isDiscoveryRunning}
+                    tabIndex={0}
+                    data-testid="@menu/switch-device"
                 >
-                    <InnerContainer
-                        onClick={handleSwitchDeviceClick}
-                        $isDisabled={isDiscoveryRunning}
-                        tabIndex={0}
-                        data-testid="@menu/switch-device"
-                    >
-                        <SidebarDeviceStatus />
+                    <SidebarDeviceStatus />
 
-                        <ExpandedSidebarOnly>
-                            {selectedDevice && selectedDevice.state && (
-                                <CaretContainer>
-                                    <Icon size={20} name="caretCircleDown" />
-                                </CaretContainer>
-                            )}
-                        </ExpandedSidebarOnly>
-                    </InnerContainer>
-                </Tooltip>
-            </ViewOnlyTooltip>
+                    <ExpandedSidebarOnly>
+                        {selectedDevice && selectedDevice.state && (
+                            <CaretContainer>
+                                <Icon size={20} name="caretCircleDown" />
+                            </CaretContainer>
+                        )}
+                    </ExpandedSidebarOnly>
+                </InnerContainer>
+            </Tooltip>
         </Wrapper>
     );
 };

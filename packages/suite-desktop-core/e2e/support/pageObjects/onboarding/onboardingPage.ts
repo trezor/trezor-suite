@@ -20,9 +20,6 @@ export class OnboardingPage {
 
     readonly welcomeBody: Locator;
     readonly onboardingContinueButton: Locator;
-    readonly onboardingViewOnlySkipButton: Locator;
-    readonly onboardingViewOnlyEnableButton: Locator;
-    readonly viewOnlyTooltipGotItButton: Locator;
     readonly connectDevicePrompt: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
@@ -54,9 +51,6 @@ export class OnboardingPage {
 
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
         this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
-        this.onboardingViewOnlySkipButton = this.page.getByTestId('@onboarding/viewOnly/skip');
-        this.onboardingViewOnlyEnableButton = this.page.getByTestId('@onboarding/viewOnly/enable');
-        this.viewOnlyTooltipGotItButton = this.page.getByTestId('@viewOnlyTooltip/gotIt');
         this.connectDevicePrompt = this.page.getByTestId('@connect-device-prompt');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
@@ -99,7 +93,7 @@ export class OnboardingPage {
     }
 
     @step()
-    async completeOnboarding(options?: { enableViewOnly?: boolean }) {
+    async completeOnboarding() {
         await this.disableNecessaryFirmwareChecks();
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
@@ -107,12 +101,6 @@ export class OnboardingPage {
         if (this.isModelWithSecureElement()) {
             await this.passThroughAuthenticityCheck();
         }
-        if (options?.enableViewOnly) {
-            await this.onboardingViewOnlyEnableButton.click();
-        } else {
-            await this.onboardingViewOnlySkipButton.click();
-        }
-        await this.viewOnlyTooltipGotItButton.click();
         await this.page.discoveryShouldFinish();
     }
 

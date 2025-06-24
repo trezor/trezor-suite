@@ -39,9 +39,6 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
             await onboardingPage.passThroughAuthenticityCheck();
         }
 
-        await onboardingPage.onboardingViewOnlyEnableButton.click();
-        await onboardingPage.viewOnlyTooltipGotItButton.click();
-
         // reload app (important, app needs time to save initialRun flag into storage) to change session id
         await page.getByTestId('@suite/loading').waitFor({ state: 'hidden' });
         await page.discoveryShouldFinish();
