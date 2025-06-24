@@ -4,10 +4,6 @@
 
 The `@trezor/connect-mobile` package provides an implementation of `@trezor/connect` which uses deep links to communicate with the Trezor Suite Lite app.
 
-## 🚧 BETA version, work in progress 🚧
-
-Currently the library is still under development, only supports read-only methods and does not communicate with the production Suite Lite app.
-
 To run a dev version of the Suite mobile app follow the instructions in [@suite-native/app](https://github.com/trezor/trezor-suite/blob/develop/suite-native/app/README.md)
 
 ## Using the Library
