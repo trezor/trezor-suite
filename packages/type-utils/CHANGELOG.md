@@ -1,3 +1,8 @@
+# 1.1.7
+
+- npm-prerelease: @trezor/type-utils 1.1.7-beta.1 (df073166ad)
+- chore: better error message for exhaustive (a046a64b91)
+
 # 1.1.6
 
 - fix(type-utils): add tsx as dev dependency (76bfc4ae30)
