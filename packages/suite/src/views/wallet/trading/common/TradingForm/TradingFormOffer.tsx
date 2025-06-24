@@ -12,6 +12,7 @@ import {
     tradingExchangeActions,
     useTradingInfo,
 } from '@suite-common/trading';
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
@@ -19,7 +20,7 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingFormContextValues } from 'src/types/trading/tradingForm';
@@ -60,6 +61,7 @@ export const TradingFormOffer = () => {
     const dispatch = useDispatch();
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
     const [isDexSwapLoading, setIsDexSwapLoading] = useState<boolean>(false);
+
     const context = useTradingFormContext();
     const {
         account,
@@ -74,6 +76,7 @@ export const TradingFormOffer = () => {
     const bestScoredQuote = quotes?.[0];
     const quote = getSelectedQuote(context, bestScoredQuote);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
 
     const selectedCrypto = getSelectedCrypto(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
@@ -262,7 +265,7 @@ export const TradingFormOffer = () => {
                 }}
                 isFullWidth
                 isDisabled={isButtonDisabled}
-                isLoading={isDexSwapLoading}
+                isLoading={isDexSwapLoading || areFeesLoading}
                 data-testid={`@trading/form/${type}-button`}
             >
                 <Translation id={tradingGetSectionActionLabel(type)} />

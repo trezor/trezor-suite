@@ -1,4 +1,4 @@
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -26,6 +26,9 @@ export const StakeButton = () => {
         selectedAccount.network.symbol,
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const areFeesLoading = useSelector(state =>
+        selectAreFeesLoading(state, selectedAccount.network.symbol),
+    );
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -47,11 +50,13 @@ export const StakeButton = () => {
         });
     };
 
+    const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;
+
     return (
         <Tooltip content={stakingMessageContent}>
             <Modal.Button
                 isDisabled={isDisabled || isStakingDisabled}
-                isLoading={isComposing || isSubmitting || isDiscoveryRunning}
+                isLoading={isLoading}
                 onClick={onStakeClick}
                 icon={isStakingDisabled ? 'info' : undefined}
             >
