@@ -14,7 +14,7 @@
         "minimatch": "^10.0.1",
         "prettier": "3.5.3",
         "sort-package-json": "^3.2.1",
-        "tsx": "^4.19.3",
+        "tsx": "^4.20.3",
         "yargs": "17.7.2"
     },
     "devDependencies": {
