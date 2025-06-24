@@ -14,6 +14,7 @@ import {
     DiscoverAccountsProgress,
     DiscoverAccountsProgressOk,
 } from '@trezor/connect/src/types/api/discoverAccounts';
+import { isNative } from '@trezor/env-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
@@ -142,7 +143,8 @@ const applyDeviceStatesThunk = createThunk(
                             metadata: {},
                             instance: getNewInstanceNumber(selectDevices(getState()), device),
                             useEmptyPassphrase: !isAddingHiddenWallet,
-                            remember: false,
+                            // TODO: On mobile, we don't want to remember the device by default, because it's not supported yet
+                            remember: isNative() ? false : true,
                             state: newDeviceState,
                         },
                     }),

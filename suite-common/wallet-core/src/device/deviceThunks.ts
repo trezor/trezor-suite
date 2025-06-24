@@ -172,14 +172,18 @@ export const handleDeviceDisconnect = createThunk(
  */
 export const forgetDisconnectedDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
-    (device: Device | TrezorDevice, { dispatch, getState, extra }) => {
+    (
+        params: { device: Device | TrezorDevice; forceForget?: boolean },
+        { dispatch, getState, extra },
+    ) => {
+        const { device, forceForget = false } = params;
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
 
         const settings = extra.selectors.selectSuiteSettings(getState());
 
         deviceInstances.forEach(d => {
-            if (d.features && !d.remember) {
+            if (d.features && (forceForget || !d.remember)) {
                 dispatch(deviceActions.forgetDevice({ device: d, settings }));
             }
         });

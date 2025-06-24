@@ -1,10 +1,7 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
-import {
-    selectIsFirmwareAuthenticityCheckDismissed,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectIsFirmwareAuthenticityCheckDismissed } from '@suite-common/wallet-core';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
@@ -17,13 +14,11 @@ import {
     selectIsLoggedOut,
     selectIsTransportInitialized,
     selectPrerequisite,
-    selectSuiteFlags,
 } from 'src/reducers/suite/suiteReducer';
 import type { AppState } from 'src/types/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
-import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
@@ -62,8 +57,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
-    const selectedDevice = useSelector(selectSelectedDevice);
-    const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
     const isFirmwareCheckEnabledAndFailed = useSelector(
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     );
@@ -121,16 +114,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
             isEntropyCheckEnabledAndFailed)
     ) {
         return <DeviceCompromised />;
-    }
-
-    if (
-        router.route?.app !== 'settings' &&
-        !initialRun &&
-        !viewOnlyPromoClosed &&
-        selectedDevice?.connected === true &&
-        selectedDevice?.remember !== true
-    ) {
-        return <ViewOnlyPromo />;
     }
 
     // TODO: murder the fullscreen app logic, there must be a better way

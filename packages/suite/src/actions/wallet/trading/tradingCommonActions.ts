@@ -1,4 +1,3 @@
-import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
 import { Output } from '@suite-common/wallet-types/src';
 import {
     amountToSmallestUnit,
@@ -8,7 +7,6 @@ import {
     parseFormDraftKey,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
-import { isDesktop } from '@trezor/env-utils';
 
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -28,11 +26,7 @@ export const submitRequestForm =
             [key: string]: string;
         };
     }) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const device = selectSelectedDevice(getState());
-        if (device && !device.remember && !isDesktop()) {
-            dispatch(toggleRememberDevice({ device, forceRemember: true }));
-        }
+    () => {
         if (form) {
             envSubmitRequestForm(
                 form.formMethod,

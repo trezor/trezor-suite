@@ -108,6 +108,7 @@ const getInitialState = ({
             defaultWalletLoading: 'passphrase',
             sidebarWidth: 0,
             isCoinsFilterVisible: false,
+            autoEject: false,
         },
         online: true,
         locks: {
@@ -129,8 +130,6 @@ const getInitialState = ({
             stakeSolBannerClosed: false,
             showDashboardStakingPromoBanner: false,
             isDashboardPassphraseBannerVisible: false,
-            viewOnlyPromoClosed: false,
-            viewOnlyTooltipClosed: false,
             suspiciousTransactionsTooltipClosed: false,
             showUnhideTokenModal: false,
             showCopyAddressModal: false,

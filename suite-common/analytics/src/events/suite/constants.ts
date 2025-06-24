@@ -105,6 +105,7 @@ export enum EventType {
     SettingsGeneralEarlyAccess = 'settings/general/early-access',
     SettingsGeneralLabeling = 'settings/general/labeling',
     SettingsGeneralLabelingProvider = 'settings/general/labeling-provider',
+    SettingsGeneralAutoEject = 'settings/general/auto-eject',
     SettingsCoinsBackend = 'settings/coins/backend',
     SettingsCoins = 'settings/coins',
     SettingsTor = 'settings/tor',

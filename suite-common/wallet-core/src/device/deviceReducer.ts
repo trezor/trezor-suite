@@ -183,7 +183,7 @@ const connectDevice = (
         ...deviceCommonFields,
         state: device._state,
         useEmptyPassphrase,
-        remember: false,
+        remember: isNative() ? false : true,
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
@@ -443,7 +443,8 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
-        remember: isPortfolioTrackerDevice,
+        // TODO: On mobile, we don't want to remember the device by default, because it's not supported yet
+        remember: isNative() ? isPortfolioTrackerDevice : true,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
         state: isPortfolioTrackerDevice ? device.state : undefined,

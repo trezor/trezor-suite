@@ -2756,6 +2756,19 @@ export default defineMessages({
         defaultMessage: 'Labeling',
         id: 'TR_LABELING',
     },
+    TR_PRIVACY: {
+        defaultMessage: 'Privacy',
+        id: 'TR_PRIVACY',
+    },
+    TR_AUTO_EJECT: {
+        defaultMessage: 'Auto eject wallets',
+        id: 'TR_AUTO_EJECT',
+    },
+    TR_AUTO_EJECT_DESCRIPTION: {
+        defaultMessage:
+            'Automatically eject all wallets when Trezor device is disconnected. Your visible balances will be removed from Suite until you reconnect your device.',
+        id: 'TR_AUTO_EJECT_DESCRIPTION',
+    },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
         id: 'TR_LANGUAGE',

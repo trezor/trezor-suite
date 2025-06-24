@@ -26,7 +26,6 @@ import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
 import { TrezorConnectLogs } from './TrezorConnectLogs';
 import { TriggerHighlight } from './TriggerHighlight';
-import { ViewOnlySettings } from './ViewOnlySettings';
 import { WipeData } from './WipeData';
 import { BioAuthSettings } from '../SettingsGeneral/BioAuthSettings';
 
@@ -77,9 +76,6 @@ export const SettingsDebug = () => {
             )}
             <SettingsSection title="Backends">
                 <Backends />
-            </SettingsSection>
-            <SettingsSection title="View only">
-                <ViewOnlySettings />
             </SettingsSection>
             <SettingsSection title="Biometric authentication">
                 <BioAuthSettings />

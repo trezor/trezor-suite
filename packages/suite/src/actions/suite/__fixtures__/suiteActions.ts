@@ -181,8 +181,6 @@ const initialRun = [
                 stakeSolBannerClosed: false,
                 suspiciousTransactionsTooltipClosed: false,
                 showDashboardStakingPromoBanner: true,
-                viewOnlyPromoClosed: true,
-                viewOnlyTooltipClosed: true,
                 isDashboardPassphraseBannerVisible: true,
                 showCopyAddressModal: true,
                 showUnhideTokenModal: true,

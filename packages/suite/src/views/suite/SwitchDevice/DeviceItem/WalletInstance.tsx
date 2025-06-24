@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Divider, Icon, Row, Text, Tooltip } from '@trezor/components';
-import { negativeSpacings, spacings } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
@@ -19,11 +19,8 @@ import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 
-import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConfirmation';
+import { EjectConfirmation } from './EjectConfirmation';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
-import { ContentType } from '../types';
-import { EjectButton } from './EjectButton';
-import { ViewOnly } from './ViewOnly';
 
 interface WalletInstanceProps {
     instance: AcquiredDevice;
@@ -41,7 +38,8 @@ export const WalletInstance = ({
     onCancel,
     ...rest
 }: WalletInstanceProps) => {
-    const [contentType, setContentType] = useState<null | ContentType>('default');
+    const [isEjecting, setIsEjecting] = useState(false);
+    const [isEjectVisible, setIsEjectVisible] = useState(false);
     const accounts = useSelector(state => state.wallet.accounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -67,7 +65,7 @@ export const WalletInstance = ({
         e.stopPropagation();
 
     const onEjectCancelClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        setContentType('default');
+        setIsEjecting(false);
         e.stopPropagation();
     };
 
@@ -97,11 +95,6 @@ export const WalletInstance = ({
         }
     };
 
-    const isViewOnlyRendered = contentType === 'default' && enabled;
-    const isEjectConfirmationRendered = contentType === 'eject-confirmation';
-    const isDisablingViewOnlyEjectsWalletRendered =
-        contentType === 'disabling-view-only-ejects-wallet';
-
     return (
         <Box position={{ type: 'relative' }}>
             <Card
@@ -111,6 +104,8 @@ export const WalletInstance = ({
                 tabIndex={0}
                 data-testid={dataTestBase}
                 variant={isSelected ? 'primary' : undefined}
+                onMouseEnter={() => setIsEjectVisible(true)}
+                onMouseLeave={() => setIsEjectVisible(false)}
                 {...rest}
             >
                 <Column>
@@ -152,18 +147,31 @@ export const WalletInstance = ({
                                     <WalletLabeling device={instance} />
                                 )}
                             </Row>
-                            <Box
-                                position={{
-                                    type: 'absolute',
-                                    right: spacings.sm,
-                                    top: spacings.sm,
-                                }}
-                            >
-                                <EjectButton
-                                    setContentType={setContentType}
-                                    data-testid={dataTestBase}
-                                />
-                            </Box>
+                            {(isEjectVisible || isEjecting) && (
+                                <Box
+                                    position={{
+                                        type: 'absolute',
+                                        right: spacings.sm,
+                                        top: spacings.sm,
+                                    }}
+                                >
+                                    <Tooltip
+                                        cursor="pointer"
+                                        content={<Translation id="TR_EJECT_HEADING" />}
+                                    >
+                                        <Icon
+                                            data-testid={`${dataTestBase}/eject-button`}
+                                            name="eject"
+                                            size={22}
+                                            variant="tertiary"
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                setIsEjecting(true);
+                                            }}
+                                        />
+                                    </Tooltip>
+                                </Box>
+                            )}
                         </Row>
                     </Text>
 
@@ -175,31 +183,15 @@ export const WalletInstance = ({
                     />
                 </Column>
 
-                {(isViewOnlyRendered ||
-                    isEjectConfirmationRendered ||
-                    isDisablingViewOnlyEjectsWalletRendered) && (
-                    <Divider
-                        margin={{ vertical: spacings.sm, horizontal: negativeSpacings.sm }}
-                        width="auto"
-                    />
-                )}
-
-                {isViewOnlyRendered && (
-                    <ViewOnly setContentType={setContentType} instance={instance} />
-                )}
-                {isEjectConfirmationRendered && (
-                    <EjectConfirmation
-                        instance={instance}
-                        onClick={stopPropagation}
-                        onCancel={onEjectCancelClick}
-                    />
-                )}
-                {isDisablingViewOnlyEjectsWalletRendered && (
-                    <EjectConfirmationDisableViewOnly
-                        instance={instance}
-                        onClick={stopPropagation}
-                        onCancel={onEjectCancelClick}
-                    />
+                {isEjecting && (
+                    <>
+                        <Divider />
+                        <EjectConfirmation
+                            instance={instance}
+                            onClick={stopPropagation}
+                            onCancel={onEjectCancelClick}
+                        />
+                    </>
                 )}
             </Card>
         </Box>

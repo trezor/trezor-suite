@@ -22,82 +22,55 @@ const stealBridgeSession = async () => {
     });
 };
 
-const testCases = [
-    {
-        testName: 'Session overtaken by another - View-Only Disabled',
-        enableViewOnly: false,
-    },
-    {
-        testName: 'Session overtaken by another - View-Only Enabled',
-        enableViewOnly: true,
-    },
-];
-
 test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
     test.use({ emulatorSetupConf: { passphrase_protection: true } });
 
-    for (const { testName, enableViewOnly } of testCases) {
-        test(
-            testName,
-            {
-                annotation: createTestAnnotation({
-                    testCase: `Verifies that a user can successfully take over a session with viewOnly ${enableViewOnly}.`,
-                    category: TestCategory.Wallets,
-                    priority: TestPriority.Medium,
-                }),
-            },
-            async ({ page, onboardingPage, dashboardPage, devicePrompt }) => {
-                await onboardingPage.completeOnboarding({ enableViewOnly });
-                await test.step('Bridge session taken by another suite session', async () => {
-                    await stealBridgeSession();
-                    await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
-                    await dashboardPage.deviceSwitchingOpenButton.click();
-                    // TODO: #16601 Uncomment once fixed
-                    // await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Refresh');
-                    await expect(dashboardPage.walletAtIndex(0)).toBeHidden();
-                });
+    test(
+        'Session overtaken by another',
+        {
+            annotation: createTestAnnotation({
+                testCase: `Verifies that a user can successfully take over a session.`,
+                category: TestCategory.Wallets,
+                priority: TestPriority.Medium,
+            }),
+        },
+        async ({ page, onboardingPage, dashboardPage }) => {
+            await onboardingPage.completeOnboarding();
+            await test.step('Bridge session taken by another suite session', async () => {
+                await stealBridgeSession();
+                await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                // TODO: #16601 Uncomment once fixed
+                // await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Refresh');
+                await expect(dashboardPage.walletAtIndex(0)).toBeHidden();
+            });
 
-                await test.step('Take Bridge session back', async () => {
-                    await dashboardPage.solveIssuesButton.click();
-                    await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Connected');
-                    await expect(dashboardPage.walletAtIndex(0)).toBeVisible();
-                    await dashboardPage.deviceSwitchingCloseButton.click();
-                    await expect(dashboardPage.deviceStatus).toHaveText('Connected');
-                });
+            await test.step('Take Bridge session back', async () => {
+                await dashboardPage.solveIssuesButton.click();
+                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Connected');
+                await expect(dashboardPage.walletAtIndex(0)).toBeVisible();
+                await dashboardPage.deviceSwitchingCloseButton.click();
+                await expect(dashboardPage.deviceStatus).toHaveText('Connected');
+            });
 
-                await test.step('Reload inactive suite session', async () => {
-                    await stealBridgeSession();
-                    await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
-                    await page.reload();
-                });
+            await test.step('Reload inactive suite session', async () => {
+                await stealBridgeSession();
+                await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
+                await page.reload();
+            });
 
-                if (!enableViewOnly) {
-                    await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
-                        // eslint-disable-next-line playwright/no-conditional-expect
-                        await expect(devicePrompt.connectDevicePrompt).toHaveText(
-                            'Failed to communicate with your Trezor',
-                        );
-                    });
+            await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
+                await expect(dashboardPage.deviceStatus).toHaveText('Disconnected');
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Disconnected');
+            });
 
-                    // This is where the flow ends for view-only disabled
-                    return;
-                }
-
-                await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
-                    await expect(dashboardPage.deviceStatus).toHaveText('Disconnected');
-                    await dashboardPage.deviceSwitchingOpenButton.click();
-                    await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText(
-                        'Disconnected',
-                    );
-                });
-
-                await test.step('Take Bridge session back', async () => {
-                    await dashboardPage.solveIssuesButton.click();
-                    await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Connected');
-                });
-            },
-        );
-    }
+            await test.step('Take Bridge session back', async () => {
+                await dashboardPage.solveIssuesButton.click();
+                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Connected');
+            });
+        },
+    );
 
     test(
         'Overtake session by opening suite new tab',
