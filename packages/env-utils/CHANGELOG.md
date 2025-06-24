@@ -1,3 +1,9 @@
+# 1.4.1
+
+- npm-prerelease: @trezor/env-utils 1.4.1-beta.1 (c3ecd94812)
+- chore(env-utils): cleanup unused or duplicated env utils (756fb28cd5)
+- feat(suite-common): add geolocation condition to the message system (e8c5a56570)
+
 # 1.4.0
 
 - npm-prerelease: @trezor/env-utils 1.4.0-beta.1 (5d59753ac0)
