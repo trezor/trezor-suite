@@ -1,3 +1,9 @@
+# 2.5.1
+
+- npm-prerelease: @trezor/blockchain-link 2.5.1-beta.1 (b569ce862f)
+- chore: update trends deps (a9f09975f2)
+- chore: add/remove used/unused packages (60fb96bd78)
+
 # 2.5.0
 
 - npm-prerelease: @trezor/blockchain-link 2.5.0-beta.1 (2ef0ddfd38)
