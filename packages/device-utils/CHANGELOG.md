@@ -1,3 +1,9 @@
+# 1.1.1
+
+- npm-prerelease: @trezor/device-utils 1.1.1-beta.2 (d9e1e9816d)
+- chore: prune dead code from suite-common and utils (40754b1f15)
+- npm-prerelease: @trezor/device-utils 1.1.1-beta.1 (9f0e37f780)
+
 # 1.1.0
 
 - npm-prerelease: @trezor/device-utils 1.1.0-beta.1 (ae6a53931b)
