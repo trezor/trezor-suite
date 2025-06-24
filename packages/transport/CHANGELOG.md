@@ -1,3 +1,15 @@
+# 1.5.1
+
+- npm-prerelease: @trezor/transport 1.5.1-beta.1 (98a275e65c)
+- chore: update jest to v30 (6d27a2ca35)
+- chore: add missing workspace libs (bc6a681c27)
+- chore(transport): UdpApi compare ping/pong as bytes (fb22a432f5)
+- fix(transport): make sure that chunk size is even with chunkSize (9ef7ccf271)
+- Revert fix(connect): webusb sessions sync in all deployments (cdd73c596f)
+- feat(transport): add `ThpState` and `ThpMessageResponse` to api (3efa912cb4)
+- fix(transport): remove UsbApi.read bytes length validation (fd083f2155)
+- chore(protocol): rename getChunkHeader to getHeaders and return [header, chunkHeader] (b893516894)
+
 # 1.5.0
 
 - npm-prerelease: @trezor/transport 1.5.0-beta.1 (203205104e)
