@@ -1,4 +1,4 @@
-import { jws as releasesJwsLocal } from '../../files/releases.v1';
+import { jws as releasesJwsLocal } from '../../static/releases.v1';
 import { getFirmwareReleaseConfig } from '../index';
 
 describe('getFirmwareReleaseConfig returns releases signed file correctly', () => {

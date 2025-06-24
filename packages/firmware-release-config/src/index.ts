@@ -5,11 +5,11 @@ import { FirmwareReleaseConfig } from '@trezor/device-utils';
 import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 
 import { JWS_SIGN_ALGORITHM, RELEASES_URL_REMOTE } from './constants';
-import { jws as releasesJwsLocal } from '../files/releases.v1';
+import { jws as releasesJwsLocal } from '../static/releases.v1';
 
 // Enable this for local development purposes:
 // set to true to always fetch local JWS
-// TODO: WIP: for now we are foring local since it was not deployed yet.
+// TODO: WIP: for now we are forcing local since it was not deployed yet.
 const FORCE_LOCAL_JWS = true;
 
 export const getFirmwareReleaseConfig = async () => {
