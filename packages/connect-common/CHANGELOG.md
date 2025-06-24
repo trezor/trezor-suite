@@ -1,3 +1,8 @@
+# 0.4.1
+
+- npm-prerelease: @trezor/connect-common 0.4.1-beta.1 (b39ee7ea52)
+- fix(connect-common): bump bl version to 2.1.10 on t3b1 (35082e5d86)
+
 # 0.4.0
 
 - npm-prerelease: @trezor/connect-common 0.4.0-beta.1 (cde234d2e1)
