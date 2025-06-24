@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { BuyCryptoPaymentMethod, BuyTrade, FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { invariant } from '@suite-common/suite-utils';
 import {
     TradingPaymentMethodProps,
     getBestRatedQuote,
@@ -12,11 +13,16 @@ import {
     selectTradingBuySupportedCryptoIds,
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { supportedFiatCurrenciesMap } from '../consts/general/supportedFiatCurrencies';
-import { TradingRootState, createMemoizedSelector } from '../tradingSlice';
+import {
+    TradingRootState,
+    createMemoizedSelector,
+    createMemoizedSelectorWithAccounts,
+} from '../tradingSlice';
 import { BuyFormValues } from '../types/buy';
-import { Country, FiatCurrencyItem } from '../types/general';
+import { Country, FiatCurrencyItem, ReceiveAccount } from '../types/general';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -26,8 +32,19 @@ const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 
 export const selectTradingBuy = (state: TradingRootState) => state.wallet.tradingNew.buy;
 
-export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
-    selectTradingBuy(state).selectedReceiveAccount;
+export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
+    [state => state, selectTradingBuy],
+    (state, { receiveAddress: address, tradingAccountKey }) => {
+        if (!tradingAccountKey) {
+            return undefined;
+        }
+
+        const account = selectAccountByKey(state, tradingAccountKey);
+        invariant(account, `Unknown tradingAccountKey: [${tradingAccountKey}]`);
+
+        return { account, address } as ReceiveAccount;
+    },
+);
 
 export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
     returnStableArrayIfEmpty(selectTradingBuy(state).buyInfo?.supportedFiatCurrencies);

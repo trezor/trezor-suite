@@ -10,6 +10,7 @@ import {
 import { getBtcAccount } from '../../../../__fixtures__/account';
 import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
+import { initialState } from '../../../../tradingSlice';
 import { ExchangeFormType } from '../../../../types/exchange';
 import { ReceiveAccount, TradeableAsset } from '../../../../types/general';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
@@ -28,10 +29,14 @@ jest.mock('@react-navigation/native', () => ({
 const getExchangeState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
     wallet: {
         tradingNew: {
+            ...initialState,
             exchange: {
-                selectedReceiveAccount,
+                ...initialState.exchange,
+                receiveAddress: selectedReceiveAccount?.address,
+                receiveAccountKey: selectedReceiveAccount?.account.key,
             },
         },
+        accounts: [getBtcAccount()],
     },
 });
 

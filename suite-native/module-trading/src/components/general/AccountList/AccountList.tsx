@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import { TradingType } from '@suite-common/trading';
+import { TradingType, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/wallet-core';
 import {
@@ -82,12 +82,16 @@ export const AccountList = ({
         }) ?? [];
 
     const onItemSelect = (receiveAccount: ReceiveAccount) => {
-        const payload = { selectedReceiveAccount: receiveAccount };
-        const action =
+        const accountAction =
             tradingType === 'buy'
-                ? tradingActions.setBuySelectedReceiveAccount(payload)
-                : tradingActions.setExchangeSelectedReceiveAccount(payload);
-        dispatch(action);
+                ? tradingBuyActions.setTradingAccountKey(receiveAccount.account.key)
+                : tradingExchangeActions.setReceiveAccountKey(receiveAccount.account.key);
+        const addressAction =
+            tradingType === 'buy'
+                ? tradingActions.setBuyReceiveAddress(receiveAccount.address)
+                : tradingActions.setExchangeReceiveAddress(receiveAccount.address);
+        dispatch(accountAction);
+        dispatch(addressAction);
         const hasAddresses = receiveAccount.account.addresses;
         if (receiveAccount.account && hasAddresses) {
             onSetPickerMode('address');

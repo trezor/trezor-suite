@@ -4,7 +4,6 @@ import { EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { invityAPI, tradingBuyActions } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
 import {
     PreloadedState,
@@ -14,9 +13,9 @@ import {
     renderHook,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
-import { Address } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
+import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
@@ -43,11 +42,14 @@ describe('useBuyForm', () => {
                         ? PROTO.AmountUnit.SATOSHI
                         : PROTO.AmountUnit.BITCOIN,
                 },
+                accounts: [
+                    getBtcAccount('btc-account-1'),
+                    getBtcAccount('btc-account-2'),
+                    { ...getBtcAccount('btc-account-3'), descriptor: '' },
+                ],
             },
         };
-        preloadedState.wallet!.tradingNew!.buy!.selectedReceiveAccount = {
-            account: { key: 'btc1' } as Account,
-        };
+        preloadedState.wallet!.tradingNew!.buy!.tradingAccountKey = 'btc-account-1';
 
         return await initStore(preloadedState);
     };
@@ -72,14 +74,12 @@ describe('useBuyForm', () => {
         const { result } = await renderUseTradingBuyForm(store);
 
         act(() => {
-            store.dispatch(
-                tradingActions.setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: { account: { key: 'btc2' } as Account },
-                }),
-            );
+            store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-2'));
         });
 
-        expect(result.current.getValues('receiveAccount')).toEqual({ account: { key: 'btc2' } });
+        expect(result.current.getValues('receiveAccount')).toEqual({
+            account: expect.objectContaining({ key: 'btc-account-2' }),
+        });
     });
 
     describe('createInvityAPIKey', () => {
@@ -99,16 +99,10 @@ describe('useBuyForm', () => {
             invityAPISpy.mockClear();
 
             act(() => {
-                store.dispatch(
-                    tradingActions.setBuySelectedReceiveAccount({
-                        selectedReceiveAccount: {
-                            account: { key: 'btc2', descriptor: 'descriptor_btc2' } as Account,
-                        },
-                    }),
-                );
+                store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-2'));
             });
 
-            expect(invityAPISpy).toHaveBeenCalledWith('descriptor_btc2');
+            expect(invityAPISpy).toHaveBeenCalledWith('descriptor-btc-account-2');
         });
 
         it('should not call createInvityAPIKey when descriptor is not changed', async () => {
@@ -118,24 +112,11 @@ describe('useBuyForm', () => {
             invityAPISpy.mockClear();
 
             act(() => {
-                store.dispatch(
-                    tradingActions.setBuySelectedReceiveAccount({
-                        selectedReceiveAccount: {
-                            account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
-                        },
-                    }),
-                );
+                store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-2'));
             });
 
             act(() => {
-                store.dispatch(
-                    tradingActions.setBuySelectedReceiveAccount({
-                        selectedReceiveAccount: {
-                            account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
-                            address: { address: 'TEST_BTC_ADDRESS' } as Address,
-                        },
-                    }),
-                );
+                store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-2'));
             });
 
             expect(invityAPISpy).toHaveBeenCalledTimes(1);
@@ -148,13 +129,7 @@ describe('useBuyForm', () => {
             invityAPISpy.mockClear();
 
             act(() => {
-                store.dispatch(
-                    tradingActions.setBuySelectedReceiveAccount({
-                        selectedReceiveAccount: {
-                            account: { key: 'btc1', descriptor: '' } as Account,
-                        },
-                    }),
-                );
+                store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-3'));
             });
 
             expect(invityAPISpy).toHaveBeenCalledTimes(1);
@@ -168,34 +143,10 @@ describe('useBuyForm', () => {
             invityAPISpy.mockClear();
 
             act(() => {
-                store.dispatch(
-                    tradingActions.setBuySelectedReceiveAccount({
-                        selectedReceiveAccount: {
-                            account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account,
-                        },
-                    }),
-                );
+                store.dispatch(tradingBuyActions.setTradingAccountKey(undefined));
             });
 
-            act(() => {
-                store.dispatch(
-                    tradingActions.setBuySelectedReceiveAccount({
-                        selectedReceiveAccount: {
-                            account: { key: 'btc1' } as Account,
-                        },
-                    }),
-                );
-            });
-
-            act(() => {
-                store.dispatch(
-                    tradingActions.setBuySelectedReceiveAccount({
-                        selectedReceiveAccount: undefined,
-                    }),
-                );
-            });
-
-            expect(invityAPISpy).toHaveBeenCalledTimes(2);
+            expect(invityAPISpy).toHaveBeenCalledTimes(1);
             expect(invityAPISpy).toHaveBeenLastCalledWith('random_string');
         });
     });
@@ -218,15 +169,13 @@ describe('useBuyForm', () => {
         const { result } = await renderUseTradingBuyForm(store);
 
         act(() => {
-            store.dispatch(
-                tradingActions.setBuySelectedReceiveAccount({
-                    selectedReceiveAccount: { account: { key: 'btc2' } as Account },
-                }),
-            );
+            store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-1'));
             result.current.setValue('asset', undefined as unknown as TradeableAsset);
         });
 
-        expect(result.current.getValues('receiveAccount')).toEqual({ account: { key: 'btc2' } });
+        expect(result.current.getValues('receiveAccount')).toEqual({
+            account: expect.objectContaining({ key: 'btc-account-1' }),
+        });
     });
 
     it('should clear crypto amount on coin change', async () => {
