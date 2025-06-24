@@ -6,33 +6,17 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "build:lib": "yarn validate-release-config && yarn sign-release-config",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build",
-        "generate-release-config": "yarn tsx ./scripts/generate-release-config.ts",
-        "sign-release-config": "yarn tsx ./scripts/sign-release-config.ts",
-        "validate-release-config": "yarn tsx ./scripts/validate-release-config.ts"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/device-utils": "workspace:^",
         "@trezor/env-utils": "workspace:^",
-        "fs-extra": "^11.3.0",
-        "jws": "^4.0.0",
-        "tsx": "^4.20.3"
+        "jws": "^4.0.0"
     },
     "devDependencies": {
-        "@types/fs-extra": "^11.0.4",
         "@types/jws": "^3.2.10"
-    },
-    "nx": {
-        "targets": {
-            "build:lib": {
-                "outputs": [
-                    "{projectRoot}/files"
-                ]
-            }
-        }
     }
 }
