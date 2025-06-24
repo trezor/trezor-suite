@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.6.1-beta.2
+# 9.6.1
 
 Minor improvements and fixes regarding the [New Connect flow in Trezor Suite](https://connect.trezor.io/9/guides/new-connect-flow-in-trezor-suite/).
 
