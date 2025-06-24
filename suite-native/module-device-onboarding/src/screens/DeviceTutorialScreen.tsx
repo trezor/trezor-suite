@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -18,11 +19,10 @@ export const DeviceTutorialScreen = ({
     const device = useSelector(selectSelectedDevice);
     useEffect(() => {
         const showTutorial = async () => {
-            const { success, payload } = await TrezorConnect.showDeviceTutorial({ device });
-
-            if (success || payload.code === 'Failure_ActionCancelled') {
-                navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
-            }
+            await requestPrioritizedDeviceAccess({
+                deviceCallback: () => TrezorConnect.showDeviceTutorial({ device }),
+            });
+            navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
         };
         showTutorial();
 
@@ -32,7 +32,6 @@ export const DeviceTutorialScreen = ({
 
     const handleSkipTutorial = () => {
         TrezorConnect.cancel();
-        navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
     };
 
     return (

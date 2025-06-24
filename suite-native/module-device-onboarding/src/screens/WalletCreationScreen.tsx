@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { isFulfilled } from '@reduxjs/toolkit';
+
 import { createAndBackupWalletThunk } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
@@ -28,14 +30,23 @@ export const WalletCreationScreen = ({
     const dispatch = useDispatch();
 
     const handleCreateAndBackupWallet = useCallback(async () => {
-        const response = await dispatch(createAndBackupWalletThunk({ walletBackupType })).unwrap();
+        const response = await dispatch(createAndBackupWalletThunk({ walletBackupType }));
 
-        if (response.success) {
-            return navigation.navigate(DeviceOnboardingStackRoutes.WalletCreatedSuccess, {
-                flowType: 'create',
-            });
+        if (isFulfilled(response)) {
+            const responsePayload = response.payload;
+
+            if (responsePayload.success) {
+                return navigation.navigate(DeviceOnboardingStackRoutes.WalletCreatedSuccess, {
+                    flowType: 'create',
+                });
+            }
+            if (
+                responsePayload.payload.code &&
+                DEFINITIVE_ERRORS.includes(responsePayload.payload.code)
+            ) {
+                return;
+            }
         }
-        if (response.payload.code && DEFINITIVE_ERRORS.includes(response.payload.code)) return;
 
         handleCreateAndBackupWallet();
     }, [dispatch, walletBackupType, navigation]);

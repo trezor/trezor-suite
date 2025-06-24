@@ -10346,6 +10346,8 @@ __metadata:
   resolution: "@suite-native/device-mutex@workspace:suite-native/device-mutex"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    expo-keep-awake: "npm:14.0.3"
+    uuid: "npm:^11.1.0"
   languageName: unknown
   linkType: soft
 

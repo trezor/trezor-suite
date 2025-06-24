@@ -6,11 +6,13 @@
     "private": true,
     "sideEffects": false,
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1"
+        "@mobily/ts-belt": "^3.13.1",
+        "expo-keep-awake": "14.0.3",
+        "uuid": "^11.1.0"
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
+        "test:unit": "yarn g:jest -c ../../jest.config.native.js"
     }
 }
