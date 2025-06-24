@@ -42,7 +42,7 @@ export const DevicePinActionButton = ({
         <Button
             onPress={navigateToPinStack}
             colorScheme={colorScheme}
-            size="small"
+            size="medium"
             testID={`@device-pin-protection/${type}-button`}
             isDisabled={isDiscoveryRunning}
             isLoading={isDiscoveryRunning}

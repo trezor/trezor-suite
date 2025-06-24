@@ -139,6 +139,7 @@ const usedIcons = [
     'walletConnect',
     'warning',
     'warningCircle',
+    'warningOctagon',
     'wifiSlash',
     'wifiX',
     'x',

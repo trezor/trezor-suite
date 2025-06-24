@@ -7,13 +7,13 @@ const redirectToDeviceAuthenticityScreenButton = element(
 class DeviceSettingsActions {
     async waitForPinProtectionScreen() {
         await waitFor(element(by.id('@screen/PinProtection')))
-            .toExist()
+            .toBeVisible()
             .withTimeout(10000);
     }
 
     async waitForDeviceAuthenticityScreen() {
         await waitFor(element(by.id('@screen/DeviceAuthenticity')))
-            .toExist()
+            .toBeVisible()
             .withTimeout(10000);
     }
 
@@ -21,12 +21,12 @@ class DeviceSettingsActions {
         const redirectToPinScreenButton = element(
             by.id('@device-pin-protection/redirectToPinScreen'),
         );
-        await waitFor(redirectToPinScreenButton);
+        await waitFor(redirectToPinScreenButton).toBeVisible().withTimeout(10000);
         await redirectToPinScreenButton.tap();
     }
 
     async redirectToDeviceAuthenticityScreen() {
-        await waitFor(redirectToDeviceAuthenticityScreenButton);
+        await waitFor(redirectToDeviceAuthenticityScreenButton).toBeVisible().withTimeout(10000);
         await redirectToDeviceAuthenticityScreenButton.tap();
     }
 
@@ -59,7 +59,7 @@ class DeviceSettingsActions {
 
     async tapCheckAuthenticityButton() {
         const checkDeviceAuthenticityButton = element(by.id('@device-authenticity/check-button'));
-        await waitFor(checkDeviceAuthenticityButton).toBeVisible().withTimeout(10000);
+        await waitFor(checkDeviceAuthenticityButton).toBeVisible().withTimeout(5_000);
         await checkDeviceAuthenticityButton.tap();
     }
 }

@@ -9,12 +9,21 @@ import {
 } from '@suite-common/wallet-core';
 import { InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { DeviceSettingsStackRoutes } from '@suite-native/navigation';
+import {
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 
 import { SettingsItemCard } from './SettingsItemCard';
 
+type NavigationProp = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.DeviceSettings
+>;
+
 export const DevicePinProtectionCard = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<NavigationProp>();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const device = useSelector(selectSelectedDevice);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
@@ -54,7 +63,13 @@ export const DevicePinProtectionCard = () => {
         <SettingsItemCard
             icon="password"
             title={<Translation id="moduleDeviceSettings.pinProtection.title" />}
-            subtitle={<Translation id="moduleDeviceSettings.pinProtection.cardSubtitle" />}
+            subtitle={
+                isDeviceProtectedByPin ? (
+                    <Translation id="moduleDeviceSettings.pinProtection.cardSubtitle.changeOrRemove" />
+                ) : (
+                    <Translation id="moduleDeviceSettings.pinProtection.cardSubtitle.enable" />
+                )
+            }
             alertBoxProps={pinAlertBoxProps}
             onPress={handleOnPress}
             testID="@device-pin-protection/redirectToPinScreen"

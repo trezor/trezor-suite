@@ -554,7 +554,19 @@ export const en = {
             content: 'PIN protects your device against physical attack.',
             changeButton: 'Change',
             alertBoxTitle: 'Pin not set',
-            cardSubtitle: 'Set a PIN for your Trezor',
+            cardSubtitle: {
+                enable: 'Set a PIN for your Trezor',
+                changeOrRemove: 'Change or remove PIN',
+            },
+            pictograms: {
+                enable: {
+                    title: 'Your PIN is not set',
+                    subtitle: 'Set your PIN to protect against unauthorized access to your Trezor.',
+                },
+                change: {
+                    title: 'Your PIN is set',
+                },
+            },
             actions: {
                 enable: {
                     success: 'Device PIN has been enabled.',
@@ -2008,7 +2020,7 @@ export const en = {
     },
     firmware: {
         title: 'Firmware',
-        version: 'Version',
+        version: 'Version {firmwareVersion}',
         typeUniversal: 'Universal',
         typeBitcoinOnly: 'Bitcoin-only',
         seedBottomSheet: {
