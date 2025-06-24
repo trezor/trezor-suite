@@ -1,3 +1,8 @@
+# 1.4.1
+
+- npm-prerelease: @trezor/protobuf 1.4.1-beta.1 (d232ee31da)
+- chore(protobuf): update protobuf messages (8f794d5575)
+
 # 1.4.0
 
 - npm-prerelease: @trezor/protobuf 1.4.0-beta.1 (731bca229d)
