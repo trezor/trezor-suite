@@ -132,7 +132,7 @@ export const createHttpReceiver = () => {
                 .filter(([key]) => key !== 'a')
                 .map(
                     ([key, value]) =>
-                        `<input type="hidden" name="${key}" value="${xssFilters.inDoubleQuotes(
+                        `<input type="hidden" name="${xssFilters.inDoubleQuotes(key)}" value="${xssFilters.inDoubleQuotes(
                             value,
                         )}">`,
                 )
