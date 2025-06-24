@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ActivityIndicator, Pressable, PressableProps } from 'react-native';
+import { Pressable, PressableProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -9,11 +9,13 @@ import {
     HStack,
     InlineAlertBox,
     InlineAlertBoxProps,
+    Loader,
     Text,
     VStack,
 } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 const ICON_WRAPPER_SIZE = 48;
 
@@ -27,6 +29,28 @@ type SettingsItemCardProps = Omit<PressableProps, 'onPress'> & {
     variant?: CardVariant;
 };
 
+type CardColorScheme = {
+    iconWrapperBackgroundColor: Color;
+    iconColor: Color;
+    titleColor: Color;
+    subtitleColor: Color;
+};
+
+export const cardVariantToColorsMap = {
+    normal: {
+        iconWrapperBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
+        iconColor: 'iconDefault',
+        titleColor: 'textDefault',
+        subtitleColor: 'textSubdued',
+    },
+    danger: {
+        iconWrapperBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
+        iconColor: 'iconAlertRed',
+        titleColor: 'textAlertRed',
+        subtitleColor: 'textAlertRed',
+    },
+} as const satisfies Record<CardVariant, CardColorScheme>;
+
 const contentStyle = prepareNativeStyle(() => ({
     flexGrow: 1,
     flexShrink: 1,
@@ -37,14 +61,8 @@ const iconWrapperStyle = prepareNativeStyle<{ variant: CardVariant }>((utils, { 
     justifyContent: 'center',
     width: ICON_WRAPPER_SIZE,
     height: ICON_WRAPPER_SIZE,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors[cardVariantToColorsMap[variant].iconWrapperBackgroundColor],
     borderRadius: utils.borders.radii.round,
-    extend: {
-        condition: variant === 'danger',
-        style: {
-            backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation1,
-        },
-    },
 }));
 
 export const SettingsItemCard = ({
@@ -63,27 +81,24 @@ export const SettingsItemCard = ({
         <Pressable onPress={onPress} disabled={isDiscoveryRunning} {...pressableProps}>
             <Card borderColor="borderElevation1" noPadding>
                 <HStack padding="sp16" spacing="sp12" alignItems="center">
-                    <Box marginVertical="sp2" style={applyStyle(iconWrapperStyle, { variant })}>
+                    <Box style={applyStyle(iconWrapperStyle, { variant })}>
                         <Icon
                             name={icon}
                             size="large"
-                            color={variant === 'danger' ? 'iconAlertRed' : 'iconSubdued'}
+                            color={cardVariantToColorsMap[variant].iconColor}
                         />
                     </Box>
-                    <HStack flex={1}>
-                        <VStack spacing={0} style={applyStyle(contentStyle)}>
-                            <Text color={variant === 'danger' ? 'textAlertRed' : 'textDefault'}>
-                                {title}
-                            </Text>
-                            <Text
-                                color={variant === 'danger' ? 'textAlertRed' : 'textSubdued'}
-                                variant="hint"
-                            >
-                                {subtitle}
-                            </Text>
-                        </VStack>
-                    </HStack>
-                    {isDiscoveryRunning ? <ActivityIndicator /> : <Icon name="caretRight" />}
+                    <VStack spacing="sp2" style={applyStyle(contentStyle)}>
+                        <Text color={cardVariantToColorsMap[variant].titleColor}>{title}</Text>
+                        <Text color={cardVariantToColorsMap[variant].subtitleColor} variant="hint">
+                            {subtitle}
+                        </Text>
+                    </VStack>
+                    {isDiscoveryRunning ? (
+                        <Loader />
+                    ) : (
+                        <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />
+                    )}
                 </HStack>
                 {alertBoxProps && (
                     <Box margin="sp4">

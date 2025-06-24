@@ -12,7 +12,6 @@ import {
 } from '@suite-common/wallet-core';
 import { InlineAlertBoxProps } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
-import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -75,14 +74,10 @@ export const DeviceFirmwareCard = () => {
 
     return (
         <SettingsItemCard
-            icon={deviceModelToIconName(deviceModel)}
+            icon="database"
             title={<Translation id="firmware.title" />}
             alertBoxProps={firmwareUpdateProps}
-            subtitle={
-                <>
-                    <Translation id="firmware.version" /> {firmwareVersion}
-                </>
-            }
+            subtitle={<Translation id="firmware.version" values={{ firmwareVersion }} />}
             onPress={handleOnPress}
         />
     );

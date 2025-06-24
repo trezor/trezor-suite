@@ -27,8 +27,8 @@ export const WipeDeviceCard = () => {
     return (
         <SettingsItemCard
             title={<Translation id="moduleDeviceSettings.wipeDevice.title" />}
-            icon="arrowsClockwise"
-            subtitle="This will reset all stored data"
+            icon="warningOctagon"
+            subtitle={<Translation id="moduleDeviceSettings.wipeDevice.subtitle" />}
             onPress={handleRedirect}
             variant="danger"
         />

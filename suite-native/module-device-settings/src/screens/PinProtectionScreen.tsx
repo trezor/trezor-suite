@@ -12,8 +12,10 @@ const EnablePinCard = () => (
         <PictogramTitleHeader
             variant="warning"
             icon="warning"
-            title="Your pin is not set"
-            subtitle="Set your PIN to protect against unauthorized access to your Trezor."
+            title={<Translation id="moduleDeviceSettings.pinProtection.pictograms.enable.title" />}
+            subtitle={
+                <Translation id="moduleDeviceSettings.pinProtection.pictograms.enable.subtitle" />
+            }
         />
         <DevicePinActionButton type="enable" colorScheme="yellowBold">
             <Translation id="moduleDeviceSettings.pinProtection.buttons.setPin" />
@@ -23,7 +25,11 @@ const EnablePinCard = () => (
 
 const DisableOrChangePinCard = () => (
     <>
-        <PictogramTitleHeader variant="success" icon="check" title="Your pin is set" />
+        <PictogramTitleHeader
+            variant="success"
+            icon="check"
+            title={<Translation id="moduleDeviceSettings.pinProtection.pictograms.change.title" />}
+        />
         <VStack>
             <DevicePinActionButton type="change" colorScheme="primary">
                 <Translation id="moduleDeviceSettings.pinProtection.buttons.changePin" />
