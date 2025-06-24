@@ -1,16 +1,19 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
+import { LayoutChangeEvent } from 'react-native';
 
 import { RequireOneOrNone } from 'type-fest';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
+import { ScreenHeaderContent } from './ScreenHeaderContent';
 
 export type ScreenSubHeaderProps = RequireOneOrNone<
     {
         content?: ReactNode;
+        subtitle?: ReactNode;
         rightIcon?: ReactNode;
         leftIcon?: ReactNode;
         closeActionType?: CloseActionType;
@@ -46,32 +49,29 @@ export const ScreenHeader = ({
 }: ScreenSubHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const [height, setHeight] = useState(0);
+
+    const handleLayout = (e: LayoutChangeEvent) => {
+        setHeight(e.nativeEvent.layout.height);
+    };
+
     return (
-        <Box style={applyStyle(headerStyle)}>
-            <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-left">
-                {leftIcon !== undefined ? (
-                    leftIcon
-                ) : (
-                    <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
-                )}
+        <VStack spacing="sp16" style={{ minHeight: height }} onLayout={handleLayout}>
+            <Box style={applyStyle(headerStyle)}>
+                <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-left">
+                    {leftIcon !== undefined ? (
+                        leftIcon
+                    ) : (
+                        <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
+                    )}
+                </Box>
+                <Box alignItems="center">
+                    <ScreenHeaderContent content={content} />
+                </Box>
+                <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
+                    {rightIcon}
+                </Box>
             </Box>
-            <Box alignItems="center">
-                {typeof content === 'string' ? (
-                    <Text
-                        variant="highlight"
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                        testID="@screen/sub-header/title"
-                    >
-                        {content}
-                    </Text>
-                ) : (
-                    content
-                )}
-            </Box>
-            <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
-                {rightIcon}
-            </Box>
-        </Box>
+        </VStack>
     );
 };

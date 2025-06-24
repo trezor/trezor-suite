@@ -34,7 +34,11 @@ export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
     return (
-        <Screen header={<ScreenHeader content="DEV utils" />}>
+        <Screen
+            header={
+                <ScreenHeader content="DEV utils" subtitle="Used mostly for debugging purposes." />
+            }
+        >
             <VStack spacing="sp16">
                 <Card>
                     <VStack spacing="sp16">

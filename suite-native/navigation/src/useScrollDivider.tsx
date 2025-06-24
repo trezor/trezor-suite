@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { atom, useAtom } from 'jotai';
 import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
@@ -13,6 +14,9 @@ const scrollDividerStyle = prepareNativeStyle(({ borders, colors }) => ({
     borderTopColor: colors.borderElevation0,
 }));
 
+export const isScrolledAtom = atom(false);
+export const heightAtom = atom(0);
+
 const ScrollDivider = () => {
     const { applyStyle } = useNativeStyles();
 
@@ -24,14 +28,17 @@ const ScrollDivider = () => {
 };
 
 export const useScrollDivider = () => {
-    const [isScrolled, setIsScrolled] = useState(false);
+    const [isScrolled, setIsScrolled] = useAtom(isScrolledAtom);
+    const [height, setHeight] = useAtom(heightAtom);
 
-    const handleScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-        setIsScrolled(nativeEvent.contentOffset.y > 0);
-    }, []);
+    const handleScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+        setIsScrolled(nativeEvent.contentOffset.y > height);
+    };
 
     return {
         scrollDivider: isScrolled ? <ScrollDivider /> : undefined,
         handleScroll,
+        isScrolled,
+        setHeight,
     };
 };

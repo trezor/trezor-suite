@@ -1,4 +1,4 @@
-import { ReactNode, useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { ScrollViewProps, View } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
@@ -13,7 +13,8 @@ import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { ScreenContentWrapper } from './ScreenContentWrapper';
+import { ScreenContentWrapper, extractScreenHeaderProps } from './ScreenContentWrapper';
+import { ScrollViewScreenHeader } from './ScreenHeaderContent';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
 
@@ -104,6 +105,8 @@ export const Screen = ({
 
     const { name } = useRoute();
 
+    const headerProps = extractScreenHeaderProps(header);
+
     return (
         <View
             style={applyStyle(screenContainerStyle, {
@@ -117,10 +120,11 @@ export const Screen = ({
             {header}
             <ScreenContentWrapper
                 isScrollable={isScrollable}
-                hasHeader={!!header}
+                header={header}
                 focusedInputBottomOffset={focusedInputBottomOffset}
                 refreshControl={refreshControl}
             >
+                {!!headerProps && <ScrollViewScreenHeader {...headerProps} />}
                 <Box
                     style={applyStyle(screenContentStyle, {
                         insets,

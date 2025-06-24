@@ -11099,6 +11099,7 @@ __metadata:
     expo-linear-gradient: "npm:~14.1.5"
     expo-navigation-bar: "npm:^4.0.2"
     expo-system-ui: "npm:~5.0.8"
+    jotai: "npm:^2.12.5"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
     react-native-edge-to-edge: "npm:1.6.0"
