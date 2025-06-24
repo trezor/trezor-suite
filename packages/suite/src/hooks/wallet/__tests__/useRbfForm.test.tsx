@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -155,7 +156,7 @@ describe('useRbfForm hook', () => {
                 const contextValues = useRbf({
                     rbfParams: f.tx.rbfParams,
                     chainedTxs: f.chainedTxs,
-                    selectedAccount: f.store.selectedAccount,
+                    selectedAccount: f.store.selectedAccount as SelectedAccountLoaded,
                 });
 
                 return (
