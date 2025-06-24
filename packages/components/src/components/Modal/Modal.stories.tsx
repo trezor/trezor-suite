@@ -1,7 +1,7 @@
 import { JSX } from 'react';
 
-import { action } from '@storybook/addon-actions';
 import { Meta, StoryObj } from '@storybook/react';
+import { action } from 'storybook/actions';
 import { ThemeProvider } from 'styled-components';
 
 import { modalSizes, modalVariants } from './types';

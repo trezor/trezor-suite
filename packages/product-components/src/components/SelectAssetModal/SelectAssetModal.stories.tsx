@@ -1,7 +1,7 @@
 import { IntlProvider } from 'react-intl';
 
-import { action } from '@storybook/addon-actions';
 import { Meta, StoryObj } from '@storybook/react';
+import { action } from 'storybook/actions';
 import { ThemeProvider } from 'styled-components';
 
 import { Modal, intermediaryTheme } from '@trezor/components';

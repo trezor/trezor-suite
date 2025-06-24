@@ -1,7 +1,7 @@
 import { ChangeEventHandler } from 'react';
 
-import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
+import { useArgs } from 'storybook/preview-api';
 
 import { Textarea as TextareaComponent, TextareaProps } from './Textarea';
 

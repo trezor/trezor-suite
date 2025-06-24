@@ -1,5 +1,5 @@
-import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
+import { useArgs } from 'storybook/preview-api';
 import styled from 'styled-components';
 
 import { Radio as RadioComponent, RadioProps, radioVariants } from './Radio';
