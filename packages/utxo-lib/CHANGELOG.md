@@ -1,3 +1,8 @@
+# 2.4.1
+
+- npm-prerelease: @trezor/utxo-lib 2.4.1-beta.1 (7e78bd7016)
+- chore: update jest to v30 (6d27a2ca35)
+
 # 2.4.0
 
 - npm-prerelease: @trezor/utxo-lib 2.4.0-beta.1 (d378869f2d)
