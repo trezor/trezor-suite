@@ -21,9 +21,6 @@ export const initLocalFirstStorageThunkFactory = (evoluDeps: EvoluDeps) =>
             const relayUrl =
                 extra.selectors.selectSuiteSettings(getState()).localFirstStorageRelayUrl;
 
-            if (relayUrl === null) {
-                return;
-            }
 
             setLocalFirstStorageProvider(new LocalFirstStorageProvider(relayUrl, evoluDeps));
 

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { selectOutputLabels } from '@suite-common/local-first-storage';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { selectHistoricFiatRatesByTimestamp, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -65,6 +66,7 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
+    const localFirstOutputLabels = useSelector(selectOutputLabels);
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
 
     const amount = useMemo(() => {
@@ -154,6 +156,8 @@ export const TransactionTarget = ({
     };
 
     const label = useMemo(() => {
+        console.log('____type', type);
+
         switch (type) {
             case 'target':
                 return (
@@ -200,7 +204,10 @@ export const TransactionTarget = ({
                         txid: transaction.txid,
                         outputIndex: metadataId,
                         defaultValue: defaultMetadataValue,
-                        value: targetMetadata,
+                        value:
+                            localFirstOutputLabels.find(
+                                it => it.txId === transaction.txid && it.outputIndex == metadataId,
+                            )?.label ?? targetMetadata,
                     }}
                 />
             }

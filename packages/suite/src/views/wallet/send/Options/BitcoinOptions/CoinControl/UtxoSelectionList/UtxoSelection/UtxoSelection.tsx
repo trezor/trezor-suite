@@ -2,7 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { selectAddressLabels } from '@suite-common/local-first-storage';
+import { selectAddressLabels, selectOutputLabels } from '@suite-common/local-first-storage';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Row, Spinner, Text, TextButton, Tooltip } from '@trezor/components';
 import { CheckContainer } from '@trezor/components/src/components/form/Checkbox/Checkbox';
@@ -177,6 +177,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const localFirstAddressLabels = useSelector(selectAddressLabels);
+    const localFirstOutputLabels = useSelector(selectOutputLabels);
 
     const dispatch = useDispatch();
 
@@ -311,7 +312,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     txid: utxo.txid,
                                     outputIndex: utxo.vout,
                                     defaultValue: `${utxo.txid}-${utxo.vout}`,
-                                    value: outputLabel,
+                                    value:
+                                        localFirstOutputLabels.find(
+                                            it =>
+                                                it.txId === utxo.txid &&
+                                                it.outputIndex == utxo.vout,
+                                        )?.label ?? outputLabel,
                                 }}
                             />
                         </LabelPart>

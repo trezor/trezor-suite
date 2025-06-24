@@ -14,7 +14,7 @@ type UpdateOutputLabelThunkParams = {
 export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkParams, void>(
     `${LABELING_PREFIX}/updateOutputLabelThunk`,
     ({ deviceStaticSessionId, txId, outputIndex, label }, { getState }) => {
-        console.log('____updateOutputLabelThunk');
+        console.log('____updateOutputLabelThunk', { txId, outputIndex, label });
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );

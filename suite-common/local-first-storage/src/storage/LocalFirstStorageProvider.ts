@@ -55,11 +55,13 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
 type OwnerId = string;
 
+const DEFAULT_RELAY_URL = 'https://free.evoluhq.com';
+
 export class LocalFirstStorageProvider {
     private storages = new Map<OwnerId, LocalFirstStorage>();
 
     constructor(
-        private relayUrl: string,
+        private relayUrl: string | null, // null -> fallback to default
         private evoluDeps: EvoluDeps,
     ) {}
 
@@ -68,7 +70,7 @@ export class LocalFirstStorageProvider {
 
         if (storage === undefined) {
             const evolu = createEvoluInstance({
-                relayUrl: this.relayUrl,
+                relayUrl: this.relayUrl ?? DEFAULT_RELAY_URL,
                 evoluKeys,
                 evoluDeps: this.evoluDeps,
             });

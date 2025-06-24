@@ -3549,6 +3549,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@evolu/common@npm:^6.0.1-preview.0":
+  version: 6.0.1-preview.8
+  resolution: "@evolu/common@npm:6.0.1-preview.8"
+  dependencies:
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    "@scure/bip39": "npm:^1.6.0"
+    kysely: "npm:^0.28.2"
+    msgpackr: "npm:^1.11.4"
+    nanoid: "npm:^3.3.11"
+    random: "npm:^5.4.0"
+  checksum: 10/a2c5eb262b07c7b62c08673bf1e2f07426c2a7038cff498420e73e63a17f898392ccd93fadcb6e532e48139c381ee07c658d6940866e71123008ed476c869b0d
+  languageName: node
+  linkType: hard
+
+"@evolu/web@npm:^1.0.1-preview.0":
+  version: 1.0.1-preview.2
+  resolution: "@evolu/web@npm:1.0.1-preview.2"
+  dependencies:
+    "@sqlite.org/sqlite-wasm": "npm:3.50.1-build1"
+  peerDependencies:
+    "@evolu/common": ^6.0.1-preview.3
+  checksum: 10/5be973aa2dff6896ae6a89a3c1a53cfceffeb5e22afdb9a4d59863a940f708f4a208887659e0b69505cdae39f37d269950dbca242d76f66dcd65a30effd170b3
+  languageName: node
+  linkType: hard
+
 "@exodus/patch-broken-hermes-typed-arrays@npm:^1.0.0-alpha.1":
   version: 1.0.0-alpha.1
   resolution: "@exodus/patch-broken-hermes-typed-arrays@npm:1.0.0-alpha.1"
@@ -5434,6 +5460,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@msgpackr-extract/msgpackr-extract-darwin-arm64@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@msgpackr-extract/msgpackr-extract-darwin-arm64@npm:3.0.3"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-darwin-x64@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@msgpackr-extract/msgpackr-extract-darwin-x64@npm:3.0.3"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-linux-arm64@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@msgpackr-extract/msgpackr-extract-linux-arm64@npm:3.0.3"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-linux-arm@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@msgpackr-extract/msgpackr-extract-linux-arm@npm:3.0.3"
+  conditions: os=linux & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-linux-x64@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@msgpackr-extract/msgpackr-extract-linux-x64@npm:3.0.3"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.3"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@napi-rs/simple-git-android-arm-eabi@npm:0.1.16":
   version: 0.1.16
   resolution: "@napi-rs/simple-git-android-arm-eabi@npm:0.1.16"
@@ -5630,7 +5698,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:1.3.0":
+"@noble/ciphers@npm:1.3.0, @noble/ciphers@npm:^1.3.0":
   version: 1.3.0
   resolution: "@noble/ciphers@npm:1.3.0"
   checksum: 10/051660051e3e9e2ca5fb9dece2885532b56b7e62946f89afa7284a0fb8bc02e2bd1c06554dba68162ff42d295b54026456084198610f63c296873b2f1cd7a586
@@ -5719,7 +5787,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.6.1, @noble/hashes@npm:~1.8.0":
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.6.1, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
@@ -7860,7 +7928,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:1.6.0, @scure/bip39@npm:^1.2.1, @scure/bip39@npm:^1.4.0, @scure/bip39@npm:^1.5.1":
+"@scure/bip39@npm:1.6.0, @scure/bip39@npm:^1.2.1, @scure/bip39@npm:^1.4.0, @scure/bip39@npm:^1.5.1, @scure/bip39@npm:^1.6.0":
   version: 1.6.0
   resolution: "@scure/bip39@npm:1.6.0"
   dependencies:
@@ -9081,6 +9149,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sqlite.org/sqlite-wasm@npm:3.50.1-build1":
+  version: 3.50.1-build1
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.50.1-build1"
+  bin:
+    sqlite-wasm: bin/index.js
+  checksum: 10/061aa630a60be6b086dcfb362c4d60665c346867a7e593c980644df44636b490c18c7f0925c188de0b14cc267977fd4421347b1982e4f3996a4608ce8242225a
+  languageName: node
+  linkType: hard
+
 "@standard-schema/spec@npm:^1.0.0":
   version: 1.0.0
   resolution: "@standard-schema/spec@npm:1.0.0"
@@ -9514,6 +9591,18 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     react: "npm:19.0.0"
     react-intl: "npm:^7.1.11"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/local-first-storage@workspace:*, @suite-common/local-first-storage@workspace:suite-common/local-first-storage":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/local-first-storage@workspace:suite-common/local-first-storage"
+  dependencies:
+    "@evolu/common": "npm:^6.0.1-preview.0"
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@scure/bip39": "npm:^1.5.1"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12586,6 +12675,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/suite-local-first-storage@workspace:*, @trezor/suite-local-first-storage@workspace:packages/suite-local-first-storage":
+  version: 0.0.0-use.local
+  resolution: "@trezor/suite-local-first-storage@workspace:packages/suite-local-first-storage"
+  dependencies:
+    "@evolu/web": "npm:^1.0.1-preview.0"
+    "@suite-common/local-first-storage": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/suite-storage@workspace:*, @trezor/suite-storage@workspace:packages/suite-storage":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
@@ -12705,6 +12803,7 @@ __metadata:
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/suite-local-first-storage": "workspace:*"
     "@trezor/suite-storage": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
@@ -28564,6 +28663,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kysely@npm:^0.28.2":
+  version: 0.28.2
+  resolution: "kysely@npm:0.28.2"
+  checksum: 10/2b9664abab95525411b24ac523c38ff286b701e58d0e88ef99c6b449d481c5298ae2c0e17e5cffaa2e98e566015c4b5aa7be46b331fc94d1abf44851ff5ec51f
+  languageName: node
+  linkType: hard
+
 "lan-network@npm:^0.1.6":
   version: 0.1.7
   resolution: "lan-network@npm:0.1.7"
@@ -31689,6 +31795,49 @@ __metadata:
   languageName: node
   linkType: hard
 
+"msgpackr-extract@npm:^3.0.2":
+  version: 3.0.3
+  resolution: "msgpackr-extract@npm:3.0.3"
+  dependencies:
+    "@msgpackr-extract/msgpackr-extract-darwin-arm64": "npm:3.0.3"
+    "@msgpackr-extract/msgpackr-extract-darwin-x64": "npm:3.0.3"
+    "@msgpackr-extract/msgpackr-extract-linux-arm": "npm:3.0.3"
+    "@msgpackr-extract/msgpackr-extract-linux-arm64": "npm:3.0.3"
+    "@msgpackr-extract/msgpackr-extract-linux-x64": "npm:3.0.3"
+    "@msgpackr-extract/msgpackr-extract-win32-x64": "npm:3.0.3"
+    node-gyp: "npm:latest"
+    node-gyp-build-optional-packages: "npm:5.2.2"
+  dependenciesMeta:
+    "@msgpackr-extract/msgpackr-extract-darwin-arm64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-darwin-x64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-linux-arm":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-linux-arm64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-linux-x64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-win32-x64":
+      optional: true
+  bin:
+    download-msgpackr-prebuilds: bin/download-prebuilds.js
+  checksum: 10/4bfe45cf6968310570765951691f1b8e85b6a837e5197b8232fc9285eef4b457992e73118d9d07c92a52cc23f9e837897b135e17ea0f73e3604540434051b62f
+  languageName: node
+  linkType: hard
+
+"msgpackr@npm:^1.11.4":
+  version: 1.11.4
+  resolution: "msgpackr@npm:1.11.4"
+  dependencies:
+    msgpackr-extract: "npm:^3.0.2"
+  dependenciesMeta:
+    msgpackr-extract:
+      optional: true
+  checksum: 10/131d9d676c8b931fb522550913afd390d361bd9dde993e9927f5ad35d58d9165c940433800b69a2caff556db632c3c510bc064cc3a5776e1c2d63a7cb280a470
+  languageName: node
+  linkType: hard
+
 "multi-sort-stream@npm:^1.0.3, multi-sort-stream@npm:^1.0.4":
   version: 1.0.4
   resolution: "multi-sort-stream@npm:1.0.4"
@@ -32203,6 +32352,19 @@ __metadata:
   version: 1.3.1
   resolution: "node-forge@npm:1.3.1"
   checksum: 10/05bab6868633bf9ad4c3b1dd50ec501c22ffd69f556cdf169a00998ca1d03e8107a6032ba013852f202035372021b845603aeccd7dfcb58cdb7430013b3daa8d
+  languageName: node
+  linkType: hard
+
+"node-gyp-build-optional-packages@npm:5.2.2":
+  version: 5.2.2
+  resolution: "node-gyp-build-optional-packages@npm:5.2.2"
+  dependencies:
+    detect-libc: "npm:^2.0.1"
+  bin:
+    node-gyp-build-optional-packages: bin.js
+    node-gyp-build-optional-packages-optional: optional.js
+    node-gyp-build-optional-packages-test: build-test.js
+  checksum: 10/f448a328cf608071dc8cc4426ac5be0daec4788e4e1759e9f7ffcd286822cc799384edce17a8c79e610c4bbfc8e3aff788f3681f1d88290e0ca7aaa5342a090f
   languageName: node
   linkType: hard
 
@@ -35046,6 +35208,13 @@ __metadata:
     discontinuous-range: "npm:1.0.0"
     ret: "npm:~0.1.10"
   checksum: 10/ae6d213ec8018b2d22960d2b73ee7a4e25f85050a11dc485b6d3a06ace318ca567353b1d75d8d11f529b7ed6bdeb52644b789307ef42812bf5da2ade4f85e113
+  languageName: node
+  linkType: hard
+
+"random@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "random@npm:5.4.0"
+  checksum: 10/6e24bb4e3531f8c28d0d44c61967c141dca234fb7b09d78fd9b94dd135374b51c0527f5f122107e673bb2e33e52725b352dce83fc38c2f3c60a589eceff13753
   languageName: node
   linkType: hard
 
