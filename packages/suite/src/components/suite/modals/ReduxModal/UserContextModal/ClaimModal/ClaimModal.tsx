@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, Modal, Paragraph, Tooltip } from '@trezor/components';
@@ -45,6 +45,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         signTx,
         trigger,
     } = useClaimForm({ selectedAccount });
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
 
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -85,6 +86,8 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         });
     };
 
+    const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;
+
     return (
         <Modal
             heading={<Translation id="TR_STAKE_CLAIM" />}
@@ -102,7 +105,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                         <Modal.Button
                             type="submit"
                             isDisabled={isDisabled || isClaimingDisabled}
-                            isLoading={isComposing || isSubmitting || isDiscoveryRunning}
+                            isLoading={isLoading}
                             onClick={onClaimClick}
                             icon={isClaimingDisabled ? 'info' : undefined}
                         >
