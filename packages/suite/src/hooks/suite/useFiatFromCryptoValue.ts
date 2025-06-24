@@ -9,7 +9,6 @@ interface CommonOwnProps {
     amount: string;
     symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
-    fiatCurrency?: string;
 }
 
 export interface UseFiatFromCryptoValueParams extends CommonOwnProps {

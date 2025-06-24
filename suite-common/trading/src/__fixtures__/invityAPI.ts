@@ -165,11 +165,8 @@ const sellWatchTrade: WatchSellTradeResponse = {
 };
 
 const otc: TradingOTC = {
-    idWidget: 'idWidget',
-    idOtcUser: 'idOtcUser',
-    apiUrl: 'apiUrl',
-    minimumFiat: '10000',
-    allowedCurrencies: ['usd'],
+    links: [],
+    minFiatLimits: {} as TradingOTC['minFiatLimits'],
 };
 
 export const invityAPIFixtures = {

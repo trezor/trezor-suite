@@ -40,7 +40,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         account,
         network,
         feeInfo,
-        localCurrencyOption,
         control,
         getDefaultValue,
         handleAmountChange,
@@ -175,7 +174,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 />
 
                 {isWithRate && (
-                    <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
+                    <FiatValue amount="1" symbol={symbol}>
                         {({ rate }) =>
                             rate && (
                                 <>

@@ -81,7 +81,7 @@ class InvityAPI {
     private readonly SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
 
     // otc service
-    private readonly OTC_INFO = '/api/v1/otc';
+    private readonly OTC_INFO = '/api/v2/otc';
 
     private static accountDescriptor: string;
     private static apiKey: string;
