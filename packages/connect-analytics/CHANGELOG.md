@@ -1,3 +1,8 @@
+# 1.3.4
+
+- npm-prerelease: @trezor/connect-analytics 1.3.4-beta.1 (6a3c30e2d1)
+- feat(connect): track npmVersion in analytics (6cc1058fe6)
+
 # 1.3.3
 
 - npm-prerelease: @trezor/connect-analytics 1.3.3-beta.1 (94e0b18cd5)
