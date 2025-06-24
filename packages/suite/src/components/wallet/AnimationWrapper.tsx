@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, Transition, motion } from 'framer-motion';
 
 interface AnimationWrapperProps {
     opened: boolean;
@@ -26,7 +26,7 @@ export const AnimationWrapper = ({
         transitionEnd: { overflow: 'unset' },
     };
 
-    const transition = { duration: 0.24, ease: 'easeInOut' };
+    const transition: Transition = { duration: 0.24, ease: 'easeInOut' };
 
     return (
         <AnimatePresence initial={false}>

@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 
-import { motion } from 'framer-motion';
+import { type Variants, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
@@ -115,7 +115,7 @@ export const UpdateNotificationBanner = ({
         onClose();
     };
 
-    const variants = {
+    const variants: Variants = {
         initial: { y: 32, opacity: 0 },
         exit: { y: 32, opacity: 0 },
         drop: {
