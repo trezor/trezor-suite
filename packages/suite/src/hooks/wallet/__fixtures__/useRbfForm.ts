@@ -1,9 +1,14 @@
 import {
     ChainedTransactions,
+    FeesState,
+    SelectedAccountLoaded,
     WalletAccountTransaction,
     WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { AccountUtxo } from '@trezor/connect';
+import { DeepPartial } from '@trezor/type-utils';
+
+import { CoinjoinState } from '../../../reducers/wallet/coinjoinReducer';
 
 export { getRootReducer } from './useSendForm';
 
@@ -12,7 +17,7 @@ const DCBA = 'dcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcba';
 const DUST = 'dust-limit-utxo-should-never-be-used-aaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
 // m/44'/0'/0' all-all-all
-export const BTC_ACCOUNT = {
+export const BTC_ACCOUNT: DeepPartial<SelectedAccountLoaded> = {
     status: 'loaded',
     account: {
         symbol: 'btc',
@@ -48,18 +53,17 @@ export const BTC_ACCOUNT = {
         availableBalance: '1',
         formattedBalance: '0.00000001 BTC',
         utxo: [{ amount: '1', txid: DUST }],
-        history: {},
     },
     network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
 };
 
-const BTC_CJ_ACCOUNT = {
+const BTC_CJ_ACCOUNT: DeepPartial<SelectedAccountLoaded> = {
     ...BTC_ACCOUNT,
     account: {
         ...BTC_ACCOUNT.account,
         accountType: 'coinjoin',
         addresses: {
-            ...BTC_ACCOUNT.account.addresses,
+            ...BTC_ACCOUNT.account!.addresses,
             anonymitySet: {
                 '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY': 1,
             },
@@ -159,9 +163,15 @@ const PREPARE_TX = (params: Partial<HackedTxType['rbfParams']> = {}): HackedTxTy
     ...txDummyData,
 });
 
+type MockedWalletStore = {
+    selectedAccount: DeepPartial<SelectedAccountLoaded>;
+    fees?: FeesState;
+    coinjoin?: DeepPartial<CoinjoinState>;
+};
+
 type ComposeAndSignFixture = {
     description: string;
-    store: any;
+    store: MockedWalletStore;
     tx: WalletAccountTransactionWithRequiredRbfParams;
     composedLevels: any;
     composeTransactionCalls: number;
@@ -975,7 +985,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                         },
                     ],
                     addresses: {
-                        ...BTC_CJ_ACCOUNT.account.addresses,
+                        ...BTC_CJ_ACCOUNT.account!.addresses,
                         anonymitySet: {
                             bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw: 1,
                         },
@@ -983,7 +993,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 },
             },
             coinjoin: {
-                accounts: [{ key: BTC_CJ_ACCOUNT.account.key }],
+                accounts: [{ key: BTC_CJ_ACCOUNT.account!.key }],
             },
         },
         tx: PREPARE_TX({
@@ -1052,7 +1062,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                         },
                     ],
                     addresses: {
-                        ...BTC_CJ_ACCOUNT.account.addresses,
+                        ...BTC_CJ_ACCOUNT.account!.addresses,
                         anonymitySet: {
                             bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw: 10,
                         },
@@ -1062,7 +1072,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
             coinjoin: {
                 accounts: [
                     {
-                        key: BTC_CJ_ACCOUNT.account.key,
+                        key: BTC_CJ_ACCOUNT.account!.key,
                         session: {},
                         prison: {
                             cdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdab00000000:

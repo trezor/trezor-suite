@@ -377,7 +377,7 @@ describe('useSendForm hook', () => {
                     };
                 });
 
-                const store = initStore(f.store);
+                const store = initStore(f.store as Args);
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,

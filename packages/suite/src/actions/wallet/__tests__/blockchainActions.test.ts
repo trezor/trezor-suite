@@ -1,6 +1,9 @@
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
 import {
+    AccountsState,
+    BlockchainState,
+    TransactionsState,
     feesReducer,
     initBlockchainThunk,
     onBlockMinedThunk,
@@ -10,6 +13,7 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
+import { FeesState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
 import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';
@@ -18,11 +22,6 @@ import { configureStore, filterThunkActionTypes } from 'src/support/tests/config
 import * as fixtures from '../__fixtures__/blockchainActions';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
-
-type AccountsState = ReturnType<typeof accountsReducer>;
-type TransactionsState = ReturnType<typeof transactionsReducer>;
-type FeesState = ReturnType<typeof feesReducer>;
-type BlockchainState = ReturnType<typeof blockchainReducer>;
 
 interface Args {
     accounts?: AccountsState;
