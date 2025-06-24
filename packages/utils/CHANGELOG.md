@@ -1,3 +1,14 @@
+# 9.4.1
+
+- npm-prerelease: @trezor/utils 9.4.1-beta.2 (73e565cc0f)
+- feat(utils): stringToIntegerInRange (6d9116d6bd)
+- chore: prune dead code from suite-common and utils (40754b1f15)
+- npm-prerelease: @trezor/utils 9.4.1-beta.1 (f30377d0c0)
+- chore: update jest to v30 (6d27a2ca35)
+- fix(suite): scroll to selected option in select (9513e1d6de)
+- chore: add missing workspace libs (bc6a681c27)
+- Revert Feat: update fee rate options regularly (26069e28b5)
+
 # 9.4.0
 
 - npm-prerelease: @trezor/utils 9.4.0-beta.1 (b74682fbb7)
