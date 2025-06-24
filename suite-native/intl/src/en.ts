@@ -1760,6 +1760,27 @@ export const en = {
             submitButton: 'Review and sign',
             total: 'Total fee',
         },
+        coinControl: {
+            cta: 'Select coins',
+            title: 'Coin control',
+            search: {
+                placeholder: 'Search for address or transaction ID',
+                noCoins: 'No coins',
+                message: 'Check the spelling or try again'
+            },
+            notEnoughCoins: 'Select additional coins to match amount or turn off coin control',
+            utxos: {
+                selected: 'Selected',
+                remaining: 'Remaining to select'
+            },
+            disable: {
+                title: 'Turn off Coin Control?',
+                description:
+                    'Trezor Suite will automatically select coins that match the amount you want to send.',
+                primaryButton: 'Turn off',
+                secondaryButton: 'Cancel',
+            }
+        },
         review: {
             confirmOnDeviceMessage: 'Go to your Trezor and confirm the amounts & recipients.',
             cancelAlert: {
