@@ -9,12 +9,12 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         await onboardingPage.disableNecessaryFirmwareChecks();
         await onboardingPage.optionallyDismissFwHashCheckError();
         await expect(analyticsSection.toggleSwitch).toBeVisible();
+
         await page.reload();
-        // analytics screen is there until user confirms his choice
         await onboardingPage.optionallyDismissFwHashCheckError();
+        // analytics screen is there until user confirms his choice
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await analyticsSection.continueButton.click();
-
         await expect(page.getByTestId('@onboarding/exit-app-button')).toBeVisible();
 
         await page.reload();
