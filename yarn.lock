@@ -11335,8 +11335,12 @@ __metadata:
     react-native-get-random-values: "npm:^1.11.0"
     react-native-keyboard-controller: "npm:1.18.5"
     react-native-launch-arguments: "npm:^4.1.0"
+<<<<<<< HEAD
     react-native-mmkv: "npm:2.12.2"
     react-native-performance: "npm:^5.1.4"
+=======
+    react-native-mmkv: "npm:3.3.0"
+>>>>>>> 72d1a467a1 (chore(suite-native): upgrade mmkv to 3.3.0 to support new arch)
     react-native-permissions: "npm:5.4.2"
     react-native-quick-crypto: "npm:0.7.17"
     react-native-reanimated: "npm:^3.18.0"
@@ -38490,16 +38494,6 @@ __metadata:
     react: ">=16.8.1"
     react-native: ">=0.60.0-rc.0 <1.0.x"
   checksum: 10/89004acbc72a72b585b3a8d21344ed9654f683f19827d3ef4c3d58305c917dac55dea23c10c1d83b901f88c255c31817aa80238f2efe0c54fa30f764a52a2d8e
-  languageName: node
-  linkType: hard
-
-"react-native-mmkv@npm:2.12.2":
-  version: 2.12.2
-  resolution: "react-native-mmkv@npm:2.12.2"
-  peerDependencies:
-    react: "*"
-    react-native: ">=0.71.0"
-  checksum: 10/c1ebb8e81905ee8ce17858ff6096525cbdd0e51892dca80a3cd6e26feb5e979a9c7d609c5a55886150efb0136c5899de174c71115f81607019ed7af68678797b
   languageName: node
   linkType: hard
 
