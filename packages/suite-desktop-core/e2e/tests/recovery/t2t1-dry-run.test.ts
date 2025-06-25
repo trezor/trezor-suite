@@ -80,7 +80,7 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
 
             await test.step('Simulate disconnect', async () => {
                 await trezorUserEnvLink.stopBridge();
-                await expect(page.getByText('Reconnect your Trezor')).toBeVisible({
+                await expect(page.getByText('Wallet backup check failed')).toBeVisible({
                     timeout: 30_000,
                 });
             });
