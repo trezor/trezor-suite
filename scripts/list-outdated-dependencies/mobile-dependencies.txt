@@ -1,5 +1,6 @@
 @babel/plugin-transform-export-namespace-from
 @config-plugins/detox
+@expo/config-plugins
 @gorhom/bottom-sheet
 @mobily/ts-belt
 @react-native-async-storage/async-storage
@@ -19,7 +20,6 @@
 @types/jest
 @types/node
 @types/react
-@expo/config-plugins
 @whatwg-node/events
 abortcontroller-polyfill
 babel-plugin-transform-inline-environment-variables
@@ -70,10 +70,10 @@ metro
 node-gyp
 node-libs-browser
 react
+react-dom
 react-fela
 react-native
 react-native-ble-plx
-react-dom
 react-native-edge-to-edge
 react-native-gesture-handler
 react-native-keyboard-controller
