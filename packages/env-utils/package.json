@@ -28,7 +28,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "ua-parser-js": "^2.0.3"
+        "ua-parser-js": "^2.0.4"
     },
     "peerDependencies": {
         "expo-constants": "*",

@@ -11760,7 +11760,7 @@ __metadata:
     react-svg: "npm:16.3.0"
     react-use: "npm:^17.6.0"
     storybook: "npm:^9.0.13"
-    styled-components: "npm:^6.1.17"
+    styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^38.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -11822,7 +11822,7 @@ __metadata:
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
     scroll-into-view-if-needed: "npm:^3.1.0"
-    styled-components: "npm:^6.1.17"
+    styled-components: "npm:^6.1.19"
     tailwindcss: "npm:^3.4.10"
     zod: "npm:^3.24.2"
   peerDependencies:
@@ -11877,7 +11877,7 @@ __metadata:
     remark-gemoji: "npm:^8.0.0"
     remark-gfm: "npm:^4.0.1"
     rimraf: "npm:^6.0.1"
-    styled-components: "npm:^6.1.17"
+    styled-components: "npm:^6.1.19"
     swr: "npm:^2.3.3"
     tsx: "npm:^4.20.3"
     webpack: "npm:5.99.9"
@@ -11988,7 +11988,7 @@ __metadata:
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
     react: 19.0.0
-    styled-components: ^6.1.17
+    styled-components: ^6.1.19
     stylelint: ^16.19.0
     stylelint-config-standard: ^38.0.0
   languageName: unknown
@@ -12016,7 +12016,7 @@ __metadata:
   peerDependencies:
     react: 19.0.0
     react-error-boundary: ^6.0.0
-    styled-components: ^6.1.17
+    styled-components: ^6.1.19
     stylelint: ^16.19.0
     stylelint-config-standard: ^38.0.0
   languageName: unknown
@@ -12176,7 +12176,7 @@ __metadata:
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
     tsx: "npm:^4.20.3"
-    ua-parser-js: "npm:^2.0.3"
+    ua-parser-js: "npm:^2.0.4"
   peerDependencies:
     expo-constants: "*"
     expo-localization: "*"
@@ -12271,7 +12271,7 @@ __metadata:
     react-intl: "npm:^7.1.11"
     react-svg: "npm:16.3.0"
     storybook: "npm:^9.0.13"
-    styled-components: "npm:^6.1.17"
+    styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
     typescript-styled-plugin: "npm:^0.18.3"
     zxcvbn: "npm:^4.4.2"
@@ -12568,7 +12568,7 @@ __metadata:
     react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:9.2.0"
     react-router-dom: "npm:^5.2.0"
-    styled-components: "npm:^6.1.17"
+    styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^38.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -12757,7 +12757,7 @@ __metadata:
     redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
     semver: "npm:^7.7.1"
-    styled-components: "npm:^6.1.17"
+    styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^38.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -12807,7 +12807,7 @@ __metadata:
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
     react-intl: "npm:^7.1.11"
-    styled-components: "npm:^6.1.17"
+    styled-components: "npm:^6.1.19"
     usb: "npm:^2.15.0"
     webpack: "npm:5.99.9"
   languageName: unknown
@@ -38927,9 +38927,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:^6.1.17":
-  version: 6.1.17
-  resolution: "styled-components@npm:6.1.17"
+"styled-components@npm:^6.1.19":
+  version: 6.1.19
+  resolution: "styled-components@npm:6.1.19"
   dependencies:
     "@emotion/is-prop-valid": "npm:1.2.2"
     "@emotion/unitless": "npm:0.8.1"
@@ -38943,7 +38943,7 @@ __metadata:
   peerDependencies:
     react: ">= 16.8.0"
     react-dom: ">= 16.8.0"
-  checksum: 10/31939ba34ef8440f02cbdd2b509d03c6125d9f67876562899e6359680ad600b169a4d2c87afa57b399ecca31432b61de54bf052e1846051bbcfca64d86e5181b
+  checksum: 10/1e7503b48619c37691791f063d4ebbb32caf3ddef2ae11c3c706c4d6df5c0538357d406ef7a5f6077b2fef6294e365d4426240155a93cab3e49af58c9404ef9a
   languageName: node
   linkType: hard
 
@@ -40431,9 +40431,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ua-parser-js@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "ua-parser-js@npm:2.0.3"
+"ua-parser-js@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "ua-parser-js@npm:2.0.4"
   dependencies:
     "@types/node-fetch": "npm:^2.6.12"
     detect-europe-js: "npm:^0.1.2"
@@ -40442,7 +40442,7 @@ __metadata:
     ua-is-frozen: "npm:^0.1.2"
   bin:
     ua-parser-js: script/cli.js
-  checksum: 10/f181f1c976d67a2a8cdd396f8c5cecc8bfe4ada7183e7ef06a81a09aa9dc98480048380240f6374189cf2ab7e6275b711f9732e26b7ed2a14f3e4fe3576b8842
+  checksum: 10/eb3a57cd4aea6c42d2d766761ccf38cdc4576075646dec611efc336f0d1e640896ec4ca084142a1fedbf25c589e093e2cad50c49a22d089e234029ecb9b8d2e4
   languageName: node
   linkType: hard
 
