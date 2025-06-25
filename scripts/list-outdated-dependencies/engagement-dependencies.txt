@@ -23,14 +23,16 @@ csstype
 date-fns
 framer-motion
 lottie-react
+node-loader
 pako
+passport-desktop
 pdfmake
 polished
 postcss-loader
 postcss-styled-syntax
 qrcode.react
-react-error-boundary
 react-date-range
+react-error-boundary
 react-focus-lock
 react-helmet-async
 react-intl
@@ -41,8 +43,8 @@ react-select
 react-svg
 react-toastify
 recharts
-simple-git
 sharp
+simple-git
 storybook
 style-loader
 styled-components
@@ -58,5 +60,3 @@ vite
 vite-plugin-wasm
 vm-browserify
 zxcvbn
-passport-desktop
-node-loader
