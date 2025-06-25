@@ -1837,6 +1837,8 @@ export const en = {
             continueButton: 'Continue',
             amountEditingDoneButton: 'Done',
             quotesLoadingLabel: 'Fetching offers...',
+            rate: 'Rate',
+            selectedRate: 'Selected rate',
             footer: {
                 poweredBy: 'Powered by',
                 learnMore: 'Learn more',
@@ -1865,6 +1867,10 @@ export const en = {
             title: 'You get',
             buttonTitle: 'Select coin',
             amountLabel: 'You get',
+        },
+        selectRate: {
+            fixed: 'Fixed',
+            floating: 'Floating',
         },
         fiatCurrencySheet: {
             title: 'Currency',

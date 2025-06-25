@@ -1,8 +1,11 @@
 import { CoinInfo } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import type { TradingBuyFormProps, TradingPaymentMethodListProps } from '@suite-common/trading';
-import { toCryptoOption } from '@suite-common/trading';
+import {
+    TradingBuyFormProps,
+    TradingPaymentMethodListProps,
+    toCryptoOption,
+} from '@suite-common/trading';
 
 import { supportedFiatCurrenciesMap } from '../../consts/general/supportedFiatCurrencies';
 import { BuyFormType } from '../../types/buy';

@@ -1,12 +1,17 @@
+import { ExchangeTrade } from 'invity-api';
+
 import { invariant } from '@suite-common/suite-utils';
-import { selectTradingExchangeBuyCryptoIds } from '@suite-common/trading';
+import {
+    selectTradingExchangeBuyCryptoIds,
+    selectTradingExchangeProviders,
+} from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import {
     TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
-} from '../tradingSlice';
+} from '../reducers';
 import { ReceiveAccount } from '../types/general';
 import {
     coinInfoToTradeableAsset,
@@ -45,5 +50,51 @@ export const selectExchangeTradeableAssetsSorted = createMemoizedSelector(
         return cryptoIds
             .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
             .sort(tradeableAssetSortingComparator);
+    },
+);
+
+export const selectExchangeQuotes = (state: TradingRootState) =>
+    state.wallet.tradingNew.exchange.quotes;
+
+export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
+    state.wallet.tradingNew.exchange.isLoading;
+
+const ratingSortingComparator = (
+    a: { rate?: number | undefined },
+    b: { rate?: number | undefined },
+) => (b.rate ?? 0) - (a.rate ?? 0);
+
+export const selectGroupedExchangeQuotes = createMemoizedSelector(
+    [
+        selectExchangeQuotes,
+        selectTradingExchangeProviders as unknown as (
+            state: TradingRootState,
+        ) => ReturnType<typeof selectTradingExchangeProviders>,
+    ],
+    (quotes, providers = {}) => {
+        const groups = {
+            fixed: [] as ExchangeTrade[],
+            float: [] as ExchangeTrade[],
+            dex: [] as ExchangeTrade[],
+        };
+
+        quotes.forEach(quote => {
+            const { exchange = '', isDex } = quote;
+            const { isFixedRate } = providers[exchange] || {};
+
+            if (isDex) {
+                groups.dex.push(quote);
+            } else if (isFixedRate) {
+                groups.fixed.push(quote);
+            } else {
+                groups.float.push(quote);
+            }
+        });
+
+        Object.values(groups).forEach(group => {
+            group.sort(ratingSortingComparator);
+        });
+
+        return groups;
     },
 );

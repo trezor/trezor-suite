@@ -649,7 +649,7 @@ describe('useBuyForm', () => {
                 expect(result.current.getValues('generalAlert')).toBeUndefined();
             });
 
-            it('should be undefined when quotes are fetched ', async () => {
+            it('should be undefined when quotes are being fetched ', async () => {
                 const store = await getInitializedStore(true);
                 const { result } = await renderUseTradingBuyForm(store);
 
