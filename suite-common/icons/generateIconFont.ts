@@ -110,6 +110,7 @@ const usedIcons = [
     'selectionSlash',
     'shareNetwork',
     'shieldCheck',
+    'shield',
     'shieldWarning',
     'shuffle',
     'spinnerGap',

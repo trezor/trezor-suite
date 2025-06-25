@@ -26,7 +26,7 @@ export const DeviceAuthenticityCard = () => {
 
     return (
         <SettingsItemCard
-            icon="shieldCheck"
+            icon="shield"
             onPress={handleOnPress}
             title={<Translation id="moduleDeviceSettings.authenticity.title" />}
             subtitle={<Translation id="moduleDeviceSettings.authenticity.content" />}
