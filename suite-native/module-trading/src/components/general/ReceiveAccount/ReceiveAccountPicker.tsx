@@ -23,6 +23,7 @@ export type ReceiveAccountPickerProps = {
     receiveAccount: ReceiveAccount | undefined;
     tradingType: Exclude<TradingType, 'sell'>;
     testID?: string;
+    noBottomBorder?: boolean;
 };
 
 type RightTextProps = {
@@ -104,6 +105,7 @@ export const ReceiveAccountPicker = ({
     receiveAccount,
     symbol,
     tradingType,
+    noBottomBorder = true,
     testID,
 }: ReceiveAccountPickerProps) => {
     const { translate } = useTranslate();
@@ -127,7 +129,7 @@ export const ReceiveAccountPicker = ({
             title={translate('moduleTrading.tradingScreen.receiveAccount')}
             onPress={openAccountPicker}
             testID={testID}
-            noBottomBorder
+            noBottomBorder={noBottomBorder}
         >
             <VStack spacing={0} paddingLeft="sp20">
                 <ReceiveAccountPickerRight

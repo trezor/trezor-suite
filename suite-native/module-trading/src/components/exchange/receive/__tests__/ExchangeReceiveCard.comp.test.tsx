@@ -5,6 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { exchangeQuotes } from '../../../../__fixtures__/exchangeQuotes';
 import { usdcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeFormType } from '../../../../types/exchange';
@@ -28,7 +29,7 @@ describe('ExchangeReceiveCard', () => {
     it('should render all components', async () => {
         act(() => {
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('receiveCryptoAmount', '100');
+            form.setValue('quote', exchangeQuotes[0]);
         });
         const { getByText, getByLabelText } = await renderExchangeBuyCard();
 
@@ -36,7 +37,7 @@ describe('ExchangeReceiveCard', () => {
         expect(getByText('$123.00')).toBeOnTheScreen();
         expect(getByLabelText('Select coin')).toHaveTextContent(/USDC/);
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
-        expect(getByLabelText('You get')).toHaveDisplayValue('100');
+        expect(getByLabelText('You get')).toHaveDisplayValue('0.00083554');
         expect(getByText('Balance:')).toBeOnTheScreen();
         expect(getByText('- USDC')).toBeOnTheScreen();
     });

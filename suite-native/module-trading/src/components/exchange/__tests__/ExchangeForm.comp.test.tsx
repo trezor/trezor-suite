@@ -5,7 +5,9 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
+import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeFormType } from '../../../types/exchange';
 import { ExchangeForm } from '../ExchangeForm';
@@ -13,11 +15,14 @@ import { ExchangeForm } from '../ExchangeForm';
 describe('ExchangeForm', () => {
     let form: ExchangeFormType;
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm(), {});
 
     const renderExchangeForm = () =>
         renderWithStoreProviderAsync(<ExchangeForm />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            preloadedState: {
+                wallet: { tradingNew: getInitializedTradingState() },
+            },
         });
 
     beforeEach(async () => {
@@ -57,6 +62,26 @@ describe('ExchangeForm', () => {
             expect(getByText('You get')).toBeOnTheScreen();
             expect(getByText('Done')).toBeOnTheScreen();
             expect(queryByText('Receive account')).toBeNull();
+        });
+
+        describe('with quote selected', () => {
+            beforeEach(() => {
+                act(() => {
+                    form.setValue('quote', exchangeQuotes[0]);
+                });
+            });
+
+            it('should display provider', async () => {
+                const { getByText } = await renderExchangeForm();
+
+                expect(getByText('Provider')).toBeOnTheScreen();
+            });
+
+            it('should display rate', async () => {
+                const { getByText } = await renderExchangeForm();
+
+                expect(getByText('Rate')).toBeOnTheScreen();
+            });
         });
     });
 });
