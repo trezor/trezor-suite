@@ -23,7 +23,7 @@ import { setCoinFilter } from './accountSearchActions';
 // move to selector!!!!
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
-    const accounts = selectDeviceAccounts(state);
+
     // waiting for device
     if (!device) {
         return {
@@ -39,15 +39,14 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         };
     }
 
-    // waiting for discovery
-    const discovery = selectDiscoveryForSelectedDevice(state);
-
     if (!device.state) {
         return {
             status: 'loading',
             loader: 'auth',
         };
     }
+
+    const accounts = selectDeviceAccounts(state);
 
     // account cannot exist since there are no discovered accounts (maybe no networks enabled)
     const enabledNetworks = selectEnabledNetworks(state);
@@ -80,6 +79,9 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             params,
         };
     }
+
+    // waiting for discovery
+    const discovery = selectDiscoveryForSelectedDevice(state);
 
     const matchedFailed = (discovery?.failed ?? []).find(
         f =>
