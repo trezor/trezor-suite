@@ -15,6 +15,8 @@ import {
 } from '@suite-common/wallet-config';
 import {
     Account,
+    AccountDescriptor,
+    AccountKey,
     DiscoveryStatus,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
@@ -1172,3 +1174,13 @@ export const isAccountInCollection = (account: Account, accounts: Account[]) =>
             // do not mark as duplicate if two different devices discover the same wallet
             deviceState === account.deviceState,
     );
+
+export const parseAccountKey = (accountKey: AccountKey) => {
+    const [accountDescriptor, networkSymbol, deviceStaticSessionId] = accountKey.split('-');
+
+    return {
+        accountDescriptor: accountDescriptor as AccountDescriptor,
+        networkSymbol: networkSymbol as NetworkSymbol,
+        deviceStaticSessionId: deviceStaticSessionId as StaticSessionId,
+    };
+};
