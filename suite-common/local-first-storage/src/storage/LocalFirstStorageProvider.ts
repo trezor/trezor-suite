@@ -1,0 +1,113 @@
+import {
+    EncryptionKey,
+    EvoluDeps,
+    OwnerId,
+    SimpleName,
+    WriteKey,
+    createEvolu,
+    createIdFromString,
+    getOrThrow,
+    hexToBytes,
+} from '@evolu/common';
+
+import { EvoluKeys } from '@suite-common/suite-types';
+
+import { Schema } from '../schema';
+import { LocalFirstStorage } from '../storage';
+
+// This is a way how to force change of the SQL files.
+// This shall NEVER change in production!!!
+const VERSION = 2;
+
+type CreateEvoluInstanceProps = {
+    relayUrl: string;
+    evoluKeys: EvoluKeys;
+    evoluDeps: EvoluDeps;
+};
+
+const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
+    const evoluOwnerId = getOrThrow(OwnerId.from(createIdFromString(evoluKeys.ownerId)));
+
+    const name = SimpleName.from(`trezor-suite-v${VERSION}-${evoluOwnerId.replace('_', '-')}`);
+    if (!name.ok) {
+        console.error(name.error);
+
+        throw name.error;
+    }
+
+    const evolu = createEvolu(evoluDeps)(Schema, {
+        name: name.value,
+        syncUrl: relayUrl,
+        initialAppOwner: {
+            type: 'AppOwner',
+            id: evoluOwnerId,
+            encryptionKey: getOrThrow(EncryptionKey.from(hexToBytes(evoluKeys.encryptionKey))),
+            writeKey: getOrThrow(
+                WriteKey.from(
+                    // Evolu uses only the first 16 bytes as write key
+                    hexToBytes(evoluKeys.writeKey).slice(0, 16),
+                ),
+            ),
+        },
+    });
+
+    // Todo: remove this for production
+    evolu.subscribeError(() => {
+        const error = evolu.getError();
+
+        console.log(error);
+
+        if (!error) return;
+        // alert('🚨 Evolu error occurred! Check the console.');
+
+        console.error(JSON.stringify(error));
+    });
+
+    return evolu;
+};
+
+type SuiteOwnerId = string;
+
+export const DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL = 'https://free.evoluhq.com';
+
+export class LocalFirstStorageProvider {
+    private storages = new Map<SuiteOwnerId, LocalFirstStorage>();
+
+    constructor(
+        private relayUrl: string | null, // null -> fallback to default
+        private evoluDeps: EvoluDeps,
+    ) {}
+
+    getStorage(evoluKeys: EvoluKeys) {
+        let storage = this.storages.get(evoluKeys.ownerId);
+
+        if (storage === undefined) {
+            const evolu = createEvoluInstance({
+                relayUrl: this.relayUrl ?? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
+                evoluKeys,
+                evoluDeps: this.evoluDeps,
+            });
+
+            storage = new LocalFirstStorage(evolu);
+            this.storages.set(evoluKeys.ownerId, storage);
+        }
+
+        return storage;
+    }
+
+    deleteStorage(ownerId: OwnerId) {
+        // Evolu does not support proper disconnect and disposal yet. This is a workaround.
+        // this.storages.get(secret)?._resetAppOwner();
+
+        this.storages.delete(ownerId);
+    }
+
+    /**
+     * @deprecated Debug only!
+     */
+    _reset = async () => {
+        for (const storage of this.storages.values()) {
+            await storage._resetAppOwner();
+        }
+    };
+}

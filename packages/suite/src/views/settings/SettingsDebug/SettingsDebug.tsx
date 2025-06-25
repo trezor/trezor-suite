@@ -18,6 +18,7 @@ import { FirmwareUpdate } from './FirmwareUpdate';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
+import { LocalFirstStorageDebug } from './LocalFirstStorageDebug';
 import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
@@ -105,6 +106,7 @@ export const SettingsDebug = () => {
             <SettingsSection title="Firmware update source">
                 <FirmwareUpdate />
             </SettingsSection>
+            <LocalFirstStorageDebug />
         </SettingsLayout>
     );
 };

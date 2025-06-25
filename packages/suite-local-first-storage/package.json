@@ -1,0 +1,16 @@
+{
+    "name": "@trezor/suite-local-first-storage",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@evolu/web": "^1.0.1-preview.4",
+        "@suite-common/local-first-storage": "workspace:*"
+    }
+}

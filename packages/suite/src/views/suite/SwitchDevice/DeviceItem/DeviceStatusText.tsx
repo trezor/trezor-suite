@@ -1,5 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 
+import { selectWalletLabel } from '@suite-common/local-first-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
@@ -24,14 +25,21 @@ type DeviceStatusVisible = {
 };
 
 const DeviceStatusVisible = ({ device, connected, forceConnectionInfo }: DeviceStatusVisible) => {
-    const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
+    const { walletLabel: walletLabelOld } = useSelector(state =>
+        selectLabelingDataForWallet(state, device.state),
+    );
 
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const defaultWalletLabel =
         device !== undefined ? defaultAccountLabelString({ device }) : undefined;
-    const isWalletLabelEmpty = walletLabel === undefined || walletLabel.trim() === '';
 
+    const localFirstWalletLabel = useSelector(state =>
+        selectWalletLabel({ state, deviceStaticSessionId: device?.state?.staticSessionId }),
+    );
+
+    const walletLabel = localFirstWalletLabel ?? walletLabelOld;
+    const isWalletLabelEmpty = walletLabel === undefined || walletLabel.trim() === '';
     const walletText = isWalletLabelEmpty ? defaultWalletLabel : walletLabel;
 
     return (

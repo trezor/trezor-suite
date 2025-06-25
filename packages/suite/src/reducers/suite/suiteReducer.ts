@@ -17,6 +17,8 @@ import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 import { ensureLocale } from 'src/utils/suite/l10n';
 
+import { setLocalFirstStorageRelayAction } from '../../actions/settings/settingsActions';
+
 export interface SuiteRootState {
     suite: SuiteState;
 }
@@ -71,6 +73,8 @@ export interface Flags {
     showBluetoothDebugInfo: boolean;
     stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
     solanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
+    isLocalFirstStorageEnabled: boolean;
+    isLocalFirstStorageDebugEnabled: boolean;
     hasSeenDisconnectTooltip: boolean; // tooltip shown when device disconnects - show only once ever
 }
 
@@ -105,6 +109,7 @@ export interface SuiteSettings {
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
+    localFirstStorageRelayUrl: string | null;
     autoEject: boolean;
 }
 
@@ -166,6 +171,8 @@ const initialState: SuiteState = {
         showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
         solanaLimitedHistoryBannerClosed: false,
+        isLocalFirstStorageEnabled: false,
+        isLocalFirstStorageDebugEnabled: false,
         hasSeenDisconnectTooltip: false,
     },
     evmSettings: {
@@ -207,6 +214,7 @@ const initialState: SuiteState = {
         defaultWalletLoading: WalletType.STANDARD,
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
+        localFirstStorageRelayUrl: null,
         autoEject: false,
     },
     recentlyConnectedDeviceRef: null,
@@ -433,6 +441,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.LOCK_ROUTER:
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
+
+            case setLocalFirstStorageRelayAction.type:
+                draft.settings.localFirstStorageRelayUrl = action.payload.url;
 
             // no default
         }

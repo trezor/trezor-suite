@@ -72,8 +72,8 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
             const deviceState = action.payload.device.state;
             if (deviceState) {
-                const accounts = selectAccountsByDeviceState(getState(), deviceState);
-                dispatch(forgetAccountsThunk({ accountsToRemove: accounts }));
+                const accountsToRemove = selectAccountsByDeviceState(getState(), deviceState);
+                dispatch(forgetAccountsThunk({ accountsToRemove }));
             }
         }
 

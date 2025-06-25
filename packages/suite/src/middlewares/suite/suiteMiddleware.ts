@@ -29,6 +29,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.forgetDevice,
             // ?
             deviceActions.setDeviceState,
+            deviceActions.setLocalFirstStorageSecret,
             deviceActions.setDiscovered,
         )(action)
     ) {

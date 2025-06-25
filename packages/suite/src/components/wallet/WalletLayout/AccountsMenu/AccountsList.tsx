@@ -1,13 +1,15 @@
+import { findAccountLabel, selectAccountLabels } from '@suite-common/local-first-storage';
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { accountSearchFn } from '@suite-common/wallet-utils';
+import { accountSearchFn, parseAccountKey } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
+import type { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
+import { selectAccountLabels as selectAccountLabelsOld } from 'src/reducers/suite/metadataReducer';
 import { AccountItemType } from 'src/types/wallet';
 
 import { AccountGroup } from './AccountGroup';
@@ -34,6 +36,7 @@ type AccountsProps = {
     // NOTE: this is to disable completely default click behavior of the item
     forceOnlyItemClick?: boolean;
     onItemClick?: (account: Account, type: AccountItemType) => void;
+    deviceStaticSessionId: StaticSessionId;
 };
 
 const Accounts = ({
@@ -44,11 +47,16 @@ const Accounts = ({
     discoveryInProgress,
     type,
     onItemClick,
+    deviceStaticSessionId,
 }: AccountsProps) => {
-    const accountLabels = useSelector(selectAccountLabels);
+    const accountLabels = useSelector(selectAccountLabelsOld);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { params } = selectedAccount;
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
+
+    const localFirstAccountLabels = useSelector(state =>
+        selectAccountLabels(state, deviceStaticSessionId),
+    );
 
     return (
         <>
@@ -61,6 +69,15 @@ const Accounts = ({
 
                 const selected = !!isSelected(account);
 
+                const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
+
+                const label =
+                    findAccountLabel({
+                        accountLabels: localFirstAccountLabels,
+                        accountDescriptor,
+                        networkSymbol,
+                    })?.label ?? accountLabels[account.key];
+
                 return (
                     <AccountSection
                         key={account.key}
@@ -68,7 +85,7 @@ const Accounts = ({
                         hideStaking={hideStaking}
                         account={{
                             ...account,
-                            accountLabel: accountLabels[account.key],
+                            accountLabel: label,
                         }}
                         selected={selected}
                         onItemClick={onItemClick}
@@ -89,7 +106,14 @@ export const AccountsList = ({
     const accounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
-    const accountLabels = useSelector(selectAccountLabels);
+    const accountLabels = useSelector(selectAccountLabelsOld);
+
+    const localFirstAccountLabels = useSelector(state =>
+        device?.state?.staticSessionId !== undefined
+            ? selectAccountLabels(state, device?.state?.staticSessionId)
+            : [],
+    );
+
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isSidebarCollapsed = useIsSidebarCollapsed();
     const { coinFilter, searchString } = useAccountSearch();
@@ -104,9 +128,18 @@ export const AccountsList = ({
         searchString || coinFilter
             ? accounts.filter(account => {
                   const { key, accountType, symbol, index } = account;
-                  const accountLabel = Object.prototype.hasOwnProperty.call(accountLabels, key)
+                  const accountLabelOld = Object.prototype.hasOwnProperty.call(accountLabels, key)
                       ? accountLabels[key]
                       : getDefaultAccountLabel({ accountType, symbol, index });
+
+                  const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
+
+                  const accountLabel =
+                      findAccountLabel({
+                          accountLabels: localFirstAccountLabels,
+                          accountDescriptor,
+                          networkSymbol,
+                      })?.label ?? accountLabelOld;
 
                   return accountSearchFn(account, searchString, coinFilter, accountLabel);
               })
@@ -144,13 +177,19 @@ export const AccountsList = ({
             return;
         }
 
-        const accountProps = {
+        const deviceStaticSessionId = device.state?.staticSessionId;
+        if (deviceStaticSessionId === undefined) {
+            return;
+        }
+
+        const accountProps: AccountsProps = {
             forceOnlyItemClick,
             accounts,
             onItemClick,
             coinjoinIsPreloading,
             discoveryInProgress: false,
             type,
+            deviceStaticSessionId,
         };
 
         return (

@@ -2,6 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
+import { selectAddressLabels, selectOutputLabels } from '@suite-common/local-first-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Row, Spinner, Text, TextButton, Tooltip } from '@trezor/components';
@@ -177,6 +178,13 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
+    const localFirstAddressLabels = useSelector(state =>
+        selectAddressLabels(state, account.deviceState),
+    );
+    const localFirstOutputLabels = useSelector(state =>
+        selectOutputLabels(state, account.deviceState),
+    );
+
     const dispatch = useDispatch();
 
     const theme = useTheme();
@@ -259,11 +267,14 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     )}
                     <Text typographyStyle="hint">
                         <MetadataLabeling
+                            deviceStaticSessionId={account.deviceState}
                             payload={{
                                 type: 'addressLabel',
                                 entityKey: account.key,
                                 defaultValue: utxo.address,
-                                value: addressLabels[utxo.address],
+                                value:
+                                    localFirstAddressLabels.find(it => it.address === utxo.address)
+                                        ?.label ?? addressLabels[utxo.address],
                             }}
                             isDisabled
                             defaultVisibleValue={<Address>{utxo.address}</Address>}
@@ -299,6 +310,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         <LabelPart>
                             <span>•</span>
                             <MetadataLabeling
+                                deviceStaticSessionId={account.deviceState}
                                 visible
                                 payload={{
                                     type: 'outputLabel',
@@ -306,7 +318,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     txid: utxo.txid,
                                     outputIndex: utxo.vout,
                                     defaultValue: `${utxo.txid}-${utxo.vout}`,
-                                    value: outputLabel,
+                                    value:
+                                        localFirstOutputLabels.find(
+                                            it =>
+                                                it.txId === utxo.txid &&
+                                                it.outputIndex == utxo.vout,
+                                        )?.label ?? outputLabel,
                                 }}
                             />
                         </LabelPart>
