@@ -10,7 +10,6 @@
 @storybook/react-webpack5
 @types/pako
 @types/pdfmake
-@types/react
 @types/react-date-range
 @types/react-dom
 @types/react-qr-reader
@@ -30,10 +29,8 @@ polished
 postcss-loader
 postcss-styled-syntax
 qrcode.react
-react
 react-error-boundary
 react-date-range
-react-dom
 react-focus-lock
 react-helmet-async
 react-intl
