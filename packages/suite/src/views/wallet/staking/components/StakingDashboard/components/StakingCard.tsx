@@ -5,7 +5,6 @@ import {
     selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
 import {
-    formatNetworkAmount,
     getStakingAccountCurrentStatus,
     getStakingDataForNetwork,
     isPending,
@@ -33,6 +32,7 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getStakingTotalRewards } from 'src/utils/suite/staking';
 
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
@@ -97,12 +97,14 @@ export const StakingCard = ({
     const selectedAccount = useSelector(selectSelectedAccount);
     const { isBelowLaptop } = useLayoutSize();
 
-    const { data, isLoading: isSolanaTotalRewardsLoading } =
-        useSelector((state: StakeRootState) =>
-            selectStakingTotalRewards(state, selectedAccount?.symbol, selectedAccount?.descriptor),
-        ) ?? {};
-    const solanaTotalRewards = data ?? '0';
-    const isTotalRewardsLoading = isSolanaTotalRewardsLoading || data === undefined;
+    const selectedStakingTotalRewards = useSelector((state: StakeRootState) =>
+        selectStakingTotalRewards(state, selectedAccount?.symbol, selectedAccount?.descriptor),
+    );
+
+    const { totalRewards = '0', isTotalRewardsLoading } = getStakingTotalRewards(
+        selectedAccount,
+        selectedStakingTotalRewards,
+    );
 
     const {
         isStakingDisabled,
@@ -114,7 +116,6 @@ export const StakingCard = ({
     const {
         autocompoundBalance = '0',
         depositedBalance = '0',
-        restakedReward = '0',
         totalPendingStakeBalance = '0',
         withdrawTotalAmount = '0',
         claimableAmount = '0',
@@ -186,9 +187,6 @@ export const StakingCard = ({
         return null;
     }
 
-    const solReward = formatNetworkAmount(solanaTotalRewards, selectedAccount.symbol);
-
-    const stakingReward = selectedAccount.networkType === 'solana' ? solReward : restakedReward;
     const isEthereumNetwork = selectedAccount.networkType === 'ethereum';
 
     return (
@@ -246,8 +244,8 @@ export const StakingCard = ({
                         }
                         iconName="plusCircle"
                         isReward
-                        cryptoAmount={stakingReward}
-                        fiatAmount={stakingReward}
+                        cryptoAmount={totalRewards}
+                        fiatAmount={totalRewards}
                         data-testid="@account/staking/rewards"
                         symbol={selectedAccount.symbol}
                         isLoading={isTotalRewardsLoading}

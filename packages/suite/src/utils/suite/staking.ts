@@ -1,4 +1,5 @@
-import { Account, StakeType } from '@suite-common/wallet-types';
+import { Account, StakeType, Timestamp } from '@suite-common/wallet-types';
+import { formatNetworkAmount, getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
@@ -35,5 +36,42 @@ export const getStakingContractAddress = (account: Account, stakeType: StakeType
         case 'solana':
         default:
             return account.descriptor;
+    }
+};
+
+interface StakingTotalRewards {
+    data?: string;
+    error?: string | boolean;
+    isLoading?: boolean;
+    lastSuccessfulFetchTimestamp?: Timestamp;
+}
+
+export const getStakingTotalRewards = (
+    account?: Account,
+    stakingTotalRewards?: StakingTotalRewards,
+) => {
+    if (!account) return {};
+
+    const { restakedReward = '0' } = getStakingDataForNetwork(account) ?? {};
+
+    const { data, isLoading: isSolanaTotalRewardsLoading } = stakingTotalRewards ?? {};
+    const solanaTotalRewards = data ?? '0';
+    const isTotalRewardsLoading = isSolanaTotalRewardsLoading || data === undefined;
+
+    const solRewardsFormatted = formatNetworkAmount(solanaTotalRewards, account.symbol);
+
+    switch (account.networkType) {
+        case 'ethereum':
+            return {
+                totalRewards: restakedReward,
+                isTotalRewardsLoading: false,
+            };
+        case 'solana':
+            return {
+                totalRewards: solRewardsFormatted,
+                isTotalRewardsLoading,
+            };
+        default:
+            return {};
     }
 };
