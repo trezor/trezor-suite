@@ -17,6 +17,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "bs58": "^6.0.0",
+        "expo": "53.0.11",
         "expo-crypto": "~14.1.5",
         "expo-secure-store": "~14.2.3",
         "expo-splash-screen": "~0.30.9",

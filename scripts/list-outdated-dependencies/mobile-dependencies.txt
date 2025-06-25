@@ -81,7 +81,6 @@ react-native-mmkv
 react-native-permissions
 react-native-quick-crypto
 react-native-reanimated
-react-native-restart
 react-native-safe-area-context
 react-native-screens
 react-native-svg

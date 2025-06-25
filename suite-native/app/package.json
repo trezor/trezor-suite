@@ -128,7 +128,6 @@
         "react-native-permissions": "^5.2.3",
         "react-native-quick-crypto": "^0.7.6",
         "react-native-reanimated": "^3.18.0",
-        "react-native-restart": "0.0.27",
         "react-native-safe-area-context": "5.4.0",
         "react-native-screens": "~4.11.1",
         "react-native-svg": "15.11.2",

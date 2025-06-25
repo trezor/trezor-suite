@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 import { MMKV } from 'react-native-mmkv';
-import RNRestart from 'react-native-restart';
 
 import { captureException, captureMessage } from '@sentry/react-native';
+import { reloadAppAsync } from 'expo';
 import { getRandomBytes } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from 'expo-splash-screen';
@@ -51,7 +51,7 @@ export const clearStorage = () => {
     captureMessage('User triggered Clear App Storage action.', 'error');
     unecryptedJotaiStorage.clearAll();
     encryptedStorage?.clearAll();
-    RNRestart.restart();
+    reloadAppAsync();
 };
 
 const alertUser = () => {
@@ -68,9 +68,7 @@ const alertUser = () => {
             },
             {
                 text: 'Restart app',
-                onPress: () => {
-                    RNRestart.restart();
-                },
+                onPress: reloadAppAsync,
                 isPreferred: true,
                 style: 'default',
             },
