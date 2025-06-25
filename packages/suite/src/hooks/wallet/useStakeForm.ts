@@ -46,7 +46,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     const { symbol } = account;
 
     const localCurrency = useSelector(selectLocalCurrency);
-    const symbolFees = useSelector(state => state.wallet.fees[symbol]?.data);
+    const networkFees = useSelector(state => state.wallet.fees[symbol]?.data);
 
     const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
 
@@ -84,7 +84,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     const state = useMemo(() => {
         const feeInfo = getFeeInfo({
             networkType: account.networkType,
-            feeInfo: symbolFees,
+            feeInfo: networkFees,
         });
 
         return {
@@ -93,7 +93,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, symbolFees, network]);
+    }, [account, defaultValues, networkFees, network]);
 
     const methods = useForm<StakeFormState>({
         mode: 'onChange',
@@ -137,7 +137,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     // sub-hook, FeeLevels handler
     const feeInfo = getFeeInfo({
         networkType: account.networkType,
-        feeInfo: symbolFees,
+        feeInfo: networkFees,
     });
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',

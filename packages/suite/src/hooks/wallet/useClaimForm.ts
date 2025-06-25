@@ -24,7 +24,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
     const localCurrency = useSelector(selectLocalCurrency);
 
     const { account, network } = selectedAccount;
-    const symbolFees = useSelector(state => state.wallet.fees[account.symbol]?.data);
+    const networkFees = useSelector(state => state.wallet.fees[account.symbol]?.data);
 
     const defaultValues = useMemo(() => {
         const stakingContractAddress = getStakingContractAddress(account, 'claim');
@@ -40,7 +40,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
     const state = useMemo(() => {
         const feeInfo = getFeeInfo({
             networkType: account.networkType,
-            feeInfo: symbolFees,
+            feeInfo: networkFees,
         });
 
         return {
@@ -49,7 +49,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, symbolFees, network]);
+    }, [account, defaultValues, networkFees, network]);
 
     const methods = useForm<ClaimFormState>({
         mode: 'onChange',
@@ -102,7 +102,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
     // sub-hook, FeeLevels handler
     const feeInfo = getFeeInfo({
         networkType: account.networkType,
-        feeInfo: symbolFees,
+        feeInfo: networkFees,
     });
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',
