@@ -1,13 +1,31 @@
 import { AccountOutputLabels } from '@suite-common/metadata-types';
 import { Utxo } from '@trezor/blockchain-link';
 
+export type OutputLabels = { [txid: string]: AccountOutputLabels };
+
 type FilterAndCategorizeUtxosParams = {
     searchQuery: string;
     utxos: Utxo[];
     spendableUtxos: Utxo[];
     lowAnonymityUtxos: Utxo[];
     dustUtxos: Utxo[];
-    outputLabels: { [txid: string]: AccountOutputLabels };
+    outputLabels: OutputLabels;
+};
+
+export const filterUtxos = (
+    utxo: Utxo,
+    searchQuery: string,
+    outputLabels?: OutputLabels,
+): boolean => {
+    const lowerCaseSearchQuery = searchQuery.toLowerCase();
+
+    return (
+        utxo.address.toLowerCase().includes(lowerCaseSearchQuery) ||
+        utxo.txid.toLowerCase().includes(lowerCaseSearchQuery) ||
+        (typeof outputLabels?.[utxo.txid]?.[utxo.vout] === 'string'
+            ? outputLabels[utxo.txid][utxo.vout].toLowerCase().includes(lowerCaseSearchQuery)
+            : false)
+    );
 };
 
 /**
@@ -22,15 +40,11 @@ export const filterAndCategorizeUtxos = ({
     outputLabels,
 }: FilterAndCategorizeUtxosParams) => {
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
-    const filterUtxos = (utxo: Utxo) =>
-        utxo.address.toLowerCase().includes(lowerCaseSearchQuery) ||
-        utxo.txid.toLowerCase().includes(lowerCaseSearchQuery) ||
-        outputLabels?.[utxo.txid]?.[utxo.vout]?.toLowerCase().includes(lowerCaseSearchQuery);
 
     return {
-        filteredUtxos: utxos.filter(filterUtxos),
-        filteredSpendableUtxos: spendableUtxos.filter(filterUtxos),
-        filteredLowAnonymityUtxos: lowAnonymityUtxos.filter(filterUtxos),
-        filteredDustUtxos: dustUtxos.filter(filterUtxos),
+        filteredUtxos: utxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
+        filteredSpendableUtxos: spendableUtxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
+        filteredLowAnonymityUtxos: lowAnonymityUtxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
+        filteredDustUtxos: dustUtxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
     };
 };
