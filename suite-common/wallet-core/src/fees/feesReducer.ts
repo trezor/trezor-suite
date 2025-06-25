@@ -8,6 +8,7 @@ import { getFeeInfo } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 
 import { feesActions } from './feesActions';
+import { updateFeeInfoThunk } from './feesThunks';
 
 export type FeesRootState = {
     wallet: {
@@ -25,14 +26,28 @@ export const DEFAULT_FEE_INFO: FeeInfo = {
 };
 
 export const feesReducer = createReducer<FeesState>({}, builder => {
-    builder.addCase(feesActions.updateFee, (state, { payload: { symbol, status, data } }) => {
-        state[symbol] = { ...state[symbol], status };
-        if (data) state[symbol].data = data;
+    builder.addCase(feesActions.updateFee, (state, { payload: { symbol, data } }) => {
+        const defaultStatus = 'loaded'; // in case the object doesn't exist yet (shouldn't happen)
+        state[symbol] = { status: defaultStatus, ...state[symbol], data };
     });
     builder.addCase(feesActions.updateMultipleFees, (state, { payload }) => ({
         ...state,
         ...payload,
     }));
+    builder.addCase(updateFeeInfoThunk.pending, (state, action) => {
+        const { networkSymbol } = action.meta.arg;
+        // at this point, the object may not exist yet (if this is the first call of the thunk)
+        state[networkSymbol] = { ...state[networkSymbol], status: 'loading' };
+    });
+    builder.addCase(updateFeeInfoThunk.fulfilled, (state, action) => {
+        const { networkSymbol } = action.meta.arg;
+        const data = action.payload;
+        state[networkSymbol] = { ...state[networkSymbol], status: 'loaded', data };
+    });
+    builder.addCase(updateFeeInfoThunk.rejected, (state, action) => {
+        const { networkSymbol } = action.meta.arg;
+        state[networkSymbol] = { ...state[networkSymbol], status: 'error' };
+    });
 });
 
 // Create app selector with WeakMap memoization since we'll be using parameters
