@@ -12229,11 +12229,8 @@ __metadata:
   dependencies:
     "@trezor/device-utils": "workspace:^"
     "@trezor/env-utils": "workspace:^"
-    "@types/fs-extra": "npm:^11.0.4"
     "@types/jws": "npm:^3.2.10"
-    fs-extra: "npm:^11.3.0"
     jws: "npm:^4.0.0"
-    tsx: "npm:^4.20.3"
   languageName: unknown
   linkType: soft
 
