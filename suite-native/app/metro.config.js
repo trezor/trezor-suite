@@ -1,11 +1,9 @@
 /* eslint-disable require-await */
-const { mergeConfig } = require('@react-native/metro-config');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
+const { mergeConfig } = require('metro-config'); // Learn more https://docs.expo.io/guides/customizing-metro
 const nodejs = require('node-libs-browser');
 
 const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecureResolver');
-
-// Learn more https://docs.expo.io/guides/customizing-metro
 
 const jsonExpoConfig = getSentryExpoConfig(__dirname);
 const defaultSourceExts = jsonExpoConfig.resolver.sourceExts;

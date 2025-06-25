@@ -7355,32 +7355,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/metro-babel-transformer@npm:0.79.3":
-  version: 0.79.3
-  resolution: "@react-native/metro-babel-transformer@npm:0.79.3"
-  dependencies:
-    "@babel/core": "npm:^7.25.2"
-    "@react-native/babel-preset": "npm:0.79.3"
-    hermes-parser: "npm:0.25.1"
-    nullthrows: "npm:^1.1.1"
-  peerDependencies:
-    "@babel/core": "*"
-  checksum: 10/42505905e6d161ceb286c785b9349debac4b1c60d89d21e7bcc4c876aad0772f5cbde73ad07a6b224afb64b6165361feb24ba613fb015b8231ded9cb4e4bccf7
-  languageName: node
-  linkType: hard
-
-"@react-native/metro-config@npm:^0.79.2":
-  version: 0.79.3
-  resolution: "@react-native/metro-config@npm:0.79.3"
-  dependencies:
-    "@react-native/js-polyfills": "npm:0.79.3"
-    "@react-native/metro-babel-transformer": "npm:0.79.3"
-    metro-config: "npm:^0.82.0"
-    metro-runtime: "npm:^0.82.0"
-  checksum: 10/76feddea598998e1e3618fa62a05ee614b1d886f6552a05d040eee81f05d5c99a8f12364f2db7f6ef38967c2459ccb6dc112b4e5f84921137e6fc7167e6b5277
-  languageName: node
-  linkType: hard
-
 "@react-native/normalize-colors@npm:0.76.6":
   version: 0.76.6
   resolution: "@react-native/normalize-colors@npm:0.76.6"
@@ -9952,7 +9926,6 @@ __metadata:
     "@react-native-community/cli": "npm:^15.1.2"
     "@react-native-community/netinfo": "npm:^11.4.1"
     "@react-native/babel-preset": "npm:^0.75.2"
-    "@react-native/metro-config": "npm:^0.79.2"
     "@react-navigation/bottom-tabs": "npm:6.6.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
@@ -10053,6 +10026,7 @@ __metadata:
     jotai: "npm:^2.12.5"
     lottie-react-native: "npm:7.2.2"
     metro: "npm:^0.82.0"
+    metro-config: "npm:^0.82.4"
     node-libs-browser: "npm:^2.2.1"
     react: "npm:19.0.0"
     react-intl: "npm:^7.1.11"
@@ -10065,7 +10039,6 @@ __metadata:
     react-native-permissions: "npm:^5.2.3"
     react-native-quick-crypto: "npm:^0.7.6"
     react-native-reanimated: "npm:^3.18.0"
-    react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:5.4.0"
     react-native-screens: "npm:~4.11.1"
     react-native-svg: "npm:15.11.2"
@@ -11268,6 +11241,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     bs58: "npm:^6.0.0"
+    expo: "npm:53.0.11"
     expo-crypto: "npm:~14.1.5"
     expo-secure-store: "npm:~14.2.3"
     expo-splash-screen: "npm:~0.30.9"
@@ -30110,7 +30084,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"metro-config@npm:0.82.4, metro-config@npm:^0.82.0":
+"metro-config@npm:0.82.4, metro-config@npm:^0.82.0, metro-config@npm:^0.82.4":
   version: 0.82.4
   resolution: "metro-config@npm:0.82.4"
   dependencies:
