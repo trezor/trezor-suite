@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, getNetworkOptional, networksCollection } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { FeeInfo, FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -67,30 +67,25 @@ type UpdateFeeInfoThunkProps = {
     networkSymbol: NetworkSymbol;
 };
 
-export const updateFeeInfoThunk = createThunk(
+export const updateFeeInfoThunk = createThunk<
+    FeeInfo,
+    UpdateFeeInfoThunkProps,
+    { rejectValue: undefined }
+>(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
-    async ({ networkSymbol }: UpdateFeeInfoThunkProps, { dispatch, getState }) => {
-        const network = getNetworkOptional(networkSymbol.toLowerCase());
-        if (!network) return;
+    async ({ networkSymbol }, { getState, fulfillWithValue, rejectWithValue }) => {
+        const network = getNetwork(networkSymbol);
         const { symbol } = network;
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
         const device = selectSelectedDevice(getState());
 
-        dispatch(feesActions.updateFee({ symbol, status: 'loading' }));
-
         const newFeeInfo = await getNewFeeInfo({ network, device });
-
         if (newFeeInfo === undefined) {
-            return dispatch(feesActions.updateFee({ symbol, status: 'error' }));
+            // now errors just silently set status. If we want to handle them in any way, we might need more specific info
+            return rejectWithValue(undefined);
         }
-        const backfilledNewFeeInfo = { blockHeight: blockchainInfo.blockHeight, ...newFeeInfo };
+        const data = { blockHeight: blockchainInfo.blockHeight, ...newFeeInfo };
 
-        dispatch(
-            feesActions.updateFee({
-                symbol,
-                status: 'loaded',
-                data: backfilledNewFeeInfo,
-            }),
-        );
+        return fulfillWithValue(data);
     },
 );

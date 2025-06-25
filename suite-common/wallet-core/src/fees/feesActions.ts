@@ -7,7 +7,8 @@ export const FEES_MODULE_PREFIX = '@common/wallet-core/fees';
 
 const updateFee = createAction(
     `${FEES_MODULE_PREFIX}/updateFee`,
-    (payload: { symbol: NetworkSymbol; status: FeesStatus; data?: FeeInfo }) => ({
+    // note: status is handled automatically by reducer cases for `updateFeeInfoThunk`
+    (payload: { symbol: NetworkSymbol; data: FeeInfo; status?: FeesStatus }) => ({
         payload,
     }),
 );
