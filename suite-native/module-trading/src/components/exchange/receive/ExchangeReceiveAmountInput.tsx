@@ -1,10 +1,12 @@
 import { forwardRef } from 'react';
 import { TextInput } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { selectTradingExchangeIsLoading } from '../../../selectors/exchangeSelectors';
 import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
 import { AmountInput } from '../../general/Input/AmountInput';
 
@@ -17,6 +19,7 @@ const noop = () => {};
 export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
+        const isLoading = useSelector(selectTradingExchangeIsLoading);
         const { watch } = useExchangeFormContext();
         const [asset, amount] = watch(['receiveAsset', 'receiveCryptoAmount']);
         const symbol = getSymbolFromTradeableAsset(asset);
@@ -34,6 +37,7 @@ export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveA
                     'moduleTrading.tradingScreen.quotesLoadingLabel',
                 )}
                 onChangeText={noop}
+                isLoading={isLoading}
             />
         );
     },

@@ -7,7 +7,9 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { exchangeQuotes } from '../../../../__fixtures__/exchangeQuotes';
 import { usdcAsset } from '../../../../__fixtures__/tradeableAssets';
+import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeFormType } from '../../../../types/exchange';
 import {
@@ -37,12 +39,12 @@ describe('ExchangeReceiveAmountInput', () => {
     it('should render receiveCryptoAmount form value', async () => {
         act(() => {
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('receiveCryptoAmount', '0.01');
+            form.setValue('quote', exchangeQuotes[0]);
         });
 
         const { getByLabelText } = await renderExchangeReceiveAmountInput();
 
-        expect(getByLabelText('You get')).toHaveDisplayValue('0.01');
+        expect(getByLabelText('You get')).toHaveDisplayValue('0.00083554');
     });
 
     it('should call showAssetsSheet callback on press', async () => {
@@ -54,5 +56,14 @@ describe('ExchangeReceiveAmountInput', () => {
         fireEvent.press(getByLabelText('You get'));
 
         expect(showAssetsSheetMock).toHaveBeenCalled();
+    });
+
+    it('should display loading skeleton when quotes are being fetched', async () => {
+        const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
+        preloadedState.wallet.tradingNew.exchange.isLoading = true;
+
+        const { getByLabelText } = await renderExchangeReceiveAmountInput({}, preloadedState);
+
+        expect(getByLabelText('Fetching offers...')).toBeTruthy();
     });
 });

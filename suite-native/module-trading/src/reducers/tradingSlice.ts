@@ -3,7 +3,6 @@ import { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    TradingExchangeState as CommonTradingExchangeState,
     TradingState as CommonTradingState,
     InvityServerEnvironment,
     TradingType,
@@ -11,13 +10,15 @@ import {
     prepareTradingReducer,
 } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
-import { Address } from '@trezor/blockchain-link-types';
 
 import { TRADING_BUY, TradingBuyState, buyActions, buyInitialState, buyReducer } from './buySlice';
-
-export interface TradingExchangeState extends CommonTradingExchangeState {
-    receiveAddress: Address | undefined;
-}
+import {
+    TRADING_EXCHANGE,
+    TradingExchangeState,
+    exchangeActions,
+    exchangeInitialState,
+    exchangeReducer,
+} from './exchangeSlice';
 
 export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
@@ -38,7 +39,7 @@ export type TradingRootState = {
 export const initialState: TradingState = {
     ...commonInitialState,
     buy: buyInitialState,
-    exchange: { ...commonInitialState.exchange, receiveAddress: undefined },
+    exchange: exchangeInitialState,
     favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
@@ -50,9 +51,6 @@ export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
     initialState,
     reducers: {
-        setExchangeReceiveAddress: (state, { payload }: PayloadAction<Address | undefined>) => {
-            state.exchange.receiveAddress = payload;
-        },
         addTradeableAssetToFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
             state.favouriteAssets[payload] = true;
         },
@@ -63,6 +61,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;
             buyReducer(state.buy, buyActions.clearState());
+            exchangeReducer(state.exchange, exchangeActions.clearState());
         },
         setTradeOrderIdToBeOpened: (state, { payload }: PayloadAction<string>) => {
             state.tradeOrderIdToBeOpened = payload;
@@ -92,10 +91,19 @@ export const tradingSlice = createSliceWithExtraDeps({
             .addCase(buyActions.clearState, state => {
                 state.tradeOrderIdToBeOpened = undefined;
             })
+            .addCase(exchangeActions.clearState, state => {
+                state.tradeOrderIdToBeOpened = undefined;
+            })
             .addMatcher(
                 action => action.type.startsWith(TRADING_BUY),
                 (state, action) => {
                     buyReducer(state.buy, action);
+                },
+            )
+            .addMatcher(
+                action => action.type.startsWith(TRADING_EXCHANGE),
+                (state, action) => {
+                    exchangeReducer(state.exchange, action);
                 },
             )
             // In case that this reducer does not match the action, try to handle it by suite-common tradingReducer.

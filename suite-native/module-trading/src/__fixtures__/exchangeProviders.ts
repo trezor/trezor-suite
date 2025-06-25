@@ -40,7 +40,7 @@ export const exchangeCexdirect: ExchangeProviderInfo = {
     statusUrl: 'https://checkout.cexdirect.io/#status/{{paymentId}}',
     supportUrl: 'https://cexdirect.io/#support',
     isDex: false,
-    isFixedRate: true,
+    isFixedRate: false,
     kycPolicyType: 'noKYC',
     addressFormats: {},
 };

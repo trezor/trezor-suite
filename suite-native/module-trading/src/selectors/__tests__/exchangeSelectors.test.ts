@@ -5,12 +5,16 @@ import { TradingRootState as CommonTradingRootState } from '@suite-common/tradin
 import { Account } from '@suite-common/wallet-types';
 
 import { getBtcAccount } from '../../__fixtures__/account';
+import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { TradingRootState, TradingState, tradingSlice } from '../../tradingSlice';
+import { TradingRootState, TradingState, tradingSlice } from '../../reducers';
 import {
+    selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeTradeableAssetsSorted,
+    selectGroupedExchangeQuotes,
     selectTradingExchange,
+    selectTradingExchangeIsLoading,
 } from '../exchangeSelectors';
 
 describe('exchangeSelectors', () => {
@@ -131,6 +135,74 @@ describe('exchangeSelectors', () => {
             expect(
                 selectExchangeTradeableAssetsSorted({ wallet: { tradingNew: prevState } }),
             ).toEqual([]);
+        });
+    });
+
+    describe('selectExchangeQuotes', () => {
+        it('should return exchange.quotes', () => {
+            prevState.exchange.quotes = exchangeQuotes;
+
+            expect(selectExchangeQuotes({ wallet: { tradingNew: prevState } })).toEqual(
+                exchangeQuotes,
+            );
+        });
+    });
+
+    describe('selectTradingExchangeIsLoading', () => {
+        it('should return exchange.isLoading', () => {
+            prevState.exchange.isLoading = true;
+
+            expect(selectTradingExchangeIsLoading({ wallet: { tradingNew: prevState } })).toBe(
+                true,
+            );
+        });
+    });
+
+    describe('selectGroupedExchangeQuotes', () => {
+        it('should return empty groups when no quotes are specified', () => {
+            expect(selectGroupedExchangeQuotes({ wallet: { tradingNew: prevState } })).toEqual({
+                fixed: [],
+                float: [],
+                dex: [],
+            });
+        });
+
+        it('should group quotes by fixed/float/dex', () => {
+            prevState.exchange.quotes = exchangeQuotes;
+
+            const groupedQuotes = selectGroupedExchangeQuotes({
+                wallet: { tradingNew: prevState },
+            });
+
+            expect(groupedQuotes).toEqual({
+                fixed: [
+                    expect.objectContaining({
+                        quoteId: 'mercuryo-fixed-best',
+                    }),
+                    expect.objectContaining({
+                        quoteId: 'mercuryo-fixed-worst',
+                    }),
+                ],
+                float: [
+                    expect.objectContaining({
+                        quoteId: 'cexdirect-floating',
+                    }),
+                ],
+                dex: [
+                    expect.objectContaining({
+                        quoteId: 'invity-dex',
+                    }),
+                ],
+            });
+        });
+
+        it('should be stable', () => {
+            prevState.exchange.quotes = exchangeQuotes;
+            const rootState = { wallet: { tradingNew: prevState } };
+
+            expect(selectGroupedExchangeQuotes(rootState)).toBe(
+                selectGroupedExchangeQuotes(rootState),
+            );
         });
     });
 });

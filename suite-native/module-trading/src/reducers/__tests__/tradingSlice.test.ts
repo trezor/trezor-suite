@@ -6,9 +6,11 @@ import { tradingBuyActions, tradingExchangeActions } from '@suite-common/trading
 import { deviceActions } from '@suite-common/wallet-core';
 import { Address } from '@trezor/blockchain-link-types';
 
+import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
 import quotes from '../../__fixtures__/quotes.json';
 import { adaAsset, btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
 import { buyActions, buyInitialState } from '../buySlice';
+import { exchangeActions } from '../exchangeSlice';
 import { TradingState, initialState, tradingActions, tradingSlice } from '../tradingSlice';
 
 describe('tradingSlice', () => {
@@ -87,29 +89,6 @@ describe('tradingSlice', () => {
         });
     });
 
-    describe('exchange', () => {
-        describe('setExchangeReceiveAddress', () => {
-            it('should set exchange receive address', () => {
-                const address = { address: 'bc1qxyz' } as Address;
-                const state = tradingReducer(
-                    undefined,
-                    tradingActions.setExchangeReceiveAddress(address),
-                );
-
-                expect(state.exchange.receiveAddress).toEqual(address);
-            });
-
-            it('should set exchange receive address to undefined', () => {
-                const state = tradingReducer(
-                    undefined,
-                    tradingActions.setExchangeReceiveAddress(undefined),
-                );
-
-                expect(state.exchange.receiveAddress).toBeUndefined();
-            });
-        });
-    });
-
     describe('tradingEnvironment', () => {
         it('should have production as initial trading environment', () => {
             const state = tradingReducer(undefined, { type: 'undefined_action' });
@@ -161,6 +140,25 @@ describe('tradingSlice', () => {
             });
         });
 
+        it('should clear exchange state', () => {
+            const prevState: TradingState = {
+                ...initialState,
+                exchange: {
+                    ...initialState.exchange,
+                    quotes: exchangeQuotes,
+                },
+            };
+
+            const state = tradingReducer(prevState, tradingActions.setTradingEnvironment('dev'));
+
+            expect(state.exchange).toEqual({
+                quotes: [],
+                isFromRedirect: false,
+                isLoading: false,
+                formStep: 'RECEIVING_ADDRESS',
+            });
+        });
+
         it('should clear tradeOrderIdToBeOpened', () => {
             const prevState: TradingState = {
                 ...initialState,
@@ -195,6 +193,33 @@ describe('tradingSlice', () => {
             } as TradingState;
 
             const state = tradingReducer(tradingInitialState, buyActions.clearState());
+
+            expect(state.tradeOrderIdToBeOpened).toBeUndefined();
+        });
+    });
+
+    describe('tradingExchange/clearState', () => {
+        it('should clear exchange state (exchangeSlice action)', () => {
+            const tradingInitialState = {
+                ...initialState,
+                exchange: {
+                    ...initialState.exchange,
+                    quotes: exchangeQuotes,
+                },
+            } as TradingState;
+
+            const state = tradingReducer(tradingInitialState, exchangeActions.clearState());
+
+            expect(state.exchange.quotes).toEqual([]);
+        });
+
+        it('should clear tradeOrderIdToBeOpened', () => {
+            const tradingInitialState = {
+                ...initialState,
+                tradeOrderIdToBeOpened: 'orderId',
+            } as TradingState;
+
+            const state = tradingReducer(tradingInitialState, exchangeActions.clearState());
 
             expect(state.tradeOrderIdToBeOpened).toBeUndefined();
         });
