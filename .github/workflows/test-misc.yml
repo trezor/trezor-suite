@@ -117,9 +117,6 @@ jobs:
           node-version-file: ".nvmrc"
 
       - run: yarn install --immutable
-      - run: yarn workspace @trezor/firmware-release-config generate-release-config
-      - run: yarn workspace @trezor/firmware-release-config sign-release-config
-      - run: yarn workspace @trezor/firmware-release-config validate-release-config
 
   components-test-img-paths-exist:
     runs-on: ubuntu-latest
