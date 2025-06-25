@@ -4,6 +4,7 @@ import { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
+import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
 import { PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT, ProviderListItem } from './ProviderListItem';
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
@@ -70,6 +71,7 @@ export const ProviderSheet = <T extends TradingTradeType>({
                     <TradingTypeAwareContextMessage marginHorizontal="sp16" marginBottom="sp4" />
                 </>
             )}
+            ListFooterComponent={<LegalGatewayContextMessage marginVertical="sp12" />}
             data={quotes}
             estimatedListHeight={screenHeight}
             estimatedItemSize={PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT}
