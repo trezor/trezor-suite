@@ -5,7 +5,13 @@
         "promptToConfigurePushNotifications": false
     },
     "build": {
+        "base": {
+            "env": {
+                "EAS_NO_FROZEN_LOCKFILE": "1"
+            }
+        },
         "develop": {
+            "extends": "base",
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "develop",
                 "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
@@ -21,6 +27,7 @@
             }
         },
         "preview": {
+            "extends": "base",
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "preview",
                 "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
@@ -36,6 +43,7 @@
             "developmentClient": false
         },
         "production": {
+            "extends": "base",
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "production",
                 "EXPO_PUBLIC_CODESIGN_BUILD": "true",
@@ -51,6 +59,7 @@
             }
         },
         "productionAPK": {
+            "extends": "base",
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "production",
                 "EXPO_PUBLIC_CODESIGN_BUILD": "true"
