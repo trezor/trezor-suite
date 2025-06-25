@@ -10,10 +10,11 @@ module.exports = {
     reporters: [
         'detox/runners/jest/reporter',
         ['jest-junit', { outputDirectory: './reports', outputName: 'junit-report.xml' }],
+        '<rootDir>/e2e/support/reporter/metadataReporter.js'
     ],
     testEnvironment: 'detox/runners/jest/testEnvironment',
     verbose: true,
     maxWorkers: 1,
     setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts'],
-    testMatch: ['<rootDir>/e2e/tests/*.test.ts'],
+    testMatch: ['<rootDir>/e2e/tests/**/*.test.ts'],
 };
