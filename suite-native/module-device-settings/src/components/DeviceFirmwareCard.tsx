@@ -8,6 +8,7 @@ import {
     selectDeviceReleaseInfo,
     selectHasRunningDiscovery,
     selectIsDeviceBackedUp,
+    selectIsFirmwareUpgradable,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { InlineAlertBoxProps } from '@suite-native/atoms';
@@ -18,6 +19,7 @@ import {
     DeviceSettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useToast } from '@suite-native/toasts';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
@@ -33,6 +35,8 @@ export const DeviceFirmwareCard = () => {
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
+    const { showToast } = useToast();
 
     const navigation = useNavigation<NavigationProp>();
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
@@ -44,6 +48,16 @@ export const DeviceFirmwareCard = () => {
     const firmwareVersion = getFirmwareVersion(device);
 
     const handleOnPress = () => {
+        if (!isFirmwareUpdateEnabled) {
+            showToast({
+                variant: 'warning',
+                message: <Translation id="firmware.updateNotAvailable" />,
+                icon: 'warning',
+            });
+
+            return;
+        }
+
         navigation.navigate(DeviceSettingsStackRoutes.ConfirmFirmwareUpdate);
     };
 
@@ -53,13 +67,11 @@ export const DeviceFirmwareCard = () => {
         }
 
         if (G.isNotNullable(deviceReleaseInfo)) {
-            const isUpgradable = deviceReleaseInfo.isNewer ?? false;
-
-            if (isUpgradable) {
+            if (isFirmwareUpgradable) {
                 return {
                     title: <Translation id="firmware.updateCard.newVersionAvailable" />,
                     variant: 'info',
-                    buttonLabel: <Translation id="firmware.updateCard.updateButton" />,
+                    buttonLabel: <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />,
                     onButtonPress: handleOnPress,
                     buttonProps: {
                         isDisabled: isDiscoveryRunning,

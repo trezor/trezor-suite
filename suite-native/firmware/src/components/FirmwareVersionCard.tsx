@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { PixelRatio } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -8,27 +9,38 @@ import {
 } from '@suite-common/wallet-core';
 import { Box, BoxProps, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { VersionArray } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
 type FirmwareVersionCardProps = {
-    title: string;
+    title: ReactNode;
     titleColor: Color;
-    version: string;
+    version: string | null;
     fwType: string;
     backgroundColor: Color;
+    isFullWidth?: boolean;
 } & BoxProps;
 
-const cardContainerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
-    (utils, { backgroundColor }) => ({
+const cardContainerStyle = prepareNativeStyle<{ backgroundColor: Color; isFullWidth: boolean }>(
+    (utils, { backgroundColor, isFullWidth }) => ({
         padding: utils.spacings.sp16,
         backgroundColor: utils.colors[backgroundColor],
         borderRadius: utils.borders.radii.r12,
         width: '50%',
         justifyContent: 'center',
+        extend: {
+            condition: isFullWidth,
+            style: {
+                width: '100%',
+            },
+        },
     }),
 );
+
+export const concatFirmwareVersion = (firmwareVersion: VersionArray | null) =>
+    firmwareVersion?.join('.');
 
 export const FirmwareVersionCard = ({
     title,
@@ -37,17 +49,18 @@ export const FirmwareVersionCard = ({
     titleColor,
     backgroundColor,
     children,
+    isFullWidth = false,
     ...boxProps
 }: FirmwareVersionCardProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box style={applyStyle(cardContainerStyle, { backgroundColor })} {...boxProps}>
+        <Box style={applyStyle(cardContainerStyle, { backgroundColor, isFullWidth })} {...boxProps}>
             <Text variant="body" color={titleColor}>
                 {title}
             </Text>
             <Text variant="highlight">
-                <Text variant="highlight">{version}</Text>
+                <Text variant="highlight">{version ?? '?.?.?'}</Text>
                 {' • '}
                 <Text variant="highlight">{fwType}</Text>
             </Text>
@@ -88,9 +101,9 @@ export const FirmwareUpdateVersionCard = (props: BoxProps) => {
     return (
         <Box flexDirection="row" justifyContent="center" alignItems="center" {...props}>
             <FirmwareVersionCard
-                title="Current firmware"
+                title={<Translation id="firmware.firmwareUpdateScreen.currentFirmware" />}
                 titleColor="textSubdued"
-                version={firmwareVersion?.join('.') ?? '?.?.?'}
+                version={concatFirmwareVersion(firmwareVersion) ?? null}
                 fwType={translate(firmwareTypeTranslationId)}
                 flex={1}
                 backgroundColor="backgroundTertiaryDefaultOnElevation0"
@@ -98,9 +111,9 @@ export const FirmwareUpdateVersionCard = (props: BoxProps) => {
             />
 
             <FirmwareVersionCard
-                title="Update firmware"
+                title={<Translation id="firmware.firmwareUpdateScreen.updateFirmware" />}
                 titleColor="textPrimaryDefault"
-                version={updateFirmwareVersion ?? '?.?.?'}
+                version={updateFirmwareVersion}
                 fwType={translate(firmwareTypeTranslationId)}
                 flex={1}
                 backgroundColor="backgroundSurfaceElevation1"

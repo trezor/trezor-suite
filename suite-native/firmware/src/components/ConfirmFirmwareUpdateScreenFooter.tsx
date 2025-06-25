@@ -44,7 +44,7 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
                 isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                 isLoading={isDiscoveryRunning}
             >
-                <Translation id="firmware.firmwareUpdateScreen.updateButton" />
+                <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />
             </Button>
             {onSkipUpdate && (
                 <Button

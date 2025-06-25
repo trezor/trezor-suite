@@ -17,6 +17,7 @@ import {
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
+
 export const ConfirmFirmwareUpdateScreen = ({
     navigation,
 }: StackProps<

@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsFirmwareUpgradable } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
 import {
     ConfirmFirmwareUpdateScreenContent,
@@ -23,6 +26,7 @@ type NavigationProp = StackNavigationProps<
 export const ConfirmFirmwareUpdateScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const { isDeviceConnected } = useDeviceConnectionGuard();
+    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
 
     const handleUpdateConfirmation = () => {
         navigation.navigate(DeviceSettingsStackRoutes.FirmwareInstallation);
@@ -34,9 +38,11 @@ export const ConfirmFirmwareUpdateScreen = () => {
         <Screen
             header={<ScreenHeader closeActionType="close" />}
             footer={
-                <ConfirmFirmwareUpdateScreenFooter
-                    onUpdateConfirmation={handleUpdateConfirmation}
-                />
+                isFirmwareUpgradable && (
+                    <ConfirmFirmwareUpdateScreenFooter
+                        onUpdateConfirmation={handleUpdateConfirmation}
+                    />
+                )
             }
         >
             <Box flex={1} marginTop="sp16">
