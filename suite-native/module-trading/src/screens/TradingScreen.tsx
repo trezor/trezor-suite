@@ -14,6 +14,7 @@ import { DeviceOffline } from '../components/general/Error/DeviceOffline';
 import { Footer } from '../components/general/Footer';
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, NavigationProps } from '../components/general/HistoryButton';
+import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
 import { useGeolocationCountryCode } from '../hooks/general/useGeolocationCountryCode';
@@ -74,6 +75,7 @@ export const TradingScreen = () => {
             }
         >
             <TradingScreenContent />
+            <LegalGatewayContextMessage marginVertical="sp16" />
         </Screen>
     );
 };
