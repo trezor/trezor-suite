@@ -186,7 +186,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     </Col>
 
                     <ActionColumn>
-                        <ActionButton onClick={onChangeHomescreen}>
+                        <ActionButton onClick={onChangeHomescreen} isDisabled={isDeviceLocked}>
                             <Translation id="TR_CHANGE_HOMESCREEN" />
                         </ActionButton>
                         <ActionButton
