@@ -364,7 +364,6 @@ export const runDiscoveryThunk = createThunk(
 
             const { isAddingHiddenWallet } = discovery;
 
-            assertDeviceIsAcquired(device);
             if (isAddingHiddenWallet && device.features && !device.features.passphrase_protection) {
                 dispatch(
                     discoveryActions.updateDiscovery(
