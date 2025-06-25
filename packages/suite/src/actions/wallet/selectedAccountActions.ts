@@ -50,7 +50,8 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     }
 
     // account cannot exist since there are no discovered accounts (maybe no networks enabled)
-    if (accounts.length === 0) {
+    const enabledNetworks = selectEnabledNetworks(state);
+    if (accounts.length === 0 && enabledNetworks.length === 0) {
         return {
             status: 'exception',
             loader: 'discovery-empty',
@@ -71,7 +72,6 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     const network = networks[params.symbol];
 
     // account cannot exists since requested network is not selected in settings/wallet
-    const enabledNetworks = selectEnabledNetworks(state);
     if (!enabledNetworks.includes(network.symbol)) {
         return {
             status: 'exception',
