@@ -25,6 +25,7 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
                 await trezorUserEnvLink.stopEmu();
                 await expect(page.getByTestId('@deviceStatus-disconnected')).toBeVisible();
                 await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
+                //TODO: Workaround because of bug #19743, device switcher should not be opened
                 await dashboardPage.deviceSwitchingCloseButton.click();
                 await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
             });

@@ -4,25 +4,24 @@ test.describe(
     'Onboarding - analytics consent',
     { tag: ['@group=device-management', '@webOnly'] },
     () => {
-        test.beforeEach(async ({ onboardingPage }) => {
+        test.beforeEach(async ({ page, url, onboardingPage }) => {
+            await page.goto(url + 'accounts');
             await onboardingPage.disableNecessaryFirmwareChecks();
+            await onboardingPage.optionallyDismissFwHashCheckError();
         });
 
         test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
             page,
-            url,
             analyticsSection,
             onboardingPage,
             walletPage,
         }) => {
-            await page.goto(url + 'accounts');
             await expect(analyticsSection.heading).toBeVisible({ timeout: 30000 });
             await analyticsSection.continueButton.click();
             await page.getByTestId('@onboarding/exit-app-button').click();
 
             if (onboardingPage.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
-                await onboardingPage.optionallyDismissFwHashCheckError();
             }
 
             await expect(page.getByTestId('@suite-layout/body')).toBeVisible();

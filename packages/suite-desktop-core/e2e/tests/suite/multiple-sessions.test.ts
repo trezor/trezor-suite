@@ -24,7 +24,6 @@ const stealBridgeSession = async () => {
 
 test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
     test.use({ emulatorSetupConf: { passphrase_protection: true } });
-
     test(
         'Session overtaken by another',
         {
@@ -40,8 +39,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                 await stealBridgeSession();
                 await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
                 await dashboardPage.deviceSwitchingOpenButton.click();
-                // TODO: #16601 Uncomment once fixed
-                // await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Refresh');
+                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Refresh');
                 await expect(dashboardPage.walletAtIndex(0)).toBeHidden();
             });
 

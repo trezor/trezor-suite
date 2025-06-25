@@ -45,7 +45,13 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
         });
     });
 
-    test('Sell Bitcoin for best offer', async ({ page, tradingPage, walletPage, devicePrompt }) => {
+    test('Sell Bitcoin for best offer', async ({
+        page,
+        dashboardPage,
+        tradingPage,
+        walletPage,
+        devicePrompt,
+    }) => {
         await test.step('Open sell form', async () => {
             await walletPage.openTrading();
             await tradingPage.sellTabButton.click();
@@ -68,6 +74,8 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
         });
 
         await tradingPage.waitForRedirectCompletion();
+        //TODO: Workaround because of bug #19743, device switcher should not be opened
+        await dashboardPage.deviceSwitchingCloseButton.click();
 
         await test.step('Verify all confirmation values', async () => {
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
@@ -92,7 +100,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
     });
 
-    test('Bitcoin sell fees', async ({ walletPage, tradingPage, devicePrompt }) => {
+    test('Bitcoin sell fees', async ({ dashboardPage, walletPage, tradingPage, devicePrompt }) => {
         const testCases: FeeSwitchTestCase[] = [
             // TODO: #18316 Uncomment and update when bug is fixed
             // {
@@ -142,6 +150,8 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
                 });
 
                 await tradingPage.waitForRedirectCompletion();
+                //TODO: Workaround because of bug #19743, device switcher should not be opened
+                await dashboardPage.deviceSwitchingCloseButton.click();
 
                 await test.step('Initiate send and verify Fee', async () => {
                     await tradingPage.initiateSendConfirmation();
