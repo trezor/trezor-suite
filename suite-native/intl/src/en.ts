@@ -2035,6 +2035,7 @@ export const en = {
         version: 'Version {firmwareVersion}',
         typeUniversal: 'Universal',
         typeBitcoinOnly: 'Bitcoin-only',
+        updateNotAvailable: 'Firmware update disabled',
         seedBottomSheet: {
             title: 'Make sure you know where to find your wallet backup.',
             description:
@@ -2045,11 +2046,13 @@ export const en = {
         updateCard: {
             upToDate: 'You’re all up to date',
             newVersionAvailable: 'Update available',
+            updateToVersionAvailable: 'Update to version {firmwareVersion} available',
             updateButton: 'Update',
         },
         firmwareUpdateScreen: {
-            updateButton: 'Update firmware',
+            updateFirmware: 'Update firmware',
             skipButton: 'Skip for now',
+            currentFirmware: 'Current Firmware',
             title: 'Firmware',
             subtitle: "Firware is your Trezor's operating system",
             changelog: {

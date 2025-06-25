@@ -7,11 +7,11 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import {
     selectDeviceId,
-    selectDeviceReleaseInfo,
     selectDeviceUpdateFirmwareVersion,
     selectHasRunningDiscovery,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
+    selectIsFirmwareUpgradable,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -51,7 +51,6 @@ const closeStateAtom = atom<CloseStateItem[]>([]);
 export const FirmwareUpdateAlert = () => {
     const { applyStyle } = useNativeStyles();
     const updateFirmwareVersion = useSelector(selectDeviceUpdateFirmwareVersion);
-    const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceId = useSelector(selectDeviceId);
     const isConnected = useSelector(selectIsDeviceConnected);
@@ -74,7 +73,7 @@ export const FirmwareUpdateAlert = () => {
     const isClosed = useAtomValue(isClosedAtom);
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
-    const isUpgradable = deviceReleaseInfo?.isNewer;
+    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
 
     const handleUpdateFirmware = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
@@ -93,7 +92,7 @@ export const FirmwareUpdateAlert = () => {
     }
 
     if (
-        !isUpgradable ||
+        !isFirmwareUpgradable ||
         isPortfolioTrackerDevice ||
         isDiscoveryRunning ||
         !isConnected ||
