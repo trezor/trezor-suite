@@ -18,6 +18,7 @@
 @types/fast-text-encoding
 @types/jest
 @types/node
+@types/react
 @expo/config-plugins
 @whatwg-node/events
 abortcontroller-polyfill
@@ -68,9 +69,11 @@ lottie-react-native
 metro
 node-gyp
 node-libs-browser
+react
 react-fela
 react-native
 react-native-ble-plx
+react-dom
 react-native-edge-to-edge
 react-native-gesture-handler
 react-native-keyboard-controller
