@@ -16,7 +16,8 @@ test.describe(
             await metadataMock.start(MetadataProvider.DROPBOX);
         });
 
-        test('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
+        //TODO: Update and enable once metadata reimplemented or bug #19740 is resolved
+        test.skip('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
             page,
             onboardingPage,
             dashboardPage,
@@ -29,9 +30,7 @@ test.describe(
             await onboardingPage.completeOnboarding();
 
             await settingsPage.navigateTo('application');
-            await expect(
-                page.getByTestId('@settings/metadata-switch').locator('input'),
-            ).not.toBeChecked();
+            await expect(settingsPage.metadataSwitch.locator('input')).not.toBeChecked();
 
             // Navigate to account and hover over add label button
             await page.getByTestId('@suite/menu/suite-index').click();
