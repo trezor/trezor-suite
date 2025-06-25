@@ -12586,6 +12586,7 @@ __metadata:
     blake-hash: "npm:^2.0.0"
     electron: "npm:35.1.2"
     electron-builder: "npm:26.0.3"
+    openpgp: "npm:^6.1.1"
     passport-desktop: "npm:^0.1.2"
     usb: "npm:^2.15.0"
   languageName: unknown

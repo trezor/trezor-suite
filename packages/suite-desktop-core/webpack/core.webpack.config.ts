@@ -52,10 +52,17 @@ const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
     return path.join(`threads`, relPath.replace('.ts', ''));
 });
 
-/* **** EXTERNALS **** */
+/* **** RUNTIME REQUIRE DEPENDENCIES ****
+ a.k.a. externals
+ Any package that needs a runtime require() call in electron-main or electron-preload
+ must be listed in suite-desktop/package.json "dependencies"
 
+ But how do I tell?
+ 1. Run `yarn workspace @trezor/suite-desktop build:app`
+ 2. find any occurrences of your local trezor-suite repo path in dist/**.js
+    (if any, Suite will likely crash when executed on another computer).
+*/
 const dependencies = Object.keys(pkg.dependencies);
-const devDependencies = Object.keys(pkg.devDependencies);
 
 /* **** CONFIG **** */
 
@@ -85,7 +92,6 @@ const config: webpack.Configuration = {
     },
     externals: [
         ...dependencies,
-        ...devDependencies,
         'bufferutil', // optional dependency of ws lib
         'memcpy', // optional depencency of bytebuffer lib
         'utf-8-validate', // optional dependency of ws lib
