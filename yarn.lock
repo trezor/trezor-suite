@@ -1903,9 +1903,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@crowdin/cli@npm:4.7.0":
-  version: 4.7.0
-  resolution: "@crowdin/cli@npm:4.7.0"
+"@crowdin/cli@npm:4.8.0":
+  version: 4.8.0
+  resolution: "@crowdin/cli@npm:4.8.0"
   dependencies:
     command-exists-promise: "npm:^2.0.2"
     node-fetch: "npm:2.7.0"
@@ -1914,7 +1914,7 @@ __metadata:
     yauzl: "npm:^3.2.0"
   bin:
     crowdin: jdeploy-bundle/jdeploy.js
-  checksum: 10/6c8dd1763d47f006f87458312997ae0520c7bccd11a8a641ffd9874c13a081ca121b079ee1079daab08f603ae2644b3dfe072eaad50247e84534c18488fb6330
+  checksum: 10/68b70175d2431fcc636822ef8dcc737a79bf724911d6f00c3891a6248cdeb2777e684fb566fbf156f904c5f8baf64473b95cc979178b625bc74257c772d6dc98
   languageName: node
   linkType: hard
 
@@ -12637,7 +12637,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
-    "@crowdin/cli": "npm:4.7.0"
+    "@crowdin/cli": "npm:4.8.0"
     "@everstake/wallet-sdk-ethereum": "npm:1.0.3"
     "@floating-ui/react": "npm:^0.27.8"
     "@formatjs/cli": "npm:6.6.4"
