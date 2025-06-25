@@ -52,6 +52,7 @@ export const PNG_IMAGES = {
     CLOCK_2x: 'clock@2x.png',
     COINS: 'coins.png',
     COINS_2x: 'coins@2x.png',
+    CONFIRM_FW_INSTALLATION_SCREEN_T1B1: 'confirm-fw-installation-screen-t1b1.png',
     TRADING_DCA_INVITY_APP_QR: 'trading-dca-invity-app-qr.png',
     TRADING_DCA_INVITY_APP_QR_2x: 'trading-dca-invity-app-qr@2x.png',
     TRADING_DCA_INVITY_APP: 'trading-dca-invity-app.webp',
