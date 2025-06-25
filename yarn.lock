@@ -10035,7 +10035,7 @@ __metadata:
     react-native-edge-to-edge: "npm:1.6.0"
     react-native-gesture-handler: "npm:~2.24.0"
     react-native-keyboard-controller: "npm:1.16.5"
-    react-native-mmkv: "npm:2.12.2"
+    react-native-mmkv: "npm:3.3.0"
     react-native-permissions: "npm:^5.2.3"
     react-native-quick-crypto: "npm:^0.7.6"
     react-native-reanimated: "npm:^3.18.0"
@@ -11248,7 +11248,7 @@ __metadata:
     jotai: "npm:^2.12.5"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
-    react-native-mmkv: "npm:2.12.2"
+    react-native-mmkv: "npm:3.3.0"
     react-native-restart: "npm:0.0.27"
     redux-persist: "npm:6.0.0"
   languageName: unknown
@@ -35445,13 +35445,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-mmkv@npm:2.12.2":
-  version: 2.12.2
-  resolution: "react-native-mmkv@npm:2.12.2"
+"react-native-mmkv@npm:3.3.0":
+  version: 3.3.0
+  resolution: "react-native-mmkv@npm:3.3.0"
   peerDependencies:
     react: "*"
-    react-native: ">=0.71.0"
-  checksum: 10/c1ebb8e81905ee8ce17858ff6096525cbdd0e51892dca80a3cd6e26feb5e979a9c7d609c5a55886150efb0136c5899de174c71115f81607019ed7af68678797b
+    react-native: "*"
+  checksum: 10/809f89f0192eb856ca4a0cc931ba26d6e383da154ccbf23160b89c4c4fcbb8c2bc8976ad921a75ad5170f60bc6991cadf8c41579b4ca9bb892b0b7a10e2689f4
   languageName: node
   linkType: hard
 
