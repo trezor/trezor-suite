@@ -36,7 +36,7 @@
         "react": "19.0.0",
         "react-dom": "19.0.0",
         "react-intl": "^7.1.11",
-        "styled-components": "^6.1.17",
+        "styled-components": "^6.1.19",
         "usb": "^2.15.0"
     }
 }
