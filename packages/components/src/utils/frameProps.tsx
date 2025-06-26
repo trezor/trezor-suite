@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 
-import { SpacingValues } from '@trezor/theme';
+import { BorderRadii, SpacingValues, borders } from '@trezor/theme';
 
 import { TransientProps, makePropsTransient } from './transientProps';
 import type { Flex } from '../components/Flex/Flex';
@@ -74,6 +74,7 @@ export type FrameProps = {
     minHeight?: string | number;
     maxHeight?: string | number;
     overflow?: Overflow;
+    borderRadius?: BorderRadii;
     pointerEvents?: PointerEvent;
     flex?: Flex;
     position?: Position;
@@ -117,6 +118,7 @@ export const withFrameProps = ({
     $minHeight,
     $maxHeight,
     $overflow,
+    $borderRadius,
     $pointerEvents,
     $flex,
     $position,
@@ -175,6 +177,10 @@ export const withFrameProps = ({
     ${$overflow &&
     css`
         overflow: ${$overflow};
+    `};
+    ${$borderRadius &&
+    css`
+        border-radius: ${$borderRadius};
     `};
     ${$pointerEvents &&
     css`
@@ -240,6 +246,13 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'overflow':
             return {
                 options: overflows,
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'borderRadius':
+            return {
+                options: borders.radii,
                 control: {
                     type: 'select',
                 },
@@ -337,6 +350,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('maxWidth') ? { maxWidth: undefined } : {}),
             ...(allowedFrameProps.includes('maxHeight') ? { maxHeight: undefined } : {}),
             ...(allowedFrameProps.includes('overflow') ? { overflow: undefined } : {}),
+            ...(allowedFrameProps.includes('borderRadius') ? { borderRadius: undefined } : {}),
             ...(allowedFrameProps.includes('flex') ? { flex: undefined } : {}),
             ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
             ...(allowedFrameProps.includes('cursor') ? { cursor: undefined } : {}),
