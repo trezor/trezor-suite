@@ -128,7 +128,7 @@ export const HoldToConfirmButton = ({
             <GestureDetector gesture={tapGesture}>
                 <Canvas
                     style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
-                    testID="@deviceOnboarding/HoldToConfirmButton"
+                    testID="@holdToConfirmButton"
                 >
                     <Circle
                         cx={CIRCLE_CENTER}

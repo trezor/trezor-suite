@@ -87,7 +87,7 @@ class DeviceOnboardingActions {
     }
 
     async pressHoldToConfirmButton() {
-        const buttonId = '@deviceOnboarding/HoldToConfirmButton';
+        const buttonId = '@holdToConfirmButton';
         await waitForElementByIdToBeVisible(buttonId);
         const holdToConfirmButton = element(by.id(buttonId));
         await holdToConfirmButton.longPress(3000);

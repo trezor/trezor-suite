@@ -1,6 +1,12 @@
 import { useSetAtom } from 'jotai';
 
-import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    SwipeableWalkthroughStepHeader,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
@@ -12,7 +18,6 @@ import {
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { RecoveryCardSvg } from '../assets/RecoveryCardSvg';
-import { OnboardingStepHeader } from '../components/OnboardingStepHeader';
 import { RecoveryInstructionsBottomSheet } from '../components/RecoveryInstructionsBottomSheet';
 
 export const RecoveryInstructionsScreen = ({
@@ -38,7 +43,7 @@ export const RecoveryInstructionsScreen = ({
     return (
         <Screen header={<ScreenHeader closeAction={handleGoBack} />}>
             <VStack paddingTop="sp16" spacing="sp32" justifyContent="space-between" flex={1}>
-                <OnboardingStepHeader
+                <SwipeableWalkthroughStepHeader
                     callout={
                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.callout" />
                     }

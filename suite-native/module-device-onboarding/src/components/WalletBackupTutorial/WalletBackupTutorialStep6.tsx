@@ -3,6 +3,7 @@ import { useDerivedValue } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/core';
 import { useSetAtom } from 'jotai';
 
+import { HoldToConfirmButton } from '@suite-native/atoms';
 import { WalletBackupType } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -16,7 +17,6 @@ import { WalletBackupInstructionCards } from './WalletBackupInstructionCards';
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
 import { updateOnboardingAnalyticsAtom } from '../../../atoms';
-import { HoldToConfirmButton } from '../SwipeableWalkthrough/HoldToConfirmButton';
 
 type WalletBackupTutorialStep6Props = WalletBackupTutorialNumberedStepProps & {
     selectedType: WalletBackupType;

@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { HoldToConfirmButton, SwipeableWalkthroughStep } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
@@ -11,8 +12,6 @@ import {
     WALLET_RECOVERY_RECAP_STEPS,
     WalletBackupTutorialNumberedStepProps,
 } from './WalletRecoveryRecapStep1';
-import { HoldToConfirmButton } from '../../SwipeableWalkthrough/HoldToConfirmButton';
-import { SwipeableWalkthroughStep } from '../../SwipeableWalkthrough/SwipeableWalkthroughStep';
 import { WalletRecapStepContent } from '../../WalletBackupRecap/WalletRecapStepContent';
 
 type NavigationProps = StackNavigationProps<

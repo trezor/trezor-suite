@@ -1,9 +1,8 @@
 import { useSharedValue } from 'react-native-reanimated';
 
+import { SwipeableWalkthrough, SwipeableWalkthroughScreenHeader } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 
-import { SwipeableWalkthrough } from '../components/SwipeableWalkthrough/SwipeableWalkthrough';
-import { SwipeableWalkthroughScreenHeader } from '../components/SwipeableWalkthrough/SwipeableWalkthroughScreenHeader';
 import { WalletBackupRecapBackButton } from '../components/WalletBackupRecap/WalletBackupRecapBackButton';
 import {
     WALLET_RECOVERY_RECAP_STEPS,

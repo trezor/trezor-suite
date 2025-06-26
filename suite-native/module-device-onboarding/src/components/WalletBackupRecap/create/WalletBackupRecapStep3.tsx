@@ -1,9 +1,9 @@
+import { SwipeableWalkthroughStep } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
 import { WalletRecapStepContent } from '../WalletRecapStepContent';
 import { WALLET_BACKUP_RECAP_STEPS } from './presets';
-import { SwipeableWalkthroughStep } from '../../SwipeableWalkthrough/SwipeableWalkthroughStep';
 
 export const WalletBackupRecapStep3 = ({
     currentStepIndex,

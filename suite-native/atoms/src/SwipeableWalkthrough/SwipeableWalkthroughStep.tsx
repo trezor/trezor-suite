@@ -3,11 +3,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AnimatedBox, IconButton, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useSwipeableWalkthroughStepHeight } from '../../hooks/useSwipeableWalkthroughStepHeight';
-import { OnboardingStepHeader } from '../OnboardingStepHeader';
+import { useSwipeableWalkthroughStepHeight } from './useSwipeableWalkthroughStepHeight';
+import { AnimatedBox } from '../Box';
+import { IconButton } from '../Button/IconButton';
+import { VStack } from '../Stack';
+import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
 
 export type SwipeableWalkthroughStepProps = {
     children: ReactNode;
@@ -91,7 +93,11 @@ export const SwipeableWalkthroughStep = ({
                 })}
                 testID="@deviceOnboarding/SwipeableWalkthroughStep/scrollView"
             >
-                <OnboardingStepHeader callout={callout} title={title} description={description} />
+                <SwipeableWalkthroughStepHeader
+                    callout={callout}
+                    title={title}
+                    description={description}
+                />
                 <VStack spacing="sp24" alignItems="center" flex={1}>
                     {children}
                     {continueButton ?? (
