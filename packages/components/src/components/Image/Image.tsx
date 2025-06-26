@@ -16,6 +16,7 @@ export const allowedImageFrameProps = [
     'margin',
     'width',
     'height',
+    'borderRadius',
     'maxWidth',
     'maxHeight',
     'flex',
