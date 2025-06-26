@@ -3,19 +3,24 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-import { FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import {
+    ConditionalRelease,
+    FirmwareRelease,
+    FirmwareReleaseConfigInfo,
+    FirmwareType,
+} from '@trezor/device-utils';
 
 import { MESSAGE_RELEASE_PATH } from '../src/constants';
-import { ConditionalRelease, ReleaseInfo } from '../src/types';
 
 type FirmwareReleaseFromJson = Omit<FirmwareRelease, 'changelog' | 'changelog_bitcoinonly'> & {
     changelog: string;
     changelog_bitcoinonly?: string;
 };
 
-function createFirmwareInfo(input: FirmwareReleaseFromJson): ReleaseInfo {
+function createFirmwareInfo(input: FirmwareReleaseFromJson): FirmwareReleaseConfigInfo {
     return {
         required: input.required ?? false,
+        url: input.url,
         version: input.version,
         min_bootloader_version: input.min_bootloader_version,
         min_firmware_version: input.min_firmware_version,
