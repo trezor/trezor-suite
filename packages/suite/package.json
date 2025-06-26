@@ -96,7 +96,7 @@
         "idb": "^8.0.3",
         "immer": "10.1.1",
         "pako": "^2.1.0",
-        "pdfmake": "^0.2.18",
+        "pdfmake": "^0.2.20",
         "polished": "^4.3.1",
         "qrcode.react": "^4.2.0",
         "react": "19.0.0",
