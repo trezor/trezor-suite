@@ -1,8 +1,70 @@
 {
     "version": 1,
-    "timestamp": "2025-06-16T00:00:00+00:00",
-    "sequence": 91,
+    "timestamp": "2025-06-26T00:00:00+00:00",
+    "sequence": 92,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">25.5.0",
+                        "mobile": ">25.5.0",
+                        "web": "*"
+                    },
+                    "countryCodes": ["GB"]
+                }
+            ],
+            "message": {
+                "id": "5ba444ce-e890-4c25-93d2-9b8b798faea1",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["context"],
+                "content": {
+                    "en-GB": "Don't invest unless you're prepared to lose all the money you invest. This is a high-risk investment, and you should not expect to be protected if something goes wrong. Take 2 mins to learn more.",
+                    "en": "Don't invest unless you're prepared to lose all the money you invest. This is a high-risk investment, and you should not expect to be protected if something goes wrong. Take 2 mins to learn more.",
+                    "es": "No inviertas a menos que estés preparado para perder todo el dinero que inviertas. Esta es una inversión de alto riesgo, y no debes esperar estar protegido si algo sale mal. Tómate 2 minutos para saber más.",
+                    "cs": "Neinvestujte, pokud nejste připraveni přijít o všechny investované peníze. Jedná se o vysoce rizikovou investici a neměli byste očekávat ochranu, pokud se něco pokazí. Věnujte 2 minuty tomu, abyste se dozvěděli více.",
+                    "ru": "Не инвестируйте, если вы не готовы потерять все вложенные средства. Это инвестиция с высоким риском, и не стоит рассчитывать на защиту в случае проблем. Потратьте 2 минуты, чтобы узнать больше.",
+                    "ja": "投資したお金をすべて失っても構わない覚悟がない限り、投資しないでください。これはハイリスクな投資であり、問題が発生しても保護されるとは限りません。2分かけて詳細を確認しましょう。",
+                    "hu": "Ne fektessen be, hacsak nem áll készen arra, hogy az összes befektetett pénzét elveszítse. Ez egy magas kockázatú befektetés, és nem számíthat védelemre, ha valami rosszul sül el. Szánjon rá 2 percet, hogy többet megtudjon.",
+                    "it": "Non investire a meno che tu non sia pronto a perdere tutto il denaro investito. Si tratta di un investimento ad alto rischio e non dovresti aspettarti di essere protetto se qualcosa va storto. Prenditi 2 minuti per saperne di più.",
+                    "fr": "N'investissez que si vous êtes prêt à perdre tout l'argent que vous investissez. Il s'agit d'un investissement à haut risque et vous ne devez pas vous attendre à être protégé en cas de problème. Prenez 2 minutes pour en savoir plus.",
+                    "de": "Investiere nur, wenn du bereit bist, dein gesamtes investiertes Geld zu verlieren. Dies ist eine risikoreiche Investition, und du solltest nicht erwarten, geschützt zu sein, wenn etwas schiefgeht. Nimm dir 2 Minuten, um mehr zu erfahren.",
+                    "tr": "Tüm yatırdığınız parayı kaybetmeye hazır değilseniz yatırım yapmayın. Bu, yüksek riskli bir yatırımdır ve bir şeyler ters giderse korunacağınızı beklememelisiniz. Daha fazla bilgi edinmek için 2 dakikanızı ayırın.",
+                    "pt": "Não invista a menos que esteja preparado para perder todo o dinheiro que investir. Este é um investimento de alto risco e você não deve esperar estar protegido se algo der errado. Reserve 2 minutos para saber mais.",
+                    "uk": "Не інвестуйте, якщо ви не готові втратити всі вкладені гроші. Це високоризикована інвестиція, і не слід очікувати захисту, якщо щось піде не так. Приділіть 2 хвилини, щоб дізнатися більше."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://www.handbook.fca.org.uk/handbook/COBS/4/Annex1.html",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
+                    }
+                },
+                "context": {
+                    "domain": [
+                        "trading.buy",
+                        "trading.sell",
+                        "trading.exchange",
+                        "accounts.sol.staking",
+                        "accounts.eth.staking"
+                    ]
+                }
+            }
+        },
         {
             "conditions": [
                 {
