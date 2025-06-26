@@ -6,6 +6,7 @@
 export const en = {
     generic: {
         trezorSuite: 'Trezor Suite',
+        trezorSuiteLite: 'Trezor Suite Lite',
         header: '<green>Trezor Suite</green> <grey>Lite</grey>',
         buttons: {
             back: 'Back',
@@ -713,16 +714,19 @@ export const en = {
     },
     moduleSettings: {
         items: {
-            preferences: {
-                title: 'Preferences',
-
-                localization: {
-                    title: 'Localization',
-                    subtitle: 'Fiat currency, Bitcoin units',
+            general: {
+                title: 'General',
+                preferences: {
+                    title: 'Preferences',
+                    subtitle: 'Currency, theme',
                 },
-                customization: {
-                    title: 'Customization',
-                    subtitle: 'Color scheme',
+                privacy: {
+                    title: 'Privacy',
+                    subtitle: 'Biometrics, data preferences',
+                },
+                support: {
+                    title: 'Support',
+                    subtitle: 'Troubleshooting, help',
                 },
             },
             features: {
@@ -737,36 +741,25 @@ export const en = {
                 },
                 viewOnly: {
                     title: 'View-only',
-                    subtitle: 'Check balances without your Trezor',
+                    subtitle: 'See your balances without your Trezor',
                 },
                 coinEnabling: {
-                    title: 'Enabled coins',
-                    subtitle: 'Manage coins that you use',
+                    title: 'Coins',
+                    subtitle: 'Enable coins that you want to use',
                 },
                 advanced: {
                     title: 'Advanced',
                     subtitle: 'Expert features for power users ',
                 },
             },
-            support: {
-                title: 'Support',
-                help: {
-                    title: 'Get help',
-                    subtitle: 'FAQ, Customer support',
-                },
-                about: {
-                    title: 'About ',
-                },
-            },
+
             connections: {
                 title: 'Connections',
                 trezorConnect: {
                     title: 'Trezor Connect',
-                    subtitle: 'Use supported wallets and apps with your Trezor',
                 },
                 walletConnect: {
                     title: 'WalletConnect',
-                    subtitle: 'Connect external apps using the WalletConnect protocol',
                     add: 'Add WalletConnect connection',
                 },
             },
@@ -850,8 +843,8 @@ export const en = {
                 },
             },
         },
-        localizations: {
-            title: 'Localization',
+        preferences: {
+            title: 'Preferences',
             fiatCurrencyLabel: 'Fiat currency',
             bitcoinUnitsLabel: 'Bitcoin units',
         },
