@@ -83,9 +83,6 @@ const getTradingContext = (type: TradingType) => `trading.${type}` as const;
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;
 
-export type DeprecatedContextKey = 'accounts.coinjoin';
-const getDeprecatedContext = (key: DeprecatedContextKey) => key;
-
 /**
  * Factory object for generating typed context keys used by the Message System.
  *
@@ -99,7 +96,7 @@ const getDeprecatedContext = (key: DeprecatedContextKey) => key;
  * - `getStaking('eth')` → 'accounts.eth.staking'
  * - `getTrading('buy')` → 'trading.buy'
  * - `getSettings('device')` → 'settings.device'
- * - `getDeprecated('accounts.coinjoin')` → 'accounts.coinjoin'
+
  */
 export const Context = {
     getGeneral: getGeneralContext,
@@ -107,7 +104,6 @@ export const Context = {
     getStaking: getStakingContext,
     getTrading: getTradingContext,
     getSettings: getSettingsContext,
-    getDeprecated: getDeprecatedContext,
 } as const;
 
 type FunctionKeysOf<T> = {
