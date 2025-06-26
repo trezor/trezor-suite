@@ -1,3 +1,5 @@
+import { DeviceModelInternal } from './deviceModelInternal';
+
 export type FirmwareVersionString = `${number}.${number}.${number}`;
 
 export enum FirmwareType {
@@ -102,3 +104,50 @@ export type FirmwareRelease = {
     channel?: string;
     translations?: string[];
 };
+
+export interface FirmwareReleaseConfigInfo {
+    required: boolean;
+    url: string;
+    version: VersionArray;
+    bootloader_version?: VersionArray;
+    min_firmware_version: VersionArray;
+    min_bootloader_version: VersionArray;
+    translations: string[];
+    firmware_revision?: string;
+    fingerprint: string;
+    changelog?: string;
+}
+
+export interface ConditionalRelease {
+    firmware_type: FirmwareType;
+    conditions: {
+        environment: {
+            min_suite_version: string;
+        };
+        rollout_probability: number;
+    };
+    release: FirmwareReleaseConfigInfo;
+}
+
+export interface ReleasesConfig {
+    T1B1: ConditionalRelease[];
+    T2T1: ConditionalRelease[];
+    T2B1: ConditionalRelease[];
+    T3B1: ConditionalRelease[];
+    T3T1: ConditionalRelease[];
+    T3W1: ConditionalRelease[];
+}
+export interface IntermediaryReleaseConfig {
+    if_version_less_than: string;
+    version: number;
+    firmware_revision: string;
+    url: string;
+}
+
+export interface FirmwareReleaseConfig {
+    version: number;
+    timestamp: string;
+    sequence: number;
+    releases: ReleasesConfig;
+    intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
+}
