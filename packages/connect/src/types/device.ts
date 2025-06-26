@@ -27,6 +27,9 @@ export type UnavailableCapability =
     | 'update-required'
     | 'trezor-connect-outdated';
 
+/**
+ * `{first testnet address}@{device.features.device_id}:{device.instance}`
+ */
 export type StaticSessionId = `${string}@${string}:${number}`;
 
 export type DeviceState = {
