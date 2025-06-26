@@ -58,6 +58,9 @@ export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
     },
 );
 
+export const selectIsTradingBlacklisted = (state: MessageSystemRootState) =>
+    selectIsFeatureEnabled(state, Feature.trading.restrictions.blacklist, false);
+
 // trade for opening in detail
 export const selectTradeToBeOpened = (state: TradingRootState) => {
     const orderId = state.wallet.tradingNew.tradeOrderIdToBeOpened;
