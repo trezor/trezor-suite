@@ -20,7 +20,7 @@ test.describe('Sign and verify ETH', { tag: ['@group=wallet'] }, () => {
      * 5. Fill out fields and sign message.
      * 6. Check that notification was rendered and correct message was generated
      */
-    test('Sign ETH', async ({ page, devicePrompt, walletPage }) => {
+    test('Signs message with Ethereum', async ({ page, devicePrompt, walletPage }) => {
         await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
         await walletPage.walletExtraDropDown.click();
         await walletPage.signAndVerifyButton.click();
@@ -42,7 +42,7 @@ test.describe('Sign and verify ETH', { tag: ['@group=wallet'] }, () => {
      * 6. Fill out fields and sign message.
      * 7. Check that notification was rendered and correct message was generated
      */
-    test('Verify ETH', async ({ page, devicePrompt, walletPage }) => {
+    test('Verify message signed with Ethereum', async ({ page, devicePrompt, walletPage }) => {
         await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
         await walletPage.walletExtraDropDown.click();
         await walletPage.signAndVerifyButton.click();

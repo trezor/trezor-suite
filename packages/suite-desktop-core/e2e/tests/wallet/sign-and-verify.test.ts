@@ -7,6 +7,7 @@ const SIGNATURE =
     'JxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
 const ELECTRUM_SIGNATURE =
     'HxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
+
 test.describe('Sign and verify', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ page, walletPage, onboardingPage }) => {
@@ -27,7 +28,7 @@ test.describe('Sign and verify', { tag: ['@group=wallet'] }, () => {
      * 7. Compare signature with expected value
      */
 
-    test('Sign', async ({ page, devicePrompt }) => {
+    test('Signs message with standard Bitcoin signature format', async ({ page, devicePrompt }) => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
@@ -40,7 +41,10 @@ test.describe('Sign and verify', { tag: ['@group=wallet'] }, () => {
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(SIGNATURE);
     });
 
-    test('Sign Electrum', async ({ page, devicePrompt }) => {
+    test('Signs message with Electrum-compatible signature format', async ({
+        page,
+        devicePrompt,
+    }) => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
@@ -53,7 +57,10 @@ test.describe('Sign and verify', { tag: ['@group=wallet'] }, () => {
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(ELECTRUM_SIGNATURE);
     });
 
-    test('Verify', async ({ page, devicePrompt }) => {
+    test('Verify message signed with standard Bitcoin signature format', async ({
+        page,
+        devicePrompt,
+    }) => {
         await page.getByTestId('@sign-verify/navigation/verify').click();
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/select-address').fill(ADDRESS);

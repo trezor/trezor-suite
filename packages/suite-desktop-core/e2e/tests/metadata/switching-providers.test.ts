@@ -1,6 +1,7 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe(
     'Metadata - switching between cloud providers',
@@ -10,67 +11,75 @@ test.describe(
         const googleLabel = 'google label';
         const defaultLabel = 'Bitcoin #1';
 
-        test('Start with one and switch to another', async ({
-            page,
-            onboardingPage,
-            metadataPage,
-            settingsPage,
-            metadataMock,
-            walletPage,
-        }) => {
-            await onboardingPage.completeOnboarding();
+        test(
+            'Start with one and switch to another',
+            {
+                annotation: createTestAnnotation({
+                    testCase: 'Suite labeling support switching from provider to another',
+                }),
+            },
+            async ({
+                page,
+                onboardingPage,
+                metadataPage,
+                settingsPage,
+                metadataMock,
+                walletPage,
+            }) => {
+                await onboardingPage.completeOnboarding();
 
-            // Navigate to account and verify initial state
-            await walletPage.openAccount();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
-                defaultLabel,
-            );
+                // Navigate to account and verify initial state
+                await walletPage.openAccount();
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                    defaultLabel,
+                );
 
-            await metadataMock.start(MetadataProvider.DROPBOX);
+                await metadataMock.start(MetadataProvider.DROPBOX);
 
-            // Add a label using Dropbox
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
+                // Add a label using Dropbox
+                await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+                await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
-            await metadataPage.account.metadataInput.fill(dropboxLabel);
-            await page.keyboard.press('Enter');
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
-                dropboxLabel,
-            );
+                await metadataPage.account.metadataInput.fill(dropboxLabel);
+                await page.keyboard.press('Enter');
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                    dropboxLabel,
+                );
 
-            // Disconnect Dropbox
-            await settingsPage.navigateTo('application');
-            await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
-            await expect(
-                page.getByTestId('@settings/metadata/connect-provider-button'),
-            ).toBeVisible();
+                // Disconnect Dropbox
+                await settingsPage.navigateTo('application');
+                await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
+                await expect(
+                    page.getByTestId('@settings/metadata/connect-provider-button'),
+                ).toBeVisible();
 
-            await metadataMock.stop();
+                await metadataMock.stop();
 
-            // Verify that labels are removed after disconnect
-            await walletPage.openAccount();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toBeVisible();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
-                defaultLabel,
-            );
+                // Verify that labels are removed after disconnect
+                await walletPage.openAccount();
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toBeVisible();
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                    defaultLabel,
+                );
 
-            await metadataMock.start(MetadataProvider.GOOGLE);
+                await metadataMock.start(MetadataProvider.GOOGLE);
 
-            // Connect to Google and add a label
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
-            await expect(page.getByTestId('@modal/metadata-provider')).toBeVisible();
-            await expect(
-                page.getByTestId('@modal/metadata-provider/file-system-button'),
-            ).toBeHidden();
-            await page.getByTestId('@modal/metadata-provider/google-button').click();
-            await expect(page.getByTestId('@modal/metadata-provider')).toBeHidden();
+                // Connect to Google and add a label
+                await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+                await expect(page.getByTestId('@modal/metadata-provider')).toBeVisible();
+                await expect(
+                    page.getByTestId('@modal/metadata-provider/file-system-button'),
+                ).toBeHidden();
+                await page.getByTestId('@modal/metadata-provider/google-button').click();
+                await expect(page.getByTestId('@modal/metadata-provider')).toBeHidden();
 
-            await metadataPage.account.metadataInput.fill(googleLabel);
-            await page.keyboard.press('Enter');
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
-                googleLabel,
-            );
-        });
+                await metadataPage.account.metadataInput.fill(googleLabel);
+                await page.keyboard.press('Enter');
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                    googleLabel,
+                );
+            },
+        );
 
         test.afterEach(async ({ metadataMock }) => {
             await metadataMock.stop();

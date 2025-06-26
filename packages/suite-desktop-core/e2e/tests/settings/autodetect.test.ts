@@ -2,6 +2,7 @@ import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 enum ColorScheme {
     Light = 'light',
@@ -36,14 +37,22 @@ test.use({ startEmulator: false });
 testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundColor }) => {
     test.describe.serial('Language and theme detection', { tag: ['@group=settings'] }, () => {
         test.use(userPreferences);
-        test(testName, async ({ onboardingPage, analyticsSection }) => {
-            await onboardingPage.optionallyDismissFwHashCheckError();
-            await expect(analyticsSection.heading).toHaveText(text);
-            await expect(analyticsSection.heading).toHaveCSS('color', hexToRgba(textColor));
-            await expect(onboardingPage.page.locator('body')).toHaveCSS(
-                'background-color',
-                hexToRgba(bodyBackgroundColor),
-            );
-        });
+        test(
+            testName,
+            {
+                annotation: createTestAnnotation({
+                    testCase: `Suite adopts preferences of the browser: ${testName}`,
+                }),
+            },
+            async ({ onboardingPage, analyticsSection }) => {
+                await onboardingPage.optionallyDismissFwHashCheckError();
+                await expect(analyticsSection.heading).toHaveText(text);
+                await expect(analyticsSection.heading).toHaveCSS('color', hexToRgba(textColor));
+                await expect(onboardingPage.page.locator('body')).toHaveCSS(
+                    'background-color',
+                    hexToRgba(bodyBackgroundColor),
+                );
+            },
+        );
     });
 });
