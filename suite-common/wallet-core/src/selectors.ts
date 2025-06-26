@@ -33,28 +33,35 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
     AccountsRootState & DeviceRootState & DiscoveryRootState & WalletSettingsRootState
 >();
 
-export const selectDeviceAccountsVisibleEnabledAndSupported = createMemoizedSelector(
-    [selectVisibleDeviceAccounts, selectSelectedDevice, selectEnabledNetworks],
-    (accounts, device, enabledNetworks) => {
-        const deviceNetworks = selectSupportedNetworkByDevice(device);
-
-        return accounts.filter(
-            ({ symbol }) => enabledNetworks.includes(symbol) && deviceNetworks.includes(symbol),
-        );
-    },
-);
-
-export const selectAllAccountsToList = createMemoizedSelector(
-    [
-        selectDeviceAccountsVisibleEnabledAndSupported,
-        selectSelectedDevice,
-        selectDiscoveryForSelectedDevice,
-    ],
+/**
+ * This means "all potentially visible accounts", because for accounts that failed to be discovered
+ * we don't know if they would have been visible or not (depends on discovery account.empty result).
+ */
+export const selectVisibleAccountsWithFailed = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectSelectedDevice, selectDiscoveryForSelectedDevice],
     (okAccounts, device, discovery) => {
         const staticSessionId = device?.state?.staticSessionId;
         const failedAccounts = getFailedAccounts(staticSessionId, discovery);
+
         const allAccounts = [...okAccounts, ...failedAccounts];
-        const sortedAccounts = sortByCoin(allAccounts);
+
+        return returnStableArrayIfEmpty(allAccounts);
+    },
+);
+
+/**
+ * Listable accounts are visible, enabled in settings, supported by the device and conventionally sorted.
+ * Edge cases: accounts failed to be discovered, or remembered accounts no longer supported by the device.
+ */
+export const selectAllAccountsToList = createMemoizedSelector(
+    [selectVisibleAccountsWithFailed, selectSelectedDevice, selectEnabledNetworks],
+    (allAccounts, device, enabledNetworks) => {
+        const deviceNetworks = selectSupportedNetworkByDevice(device);
+
+        const filteredAccounts = allAccounts.filter(
+            ({ symbol }) => enabledNetworks.includes(symbol) && deviceNetworks.includes(symbol),
+        );
+        const sortedAccounts = sortByCoin(filteredAccounts);
 
         return returnStableArrayIfEmpty(sortedAccounts);
     },
