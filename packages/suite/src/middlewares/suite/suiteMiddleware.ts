@@ -5,14 +5,12 @@ import { AnyAction } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    createDeviceInstanceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
     restartDiscoveryThunk,
-    selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -62,10 +60,6 @@ const suite =
 
         // pass action to reducers
         next(action);
-
-        if (createDeviceInstanceThunk.fulfilled.match(action)) {
-            api.dispatch(selectDeviceThunk({ device: action.payload.device }));
-        }
 
         if (deviceActions.forgetDevice.match(action)) {
             api.dispatch(handleDeviceDisconnect(action.payload.device));
