@@ -123,7 +123,7 @@
     },
     "devDependencies": {
         "@crowdin/cli": "4.8.0",
-        "@formatjs/cli": "6.6.4",
+        "@formatjs/cli": "6.7.2",
         "@testing-library/react": "^16.3.0",
         "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",
