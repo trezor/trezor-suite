@@ -1967,6 +1967,7 @@ export const en = {
             btcOnlyFirmwareTitle: 'Bitcoin-only firmware',
             btcOnlyFirmwareDescription:
                 'Swapping is unavailable with Bitcoin-only firmware. To enable, switch to universal firmware.',
+            notAvailableInCountryTitle: 'Trading is not yet available in your country',
         },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
