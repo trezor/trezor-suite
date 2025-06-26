@@ -34,7 +34,7 @@ import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens'
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 import { SignSuccessMessage } from './SignSuccessMessage';
-import { useUtxoSelection } from '../hooks/useUxtoSelection';
+import { useUtxoSelection } from '../hooks/useUtxoSelection';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -146,8 +146,7 @@ export const OutputsReviewFooter = ({
                 selectedAccount: account,
             }),
         );
-        if (account.networkType === 'bitcoin') setSelectedUtxos([]); // clear selected UTXOs after sending the transaction
-        
+
         if (isFulfilled(sendResponse)) {
             const { txid: sentTxid } = sendResponse.payload.payload;
 
@@ -167,6 +166,7 @@ export const OutputsReviewFooter = ({
             }
 
             setTxid(sentTxid);
+            if (account.networkType === 'bitcoin') setSelectedUtxos([]); // clear selected UTXOs after sending the transaction
 
             return;
         }

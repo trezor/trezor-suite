@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRatesRootState,
     TransactionsRootState,
@@ -11,20 +11,32 @@ import {
     selectLocalCurrency,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { Button, Card, CheckBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
-import { AccountAddressFormatter , FiatAmountFormatter } from '@suite-native/formatters';
+import { Card, CheckBox, Divider, HStack, Text, TextButton, VStack } from '@suite-native/atoms';
+import {
+    AccountAddressFormatter,
+    CryptoAmountFormatter,
+    FiatAmountFormatter,
+} from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Utxo } from '@trezor/blockchain-link-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+const AccountAddressFormatterStyle = prepareNativeStyle(() => ({
+    maxWidth: '80%',
+}));
 
 export type Props = {
     utxo: Utxo;
     onToggle: (utxo: Utxo) => void;
-    accountKey: string;
+    accountKey: AccountKey;
+    symbol: NetworkSymbol;
     isSelected?: boolean;
 };
 
@@ -33,8 +45,9 @@ type TransactionDetailNavigation = StackNavigationProps<
     RootStackRoutes.TransactionDetail
 >;
 
-export const UtxoCard = ({ utxo, onToggle, accountKey, isSelected = false }: Props) => {
-    const { DateFormatter, CryptoAmountFormatter } = useFormatters();
+export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = false }: Props) => {
+    const { DateFormatter } = useFormatters();
+    const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<TransactionDetailNavigation>();
 
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
@@ -42,7 +55,7 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, isSelected = false }: Pro
     );
 
     const fiatCurrencyCode = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey('btc', fiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
 
     const currentRates = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
@@ -55,14 +68,11 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, isSelected = false }: Pro
         });
     };
 
-    const fiatTotalActualNumeric = pipe(
-        convertCryptoToFiatAmount({
-            amount: utxo.amount,
-            symbol: 'btc',
-            rate: currentRates?.rate,
-        }),
-        Number,
-    );
+    const fiatAmount = convertCryptoToFiatAmount({
+        amount: utxo.amount,
+        symbol,
+        rate: currentRates?.rate,
+    });
 
     return (
         <Card noPadding borderColor={isSelected ? 'backgroundSecondaryDefault' : 'transparent'}>
@@ -75,21 +85,28 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, isSelected = false }: Pro
                 >
                     <VStack>
                         <HStack alignItems="center">
-                            <Text variant="highlight">
-                                <CryptoAmountFormatter symbol="btc" value={utxo.amount} />{' '}
-                            </Text>
-                            <Text color="textSubdued">≈ </Text>
+                            <CryptoAmountFormatter
+                                color="textDefault"
+                                variant="highlight"
+                                value={utxo.amount}
+                                isBalance={false}
+                                symbol={symbol}
+                            />
+                            <Text color="textSubdued">≈</Text>
                             <FiatAmountFormatter
                                 color="textSubdued"
                                 variant="highlight"
-                                symbol="btc"
-                                value={String(fiatTotalActualNumeric)}
+                                symbol={symbol}
+                                value={fiatAmount}
                             />
                         </HStack>
 
-                        <AccountAddressFormatter style={{
-                            maxWidth: '80%',
-                        }} value={utxo.address} variant='hint' />
+                        <AccountAddressFormatter
+                            style={applyStyle(AccountAddressFormatterStyle)}
+                            value={utxo.address}
+                            variant="hint"
+                            color="textSubdued"
+                        />
                     </VStack>
                     <CheckBox isChecked={isSelected} onChange={() => onToggle(utxo)} />
                 </HStack>
@@ -104,9 +121,9 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, isSelected = false }: Pro
                             <DateFormatter value={transactionBlockTime} />
                         </Text>
                     )}
-                    <Button colorScheme="plain" onPress={handleShowDetails} size="tiny">
-                        Show details
-                    </Button>
+                    <TextButton variant="tertiary" onPress={handleShowDetails} size="small">
+                        <Translation id="moduleSend.coinControl.utxos.showDetails" />
+                    </TextButton>
                 </HStack>
             </VStack>
         </Card>

@@ -15,7 +15,7 @@ import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 
-import { useUtxoSelection } from '../hooks/useUxtoSelection';
+import { useUtxoSelection } from '../hooks/useUtxoSelection';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { constructFormDraft, getOutputFieldName } from '../utils';

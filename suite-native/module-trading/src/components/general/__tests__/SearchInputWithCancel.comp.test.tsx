@@ -1,6 +1,9 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { SearchInputWithCancel, SearchInputWithCancelProps } from '../SearchInputWithCancel';
+import {
+    BottomSheetSearchInputProps,
+    BottomSheetSearchInputWithCancel,
+} from '../BottomSheetSearchInputWithCancel';
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -15,8 +18,10 @@ jest.mock('@trezor/react-utils', () => {
 });
 
 describe('SearchInputWithCancel', () => {
-    const renderSearchInputWithCancel = (props: Partial<SearchInputWithCancelProps>) =>
-        renderWithBasicProvider(<SearchInputWithCancel onChange={jest.fn()} {...props} />);
+    const renderSearchInputWithCancel = (props: Partial<BottomSheetSearchInputProps>) =>
+        renderWithBasicProvider(
+            <BottomSheetSearchInputWithCancel onChange={jest.fn()} {...props} />,
+        );
 
     it('should render without "Cancel" button by default', async () => {
         const { queryByText } = await renderSearchInputWithCancel({});

@@ -12,7 +12,10 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-export type SearchInputWithCancelProps = Omit<BottomSheetSearchInputProps, 'elevation'>;
+type ClearAndBlur = {
+    clear?: () => void;
+    blur?: () => void;
+};
 
 const noOp = () => {};
 

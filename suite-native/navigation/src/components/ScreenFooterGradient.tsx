@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
 
 const screenFooterGradientStyle = prepareNativeStyle(utils => ({
@@ -11,18 +11,22 @@ const screenFooterGradientStyle = prepareNativeStyle(utils => ({
     pointerEvents: 'none',
 }));
 
-export const ScreenFooterGradient = () => {
+type ScreenFooterGradientProps = {
+    style?: NativeStyleObject;
+};
+
+export const ScreenFooterGradient = ({ style }: ScreenFooterGradientProps) => {
     const { applyStyle, utils } = useNativeStyles();
 
     // 'transparent' color does not work in context of LinearGradient on iOS, RGBA has to be used instead.
     const backgroundColor = utils.colors.backgroundSurfaceElevation0;
-    const transparentColor = hexToRgba(backgroundColor, 0.01);
+    const transparentColor = hexToRgba(backgroundColor, 0.1);
 
     return (
         <LinearGradient
             dither={false}
             colors={[transparentColor, backgroundColor]}
-            style={applyStyle(screenFooterGradientStyle)}
+            style={[applyStyle(screenFooterGradientStyle), style]}
         />
     );
 };

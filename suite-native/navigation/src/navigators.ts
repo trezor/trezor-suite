@@ -92,6 +92,7 @@ export type SendStackParamList = {
     };
     [SendStackRoutes.SendUtxo]: {
         accountKey: AccountKey;
+        amount?: string;
     };
     [SendStackRoutes.SendFees]: {
         accountKey: AccountKey;

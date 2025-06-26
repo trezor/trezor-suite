@@ -5,7 +5,11 @@ import styled, { useTheme } from 'styled-components';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { amountToSmallestUnit, filterAndCategorizeUtxos , formatNetworkAmount } from '@suite-common/wallet-utils';
+import {
+    amountToSmallestUnit,
+    filterAndCategorizeUtxos,
+    formatNetworkAmount,
+} from '@suite-common/wallet-utils';
 import { Card, Checkbox, Column, Icon, Row, Switch, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
