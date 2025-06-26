@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { SettingsItemCard } from '@suite-native/atoms';
+import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,
@@ -24,7 +24,7 @@ export const DeviceAuthenticityCard = () => {
     };
 
     return (
-        <SettingsItemCard
+        <CompactCardWithIconLayout
             icon="shield"
             onPress={handleOnPress}
             title={<Translation id="moduleDeviceSettings.authenticity.title" />}

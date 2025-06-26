@@ -10,7 +10,7 @@ import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { InlineAlertBoxProps, SettingsItemCard } from '@suite-native/atoms';
+import { CompactCardWithIconLayout, InlineAlertBoxProps } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
@@ -71,7 +71,7 @@ export const DeviceFirmwareCard = () => {
     })();
 
     return (
-        <SettingsItemCard
+        <CompactCardWithIconLayout
             icon="database"
             title={<Translation id="firmware.title" />}
             alertBoxProps={firmwareUpdateProps}

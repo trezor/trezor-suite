@@ -17,7 +17,7 @@ import { Text } from '../Text';
 const ICON_WRAPPER_SIZE = 48;
 
 type CardVariant = 'normal' | 'danger';
-type SettingsItemCardProps = Omit<PressableProps, 'onPress'> & {
+type CompactCardWithIconLayoutProps = Omit<PressableProps, 'onPress'> & {
     icon: IconName;
     title: ReactNode;
     subtitle: ReactNode;
@@ -62,7 +62,7 @@ const iconWrapperStyle = prepareNativeStyle<{ variant: CardVariant }>((utils, { 
     borderRadius: utils.borders.radii.round,
 }));
 
-export const SettingsItemCard = ({
+export const CompactCardWithIconLayout = ({
     icon,
     title,
     subtitle,
@@ -70,7 +70,7 @@ export const SettingsItemCard = ({
     onPress,
     variant = 'normal',
     ...pressableProps
-}: SettingsItemCardProps) => {
+}: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 

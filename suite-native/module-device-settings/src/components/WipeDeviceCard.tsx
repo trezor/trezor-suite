@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { SettingsItemCard } from '@suite-native/atoms';
+import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -24,7 +24,7 @@ export const WipeDeviceCard = () => {
     };
 
     return (
-        <SettingsItemCard
+        <CompactCardWithIconLayout
             title={<Translation id="moduleDeviceSettings.wipeDevice.title" />}
             icon="warningOctagon"
             subtitle={<Translation id="moduleDeviceSettings.wipeDevice.subtitle" />}
