@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -8,6 +7,8 @@ import {
     StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
+
+import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -24,7 +25,7 @@ export const WipeDeviceCard = () => {
     };
 
     return (
-        <CompactCardWithIconLayout
+        <DeviceSettingsItemCard
             title={<Translation id="moduleDeviceSettings.wipeDevice.title" />}
             icon="warningOctagon"
             subtitle={<Translation id="moduleDeviceSettings.wipeDevice.subtitle" />}

@@ -10,7 +10,7 @@ import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { CompactCardWithIconLayout, InlineAlertBoxProps } from '@suite-native/atoms';
+import { InlineAlertBoxProps } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,6 +19,8 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { getFirmwareVersion } from '@trezor/device-utils';
+
+import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -71,7 +73,7 @@ export const DeviceFirmwareCard = () => {
     })();
 
     return (
-        <CompactCardWithIconLayout
+        <DeviceSettingsItemCard
             icon="database"
             title={<Translation id="firmware.title" />}
             alertBoxProps={firmwareUpdateProps}

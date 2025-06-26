@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import { Pressable, PressableProps } from 'react-native';
-import { useSelector } from 'react-redux';
 
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
@@ -17,10 +15,11 @@ import { Text } from '../Text';
 const ICON_WRAPPER_SIZE = 48;
 
 type CardVariant = 'normal' | 'danger';
-type CompactCardWithIconLayoutProps = Omit<PressableProps, 'onPress'> & {
+export type CompactCardWithIconLayoutProps = Omit<PressableProps, 'onPress'> & {
     icon: IconName;
     title: ReactNode;
     subtitle: ReactNode;
+    isDisabled?: boolean;
     alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
     onPress?: () => void;
     variant?: CardVariant;
@@ -68,14 +67,14 @@ export const CompactCardWithIconLayout = ({
     subtitle,
     alertBoxProps,
     onPress,
+    isDisabled = false,
     variant = 'normal',
     ...pressableProps
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     return (
-        <Pressable onPress={onPress} disabled={isDiscoveryRunning} {...pressableProps}>
+        <Pressable onPress={onPress} disabled={isDisabled} {...pressableProps}>
             <Card borderColor="borderElevation1" noPadding>
                 <HStack padding="sp16" spacing="sp12" alignItems="center">
                     <Box style={applyStyle(iconWrapperStyle, { variant })}>
@@ -91,7 +90,7 @@ export const CompactCardWithIconLayout = ({
                             {subtitle}
                         </Text>
                     </VStack>
-                    {isDiscoveryRunning ? (
+                    {isDisabled ? (
                         <Loader />
                     ) : (
                         <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />

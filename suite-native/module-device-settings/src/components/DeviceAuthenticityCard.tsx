@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { CompactCardWithIconLayout } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,
@@ -9,6 +8,8 @@ import {
     DeviceSettingsStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+
+import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     DeviceAuthenticityStackParamList,
@@ -24,7 +25,7 @@ export const DeviceAuthenticityCard = () => {
     };
 
     return (
-        <CompactCardWithIconLayout
+        <DeviceSettingsItemCard
             icon="shield"
             onPress={handleOnPress}
             title={<Translation id="moduleDeviceSettings.authenticity.title" />}
