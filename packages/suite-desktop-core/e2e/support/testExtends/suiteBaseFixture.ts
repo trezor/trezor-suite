@@ -58,11 +58,14 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo, electronConf: 
         path: tracePath,
         contentType: 'application/zip',
     });
-    testInfo.attachments.push({
-        name: 'video',
-        path: getVideoPath(testInfo.outputDir),
-        contentType: 'video/webm',
-    });
+    const videoPath = getVideoPath(testInfo.outputDir);
+    if (videoPath) {
+        testInfo.attachments.push({
+            name: 'video',
+            path: videoPath,
+            contentType: 'video/webm',
+        });
+    }
     const closePromise = suite.electronApp.close();
     // Handle modal that asks to enable auto-start
     if (electronConf.exposeConnectWs) {
@@ -87,11 +90,14 @@ const webSetup = async (browserContext: BrowserContext) => {
 const webTeardown = async (page: Page, browserContext: BrowserContext, testInfo: TestInfo) => {
     await page.close();
     await browserContext.close();
-    testInfo.attachments.push({
-        name: 'video',
-        path: getVideoPath(testInfo.outputDir),
-        contentType: 'video/webm',
-    });
+    const videoPath = getVideoPath(testInfo.outputDir);
+    if (videoPath) {
+        testInfo.attachments.push({
+            name: 'video',
+            path: videoPath,
+            contentType: 'video/webm',
+        });
+    }
 };
 
 const trezorEnvSetup = async (

@@ -71,11 +71,19 @@ export async function skipFixture({}, use: (r: void) => Promise<void>) {
 }
 /* eslint-enable react-hooks/rules-of-hooks */
 
-export const getVideoPath = (videoFolder: string) => {
+export const getVideoPath = (videoFolder: string): string | false => {
     const videoFilenames = readdirSync(videoFolder).filter(file => file.endsWith('.webm'));
-    if (videoFilenames.length !== 1) {
+    if (videoFilenames.length < 1) {
         console.error(
-            `Warning: More than one test video file found in the output directory: ${videoFolder}\nAttaching only the first one: ${videoFilenames[0]}`,
+            `Test teardown error: No test video files found in the output directory: ${videoFolder}`,
+        );
+
+        return false;
+    }
+
+    if (videoFilenames.length > 1) {
+        console.warn(
+            `Test teardown warning: Multiple test video files found in the output directory: ${videoFilenames}.\nUsing the first one: ${videoFilenames[0]}`,
         );
     }
 
@@ -83,7 +91,7 @@ export const getVideoPath = (videoFolder: string) => {
 };
 
 export const findLatestVersionForModel = (
-    model: 'T2T1' | 'T2B1' | 'T2T1' | 'T3B1' | 'T3T1',
+    model: 'T1B1' | 'T2B1' | 'T2T1' | 'T3B1' | 'T3T1',
 ): string => {
     const firmwareVersions = releases.firmware;
     const versions = Object.keys(firmwareVersions);
