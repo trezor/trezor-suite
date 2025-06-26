@@ -10842,7 +10842,6 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
-    "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/module-authorize-device": "workspace:*"
     "@suite-native/navigation": "workspace:*"

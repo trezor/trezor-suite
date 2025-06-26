@@ -8,7 +8,6 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../device" },
-        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../module-authorize-device" },
         { "path": "../navigation" },
