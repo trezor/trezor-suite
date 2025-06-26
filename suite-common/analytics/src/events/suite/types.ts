@@ -492,7 +492,6 @@ export type SuiteAnalyticsEvent =
     | { type: EventType.SettingsDeviceSetupWipeCode }
     | { type: EventType.SettingsDeviceChangeWipeCode }
     | { type: EventType.SettingsDeviceDisableWipeCode }
-    | { type: EventType.SettingsDeviceChangeLabel }
     | {
           type: EventType.SettingsDeviceUpdateAutoLock;
           payload: {

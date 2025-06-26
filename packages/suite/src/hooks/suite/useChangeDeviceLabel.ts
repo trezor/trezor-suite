@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { yup } from '@suite-common/validators';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { isAscii } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -60,7 +60,7 @@ export const useChangeDeviceLabel = (): {
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
         dispatch(applySettings({ label: deviceLabel }));
         analytics.report({
-            type: EventType.SettingsDeviceChangeLabel,
+            type: EventTypeShared.SettingsDeviceChangeLabel,
         });
     });
 
