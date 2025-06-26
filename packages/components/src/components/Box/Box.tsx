@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 
 import {
-    BorderRadii,
     BorderWidths,
     Elevation,
     mapElevationToBackground,
@@ -22,6 +21,7 @@ export const allowedBoxFrameProps = [
     'padding',
     'width',
     'overflow',
+    'borderRadius',
     'minWidth',
     'maxWidth',
     'height',
@@ -39,7 +39,6 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>
 
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
-        $borderRadius?: BorderRadii;
         $borderWidth?: BorderWidth;
         $elevation: Elevation;
         $hasBackground?: boolean;
@@ -89,7 +88,6 @@ type BorderWidth =
 
 export type BoxProps = AllowedFrameProps & {
     children: React.ReactNode;
-    borderRadius?: BorderRadii;
     borderWidth?: BorderWidth;
     hasBackground?: boolean;
     'data-testid'?: string;
@@ -102,7 +100,6 @@ export type BoxProps = AllowedFrameProps & {
 
 export const Box = ({
     children,
-    borderRadius,
     borderWidth,
     hasBackground,
     'data-testid': dataTestId,
@@ -121,7 +118,6 @@ export const Box = ({
             as={as}
             data-testid={dataTestId}
             aria-hidden={ariaHidden}
-            $borderRadius={borderRadius}
             $borderWidth={borderWidth}
             $hasBackground={hasBackground}
             $elevation={elevation}
