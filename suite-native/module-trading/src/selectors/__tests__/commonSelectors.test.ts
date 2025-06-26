@@ -7,6 +7,7 @@ import {
     selectActiveTradingType,
     selectEnabledTradingTypes,
     selectIsAmountInputActive,
+    selectIsTradingBlacklisted,
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
@@ -22,10 +23,12 @@ const getPreloadedState = ({
     buy,
     sell,
     exchange,
+    blacklist,
 }: {
     buy?: boolean;
     sell?: boolean;
     exchange?: boolean;
+    blacklist?: boolean;
 }) => {
     const features: Feature[] = [];
     if (buy !== undefined) {
@@ -44,6 +47,12 @@ const getPreloadedState = ({
         features.push({
             domain: 'trading.exchange',
             flag: exchange,
+        });
+    }
+    if (blacklist !== undefined) {
+        features.push({
+            domain: 'trading.restrictions.blacklist',
+            flag: blacklist,
         });
     }
 
@@ -226,6 +235,23 @@ describe('commonSelectors', () => {
             const firstCall = selectEnabledTradingTypes(getPreloadedState(flags));
             const secondCall = selectEnabledTradingTypes(getPreloadedState(flags));
             expect(firstCall).toBe(secondCall);
+        });
+    });
+
+    describe('selectIsTradingBlacklisted', () => {
+        it('should return true if trading.restrictions.blacklist feature is enabled', () => {
+            const state = getPreloadedState({ blacklist: true });
+            expect(selectIsTradingBlacklisted(state)).toBe(true);
+        });
+
+        it('should return false if trading.restrictions.blacklist feature is disabled', () => {
+            const state = getPreloadedState({ blacklist: false });
+            expect(selectIsTradingBlacklisted(state)).toBe(false);
+        });
+
+        it('should return false if trading.restrictions.blacklist feature is not set', () => {
+            const state = getPreloadedState({});
+            expect(selectIsTradingBlacklisted(state)).toBe(false);
         });
     });
 });
