@@ -9741,7 +9741,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.6"
+    "@types/invity-api": "npm:^1.1.8"
     react: "npm:19.0.0"
     react-redux: "npm:9.2.0"
     uuid: "npm:^11.1.0"
@@ -12728,7 +12728,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
-    "@types/invity-api": "npm:^1.1.6"
+    "@types/invity-api": "npm:^1.1.8"
     "@types/jws": "npm:^3.2.10"
     "@types/pako": "npm:^2.0.3"
     "@types/pdfmake": "npm:^0.2.11"
@@ -13564,10 +13564,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/invity-api@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "@types/invity-api@npm:1.1.6"
-  checksum: 10/6a3ab75e626fb7c676cce84907a10c573ebef176207f97f38a8eceb6bed480f8f8dffc57565633cb3e78ca50de488a5f390cd5b375fb73aa261b3c56fe5670ba
+"@types/invity-api@npm:^1.1.8":
+  version: 1.1.8
+  resolution: "@types/invity-api@npm:1.1.8"
+  checksum: 10/5436ce35cb0a8985e2c2ff1fd701eb4979af74e00d65a0f207bb54bb36cbf35ec9b5c21a96bc109e88a9a3a03b1872670acfb18e4bfc0f242f3425b1199f6229
   languageName: node
   linkType: hard
 
