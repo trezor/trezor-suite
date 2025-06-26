@@ -50,7 +50,7 @@ const svgoConfig = {
         // it's necessary to remove all dimension tags to allow resizing
         'removeDimensions',
         'removeRasterImages',
-        'removeScriptElement',
+        'removeScripts',
     ],
 };
 
