@@ -917,7 +917,7 @@
                         "uk": "Дізнатись більше"
                     }
                 },
-                "context": { "domain": "accounts.coinjoin" }
+                "context": { "domain": ["accounts.coinjoin", "accounts.btc.coinjoin"] }
             }
         },
         {
@@ -1062,7 +1062,7 @@
                         "uk": "Дізнатись більше"
                     }
                 },
-                "context": { "domain": "accounts.coinjoin" }
+                "context": { "domain": ["accounts.coinjoin", "accounts.btc.coinjoin"] }
             }
         },
         {

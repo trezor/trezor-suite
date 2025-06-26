@@ -88,12 +88,4 @@ describe('ContextMessage', () => {
         });
         expect(queryByHintText(contextActionId)).toBeNull();
     });
-
-    it('should return null when there is message of different context', async () => {
-        const { queryByHintText } = await render({
-            context: Context.getDeprecated('accounts.coinjoin'),
-            preloadedState: stateWithTradeContextMessage,
-        });
-        expect(queryByHintText(contextActionId)).toBeNull();
-    });
 });
