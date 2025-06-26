@@ -25,7 +25,6 @@
         "react": "19.0.0",
         "react-native": "0.79.3",
         "react-native-mmkv": "3.3.0",
-        "react-native-restart": "0.0.27",
         "redux-persist": "6.0.0"
     }
 }
