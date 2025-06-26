@@ -1,31 +1,30 @@
 {
     "trade": {
         "refundAddress": "0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C",
-        "partnerData": "https://my.btcdirect.eu/en-gb/user/link-user-identifier?client=trezor&user-identifier-id=0124f853-c435-49d0-b247-aa7f4bed1d3a",
-        "paymentId": "bf6abd06-5fcf-421c-921c-61807f552acd",
+        "paymentId": "da39ba5f-07f3-45fa-914d-85c96f86c9fe",
         "status": "SUBMITTED",
-        "exchange": "btcdirect-sell",
+        "partnerData": "https://sell.moonpay.com/?apiKey=pk_live_1wuWa2Z1O2qG8izvpLkMOvBFbAPgWpfn&baseCurrencyCode=usdc&quoteCurrencyCode=eur&baseCurrencyAmount=50&lockAmount=true&externalTransactionId=da39ba5f-07f3-45fa-914d-85c96f86c9fe&redirectURL=http%3A%2F%2Flocalhost%3A8000%2Fcoinmarket-redirect%23sell-offers%2Feth%2Fnormal%2F0%2Fp-qc%2FCZ%2FEUR%2F50%2Fethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48%2FcreditCard%2F275ebeab-f63b-4495-9486-70b7d9e8fb83&showWalletAddressForm=true&colorCode=%2300bfd9&language=CZ&signature=PWc4D%2BmrQ2VTHH0xz2tcSD1Ubhn0iXqAgXA9vpO1A%2FI%3D",
+        "exchange": "moonpay-sell",
         "fiatCurrency": "EUR",
         "cryptoCurrency": "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-        "rate": 0.9453571428571429,
+        "rate": 0.7966,
         "amountInCrypto": true,
         "exp": "smWJR5rZZn8vPQSVap5/lQ==",
         "country": "CZ",
-        "paymentMethodName": "Bank Transfer",
-        "fiatStringAmount": "9.32",
-        "cryptoStringAmount": "9.87",
-        "minFiat": 1,
-        "maxFiat": 50726.17,
-        "minCrypto": 1,
-        "maxCrypto": 52373.58101,
-        "paymentMethod": "bankTransfer",
-        "orderId": "0a752718-2686-4ebc-98d0-336f72fdba50",
-        "validUntil": "2099-02-11T14:16:33Z"
+        "paymentMethodName": "Credit Card",
+        "fiatStringAmount": "39.83",
+        "cryptoStringAmount": "50",
+        "minFiat": 20,
+        "maxFiat": 30000,
+        "minCrypto": 5.01,
+        "maxCrypto": 30000,
+        "paymentMethod": "creditCard",
+        "orderId": "275ebeab-f63b-4495-9486-70b7d9e8fb83"
     },
     "tradeForm": {
         "form": {
             "formMethod": "GET",
-            "formAction": "https://my.btcdirect.eu/en-gb/user/link-user-identifier?client=trezor&user-identifier-id=0124f853-c435-49d0-b247-aa7f4bed1d3a",
+            "formAction": "https://sell.moonpay.com/?apiKey=pk_live_1wuWa2Z1O2qG8izvpLkMOvBFbAPgWpfn&baseCurrencyCode=usdc&quoteCurrencyCode=eur&baseCurrencyAmount=50&lockAmount=true&externalTransactionId=da39ba5f-07f3-45fa-914d-85c96f86c9fe&redirectURL=http%3A%2F%2Flocalhost%3A8000%2Fcoinmarket-redirect%23sell-offers%2Feth%2Fnormal%2F0%2Fp-qc%2FCZ%2FEUR%2F50%2Fethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48%2FcreditCard%2F275ebeab-f63b-4495-9486-70b7d9e8fb83&showWalletAddressForm=true&colorCode=%2300bfd9&language=CZ&signature=PWc4D%2BmrQ2VTHH0xz2tcSD1Ubhn0iXqAgXA9vpO1A%2FI%3D",
             "fields": {}
         }
     }

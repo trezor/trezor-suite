@@ -16,11 +16,13 @@ import info from './info.json';
 import sellList from './sell/list.json';
 import sellQuotesBTC from './sell/quotes-bitcoin.json';
 import sellQuotesEthereumToken from './sell/quotes-ethereum-token.json';
+import sellQuotesEthereum from './sell/quotes-ethereum.json';
 import sellQuotesSolana from './sell/quotes-solana.json';
 import sellTradePayload from './sell/requests/trade-request.json';
 import sellWatchPayload from './sell/requests/watch-request.json';
 import sellTradeBTC from './sell/trade-bitcoin.json';
 import sellTradeEthereumToken from './sell/trade-ethereum-token.json';
+import sellTradeEthereum from './sell/trade-ethereum.json';
 import sellTradeSolana from './sell/trade-solana.json';
 import sellWatchBTC from './sell/watch-bitcoin.json';
 import sellWatchEthereum from './sell/watch-ethereum.json';
@@ -109,9 +111,11 @@ export {
     buyWatch,
     sellList,
     sellQuotesBTC,
+    sellQuotesEthereum,
     sellQuotesEthereumToken,
     sellQuotesSolana,
     sellTradeBTC,
+    sellTradeEthereum,
     sellTradeEthereumToken,
     sellTradeSolana,
     sellWatchBTC,
