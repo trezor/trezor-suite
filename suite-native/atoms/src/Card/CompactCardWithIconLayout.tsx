@@ -15,7 +15,7 @@ import { Text } from '../Text';
 const ICON_WRAPPER_SIZE = 48;
 
 type CardVariant = 'normal' | 'danger';
-export type CompactCardWithIconLayoutProps = Omit<PressableProps, 'onPress'> & {
+export type CompactCardWithIconLayoutProps = {
     icon: IconName;
     title: ReactNode;
     subtitle: ReactNode;
@@ -23,7 +23,7 @@ export type CompactCardWithIconLayoutProps = Omit<PressableProps, 'onPress'> & {
     alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
     onPress?: () => void;
     variant?: CardVariant;
-};
+} & PressableProps;
 
 type CardColorScheme = {
     iconWrapperBackgroundColor: Color;
