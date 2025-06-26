@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { EventTypeShared, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -11,7 +12,6 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { deviceNameFormValidationSchema } from '../deviceNameFormSchema';
 
@@ -73,7 +73,7 @@ export const useChangeDeviceName = () => {
         navigation.navigate(DeviceNameStackRoutes.DeviceNameLoadingScreen);
 
         analytics.report({
-            type: EventType.SettingsDeviceChangeLabel,
+            type: EventTypeShared.SettingsDeviceChangeLabel,
         });
     });
 
