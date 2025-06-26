@@ -23,7 +23,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { getExcludedUtxos } from '@suite-common/wallet-utils';
+import { amountToSmallestUnit , getExcludedUtxos } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
     SendStackParamList,
@@ -33,6 +33,7 @@ import {
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 
+import { useUtxoSelection } from './useUxtoSelection';
 import { useSubscribeForSolanaBlockUpdates } from '../hooks/useSubscribeForSolanaBlockUpdates';
 import { storeFeeLevels } from '../sendFormSlice';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
@@ -63,15 +64,19 @@ const useSendForm = (
     accountKey: string,
     tokenContract?: TokenAddress,
 ): {
-    handleSubmitSendForm: () => void;
-    form: UseFormReturn<SendOutputsFormValues>;
-    network: Network | null;
+P    isValid: boolean;
+    isSubmitting: boolean;
+    handleNavigateToReviewScreen: () => void;
+    form: ReturnType<typeof useForm<SendOutputsFormValues>>;
+    network: ReturnType<typeof getNetwork> | null;
     amount: string | undefined;
-} | null => {
+} | null {
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
+
+    const { selectedUtxos } = useUtxoSelection();
 
     const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
 
@@ -100,7 +105,7 @@ const useSendForm = (
                 anonymitySet: account?.addresses?.anonymitySet,
                 dustLimit: networkFeeInfo?.dustLimit,
             }),
-        [account, networkFeeInfo],
+        [account?.utxo, account?.addresses?.anonymitySet, networkFeeInfo?.dustLimit],
     );
 
     useSubscribeForSolanaBlockUpdates(account);
@@ -140,7 +145,11 @@ const useSendForm = (
         if (account && network && networkFeeInfo) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
-                    formState: constructFormDraft({ formValues: getValues(), tokenContract }),
+                    formState: constructFormDraft({
+                        formValues: getValues(),
+                        tokenContract,
+                        selectedUtxos,
+                    }),
                     composeContext: {
                         account,
                         network,
@@ -179,6 +188,7 @@ const useSendForm = (
                             formValues: getValues(),
                             tokenContract,
                             feeLevel: normalFeeLevel,
+                            selectedUtxos,
                         }),
                     }),
                 );
@@ -194,12 +204,13 @@ const useSendForm = (
         networkFeeInfo,
         setError,
         excludedUtxos,
+        selectedUtxos
     ]);
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
         const response = await dispatch(
             calculateFeeLevelsMaxAmountThunk({
-                formState: constructFormDraft({ formValues: getValues() }),
+                formState: constructFormDraft({ formValues: getValues(), selectedUtxos }),
                 accountKey,
             }),
         );
@@ -207,7 +218,7 @@ const useSendForm = (
         if (isFulfilled(response)) {
             setFeeLevelsMaxAmount(response.payload);
         }
-    }, [getValues, accountKey, dispatch]);
+    }, [getValues, accountKey, dispatch, selectedUtxos]);
 
     useEffect(() => {
         const prefillValuesFromStoredDraft = async () => {
@@ -231,7 +242,7 @@ const useSendForm = (
     // Triggered for every change of watchedFormValues.
     useEffect(() => {
         debounce(updateFormState);
-    }, [updateFormState, watchedFormValues, debounce]);
+    }, [updateFormState, watchedFormValues, debounce, selectedUtxos]);
 
     useEffect(() => {
         // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
@@ -253,7 +264,7 @@ const useSendForm = (
 
         const response = await dispatch(
             composeSendFormTransactionFeeLevelsThunk({
-                formState: constructFormDraft({ formValues: values, tokenContract }),
+                formState: constructFormDraft({ formValues: values, tokenContract, selectedUtxos }),
                 composeContext: {
                     account,
                     network,
@@ -273,11 +284,13 @@ const useSendForm = (
             return;
         }
     });
+    const amount = amountToSmallestUnit(getValues('outputs.0.amount'), 8);
 
     return {
         handleSubmitSendForm,
         form,
         network,
+        amount,
     };
 };
 

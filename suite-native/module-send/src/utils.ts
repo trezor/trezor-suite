@@ -1,4 +1,5 @@
 import { FormState, TokenAddress } from '@suite-common/wallet-types';
+import { Utxo } from '@trezor/blockchain-link-types';
 import { FeeLevel } from '@trezor/connect';
 
 import { SendOutputFieldName, SendOutputsFormValues } from './sendOutputsFormSchema';
@@ -12,10 +13,12 @@ export const constructFormDraft = ({
     formValues: { outputs, ...restFormValues },
     tokenContract,
     feeLevel = { label: 'normal', feePerUnit: '' },
+    selectedUtxos = [],
 }: {
     formValues: SendOutputsFormValues;
     tokenContract?: TokenAddress;
     feeLevel?: Pick<FeeLevel, 'label' | 'feePerUnit' | 'feeLimit'>;
+    selectedUtxos?: Utxo[];
 }): FormState => ({
     outputs: outputs.map(({ address, amount, fiat = '' }) => ({
         address,
@@ -25,9 +28,9 @@ export const constructFormDraft = ({
         fiat,
         currency: { label: '', value: '' },
     })),
-    isCoinControlEnabled: false,
+    isCoinControlEnabled: selectedUtxos.length > 0,
     hasCoinControlBeenOpened: false,
-    selectedUtxos: [],
+    selectedUtxos,
     options: [],
     selectedFee: feeLevel.label,
     feePerUnit: feeLevel.feePerUnit,

@@ -34,6 +34,7 @@ import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens'
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 import { SignSuccessMessage } from './SignSuccessMessage';
+import { useUtxoSelection } from '../hooks/useUxtoSelection';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -98,6 +99,7 @@ export const OutputsReviewFooter = ({
     const { showAlert } = useAlert();
     const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
+    const { setSelectedUtxos } = useUtxoSelection();
 
     const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
@@ -144,6 +146,8 @@ export const OutputsReviewFooter = ({
                 selectedAccount: account,
             }),
         );
+        if (account.networkType === 'bitcoin') setSelectedUtxos([]); // clear selected UTXOs after sending the transaction
+        
         if (isFulfilled(sendResponse)) {
             const { txid: sentTxid } = sendResponse.payload.payload;
 
