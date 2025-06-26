@@ -32,10 +32,6 @@ export const Box: StoryObj<typeof BoxComponent> = {
         hasBackground: {
             control: 'boolean',
         },
-        borderRadius: {
-            control: 'select',
-            options: ['undefined', ...Object.values(borders.radii)],
-        },
         borderWidth: {
             control: 'select',
             options: ['undefined', ...Object.values(borders.widths)],
