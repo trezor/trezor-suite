@@ -13,7 +13,7 @@ test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
         await expect(page.getByTestId('@safety-checks-apply')).toBeVisible();
     });
 
-    test('Only one level is selected at a time', async ({ page }) => {
+    test('Only one level of Safety Checks is selected at a time', async ({ page }) => {
         // Open the safety checks modal.
         await page.getByTestId('@settings/device/safety-checks-button').click();
 
@@ -36,7 +36,7 @@ test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
         ).toHaveCount(1);
     });
 
-    test('Apply button is enabled only when value is changed', async ({ page }) => {
+    test('Apply button is enabled only when Safety Checks value is changed', async ({ page }) => {
         // Open the safety checks modal.
         await page.getByTestId('@settings/device/safety-checks-button').click();
 

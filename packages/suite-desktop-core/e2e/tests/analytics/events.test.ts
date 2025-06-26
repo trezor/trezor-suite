@@ -10,7 +10,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
-    test('reports transport-type, suite-ready and device-connect/device-disconnect events when analytics is initialized and enabled', async ({
+    test('Analytics captures important events when started enabled', async ({
         page,
         analytics,
         onboardingPage,
@@ -21,9 +21,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
 
         const firmwareVersion = findLatestVersionForModel('T3T1');
         await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1', version: firmwareVersion });
-        await trezorUserEnvLink.setupEmu({
-            passphrase_protection: true,
-        });
+        await trezorUserEnvLink.setupEmu({ passphrase_protection: true });
 
         // reload to activate bridge and start testing app with enabled analytics
         await trezorUserEnvLink.startBridge();
@@ -92,7 +90,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         expect(analytics.findLatestRequestByType(EventType.DeviceDisconnect)).toBeDefined();
     });
 
-    test('reports suite-ready after enabling analytics on app initial run', async ({
+    test('Analytics capture suite-ready after getting enabled', async ({
         analytics,
         page,
         analyticsSection,

@@ -2,7 +2,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Hidden version page', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
-    test('is accessible via route', async ({ url, page, analyticsSection }) => {
+    test('Version page is accessible on URL', async ({ url, page, analyticsSection }) => {
         await analyticsSection.continueButton.click();
 
         await page.goto(url + 'version');
