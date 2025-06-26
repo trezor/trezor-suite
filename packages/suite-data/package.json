@@ -31,7 +31,7 @@
         "@types/fs-extra": "^11.0.4",
         "autoprefixer": "^10.4.21",
         "babel-loader": "^10.0.0",
-        "css-loader": "^6.10.0",
+        "css-loader": "^7.1.2",
         "fs-extra": "^11.3.0",
         "postcss-loader": "^8.1.1",
         "simple-git": "^3.28.0",
