@@ -7,13 +7,15 @@ import {
     selectIsDeviceProtectedByPin,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { CompactCardWithIconLayout, InlineAlertBoxProps } from '@suite-native/atoms';
+import { InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+
+import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -58,7 +60,7 @@ export const DevicePinProtectionCard = () => {
     };
 
     return (
-        <CompactCardWithIconLayout
+        <DeviceSettingsItemCard
             icon="password"
             title={<Translation id="moduleDeviceSettings.pinProtection.title" />}
             subtitle={
