@@ -160,16 +160,16 @@ export enum AddCoinAccountStackRoutes {
 }
 
 export enum SettingsStackRoutes {
-    SettingsLocalization = 'SettingsLocalization',
-    SettingsCustomization = 'SettingsCustomization',
     SettingsPrivacyAndSecurity = 'SettingsPrivacyAndSecurity',
     SettingsViewOnly = 'SettingsViewOnly',
-    SettingsAbout = 'SettingsAbout',
     SettingsFAQ = 'SettingsFAQ',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
     SettingsDeviceChecks = 'SettingsDeviceChecks',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
+
+    // New settings routes
+    SettingsPreferences = 'SettingsPreferences',
 }
 
 export enum TradingStackRoutes {

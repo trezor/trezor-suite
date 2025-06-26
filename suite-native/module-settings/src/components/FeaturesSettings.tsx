@@ -13,44 +13,34 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
 import { SettingsSection } from './SettingsSection';
-import { SettingsSectionItem } from './SettingsSectionItem';
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const hasDiscovery = useSelector(selectHasRunningDiscovery);
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
 
-    const hasDiscovery = useSelector(selectHasRunningDiscovery);
-
     return (
         <SettingsSection title={<Translation id="moduleSettings.items.features.title" />}>
             {isDevButtonVisible && (
-                <SettingsSectionItem
-                    iconName="circleDashed"
+                <AppSettingsCardWithIconLayout
+                    icon="circleDashed"
                     title={<Translation id="moduleSettings.items.features.devUtils.title" />}
                     subtitle={<Translation id="moduleSettings.items.features.devUtils.subtitle" />}
                     onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
                     testID="@settings/dev-utils"
                 />
             )}
-            <SettingsSectionItem
-                iconName="eye"
-                title={<Translation id="moduleSettings.items.features.privacyAndSecurity.title" />}
-                subtitle={
-                    <Translation id="moduleSettings.items.features.privacyAndSecurity.subtitle" />
-                }
-                onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
-                testID="@settings/privacy-and-security"
-            />
             {isUsbDeviceConnectFeatureEnabled && (
                 <>
-                    <SettingsSectionItem
-                        iconName="bookmarkSimple"
+                    <AppSettingsCardWithIconLayout
+                        icon="bookmarkSimple"
                         title={<Translation id="moduleSettings.items.features.viewOnly.title" />}
                         subtitle={
                             <Translation id="moduleSettings.items.features.viewOnly.subtitle" />
@@ -58,8 +48,8 @@ export const FeaturesSettings = () => {
                         onPress={() => navigateTo(SettingsStackRoutes.SettingsViewOnly)}
                         testID="@settings/view-only"
                     />
-                    <SettingsSectionItem
-                        iconName="coins"
+                    <AppSettingsCardWithIconLayout
+                        icon="coins"
                         title={
                             <Translation id="moduleSettings.items.features.coinEnabling.title" />
                         }
@@ -67,11 +57,11 @@ export const FeaturesSettings = () => {
                             <Translation id="moduleSettings.items.features.coinEnabling.subtitle" />
                         }
                         onPress={() => navigateTo(SettingsStackRoutes.SettingsCoinEnabling)}
-                        isLoading={hasDiscovery}
+                        isDisabled={hasDiscovery}
                         testID="@settings/coin-enabling"
                     />
-                    <SettingsSectionItem
-                        iconName="shieldWarning"
+                    <AppSettingsCardWithIconLayout
+                        icon="shieldWarning"
                         title={<Translation id="moduleSettings.items.features.advanced.title" />}
                         subtitle={
                             <Translation id="moduleSettings.items.features.advanced.subtitle" />

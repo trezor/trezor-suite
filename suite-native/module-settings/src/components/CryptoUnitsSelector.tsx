@@ -26,7 +26,7 @@ export const CryptoUnitsSelector = () => {
 
     return (
         <Select<PROTO.AmountUnit>
-            selectLabel={<Translation id="moduleSettings.localizations.bitcoinUnitsLabel" />}
+            selectLabel={<Translation id="moduleSettings.preferences.bitcoinUnitsLabel" />}
             selectValue={bitcoinUnit}
             items={bitcoinUnitsItems}
             onSelectItem={handleSelectUnit}
