@@ -34,7 +34,7 @@
         "css-loader": "^6.10.0",
         "fs-extra": "^11.3.0",
         "postcss-loader": "^8.1.1",
-        "simple-git": "^3.27.0",
+        "simple-git": "^3.28.0",
         "style-loader": "^4.0.0",
         "tsx": "^4.20.3",
         "webpack": "5.99.9",
