@@ -4,7 +4,6 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
-    getNewInstanceNumber,
     getSelectedDevice,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
@@ -103,51 +102,6 @@ export const toggleRememberDevice = createThunk(
 export type CreateDeviceInstanceError = {
     error: 'passphrase-enabling-cancelled' | 'features-unavailable';
 };
-
-type CreateDeviceInstanceParams = { device: TrezorDevice; useEmptyPassphrase: boolean };
-
-export const createDeviceInstanceThunk = createThunk<
-    { device: TrezorDevice },
-    CreateDeviceInstanceParams,
-    { rejectValue: CreateDeviceInstanceError }
->(
-    `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
-    async (
-        { device, useEmptyPassphrase = false },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
-    ) => {
-        if (!device.features) return rejectWithValue({ error: 'features-unavailable' });
-        if (!device.features.passphrase_protection) {
-            const response = await TrezorConnect.applySettings({
-                device,
-                use_passphrase: true,
-            });
-
-            if (!response.success) {
-                dispatch(
-                    notificationsActions.addToast({ type: 'error', error: response.payload.error }),
-                );
-
-                return rejectWithValue({ error: 'passphrase-enabling-cancelled' });
-            }
-
-            dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
-        }
-
-        const devices = selectDevices(getState());
-
-        const newDeviceInstance: TrezorDevice = {
-            ...device,
-            useEmptyPassphrase,
-            instance: getNewInstanceNumber(devices, device),
-        };
-        dispatch(deviceActions.createDeviceInstance({ device: newDeviceInstance }));
-
-        return fulfillWithValue({
-            device: newDeviceInstance,
-        });
-    },
-);
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`

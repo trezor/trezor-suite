@@ -4,7 +4,6 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
     accountsActions,
-    createDeviceInstanceThunk,
     createImportedDeviceThunk,
     deviceActions,
     forgetDisconnectedDevices,
@@ -54,12 +53,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
 
-        if (
-            isAnyOf(
-                createDeviceInstanceThunk.fulfilled,
-                createImportedDeviceThunk.fulfilled,
-            )(action)
-        ) {
+        if (isAnyOf(createImportedDeviceThunk.fulfilled)(action)) {
             dispatch(selectDeviceThunk({ device: action.payload.device }));
         }
 
