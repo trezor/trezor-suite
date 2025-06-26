@@ -286,6 +286,5 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 projectId,
             },
         },
-        newArchEnabled: false,
     };
 };
