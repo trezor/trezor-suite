@@ -67,8 +67,6 @@ export const AddHiddenWalletButton = () => {
                 screen: AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice,
             });
         } else {
-            // Navigate to the PassphraseStackNavigator which will handle showing the appropriate screen
-            // based on the current state of the passphrase flow
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseForm,
             });

@@ -1,6 +1,5 @@
 export enum RootStackRoutes {
     AppTabs = 'AppTabs',
-    LegacyOnboarding = 'LegacyOnboarding',
     OnboardingStack = 'OnboardingStack',
     DeviceOnboardingStack = 'DeviceOnboardingStack',
     AccountsImport = 'AccountsImport',
@@ -124,7 +123,6 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
     PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
-    PassphraseStackNavigator = 'PassphraseStackNavigator',
 }
 
 export enum DevUtilsStackRoutes {
