@@ -3,11 +3,12 @@ import { useMemo } from 'react';
 import { useAtom } from 'jotai';
 
 import { Utxo } from '@trezor/blockchain-link-types';
+import { BigNumber } from '@trezor/utils';
 
 import { selectedUtxosAtom } from '../atoms/coinControlAtoms';
 
 type UseUtxoSelectionReturn = {
-    totalSelectedAmount: string;
+    totalSelectedAmount: BigNumber;
     isCoinControlEnabled: boolean;
     selectedUtxos: Utxo[];
     handleUtxoSelection: (utxo: Utxo) => void;
@@ -19,7 +20,7 @@ export const useUtxoSelection = (): UseUtxoSelectionReturn => {
 
     const isCoinControlEnabled = useMemo(() => selectedUtxos.length > 0, [selectedUtxos]);
     const totalSelectedAmount = useMemo(
-        () => selectedUtxos.reduce((acc, utxo) => acc + Number(utxo.amount), 0).toString(),
+        () => selectedUtxos.reduce((acc, utxo) => BigNumber(acc).plus(utxo.amount), BigNumber(0)),
         [selectedUtxos],
     );
 

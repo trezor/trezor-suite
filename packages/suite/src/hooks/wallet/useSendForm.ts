@@ -18,7 +18,8 @@ import {
     formatAmount,
     getDefaultValues,
     getFeeInfo,
- useExcludedUtxos } from '@suite-common/wallet-utils';
+    useExcludedUtxos,
+} from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { fillSendForm } from 'src/actions/suite/protocolActions';

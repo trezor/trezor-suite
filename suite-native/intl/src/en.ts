@@ -13,6 +13,7 @@ export const en = {
             cancel: 'Cancel',
             close: 'Close',
             confirm: 'Confirm',
+            confirmSelection: 'Confirm selection',
             continue: 'Continue',
             disable: 'Disable',
             dismiss: 'Dismiss',
@@ -935,7 +936,6 @@ export const en = {
                 title: 'Choose coins you want to use with your Trezor.',
                 subtitle:
                     'The more coins are enabled, the longer it takes to load the app. You can always add more later.',
-                button: 'Confirm selection',
             },
             settings: {
                 title: 'Enabled coins',
@@ -1766,12 +1766,13 @@ export const en = {
             search: {
                 placeholder: 'Search for address or transaction ID',
                 noCoins: 'No coins',
-                message: 'Check the spelling or try again'
+                message: 'Check the spelling or try again',
             },
             notEnoughCoins: 'Select additional coins to match amount or turn off coin control',
             utxos: {
                 selected: 'Selected',
-                remaining: 'Remaining to select'
+                remaining: 'Remaining to select',
+                showDetails: 'Show details',
             },
             disable: {
                 title: 'Turn off Coin Control?',
@@ -1779,7 +1780,7 @@ export const en = {
                     'Trezor Suite will automatically select coins that match the amount you want to send.',
                 primaryButton: 'Turn off',
                 secondaryButton: 'Cancel',
-            }
+            },
         },
         review: {
             confirmOnDeviceMessage: 'Go to your Trezor and confirm the amounts & recipients.',

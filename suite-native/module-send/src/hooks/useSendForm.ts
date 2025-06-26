@@ -23,7 +23,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { amountToSmallestUnit , getExcludedUtxos } from '@suite-common/wallet-utils';
+import { amountToSmallestUnit, getExcludedUtxos } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
     SendStackParamList,
@@ -60,17 +60,7 @@ const getDefaultValues = ({
         ],
     }) as const;
 
-const useSendForm = (
-    accountKey: string,
-    tokenContract?: TokenAddress,
-): {
-P    isValid: boolean;
-    isSubmitting: boolean;
-    handleNavigateToReviewScreen: () => void;
-    form: ReturnType<typeof useForm<SendOutputsFormValues>>;
-    network: ReturnType<typeof getNetwork> | null;
-    amount: string | undefined;
-} | null {
+export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation =
@@ -204,7 +194,7 @@ P    isValid: boolean;
         networkFeeInfo,
         setError,
         excludedUtxos,
-        selectedUtxos
+        selectedUtxos,
     ]);
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
@@ -293,5 +283,3 @@ P    isValid: boolean;
         amount,
     };
 };
-
-export { useSendForm };

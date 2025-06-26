@@ -42,9 +42,15 @@ export const filterAndCategorizeUtxos = ({
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
 
     return {
-        filteredUtxos: utxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
-        filteredSpendableUtxos: spendableUtxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
-        filteredLowAnonymityUtxos: lowAnonymityUtxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
-        filteredDustUtxos: dustUtxos.filter((utxo) => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
+        filteredUtxos: utxos.filter(utxo => filterUtxos(utxo, lowerCaseSearchQuery, outputLabels)),
+        filteredSpendableUtxos: spendableUtxos.filter(utxo =>
+            filterUtxos(utxo, lowerCaseSearchQuery, outputLabels),
+        ),
+        filteredLowAnonymityUtxos: lowAnonymityUtxos.filter(utxo =>
+            filterUtxos(utxo, lowerCaseSearchQuery, outputLabels),
+        ),
+        filteredDustUtxos: dustUtxos.filter(utxo =>
+            filterUtxos(utxo, lowerCaseSearchQuery, outputLabels),
+        ),
     };
 };

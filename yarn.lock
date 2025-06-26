@@ -10980,6 +10980,7 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@shopify/flash-list": "npm:1.7.6"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"

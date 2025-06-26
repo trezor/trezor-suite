@@ -18,7 +18,7 @@ import { TestProps } from '../types';
 // and also because string needs to be rendered in the <Text> element anyway
 export type ButtonAccessory = IconName | ReactElement;
 
-export type ButtonSize = 'plain' | 'tiny' | 'extraSmall' | 'small' | 'medium' | 'large';
+export type ButtonSize = 'tiny' | 'extraSmall' | 'small' | 'medium' | 'large';
 export type ButtonColorScheme =
     | 'primary'
     | 'primaryElevation0'
@@ -34,8 +34,7 @@ export type ButtonColorScheme =
     | 'blueBold'
     | 'blueElevation0'
     | 'blueElevation1'
-    | 'backgroundSurfaceElevation0'
-    | 'plain';
+    | 'backgroundSurfaceElevation0';
 
 export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     children: ReactNode;
@@ -201,21 +200,9 @@ export const buttonSchemeToColorsMap = {
         iconColor: 'textSubdued',
         disabledColors: baseDisabledScheme,
     },
-    plain: {
-        backgroundColor: 'transparent',
-        onPressColor: 'transparent',
-        textColor: 'textPrimaryDefault',
-        iconColor: 'iconDefault',
-        disabledColors: baseDisabledScheme,
-    },
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
 export const buttonSizeToDimensionsMap = {
-    plain: {
-        minHeight: 0,
-        paddingVertical: nativeSpacings.sp2,
-        paddingHorizontal: nativeSpacings.sp8,
-    },
     tiny: {
         minHeight: 20,
         paddingVertical: nativeSpacings.sp2,
@@ -244,7 +231,6 @@ export const buttonSizeToDimensionsMap = {
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
 
 const sizeToAdditionalSpacingMap = {
-    plain: 0,
     tiny: 0,
     extraSmall: 0,
     small: nativeSpacings.sp1,
@@ -253,7 +239,6 @@ const sizeToAdditionalSpacingMap = {
 } as const satisfies Record<ButtonSize, number>;
 
 export const buttonToTextSizeMap = {
-    plain: 'callout',
     tiny: 'label',
     extraSmall: 'hint',
     small: 'hint',
@@ -262,7 +247,6 @@ export const buttonToTextSizeMap = {
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 export const buttonToIconSizeMap = {
-    plain: 'small',
     tiny: 'small',
     extraSmall: 'medium',
     small: 'medium',
