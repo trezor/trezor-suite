@@ -2,7 +2,6 @@ import { useAtom } from 'jotai';
 
 import { renderHook } from '@suite-native/test-utils';
 import { Utxo } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../useUxtoSelection';
 
@@ -32,7 +31,7 @@ describe('useUtxoSelection', () => {
         const { result } = renderHook(() => useUtxoSelection());
 
         expect(result.current.selectedUtxos).toEqual([]);
-        expect(result.current.totalSelectedAmount).toEqual(BigNumber(0));
+        expect(result.current.totalSelectedAmount).toBe('0');
         expect(result.current.isCoinControlEnabled).toBe(false);
     });
 
@@ -61,6 +60,6 @@ describe('useUtxoSelection', () => {
 
         const { result } = renderHook(() => useUtxoSelection());
 
-        expect(result.current.totalSelectedAmount).toEqual(BigNumber(3000));
+        expect(result.current.totalSelectedAmount).toBe('3000');
     });
 });
