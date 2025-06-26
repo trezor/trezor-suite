@@ -3,13 +3,16 @@ import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
-import { Timer } from '@trezor/react-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
-import { TradingExchangeFormProps, TradingExchangeType } from '../../types';
+import {
+    HandleExchangeRequestThunkProps,
+    TradingExchangeFormProps,
+    TradingExchangeType,
+} from '../../types';
 import { addIdsToQuotes, getTradingNetworkDecimals } from '../../utils';
 import { exchangeUtils } from '../../utils/exchange/exchangeUtils';
 
@@ -58,14 +61,6 @@ export const getQuoteRequestData = ({
     };
 
     return request;
-};
-
-export type HandleExchangeRequestThunkProps = {
-    formValues: TradingExchangeFormProps;
-    network: Network;
-    timer: Timer;
-    shouldSendInSats: boolean | undefined;
-    composeRequestCallback: () => void;
 };
 
 export const handleExchangeRequestThunk = createThunk<

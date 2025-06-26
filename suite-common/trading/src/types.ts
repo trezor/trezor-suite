@@ -276,6 +276,14 @@ export type HandleBuyRequestThunkProps = {
     shouldSendInSats: boolean | undefined;
 };
 
+export type HandleExchangeRequestThunkProps = {
+    formValues: TradingExchangeFormProps;
+    network: Network;
+    timer: Timer;
+    shouldSendInSats: boolean | undefined;
+    composeRequestCallback: () => void;
+};
+
 export type TradingVerifiedAddress =
     | {
           address: string;
