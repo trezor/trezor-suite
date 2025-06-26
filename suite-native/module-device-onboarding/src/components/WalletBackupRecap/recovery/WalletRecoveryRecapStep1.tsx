@@ -1,8 +1,8 @@
 import { SharedValue } from 'react-native-reanimated';
 
+import { SwipeableWalkthroughStep } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { SwipeableWalkthroughStep } from '../../SwipeableWalkthrough/SwipeableWalkthroughStep';
 import { WalletRecapStepContent } from '../../WalletBackupRecap/WalletRecapStepContent';
 
 export type WalletBackupTutorialNumberedStepProps = {

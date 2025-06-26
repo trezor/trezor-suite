@@ -1,12 +1,11 @@
 import { SharedValue } from 'react-native-reanimated';
 
-import { VStack } from '@suite-native/atoms';
+import { SwipeableWalkthroughStep, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { WalletBackupRecapListItem } from './WalletBackupRecapListItem';
 import { WALLET_BACKUP_RECAP_STEPS, walletBackupSecuritySteps } from './presets';
-import { SwipeableWalkthroughStep } from '../../SwipeableWalkthrough/SwipeableWalkthroughStep';
 
 export type WalletBackupTutorialNumberedStepProps = {
     currentStepIndex: SharedValue<number>;

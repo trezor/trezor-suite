@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 
 import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
+import { SwipeableWalkthrough, SwipeableWalkthroughScreenHeader } from '@suite-native/atoms';
 import { WalletBackupType } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
@@ -14,8 +15,6 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-import { SwipeableWalkthrough } from '../components/SwipeableWalkthrough/SwipeableWalkthrough';
-import { SwipeableWalkthroughScreenHeader } from '../components/SwipeableWalkthrough/SwipeableWalkthroughScreenHeader';
 import { WalletBackupTutorialStep1 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep1';
 import { WalletBackupTutorialStep2 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep2';
 import { WalletBackupTutorialStep3 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep3';

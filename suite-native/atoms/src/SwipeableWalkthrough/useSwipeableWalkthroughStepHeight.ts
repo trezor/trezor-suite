@@ -4,11 +4,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-const swipeableWalkthroughStepScrennLayoutHeightAtom = atom(0);
+const swipeableWalkthroughStepScreenLayoutHeightAtom = atom(0);
 
 export const useSwipeableWalkthroughStepHeight = () => {
-    const stepOffset = useAtomValue(swipeableWalkthroughStepScrennLayoutHeightAtom);
-    const setStepLayoutHeight = useSetAtom(swipeableWalkthroughStepScrennLayoutHeightAtom);
+    const stepOffset = useAtomValue(swipeableWalkthroughStepScreenLayoutHeightAtom);
+    const setStepLayoutHeight = useSetAtom(swipeableWalkthroughStepScreenLayoutHeightAtom);
     const { bottom, top } = useSafeAreaInsets();
 
     const swipeableWalkthroughStepHeight = useMemo(

@@ -1,9 +1,11 @@
 import { ReactNode } from 'react';
 
-import { Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-type OnboardingStepHeaderProps = {
+import { VStack } from '../Stack';
+import { Text } from '../Text';
+
+type SwipeableWalkthroughStepHeaderProps = {
     callout: ReactNode;
     title: ReactNode;
     description?: ReactNode;
@@ -13,11 +15,11 @@ const titleStyle = prepareNativeStyle(() => ({
     letterSpacing: -1.4,
 }));
 
-export const OnboardingStepHeader = ({
+export const SwipeableWalkthroughStepHeader = ({
     callout,
     title,
     description,
-}: OnboardingStepHeaderProps) => {
+}: SwipeableWalkthroughStepHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     if (!title || !callout) return;

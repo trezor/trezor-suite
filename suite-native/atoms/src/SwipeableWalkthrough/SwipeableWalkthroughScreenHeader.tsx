@@ -1,13 +1,14 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { StatusBar } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useNavigation, useTheme } from '@react-navigation/native';
-
-import { Box, IconButton } from '@suite-native/atoms';
-import { ScreenHeader } from '@suite-native/navigation';
+import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
+import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { Box } from '../Box';
+import { IconButton } from '../Button/IconButton';
 
 type SwipeableWalkthroughScreenHeaderProps = {
     currentStepIndex: SharedValue<number>;
@@ -74,14 +75,9 @@ export const SwipeableWalkthroughScreenHeader = ({
     CustomBackButton,
     onPressBack,
 }: SwipeableWalkthroughScreenHeaderProps) => {
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
-    const {
-        colors: { background },
-        dark,
-    } = useTheme();
-
-    const navigation = useNavigation();
+    const activeColorScheme = useActiveColorScheme();
 
     const BackButton = CustomBackButton || SwipeableWalkthroughBackButton;
 
@@ -93,25 +89,15 @@ export const SwipeableWalkthroughScreenHeader = ({
         }
     }, [currentStepIndex, onPressBack]);
 
-    useEffect(() => {
-        // Override default navigation GO_BACK action to align it with the UI back button behavior.
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            if (e.data.action.type === 'GO_BACK') {
-                e.preventDefault();
-                handlePressBackButton();
-            }
-        });
-
-        return unsubscribe;
-    }, [handlePressBackButton, navigation]);
+    useOverrideBackNavigation({ onNavigateBack: handlePressBackButton });
 
     return (
         <>
             {/* Status bar can not be transparent same as on the other screens, because then is the animated content visible in in while transitioning. */}
             <Box style={applyStyle(statusBarStyle, { topSafeAreaInset })}>
                 <StatusBar
-                    backgroundColor={background}
-                    barStyle={dark ? 'light-content' : 'dark-content'}
+                    backgroundColor={utils.colors.backgroundSurfaceElevation0}
+                    barStyle={activeColorScheme === 'dark' ? 'light-content' : 'dark-content'}
                 />
             </Box>
             <Box style={applyStyle(screenHeaderContainerStyle)}>
