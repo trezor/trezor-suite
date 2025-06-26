@@ -40,17 +40,16 @@ const svgoConfig = {
     plugins: [
         {
             name: 'preset-default',
-            params: {
-                overrides: {
-                    removeViewBox: false,
-                },
-            },
+        },
+        {
+            name: 'removeViewBox',
+            active: false,
         },
         'prefixIds',
         // it's necessary to remove all dimension tags to allow resizing
         'removeDimensions',
         'removeRasterImages',
-        'removeScriptElement',
+        'removeScripts',
     ],
 };
 
