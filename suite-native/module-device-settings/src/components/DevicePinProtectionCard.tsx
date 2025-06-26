@@ -7,15 +7,13 @@ import {
     selectIsDeviceProtectedByPin,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { InlineAlertBoxProps } from '@suite-native/atoms';
+import { InlineAlertBoxProps, SettingsItemCard } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-
-import { SettingsItemCard } from './SettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,

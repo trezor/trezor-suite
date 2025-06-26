@@ -3,19 +3,16 @@ import { Pressable, PressableProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import {
-    Box,
-    Card,
-    HStack,
-    InlineAlertBox,
-    InlineAlertBoxProps,
-    Loader,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+
+import { Card } from './Card';
+import { Box } from '../Box';
+import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { Loader } from '../Loader';
+import { HStack, VStack } from '../Stack';
+import { Text } from '../Text';
 
 const ICON_WRAPPER_SIZE = 48;
 

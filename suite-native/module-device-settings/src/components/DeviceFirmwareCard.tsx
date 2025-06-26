@@ -10,7 +10,7 @@ import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { InlineAlertBoxProps } from '@suite-native/atoms';
+import { InlineAlertBoxProps, SettingsItemCard } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,8 +19,6 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { getFirmwareVersion } from '@trezor/device-utils';
-
-import { SettingsItemCard } from './SettingsItemCard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
