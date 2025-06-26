@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNetInfo } from '@react-native-community/netinfo';
 import { useNavigation } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
@@ -9,15 +8,13 @@ import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 
-import { ActiveTab } from '../components/general/ActiveTab';
-import { DeviceOffline } from '../components/general/Error/DeviceOffline';
 import { Footer } from '../components/general/Footer';
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
+import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
-import { useGeolocationCountryCode } from '../hooks/general/useGeolocationCountryCode';
 import { useMountedRecentlyFlag } from '../hooks/general/useMountedRecentlyFlag';
 import {
     selectActiveTradingType,
@@ -26,13 +23,11 @@ import {
 } from '../selectors/commonSelectors';
 
 const TradingScreenContent = () => {
-    const { isInternetReachable } = useNetInfo();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
     const activeTradingType = useSelector(selectActiveTradingType);
     const navigation = useNavigation<NavigationProps>();
     const isScreenMountedRecently = useMountedRecentlyFlag(activeTradingType);
     useActiveTradingTypeReaction();
-    useGeolocationCountryCode();
 
     useEffect(() => {
         if (tradeToBeOpened) {
@@ -51,7 +46,7 @@ const TradingScreenContent = () => {
     return (
         <VStack spacing="sp16">
             <Header isFormMountedRecently={isScreenMountedRecently} />
-            {isInternetReachable === false ? <DeviceOffline /> : <ActiveTab />}
+            <TradingTabContent />
             <Footer isFormMountedRecently={isScreenMountedRecently} />
             <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
         </VStack>

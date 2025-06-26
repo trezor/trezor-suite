@@ -48,6 +48,9 @@ export const Feature = {
         buy: 'trading.buy',
         sell: 'trading.sell',
         exchange: 'trading.exchange',
+        restrictions: {
+            blacklist: 'trading.restrictions.blacklist',
+        },
     },
 
     // device onboarding (MOBILE ONLY!!!).
