@@ -31,7 +31,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
     return (
         <Column gap={spacings.sm}>
             {account?.accountType === 'coinjoin' && (
-                <ContextMessage context={Context.getDeprecated('accounts.coinjoin')} />
+                <ContextMessage context={Context.getAccount('btc', 'coinjoin')} />
             )}
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&

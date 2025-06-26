@@ -1,12 +1,7 @@
 import { TradingType } from '@suite-common/trading';
 import { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
-import {
-    Context,
-    DeprecatedContextKey,
-    GeneralContextKey,
-    SettingsCategory,
-} from '../messageSystemTypes';
+import { Context, GeneralContextKey, SettingsCategory } from '../messageSystemTypes';
 
 describe('Message system types', () => {
     describe('Context', () => {
@@ -71,15 +66,6 @@ describe('Message system types', () => {
                     expect(Context.getSettings(category)).toBe(expected);
                 },
             );
-        });
-
-        describe('getDeprecated', () => {
-            it.each([['accounts.coinjoin', 'accounts.coinjoin']] as const satisfies [
-                DeprecatedContextKey,
-                string,
-            ][])('getDeprecated(%s) → %s', (key, expected) => {
-                expect(Context.getDeprecated(key)).toBe(expected);
-            });
         });
     });
 });
