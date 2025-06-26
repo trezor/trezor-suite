@@ -1,10 +1,10 @@
 import { createPublicKey } from 'crypto';
 import { decode, verify } from 'jws';
 
+import { FirmwareReleaseConfig } from '@trezor/device-utils';
 import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 
 import { JWS_SIGN_ALGORITHM, RELEASES_URL_REMOTE } from './constants';
-import { FirmwareReleaseConfig } from './types';
 import { jws as releasesJwsLocal } from '../files/releases.v1';
 
 // Enable this for local development purposes:
