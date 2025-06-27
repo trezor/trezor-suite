@@ -80,7 +80,8 @@ export class TradingPage {
         this.page.getByTestId(`@trading/offers/quote-${provider}`);
     readonly refreshTime: Locator;
     readonly selectThisQuoteButton: Locator;
-    readonly backToAccountButton: Locator;
+    readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
+        this.page.getByRole('button', { name: `Make another ${type}` });
     // Confirmation modal
     readonly modal: Locator;
     readonly termsConfirmButton: Locator;
@@ -157,7 +158,6 @@ export class TradingPage {
         this.quotes = this.page.getByTestId('@trading/offers/quote');
         this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
         this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
-        this.backToAccountButton = this.page.getByRole('button', { name: 'Back to Account' });
         // Confirmation modal
         this.modal = this.page.getByTestId('@modal');
         this.termsConfirmButton = this.page.getByTestId(

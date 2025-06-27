@@ -113,14 +113,14 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
                 await route.fulfill({ json: { status: 'SUCCESS' } });
             });
             await page.clock.fastForward(tradingMock.watchPeriod);
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Trade success');
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Sell Successful');
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });
 
         await test.step('Return to account sell form', async () => {
-            await tradingPage.backToAccountButton.click();
+            await tradingPage.backToAccountButton('Sell').click();
             await expect(page).toHaveURL(/\/accounts\/coinmarket\/sell#\/sol\/0\/normal$/);
         });
     });

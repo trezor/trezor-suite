@@ -133,14 +133,14 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         await test.step('Wait 30s for watch refresh and status change to Approved', async () => {
             await tradingMock.changeBuyWatchResponseTo('SUCCESS');
             await page.clock.fastForward(tradingMock.watchPeriod);
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Buy Successful');
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
             await expect(tradingPage.confirmationProvider).toHaveText(bestBuyProvider);
         });
 
         await test.step('Return to account buy form', async () => {
-            await tradingPage.backToAccountButton.click();
+            await tradingPage.backToAccountButton('Buy').click();
             await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/btc\/0\/normal$/);
         });
     });
