@@ -57,6 +57,14 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
 export const selectFees = (state: FeesRootState) => state.wallet.fees;
 
 /**
+ * Returns raw feeInfo per network
+ */
+export const selectRawNetworkFeeInfo = createMemoizedSelector(
+    [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
+    (fees, symbol): FeeInfo | undefined => (symbol !== undefined ? fees[symbol]?.data : undefined),
+);
+
+/**
  * Returns feeInfo per network, cleaned up, and for Ethereum also converted from wei to Gwei.
  */
 export const selectConvertedNetworkFeeInfo = createMemoizedSelector(

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { selectLocalCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
 
@@ -24,7 +24,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
     const localCurrency = useSelector(selectLocalCurrency);
 
     const { account, network } = selectedAccount;
-    const networkFees = useSelector(state => state.wallet.fees[account.symbol]?.data);
+    const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
 
     const defaultValues = useMemo(() => {
         const stakingContractAddress = getStakingContractAddress(account, 'claim');
