@@ -1,13 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import {
-    BottomSheetSearchInput,
-    BottomSheetSearchInputProps,
-    BottomSheetSearchInputRef,
-    HStack,
-    TextButton,
-} from '@suite-native/atoms';
+import { HStack, TextButton } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -17,7 +11,28 @@ type ClearAndBlur = {
     blur?: () => void;
 };
 
-const noOp = () => {};
+export type SearchComponentProps = {
+    placeholder: string;
+    onChange: (value: string) => void;
+    value: string;
+    onFocus?: () => void;
+    onBlur?: () => void;
+    autoCorrect?: boolean;
+};
+
+export type SearchInputWithCancelProps<R extends ClearAndBlur | null> = {
+    SearchComponent: SearchComponentWithRef<R>;
+    searchRef: React.RefObject<R | null>;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+    onFocus?: () => void;
+    onBlur?: () => void;
+};
+
+export type SearchComponentWithRef<R extends ClearAndBlur | null> = React.ForwardRefExoticComponent<
+    SearchComponentProps & React.RefAttributes<R>
+>;
 
 const inputWrapperStyle = prepareNativeStyle(_ => ({
     flex: 1,
@@ -31,25 +46,26 @@ const buttonStyle = prepareNativeStyle(({ spacings }) => ({
     paddingLeft: spacings.sp8,
 }));
 
-export const SearchInputWithCancel = ({
-    onFocus = noOp,
-    onBlur = noOp,
+export function SearchInputWithCancel<R extends ClearAndBlur | null>({
+    SearchComponent,
+    searchRef,
     onChange,
     placeholder,
+    onFocus,
+    onBlur,
     ...props
-}: SearchInputWithCancelProps) => {
+}: SearchInputWithCancelProps<R>) {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const [isInputActive, setIsInputActive] = useState(false);
-    const inputRef = useRef<BottomSheetSearchInputRef>(null);
     const debounce = useDebounce();
 
     useEffect(() => () => onChange(''), [onChange]);
 
     const handleCancel = () => {
         onChange('');
-        inputRef.current?.clear();
-        inputRef.current?.blur();
+        searchRef?.current?.clear?.();
+        searchRef?.current?.blur?.();
     };
 
     const handleOnChange = (value: string) => {
@@ -61,19 +77,18 @@ export const SearchInputWithCancel = ({
     return (
         <HStack alignItems="center" spacing={0}>
             <Animated.View layout={LinearTransition} style={applyStyle(inputWrapperStyle)}>
-                <BottomSheetSearchInput
-                    ref={inputRef}
+                <SearchComponent
+                    {...(searchRef ? { ref: searchRef as React.Ref<any> } : {})}
                     placeholder={placeholder ?? translate('moduleTrading.defaultSearchLabel')}
                     onFocus={() => {
                         setIsInputActive(true);
-                        onFocus();
+                        onFocus?.();
                     }}
                     onBlur={() => {
                         setIsInputActive(false);
-                        onBlur();
+                        onBlur?.();
                     }}
                     onChange={handleOnChange}
-                    autoCorrect={false}
                     {...props}
                 />
             </Animated.View>
@@ -93,4 +108,4 @@ export const SearchInputWithCancel = ({
             </Animated.View>
         </HStack>
     );
-};
+}

@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { renderHook } from '@suite-native/test-utils';
 import { Utxo } from '@trezor/blockchain-link-types';
 
-import { useUtxoSelection } from '../useUxtoSelection';
+import { useUtxoSelection } from '../useUtxoSelection';
 
 jest.mock('jotai', () => ({
     useAtom: jest.fn(() => [[], jest.fn()]),

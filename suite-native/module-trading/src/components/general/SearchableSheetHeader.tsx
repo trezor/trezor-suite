@@ -6,7 +6,7 @@ import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { SearchInputWithCancel } from './SearchInputWithCancel';
+import { BottomSheetSearchInputWithCancel } from './BottomSheetSearchInputWithCancel';
 import { SheetHeaderTitle } from './SheetHeaderTitle';
 
 export type SearchableSheetHeaderProps = {
@@ -79,7 +79,7 @@ export const SearchableSheetHeader = ({
                 )}
             </Animated.View>
             <Animated.View layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
-                <SearchInputWithCancel
+                <BottomSheetSearchInputWithCancel
                     onChange={onFilterChange}
                     onFocus={() => changeFilterFocus(true)}
                     onBlur={() => changeFilterFocus(false)}
