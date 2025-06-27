@@ -1,6 +1,7 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
+import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
@@ -49,12 +50,12 @@ export const TransactionReviewSummary = ({
     const currentAccountKey = useSelector(
         state => state.wallet.selectedAccount.account?.key,
     ) as string;
-    const fees = useSelector(state => state.wallet.fees);
+    const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useLocales();
     const { symbol, accountType, index, networkType } = account;
     const network = networks[symbol];
     const fee = getFee(account.networkType, tx);
-    const estimateTime = getEstimatedTime(networkType, fees[account.symbol]?.data, tx);
+    const estimateTime = getEstimatedTime(networkType, rawFeeInfo, tx);
     const connectPopupCall = useSelector(selectConnectPopupCall);
 
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;

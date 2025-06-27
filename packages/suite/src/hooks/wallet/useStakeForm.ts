@@ -8,6 +8,7 @@ import {
     StakeContextValues,
     selectFiatRatesByFiatRateKey,
     selectLocalCurrency,
+    selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import {
@@ -46,7 +47,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     const { symbol } = account;
 
     const localCurrency = useSelector(selectLocalCurrency);
-    const networkFees = useSelector(state => state.wallet.fees[symbol]?.data);
+    const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
 
     const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
 
