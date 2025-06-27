@@ -23,6 +23,7 @@ export const SendOutputsScreen = ({
     if (!sendForm) {
         return null;
     }
+
     const { form, handleSubmitSendForm, amount, network } = sendForm;
     const {
         formState: { isValid, isSubmitting },
