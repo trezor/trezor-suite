@@ -13,8 +13,7 @@
         "develop": {
             "extends": "base",
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "develop",
-                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
+                "EXPO_PUBLIC_ENVIRONMENT": "develop"
             },
             "channel": "develop",
             "autoIncrement": true,
@@ -29,8 +28,7 @@
         "preview": {
             "extends": "base",
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "preview",
-                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
+                "EXPO_PUBLIC_ENVIRONMENT": "preview"
             },
             "channel": "preview",
             "autoIncrement": true,
@@ -46,8 +44,7 @@
             "extends": "base",
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "production",
-                "EXPO_PUBLIC_CODESIGN_BUILD": "true",
-                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "false"
+                "EXPO_PUBLIC_CODESIGN_BUILD": "true"
             },
             "autoIncrement": true,
             "android": {

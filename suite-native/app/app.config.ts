@@ -157,17 +157,14 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         ['expo-secure-store'],
-    ];
-
-    if (process.env.EXPO_PUBLIC_BLUETOOTH_ENABLED) {
-        plugins.push(['react-native-ble-plx', {}]);
-        plugins.push([
+        ['react-native-ble-plx', {}],
+        [
             'react-native-permissions',
             {
                 iosPermissions: ['Bluetooth'],
             },
-        ]);
-    }
+        ],
+    ];
 
     return [
         ...plugins,
@@ -191,7 +188,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '33',
+        runtimeVersion: '34',
         ...(buildType === 'production'
             ? {}
             : {
