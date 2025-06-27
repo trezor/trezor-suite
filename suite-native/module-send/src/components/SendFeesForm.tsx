@@ -11,8 +11,8 @@ import {
     SendRootState,
     selectAccountByKey,
     selectAreFeesLoading,
-    selectNetworkFeeInfo,
-    selectNetworkFeeLevelFeePerUnit,
+    selectConvertedNetworkFeeInfo,
+    selectConvertedNetworkFeeLevelFeePerUnit,
     selectSendFormDraftByKey,
     useFetchFeesOnce,
     useRefetchFees,
@@ -75,7 +75,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const feeLevels = useSelector(selectFeeLevels);
 
     const networkFeeInfo = useSelector((state: FeesRootState) =>
-        selectNetworkFeeInfo(state, account?.symbol),
+        selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
 
     const formDraft = useSelector((state: SendRootState) =>
@@ -116,7 +116,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     ] as GeneralPrecomposedTransactionFinal;
 
     const feePerUnit = useSelector((state: FeesRootState) =>
-        selectNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
+        selectConvertedNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
     );
 
     useRefetchFees({

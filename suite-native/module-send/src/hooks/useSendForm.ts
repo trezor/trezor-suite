@@ -15,9 +15,9 @@ import {
     WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
+    selectConvertedNetworkFeeInfo,
     selectDeviceUnavailableCapabilities,
     selectIsAmountInSats,
-    selectNetworkFeeInfo,
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
@@ -82,7 +82,7 @@ export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) =>
         selectIsAmountInSats(state, account?.symbol),
     );
     const networkFeeInfo = useSelector((state: FeesRootState) =>
-        selectNetworkFeeInfo(state, account?.symbol),
+        selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),

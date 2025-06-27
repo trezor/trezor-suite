@@ -5,7 +5,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     composeSendFormTransactionFeeLevelsThunk,
-    selectNetworkFeeInfo,
+    selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
 import { Success, Unsuccessful } from '@trezor/connect';
@@ -75,7 +75,7 @@ export const recomposeAndSignTxThunk = createThunk<
         const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
         const options: FormOptions[] = ['broadcast'];
         const network = getNetwork(account.symbol);
-        const feeInfo = selectNetworkFeeInfo(getState(), account.symbol);
+        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
         const activeTradingSection = selectTradingActiveSection(
             getState(),
         ) as TradingTradeSellExchangeType;
