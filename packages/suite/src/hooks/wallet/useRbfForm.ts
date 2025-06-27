@@ -20,7 +20,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     calculateChainedTransactionsFeeForRbf,
-    getFeeInfo,
+    getConvertedOrDefaultFeeInfo,
     isEip1559,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -42,7 +42,7 @@ export type UseRbfProps = {
 const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin) => {
     const { feeRate } = rbfParams;
     // increase FeeLevels (old rate + defined rate)
-    const feeInfo = getFeeInfo({
+    const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: 'bitcoin',
         feeInfo: info,
     });
@@ -61,7 +61,7 @@ const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin
 const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthereum) => {
     // use maxFeePerGas as fallback in case backend does not return eip1559 fees
     const currentGasPrice = new BigNumber(rbfParams.gasPrice || rbfParams.maxFeePerGas);
-    const feeInfo = getFeeInfo({
+    const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: 'ethereum',
         feeInfo: info,
     });
