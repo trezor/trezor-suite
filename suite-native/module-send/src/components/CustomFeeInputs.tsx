@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { FeesRootState, selectNetworkFeeInfo } from '@suite-common/wallet-core';
+import { FeesRootState, selectConvertedNetworkFeeInfo } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Hint, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
@@ -19,7 +19,9 @@ type CustomFeeInputsProps = {
 
 export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
     const { translate } = useTranslate();
-    const feeInfo = useSelector((state: FeesRootState) => selectNetworkFeeInfo(state, symbol));
+    const feeInfo = useSelector((state: FeesRootState) =>
+        selectConvertedNetworkFeeInfo(state, symbol),
+    );
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const debounce = useDebounce();
     const {

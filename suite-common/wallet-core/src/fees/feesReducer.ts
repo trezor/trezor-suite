@@ -56,7 +56,10 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
 // Base selector for fees state
 export const selectFees = (state: FeesRootState) => state.wallet.fees;
 
-export const selectNetworkFeeInfo = createMemoizedSelector(
+/**
+ * Returns feeInfo per network, cleaned up, and for Ethereum also converted from wei to Gwei.
+ */
+export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
     [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
     (fees, symbol): FeeInfo | null => {
         if (!symbol || !fees[symbol]) return null;
@@ -73,7 +76,7 @@ export const selectNetworkFeeInfo = createMemoizedSelector(
 
 export const selectNetworkFeeLevel = createMemoizedSelector(
     [
-        selectNetworkFeeInfo,
+        selectConvertedNetworkFeeInfo,
         (_state: FeesRootState, _symbol?: NetworkSymbol, level?: FeeLevelLabel) => level,
     ],
     (networkFeeInfo, level): FeeLevel | null => {
@@ -84,8 +87,8 @@ export const selectNetworkFeeLevel = createMemoizedSelector(
     },
 );
 
-export const selectNetworkFeeLevelTimeEstimate = createMemoizedSelector(
-    [selectNetworkFeeInfo, selectNetworkFeeLevel],
+export const selectConvertedNetworkFeeLevelTimeEstimate = createMemoizedSelector(
+    [selectConvertedNetworkFeeInfo, selectNetworkFeeLevel],
     (networkFeeInfo, feeLevel): string | null => {
         if (!feeLevel || !networkFeeInfo) return null;
 
@@ -93,7 +96,7 @@ export const selectNetworkFeeLevelTimeEstimate = createMemoizedSelector(
     },
 );
 
-export const selectNetworkFeeLevelFeePerUnit = createMemoizedSelector(
+export const selectConvertedNetworkFeeLevelFeePerUnit = createMemoizedSelector(
     [selectNetworkFeeLevel],
     (feeLevel): string | null => {
         if (!feeLevel) return null;

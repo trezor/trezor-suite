@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     FeesRootState,
-    selectNetworkFeeLevelFeePerUnit,
-    selectNetworkFeeLevelTimeEstimate,
+    selectConvertedNetworkFeeLevelFeePerUnit,
+    selectConvertedNetworkFeeLevelTimeEstimate,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
@@ -102,11 +102,11 @@ export const FeeOption = ({
     const dispatch = useDispatch();
 
     const feeTimeEstimate = useSelector((state: FeesRootState) =>
-        selectNetworkFeeLevelTimeEstimate(state, symbol, feeKey),
+        selectConvertedNetworkFeeLevelTimeEstimate(state, symbol, feeKey),
     );
 
     const backendFeePerUnit = useSelector((state: FeesRootState) =>
-        selectNetworkFeeLevelFeePerUnit(state, symbol, feeKey),
+        selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, feeKey),
     );
 
     const areFeeValuesComplete = isFinalPrecomposedTransaction(feeLevel);

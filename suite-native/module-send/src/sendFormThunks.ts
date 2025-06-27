@@ -10,7 +10,7 @@ import {
     deviceActions,
     enhancePrecomposedTransactionThunk,
     selectAccountByKey,
-    selectNetworkFeeInfo,
+    selectConvertedNetworkFeeInfo,
     selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
@@ -142,7 +142,7 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) throw new Error('Account not found.');
 
-        const networkFeeInfo = selectNetworkFeeInfo(getState(), account.symbol);
+        const networkFeeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
         const network = getNetwork(account.symbol);
 
         if (!networkFeeInfo) throw new Error('Network fees not found.');
@@ -231,7 +231,7 @@ export const calculateCustomFeeLevelThunk = createThunk(
         { dispatch, getState },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
-        const feeInfo = selectNetworkFeeInfo(getState(), account?.symbol);
+        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account?.symbol);
 
         const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
 
