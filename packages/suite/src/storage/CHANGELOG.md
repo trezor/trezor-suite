@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 25.8.0
+
+- make `device.authenticityChecks` non-nullable
+
 ## 25.7.0
 
 - introduce new object store `bioAuth`
