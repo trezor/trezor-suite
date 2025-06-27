@@ -84,8 +84,8 @@ const validateProtocolMessageBody =
     };
 
 export class TrezordNode {
-    /** versioning, baked in by webpack */
     version = '3.1.0';
+    bundledVersion?: string;
     serviceName = 'trezord-node';
     /** last known descriptors state */
     descriptors: Descriptor[];
@@ -121,9 +121,7 @@ export class TrezordNode {
         this.port = port || defaults.port;
         this.logger = logger;
         this.descriptors = [];
-        if (bundledVersion) {
-            this.version = `${this.version}-bundled.${bundledVersion}`;
-        }
+        this.bundledVersion = bundledVersion;
 
         this.listenSubscriptions = [];
 
@@ -454,6 +452,7 @@ export class TrezordNode {
                     const props = {
                         intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
                         version: this.version,
+                        bundledVersion: this.bundledVersion,
                         devices: this.descriptors,
                         logs: this.logger.getLog(),
                     };
