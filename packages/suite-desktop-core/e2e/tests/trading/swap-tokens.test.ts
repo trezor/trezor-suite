@@ -89,7 +89,7 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Swap Successful');
             await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
                 formattedSendAmount,
             );

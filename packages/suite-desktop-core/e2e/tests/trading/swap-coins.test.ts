@@ -14,7 +14,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 const transactionStates = [
     { transactionStatus: 'CONFIRMING', displayedText: 'Pending' },
     { transactionStatus: 'CONVERTING', displayedText: 'Converting' },
-    { transactionStatus: 'SUCCESS', displayedText: 'Approved' },
+    { transactionStatus: 'SUCCESS', displayedText: 'Swap Successful' },
 ];
 
 // Expected values based on our mocked responses

@@ -90,7 +90,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnl
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Swap Successful');
             await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
                 formattedSendAmount,
             );
@@ -102,7 +102,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnl
         });
 
         await test.step('Return to account swap form', async () => {
-            await tradingPage.backToAccountButton.click();
+            await tradingPage.backToAccountButton('Swap').click();
             await expect(page).toHaveURL(/\/accounts\/coinmarket\/exchange#\/sol\/0\/normal$/);
         });
     });
