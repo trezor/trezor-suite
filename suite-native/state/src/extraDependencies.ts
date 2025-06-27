@@ -11,15 +11,12 @@ import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { mergeDeepObject } from '@trezor/utils';
 
-const isBluetoothBuild = process.env.EXPO_PUBLIC_BLUETOOTH_ENABLED === 'true';
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
 const transportsPerDeviceType = {
     device: Platform.select({
-        ios: isBluetoothBuild ? ['BridgeTransport', NativeBluetoothTransport] : ['BridgeTransport'],
-        android: isBluetoothBuild
-            ? [NativeUsbTransport, NativeBluetoothTransport]
-            : [NativeUsbTransport],
+        ios: ['BridgeTransport', NativeBluetoothTransport],
+        android: [NativeUsbTransport, NativeBluetoothTransport],
     }),
     emulator: ['BridgeTransport'],
 } as const;
