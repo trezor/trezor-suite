@@ -6,7 +6,7 @@ import {
 import { NativeStyleUtils, useNativeStyles } from '@trezor/styles';
 import { BigNumber } from '@trezor/utils';
 
-import { useUtxoSelection } from '../../../hooks/useUxtoSelection';
+import { useUtxoSelection } from '../../../hooks/useUtxoSelection';
 import { SwitchCoinControlButton } from '../SwitchCoinControlButton';
 
 jest.mock('../../../hooks/useUtxoSelection', () => ({

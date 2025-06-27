@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useFilteredUtxos } from '@suite-common/wallet-utils';
-import { SearchInput, VStack } from '@suite-native/atoms';
+import { BaseSearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import { Utxo } from '@trezor/blockchain-link-types';
@@ -14,16 +15,17 @@ import { BigNumber } from '@trezor/utils';
 import { SendUtxoScreenFooter } from '../components/CoinControl/SendUtxoScreenFooter';
 import { SendUtxoScreenHeader } from '../components/CoinControl/SendUtxoScreenHeader';
 import { UtxoList } from '../components/CoinControl/UtxoList';
-import { useUtxoSelection } from '../hooks/useUxtoSelection';
+import { useUtxoSelection } from '../hooks/useUtxoSelection';
 
 export const SendUtxoScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendUtxo>) => {
     const { accountKey, amount } = params;
 
-    const debounce = useDebounce();
     const { translate } = useTranslate();
     const navigation = useNavigation();
+
+    const searchInputRef = useRef<TextInput>(null);
 
     const { selectedUtxos, setSelectedUtxos } = useUtxoSelection();
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -61,10 +63,10 @@ export const SendUtxoScreen = ({
 
     return (
         <Screen
+            isScrollable={false}
             header={
                 <SendUtxoScreenHeader
                     onDelete={() => {
-                        setSelectedUtxos([]);
                         navigation.goBack();
                     }}
                 />
@@ -78,10 +80,13 @@ export const SendUtxoScreen = ({
                 />
             }
         >
-            <VStack spacing="sp24">
-                <SearchInput
-                    onChange={query => debounce(() => setSearchQuery(query))}
+            <VStack spacing="sp24" flex={1}>
+                <SearchInputWithCancel
+                    onChange={onSearchChange}
                     placeholder={translate('moduleSend.coinControl.search.placeholder')}
+                    SearchComponent={BaseSearchInput}
+                    value={searchQuery}
+                    searchRef={searchInputRef}
                 />
 
                 {filteredUtxos.length > 0 ? (

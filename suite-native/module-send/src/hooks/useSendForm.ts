@@ -33,7 +33,7 @@ import {
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 
-import { useUtxoSelection } from './useUxtoSelection';
+import { useUtxoSelection } from './useUtxoSelection';
 import { useSubscribeForSolanaBlockUpdates } from '../hooks/useSubscribeForSolanaBlockUpdates';
 import { storeFeeLevels } from '../sendFormSlice';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';

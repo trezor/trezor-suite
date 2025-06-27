@@ -1,6 +1,6 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { useUtxoSelection } from '../../../hooks/useUxtoSelection';
+import { useUtxoSelection } from '../../../hooks/useUtxoSelection';
 import { SendUtxoScreenHeader } from '../SendUtxoScreenHeader';
 
 jest.mock('../../../hooks/useUtxoSelection', () => ({
