@@ -34,9 +34,10 @@ import {
 } from 'src/reducers/wallet/selectedAccountReducer';
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
-import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
+import { findLabelsToBeMovedOrDeleted } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
+import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
 
 export const saveSendFormDraftThunk = createThunk(
     `${MODULE_PREFIX}/saveSendFormDraftThunk`,
@@ -93,22 +94,17 @@ export const importSendFormRequestThunk = createThunk(
     (_, { dispatch }) => dispatch(modalActions.openDeferredModal({ type: 'import-transaction' })),
 );
 
-const updateRbfLabelsThunk = createThunk(
+type UpdateRbfLabelsThunkParams = {
+    labelsToBeEdited: RbfLabelsToBeUpdated;
+    precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
+    txid: string;
+};
+
+const updateRbfLabelsThunk = createThunk<void, UpdateRbfLabelsThunkParams, void>(
     `${MODULE_PREFIX}/updateReplacedTransactionThunk`,
-    (
-        {
-            labelsToBeEdited,
-            precomposedTransaction,
-            txid,
-        }: {
-            labelsToBeEdited: RbfLabelsToBeUpdated;
-            precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
-            txid: string;
-        },
-        { dispatch },
-    ) => {
+    ({ labelsToBeEdited, precomposedTransaction, txid }, { dispatch }) => {
         dispatch(
-            moveLabelsForRbfAction({
+            moveLabelsForRbfThunk({
                 toBeMovedOrDeletedList: labelsToBeEdited,
                 newTxid: txid,
             }),
@@ -293,7 +289,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         const result = pushResponse.payload;
         const { txid } = result.payload;
 
-        if (isBumpFeeRbf && rbfLabelsToBeEdited) {
+        if (isBumpFeeRbf && rbfLabelsToBeEdited !== null) {
             dispatch(
                 updateRbfLabelsThunk({
                     labelsToBeEdited: rbfLabelsToBeEdited,

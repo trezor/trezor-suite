@@ -18,7 +18,8 @@ import {
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
 } from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfTransactions.fixture';
-import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
+import { findLabelsToBeMovedOrDeleted } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
+import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
 
 const rootReducer = combineReducers({
     wallet: combineReducers({
@@ -53,7 +54,7 @@ const initStore = ({
     return store;
 };
 
-describe(moveLabelsForRbfAction.name, () => {
+describe(moveLabelsForRbfThunk.name, () => {
     it('moves the labels onto new RBF transaction and deletes the label of the chained transaction', async () => {
         const store = initStore({
             wallet: {
@@ -73,7 +74,7 @@ describe(moveLabelsForRbfAction.name, () => {
         );
 
         await store.dispatch(
-            moveLabelsForRbfAction({
+            moveLabelsForRbfThunk({
                 toBeMovedOrDeletedList,
                 newTxid: transactionSendingCoinsReplacement.txid,
             }),
