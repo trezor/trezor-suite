@@ -461,7 +461,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_STATUS_CONVERTING',
     },
     TR_EXCHANGE_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Approved',
+        defaultMessage: 'Swap Successful',
         id: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
     },
     TR_EXCHANGE_DETAIL_SUCCESS_TEXT: {
@@ -469,7 +469,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_DETAIL_SUCCESS_TEXT',
     },
     TR_EXCHANGE_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Back to Account',
+        defaultMessage: 'Make another Swap',
         id: 'TR_EXCHANGE_DETAIL_SUCCESS_BUTTON',
     },
     TR_EXCHANGE_DETAIL_ERROR_TITLE: {
@@ -486,7 +486,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_DETAIL_ERROR_SUPPORT',
     },
     TR_EXCHANGE_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Account',
+        defaultMessage: 'Back to Swap',
         id: 'TR_EXCHANGE_DETAIL_ERROR_BUTTON',
     },
     TR_EXCHANGE_DETAIL_KYC_TITLE: {
@@ -573,7 +573,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO',
     },
     TR_EXCHANGE_APPROVAL_VALUE_ZERO: {
-        defaultMessage: 'Revoke previous approval',
+        defaultMessage: 'Revoke previous approval of {value} {send}',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_ZERO',
     },
     TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO: {
@@ -937,7 +937,7 @@ export default defineMessages({
         id: 'TR_SELL_GO_TO_TRANSACTION',
     },
     TR_SELL_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Trade success',
+        defaultMessage: 'Sell Successful',
         id: 'TR_SELL_DETAIL_SUCCESS_TITLE',
     },
     TR_SELL_DETAIL_SUCCESS_TEXT: {
@@ -945,7 +945,7 @@ export default defineMessages({
         id: 'TR_SELL_DETAIL_SUCCESS_TEXT',
     },
     TR_SELL_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Back to Account',
+        defaultMessage: 'Make another Sell',
         id: 'TR_SELL_DETAIL_SUCCESS_BUTTON',
     },
     TR_SELL_DETAIL_SUCCESS_FIXED_RATE_HEADER: {
@@ -969,7 +969,7 @@ export default defineMessages({
         id: 'TR_SELL_DETAIL_ERROR_SUPPORT',
     },
     TR_SELL_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Account',
+        defaultMessage: 'Back to Sell',
         id: 'TR_SELL_DETAIL_ERROR_BUTTON',
     },
     TR_SELL_DETAIL_PENDING_TITLE: {
@@ -1136,7 +1136,7 @@ export default defineMessages({
         id: 'TR_BUY_NOT_TRANSACTIONS',
     },
     TR_BUY_GO_TO_PAYMENT: {
-        defaultMessage: 'Finish transaction',
+        defaultMessage: 'Continue',
         id: 'TR_BUY_GO_TO_PAYMENT',
     },
     TR_BUY_RECEIVING_ACCOUNT: {
@@ -1144,7 +1144,7 @@ export default defineMessages({
         id: 'TR_BUY_RECEIVING_ACCOUNT',
     },
     TR_BUY_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Approved',
+        defaultMessage: 'Buy Successful',
         id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
     },
     TR_BUY_DETAIL_SUCCESS_TEXT: {
@@ -1152,7 +1152,7 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
     },
     TR_BUY_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Back to Account',
+        defaultMessage: 'Make another Buy',
         id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
     },
     TR_BUY_DETAIL_ERROR_TITLE: {
@@ -1169,7 +1169,7 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
     },
     TR_BUY_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Account',
+        defaultMessage: 'Back to Buy',
         id: 'TR_BUY_DETAIL_ERROR_BUTTON',
     },
     TR_BUY_DETAIL_PENDING_TITLE: {
@@ -2076,11 +2076,12 @@ export default defineMessages({
     },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
         defaultMessage:
-            'You can use <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> and <code>some special characters</code>',
+            'Use only  <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> and <code>these special characters</code>',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
-        defaultMessage: 'Using other characters may risk future compatibility',
+        defaultMessage:
+            'The use of unlisted special characters may cause compatibility issues in the future.',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS_WARNING',
     },
     TR_CONFIRMED_TX: {
@@ -2491,7 +2492,7 @@ export default defineMessages({
         id: 'TR_ENTER_PASSPHRASE',
     },
     TR_ENTER_PASSPHRASE_ON_DEVICE: {
-        defaultMessage: 'or enter on Trezor',
+        defaultMessage: 'Enter passphrase on Trezor',
         id: 'TR_ENTER_PASSPHRASE_ON_DEVICE',
     },
     TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL: {
@@ -2953,7 +2954,7 @@ export default defineMessages({
         id: 'TR_NETWORK_TITLE',
     },
     TR_NETWORK_TESTNET: {
-        defaultMessage: 'Transaction is on testnet network',
+        defaultMessage: 'This transaction is on a testnet network',
         id: 'TR_NETWORK_TESTNET',
     },
     TR_NETWORK_COINJOIN_BITCOIN: {
@@ -3318,7 +3319,7 @@ export default defineMessages({
         id: 'TR_SOLVE_ISSUE',
     },
     TR_THP_RESET_CREDENTIALS_SUCCESS: {
-        defaultMessage: 'Trezor Host Protocol credentials has been reset. RECONNECT THE DEVICE',
+        defaultMessage: 'THP credentials has been reset. Reconnect your Trezor.',
         id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
     },
     TR_THP_PAIR: {
@@ -3331,7 +3332,7 @@ export default defineMessages({
     },
     TR_THP_INCORRECT_SECURITY_CODE: {
         id: 'TR_THP_INCORRECT_SECURITY_CODE',
-        defaultMessage: 'Incorrect security code. Please try again with a new code.',
+        defaultMessage: 'Incorrect security code. Try again with a new code.',
     },
     TR_THP_GET_NEW_CODE: {
         id: 'TR_THP_GET_NEW_CODE',
@@ -3384,7 +3385,7 @@ export default defineMessages({
     TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION: {
         id: 'TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION',
         defaultMessage:
-            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it-no need confirm every time.',
+            'Use this computer regularly with your Trezor? Let Trezor Suite connect automatically—no need to approve it each time.',
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
@@ -3393,7 +3394,7 @@ export default defineMessages({
     TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_DESCRIPTION',
         defaultMessage:
-            'Use this computer often with your Trezor? Allow Trezor Suite to connect automatically to it—no need to confirm every time.',
+            'Use this computer regularly with your Trezor? Let Trezor Suite connect automatically—no need to approve it each time.',
     },
     TR_THP_TURN_ON_AUTO_CONNECT: {
         id: 'TR_THP_TURN_ON_AUTO_CONNECT',
@@ -3401,7 +3402,7 @@ export default defineMessages({
     },
     TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS: {
         id: 'TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS',
-        defaultMessage: 'No thanks',
+        defaultMessage: 'Not now',
     },
     TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS: {
         id: 'TR_THP_TURN_ON_AUTO_CONNECT_SHIP_ON_TRUSTED_COMPUTERS',
@@ -5217,7 +5218,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_STELLAR_SUPPORT_DESCRIPTION',
-        defaultMessage: 'Include the Stellar network in coin settings',
+        defaultMessage: 'Include the Stellar network in coin settings.',
     },
     TR_GO_TO_EXP_FEATURE: {
         id: 'TR_GO_TO_EXP_FEATURE',
@@ -5410,7 +5411,7 @@ export default defineMessages({
     BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION: {
         id: 'BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION',
         defaultMessage:
-            'A previous attempt to backup this device failed. Wallet backup may be done only once.',
+            'A previous attempt to back up this device failed. Wallet backup may be done only once.',
     },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
@@ -5518,7 +5519,7 @@ export default defineMessages({
     },
     TR_REWARDS: {
         id: 'TR_REWARDS',
-        defaultMessage: 'Rewards',
+        defaultMessage: 'Total rewards',
     },
     TR_ALL_TRANSACTIONS: {
         id: 'TR_ALL_TRANSACTIONS',
@@ -5638,7 +5639,7 @@ export default defineMessages({
         id: 'TR_CONVERTED_TO_LOWERCASE',
     },
     TR_ADDED_BITCOINCASH_PREFIX: {
-        defaultMessage: "Prefix 'bitcoincash:' added. Make sure this is a Bitcoin Cash address.",
+        defaultMessage: "Prefix 'bitcoincash:' added. Confirm this is a Bitcoin Cash address.",
         id: 'TR_ADDED_BITCOINCASH_PREFIX',
     },
     TR_CONVERT_TO_CHECKSUM_ADDRESS: {
@@ -6548,7 +6549,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_YOUR_VERSION: {
         id: 'TR_UPDATE_MODAL_YOUR_VERSION',
-        defaultMessage: 'Your version: v{version}',
+        defaultMessage: 'Your version: {version}',
     },
     TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES: {
         id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES',
@@ -6690,7 +6691,7 @@ export default defineMessages({
     TR_COLOR_SCHEME_DESCRIPTION: {
         id: 'TR_COLOR_SCHEME_DESCRIPTION',
         defaultMessage:
-            'Choose whether Trezor Suite uses dark-colored elements on a light background or light-colored elements on a dark background.',
+            'Choose between light mode, dark mode, or follow your system’s appearance settings.',
     },
     TR_COLOR_SCHEME_DARK: {
         id: 'TR_COLOR_SCHEME_DARK',
@@ -7740,7 +7741,7 @@ export default defineMessages({
     },
     TR_DISCOVERY_WARNING_DESCRIPTION: {
         id: 'TR_DISCOVERY_WARNING_DESCRIPTION',
-        defaultMessage: 'Just a moment - almost done!',
+        defaultMessage: 'Just a moment—almost done',
     },
     TR_STAKING_REWARDS_TITLE: {
         id: 'TR_STAKING_REWARDS_TITLE',
@@ -8644,7 +8645,7 @@ export default defineMessages({
         id: 'TR_BIO_AUTH_UNAVAILABLE_TOOLTIP',
         description:
             "The tooltip content to tell the user why he can't turn on biometric authentication",
-        defaultMessage: 'Biometric authentication is not available on your device.',
+        defaultMessage: "Biometric authentication isn't available on your device.",
     },
     TR_VIEW_ALL: {
         id: 'TR_VIEW_ALL',
@@ -9803,11 +9804,11 @@ export default defineMessages({
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
-        defaultMessage: "It's important to first learn <a>how a passphrase works</a>.",
+        defaultMessage: "It's important to first learn how a passphrase works.",
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',
-        defaultMessage: 'Use something long, unique and unpredictable.',
+        defaultMessage: 'A passphrase opens a wallet secured by that phrase.',
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM3: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
@@ -10126,16 +10127,16 @@ export default defineMessages({
     },
     TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS: {
         id: 'TR_BLUETOOTH_ALLOW_BLUETOOTH_PERMISSIONS',
-        defaultMessage: 'Allow bluetooth permissions',
+        defaultMessage: 'Allow Bluetooth permissions',
     },
     TR_BLUETOOTH_OR_CONNECT_VIA_CABLE: {
         id: 'TR_BLUETOOTH_OR_CONNECT_VIA_CABLE',
-        defaultMessage: 'Allow bluetooth permissions',
+        defaultMessage: 'Allow Bluetooth permissions',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_PERMISSIONS',
         defaultMessage:
-            'Cannot open permission settings. Go to Settings/Privacy and security/Bluetooth.',
+            'Unable to open permission settings. Go to Settings > Privacy & Security > Bluetooth to adjust permissions.',
     },
     TR_BLUETOOTH_CONNECT: {
         id: 'TR_BLUETOOTH_CONNECT',
@@ -10175,7 +10176,7 @@ export default defineMessages({
     },
     TR_BLUETOOTH_CANCELLING: {
         id: 'TR_BLUETOOTH_CANCELLING',
-        defaultMessage: 'Cancelling',
+        defaultMessage: 'Canceling',
     },
     TR_BLUETOOTH_PAIRING_FAILED: {
         id: 'TR_BLUETOOTH_PAIRING_FAILED',
@@ -10195,11 +10196,11 @@ export default defineMessages({
     },
     TR_BLUETOOTH_X_TREZORS_FOUND: {
         id: 'TR_BLUETOOTH_X_TREZORS_FOUND',
-        defaultMessage: '{number} Trezors Found',
+        defaultMessage: '{number} Trezors found',
     },
     TR_BLUETOOTH_NO_TREZOR_FOUND: {
         id: 'TR_BLUETOOTH_NO_TREZOR_FOUND',
-        defaultMessage: 'No Trezor Found',
+        defaultMessage: 'No Trezor found',
     },
     TR_BLUETOOTH_SCAN_AGAIN: {
         id: 'TR_BLUETOOTH_SCAN_AGAIN',
@@ -10211,7 +10212,7 @@ export default defineMessages({
     },
     TR_BLUETOOTH_GHOST_DEVICE: {
         id: 'TR_BLUETOOTH_GHOST_DEVICE',
-        defaultMessage: 'Trezor not found. Remove it and create a new connection.',
+        defaultMessage: 'Trezor not found. Disconnect it and create a new connection.',
     },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
@@ -10378,7 +10379,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_WALLETCONNECT_DESCRIPTION',
-        defaultMessage: 'Use WalletConnect to connect your Trezor to Ethereum dApps.',
+        defaultMessage: 'Use WalletConnect to connect your Trezor to Ethereum or Solana dApps.',
     },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',
