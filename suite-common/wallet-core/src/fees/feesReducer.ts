@@ -4,7 +4,7 @@ import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDuration } from '@suite-common/suite-utils';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel, FeesState, FeesStatus } from '@suite-common/wallet-types';
-import { getFeeInfo } from '@suite-common/wallet-utils';
+import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 
 import { feesActions } from './feesActions';
@@ -73,7 +73,7 @@ export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
         if (!symbol || !fees[symbol]) return null;
 
         const networkType = getNetworkType(symbol);
-        const feeInfo = getFeeInfo({
+        const feeInfo = getConvertedOrDefaultFeeInfo({
             networkType,
             feeInfo: fees[symbol].data,
         });

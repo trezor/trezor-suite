@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { selectLocalCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { getFeeInfo } from '@suite-common/wallet-utils';
+import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -38,7 +38,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
     }, [account]);
 
     const state = useMemo(() => {
-        const feeInfo = getFeeInfo({
+        const feeInfo = getConvertedOrDefaultFeeInfo({
             networkType: account.networkType,
             feeInfo: networkFees,
         });
@@ -100,7 +100,7 @@ export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimCont
     }, [composeRequest, defaultValues, reset]);
 
     // sub-hook, FeeLevels handler
-    const feeInfo = getFeeInfo({
+    const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
         feeInfo: networkFees,
     });

@@ -198,12 +198,15 @@ export const prepareEthereumTransaction = (
     return result;
 };
 
-interface GetFeeInfoProps {
+type GetConvertedOrDefaultFeeLevelsProps = {
     feeInfo?: FeeInfo;
     networkType: NetworkType;
-}
+};
 
-const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
+const getConvertedOrDefaultFeeLevels = ({
+    feeInfo,
+    networkType,
+}: GetConvertedOrDefaultFeeLevelsProps) => {
     if (!feeInfo) return [];
 
     const levels = feeInfo.levels.concat({
@@ -236,8 +239,11 @@ const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
     return levels;
 };
 
-export const getFeeInfo = ({ networkType, feeInfo }: GetFeeInfoProps): FeeInfo => ({
-    levels: getFeeLevels({ networkType, feeInfo }),
+export const getConvertedOrDefaultFeeInfo = ({
+    networkType,
+    feeInfo,
+}: GetConvertedOrDefaultFeeLevelsProps): FeeInfo => ({
+    levels: getConvertedOrDefaultFeeLevels({ networkType, feeInfo }),
     blockHeight: feeInfo?.blockHeight ?? 0,
     blockTime: feeInfo?.blockTime ?? 0,
     minFee: feeInfo?.minFee ?? 0,

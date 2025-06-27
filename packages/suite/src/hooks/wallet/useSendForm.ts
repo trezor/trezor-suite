@@ -15,8 +15,8 @@ import { FormState } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
+    getConvertedOrDefaultFeeInfo,
     getDefaultValues,
-    getFeeInfo,
     useExcludedUtxos,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -101,7 +101,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const rawFeeInfo = props.fees[symbol]?.data;
     const feeInfo = useMemo(
         () =>
-            getFeeInfo({
+            getConvertedOrDefaultFeeInfo({
                 networkType,
                 feeInfo: rawFeeInfo,
             }),

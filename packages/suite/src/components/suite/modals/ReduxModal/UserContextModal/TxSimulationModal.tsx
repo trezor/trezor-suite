@@ -15,7 +15,7 @@ import { Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
-import { asBaseCurrencyAmount, getFeeInfo } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import {
     AssetLogo,
     Banner,
@@ -223,7 +223,7 @@ export const TxSimulationModal = () => {
         },
     });
     const fees = useSelector(state => state.wallet.fees);
-    const feeInfo = getFeeInfo({
+    const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account?.networkType ?? 'ethereum',
         feeInfo: fees[account?.symbol ?? 'eth']?.data,
     });
