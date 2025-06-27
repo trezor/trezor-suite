@@ -11,6 +11,7 @@ import { Translation } from '../components/Translation';
 export type StatusProps = LogsProps &
     DevicesProps & {
         version: string;
+        bundledVersion?: string;
     };
 
 export const Status = () => {
@@ -26,7 +27,7 @@ export const Status = () => {
 
     if (!data) return null;
 
-    const { version, devices, logs } = data;
+    const { version, bundledVersion, devices, logs } = data;
 
     return (
         <div>
@@ -35,7 +36,8 @@ export const Status = () => {
             </H1>
             <Card>
                 <div>
-                    <Translation id="version" />: {version}
+                    <Translation id="version" />: {version}{' '}
+                    {bundledVersion && `(bundled in Trezor Suite ${bundledVersion})`}
                 </div>
                 <Translation id="bridge.description" />
             </Card>
