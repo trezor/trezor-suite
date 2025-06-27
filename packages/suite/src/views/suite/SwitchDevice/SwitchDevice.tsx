@@ -43,7 +43,7 @@ export const SwitchDevice = ({
     }, [cancelable, onCancel]);
 
     return (
-        <SwitchDeviceModal isAnimationEnabled onCancel={handleCancel}>
+        <SwitchDeviceModal onCancel={handleCancel}>
             {isBluetoothMode ? (
                 <BluetoothConnect uiMode="card" />
             ) : (

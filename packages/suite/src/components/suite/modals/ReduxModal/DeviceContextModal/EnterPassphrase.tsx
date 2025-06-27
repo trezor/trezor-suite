@@ -47,7 +47,7 @@ export const EnterPassphrase = ({
     const isUsingNonAsciiCharacters = getNonAsciiChars(value) !== null;
 
     return (
-        <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>
+        <SwitchDeviceModal onCancel={onCancel}>
             <CardWithDevice
                 cancelDisabled={cancelDisabled}
                 onCancel={onCancel}
