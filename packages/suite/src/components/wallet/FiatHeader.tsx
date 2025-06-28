@@ -76,7 +76,7 @@ export const FiatHeader = ({
     });
 
     const formattedFiatAmount = formattedAmount?.props.children;
-    const [whole, separator, fractional] = ['en', 'ja'].includes(language)
+    const [whole, separator, fractional] = ['en', 'ja', 'zh'].includes(language)
         ? formattedFiatAmount.split(/(\.)/)
         : formattedFiatAmount.split(/(,)/);
 
