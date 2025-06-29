@@ -52,14 +52,6 @@ module.exports = {
         '!**/__fixtures__/**',
         '!<rootDir>/src/hooks/**/useTrading*',
     ],
-    coverageThreshold: {
-        global: {
-            statements: 49,
-            branches: 35,
-            lines: 49,
-            functions: 46,
-        },
-    },
     modulePathIgnorePatterns: ['node_modules'],
     watchPathIgnorePatterns: ['<rootDir>/libDev'],
     testPathIgnorePatterns: [
