@@ -7,7 +7,11 @@ import { Network, getNetwork, networksCollection } from '@suite-common/wallet-co
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, getEthereumEstimateFeeParams } from '@suite-common/wallet-utils';
+import {
+    getAccountIdentity,
+    getEthereumEstimateFeeParams,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -82,7 +86,7 @@ const ethereumRequestThunk = createThunk<
                 throw new Error('personal_sign error');
             }
 
-            return `0x${response.payload.signature}`;
+            return sanitizeHex(response.payload.signature);
         }
         case 'eth_signTypedData_v4': {
             const [address, data] = event.params.request.params;
@@ -103,7 +107,7 @@ const ethereumRequestThunk = createThunk<
                 throw new Error('eth_signTypedData_v4 error');
             }
 
-            return `0x${response.payload.signature}`;
+            return sanitizeHex(response.payload.signature);
         }
         case 'eth_sendTransaction': {
             const chainId = Number(event.params.chainId.replace('eip155:', ''));
@@ -163,11 +167,12 @@ const ethereumRequestThunk = createThunk<
             const { nonce } = await dispatch(
                 ethereumGetCurrentNonceThunk({ selectedAccount: account }),
             ).unwrap();
-            const nonceHex = `0x${parseInt(nonce).toString(16)}`;
+            const nonceHex = sanitizeHex(parseInt(nonce).toString(16));
             const payload = {
                 path: account.path,
                 transaction: {
                     ...transaction,
+                    data: sanitizeHex(transaction.data || ''),
                     gasLimit: transaction.gas,
                     nonce: nonceHex,
                     chainId,
