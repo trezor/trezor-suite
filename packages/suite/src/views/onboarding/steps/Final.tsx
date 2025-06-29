@@ -188,7 +188,7 @@ export const FinalStep = () => {
                                 onClick={() => setState('rename')}
                                 isDisabled={isWaitingForConfirm}
                             >
-                                <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
+                                <Translation id="TR_ONBOARDING_DEVICE_EDIT_LABEL" />
                             </Button>
 
                             <Tooltip
