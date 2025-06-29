@@ -140,13 +140,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 19) {
-        // @ts-expect-error fiatRates doesn't exists anymore
-        if (db.objectStoreNames.contains('fiatRates')) {
-            // @ts-expect-error fiatRates doesn't exists anymore
-            db.deleteObjectStore('fiatRates');
-        }
-        // @ts-expect-error fiatRates doesn't exists anymore
-        db.createObjectStore('fiatRates');
+        // no-op - this migration code became obsolete
     }
 
     if (oldVersion < 20) {
