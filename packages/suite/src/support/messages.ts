@@ -2627,6 +2627,10 @@ export default defineMessages({
         defaultMessage: 'Change Homescreen',
         id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
     },
+    TR_ONBOARDING_DEVICE_EDIT_LABEL: {
+        defaultMessage: 'Change name',
+        id: 'TR_ONBOARDING_DEVICE_EDIT_LABEL',
+    },
     TR_FIRMWARE: {
         defaultMessage: 'Firmware',
         id: 'TR_FIRMWARE',
