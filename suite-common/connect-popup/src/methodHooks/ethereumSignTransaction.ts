@@ -65,7 +65,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                         options: ['ethereumNonce', 'ethereumData'],
                         selectedFee: 'custom',
                         ethereumDataAscii: '',
-                        ethereumDataHex: typedPayload.transaction.data?.replace(/^0x/, ''),
+                        ethereumDataHex: typedPayload.transaction.data,
                         ethereumNonce: typedPayload.transaction.nonce,
                     },
                     precomposedTransaction: txSigningPrecomposed,
