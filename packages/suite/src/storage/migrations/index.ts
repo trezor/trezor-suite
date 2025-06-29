@@ -73,10 +73,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         });
         accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
 
-        // object store for discovery
-        // @ts-expect-error
-        db.createObjectStore('discovery', { keyPath: 'deviceState' });
-
         db.createObjectStore('analytics');
     }
 
@@ -223,17 +219,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                 return account;
             }
         });
-
-        // @ts-expect-error
-        await updateAll(transaction, 'discovery', (d: any) => {
-            // reset discovery
-            if (d.networks.includes('ltc')) {
-                d.index = 0;
-                d.loaded = 0;
-
-                return d;
-            }
-        });
     }
 
     if (oldVersion < 23) {
@@ -280,17 +265,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                 account.accountType = 'segwit';
 
                 return account;
-            }
-        });
-
-        // @ts-expect-error
-        await updateAll(transaction, 'discovery', (d: any) => {
-            // reset discovery
-            if (d.networks.includes('vtc')) {
-                d.index = 0;
-                d.loaded = 0;
-
-                return d;
             }
         });
     }
@@ -389,22 +363,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error
             graph.account.deviceState = graph.account.deviceState.replace('undefined', '0');
             graphStoreNew.add(graph);
-        });
-
-        // discovery
-        // @ts-expect-error
-        const discoveryStoreOld = transaction.objectStore('discovery');
-        const discoveries = await discoveryStoreOld.getAll();
-        // @ts-expect-error
-        db.deleteObjectStore('discovery');
-
-        // @ts-expect-error
-        const discoveryStoreNew = db.createObjectStore('discovery', { keyPath: 'deviceState' });
-
-        discoveries.forEach(discovery => {
-            // @ts-expect-error
-            discovery.deviceState = discovery.deviceState.replace('undefined', '0');
-            discoveryStoreNew.add(discovery);
         });
     }
 
@@ -595,18 +553,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             );
 
             return walletSettings;
-        });
-
-        // @ts-expect-error
-        await updateAll(transaction, 'discovery', (discovery: any) => {
-            // remove trop from discovery networks
-            discovery.networks = discovery.networks.filter(
-                // @ts-expect-error
-                network => network !== 'trop',
-            );
-            discovery.failed = [];
-
-            return discovery;
         });
 
         // remove trop from backend settings
@@ -814,15 +760,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             return walletSettings;
         });
 
-        // @ts-expect-error
-        await updateAll(transaction, 'discovery', (discovery: any) => {
-            // remove tgor from discovery networks
-            discovery.networks = discovery.networks.filter((network: any) => network !== 'tgor');
-            discovery.failed = [];
-
-            return discovery;
-        });
-
         // remove tgor from backend settings
         const backendSettings = transaction.objectStore('backendSettings');
         // @ts-expect-error
@@ -977,23 +914,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             tokenManagement.add(maticTokenManagementHide, 'pol-coin-hide');
             tokenManagement.delete('matic-coin-hide');
         }
-
-        // @ts-expect-error
-        await updateAll(transaction, 'discovery', (discovery: any) => {
-            discovery.networks = discovery.networks.map((network: any) =>
-                network === 'matic' ? 'pol' : network,
-            );
-
-            discovery.failed = discovery.failed.map((network: any) => {
-                if (network.symbol === 'matic') {
-                    network = { ...network, symbol: 'pol' };
-                }
-
-                return network;
-            });
-
-            return discovery;
-        });
 
         const accounts = transaction.objectStore('accounts');
         let accountsCursor = await accounts.openCursor();
@@ -1225,17 +1145,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             );
 
             return walletSettings;
-        });
-
-        // Remove deprecated networks from discovery networks
-        // @ts-expect-error
-        await updateAll(transaction, 'discovery', (discovery: any) => {
-            discovery.networks = discovery.networks.filter(
-                (network: any) => !deprecatedNetworks.includes(network), // Exclude deprecated networks from discovery
-            );
-            discovery.failed = []; // Clear failed discovery attempts
-
-            return discovery;
         });
 
         // Remove deprecated networks from backend settings

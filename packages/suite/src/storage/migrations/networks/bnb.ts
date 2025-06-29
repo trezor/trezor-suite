@@ -69,23 +69,6 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
         tokenManagement.delete('bnb-coin-hide');
     }
 
-    // @ts-expect-error
-    await updateAll(transaction, 'discovery', (discovery: any) => {
-        discovery.networks = discovery.networks.map((network: any) =>
-            network === 'bnb' ? 'bsc' : network,
-        );
-
-        discovery.failed = discovery.failed.map((network: any) => {
-            if (network.symbol === 'bnb') {
-                network = { ...network, symbol: 'bsc' };
-            }
-
-            return network;
-        });
-
-        return discovery;
-    });
-
     const accounts = transaction.objectStore('accounts');
     let accountsCursor = await accounts.openCursor();
     while (accountsCursor) {
