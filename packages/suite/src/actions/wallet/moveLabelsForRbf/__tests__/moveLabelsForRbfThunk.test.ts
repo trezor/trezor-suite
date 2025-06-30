@@ -4,22 +4,22 @@ import { configureMockStore, initPreloadedState } from '@suite-common/test-utils
 
 import metadataReducer, {
     selectLabelingDataForAccount,
-} from '../../../reducers/suite/metadataReducer';
-import suiteReducer from '../../../reducers/suite/suiteReducer';
-import { accountsReducer, transactionsReducer } from '../../../reducers/wallet';
+} from '../../../../reducers/suite/metadataReducer';
+import suiteReducer from '../../../../reducers/suite/suiteReducer';
+import { accountsReducer, transactionsReducer } from '../../../../reducers/wallet';
 import {
     accountReceivingCoins,
     accountSpendingCoins,
     moveLabelsForRbfAccountsFixture,
-} from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfAccounts.fixture';
-import { moveLabelsForRbfMetadataStateFixture } from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfMetadataState.fixture';
+} from '../__fixtures__/moveLabelsForRbfAccounts.fixture';
+import { moveLabelsForRbfMetadataStateFixture } from '../__fixtures__/moveLabelsForRbfMetadataState.fixture';
 import {
     moveLabelsForRbfTransactionsFixture,
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
-} from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfTransactions.fixture';
-import { findLabelsToBeMovedOrDeleted } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
-import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
+} from '../__fixtures__/moveLabelsForRbfTransactions.fixture';
+import { findLabelsToBeMovedOrDeleted } from '../findLabelsToBeMovedOrDeletedThunk';
+import { moveLabelsForRbfThunk } from '../moveLabelsForRbfThunk';
 
 const rootReducer = combineReducers({
     wallet: combineReducers({
