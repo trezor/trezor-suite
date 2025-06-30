@@ -1,36 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 
-type ConnectKey = keyof typeof TrezorConnect;
-
-// List of methods that doesn't work with additional `useCardanoDerivation` param
-// (eg. because they don't accept options object as a param)
-// or they don't trigger seed derivation on a device so there is no need to pass it.
-const blacklist: ConnectKey[] = [
-    'manifest',
-    'init',
-    'setTransports',
-    'getSettings',
-    'on',
-    'off',
-    'removeAllListeners',
-    'uiResponse',
-    'blockchainGetAccountBalanceHistory',
-    'blockchainGetInfo',
-    'blockchainGetCurrentFiatRates',
-    'blockchainGetFiatRatesForTimestamps',
-    'blockchainDisconnect',
-    'blockchainEstimateFee',
-    'blockchainGetTransactions',
-    'blockchainSetCustomBackend',
-    'blockchainSubscribe',
-    'blockchainSubscribeFiatRates',
-    'blockchainUnsubscribe',
-    'blockchainUnsubscribeFiatRates',
-    'requestLogin',
-    'getCoinInfo',
-    'dispose',
-    'cancel',
-];
+import { blacklist } from './blacklist';
+import { ConnectKey } from './types';
 
 export const cardanoConnectPatch = (getEnabledNetworks: () => string[]) => {
     // Pass additional parameter `useCardanoDerivation` to Trezor Connect methods

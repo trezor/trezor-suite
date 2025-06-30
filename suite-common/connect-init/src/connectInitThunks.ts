@@ -22,7 +22,9 @@ import { isDesktop } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
 import { getSynchronize } from '@trezor/utils';
 
+import { blacklist } from './blacklist';
 import { cardanoConnectPatch } from './cardanoConnectPatch';
+import { ConnectKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
@@ -143,59 +145,28 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
 
         const synchronize = getSynchronize();
 
-        const wrappedMethods: Array<keyof typeof TrezorConnect> = [
-            'applySettings',
-            'authenticateDevice',
-            'authorizeCoinjoin',
-            'backupDevice',
-            'cancelCoinjoinAuthorization',
-            'cardanoGetAddress',
-            'cardanoGetPublicKey',
-            'cardanoSignTransaction',
-            'changePin',
-            'cipherKeyValue',
-            'discoverAccounts',
-            'ethereumGetAddress',
-            'ethereumSignTransaction',
-            'getAddress',
-            'getDeviceState',
-            'getFeatures',
-            'getOwnershipProof',
-            'getPublicKey',
-            'pushTransaction',
-            'recoveryDevice',
-            'resetDevice',
-            'rippleGetAddress',
-            'rippleSignTransaction',
-            'setBusy',
-            'showDeviceTutorial',
-            'signTransaction',
-            'solanaGetAddress',
-            'solanaSignTransaction',
-            'unlockPath',
-            'wipeDevice',
-        ] as const;
+        Object.keys(TrezorConnect)
+            .filter(k => !blacklist.includes(k as ConnectKey))
+            .forEach(key => {
+                // typescript complains about params and return type, need to be "any"
+                const original: any = TrezorConnect[key as ConnectKey];
+                if (!original) return;
+                (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
+                    dispatch(lockDevice(true));
+                    const result = await synchronize(() => original(params));
 
-        wrappedMethods.forEach(key => {
-            // typescript complains about params and return type, need to be "any"
-            const original: any = TrezorConnect[key];
-            if (!original) return;
-            (TrezorConnect[key] as any) = async (params: any) => {
-                dispatch(lockDevice(true));
-                const result = await synchronize(() => original(params));
+                    dispatch(lockDevice(false));
+                    dispatch(
+                        deviceActions.removeButtonRequests({
+                            // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                            // be the same re-selected device from this line. We should reuse device from params.
+                            device: selectSelectedDevice(getState()),
+                        }),
+                    );
 
-                dispatch(lockDevice(false));
-                dispatch(
-                    deviceActions.removeButtonRequests({
-                        // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                        // be the same re-selected device from this line. We should reuse device from params.
-                        device: selectSelectedDevice(getState()),
-                    }),
-                );
-
-                return result;
-            };
-        });
+                    return result;
+                };
+            });
 
         cardanoConnectPatch(getEnabledNetworks);
 
