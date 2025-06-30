@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
@@ -14,8 +13,6 @@ import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
-
-import { ConfirmActionModal } from './ConfirmActionModal';
 
 const MessageText = styled.pre`
     font-family: monospace;
@@ -31,18 +28,22 @@ interface SignMessageModalProps {
     serializedPath?: string;
 }
 
+export const simplifyJSON = (object: any) =>
+    JSON.stringify(object, null, 2)
+        .replace(/[{}",[\]]/g, '')
+        .replace(/^\s{2}/gm, '')
+        .replace(/\n\s*\n/gm, '\n')
+        .trim();
+
 export const SignMessageModal = ({
     device,
     message,
     coin,
     serializedPath,
 }: SignMessageModalProps) => {
-    const popupCall = useSelector(selectConnectPopupCall);
     const accounts = useSelector(selectDeviceAccounts);
     const accountLabels = useSelector(selectAccountLabels);
     const deviceModelInternal = device.features?.internal_model;
-
-    if (!popupCall || popupCall?.state !== 'ongoing') return <ConfirmActionModal device={device} />;
 
     const onCancel = () => {
         TrezorConnect.cancel();
@@ -52,6 +53,15 @@ export const SignMessageModal = ({
     const networkSymbol = coin?.toLowerCase() as NetworkSymbol;
     const network = networkSymbol ? getNetwork(networkSymbol) : undefined;
     const account = accounts.find(a => a.symbol === networkSymbol && a.path === serializedPath);
+    const eip712parsed = () => {
+        try {
+            return JSON.parse(message);
+        } catch {
+            return undefined;
+        }
+    };
+    const isEip712 =
+        eip712parsed()?.primaryType && eip712parsed()?.domain && eip712parsed()?.message;
 
     return (
         <Modal.Backdrop>
@@ -65,7 +75,7 @@ export const SignMessageModal = ({
             <Modal.ModalBase
                 size="small"
                 heading={
-                    popupCall.method === 'ethereumSignTypedData' ? (
+                    isEip712 ? (
                         <Translation id="TR_SIGN_EIP712_TYPED_DATA" />
                     ) : (
                         <Translation id="TR_SIGN_MESSAGE" />
@@ -100,10 +110,46 @@ export const SignMessageModal = ({
                 }
             >
                 <Column gap={spacings.xs}>
+                    {account && (
+                        <Card
+                            header={
+                                <Row gap={spacings.sm}>
+                                    <DotIndicator isActive={device.buttonRequests.length === 1} />
+                                    <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">
+                                        <Translation id="TR_ADDRESS" />
+                                    </H4>
+                                </Row>
+                            }
+                            paddingType="small"
+                        >
+                            <MessageText data-testid="@sign-message-modal/address">
+                                {account.descriptor}
+                            </MessageText>
+                        </Card>
+                    )}
+                    {isEip712 && (
+                        <Card
+                            header={
+                                <Row gap={spacings.sm}>
+                                    <DotIndicator isActive={device.buttonRequests.length === 2} />
+                                    <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">
+                                        <Translation id="TR_DOMAIN" />
+                                    </H4>
+                                </Row>
+                            }
+                            paddingType="small"
+                        >
+                            <MessageText data-testid="@sign-message-modal/domain">
+                                {simplifyJSON(eip712parsed()?.domain)}
+                            </MessageText>
+                        </Card>
+                    )}
                     <Card
                         header={
                             <Row gap={spacings.sm}>
-                                <DotIndicator isActive={true} />
+                                <DotIndicator
+                                    isActive={device.buttonRequests.length === (isEip712 ? 3 : 2)}
+                                />
                                 <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">
                                     <Translation id="TR_MESSAGE" />
                                 </H4>
@@ -112,7 +158,7 @@ export const SignMessageModal = ({
                         paddingType="small"
                     >
                         <MessageText data-testid="@sign-message-modal/message">
-                            {message}
+                            {isEip712 ? simplifyJSON(eip712parsed()?.message) : message}
                         </MessageText>
                     </Card>
                 </Column>

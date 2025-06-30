@@ -44,6 +44,8 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_FeeOverThreshold':
         case 'ButtonRequest_SignTx': {
+            if (data?.type === 'message') return <SignMessageModal device={device} {...data} />;
+
             return <TransactionReviewModal type="sign-transaction" />;
         }
         case 'ButtonRequest_Other': {
