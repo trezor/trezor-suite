@@ -13,6 +13,7 @@ import { useTheme } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { useFetchFeesOnce, useRefetchFees } from '@suite-common/wallet-core';
 import {
     FeeInfo,
     FormState,
@@ -25,8 +26,10 @@ import { FeeLevel } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
+import { MODAL } from 'src/actions/suite/constants';
+import { REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES } from 'src/actions/suite/constants/modalConstants';
 import { Translation } from 'src/components/suite';
-import { useFetchFeesOnce, useRefetchFees } from 'src/hooks/wallet/useRefetchFees';
+import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
 import { CustomFee } from './CustomFee/CustomFee';
@@ -144,6 +147,7 @@ export const Fees = <TFieldValues extends FormState>({
     const { getValues, register, setValue, trigger } = props as unknown as UseFormReturn<FormState>;
     const theme = useTheme();
 
+    const modal = useSelector(state => state.modal);
     const selectedOption = getValues('selectedFee') || 'normal';
     const isCustomFee = selectedOption === 'custom';
     const errors = props.errors as unknown as FieldErrors<FormState>;
@@ -161,7 +165,12 @@ export const Fees = <TFieldValues extends FormState>({
 
     useFetchFeesOnce({ networkSymbol: symbol });
     // this component is used under different contexts & form states, but `setMaxOutputId` will be compatible (see `FormState` type)
-    const isRefetchDisabled = getValues().setMaxOutputId !== undefined;
+    const isRefetchDisabled =
+        getValues().setMaxOutputId !== undefined ||
+        (modal.context === MODAL.CONTEXT_DEVICE &&
+            modal.windowType !== undefined &&
+            REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES.includes(modal.windowType));
+
     useRefetchFees({ networkSymbol: symbol, isDisabled: isRefetchDisabled });
 
     const feeLabelId = useMemo(() => {

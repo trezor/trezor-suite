@@ -28,6 +28,7 @@ export * from './discovery/passphraseUtils';
 export * from './fees/feesActions';
 export * from './fees/feesConstants';
 export * from './fees/feesReducer';
+export * from './fees/hooks/useRefetchFees';
 export * from './fees/feesThunks';
 export * from './fees/feesUtils';
 export * from './fiat-rates/fiatRatesMiddleware';
