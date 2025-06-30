@@ -1,5 +1,10 @@
-import { getBestRatedQuote } from '@suite-common/trading';
+import styled from 'styled-components';
 
+import { Context } from '@suite-common/message-system';
+import { getBestRatedQuote } from '@suite-common/trading';
+import { spacingsPx } from '@trezor/theme';
+
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -8,6 +13,19 @@ import { TradingHeader } from 'src/views/wallet/trading/common/TradingHeader/Tra
 import { TradingOffersEmpty } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersEmpty';
 import { TradingOffersExchange } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchange';
 import { TradingOffersItem } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xl};
+    margin-top: ${spacingsPx.md};
+`;
+
+const OffersContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.md};
+`;
 
 export const TradingOffers = () => {
     const context = useTradingFormContext();
@@ -21,13 +39,15 @@ export const TradingOffers = () => {
     const offers = isTradingExchangeContext(context) ? (
         <TradingOffersExchange />
     ) : (
-        quotes?.map(quote => (
-            <TradingOffersItem
-                key={quote?.orderId}
-                quote={quote}
-                isBestRate={bestRatedQuote?.orderId === quote?.orderId}
-            />
-        ))
+        <OffersContainer>
+            {quotes?.map(quote => (
+                <TradingOffersItem
+                    key={quote?.orderId}
+                    quote={quote}
+                    isBestRate={bestRatedQuote?.orderId === quote?.orderId}
+                />
+            ))}
+        </OffersContainer>
     );
 
     return (
@@ -36,7 +56,11 @@ export const TradingOffers = () => {
 
             <TradingHeader title="TR_TRADING_SHOW_OFFERS" titleTimer="TR_TRADING_OFFERS_REFRESH" />
 
-            {noOffers ? <TradingOffersEmpty /> : offers}
+            <Container>
+                {noOffers ? <TradingOffersEmpty /> : offers}
+
+                <ContextMessage context={Context.getLegal('gateway')} />
+            </Container>
         </>
     );
 };

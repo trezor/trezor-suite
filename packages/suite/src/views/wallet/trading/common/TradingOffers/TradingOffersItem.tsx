@@ -128,7 +128,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
             data-testid="@trading/offers/quote"
             data-testid-alt={`@trading/offers/quote-${exchange}`}
         >
-            <Card margin={{ top: spacings.md }} minHeight={100}>
+            <Card minHeight={100}>
                 <Offer>
                     <ExchangeNameOfferColumn>
                         {tagsExist && (
