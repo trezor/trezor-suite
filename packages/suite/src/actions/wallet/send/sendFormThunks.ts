@@ -268,11 +268,15 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             return;
         }
 
-        const isBumpFeeRbf = isRbfBumpFeeTransaction(precomposedTransaction);
+        const isBumpFeeRbf = isRbfBumpFeeTransaction(enhancedPrecomposedTransaction);
 
         // This has to be executed prior to pushing the transaction!
         const rbfLabelsToBeEdited = isBumpFeeRbf
-            ? dispatch(findLabelsToBeMovedOrDeleted({ prevTxid: precomposedTransaction.prevTxid }))
+            ? dispatch(
+                  findLabelsToBeMovedOrDeleted({
+                      prevTxid: enhancedPrecomposedTransaction.prevTxid,
+                  }),
+              )
             : null;
 
         // push tx to the network
@@ -293,7 +297,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             dispatch(
                 updateRbfLabelsThunk({
                     labelsToBeEdited: rbfLabelsToBeEdited,
-                    precomposedTransaction,
+                    precomposedTransaction: enhancedPrecomposedTransaction,
                     txid,
                 }),
             );
