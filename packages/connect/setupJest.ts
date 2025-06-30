@@ -1,7 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { ReleaseInfo } from '@trezor/firmware-release-config/src/types';
+import { DeviceModelInternal, FirmwareReleaseConfigInfo } from '@trezor/device-utils';
 import { AbstractApiTransport, UsbApi } from '@trezor/transport';
 
 import { type Features } from './src/types';
@@ -81,8 +80,9 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     ...feat,
 });
 
-const commonReleaseData: ReleaseInfo = {
+const commonReleaseData: FirmwareReleaseConfigInfo = {
     required: false,
+    url: '/some/path/to/firmware.bin',
     version: [2, 8, 9],
     min_bootloader_version: [2, 1, 6],
     min_firmware_version: [2, 7, 2],
@@ -96,7 +96,7 @@ const commonReleaseData: ReleaseInfo = {
         '* Changed "swipe to continue" to "tap to continue". Screens still respond to swipe-up, but the preferred interaction method is now tapping the lower part of the screen.',
 };
 
-const getReleaseData = (releaseInfo: Partial<ReleaseInfo> = {}): ReleaseInfo => ({
+const getReleaseData = (releaseInfo: Partial<FirmwareReleaseConfigInfo> = {}): FirmwareReleaseConfigInfo => ({
     ...commonReleaseData,
     ...releaseInfo,
 });

@@ -1,16 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
 import {
+    ConditionalRelease,
     DeviceModelInternal,
     FirmwareRelease,
+    FirmwareReleaseConfig,
     FirmwareType,
+    IntermediaryReleaseConfig,
     VersionArray,
 } from '@trezor/device-utils';
-import {
-    ConditionalRelease,
-    FirmwareReleaseConfig,
-    IntermediaryReleaseConfig,
-} from '@trezor/firmware-release-config/src/types';
 import { getIntegerInRangeFromString, versionUtils } from '@trezor/utils';
 
 import type { Features, FirmwareReleaseConfigInfo } from '../types';
@@ -150,7 +148,7 @@ const getIntermediaryMessageRelease = (features: Features) => {
         );
     }
 
-    return intermediary || undefined; // Return null if no intermediary is found
+    return intermediary || undefined;
 };
 
 export const getReleaseConfig = (features: Features, firmwareType: FirmwareType) => {

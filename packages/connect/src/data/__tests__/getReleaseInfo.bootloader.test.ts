@@ -1,5 +1,4 @@
-import { DeviceModelInternal, FirmwareType, VersionArray } from '@trezor/device-utils';
-import { ReleaseInfo } from '@trezor/firmware-release-config/src/types';
+import { DeviceModelInternal, FirmwareReleaseConfigInfo, FirmwareType, VersionArray } from '@trezor/device-utils';
 
 import { getReleaseInfo } from '../firmwareInfo';
 
@@ -53,6 +52,8 @@ const fixtures = [
         intermediary: {
             min_firmware_version: [1, 6, 2] as VersionArray,
             min_bootloader_version: [1, 8, 0] as VersionArray,
+            firmware_revision: '592590cf66a9b62dfeee7e4d2afb6e01005e5b2c',
+            url: '/some/path.bin',
             version: 1,
         },
         result: {
@@ -65,6 +66,8 @@ const fixtures = [
             intermediary: {
                 min_firmware_version: [1, 6, 2] as VersionArray,
                 min_bootloader_version: [1, 8, 0] as VersionArray,
+                firmware_revision: '592590cf66a9b62dfeee7e4d2afb6e01005e5b2c',
+                url: '/some/path.bin',
                 version: 1,
             },
             isRequired: false,
@@ -124,6 +127,8 @@ const fixtures = [
         intermediary: {
             min_firmware_version: [1, 6, 2] as VersionArray,
             min_bootloader_version: [1, 8, 0] as VersionArray,
+            firmware_revision: '592590cf66a9b62dfeee7e4d2afb6e01005e5b2c',
+            url: '/some/path.bin',
             version: 1,
         },
         result: {
@@ -136,6 +141,8 @@ const fixtures = [
             intermediary: {
                 min_firmware_version: [1, 6, 2] as VersionArray,
                 min_bootloader_version: [1, 8, 0] as VersionArray,
+                firmware_revision: '592590cf66a9b62dfeee7e4d2afb6e01005e5b2c',
+                url: '/some/path.bin',
                 version: 1,
             },
             isRequired: false,
@@ -150,7 +157,7 @@ describe('getReleaseInfo() in bootloader', () => {
         it(f.desc, () => {
             const result = getReleaseInfo({
                 features: f.features,
-                release: f.release as ReleaseInfo,
+                release: f.release as FirmwareReleaseConfigInfo,
                 conditions: f.conditions,
                 intermediary: f.intermediary,
                 firmwareType: f.firmwareType,

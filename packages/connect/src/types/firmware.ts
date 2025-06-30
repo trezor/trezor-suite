@@ -1,8 +1,4 @@
-import { DeviceModelInternal, FirmwareType, VersionArray } from '@trezor/device-utils';
-import {
-    ConditionalRelease,
-    IntermediaryReleaseConfig,
-} from '@trezor/firmware-release-config/src/types';
+import { ConditionalRelease, DeviceModelInternal, FirmwareType, IntermediaryReleaseConfig, VersionArray } from '@trezor/device-utils';
 
 export type FirmwareRange = Record<
     DeviceModelInternal,
