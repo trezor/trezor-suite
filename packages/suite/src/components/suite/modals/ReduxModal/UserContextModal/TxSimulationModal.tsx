@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { numberToHex, toWei } from 'web3-utils';
@@ -231,6 +231,18 @@ export const TxSimulationModal = () => {
     } = methods;
     const isSigningTransaction =
         popupCall?.state === 'tx-simulation' && popupCall?.method === 'ethereumSignTransaction';
+
+    useEffect(() => {
+        // Use TX simulation gas estimation instead of the default
+        if (
+            simulationResult?.gas_estimation?.status === 'Success' &&
+            defaultGasLimit === ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
+        ) {
+            const newFeeLimit = Number(simulationResult.gas_estimation.estimate).toString();
+            setValue('feeLimit', newFeeLimit);
+            setValue('estimatedFeeLimit', newFeeLimit);
+        }
+    }, [simulationResult, defaultGasLimit, setValue]);
 
     const onConfirm = () => {
         if (isSigningTransaction) {

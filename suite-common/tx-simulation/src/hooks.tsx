@@ -82,7 +82,7 @@ export const useTxSimulationConnectPopup = (popupCall?: ConnectPopupCall) => {
                 },
                 account_address: popupCall.fromAddress,
                 metadata: { domain: popupCall.source.origin },
-                options: ['validation' as const, 'simulation' as const],
+                options: ['validation' as const, 'simulation' as const, 'gas_estimation' as const],
                 block: 'latest',
             };
         }
@@ -99,7 +99,7 @@ export const useTxSimulationConnectPopup = (popupCall?: ConnectPopupCall) => {
                 },
                 account_address: popupCall.fromAddress,
                 metadata: { domain: popupCall.source.origin },
-                options: ['validation' as const, 'simulation' as const],
+                options: ['validation' as const, 'simulation' as const, 'gas_estimation' as const],
                 block: 'latest',
             };
         }

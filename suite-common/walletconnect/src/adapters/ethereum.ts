@@ -4,14 +4,11 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { Account } from '@suite-common/wallet-types';
-import {
-    getAccountIdentity,
-    getEthereumEstimateFeeParams,
-    sanitizeHex,
-} from '@suite-common/wallet-utils';
+import { getAccountIdentity, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -144,26 +141,8 @@ const ethereumRequestThunk = createThunk<
                 }
             }
             if (!transaction.gas) {
-                const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-                    coin: account.symbol,
-                    identity: getAccountIdentity(account),
-                    request: {
-                        blocks: [2],
-                        specific: {
-                            from: account.descriptor,
-                            ...getEthereumEstimateFeeParams(
-                                account.descriptor,
-                                transaction.amount || account.formattedBalance,
-                                undefined,
-                                transaction.data,
-                            ),
-                        },
-                    },
-                });
-                if (!estimatedFee.success) {
-                    throw new Error('eth_sendTransaction cannot estimate fee');
-                }
-                transaction.gas = estimatedFee.payload.levels[0].feeLimit;
+                // Placeholder, will be replaced by estimate from TX simulation response
+                transaction.gas = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
             }
             if (!transaction.value) {
                 transaction.value = '0x0';
