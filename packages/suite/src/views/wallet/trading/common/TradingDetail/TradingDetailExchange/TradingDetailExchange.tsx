@@ -5,7 +5,8 @@ import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { type TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { getExplorerUrl } from '@suite-common/wallet-config';
+import { selectAccounts, selectExplorer } from '@suite-common/wallet-core';
 import { Card, InfoItem } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -57,6 +58,9 @@ export const TradingDetailExchange = () => {
     const previousTradeStatus = usePrevious(tradeStatus);
     const tradeStatusStep = getTradeStatusStep(tradeStatus);
 
+    const network = trade?.data.send && cryptoIdToNetwork(trade.data.send);
+    const explorer = useSelector(state => selectExplorer(state, network?.symbol));
+
     const exchange = trade?.data?.exchange;
     const provider =
         info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
@@ -102,21 +106,18 @@ export const TradingDetailExchange = () => {
         return null;
     }
 
-    const { receiveTxHash, send } = trade.data;
-    const network = send && cryptoIdToNetwork(send);
-
     const sendAccount = accounts.find(account => account.key === trade.sendAccountKey);
     const receiveAccount = accounts.find(account => account.key === trade.receiveAccountKey);
 
     return (
         <Wrapper>
             <Card>
-                {receiveTxHash && (
+                {trade.data.receiveTxHash && (
                     <InfoItem label={<Translation id="TR_TXID" />}>
                         <TxAddress
-                            txAddress={receiveTxHash}
-                            explorerUrl={network?.explorer.tx}
-                            explorerUrlQueryString={network?.explorer.queryString}
+                            txAddress={trade.data.receiveTxHash}
+                            explorerUrl={getExplorerUrl(explorer, 'tx')}
+                            explorerUrlQueryString={explorer?.queryString}
                         />
                     </InfoItem>
                 )}
