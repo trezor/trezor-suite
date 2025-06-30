@@ -9844,6 +9844,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.59.0"
+    react-redux: "npm:^9.2.0"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
@@ -35742,7 +35743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:9.2.0":
+"react-redux@npm:9.2.0, react-redux@npm:^9.2.0":
   version: 9.2.0
   resolution: "react-redux@npm:9.2.0"
   dependencies:
