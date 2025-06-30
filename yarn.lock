@@ -9879,6 +9879,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@walletconnect/core": "npm:^2.20.3"
     "@walletconnect/utils": "npm:^2.20.3"
     bs58: "npm:^6.0.0"
