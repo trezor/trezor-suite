@@ -10474,4 +10474,8 @@ export default defineMessages({
         id: 'TR_DEFAULT_ACCOUNT',
         defaultMessage: 'Default account',
     },
+    TR_DOMAIN: {
+        id: 'TR_DOMAIN',
+        defaultMessage: 'Domain',
+    },
 } as const);
