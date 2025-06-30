@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 
 import { Box, Card, CardDivider, HStack, RoundedIcon, Text } from '@suite-native/atoms';
-// import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { WalletConnectPairBottomSheet } from '@suite-native/module-connect-popup';
@@ -18,10 +18,8 @@ import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { SettingsSection } from './SettingsSection';
 
 export const ConnectionSettings = () => {
-    // const isConnectPopupEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
-    // const isWalletConnectEnabled = useFeatureFlag(FeatureFlag.IsWalletConnectEnabled);
-    const isConnectPopupEnabled = true;
-    const isWalletConnectEnabled = true;
+    const isConnectPopupEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
+    const isWalletConnectEnabled = useFeatureFlag(FeatureFlag.IsWalletConnectEnabled);
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const [pairingOpened, setPairingOpened] = useState<'qr' | 'manual' | null>(null);

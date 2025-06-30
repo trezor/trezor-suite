@@ -109,7 +109,7 @@ const BiometricsSwitchRow = () => {
     );
 };
 
-export const SettingsPrivacyAndSecurityScreen = () => {
+export const SettingsPrivacyScreen = () => {
     const { translate } = useTranslate();
 
     return (

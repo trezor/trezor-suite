@@ -5,7 +5,7 @@ import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { SettingsSection } from './SettingsSection';
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
-export const PreferencesSettings = () => {
+export const GeneralSettings = () => {
     const navigateTo = useSettingsNavigateTo();
 
     return (
@@ -21,12 +21,12 @@ export const PreferencesSettings = () => {
                 title={<Translation id="moduleSettings.items.general.privacy.title" />}
                 subtitle={<Translation id="moduleSettings.items.general.privacy.subtitle" />}
                 icon="lock"
-                onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacy)}
             />
             <AppSettingsCardWithIconLayout
                 title="Support"
                 subtitle="Troubleshooting, help"
-                onPress={() => navigateTo(SettingsStackRoutes.SettingsFAQ)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsSupport)}
                 icon="lifebuoy"
             />
         </SettingsSection>

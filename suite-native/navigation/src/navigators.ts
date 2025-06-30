@@ -69,9 +69,9 @@ export type DevUtilsStackParamList = {
 
 export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsPreferences]: undefined;
-    [SettingsStackRoutes.SettingsPrivacyAndSecurity]: undefined;
+    [SettingsStackRoutes.SettingsPrivacy]: undefined;
     [SettingsStackRoutes.SettingsViewOnly]: undefined;
-    [SettingsStackRoutes.SettingsFAQ]: undefined;
+    [SettingsStackRoutes.SettingsSupport]: undefined;
     [SettingsStackRoutes.SettingsCoinEnabling]: undefined;
     [SettingsStackRoutes.SettingsDeviceChecks]: undefined;
     [SettingsStackRoutes.TurnOffDeviceAuthenticityCheck]: undefined;
