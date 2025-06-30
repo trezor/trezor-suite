@@ -230,6 +230,13 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]: TradingExchangeRateFilter;
 }
 
+export type MinimalExchangeFormProps = {
+    outputs: [{ amount?: string }, ...{ amount?: string }[]];
+    receiveCryptoSelect: { value: CryptoId };
+    sendCryptoSelect: { value: CryptoId };
+    setMaxOutputId?: string;
+};
+
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
 export type TradingSendRejectedProps = {
@@ -277,7 +284,7 @@ export type HandleBuyRequestThunkProps = {
 };
 
 export type HandleExchangeRequestThunkProps = {
-    formValues: TradingExchangeFormProps;
+    formValues: MinimalExchangeFormProps;
     network: Network;
     timer: Timer;
     shouldSendInSats: boolean | undefined;
