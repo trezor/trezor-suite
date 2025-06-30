@@ -1,5 +1,7 @@
 import { DeviceModelInternal, FirmwareType, VersionArray } from '@trezor/device-utils';
 
+export type FirmwareUpdateSource = 'production' | 'test-unsigned' | 'test-signed';
+
 export interface ReleaseInfo {
     required: boolean;
     version: VersionArray;

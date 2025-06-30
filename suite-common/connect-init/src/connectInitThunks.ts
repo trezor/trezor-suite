@@ -41,12 +41,13 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
     `${CONNECT_INIT_MODULE}/initThunk`,
     async (connectInitHooks, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectDebugSettings },
+            selectors: { selectDebugSettings, selectFirmwareUpdateSource },
             actions: { lockDevice },
             utils: { connectInitSettings },
         } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
+        const getFirmwareUpdateSource = () => selectFirmwareUpdateSource(getState());
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
@@ -212,6 +213,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports,
                 debug: showConnectLogs,
+                firmwareUpdateSource: getFirmwareUpdateSource(),
             });
         } catch (error) {
             let formattedError: string;

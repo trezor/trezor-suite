@@ -58,7 +58,7 @@ export class DataManager {
             }
         }
 
-        const firmwareReleaseConfig = await getFirmwareReleaseConfig();
+        const firmwareReleaseConfig = await getFirmwareReleaseConfig(settings.firmwareUpdateSource);
 
         parseFirmwareReleaseConfig(firmwareReleaseConfig);
     }

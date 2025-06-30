@@ -16,6 +16,7 @@ import {
 import { BlockchainBlock, ConnectSettings, Manifest, StaticSessionId } from '@trezor/connect';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
+import { FirmwareUpdateSource } from '@trezor/firmware-release-config';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -63,6 +64,7 @@ export type ExtraDependencies = {
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
+        selectFirmwareUpdateSource: SuiteCompatibleSelector<FirmwareUpdateSource>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

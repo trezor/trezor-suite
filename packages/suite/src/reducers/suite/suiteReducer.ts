@@ -32,6 +32,7 @@ import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/p
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 import { RouterRootState, selectRouter } from './routerReducer';
+import { FirmwareUpdateSource } from '@trezor/firmware-release-config';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -100,6 +101,7 @@ export interface PrefillFields {
     transactionHistory?: string;
 }
 
+
 export interface SuiteSettings {
     theme: {
         variant: Exclude<SuiteThemeVariant, 'system'> | 'debug';
@@ -109,6 +111,7 @@ export interface SuiteSettings {
     isCoinjoinReceiveWarningHidden: boolean;
     isDesktopSuitePromoHidden: boolean;
     debug: DebugModeOptions;
+    firmwareUpdateSource: FirmwareUpdateSource;
     autodetect: AutodetectSettings;
     enabledSecurityChecks: {
         deviceAuthenticity: boolean;
@@ -206,6 +209,7 @@ const initialState: SuiteState = {
             isUnlockedBootloaderAllowed: false,
             showConnectLogs: false,
         },
+        firmwareUpdateSource: 'production',
         autodetect: {
             language: true,
             theme: true,
@@ -270,6 +274,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_DEBUG_MODE:
                 draft.settings.debug = { ...draft.settings.debug, ...action.payload };
+                break;
+
+            case SUITE.SET_FIRMWARE_UPDATE_SOURCE:
+                draft.settings.firmwareUpdateSource = action.payload;
                 break;
 
             case SUITE.SET_EXPERIMENTAL_FEATURES:

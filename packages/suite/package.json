@@ -75,6 +75,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/firmware-release-config": "workspace:^",
         "@trezor/ipc-proxy": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/protobuf": "workspace:*",

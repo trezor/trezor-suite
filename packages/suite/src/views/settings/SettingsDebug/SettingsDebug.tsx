@@ -31,6 +31,7 @@ import { TriggerHighlight } from './TriggerHighlight';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { WipeData } from './WipeData';
 import { BioAuthSettings } from '../SettingsGeneral/BioAuthSettings';
+import { FirmwareUpdate } from './FirmwareUpdate';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -108,6 +109,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="TrezorConnect">
                 <TrezorConnectLogs />
+            </SettingsSection>
+            <SettingsSection title="Firmware update source">
+                <FirmwareUpdate />
             </SettingsSection>
         </SettingsLayout>
     );

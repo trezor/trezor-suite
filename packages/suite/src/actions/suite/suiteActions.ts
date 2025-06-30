@@ -22,6 +22,7 @@ import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite
 import { isOnionUrl } from 'src/utils/suite/tor';
 
 import { SUITE } from './constants';
+import { FirmwareUpdateSource } from '@trezor/firmware-release-config';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -33,6 +34,7 @@ export type SuiteAction =
           locale: Locale;
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
+    | { type: typeof SUITE.SET_FIRMWARE_UPDATE_SOURCE; payload: FirmwareUpdateSource; }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
@@ -342,6 +344,18 @@ export const onSuiteReady = (): SuiteAction => ({
  */
 export const setDebugMode = (payload: Partial<DebugModeOptions>): SuiteAction => ({
     type: SUITE.SET_DEBUG_MODE,
+    payload,
+});
+
+/**
+ * Triggered by user action in:
+ * - Debug Settings
+ * Set `firmwareUpdateSource` field in suite reducer
+ * @param {FirmwareUpdateSource} payload
+ * @returns {SuiteAction}
+ */
+export const setFirmwareUpdateSource = (payload: FirmwareUpdateSource): SuiteAction => ({
+    type: SUITE.SET_FIRMWARE_UPDATE_SOURCE,
     payload,
 });
 

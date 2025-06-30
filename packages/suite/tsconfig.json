@@ -113,6 +113,7 @@
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
+        { "path": "../firmware-release-config" },
         { "path": "../ipc-proxy" },
         { "path": "../product-components" },
         { "path": "../protobuf" },

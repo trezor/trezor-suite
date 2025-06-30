@@ -1,17 +1,19 @@
 import { decode, verify } from 'jws';
 
 import { FirmwareReleaseConfig } from '@trezor/device-utils';
-import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
+import { getJWSPublicKey } from '@trezor/env-utils';
 
 import { JWS_SIGN_ALGORITHM, RELEASES_URL_REMOTE } from './constants';
 import { jws as releasesJwsLocal } from '../files/releases.v1';
+import { FirmwareUpdateSource } from './types';
 
 // Enable this for local development purposes:
 // set to true to always fetch local JWS
-// TODO: WIP: for now we are foring local since it was not deployed yet.
+// TODO: WIP: for now we are forcing local since it was not deployed yet.
 const FORCE_LOCAL_JWS = true;
 
-const getReleaseJWS = async () => {
+
+const getReleaseJWS = async (firmwareUpdateSource?: FirmwareUpdateSource) => {
     if (FORCE_LOCAL_JWS) {
         return {
             releasesJws: releasesJwsLocal,
@@ -19,9 +21,9 @@ const getReleaseJWS = async () => {
         };
     }
 
-    const remoteReleasesUrl = isCodesignBuild()
-        ? RELEASES_URL_REMOTE.stable
-        : RELEASES_URL_REMOTE.develop;
+    const remoteReleasesUrl = firmwareUpdateSource === 'production' ?
+         RELEASES_URL_REMOTE.production
+        : firmwareUpdateSource === 'test-signed' ?   RELEASES_URL_REMOTE['test-signed'] : RELEASES_URL_REMOTE['test-unsigned'];
 
     try {
         const controller = new AbortController();
@@ -53,8 +55,8 @@ const getReleaseJWS = async () => {
     }
 };
 
-export const getFirmwareReleaseConfig = async () => {
-    const { releasesJws, isRemote } = await getReleaseJWS();
+export const getFirmwareReleaseConfig = async (firmwareUpdateSource?: FirmwareUpdateSource) => {
+    const { releasesJws, isRemote } = await getReleaseJWS(firmwareUpdateSource);
 
     const decodedJws = decode(releasesJws);
 
@@ -97,3 +99,5 @@ export const getFirmwareReleaseConfig = async () => {
         throw new Error(`Failed to validate release message: ${error.message}`);
     }
 };
+
+export * from './types';

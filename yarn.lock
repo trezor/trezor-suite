@@ -12224,7 +12224,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/firmware-release-config@workspace:*, @trezor/firmware-release-config@workspace:packages/firmware-release-config":
+"@trezor/firmware-release-config@workspace:*, @trezor/firmware-release-config@workspace:^, @trezor/firmware-release-config@workspace:packages/firmware-release-config":
   version: 0.0.0-use.local
   resolution: "@trezor/firmware-release-config@workspace:packages/firmware-release-config"
   dependencies:
@@ -12714,6 +12714,7 @@ __metadata:
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/firmware-release-config": "workspace:^"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/protobuf": "workspace:*"
