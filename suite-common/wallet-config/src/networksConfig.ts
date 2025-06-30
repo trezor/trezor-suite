@@ -316,7 +316,7 @@ export const networks = {
     xrp: {
         symbol: 'xrp',
         displaySymbol: 'XRP',
-        name: 'XRP',
+        name: 'XRP Ledger',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
         decimals: 6,
