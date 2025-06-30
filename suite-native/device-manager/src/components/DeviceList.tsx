@@ -20,7 +20,8 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { Translation } from '@suite-native/intl';
+import { IconName } from '@suite-native/icons';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
@@ -46,6 +47,7 @@ type DeviceListProps = {
 
 type ConnectButtonProps = {
     isDividerVisible: boolean;
+    isOnlyBluetoothSupported: boolean;
     onPress: () => void;
 };
 
@@ -65,22 +67,39 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
 }));
 
-const ConnectButton = ({ isDividerVisible, onPress }: ConnectButtonProps) => {
+const ConnectButton = ({
+    isDividerVisible,
+    isOnlyBluetoothSupported,
+    onPress,
+}: ConnectButtonProps) => {
     const { applyStyle } = useNativeStyles();
+
+    let buttonText: TxKeyPath = 'deviceManager.connectButton.first';
+    let buttonViewLeft: IconName | undefined;
+    if (isOnlyBluetoothSupported) {
+        buttonText = 'deviceManager.connectButton.bluetooth';
+        buttonViewLeft = 'bluetooth';
+    } else if (isDividerVisible) {
+        buttonText = 'deviceManager.connectButton.another';
+    }
 
     return isDividerVisible ? (
         <VStack spacing="sp4" paddingTop="sp4">
             <TextDivider title="generic.orSeparator" />
             <Box style={applyStyle(buttonWrapperStyle)}>
-                <Button colorScheme="tertiaryElevation0" onPress={onPress}>
-                    <Translation id="deviceManager.connectButton.another" />
+                <Button
+                    viewLeft={buttonViewLeft}
+                    colorScheme="tertiaryElevation0"
+                    onPress={onPress}
+                >
+                    <Translation id={buttonText} />
                 </Button>
             </Box>
         </VStack>
     ) : (
         <Box style={applyStyle(buttonWrapperStyle)}>
-            <Button colorScheme="tertiaryElevation0" onPress={onPress}>
-                <Translation id="deviceManager.connectButton.first" />
+            <Button viewLeft={buttonViewLeft} colorScheme="tertiaryElevation0" onPress={onPress}>
+                <Translation id={buttonText} />
             </Button>
         </Box>
     );
@@ -138,6 +157,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const opacity = useSharedValue(0);
     const height = useSharedValue(0);
 
+    const isIosWithBluetoothEnabled = Platform.OS === 'ios' && isBluetoothEnabled;
     const hasUnselectedDevices = notSelectedInstancelessDevices.length > 0;
     const isConnectButtonVisible = !hasDiscovery && !isDeviceConnected;
 
@@ -146,7 +166,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
             onSelectDevice(device);
         }
         setIsDeviceManagerVisible(false);
-        if (isBluetoothEnabled && Platform.OS === 'ios') {
+        if (isIosWithBluetoothEnabled) {
             // make sure the device manager is already hidden before navigating to prevent app freezing
             // TODO: might be fixed by https://github.com/trezor/trezor-suite/issues/17968
             setTimeout(
@@ -197,6 +217,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
                 {isConnectButtonVisible && (
                     <ConnectButton
                         isDividerVisible={hasUnselectedDevices}
+                        isOnlyBluetoothSupported={isIosWithBluetoothEnabled}
                         onPress={handleConnectDevice}
                     />
                 )}
