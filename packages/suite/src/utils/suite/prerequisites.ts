@@ -19,8 +19,7 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
     if (!router || router.app === 'unknown') return;
 
     // no transport available
-    // todo: is transport-bridge good name? other prerequisites denote to the problem. this ones denotes to the solution
-    if (transport && !transport.transports.length) return 'transport-bridge';
+    if (transport && !transport.transports.length) return 'no-transport';
 
     if (!device) return 'device-disconnected';
 
@@ -76,7 +75,7 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
 export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[] => {
     if (router.app === 'settings') {
         return [
-            'transport-bridge',
+            'no-transport',
             'device-disconnected',
             'device-unacquired',
             'device-unacquired-requires-thp',

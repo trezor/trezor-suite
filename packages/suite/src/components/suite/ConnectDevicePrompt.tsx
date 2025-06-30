@@ -124,7 +124,7 @@ const getMessageId = ({
     }
 
     const map: Record<PrerequisiteType, TranslationKey> = {
-        'transport-bridge': isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT',
+        'no-transport': isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT',
         'device-bootloader': 'TR_DEVICE_CONNECTED_BOOTLOADER',
         'device-used-elsewhere': 'TR_DEVICE_CONNECTED_UNACQUIRED',
         'device-unacquired': 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
