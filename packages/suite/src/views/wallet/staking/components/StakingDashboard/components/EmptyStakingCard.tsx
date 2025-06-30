@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Context } from '@suite-common/message-system';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
@@ -19,6 +20,7 @@ import { spacings } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingFeature, Translation } from 'src/components/suite';
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -136,6 +138,7 @@ export const EmptyStakingCard = () => {
                     </section>
                 </Column>
             </Card>
+            <ContextMessage context={Context.getLegal('gateway')} />
         </DashboardSection>
     );
 };

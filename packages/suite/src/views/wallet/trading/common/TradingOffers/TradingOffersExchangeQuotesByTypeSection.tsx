@@ -1,10 +1,17 @@
 import { ExchangeTrade } from 'invity-api';
+import styled from 'styled-components';
 
 import { H3, Icon, Row, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { ExtendedMessageDescriptor, Translation } from 'src/components/suite/Translation';
 import { TradingOffersItem } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
+
+const OffersContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.md};
+`;
 
 interface TradingOffersExchangeQuotesByTypeSectionProps {
     quotes: ExchangeTrade[];
@@ -33,9 +40,11 @@ export const TradingOffersExchangeQuotesByTypeSection = ({
                     <Icon name="info" variant="tertiary" size={20} />
                 </Tooltip>
             </Row>
-            {quotes.map(quote => (
-                <TradingOffersItem key={quote.orderId} quote={quote} isBestRate={false} />
-            ))}
+            <OffersContainer>
+                {quotes.map(quote => (
+                    <TradingOffersItem key={quote.orderId} quote={quote} isBestRate={false} />
+                ))}
+            </OffersContainer>
         </>
     );
 };
