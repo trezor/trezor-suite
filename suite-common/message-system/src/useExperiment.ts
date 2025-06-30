@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { selectAnalyticsInstanceId } from '@suite-common/analytics';
 
 import { selectActiveExperimentGroup } from './experimentUtils';
-import { selectExperimentById } from './messageSystemSelectors';
-import { ExperimentId } from './messageSystemTypes';
+import { selectExperimentByKey } from './messageSystemSelectors';
+import { ExperimentKey } from './messageSystemTypes';
 
-export const useExperiment = (experimentId: ExperimentId) => {
+export const useExperiment = (experimentKey: ExperimentKey) => {
     const instanceId = useSelector(selectAnalyticsInstanceId);
-    const experiment = useSelector(selectExperimentById(experimentId));
+    const experiment = useSelector(selectExperimentByKey(experimentKey));
     const activeExperimentVariant = useMemo(
         () => selectActiveExperimentGroup({ instanceId, experiment }),
         [instanceId, experiment],

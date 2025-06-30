@@ -4,6 +4,8 @@ import { Category, Message } from '@suite-common/suite-types';
 
 import {
     ContextDomain,
+    Experiment,
+    ExperimentKey,
     ExperimentsItemType,
     FeatureDomain,
     MessageSystemRootState,
@@ -175,5 +177,12 @@ export const selectExperimentById = (id: ExperimentId) =>
     createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
         allValidExperiments.find(
             (experiment): experiment is ExperimentsItemType => experiment.id === id,
+        ),
+    );
+
+export const selectExperimentByKey = (key: ExperimentKey) =>
+    createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
+        allValidExperiments.find(
+            (experiment): experiment is ExperimentsItemType => experiment.id === Experiment[key],
         ),
     );

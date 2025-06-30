@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { FeedbackCategory } from '@suite-common/suite-types';
+import { FeedbackCategory } from '@suite-common/feedback';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { step } from '../common';

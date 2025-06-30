@@ -9418,6 +9418,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/feedback@workspace:*, @suite-common/feedback@workspace:suite-common/feedback":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/feedback@workspace:suite-common/feedback"
+  dependencies:
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/fiat-services@workspace:*, @suite-common/fiat-services@workspace:suite-common/fiat-services":
   version: 0.0.0-use.local
   resolution: "@suite-common/fiat-services@workspace:suite-common/fiat-services"
@@ -9633,7 +9644,6 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -12667,6 +12677,7 @@ __metadata:
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
+    "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/formatters": "workspace:*"

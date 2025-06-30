@@ -6,8 +6,9 @@ import styled from 'styled-components';
 
 import type { TradingBuyType } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Card } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -17,6 +18,7 @@ import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/T
 import { TradingDetailBuyPaymentProcessing } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentProcessing';
 import { TradingDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentSuccessful';
 import { TradingDetailBuyPaymentWaitingForUser } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentWaitingForUser';
+import { TradingDetailFeedback } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
@@ -100,22 +102,31 @@ export const TradingDetailBuy = () => {
 
     return (
         <Wrapper data-testid="@trading/transaction/detail">
-            <Card data-testid="@trading/transaction/detail/status-card">
-                {tradeStatusStep === 'error' && (
-                    <TradingDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
-                )}
-                {tradeStatusStep === 'processing' && <TradingDetailBuyPaymentProcessing />}
-                {tradeStatusStep === 'waiting' && (
-                    <TradingDetailBuyPaymentWaitingForUser
-                        trade={trade.data}
-                        account={account}
-                        providerName={provider?.brandName || provider?.companyName}
-                    />
-                )}
-                {tradeStatusStep === 'success' && (
-                    <TradingDetailBuyPaymentPaymentSuccessful account={account} />
-                )}
-            </Card>
+            <Column gap={spacings.lg}>
+                <Card data-testid="@trading/transaction/detail/status-card">
+                    {tradeStatusStep === 'error' && (
+                        <TradingDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
+                    )}
+                    {tradeStatusStep === 'processing' && <TradingDetailBuyPaymentProcessing />}
+                    {tradeStatusStep === 'waiting' && (
+                        <TradingDetailBuyPaymentWaitingForUser
+                            trade={trade.data}
+                            account={account}
+                            providerName={provider?.brandName || provider?.companyName}
+                        />
+                    )}
+                    {tradeStatusStep === 'success' && (
+                        <TradingDetailBuyPaymentPaymentSuccessful account={account} />
+                    )}
+                </Card>
+                <TradingDetailFeedback
+                    status={tradeStatus}
+                    type={trade.tradeType}
+                    provider={provider?.name}
+                    id={trade.data.id}
+                    quoteAmounts={quoteAmounts}
+                />
+            </Column>
             <Card>
                 <TradingSelectedOfferInfo
                     account={account}

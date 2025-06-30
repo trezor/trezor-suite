@@ -6,7 +6,6 @@
         { "path": "../suite-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/env-utils" },
         { "path": "../../packages/protocol" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

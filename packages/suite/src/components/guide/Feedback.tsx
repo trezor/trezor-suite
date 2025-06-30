@@ -1,26 +1,24 @@
 import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import { FeedbackCategory, FeedbackType, Rating, UserData } from '@suite-common/suite-types';
-import { Button, CollapsibleBox, Select, Textarea, variables } from '@trezor/components';
-import { getFirmwareVersion } from '@trezor/device-utils';
 import {
-    getCommitHash,
-    getEnvironment,
-    getOsName,
-    getSuiteVersion,
-    getUserAgent,
-    getWindowHeight,
-    getWindowWidth,
-} from '@trezor/env-utils';
+    FeedbackCategory,
+    FeedbackType,
+    Rating,
+    buildUserFeedbackData,
+    sendFeedback,
+} from '@suite-common/feedback';
+import { Button, CollapsibleBox, Select, Textarea, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx } from '@trezor/theme';
 
-import { sendFeedback, setView } from 'src/actions/suite/guideActions';
+import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+
+import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';
 
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
@@ -41,37 +39,6 @@ const SelectWrapper = styled.div`
     padding: 0 0 20px;
 `;
 
-const RatingWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 0 0 20px;
-`;
-
-const RatingItem = styled.button<{ $selected?: boolean }>`
-    width: 48px;
-    height: 47px;
-    padding-top: 1px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    cursor: pointer;
-    font-size: 30px;
-    background-color: inherit;
-
-    ${({ $selected, theme }) =>
-        $selected &&
-        css`
-            background: ${theme.legacy.BG_GREEN};
-            border: 1px solid ${theme.legacy.BG_GREEN};
-
-            &:hover {
-                background: ${theme.legacy.BG_GREEN};
-            }
-        `};
-`;
-
 const AnonymousDataList = styled.ul`
     margin-left: 20px;
 `;
@@ -88,34 +55,7 @@ const StyledTextarea = styled(Textarea)`
     margin-bottom: ${spacingsPx.md};
 `;
 
-type RatingItem = {
-    id: Rating;
-    value: ReactNode;
-};
-
 const MESSAGE_CHARACTER_LIMIT = 1000;
-const ratingOptions: RatingItem[] = [
-    {
-        id: '1',
-        value: <>&#128545;</>,
-    },
-    {
-        id: '2',
-        value: <>&#128533;</>,
-    },
-    {
-        id: '3',
-        value: <>&#128529;</>,
-    },
-    {
-        id: '4',
-        value: <>&#128522;</>,
-    },
-    {
-        id: '5',
-        value: <>&#128525;</>,
-    },
-];
 
 /** A format compatible with React Select component. */
 type FeedbackCategoryOption = {
@@ -132,7 +72,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
     const dispatch = useDispatch();
     const router = useSelector(state => state.router);
     const [description, setDescription] = useState('');
-    const [rating, setRating] = useState<RatingItem>();
+    const [rating, setRating] = useState<Rating | undefined>();
 
     const feedbackCategories: { [key in FeedbackCategory]: ReactNode } = {
         dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
@@ -179,18 +119,8 @@ export const Feedback = ({ type }: FeedbackProps) => {
 
     const goBack = () => dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
     const onSubmit = useCallback(() => {
-        const userData: UserData = {
-            platform: getEnvironment(),
-            os: getOsName(),
-            user_agent: getUserAgent(),
-            suite_version: getSuiteVersion(),
-            suite_revision: getCommitHash(),
-            window_dimensions: `${getWindowWidth()}x${getWindowHeight()}`,
-            device_model: device?.features?.internal_model,
-            firmware_version: device?.features ? getFirmwareVersion(device) : '',
-            firmware_revision: device?.features?.revision || '',
-            firmware_type: device?.firmwareType || '',
-        };
+        const userData = buildUserFeedbackData(device);
+
         if (type === 'BUG') {
             dispatch(
                 sendFeedback({
@@ -210,7 +140,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     type: 'SUGGESTION',
                     payload: {
                         description,
-                        rating: rating?.id,
+                        rating,
                         ...userData,
                     },
                 }),
@@ -221,7 +151,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [device, dispatch, type, description, category, rating?.id]);
+    }, [device, dispatch, type, description, category, rating]);
 
     return (
         <GuideViewWrapper>
@@ -264,18 +194,11 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         <Headline>
                             <Translation id="TR_GUIDE_FEEDBACK_RATING_HEADLINE" />
                         </Headline>
-                        <RatingWrapper>
-                            {ratingOptions.map(item => (
-                                <RatingItem
-                                    key={item.id}
-                                    $selected={rating?.id === item.id}
-                                    onClick={() => setRating(item)}
-                                    data-testid={`@guide/feedback/suggestion/${item.id}`}
-                                >
-                                    {item.value}
-                                </RatingItem>
-                            ))}
-                        </RatingWrapper>
+                        <EmojiRatingSelector
+                            value={rating}
+                            onChange={setRating}
+                            data-testid="@guide/feedback/suggestion"
+                        />
                     </>
                 )}
                 {type === 'BUG' && (

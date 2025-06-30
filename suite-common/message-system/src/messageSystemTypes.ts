@@ -124,9 +124,10 @@ type FunctionContextReturnValues = {
 export type ContextDomain = FunctionContextReturnValues;
 
 export const Experiment = {
-    // e.g. orangeSendButton: 'fb0eb1bc-8ec3-44d4-98eb-53301d73d981',
+    tradingFeedbackForm: '092db279-98dc-418e-bbfa-ef70716fb211',
 } as const;
 
-export type ExperimentId = (typeof Experiment)[keyof typeof Experiment];
+export type ExperimentKey = keyof typeof Experiment;
+export type ExperimentId = (typeof Experiment)[ExperimentKey];
 
 export type ExperimentsItemType = Omit<ExperimentsItem, 'id'> & { id: ExperimentId };
