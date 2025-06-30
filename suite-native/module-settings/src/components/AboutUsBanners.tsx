@@ -26,59 +26,82 @@ export const AboutUsBanners = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <VStack spacing="sp16">
-            <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
-                <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                    <Icon color="iconOnPrimary" name="trezorLogo" />
-                    <Text
-                        textAlign="center"
-                        color="textOnPrimary"
-                        variant="titleSmall"
-                        style={applyStyle(trezorDescriptionTextStyle)}
-                    >
-                        <Translation id="moduleSettings.aboutUs.body" />
-                    </Text>
-                </VStack>
-            </Card>
-            <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundSecondaryDefault' })}>
-                <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                    <Text color="textDefaultInverted" variant="titleMedium">
-                        <Translation id="moduleSettings.aboutUs.followUs" />
-                    </Text>
-                    <HStack spacing="sp24">
-                        <IconButton
-                            size="large"
-                            colorScheme="tertiaryElevation1"
-                            iconName="twitterLogo"
-                            accessibilityRole="link"
-                            accessibilityLabel="X"
-                            onPress={() => openLink('https://x.com/trezor', { enforce: true })}
-                        />
-                        <IconButton
-                            size="large"
-                            colorScheme="tertiaryElevation1"
-                            iconName="tiktokLogo"
-                            accessibilityRole="link"
-                            accessibilityLabel="tiktok"
-                            onPress={() =>
-                                openLink('https://www.tiktok.com/@trezor.io_official', {
-                                    enforce: true,
-                                })
-                            }
-                        />
-                        <IconButton
-                            size="large"
-                            colorScheme="tertiaryElevation1"
-                            iconName="instagramLogo"
-                            accessibilityRole="link"
-                            accessibilityLabel="instagram"
-                            onPress={() =>
-                                openLink('https://www.instagram.com/trezor.io/', { enforce: true })
-                            }
-                        />
-                    </HStack>
-                </VStack>
-            </Card>
+        <VStack spacing="sp20">
+            <Text>
+                <Translation
+                    id="moduleSettings.aboutUs.title"
+                    values={{
+                        grey: chunks => (
+                            <Text variant="titleSmall" color="textOnTertiary">
+                                {chunks}
+                            </Text>
+                        ),
+                        green: chunks => (
+                            <Text variant="titleSmall" color="textSecondaryHighlight">
+                                {chunks}
+                            </Text>
+                        ),
+                    }}
+                />
+            </Text>
+            <VStack>
+                <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
+                    <VStack spacing="sp24" style={applyStyle(stackStyle)}>
+                        <Icon color="iconOnPrimary" name="trezorLogo" />
+                        <Text
+                            textAlign="center"
+                            color="textOnPrimary"
+                            variant="titleSmall"
+                            style={applyStyle(trezorDescriptionTextStyle)}
+                        >
+                            <Translation id="moduleSettings.aboutUs.body" />
+                        </Text>
+                    </VStack>
+                </Card>
+                <Card
+                    style={applyStyle(cardStyle, { backgroundColor: 'backgroundSecondaryDefault' })}
+                >
+                    <VStack spacing="sp24" style={applyStyle(stackStyle)}>
+                        <Text color="textDefaultInverted" variant="titleMedium">
+                            <Translation id="moduleSettings.aboutUs.followUs" />
+                        </Text>
+                        <HStack spacing="sp24">
+                            <IconButton
+                                size="large"
+                                colorScheme="tertiaryElevation1"
+                                iconName="twitterLogo"
+                                accessibilityRole="link"
+                                accessibilityLabel="X"
+                                onPress={() => openLink('https://x.com/trezor', { enforce: true })}
+                            />
+                            <IconButton
+                                size="large"
+                                colorScheme="tertiaryElevation1"
+                                iconName="tiktokLogo"
+                                accessibilityRole="link"
+                                accessibilityLabel="tiktok"
+                                onPress={() =>
+                                    openLink('https://www.tiktok.com/@trezor.io_official', {
+                                        enforce: true,
+                                    })
+                                }
+                            />
+                            <IconButton
+                                size="large"
+                                colorScheme="tertiaryElevation1"
+                                iconName="instagramLogo"
+                                accessibilityRole="link"
+                                accessibilityLabel="instagram"
+                                onPress={() =>
+                                    openLink('https://www.instagram.com/trezor.io/', {
+                                        enforce: true,
+                                    })
+                                }
+                            />
+                        </HStack>
+                    </VStack>
+                </Card>
+            </VStack>
         </VStack>
     );
 };

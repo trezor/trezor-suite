@@ -9,7 +9,7 @@ import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 
 type SelectTriggerProps = {
     value: string | null;
-    label: ReactNode;
+    label?: ReactNode;
     icon?: ReactNode;
     handlePress: () => void;
     testID?: string;
@@ -38,8 +38,8 @@ export const SelectTrigger = ({ value, label, icon, handlePress, testID }: Selec
 
     return (
         <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
-            <Box>
-                {!!value && (
+            <Box justifyContent="center">
+                {!!value && !!label && (
                     <Text variant="label" color="textSubdued">
                         {label}
                     </Text>

@@ -1,3 +1,5 @@
+import { S } from '@mobily/ts-belt';
+
 import { Text, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Icon } from '@suite-native/icons';
@@ -15,12 +17,15 @@ export const SettingsScreen = () => (
             <PreferencesSettings />
             <FeaturesSettings />
             <ConnectionSettings />
+
             <VStack justifyContent="center" alignItems="center" marginBottom="sp24">
                 <Icon name="trezorLogo" size="large" color="iconSubdued" />
                 <Text variant="callout" color="textSubdued">
                     <Translation id="generic.trezorSuiteLite" />
                 </Text>
-                <Text color="textSubdued">{getSuiteVersion()}</Text>
+                {S.isNotEmpty(getSuiteVersion()) && (
+                    <Text color="textSubdued">{getSuiteVersion()}</Text>
+                )}
             </VStack>
         </VStack>
     </Screen>

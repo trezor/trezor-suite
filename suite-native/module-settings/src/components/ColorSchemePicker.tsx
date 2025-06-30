@@ -1,4 +1,6 @@
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ColorSchemePickerItem } from './ColorSchemePickerItem';
@@ -9,13 +11,23 @@ export const ColorSchemePicker = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <VStack spacing={11}>
-            <Text>Color Scheme</Text>
-            <HStack spacing="sp8" style={applyStyle(themesContainerStyle)}>
-                <ColorSchemePickerItem colorScheme="standard" />
-                <ColorSchemePickerItem colorScheme="dark" />
-                <ColorSchemePickerItem colorScheme="system" />
-            </HStack>
-        </VStack>
+        <Card>
+            <VStack spacing="sp12">
+                <HStack alignItems="center">
+                    <Icon name="flag" size="mediumLarge" />
+                    <Text>
+                        <Translation id="moduleSettings.preferences.theme" />
+                    </Text>
+                </HStack>
+
+                <VStack spacing={11}>
+                    <HStack spacing="sp8" style={applyStyle(themesContainerStyle)}>
+                        <ColorSchemePickerItem colorScheme="standard" />
+                        <ColorSchemePickerItem colorScheme="dark" />
+                        <ColorSchemePickerItem colorScheme="system" />
+                    </HStack>
+                </VStack>
+            </VStack>
+        </Card>
     );
 };

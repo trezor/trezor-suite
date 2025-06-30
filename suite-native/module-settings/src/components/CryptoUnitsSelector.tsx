@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Select } from '@suite-native/atoms';
+import { Card, HStack, Select, Text, VStack } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { PROTO } from '@trezor/connect';
 
@@ -25,12 +26,21 @@ export const CryptoUnitsSelector = () => {
     };
 
     return (
-        <Select<PROTO.AmountUnit>
-            selectLabel={<Translation id="moduleSettings.preferences.bitcoinUnitsLabel" />}
-            selectValue={bitcoinUnit}
-            items={bitcoinUnitsItems}
-            onSelectItem={handleSelectUnit}
-            testID="@settings/localization/bitcoin-units-selector"
-        />
+        <Card>
+            <VStack spacing="sp12">
+                <HStack alignItems="center">
+                    <Icon name="flag" size="mediumLarge" />
+                    <Text>
+                        <Translation id="moduleSettings.preferences.bitcoinUnitsLabel" />
+                    </Text>
+                </HStack>
+                <Select<PROTO.AmountUnit>
+                    selectValue={bitcoinUnit}
+                    items={bitcoinUnitsItems}
+                    onSelectItem={handleSelectUnit}
+                    testID="@settings/localization/bitcoin-units-selector"
+                />
+            </VStack>
+        </Card>
     );
 };

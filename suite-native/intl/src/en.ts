@@ -7,7 +7,7 @@ export const en = {
     generic: {
         trezorSuite: 'Trezor Suite',
         trezorSuiteLite: 'Trezor Suite Lite',
-        header: '<green>Trezor Suite</green> <grey>Lite</grey>',
+        header: '<grey>About</grey> <green>Trezor Suite Lite</green>',
         buttons: {
             back: 'Back',
             cancel: 'Cancel',
@@ -845,14 +845,15 @@ export const en = {
         },
         preferences: {
             title: 'Preferences',
-            fiatCurrencyLabel: 'Fiat currency',
+            fiatCurrencyLabel: 'Currency',
             bitcoinUnitsLabel: 'Bitcoin units',
+            theme: 'Theme',
         },
         customization: {
             title: 'Customization',
         },
         aboutUs: {
-            title: 'About Trezor Suite Lite',
+            title: '<grey>About</grey> <green>Trezor Suite Lite</green>',
             followUs: 'Follow us',
             body: 'Trezor Suite Lite is a safe and secure way to stay connected to the crypto on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
         },
