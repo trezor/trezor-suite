@@ -15,6 +15,7 @@ import {
     isBitcoinCashAddressUppercase,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
 import { Box, Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
@@ -49,7 +50,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         useState<ReturnType<typeof isAddressDeprecated>>(undefined);
     const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const [autocorrectMessage, setAutocorrectMessage] = useState<string | undefined>();
-    const contractAddressWarningDismissed = useRef(false);
     const autocorrectTimeout = useRef<TimerId>(null);
     const dispatch = useDispatch();
     const { device } = useDevice();
@@ -65,6 +65,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         watch,
         setDraftSaveRequest,
         trigger,
+        clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
     const { descriptor, networkType, symbol } = account;
@@ -83,10 +84,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
 
-    const isContractAddressWarningEnabled = ['eth', 'tsep', 'thol'].includes(symbol);
+    const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
+        useState(false);
+    const isExternalAddressCheckEnabled = ['eth', 'tsep', 'thol', 'sol', 'dsol'].includes(symbol);
 
     useEffect(() => {
-        contractAddressWarningDismissed.current = false;
+        setIsExternalAddressCheckWarningDismissed(false);
     }, [address]);
 
     const getInputState = () => {
@@ -172,7 +175,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 return {
                     learnMoreUrl: addressDeprecatedUrl ? URLS[addressDeprecatedUrl] : undefined,
                 };
-            case 'evmchecks':
+            case 'evmChecks':
                 if (!checkAddressCheckSum(address)) {
                     return {
                         buttonProps: {
@@ -187,13 +190,14 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         },
                     };
                 }
-                if (!contractAddressWarningDismissed.current) {
+                if (!isExternalAddressCheckWarningDismissed) {
                     return {
                         buttonProps: {
-                            onClick: () => {
-                                contractAddressWarningDismissed.current = true;
-                                trigger(inputName);
-                                composeTransaction(amountInputName);
+                            onClick: async () => {
+                                setIsExternalAddressCheckWarningDismissed(true);
+                                await trigger(inputName);
+                                clearErrors(inputName);
+                                composeTransaction();
                             },
                             text: translationString('TR_I_UNDERSTAND_THE_RISK'),
                         },
@@ -202,6 +206,24 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
 
                 return {};
+            case 'solAssociatedAccountCheck':
+                if (!isExternalAddressCheckWarningDismissed) {
+                    return {
+                        buttonProps: {
+                            onClick: async () => {
+                                setIsExternalAddressCheckWarningDismissed(true);
+                                await trigger(inputName);
+                                clearErrors(inputName);
+                                composeTransaction();
+                            },
+                            text: translationString('TR_I_UNDERSTAND_THE_RISK'),
+                        },
+                        learnMoreUrl: URLS.HELP_CENTER_SOLANA_HELP_URL,
+                    };
+                }
+
+                return {};
+
             default:
                 return {};
         }
@@ -269,7 +291,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return translationString('RECIPIENT_REQUIRES_UPDATE');
                 }
             },
-            bch_missing_prefix: (value: string) => {
+            bchMissingPrefix: (value: string) => {
                 if (symbol === 'bch' && !hasBitcoinCashAddressPrefix(value)) {
                     setValue(inputName, 'bitcoincash:' + value, {
                         shouldValidate: true,
@@ -282,10 +304,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return true;
                 }
             },
-            evmchecks: async (address: string) => {
+            evmChecks: async (address: string) => {
                 if (networkType === 'ethereum') {
                     if (!isOnline) {
-                        return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
                     const params = {
                         descriptor: address,
@@ -294,7 +316,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     const result = await TrezorConnect.getAccountInfo(params);
 
                     if (!result.success) {
-                        return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
                     const { payload } = result;
@@ -316,13 +338,37 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     }
 
                     // 2. Check if address is a contract address (right now only for Eth, Holesky and Sepolia)
-                    if (
-                        !contractAddressWarningDismissed.current &&
-                        isContractAddressWarningEnabled
-                    ) {
+                    if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
                         const isContract = payload.misc?.contractInfo;
                         if (isContract) {
                             return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
+                        }
+                    }
+                }
+            },
+            solAssociatedAccountCheck: async (value: string) => {
+                if (networkType === 'solana') {
+                    if (!isOnline) {
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
+                    }
+
+                    const { payload, success } = await TrezorConnect.getAccountInfo({
+                        descriptor: value,
+                        coin: symbol,
+                        details: 'basic',
+                    });
+
+                    if (!success) {
+                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
+                    }
+
+                    if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
+                        const isProgramDerivedAccount = !(
+                            payload?.misc?.owner === SYSTEM_PROGRAM_PUBLIC_KEY ||
+                            payload?.misc?.owner === undefined
+                        );
+                        if (isProgramDerivedAccount) {
+                            return translationString('TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT');
                         }
                     }
                 }
