@@ -1,6 +1,5 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Checkbox } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -11,8 +10,13 @@ import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 export const TransportBackends = () => {
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
 
-    const { bridgeProcess, bridgeSettings, changeBridgeSettings, bridgeDesktopApiError } =
-        useBridgeDesktopApi();
+    const {
+        bridgeProcess,
+        bridgeSettings,
+        changeBridgeSettings,
+        toggleBridge,
+        bridgeDesktopApiError,
+    } = useBridgeDesktopApi();
 
     if (bridgeDesktopApiError) return bridgeDesktopApiError;
 
@@ -35,7 +39,7 @@ export const TransportBackends = () => {
                     <Checkbox
                         isChecked={bridgeProcess.process}
                         onClick={() => {
-                            desktopApi.toggleBridge();
+                            toggleBridge();
                         }}
                     />
                 </ActionColumn>
