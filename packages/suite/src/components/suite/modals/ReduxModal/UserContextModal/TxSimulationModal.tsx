@@ -5,7 +5,12 @@ import { numberToHex, toWei } from 'web3-utils';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useFormatters } from '@suite-common/formatters';
-import { AssetDiff, AssetExposure, useTxSimulationConnectPopup } from '@suite-common/tx-simulation';
+import {
+    AssetDiff,
+    AssetExposure,
+    getSimulationErrorRiskLevel,
+    useTxSimulationConnectPopup,
+} from '@suite-common/tx-simulation';
 import { Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
@@ -507,7 +512,9 @@ export const TxSimulationModal = () => {
 
                             {simulationResult.simulation?.status === 'Error' && (
                                 <TxSimulationBanner
-                                    type="error"
+                                    type={getSimulationErrorRiskLevel(
+                                        simulationResult.simulation.error,
+                                    )}
                                     title={<Translation id="TR_SIMULATION_ERROR" />}
                                     description={simulationResult.simulation.error}
                                     disclaimerAccepted={disclaimerAccepted}
