@@ -78,7 +78,7 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
     const TipComponent = useMemo(
         () => (): JSX.Element => {
             switch (prerequisite) {
-                case 'transport-bridge':
+                case 'no-transport':
                     return <Transport />;
                 case 'device-disconnect-required':
                     return <DeviceDisconnectRequired />;
@@ -134,7 +134,7 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                 deviceStatus={deviceStatus}
                 showWarning={
                     !!(device && deviceStatus && deviceNeedsAttention(deviceStatus)) ||
-                    prerequisite === 'transport-bridge'
+                    prerequisite === 'no-transport'
                 }
                 showWarningIcon={shouldDisplayInitialWarningIcon(deviceStatus)}
                 prerequisite={prerequisite}

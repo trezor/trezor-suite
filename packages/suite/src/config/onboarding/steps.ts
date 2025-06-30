@@ -4,7 +4,7 @@ import * as STEP from 'src/constants/onboarding/steps';
 import { Step, StepCategory } from 'src/types/onboarding';
 
 const commonPrerequisites: Step['prerequisites'] = [
-    'transport-bridge',
+    'no-transport',
     'device-bootloader',
     'device-seedless',
     'device-unacquired',
@@ -27,7 +27,7 @@ export const stepCategories: StepCategory[] = [
             {
                 id: STEP.ID_FIRMWARE_STEP,
                 prerequisites: [
-                    'transport-bridge',
+                    'no-transport',
                     'device-seedless',
                     'device-unacquired',
                     'device-unknown',
