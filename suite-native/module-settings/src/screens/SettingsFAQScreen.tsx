@@ -1,10 +1,10 @@
-import { CompactCardWithIconLayout, Divider, VStack } from '@suite-native/atoms';
+import { CompactCardWithIconLayout, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
-import { AppVersion } from '../components/AppVersion';
+import { AppCommitHash } from '../components/AppCommitHash';
 import { FAQInfoPanel } from '../components/FAQInfoPanel';
 import { SettingsSection } from '../components/SettingsSection';
 import { SupportCard } from '../components/SupportCard';
@@ -24,26 +24,27 @@ export const SettingsFAQScreen = () => {
 
     return (
         <Screen header={<ScreenHeader content={translate('moduleSettings.faq.title')} />}>
-            <VStack spacing="sp24">
-                <FAQInfoPanel />
-                <SupportCard />
-            </VStack>
-            <VStack spacing="sp24">
+            <VStack spacing="sp40">
+                <VStack spacing="sp32">
+                    <FAQInfoPanel />
+                    <SupportCard />
+                </VStack>
                 <AboutUsBanners />
-                <Divider />
-                <SettingsSection title="Legal">
-                    <CompactCardWithIconLayout
-                        title="Terms & conditions"
-                        icon="filePdf"
-                        onPress={handleOpenTermsAndConditions}
-                    />
-                    <CompactCardWithIconLayout
-                        title="Privacy policy"
-                        icon="filePdf"
-                        onPress={handleOpenPrivacyPolicy}
-                    />
-                </SettingsSection>
-                <AppVersion />
+                <VStack spacing="sp32">
+                    <SettingsSection title="Legal">
+                        <CompactCardWithIconLayout
+                            title="Terms & conditions"
+                            icon="filePdf"
+                            onPress={handleOpenTermsAndConditions}
+                        />
+                        <CompactCardWithIconLayout
+                            title="Privacy policy"
+                            icon="filePdf"
+                            onPress={handleOpenPrivacyPolicy}
+                        />
+                    </SettingsSection>
+                </VStack>
+                <AppCommitHash />
             </VStack>
         </Screen>
     );

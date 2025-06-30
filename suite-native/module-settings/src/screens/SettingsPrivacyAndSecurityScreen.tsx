@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
+import { Box, DiscreetCanvas, Text, VStack, useDiscreetMode } from '@suite-native/atoms';
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -55,7 +55,7 @@ const DiscreetModeSwitchRow = () => {
                     <DiscreetTextExample />
                 </Box>
             }
-            iconName="detective"
+            iconName="eyeSlash"
             isChecked={isDiscreetMode}
             onChange={handleSetDiscreetMode}
         />
@@ -116,11 +116,11 @@ export const SettingsPrivacyAndSecurityScreen = () => {
         <Screen
             header={<ScreenHeader content={translate('moduleSettings.privacyAndSecurity.title')} />}
         >
-            <Card>
+            <VStack spacing="sp16">
                 <BiometricsSwitchRow />
                 <DiscreetModeSwitchRow />
                 <AnalyticsSwitchRow />
-            </Card>
+            </VStack>
         </Screen>
     );
 };

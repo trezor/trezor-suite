@@ -13,7 +13,7 @@ type SelectProps<TItemValue extends SelectItemValue> = {
     items: SelectItemType<TItemValue>[];
     selectValue: SelectItemValue;
     onSelectItem: (value: TItemValue) => void;
-    selectLabel: ReactNode;
+    selectLabel?: ReactNode;
     testID?: string;
 };
 

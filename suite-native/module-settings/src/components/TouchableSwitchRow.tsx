@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Box, RoundedIcon, Switch, Text } from '@suite-native/atoms';
+import { Box, Card, HStack, RoundedIcon, Switch, Text } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -20,9 +20,10 @@ const textStyle = prepareNativeStyle(utils => ({
 }));
 
 const contentStyle = prepareNativeStyle(_ => ({
-    maxWidth: '70%',
+    maxWidth: '75%',
 }));
 
+// TODO rename
 export const TouchableSwitchRow = ({
     isChecked,
     onChange,
@@ -45,21 +46,18 @@ export const TouchableSwitchRow = ({
             accessibilityState={{ checked: isChecked }}
             testID={testID}
         >
-            <Box
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                marginVertical="sp16"
-            >
-                <Box style={applyStyle(contentStyle)} flexDirection="row">
-                    <RoundedIcon name={iconName} color="iconSubdued" />
-                    <Box alignItems="flex-start" style={applyStyle(textStyle)}>
-                        <Text>{text}</Text>
-                        {description && <Box>{description}</Box>}
+            <Card>
+                <HStack justifyContent="space-between" alignItems="center" spacing="sp12">
+                    <Box style={applyStyle(contentStyle)} flexDirection="row" alignItems="center">
+                        <RoundedIcon name={iconName} color="iconSubdued" />
+                        <Box alignItems="flex-start" style={applyStyle(textStyle)} flex={1}>
+                            <Text>{text}</Text>
+                            {description && <Box>{description}</Box>}
+                        </Box>
                     </Box>
-                </Box>
-                <Switch isChecked={isChecked} onChange={handleChange} />
-            </Box>
+                    <Switch isChecked={isChecked} onChange={handleChange} />
+                </HStack>
+            </Card>
         </TouchableOpacity>
     );
 };

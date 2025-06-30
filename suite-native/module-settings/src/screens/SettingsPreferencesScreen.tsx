@@ -1,4 +1,4 @@
-import { Card, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
@@ -12,15 +12,9 @@ export const SettingsPreferencesScreen = () => {
     return (
         <Screen header={<ScreenHeader content={translate('moduleSettings.preferences.title')} />}>
             <VStack spacing="sp16">
-                <Card>
-                    <CurrencySelector />
-                </Card>
-                <Card>
-                    <CryptoUnitsSelector />
-                </Card>
-                <Card>
-                    <ColorSchemePicker />
-                </Card>
+                <CurrencySelector />
+                <CryptoUnitsSelector />
+                <ColorSchemePicker />
             </VStack>
         </Screen>
     );
