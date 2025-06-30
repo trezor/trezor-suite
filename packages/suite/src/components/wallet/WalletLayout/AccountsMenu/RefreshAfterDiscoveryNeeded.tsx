@@ -47,11 +47,13 @@ const animationConfig: MotionProps = {
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isDiscoveryButtonVisible = useSelector(state =>
+    const isRediscoverNeeded = useSelector(state =>
         selectIsRediscoverNeeded(state, selectedDevice?.state?.staticSessionId),
     );
     const isSidebarCollapsed = useIsSidebarCollapsed();
     const isDiscoveryInProgress = useSelector(selectHasRunningDiscovery);
+    const isDiscoveryButtonVisible = isRediscoverNeeded && !isDiscoveryInProgress;
+
     if (!selectedDevice?.connected) {
         return null;
     }
