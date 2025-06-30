@@ -18,7 +18,7 @@ import {
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
 } from '../__fixtures__/moveLabelsForRbfTransactions.fixture';
-import { findLabelsToBeMovedOrDeleted } from '../findLabelsToBeMovedOrDeletedThunk';
+import { findLabelsToBeMovedOrDeletedThunk } from '../findLabelsToBeMovedOrDeletedThunk';
 import { moveLabelsForRbfThunk } from '../moveLabelsForRbfThunk';
 
 const rootReducer = combineReducers({
@@ -68,7 +68,7 @@ describe(moveLabelsForRbfThunk.name, () => {
         });
 
         const toBeMovedOrDeletedList = store.dispatch(
-            findLabelsToBeMovedOrDeleted({
+            findLabelsToBeMovedOrDeletedThunk({
                 prevTxid: originalTransactionSpendAccount.txid,
             }),
         );
