@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -64,6 +65,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         selectableAccounts[0] || null,
     );
+    const { isLoading, isMalicious } = useDappScan(pendingProposal?.params.proposer.metadata.url);
 
     const handleAccept = () => {
         dispatch(
@@ -114,8 +116,12 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         variant="primary"
                         onClick={handleAccept}
                         isDisabled={
-                            pendingProposal.expired || pendingProposal.isScam || noNetworksActivated
+                            pendingProposal.expired ||
+                            pendingProposal.isScam ||
+                            noNetworksActivated ||
+                            isMalicious
                         }
+                        isLoading={isLoading}
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
@@ -265,7 +271,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     </Banner>
                 )}
 
-                {pendingProposal.isScam && (
+                {(isMalicious || pendingProposal.isScam) && (
                     <Banner variant="destructive">
                         <Translation id="TR_WALLETCONNECT_IS_SCAM" />
                     </Banner>

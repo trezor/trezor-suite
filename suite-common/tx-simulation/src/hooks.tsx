@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import type { TransactionScanResponse } from '@blockaid/client/resources';
+import type { SiteScanResponse, TransactionScanResponse } from '@blockaid/client/resources';
 import type { JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
 import { ConnectPopupCall } from '@suite-common/connect-popup';
@@ -141,4 +141,36 @@ export const useTxSimulationConnectPopup = (popupCall?: ConnectPopupCall) => {
         network,
         targetContract,
     };
+};
+
+export const useDappScan = (url?: string) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [result, setResult] = useState<SiteScanResponse | null>(null);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+        if (!url) {
+            setResult(null);
+            setError(null);
+
+            return;
+        }
+
+        setIsLoading(true);
+        client.site
+            .scan({ url })
+            .then(res => {
+                setResult(res);
+            })
+            .catch(err => {
+                setError(err);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [url]);
+
+    const isMalicious = result?.status === 'hit' && result.is_malicious;
+
+    return { isLoading, result, error, isMalicious };
 };
