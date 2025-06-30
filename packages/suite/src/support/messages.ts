@@ -1617,20 +1617,20 @@ export default defineMessages({
     },
     TR_TRADING_OTC_INFO_BUY: {
         defaultMessage:
-            'For purchases over {minimumFiat} {fiatSymbol}, consider using our OTC partner:',
+            'For purchases over {minimumFiat} {fiatSymbol}, consider using our OTC partners:',
         id: 'TR_TRADING_OTC_INFO_BUY',
     },
     TR_TRADING_OTC_INFO_SELL: {
         defaultMessage:
-            'For sales over {minimumFiat} {fiatSymbol}, consider using our OTC partner:',
+            'For sales over {minimumFiat} {fiatSymbol}, consider using our OTC partners:',
         id: 'TR_TRADING_OTC_INFO_SELL',
     },
     TR_TRADING_OTC_LINK_BUY: {
-        defaultMessage: 'Buy with Mercuryo',
+        defaultMessage: 'Buy with {providerName}',
         id: 'TR_TRADING_OTC_LINK_BUY',
     },
     TR_TRADING_OTC_LINK_SELL: {
-        defaultMessage: 'Sell with Mercuryo',
+        defaultMessage: 'Sell with {providerName}',
         id: 'TR_TRADING_OTC_LINK_SELL',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
@@ -1798,7 +1798,7 @@ export default defineMessages({
         id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
     },
     TR_AUTH_CONFIRM_FAILED_TITLE: {
-        defaultMessage: 'Wrong passphrase',
+        defaultMessage: 'Incorrect passphrase',
         id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
     TR_BACK: {
@@ -3387,7 +3387,7 @@ export default defineMessages({
         id: 'TR_SOLVE_ISSUE',
     },
     TR_THP_RESET_CREDENTIALS_SUCCESS: {
-        defaultMessage: 'THP credentials has been reset. Reconnect your Trezor.',
+        defaultMessage: 'THP credentials have been reset. Reconnect your Trezor.',
         id: 'TR_THP_RESET_CREDENTIALS_SUCCESS',
     },
     TR_THP_PAIR: {
@@ -3412,7 +3412,7 @@ export default defineMessages({
     },
     TR_THP_VERIFICATION_FAILED_DESCRIPTION: {
         id: 'TR_THP_VERIFICATION_FAILED_DESCRIPTION',
-        defaultMessage: 'The one-time security code you entered is incorrect. Please try again.',
+        defaultMessage: 'The one-time security code entered is incorrect. Try again.',
     },
     TR_THP_CHECK_TREZOR_FOR_CODE: {
         id: 'TR_THP_CHECK_TREZOR_FOR_CODE',
@@ -9897,7 +9897,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_HEADING',
-        defaultMessage: 'Use 10 or more random letters and numbers — mix upper and lowercase.',
+        defaultMessage: 'Use 10+ characters: mix uppercase, lowercase, and numbers.',
     },
     TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM2_DESCRIPTION',
@@ -9905,7 +9905,8 @@ export default defineMessages({
     },
     TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_HEADING',
-        defaultMessage: 'Create a sentence only you would think of — not from a book or movie.',
+        defaultMessage:
+            'Create a sentence only you would come up with—avoid quotes and famous lines.',
     },
     TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION: {
         id: 'TR_PASSPHRASE_EXAMPLES_ITEM3_DESCRIPTION',
