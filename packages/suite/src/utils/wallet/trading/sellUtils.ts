@@ -24,15 +24,16 @@ export const createQuoteLink = async (
     if (orderId) {
         hash = `p-${hash}/${orderId}`;
     }
-    if (composedInfo.selectedFee && composedInfo.selectedFee !== 'normal') {
-        hash += `/${composedInfo.selectedFee}`;
-        if (composedInfo.selectedFee === 'custom') {
-            hash += `/${composedInfo.composed?.feePerByte}`;
-            hash += `/${composedInfo.composed?.maxFeePerGas}`;
-            hash += `/${composedInfo.composed?.maxPriorityFeePerGas}`;
-            if (composedInfo.composed?.feeLimit) {
-                hash += `/${composedInfo.composed?.feeLimit}`;
-            }
+
+    // fees info
+    if (composedInfo.composed) {
+        hash += account.networkType === 'solana' ? '/normal' : '/custom'; // manually set fee type
+        hash += `/${composedInfo.composed.feePerByte}`;
+        hash += `/${composedInfo.composed.maxFeePerGas}`;
+        hash += `/${composedInfo.composed.maxPriorityFeePerGas}`;
+
+        if (composedInfo.composed.feeLimit) {
+            hash += `/${composedInfo.composed.feeLimit}`;
         }
     }
 
