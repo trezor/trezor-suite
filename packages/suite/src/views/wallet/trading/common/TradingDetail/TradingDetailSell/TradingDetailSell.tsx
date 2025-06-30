@@ -6,14 +6,16 @@ import styled from 'styled-components';
 
 import type { TradingSellType } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Card } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { TradingDetailFeedback } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback';
 import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
 import { TradingDetailSellPaymentPending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentPending';
 import { TradingDetailSellPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSuccessful';
@@ -93,21 +95,30 @@ export const TradingDetailSell = () => {
 
     return (
         <Wrapper>
-            <Card>
-                {tradeStatusStep === 'success' && (
-                    <TradingDetailSellPaymentSuccessful account={account} />
-                )}
-                {tradeStatusStep === 'error' && (
-                    <TradingDetailSellPaymentFailed
-                        account={account}
-                        transactionId={trade.key}
-                        supportUrl={supportUrl}
-                    />
-                )}
-                {tradeStatusStep === 'pending' && (
-                    <TradingDetailSellPaymentPending supportUrl={supportUrl} />
-                )}
-            </Card>
+            <Column gap={spacings.lg}>
+                <Card>
+                    {tradeStatusStep === 'success' && (
+                        <TradingDetailSellPaymentSuccessful account={account} />
+                    )}
+                    {tradeStatusStep === 'error' && (
+                        <TradingDetailSellPaymentFailed
+                            account={account}
+                            transactionId={trade.key}
+                            supportUrl={supportUrl}
+                        />
+                    )}
+                    {tradeStatusStep === 'pending' && (
+                        <TradingDetailSellPaymentPending supportUrl={supportUrl} />
+                    )}
+                </Card>
+                <TradingDetailFeedback
+                    status={tradeStatus}
+                    type={trade.tradeType}
+                    provider={provider?.name}
+                    id={trade.data.id}
+                    quoteAmounts={quoteAmounts}
+                />
+            </Column>
             <Card>
                 <TradingSelectedOfferInfo
                     account={account}

@@ -7,8 +7,9 @@ import styled from 'styled-components';
 import { type TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import { selectAccounts, selectExplorer } from '@suite-common/wallet-core';
-import { Card, InfoItem } from '@trezor/components';
+import { Card, Column, InfoItem } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
@@ -22,6 +23,7 @@ import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/com
 import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentKYC';
 import { TradingDetailExchangePaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSending';
 import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSuccessful';
+import { TradingDetailFeedback } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
@@ -111,41 +113,49 @@ export const TradingDetailExchange = () => {
 
     return (
         <Wrapper>
-            <Card>
-                {trade.data.receiveTxHash && (
-                    <InfoItem label={<Translation id="TR_TXID" />}>
-                        <TxAddress
-                            txAddress={trade.data.receiveTxHash}
-                            explorerUrl={getExplorerUrl(explorer, 'tx')}
-                            explorerUrlQueryString={explorer?.queryString}
+            <Column gap={spacings.lg}>
+                <Card>
+                    {trade.data.receiveTxHash && (
+                        <InfoItem label={<Translation id="TR_TXID" />}>
+                            <TxAddress
+                                txAddress={trade.data.receiveTxHash}
+                                explorerUrl={getExplorerUrl(explorer, 'tx')}
+                                explorerUrlQueryString={explorer?.queryString}
+                            />
+                        </InfoItem>
+                    )}
+                    {tradeStatusStep === 'success' && (
+                        <TradingDetailExchangePaymentSuccessful account={account} />
+                    )}
+                    {tradeStatusStep === 'kyc' && (
+                        <TradingDetailExchangePaymentKYC
+                            account={account}
+                            provider={provider}
+                            supportUrl={supportUrl}
                         />
-                    </InfoItem>
-                )}
-
-                {tradeStatusStep === 'success' && (
-                    <TradingDetailExchangePaymentSuccessful account={account} />
-                )}
-                {tradeStatusStep === 'kyc' && (
-                    <TradingDetailExchangePaymentKYC
-                        account={account}
-                        provider={provider}
-                        supportUrl={supportUrl}
-                    />
-                )}
-                {tradeStatusStep === 'error' && (
-                    <TradingDetailExchangePaymentFailed
-                        account={account}
-                        transactionId={trade.key}
-                        supportUrl={supportUrl}
-                    />
-                )}
-                {tradeStatusStep === 'converting' && (
-                    <TradingDetailExchangePaymentConverting supportUrl={supportUrl} />
-                )}
-                {tradeStatusStep === 'sending' && (
-                    <TradingDetailExchangePaymentSending supportUrl={supportUrl} />
-                )}
-            </Card>
+                    )}
+                    {tradeStatusStep === 'error' && (
+                        <TradingDetailExchangePaymentFailed
+                            account={account}
+                            transactionId={trade.key}
+                            supportUrl={supportUrl}
+                        />
+                    )}
+                    {tradeStatusStep === 'converting' && (
+                        <TradingDetailExchangePaymentConverting supportUrl={supportUrl} />
+                    )}
+                    {tradeStatusStep === 'sending' && (
+                        <TradingDetailExchangePaymentSending supportUrl={supportUrl} />
+                    )}
+                </Card>
+                <TradingDetailFeedback
+                    status={tradeStatus}
+                    type={trade.tradeType}
+                    provider={provider?.name}
+                    id={trade.data.id}
+                    quoteAmounts={quoteAmounts}
+                />
+            </Column>
             <Card>
                 <TradingSelectedOfferInfo
                     account={sendAccount}

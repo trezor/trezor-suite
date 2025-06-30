@@ -10529,4 +10529,25 @@ export default defineMessages({
         id: 'TR_SIMULATION_NO_ASSETS',
         defaultMessage: 'No asset changes detected',
     },
+    TR_EXCHANGE_DETAIL_FEEDBACK_TITLE: {
+        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_TITLE',
+        defaultMessage: 'How was your trading experience with Trezor Suite?',
+    },
+    TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION: {
+        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION',
+        defaultMessage:
+            'Can you tell us more about your experience? Any details help make it better.',
+    },
+    TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON: {
+        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON',
+        defaultMessage: 'Send feedback',
+    },
+    TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_TITLE: {
+        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_TITLE',
+        defaultMessage: 'Thanks!',
+    },
+    TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_DESCRIPTION: {
+        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_DESCRIPTION',
+        defaultMessage: 'We value your feedback.',
+    },
 } as const);

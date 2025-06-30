@@ -1,12 +1,4 @@
-import type {
-    ActiveView,
-    Feedback,
-    FeedbackType,
-    GuideCategory,
-    GuideNode,
-} from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { isCodesignBuild } from '@trezor/env-utils';
+import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Dispatch } from 'src/types/suite';
@@ -59,30 +51,3 @@ export const openNode = (payload: GuideNode) => (dispatch: Dispatch) => {
         payload,
     });
 };
-
-const getUrl = (feedbackType: FeedbackType) => {
-    const typeUri = feedbackType === 'BUG' ? 'bugs' : 'feedback';
-    const base = `https://data.trezor.io/suite/${typeUri}`;
-
-    if (isCodesignBuild()) {
-        return `${base}/stable.log`;
-    }
-
-    return `${base}/develop.log`;
-};
-
-export const sendFeedback =
-    ({ type, payload }: Feedback) =>
-    async (dispatch: Dispatch) => {
-        const url = getUrl(type);
-        const params = new URLSearchParams({ ...payload });
-        try {
-            await fetch(`${url}?${params.toString()}`, {
-                method: 'GET',
-            });
-            dispatch(notificationsActions.addToast({ type: 'user-feedback-send-success' }));
-        } catch (err) {
-            dispatch(notificationsActions.addToast({ type: 'user-feedback-send-error' }));
-            console.error('failed to send user feedback', err);
-        }
-    };
