@@ -46,10 +46,15 @@ export const useBridgeDesktopApi = () => {
         desktopApi.changeBridgeSettings(settings);
     };
 
+    const toggleBridge = () => {
+        desktopApi.toggleBridge();
+    };
+
     return {
         bridgeSettings,
         bridgeProcess,
         changeBridgeSettings,
+        toggleBridge,
         bridgeDesktopApiError,
     };
 };
