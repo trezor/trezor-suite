@@ -20,7 +20,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { selectValidTradingBuyQuotesNative } from '../../selectors/buySelectors';
 import { tradingActions } from '../../tradingSlice';
 import { BuyFormType } from '../../types/buy';
-import { tradingBuyFormToTradingBuyFormProps } from '../../utils/general/quotesUtils';
+import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useReloadTimer } from '../general/useReloadTimer';
 
