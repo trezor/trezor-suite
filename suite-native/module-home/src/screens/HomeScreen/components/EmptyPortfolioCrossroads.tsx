@@ -43,13 +43,13 @@ export const EmptyPortfolioCrossroads = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
+    const isIosWithBluetoothEnabled = Platform.OS === 'ios' && isBluetoothEnabled;
 
     const handleConnectDevice = () => {
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen:
-                isBluetoothEnabled && Platform.OS === 'ios'
-                    ? AuthorizeDeviceStackRoutes.ConnectBluetoothDevice
-                    : AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+            screen: isIosWithBluetoothEnabled
+                ? AuthorizeDeviceStackRoutes.ConnectBluetoothDevice
+                : AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
         });
         analytics.report({
             type: EventType.EmptyDashboardClick,
@@ -67,7 +67,7 @@ export const EmptyPortfolioCrossroads = () => {
     return (
         <VStack spacing="sp16" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
-                {isBluetoothEnabled && Platform.OS === 'ios' ? (
+                {isIosWithBluetoothEnabled ? (
                     <VStack marginTop="sp16" spacing="sp24" alignItems="center">
                         <DeviceImage deviceModel={DeviceModelInternal.T3W1} />
                         <CenteredTitleHeader
