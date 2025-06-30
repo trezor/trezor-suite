@@ -7751,7 +7751,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
         defaultMessage:
-            'Restarting your computer may fix the communication issue between your browser and device.',
+            'Restarting your computer may fix the communication issue between Trezor Suite and your Trezor device.',
     },
     TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
         id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
