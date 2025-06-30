@@ -53,7 +53,7 @@ describe('DeviceSettings Actions', () => {
             const mock = () => {
                 if (f.deviceChange) {
                     // @ts-expect-error
-                    store.dispatch(deviceActions.deviceChanged({ device: f.deviceChange }));
+                    store.dispatch(deviceActions.deviceChanged(f.deviceChange));
                     store.dispatch(deviceActions.updateSelectedDevice(f.deviceChange));
                 }
 

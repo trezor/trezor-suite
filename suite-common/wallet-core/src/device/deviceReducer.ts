@@ -234,10 +234,21 @@ const changeDevice = (
     draft: DeviceReducerState,
     device: Device | TrezorDevice,
     extended: Partial<AcquiredDevice>,
-    shouldUpdateState = false,
 ) => {
     // change only acquired devices
     if (!device.features) return;
+
+    // this is not nice - during passphrase/discovery refactor, I made a decision that we are not going to update device.state in reducer
+    // in any other case than as a result of device authorization (passphrase+discovery). But later we realized that we need to update device.state.sessionId
+    // for saved devices too https://github.com/trezor/trezor-suite/issues/19411 so I am adding this as a quick fix that should work until we come up with a better solution.
+    const staticSessionId = device?.state;
+    const deviceBeforeUpdate = staticSessionId
+        ? draft.devices.find(d => d.state?.staticSessionId === staticSessionId)
+        : undefined;
+    const shouldUpdateState =
+        !!deviceBeforeUpdate &&
+        deviceBeforeUpdate.remember &&
+        !deviceBeforeUpdate.useEmptyPassphrase;
 
     if (!shouldUpdateState) {
         // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
@@ -605,8 +616,7 @@ const requestDeviceReconnect = (draft: DeviceReducerState) => {
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(deviceActions.deviceChanged, (state, { payload }) => {
-            const { device, shouldUpdateState } = payload;
-            changeDevice(state, device, { connected: true, available: true }, shouldUpdateState);
+            changeDevice(state, payload, { connected: true, available: true });
         })
         .addCase(deviceActions.setDeviceState, (state, { payload }) => {
             setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
