@@ -9,7 +9,7 @@ import { FAQInfoPanel } from '../components/FAQInfoPanel';
 import { SettingsSection } from '../components/SettingsSection';
 import { SupportCard } from '../components/SupportCard';
 
-export const SettingsFAQScreen = () => {
+export const SettingsSupportScreen = () => {
     const { translate } = useTranslate();
 
     const openLink = useOpenLink();

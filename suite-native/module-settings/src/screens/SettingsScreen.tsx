@@ -9,15 +9,14 @@ import { getSuiteVersion } from '@trezor/env-utils';
 
 import { ConnectionSettings } from '../components/ConnectionSettings';
 import { FeaturesSettings } from '../components/FeaturesSettings';
-import { PreferencesSettings } from '../components/PreferencesSettings';
+import { GeneralSettings } from '../components/GeneralSettings';
 
 export const SettingsScreen = () => (
     <Screen header={<DeviceManagerScreenHeader />}>
         <VStack marginTop="sp16" spacing="sp40">
-            <PreferencesSettings />
+            <GeneralSettings />
             <FeaturesSettings />
             <ConnectionSettings />
-
             <VStack justifyContent="center" alignItems="center" marginBottom="sp24">
                 <Icon name="trezorLogo" size="large" color="iconSubdued" />
                 <Text variant="callout" color="textSubdued">

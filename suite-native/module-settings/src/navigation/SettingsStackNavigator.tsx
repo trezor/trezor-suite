@@ -8,9 +8,9 @@ import {
 
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
-import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
-import { SettingsPrivacyAndSecurityScreen } from '../screens/SettingsPrivacyAndSecurityScreen';
+import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
+import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
 import { SettingsViewOnlyScreen } from '../screens/SettingsViewOnlyScreen';
 import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
 import { TurnOffFirmwareAuthenticityCheckScreen } from '../screens/TurnOffFirmwareAuthenticityCheckScreen';
@@ -26,9 +26,9 @@ export const SettingsStackNavigator = () => (
         />
 
         <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.SettingsPrivacyAndSecurity }}
-            name={SettingsStackRoutes.SettingsPrivacyAndSecurity}
-            component={SettingsPrivacyAndSecurityScreen}
+            options={{ title: SettingsStackRoutes.SettingsPrivacy }}
+            name={SettingsStackRoutes.SettingsPrivacy}
+            component={SettingsPrivacyScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsViewOnly }}
@@ -36,9 +36,9 @@ export const SettingsStackNavigator = () => (
             component={SettingsViewOnlyScreen}
         />
         <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.SettingsFAQ }}
-            name={SettingsStackRoutes.SettingsFAQ}
-            component={SettingsFAQScreen}
+            options={{ title: SettingsStackRoutes.SettingsSupport }}
+            name={SettingsStackRoutes.SettingsSupport}
+            component={SettingsSupportScreen}
         />
 
         <SettingsStack.Screen
