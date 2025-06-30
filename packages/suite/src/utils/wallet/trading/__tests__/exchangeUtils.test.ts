@@ -41,7 +41,7 @@ describe('exchangeUtils', () => {
                     mockQuoteId,
                 ),
             ).toStrictEqual(
-                `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId`,
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId/custom/1/2/3/4`,
             );
         });
 
@@ -54,7 +54,7 @@ describe('exchangeUtils', () => {
                     mockQuoteId,
                 ),
             ).toStrictEqual(
-                `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId/high`,
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId/custom/1/2/3/4`,
             );
         });
 
@@ -68,6 +68,23 @@ describe('exchangeUtils', () => {
                 ),
             ).toStrictEqual(
                 `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId/custom/1/2/3/4`,
+            );
+        });
+
+        it('should create link for quote when account network type is solana', async () => {
+            expect(
+                await createQuoteLink(
+                    mockQuotesRequest,
+                    {
+                        ...mockAccount,
+                        symbol: 'sol',
+                        networkType: 'solana',
+                    } as Account,
+                    { ...mockComposedInfo, selectedFee: 'normal' },
+                    mockQuoteId,
+                ),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/sol/normal/1/bitcoin/litecoin/1/quoteId/normal/1/2/3/4`,
             );
         });
     });

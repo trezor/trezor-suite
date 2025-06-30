@@ -50,6 +50,8 @@ export const useTradingSellFormRedirectValues = (
               },
               feeLimit: composed?.feeLimit ?? '',
               feePerUnit: composed?.feePerByte ?? '',
+              maxFeePerGas: composed?.maxFeePerGas ?? '',
+              maxPriorityFeePerGas: composed?.maxPriorityFeePerGas ?? '',
               selectedFee,
               selectedUtxos: [],
               options: ['broadcast'],
