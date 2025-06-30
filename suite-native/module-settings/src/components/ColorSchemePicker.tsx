@@ -14,7 +14,7 @@ export const ColorSchemePicker = () => {
         <Card>
             <VStack spacing="sp12">
                 <HStack alignItems="center">
-                    <Icon name="flag" size="mediumLarge" />
+                    <Icon name="palette" size="mediumLarge" />
                     <Text>
                         <Translation id="moduleSettings.preferences.theme" />
                     </Text>
