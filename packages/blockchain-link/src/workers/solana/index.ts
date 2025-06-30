@@ -92,7 +92,6 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
-    fullHistory = true,
 ) => {
     let lastSignature: SignatureWithSlot | undefined;
     let keepFetching = true;
@@ -112,7 +111,7 @@ const getAllSignatures = async (
             slot: info.slot,
         }));
         lastSignature = signatures[signatures.length - 1];
-        keepFetching = signatures.length === limit && fullHistory;
+        keepFetching = signatures.length === limit;
         allSignatures = [...allSignatures, ...signatures];
     }
 
@@ -228,6 +227,10 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const publicKey = address(payload.descriptor);
 
+    const { value: accountInfo } = await api.rpc
+        .getAccountInfo(publicKey, { encoding: 'base64' })
+        .send();
+
     const getAllTxIds = async (tokenAccountPubkeys: string[]) => {
         const sortedTokenAccountPubkeys = tokenAccountPubkeys.sort();
         // limit to 100 accounts, loading too many would hit the rpc limit
@@ -236,14 +239,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         const allAccounts = [payload.descriptor, ...sortedTokenAccountPubkeys];
 
         const allTxIds =
-            details === 'basic' || details === 'txs' || details === 'txids'
+            details === 'txs' || details === 'txids'
                 ? Array.from(
                       new Set(
                           (
                               await Promise.all(
-                                  allAccounts.map(account =>
-                                      getAllSignatures(api, account, details !== 'basic'),
-                                  ),
+                                  allAccounts.map(account => getAllSignatures(api, account)),
                               )
                           )
                               .flat()
@@ -419,16 +420,10 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     // Not necessary for basic and tokens details
     if (!['basic', 'tokens'].includes(details)) {
-        // https://solana.stackexchange.com/a/13102
-        const { value: accountInfo } = await api.rpc
-            .getAccountInfo(publicKey, { encoding: 'base64' })
-            .send();
-
         const solEpoch = await getEpoch();
         const solStakingAccounts = await getSolanaStakingData(api?.rpc, publicKey, solEpoch);
 
         misc = {
-            owner: accountInfo?.owner,
             solStakingAccounts,
             solEpoch,
         };
@@ -465,7 +460,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : undefined,
         tokens,
-        ...(misc ? { misc } : {}),
+        misc: { ...misc, owner: accountInfo?.owner },
     };
 
     // Update token accounts of account stored by the worker since new accounts
