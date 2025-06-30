@@ -14,20 +14,20 @@ export const PreferencesSettings = () => {
                 title={<Translation id="moduleSettings.items.general.preferences.title" />}
                 subtitle={<Translation id="moduleSettings.items.general.preferences.subtitle" />}
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsPreferences)}
-                icon="flag"
+                icon="slidersHorizontal"
                 testID="@settings/preferences"
             />
             <AppSettingsCardWithIconLayout
                 title={<Translation id="moduleSettings.items.general.privacy.title" />}
                 subtitle={<Translation id="moduleSettings.items.general.privacy.subtitle" />}
-                icon="flag"
+                icon="lock"
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
             />
             <AppSettingsCardWithIconLayout
                 title="Support"
                 subtitle="Troubleshooting, help"
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsFAQ)}
-                icon="flag"
+                icon="lifebuoy"
             />
         </SettingsSection>
     );

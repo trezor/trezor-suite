@@ -30,7 +30,7 @@ export const CurrencySelector = () => {
         <Card>
             <VStack spacing="sp12">
                 <HStack alignItems="center">
-                    <Icon name="flag" size="mediumLarge" />
+                    <Icon name="translate" size="mediumLarge" />
                     <Text>
                         <Translation id="moduleSettings.preferences.fiatCurrencyLabel" />
                     </Text>

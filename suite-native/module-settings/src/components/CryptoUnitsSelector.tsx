@@ -29,7 +29,7 @@ export const CryptoUnitsSelector = () => {
         <Card>
             <VStack spacing="sp12">
                 <HStack alignItems="center">
-                    <Icon name="flag" size="mediumLarge" />
+                    <Icon name="currencyBtc" size="mediumLarge" />
                     <Text>
                         <Translation id="moduleSettings.preferences.bitcoinUnitsLabel" />
                     </Text>
