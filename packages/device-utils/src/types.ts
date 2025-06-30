@@ -138,7 +138,8 @@ export interface ReleasesConfig {
     T3W1: ConditionalRelease[];
 }
 export interface IntermediaryReleaseConfig {
-    if_version_less_than: string;
+    min_firmware_version: VersionArray;
+    min_bootloader_version: VersionArray;
     version: number;
     firmware_revision: string;
     url: string;
