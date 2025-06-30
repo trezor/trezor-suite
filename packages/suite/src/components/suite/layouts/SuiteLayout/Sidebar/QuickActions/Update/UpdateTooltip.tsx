@@ -96,7 +96,7 @@ const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
             leftItem={
                 <SuiteIconRectangle $size="medium">
                     <Icon
-                        name="trezorDevices"
+                        name="trezorLogo"
                         size={iconSizes.small}
                         color={theme.iconDefaultInverted}
                     />
