@@ -10,7 +10,7 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
 import {
     HandleExchangeRequestThunkProps,
-    TradingExchangeFormProps,
+    MinimalExchangeFormProps,
     TradingExchangeType,
 } from '../../types';
 import { addIdsToQuotes, getTradingNetworkDecimals } from '../../utils';
@@ -25,7 +25,7 @@ const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
     invityAPI.getExchangeQuotes(requestData, signal);
 
 type GetQuoteRequestData = {
-    formValues: TradingExchangeFormProps;
+    formValues: MinimalExchangeFormProps;
     network: Network;
     shouldSendInSats: boolean | undefined;
 };
