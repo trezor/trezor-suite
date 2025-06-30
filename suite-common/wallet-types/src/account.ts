@@ -76,6 +76,7 @@ type AccountNetworkSpecific =
               rent?: number;
               solStakingAccounts?: SolanaStakingAccount[];
               solEpoch?: number;
+              owner?: string;
           };
           marker: undefined;
           stellarCursor: undefined;

@@ -2270,9 +2270,9 @@ export default defineMessages({
             "Address has no transaction history and isn't checksummed. Check that the address is correct.",
         id: 'TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED',
     },
-    TR_ETH_ADDRESS_CANT_VERIFY_HISTORY: {
+    TR_ADDRESS_CANT_VERIFY_HISTORY: {
         defaultMessage: 'Unable to verify address history. Check that the address is correct.',
-        id: 'TR_ETH_ADDRESS_CANT_VERIFY_HISTORY',
+        id: 'TR_ADDRESS_CANT_VERIFY_HISTORY',
     },
     TR_EVM_ADDRESS_IS_CONTRACT: {
         defaultMessage: "You're sending funds to a contract address.",
@@ -5705,6 +5705,11 @@ export default defineMessages({
     TR_CONVERT_TO_CHECKSUM_ADDRESS: {
         defaultMessage: 'Convert to checksum',
         id: 'TR_CONVERT_TO_CHECKSUM_ADDRESS',
+    },
+    TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT: {
+        defaultMessage:
+            'You are sending funds to an associated account (e.g. token or staking account).',
+        id: 'TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: "Can't send to myself",
