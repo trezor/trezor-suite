@@ -36,7 +36,7 @@ import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
-import { findLabelsToBeMovedOrDeleted } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
+import { findLabelsToBeMovedOrDeletedThunk } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
 import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
 
 export const saveSendFormDraftThunk = createThunk(
@@ -273,7 +273,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // This has to be executed prior to pushing the transaction!
         const rbfLabelsToBeEdited = isBumpFeeRbf
             ? dispatch(
-                  findLabelsToBeMovedOrDeleted({
+                  findLabelsToBeMovedOrDeletedThunk({
                       prevTxid: enhancedPrecomposedTransaction.prevTxid,
                   }),
               )

@@ -4,12 +4,12 @@ import { findChainedTransactions, findTransactions } from '@suite-common/wallet-
 import { Dispatch, GetState } from '../../../types/suite';
 import { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
 
-type FindLabelsToBeMovedOrDeletedParams = {
+type FindLabelsToBeMovedOrDeletedThunkParams = {
     prevTxid: string;
 };
 
-export const findLabelsToBeMovedOrDeleted =
-    ({ prevTxid }: FindLabelsToBeMovedOrDeletedParams) =>
+export const findLabelsToBeMovedOrDeletedThunk =
+    ({ prevTxid }: FindLabelsToBeMovedOrDeletedThunkParams) =>
     (_dispatch: Dispatch, getState: GetState): RbfLabelsToBeUpdated => {
         const accountTransactions = findTransactions(
             prevTxid,
