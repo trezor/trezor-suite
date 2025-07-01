@@ -230,7 +230,7 @@ export const useTradingExchangeForm = ({
     const helpers = useTradingFormActions({
         account,
         methods,
-        isNotFormPage,
+        pageType,
         draftUpdated,
         type,
         handleChange,

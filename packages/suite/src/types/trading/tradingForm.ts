@@ -45,6 +45,7 @@ import {
     TradingAccountOptionsGroupOptionProps,
     TradingGetCryptoQuoteAmountProps,
     TradingGetProvidersInfoProps,
+    TradingPageType,
     TradingTradeSellExchangeType,
 } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
@@ -282,7 +283,7 @@ export interface TradingFormInputCurrencyProps {
 export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormProps> {
     account: Account;
     methods: UseFormReturn<T>;
-    isNotFormPage: boolean;
+    pageType: TradingPageType;
     draftUpdated: TradingSellExchangeFormProps | null;
     type: TradingTradeSellExchangeType;
     handleChange: (offLoading?: boolean) => Promise<void>;

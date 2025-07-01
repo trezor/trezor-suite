@@ -217,7 +217,7 @@ export const useTradingSellForm = ({
     const helpers = useTradingFormActions({
         account,
         methods,
-        isNotFormPage,
+        pageType,
         draftUpdated,
         type,
         handleChange,

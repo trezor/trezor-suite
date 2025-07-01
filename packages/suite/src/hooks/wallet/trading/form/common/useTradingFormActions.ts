@@ -53,7 +53,7 @@ import {
 export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     account,
     methods,
-    isNotFormPage,
+    pageType,
     draftUpdated,
     type,
     handleChange,
@@ -72,6 +72,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         accounts,
         deviceState: device?.state?.staticSessionId,
     });
+    const isNotFormPage = pageType !== 'form';
     const [fractionButton, setFractionButton] = useState<number | undefined>(undefined);
     const { buildDefaultCryptoOption } = useTradingInfo();
 
@@ -236,6 +237,8 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {
+            if (pageType === 'confirm') return;
+
             const fiatValue = values?.outputs?.[0]?.fiat;
             const cryptoValue = values?.outputs?.[0]?.amount;
 
@@ -262,13 +265,13 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             }
         },
         500,
-        [previousValues, handleChange, handleSubmit],
+        [previousValues, pageType, handleChange, handleSubmit],
     );
 
     // call change handler on every change of select inputs
     // effect only for sell form
     useEffect(() => {
-        if (type !== 'sell') return;
+        if (type !== 'sell' || pageType === 'confirm') return;
 
         if (
             isChanged(
@@ -286,12 +289,12 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, type]);
+    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, pageType, type]);
 
     // call change handler on every change of select inputs
     // effect only for exchange form
     useEffect(() => {
-        if (type !== 'exchange') return;
+        if (type !== 'exchange' || pageType === 'confirm') return;
 
         if (
             isChanged(
@@ -305,7 +308,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, type]);
+    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, pageType, type]);
 
     return {
         isBalanceZero,
