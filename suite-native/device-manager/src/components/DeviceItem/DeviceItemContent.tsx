@@ -12,7 +12,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
-import { selectShouldDeviceBeTreatedAsBootloaderMode } from '@suite-native/device';
+import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeTypographyStyle } from '@trezor/theme';
@@ -61,14 +61,14 @@ export const DeviceItemContent = React.memo(
     }: DeviceItemContentProps) => {
         const { translate } = useTranslate();
         const { applyStyle } = useNativeStyles();
-        const isDeviceInBootloader = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
+        const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
         const selectedDevice = useSelector(selectSelectedDevice);
 
         const device = useSelectorDeepComparison((state: DeviceRootState) => {
             // select only what is needed to avoid unnecessary rerenders
             const d = selectDeviceByState(state, deviceState);
 
-            if (!d && isDeviceInBootloader)
+            if (!d && shouldFactoryResetBeVisible)
                 return {
                     id: 'bootloader_device',
                     name: selectedDevice?.name,

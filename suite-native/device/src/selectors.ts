@@ -240,7 +240,7 @@ export const selectIsDeviceSetupSupported = createMemoizedSelector(
             (isModelTDeviceOnboardingFeatureFlagEnabled && model === DeviceModelInternal.T2T1)),
 );
 
-export const selectShouldDeviceBeTreatedAsBootloaderMode = createMemoizedSelector(
+export const selectShouldFactoryResetBeVisible = createMemoizedSelector(
     [selectIsDeviceInBootloader, selectHasDeviceFirmwareInstalled],
     (isDeviceInBootloader, hasDeviceFirmwareInstalled) =>
         isDeviceInBootloader && hasDeviceFirmwareInstalled,

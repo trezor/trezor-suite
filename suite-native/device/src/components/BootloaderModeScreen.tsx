@@ -19,7 +19,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { selectShouldDeviceBeTreatedAsBootloaderMode } from '../selectors';
+import { selectShouldFactoryResetBeVisible } from '../selectors';
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -43,7 +43,7 @@ type NavigationProps = CompositeNavigationProp<
 export const BootloaderModeScreen = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
-    const isDeviceInBootloader = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
+    const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleRedirectToFactoryReset = () => {
@@ -57,10 +57,10 @@ export const BootloaderModeScreen = () => {
 
     useEffect(() => {
         // If user changes device through device switcher, navigate to the screen where user was before entering bootloader mode.
-        if (!isDeviceInBootloader) {
+        if (!shouldFactoryResetBeVisible) {
             navigateToInitialScreen();
         }
-    }, [isDeviceInBootloader, navigateToInitialScreen, navigation]);
+    }, [shouldFactoryResetBeVisible, navigateToInitialScreen, navigation]);
 
     useEffect(() => {
         // Navigating back from the bootloader screen would get the user back to homescreen in incorrect state, so we'll avoid it by this.
