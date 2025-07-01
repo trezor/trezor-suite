@@ -1,8 +1,56 @@
 {
     "version": 1,
-    "timestamp": "2025-06-16T00:00:00+00:00",
-    "sequence": 91,
+    "timestamp": "2025-07-01T18:08:10+00:00",
+    "sequence": 92,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": ">=25.6.1",
+                        "web": "!"
+                    },
+                    "os": {
+                        "macos": "!",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "*",
+                        "chromeos": "!"
+                    },
+                    "countryCodes": ["GB"]
+                }
+            ],
+            "message": {
+                "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "priority": 91,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Trading is not available in your country yet.",
+                    "en": "Trading is not available in your country yet.",
+                    "es": "Trading is not available in your country yet.",
+                    "cs": "Trading is not available in your country yet.",
+                    "de": "Trading is not available in your country yet.",
+                    "fr": "Trading is not available in your country yet.",
+                    "it": "Trading is not available in your country yet.",
+                    "pt": "Trading is not available in your country yet.",
+                    "tr": "Trading is not available in your country yet.",
+                    "ru": "Trading is not available in your country yet.",
+                    "ja": "Trading is not available in your country yet.",
+                    "uk": "Trading is not available in your country yet.",
+                    "hu": "Trading is not available in your country yet."
+                },
+                "feature": [
+                    {
+                        "domain": "trading.restrictions.blacklist",
+                        "flag": true
+                    }
+                ]
+            }
+        },
         {
             "conditions": [
                 {
