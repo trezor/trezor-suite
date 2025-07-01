@@ -28,6 +28,9 @@
             "path": "../device-utils"
         },
         {
+            "path": "../env-utils"
+        },
+        {
             "path": "../protobuf"
         },
         {
