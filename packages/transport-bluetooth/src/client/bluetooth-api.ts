@@ -8,13 +8,11 @@ import { PathInternal } from '@trezor/transport/src/types';
 import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
-import { BluetoothDevice } from './types';
+import { BluetoothDevice, TrezorBluetoothSettings } from './types';
 
 // implementation of @trezor/transport/src/api/abstract
 
-type BluetoothApiParams = AbstractApiConstructorParams & {
-    url: string;
-};
+type BluetoothApiParams = AbstractApiConstructorParams & TrezorBluetoothSettings;
 
 export class BluetoothApi extends AbstractApi {
     chunkSize = 244;
@@ -24,7 +22,7 @@ export class BluetoothApi extends AbstractApi {
     constructor(options: BluetoothApiParams) {
         super(options);
 
-        this.api = new TrezorBluetooth({ url: options.url, logger: options.logger });
+        this.api = new TrezorBluetooth(options);
     }
 
     private devicesToDescriptors(devices: BluetoothDevice[]) {
