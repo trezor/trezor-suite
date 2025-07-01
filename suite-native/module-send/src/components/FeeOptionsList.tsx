@@ -35,7 +35,7 @@ export const FeeOptionsList = ({
     symbol,
     accountKey,
     tokenContract,
-    isLoading = false,
+    isLoading,
 }: FeeOptionsListProps) => {
     const predefinedFeeLevels = pipe(
         feeLevels,

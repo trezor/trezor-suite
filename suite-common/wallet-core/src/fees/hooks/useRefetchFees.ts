@@ -29,7 +29,7 @@ export const useRefetchFees = ({ networkSymbol, isDisabled }: UseRefetchFeesProp
                 updateFeeInfoThunk({
                     networkSymbol,
                     artificialDelay: FEE_UPDATE_DELAY_MILLISECONDS,
-                }) as any,
+                }),
             );
         }, FEES_UPDATE_INTERVAL_MILLISECONDS);
 

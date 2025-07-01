@@ -56,13 +56,9 @@ type MainnetSummaryProps = {
     amount: string;
     symbol: NetworkSymbol;
     isLoading?: boolean;
-}
+};
 
-const MainnetSummary = ({
-    amount,
-    symbol,
-    isLoading,
-}: MainnetSummaryProps) => (
+const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
     <HStack justifyContent="space-between" alignItems="center">
         <Text variant="callout">
             <Translation id="moduleSend.fees.totalAmount" />
