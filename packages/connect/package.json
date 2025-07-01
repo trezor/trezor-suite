@@ -86,6 +86,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:^",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
@@ -96,12 +97,14 @@
         "blakejs": "^1.2.1",
         "bs58": "^6.0.0",
         "bs58check": "^4.0.0",
-        "cross-fetch": "^4.0.0"
+        "cross-fetch": "^4.0.0",
+        "jws": "^4.0.0"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.27.1",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
+        "@types/jws": "^3.2.10",
         "@types/karma": "^6.3.9",
         "babel-loader": "^10.0.0",
         "jest": "29.7.0",
