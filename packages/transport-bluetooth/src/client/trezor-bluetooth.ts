@@ -1,3 +1,4 @@
+import { resolveAfter } from '@trezor/utils';
 import { WebsocketClient } from '@trezor/websocket-client';
 
 import {
@@ -67,8 +68,42 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
         return this.sendMessage({ method: 'connect_device', params }, { timeout: wsTimeout });
     }
 
-    write(params: WriteParams) {
-        const withResponse = false;
+    private writeBuffer: Record<string, { bytes: number; lastWrite: number } | undefined> = {};
+
+    private async write(params: WriteParams) {
+        const writeBuffer = this.writeBuffer[params.id];
+        if (!writeBuffer) {
+            throw new Error('Device not opened');
+        }
+
+        // MacOS and Windows writeWithoutResponse sends packets faster than Trezor is able to process or just loose packets and doesn't send them at all (macos)
+        // we need to use throttle it to make sure that they are received and processed correctly
+        // NOTE: the faster it sends the longer it waits when withResponse is used
+        const MIN_PACKETS = 8;
+        const MAX_PACKETS = 16;
+        const PACKET_SIZE = 244;
+        const WITH_RESPONSE_BYTES = PACKET_SIZE * MAX_PACKETS;
+        let withResponse = false;
+        const lastWrite = Date.now() - writeBuffer.lastWrite;
+        // windows: use delay between packets. do not use writeWithResponse - it takes too long
+        if (this.settings.writeWithDelay && lastWrite < MIN_PACKETS) {
+            const wait =
+                MIN_PACKETS -
+                lastWrite +
+                Math.floor(MIN_PACKETS * (writeBuffer.bytes / WITH_RESPONSE_BYTES));
+            await resolveAfter(wait);
+        }
+
+        // macos: use writeWithResponse occasionally (first few packets and every 16-nth)
+        if (this.settings.writeWithResponse) {
+            const sent = writeBuffer.bytes / PACKET_SIZE;
+            if (sent <= MIN_PACKETS || sent % WITH_RESPONSE_BYTES === 0) {
+                withResponse = true;
+            }
+        }
+
+        writeBuffer.lastWrite = Date.now();
+        writeBuffer.bytes += params.data.length;
 
         return this.sendMessage({ method: 'write', params: { ...params, withResponse } });
     }
@@ -92,6 +127,17 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
 
         if (method === 'write') {
             return this.write(params);
+        }
+
+        if (method === 'open_device') {
+            this.writeBuffer[params] = {
+                bytes: 0,
+                lastWrite: 0,
+            };
+        }
+
+        if (method === 'close_device') {
+            delete this.writeBuffer[params];
         }
 
         return this.sendMessage({ method, params });
