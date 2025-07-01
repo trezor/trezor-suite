@@ -603,7 +603,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON',
     },
     TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED: {
-        defaultMessage: 'The approval transaction has been successfully processed.',
+        defaultMessage: 'The approval transaction has been processed successfully.',
         id: 'TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED',
     },
     TR_EXCHANGE_APPROVAL_SEND_TO: {
@@ -7776,7 +7776,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
         defaultMessage:
-            'Restarting your computer may fix the communication issue between Trezor Suite and your Trezor device.',
+            'Restarting your computer may fix the communication issue between your browser and device.',
     },
     TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
         id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
