@@ -21,6 +21,7 @@ export const GeneralSettings = () => {
                 title={<Translation id="moduleSettings.items.general.privacy.title" />}
                 subtitle={<Translation id="moduleSettings.items.general.privacy.subtitle" />}
                 icon="lock"
+                testID="@settings/privacy"
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacy)}
             />
             <AppSettingsCardWithIconLayout

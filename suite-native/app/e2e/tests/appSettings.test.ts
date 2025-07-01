@@ -38,7 +38,7 @@ describe('App Settings - without device interactions', () => {
             .withTimeout(10000);
 
         await onTabBar.navigateToSettings();
-        await onSettings.tapLocalization();
+        await onSettings.tapPreferences();
         await onSettings.changeLocalizationCurrency('czk');
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
@@ -56,7 +56,7 @@ describe('App Settings - without device interactions', () => {
             .withTimeout(10000);
 
         await onTabBar.navigateToSettings();
-        await onSettings.tapLocalization();
+        await onSettings.tapPreferences();
         await onSettings.changeBitcoinUnits(PROTO.AmountUnit.SATOSHI);
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
