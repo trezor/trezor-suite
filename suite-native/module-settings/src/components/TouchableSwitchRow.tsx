@@ -50,7 +50,7 @@ export const TouchableSwitchRow = ({
                 <HStack justifyContent="space-between" alignItems="center" spacing="sp12">
                     <Box style={applyStyle(contentStyle)} flexDirection="row" alignItems="center">
                         <RoundedIcon name={iconName} color="iconSubdued" />
-                        <Box alignItems="flex-start" style={applyStyle(textStyle)} flex={1}>
+                        <Box alignItems="flex-start" style={applyStyle(textStyle)}>
                             <Text>{text}</Text>
                             {description && <Box>{description}</Box>}
                         </Box>
