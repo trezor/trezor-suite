@@ -76,7 +76,13 @@ export const selectNetworksToDiscover = (
     if (!staticSessionId) {
         return enabledNetworks;
     }
+
     const device = selectSelectedDevice(state);
+    const deviceNetworks = selectSupportedNetworkByDevice(device);
+    const enabledSupportedNetworks = enabledNetworks.filter(network =>
+        deviceNetworks.includes(network),
+    );
+
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
     const okAccounts = selectAccountsByDeviceState(state, staticSessionId);
     const failedAccounts = getFailedAccounts(staticSessionId, discovery);
@@ -85,7 +91,7 @@ export const selectNetworksToDiscover = (
         ...new Set([...okAccounts, ...failedAccounts].map(account => account.symbol)),
     ];
 
-    return enabledNetworks.filter(network => !discoveredNetworks.includes(network));
+    return enabledSupportedNetworks.filter(network => !discoveredNetworks.includes(network));
 };
 
 export const selectIsRediscoverNeeded = (
