@@ -104,20 +104,6 @@ jobs:
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
 
-  firmware-release-config-scripts:
-    runs-on: ubuntu-latest
-    if: github.repository == 'trezor/trezor-suite'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-
-      - run: yarn install --immutable
-
   components-test-img-paths-exist:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
