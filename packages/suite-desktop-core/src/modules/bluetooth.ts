@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 
+import { isMacOs, isWindows } from '@trezor/env-utils';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
@@ -66,6 +67,8 @@ export const init: ModuleInit = () => {
                   url: bluetoothProcess.getUrl(),
                   logger: desktopLogger,
                   messages: {}, // will be added by @trezor/connect transport initialization
+                  writeWithResponse: isMacOs(),
+                  writeWithDelay: isWindows(),
               })
             : undefined;
 
