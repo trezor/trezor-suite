@@ -860,6 +860,16 @@ export const en = {
         },
         privacyAndSecurity: {
             title: 'Privacy & Security',
+            analyticsSwitch: {
+                title: 'Usage data',
+                subtitle:
+                    'All collected data is anonymous and is only used to improve the Trezor ecosystem.',
+            },
+            biometrics: {
+                title: 'Biometrics',
+                subtitle: 'Use facial or fingerprint verification to unlock the app.',
+            },
+            discreetMode: 'Discreet mode',
         },
         coinEnabling: {
             initialSetup: {

@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FiatCurrency, FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Card, HStack, Select, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+
+import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 
 export const transformFiatCurrencyToSelectItem = ({ code, label }: FiatCurrency) => ({
     value: code,
@@ -27,21 +28,16 @@ export const CurrencySelector = () => {
     };
 
     return (
-        <Card>
-            <VStack spacing="sp12">
-                <HStack alignItems="center">
-                    <Icon name="translate" size="mediumLarge" />
-                    <Text>
-                        <Translation id="moduleSettings.preferences.fiatCurrencyLabel" />
-                    </Text>
-                </HStack>
-                <Select<FiatCurrencyCode>
-                    items={fiatCurrencyItems}
-                    selectValue={selectedFiatCurrencyCode}
-                    onSelectItem={handleSelectCurrency}
-                    testID="@settings/localization/currency-selector"
-                />
-            </VStack>
-        </Card>
+        <PreferencesSettingsCard
+            iconName="translate"
+            title={<Translation id="moduleSettings.preferences.fiatCurrencyLabel" />}
+        >
+            <Select<FiatCurrencyCode>
+                items={fiatCurrencyItems}
+                selectValue={selectedFiatCurrencyCode}
+                onSelectItem={handleSelectCurrency}
+                testID="@settings/localization/currency-selector"
+            />
+        </PreferencesSettingsCard>
     );
 };

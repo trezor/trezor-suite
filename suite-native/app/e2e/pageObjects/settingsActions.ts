@@ -20,8 +20,7 @@ class SettingsActions {
 
     async tapCoinEnabling() {
         const coinEnablingElement = element(by.id('@settings/coin-enabling'));
-
-        await waitFor(coinEnablingElement).toBeVisible().withTimeout(10000);
+        await scrollUntilVisible(coinEnablingElement);
         await coinEnablingElement.tap();
     }
 
