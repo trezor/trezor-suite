@@ -1,0 +1,31 @@
+name: "[Check] Unused Translation Keys"
+
+#on:
+#  pull_request:
+#    paths:
+#      - "suite-native/**"
+#      - "!**.md"
+
+on:
+  push:
+    branches:
+      - feat/native/unused-translation-strings
+    paths:
+      - "suite-native/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  check-unused-translations:
+    name: Check for unused translations
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for unused translations
+        run: |
+          cd suite-native/app
+          node find-unused-translations.js
