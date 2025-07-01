@@ -14,6 +14,7 @@ type FeeOptionsListProps = {
     symbol: NetworkSymbol;
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    isLoading?: boolean;
 };
 
 // User is not able to enter the fees screen if there is not normal fee or at least the economy fee (in final state) present.
@@ -34,6 +35,7 @@ export const FeeOptionsList = ({
     symbol,
     accountKey,
     tokenContract,
+    isLoading = false,
 }: FeeOptionsListProps) => {
     const predefinedFeeLevels = pipe(
         feeLevels,
@@ -57,6 +59,7 @@ export const FeeOptionsList = ({
                         symbol={symbol}
                         transactionBytes={transactionBytes}
                         isInteractive={isMultipleOptionsDisplayed}
+                        isLoading={isLoading}
                     />
                 ))}
             </VStack>

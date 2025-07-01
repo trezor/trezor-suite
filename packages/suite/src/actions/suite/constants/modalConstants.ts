@@ -1,4 +1,4 @@
-import { UI } from "@trezor/connect";
+import { UI } from '@trezor/connect';
 
 export const CLOSE = '@modal/close';
 export const CONTEXT_NONE = '@modal/context-none';
