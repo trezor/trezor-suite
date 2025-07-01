@@ -6,7 +6,7 @@ import {
     restartDiscoveryThunk,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
-    selectShowRediscoverButton,
+    selectShouldRediscoverNetworks,
 } from '@suite-common/wallet-core';
 import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -85,7 +85,7 @@ export const SettingsCoins = () => {
     const { isDiscoveryRunning } = useDiscovery();
     const staticSessionId = device?.state?.staticSessionId;
     const isDiscoveryButtonVisible = useSelector(state =>
-        selectShowRediscoverButton(state, staticSessionId),
+        selectShouldRediscoverNetworks(state, staticSessionId),
     );
 
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
