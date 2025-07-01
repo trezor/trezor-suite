@@ -2,7 +2,8 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import { ReviewOutput } from '@suite-common/wallet-types';
 import { findAccountsByAddress, sortByCoin } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { StaticSessionId, type TrezorConnect } from '@trezor/connect';
+import { arrayToDictionary } from '@trezor/utils';
 
 import { AccountsRootState } from './accounts/accountsReducer';
 import {
@@ -33,51 +34,78 @@ type CompoundRootState = AccountsRootState &
     WalletSettingsRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<CompoundRootState>();
 
+const selectEnabledSupportedNetworks = (state: CompoundRootState) => {
+    const enabledNetworks = selectEnabledNetworks(state);
+    const device = selectSelectedDevice(state);
+    const deviceNetworks = selectSupportedNetworkByDevice(device);
+
+    return enabledNetworks.filter(network => deviceNetworks.includes(network));
+};
+
 /**
  * Listable accounts are visible, enabled in settings, supported by the device and conventionally sorted.
  * Edge cases: accounts failed to be discovered, or remembered accounts no longer supported by the device.
  */
 export const selectAllAccountsToList = createMemoizedSelector(
-    [selectVisibleDeviceAccounts, selectSelectedDevice, selectEnabledNetworks],
-    (accounts, device, enabledNetworks) => {
-        const deviceNetworks = selectSupportedNetworkByDevice(device);
-
-        const filteredAccounts = accounts.filter(
-            ({ symbol }) => enabledNetworks.includes(symbol) && deviceNetworks.includes(symbol),
+    [selectVisibleDeviceAccounts, selectEnabledSupportedNetworks],
+    (accounts, enabledSupportedNetworks) => {
+        const filteredAccounts = accounts.filter(({ symbol }) =>
+            enabledSupportedNetworks.includes(symbol),
         );
+
         const sortedAccounts = sortByCoin(filteredAccounts);
 
         return returnStableArrayIfEmpty(sortedAccounts);
     },
 );
 
-export const selectNetworksToDiscover = (
-    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
+export const selectDiscoveryAccountsParam = (
+    state: CompoundRootState,
     staticSessionId: StaticSessionId,
-) => {
-    const enabledNetworks = selectEnabledNetworks(state);
-    const device = selectSelectedDevice(state);
-    const deviceNetworks = selectSupportedNetworkByDevice(device);
-    const networks = enabledNetworks.filter(network => deviceNetworks.includes(network));
+): Parameters<TrezorConnect['discoverAccounts']>[0]['accounts'] => {
+    const networks = selectEnabledSupportedNetworks(state);
     const accounts = selectAccountsByDeviceState(state, staticSessionId);
 
-    const networkSet = new Set(networks);
-    const allSet = new Set(accounts.map(a => a.symbol));
-    const failedSet = new Set(accounts.filter(a => a.failed).map(a => a.symbol));
+    const symbolMap = arrayToDictionary(accounts, acc => acc.symbol, true);
 
-    return {
-        failed: [...failedSet].filter(s => networkSet.has(s)),
-        undiscovered: [...networkSet].filter(s => !allSet.has(s)),
-    };
+    return networks.flatMap(symbol => {
+        const symbolAccounts = symbolMap[symbol];
+
+        // undiscovered network; discover as a whole
+        if (!symbolAccounts) return [{ symbol }];
+
+        // discovered network; separate by account type
+        const typeMap = arrayToDictionary(symbolAccounts, acc => acc.accountType, true);
+
+        return Object.entries(typeMap).flatMap(([type, accs]) => {
+            // account with the highest index
+            const lastAccount = accs.reduce((last, current) =>
+                current.index > last.index ? current : last,
+            );
+
+            // last account is a failed one; try to discover it again
+            if (lastAccount.failed) return [{ symbol, type, skip: lastAccount.index }];
+            // last account is a used one; skip it and try to discover next one
+            else if (!lastAccount.empty) return [{ symbol, type, skip: lastAccount.index + 1 }];
+            // last account is an empty one; no need to discover
+            else return [];
+        });
+    });
 };
 
-export const selectShowRediscoverButton = (
-    state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
+export const selectShouldRediscoverNetworks = (
+    state: CompoundRootState,
     staticSessionId?: StaticSessionId,
-) =>
-    staticSessionId &&
-    selectNetworksToDiscover(state, staticSessionId).undiscovered.length > 0 &&
-    !selectHasRunningDiscovery(state);
+) => {
+    if (!staticSessionId) return false;
+    if (selectHasRunningDiscovery(state)) return false;
+
+    const networks = selectEnabledSupportedNetworks(state);
+    const accounts = selectAccountsByDeviceState(state, staticSessionId);
+    const discoveredNetworks = new Set(accounts.map(account => account.symbol));
+
+    return networks.some(network => !discoveredNetworks.has(network));
+};
 
 export const selectAccountsToBeForgotten = (
     state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,

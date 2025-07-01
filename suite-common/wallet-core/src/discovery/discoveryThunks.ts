@@ -26,11 +26,9 @@ import {
     selectDevices,
     selectPhysicalDevices,
     selectSelectedDevice,
-    selectSupportedNetworkByDevice,
 } from '../device/deviceSelectors';
 import { selectDeviceThunk } from '../device/deviceThunks';
-import { selectAccountsToBeForgotten, selectNetworksToDiscover } from '../selectors';
-import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
+import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
@@ -447,6 +445,17 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
+            const accountsParam = selectDiscoveryAccountsParam(
+                getState(),
+                deviceStateResponse.payload._state.staticSessionId,
+            );
+
+            // no networks to discover, complete discovery
+            if (!accountsParam.length) {
+                // TODO: find out how to early return discovery; calling completeDiscoveryThunk does not work
+                console.warn('No networks to discover, todo: stop discovery');
+            }
+
             const onBundleProgress = createOnBundleProgressHandler(
                 device.path,
                 deviceStateResponse.payload._state.staticSessionId,
@@ -469,18 +478,6 @@ export const runDiscoveryThunk = createThunk(
 
             TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
-            const deviceNetworks = selectSupportedNetworkByDevice(device);
-            const enabledNetworks = selectEnabledNetworks(getState()).filter(symbol =>
-                deviceNetworks.includes(symbol),
-            );
-            const discoveryAccountsPayload = enabledNetworks.map(n => ({ symbol: n }));
-
-            // no networks to discover, complete discovery
-            if (!discoveryAccountsPayload.length) {
-                // TODO: find out how to early return discovery; calling completeDiscoveryThunk does not work
-                console.warn('No networks to discover, todo: stop discovery');
-            }
-
             // NOTE: sync set discovery status to progress to make sure that there aren't some hanging states
             // before asnyc onBundleProgress is called which sets progress
             dispatch(
@@ -501,7 +498,7 @@ export const runDiscoveryThunk = createThunk(
                     },
                 },
                 useEmptyPassphrase: !isAddingHiddenWallet,
-                accounts: discoveryAccountsPayload,
+                accounts: accountsParam,
             });
 
             TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
@@ -711,6 +708,14 @@ export const runAdditionalDiscoveryThunk = createThunk(
             dispatch(accountsActions.removeAccount(accountsToRemove));
         }
 
+        const accountsParam = selectDiscoveryAccountsParam(getState(), staticSessionId);
+
+        if (!accountsParam.length) {
+            console.warn('no rediscovery needed');
+
+            return;
+        }
+
         dispatch(
             discoveryActions.startDiscovery(device.path, {
                 isAddingHiddenWallet: false,
@@ -726,22 +731,12 @@ export const runAdditionalDiscoveryThunk = createThunk(
             getState,
         );
 
-        const networksToDiscover = selectNetworksToDiscover(getState(), staticSessionId);
-
-        if (!networksToDiscover.undiscovered.length && !networksToDiscover.failed.length) {
-            console.warn('no networks to discover');
-
-            return;
-        }
-
         TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
 
         const result = await TrezorConnect.discoverAccounts({
             device,
             useEmptyPassphrase: device.useEmptyPassphrase,
-            accounts: [...networksToDiscover.undiscovered, ...networksToDiscover.failed].map(n => ({
-                symbol: n,
-            })),
+            accounts: accountsParam,
         });
 
         console.warn('runAdditionalDiscovery: TrezorConnect.getAccountInfo, result: ', result);
