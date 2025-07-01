@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Stack, VStack } from '@suite-native/atoms';
-import { selectShouldDeviceBeTreatedAsBootloaderMode } from '@suite-native/device';
+import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
@@ -46,7 +46,7 @@ export const DeviceManagerContent = () => {
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isDeviceInBootloaderMode = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
+    const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const device = useSelector(selectSelectedDevice);
@@ -106,7 +106,7 @@ export const DeviceManagerContent = () => {
                         onSelectDevice={handleSelectDevice}
                     />
 
-                    {!isPortfolioTrackerDevice && !isDeviceInBootloaderMode && (
+                    {!isPortfolioTrackerDevice && !shouldFactoryResetBeVisible && (
                         <VStack spacing="sp12">
                             <WalletList onSelectDevice={handleSelectDevice} />
                             <Stack

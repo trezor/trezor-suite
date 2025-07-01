@@ -37,7 +37,7 @@ import {
     selectDeviceError,
     selectIsDeviceFirmwareSupported,
     selectIsDeviceSetupSupported,
-    selectShouldDeviceBeTreatedAsBootloaderMode,
+    selectShouldFactoryResetBeVisible,
 } from '../selectors';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -59,7 +59,7 @@ export const useDetectDeviceError = () => {
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
-    const isDeviceInBootloader = useSelector(selectShouldDeviceBeTreatedAsBootloaderMode);
+    const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
@@ -152,7 +152,7 @@ export const useDetectDeviceError = () => {
             !wasDeviceEjectedByUser &&
             !isUnacquiredDevice &&
             !deviceError &&
-            !isDeviceInBootloader
+            !shouldFactoryResetBeVisible
         ) {
             if (hasDeviceFirmwareInstalled) {
                 showAlert({
@@ -207,12 +207,12 @@ export const useDetectDeviceError = () => {
         deviceError,
         handleDisconnect,
         isDeviceSetupSupported,
-        isDeviceInBootloader,
+        shouldFactoryResetBeVisible,
     ]);
 
     useEffect(() => {
         if (
-            isDeviceInBootloader &&
+            shouldFactoryResetBeVisible &&
             !isFirmwareInstallationRunning &&
             !wasDeviceEjectedByUser &&
             isOnboardingFinished
@@ -220,7 +220,7 @@ export const useDetectDeviceError = () => {
             navigation.navigate(RootStackRoutes.BootloaderMode);
         }
     }, [
-        isDeviceInBootloader,
+        shouldFactoryResetBeVisible,
         isFirmwareInstallationRunning,
         isOnboardingFinished,
         navigation,
