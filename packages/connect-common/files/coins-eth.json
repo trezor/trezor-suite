@@ -234,6 +234,29 @@
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
             }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://rpc.hyperliquid.xyz/evm"]
+            },
+            "chain": "hype",
+            "chain_id": 999,
+            "blocktime_seconds": 1,
+            "coingecko_id": "hyperliquid",
+            "is_testnet": false,
+            "label": "HYPE",
+            "name": "HyperEVM",
+            "shortcut": "HYPE",
+            "slip44": 999,
+            "support": {
+                "T1B1": "1.12.0",
+                "T2B1": "2.7.0",
+                "T2T1": "2.6.0",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1",
+                "T3W1": "2.6.1"
+            }
         }
     ]
 }
