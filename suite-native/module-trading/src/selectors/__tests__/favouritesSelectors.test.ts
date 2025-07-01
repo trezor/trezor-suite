@@ -3,7 +3,7 @@ import { CryptoId } from 'invity-api';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { btcAsset } from '../../__fixtures__/tradeableAssets';
-import { TradingState, tradingActions, tradingSlice } from '../../tradingSlice';
+import { TradingState, tradingActions, tradingSlice } from '../../reducers';
 import { TradeableAsset } from '../../types/general';
 import {
     selectIsTradingFavouriteAsset,

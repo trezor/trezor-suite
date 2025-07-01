@@ -7,12 +7,12 @@ import {
     TradingType,
 } from '@suite-common/trading';
 
-import { TradingState, initialState } from '../tradingSlice';
 import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
 import coins from './coins.json';
 import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
 import platforms from './platforms.json';
 import quotes from './quotes.json';
+import { TradingState, initialState } from '../reducers';
 
 export const getInitializedBuyState = () =>
     ({

@@ -16,7 +16,7 @@ import { Account } from '@suite-common/wallet-types';
 import { getBtcAccount } from '../../__fixtures__/account';
 import quotes from '../../__fixtures__/quotes.json';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { TradingRootState, TradingState, tradingSlice } from '../../tradingSlice';
+import { TradingRootState, TradingState, tradingSlice } from '../../reducers';
 import {
     selectBuyAmountLimits,
     selectBuyBestQuotesForAvailablePaymentMethods,

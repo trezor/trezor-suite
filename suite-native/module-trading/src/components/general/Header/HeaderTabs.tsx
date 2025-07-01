@@ -7,8 +7,8 @@ import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
 import { HeaderTab } from './HeaderTab';
+import { tradingActions } from '../../../reducers';
 import { selectActiveTradingType } from '../../../selectors/commonSelectors';
-import { tradingActions } from '../../../tradingSlice';
 
 const useSelectedTab = () => {
     const dispatch = useDispatch();

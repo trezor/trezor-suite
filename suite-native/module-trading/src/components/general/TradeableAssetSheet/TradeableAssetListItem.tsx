@@ -13,7 +13,7 @@ import { TradeableAsset } from '../../../types/general';
 import { NetworkBadge } from '../NetworkBadge';
 import { NetworkSymbolExtendedFormatter } from '../NetworkSymbolExtendedFormatter';
 import { FavouriteIcon } from './FavouriteIcon';
-import { TradingRootState, tradingActions } from '../../../tradingSlice';
+import { TradingRootState, tradingActions } from '../../../reducers';
 
 export type TradeableAssetListItemProps = {
     asset: TradeableAsset;

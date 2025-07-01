@@ -20,8 +20,8 @@ import {
     TradeHistoryListItem,
 } from '../components/history/TradeHistoryListItem/TradeHistoryListItem';
 import { useBottomSheetControls } from '../hooks/general/useBottomSheetControls';
+import { tradingActions } from '../reducers';
 import { selectTradeToBeOpened } from '../selectors/commonSelectors';
-import { tradingActions } from '../tradingSlice';
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;

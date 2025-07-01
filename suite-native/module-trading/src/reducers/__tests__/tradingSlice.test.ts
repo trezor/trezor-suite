@@ -6,8 +6,9 @@ import { tradingBuyActions, tradingExchangeActions } from '@suite-common/trading
 import { deviceActions } from '@suite-common/wallet-core';
 import { Address } from '@trezor/blockchain-link-types';
 
-import quotes from '../__fixtures__/quotes.json';
-import { adaAsset, btcAsset, usdcAsset } from '../__fixtures__/tradeableAssets';
+import quotes from '../../__fixtures__/quotes.json';
+import { adaAsset, btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
+import { buyActions, buyInitialState } from '../buySlice';
 import { TradingState, initialState, tradingActions, tradingSlice } from '../tradingSlice';
 
 describe('tradingSlice', () => {
@@ -86,29 +87,6 @@ describe('tradingSlice', () => {
         });
     });
 
-    describe('buy', () => {
-        describe('setBuyReceiveAddress', () => {
-            it('should set buy receive address', () => {
-                const address = { address: 'bc1qxyz' } as Address;
-                const state = tradingReducer(
-                    undefined,
-                    tradingActions.setBuyReceiveAddress(address),
-                );
-
-                expect(state.buy.receiveAddress).toEqual(address);
-            });
-
-            it('should set buy receive address to undefined', () => {
-                const state = tradingReducer(
-                    undefined,
-                    tradingActions.setBuyReceiveAddress(undefined),
-                );
-
-                expect(state.buy.receiveAddress).toBeUndefined();
-            });
-        });
-    });
-
     describe('exchange', () => {
         describe('setExchangeReceiveAddress', () => {
             it('should set exchange receive address', () => {
@@ -139,7 +117,7 @@ describe('tradingSlice', () => {
             expect(state.tradingEnvironment).toBe('production');
         });
 
-        it('setTradingEnvironment should set trading environment and clear buy state', () => {
+        it('setTradingEnvironment should set trading environment', () => {
             const state = tradingReducer(undefined, tradingActions.setTradingEnvironment('dev'));
 
             expect(state.tradingEnvironment).toBe('dev');
@@ -149,14 +127,12 @@ describe('tradingSlice', () => {
                 isLoading: false,
             });
         });
-    });
 
-    describe('clearBuyState', () => {
-        it('should clear buy state', () => {
-            const tradingInitialState = {
+        it('setTradingEnvironment should clear buy state', () => {
+            const prevState: TradingState = {
                 ...initialState,
                 buy: {
-                    ...initialState.buy,
+                    ...buyInitialState,
                     tradingAccountKey: 'account-key',
                     receiveAddress: {
                         address: 'bc1qxyz',
@@ -168,62 +144,59 @@ describe('tradingSlice', () => {
                         country: 'CZ',
                     },
                     quotes: quotes as BuyTrade[],
-                    selectedQuote: quotes[0],
+                    selectedQuote: quotes[0] as BuyTrade,
                     amountLimits: {
                         currency: 'CZK',
                         minFiat: '100',
                     },
                 },
-            } as TradingState;
+            };
 
-            const state = tradingReducer(tradingInitialState, tradingSlice.actions.clearBuyState());
+            const state = tradingReducer(prevState, tradingActions.setTradingEnvironment('dev'));
 
             expect(state.buy).toEqual({
-                receiveAddress: undefined,
-                tradingAccountKey: undefined,
-                quotesRequest: undefined,
                 quotes: [],
-                selectedQuote: undefined,
-                amountLimits: undefined,
                 isFromRedirect: false,
                 isLoading: false,
             });
         });
+
+        it('should clear tradeOrderIdToBeOpened', () => {
+            const prevState: TradingState = {
+                ...initialState,
+                tradeOrderIdToBeOpened: 'orderId',
+            };
+
+            const state = tradingReducer(prevState, tradingActions.setTradingEnvironment('dev'));
+
+            expect(state.tradeOrderIdToBeOpened).toBeUndefined();
+        });
     });
 
-    describe('clearQuotesAndQuotesRequest', () => {
-        it('should clear quotes and quotesRequest', () => {
+    describe('tradingBuy/clearState', () => {
+        it('should clear buy state (buySlice action)', () => {
             const tradingInitialState = {
                 ...initialState,
                 buy: {
                     ...initialState.buy,
-                    tradingAccountKey: 'account-key',
-                    receiveAddress: {
-                        address: 'address',
-                    } as Address,
-                    quotesRequest: {
-                        wantCrypto: true,
-                        receiveCurrency: 'btc' as CryptoId,
-                        fiatCurrency: 'czk',
-                        country: 'CZ',
-                    },
                     quotes: quotes as BuyTrade[],
-                    selectedQuote: quotes[0],
                 },
             } as TradingState;
 
-            const state = tradingReducer(
-                tradingInitialState,
-                tradingSlice.actions.clearQuotesAndQuotesRequest(),
-            );
+            const state = tradingReducer(tradingInitialState, buyActions.clearState());
 
-            expect(state.buy).toEqual({
-                ...tradingInitialState.buy,
-                receiveAddress: expect.any(Object),
-                quotesRequest: undefined,
-                quotes: [],
-                selectedQuote: expect.any(Object),
-            });
+            expect(state.buy.quotes).toEqual([]);
+        });
+
+        it('should clear tradeOrderIdToBeOpened', () => {
+            const tradingInitialState = {
+                ...initialState,
+                tradeOrderIdToBeOpened: 'orderId',
+            } as TradingState;
+
+            const state = tradingReducer(tradingInitialState, buyActions.clearState());
+
+            expect(state.tradeOrderIdToBeOpened).toBeUndefined();
         });
     });
 
@@ -259,17 +232,22 @@ describe('tradingSlice', () => {
 
     describe('@suite/device/selectDevice', () => {
         it('should clear receiveAddress', () => {
-            const actions = [
-                tradingActions.setBuyReceiveAddress({
-                    address: 'address',
-                } as Address),
-                tradingActions.setExchangeReceiveAddress({
-                    address: 'address',
-                } as Address),
-                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
-            ];
+            const prevState: TradingState = {
+                ...initialState,
+                buy: {
+                    ...initialState.buy,
+                    receiveAddress: { address: 'address' } as Address,
+                },
+                exchange: {
+                    ...initialState.exchange,
+                    receiveAddress: { address: 'address' } as Address,
+                },
+            };
 
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+            const state = tradingReducer(
+                prevState,
+                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+            );
 
             expect(state.buy.receiveAddress).toBeUndefined();
             expect(state.exchange.receiveAddress).toBeUndefined();
@@ -293,89 +271,6 @@ describe('tradingSlice', () => {
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
             expect(state.exchange.receiveAccountKey).toBeUndefined();
-        });
-    });
-
-    describe('buyAssetChanged', () => {
-        it('should clear tradingAccountKey and receiveAddress', () => {
-            const actions = [
-                tradingBuyActions.setTradingAccountKey('account-key'),
-                tradingActions.setBuyReceiveAddress({ address: 'address' } as Address),
-                tradingActions.buyAssetChanged(),
-            ];
-
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
-
-            expect(state.buy.tradingAccountKey).toBeUndefined();
-            expect(state.buy.receiveAddress).toBeUndefined();
-        });
-
-        it('should clear buy amountLimits', () => {
-            const actions = [
-                tradingBuyActions.setAmountLimits({
-                    currency: 'CZK',
-                    minFiat: '100',
-                    maxCrypto: '0.01',
-                    maxFiat: '1000',
-                    minCrypto: '0.0001',
-                }),
-                tradingActions.buyAssetChanged(),
-            ];
-
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
-
-            expect(state.buy.amountLimits).toBeUndefined();
-        });
-
-        it('should clear quotesRequest', () => {
-            const actions = [
-                tradingBuyActions.saveQuoteRequest({
-                    wantCrypto: true,
-                    receiveCurrency: 'btc' as CryptoId,
-                    fiatCurrency: 'czk',
-                    country: 'CZ',
-                }),
-                tradingActions.buyAssetChanged(),
-            ];
-
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
-
-            expect(state.buy.quotesRequest).toBeUndefined();
-        });
-    });
-
-    describe('buyFiatCurrencyChanged', () => {
-        it('should clear buy amountLimits', () => {
-            const actions = [
-                tradingBuyActions.setAmountLimits({
-                    currency: 'CZK',
-                    minFiat: '100',
-                    maxCrypto: '0.01',
-                    maxFiat: '1000',
-                    minCrypto: '0.0001',
-                }),
-                tradingActions.buyFiatCurrencyChanged(),
-            ];
-
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
-
-            expect(state.buy.amountLimits).toBeUndefined();
-        });
-
-        it('should clear quotesRequest', () => {
-            const actions = [
-                tradingBuyActions.saveQuoteRequest({
-                    wantCrypto: true,
-                    receiveCurrency: 'btc' as CryptoId,
-                    fiatCurrency: 'czk',
-                    country: 'CZ',
-                }),
-                tradingActions.buyAssetChanged(),
-            ];
-
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
-
-            expect(state.buy.quotesRequest).toBeUndefined();
         });
     });
 
