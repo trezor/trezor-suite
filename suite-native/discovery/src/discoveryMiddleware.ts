@@ -8,6 +8,7 @@ import {
     deviceActions,
     discoveryActions,
     restartDiscoveryThunk,
+    selectNetworksToDiscover,
     selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -74,7 +75,14 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 if (!device?.state) {
                     dispatch(startDiscoveryThunk({}));
                 } else if (device.state.staticSessionId) {
-                    dispatch(restartDiscoveryThunk());
+                    const networksToDiscover = selectNetworksToDiscover(
+                        getState(),
+                        device.state.staticSessionId,
+                    );
+
+                    if (networksToDiscover.length) {
+                        dispatch(restartDiscoveryThunk());
+                    }
                 }
             }
         }

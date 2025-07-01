@@ -5,9 +5,8 @@ import styled from 'styled-components';
 
 import {
     restartDiscoveryThunk,
-    selectHasRunningDiscovery,
-    selectIsRediscoverNeeded,
     selectSelectedDevice,
+    selectShowRediscoverButton,
 } from '@suite-common/wallet-core';
 import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -47,12 +46,10 @@ const animationConfig: MotionProps = {
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isRediscoverNeeded = useSelector(state =>
-        selectIsRediscoverNeeded(state, selectedDevice?.state?.staticSessionId),
-    );
     const isSidebarCollapsed = useIsSidebarCollapsed();
-    const isDiscoveryInProgress = useSelector(selectHasRunningDiscovery);
-    const isDiscoveryButtonVisible = isRediscoverNeeded && !isDiscoveryInProgress;
+    const isDiscoveryButtonVisible = useSelector(state =>
+        selectShowRediscoverButton(state, selectedDevice?.state?.staticSessionId),
+    );
 
     if (!selectedDevice?.connected) {
         return null;
@@ -71,7 +68,6 @@ export const RefreshAfterDiscoveryNeeded = () => {
                         >
                             <Tooltip content={<Translation id="REFRESH" />}>
                                 <IconButton
-                                    isDisabled={isDiscoveryInProgress}
                                     variant="tertiary"
                                     size="tiny"
                                     icon="repeat"
@@ -86,7 +82,6 @@ export const RefreshAfterDiscoveryNeeded = () => {
                             </AccountsMenuNotice>
 
                             <Button
-                                isDisabled={isDiscoveryInProgress}
                                 variant="tertiary"
                                 size="tiny"
                                 icon="repeat"
