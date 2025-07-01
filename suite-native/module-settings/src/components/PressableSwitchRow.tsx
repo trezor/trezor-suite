@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { Box, Card, HStack, RoundedIcon, Switch, Text } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
@@ -8,7 +8,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 type TouchableSwitchRowProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
-    text: string;
+    text: ReactNode;
+    accessibilityLabel: string;
     description?: ReactNode;
     iconName: IconName;
     testID?: string;
@@ -23,12 +24,12 @@ const contentStyle = prepareNativeStyle(_ => ({
     maxWidth: '75%',
 }));
 
-// TODO rename
-export const TouchableSwitchRow = ({
+export const PressableSwitchRow = ({
     isChecked,
     onChange,
     text,
     description,
+    accessibilityLabel,
     iconName,
     testID,
 }: TouchableSwitchRowProps) => {
@@ -39,10 +40,10 @@ export const TouchableSwitchRow = ({
     };
 
     return (
-        <TouchableOpacity
+        <Pressable
             onPress={handleChange}
             accessibilityRole="switch"
-            accessibilityLabel={text}
+            accessibilityLabel={accessibilityLabel}
             accessibilityState={{ checked: isChecked }}
             testID={testID}
         >
@@ -58,6 +59,6 @@ export const TouchableSwitchRow = ({
                     <Switch isChecked={isChecked} onChange={handleChange} />
                 </HStack>
             </Card>
-        </TouchableOpacity>
+        </Pressable>
     );
 };
