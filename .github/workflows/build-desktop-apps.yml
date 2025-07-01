@@ -127,7 +127,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          yarn workspace @trezor/suite-desktop build:${{env.platform}}
+          BLUETOOTH=${{ github.event.inputs.bluetooth }} yarn workspace @trezor/suite-desktop build:${{env.platform}}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
           mv packages/suite-desktop/build-electron/* .
 
