@@ -30,20 +30,18 @@ export const SettingsSupportScreen = () => {
                     <SupportCard />
                 </VStack>
                 <AboutUsBanners />
-                <VStack spacing="sp32">
-                    <SettingsSection title="Legal">
-                        <CompactCardWithIconLayout
-                            title="Terms & conditions"
-                            icon="filePdf"
-                            onPress={handleOpenTermsAndConditions}
-                        />
-                        <CompactCardWithIconLayout
-                            title="Privacy policy"
-                            icon="filePdf"
-                            onPress={handleOpenPrivacyPolicy}
-                        />
-                    </SettingsSection>
-                </VStack>
+                <SettingsSection title="Legal">
+                    <CompactCardWithIconLayout
+                        title="Terms & conditions"
+                        icon="filePdf"
+                        onPress={handleOpenTermsAndConditions}
+                    />
+                    <CompactCardWithIconLayout
+                        title="Privacy policy"
+                        icon="filePdf"
+                        onPress={handleOpenPrivacyPolicy}
+                    />
+                </SettingsSection>
                 <AppCommitHash />
             </VStack>
         </Screen>

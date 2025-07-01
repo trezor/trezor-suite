@@ -1,18 +1,23 @@
 import { S } from '@mobily/ts-belt';
 
 import { Box, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { getCommitHash } from '@trezor/env-utils';
 
 import { ProductionDebug } from './ProductionDebug';
 
 export const AppCommitHash = () => {
-    if (S.isEmpty(getCommitHash())) return null;
+    const lastCommitHash = getCommitHash();
+    if (S.isEmpty(lastCommitHash)) return null;
 
     return (
         <Box alignItems="center">
             <ProductionDebug>
                 <Text variant="hint" color="textDisabled">
-                    Last commit hash: {getCommitHash().slice(0, 7)}
+                    <Translation
+                        id="moduleSettings.aboutUs.lastCommitHash"
+                        values={{ lastCommitHash }}
+                    />
                 </Text>
             </ProductionDebug>
         </Box>
