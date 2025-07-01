@@ -12098,6 +12098,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:^"
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
@@ -12107,6 +12108,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@types/jws": "npm:^3.2.10"
     "@types/karma": "npm:^6.3.9"
     babel-loader: "npm:^10.0.0"
     blakejs: "npm:^1.2.1"
@@ -12114,6 +12116,7 @@ __metadata:
     bs58check: "npm:^4.0.0"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
+    jws: "npm:^4.0.0"
     karma: "npm:^6.4.4"
     karma-babel-preprocessor: "npm:^8.0.2"
     karma-chrome-launcher: "npm:^3.2.0"
@@ -12204,17 +12207,6 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^5.2.0"
     globals: "npm:^16.1.0"
     typescript-eslint: "npm:^8.35.0"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/firmware-release-config@workspace:packages/firmware-release-config":
-  version: 0.0.0-use.local
-  resolution: "@trezor/firmware-release-config@workspace:packages/firmware-release-config"
-  dependencies:
-    "@trezor/device-utils": "workspace:^"
-    "@trezor/env-utils": "workspace:^"
-    "@types/jws": "npm:^3.2.10"
-    jws: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
