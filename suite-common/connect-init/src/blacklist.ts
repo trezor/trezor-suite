@@ -26,4 +26,8 @@ export const blacklist: ConnectKey[] = [
     'getCoinInfo',
     'dispose',
     'cancel',
+    // this API may use device or not, depending on parameters. The flow that doesn't use device is called very often,
+    // so locking device must be avoided (blocks a lot of Suite features needlessly)
+    // TODO find a better solution to wrap this method only when device is used
+    'getAccountInfo',
 ];
