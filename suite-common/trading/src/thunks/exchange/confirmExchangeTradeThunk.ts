@@ -134,11 +134,7 @@ export const confirmExchangeTradeThunk = createThunk(
 
         if (response.status === 'CONFIRM' && response.isDex) {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
-
-            // hotfix, will be fixed in https://github.com/trezor/trezor-suite/issues/19768
-            if (!approvalFlow) {
-                dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
-            }
+            dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
 
             return isConfirmationOk;
         }

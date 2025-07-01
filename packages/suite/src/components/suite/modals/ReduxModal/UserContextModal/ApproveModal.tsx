@@ -29,7 +29,6 @@ import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
@@ -57,18 +56,13 @@ export const ApproveModal = ({
         exchangeInfo,
         confirmTrade,
         sendTransaction,
-        watchTradeApproval,
+        preselectedQuote,
     } = useTradingFormContext<TradingExchangeType>();
 
     const { cryptoIdToSymbolAndContractAddress, cryptoIdToCoinSymbol } = useTradingInfo();
 
     const [approvalType, setApprovalType] = useState<DexApprovalType>('MINIMAL');
     const [isConfirmButtonLoading, setIsConfirmButtonLoading] = useState<boolean>(false);
-
-    useTradingExchangeWatchSendApproval({
-        selectedQuote,
-        watchTradeApproval,
-    });
 
     useEffect(() => {
         if (selectedQuote?.status !== 'APPROVAL_REQ') {
@@ -81,8 +75,9 @@ export const ApproveModal = ({
     const { exchange, dexTx } = selectedQuote;
     if (!exchange || !dexTx) return null;
 
-    const providerName =
-        exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
+    const quoteExchange = preselectedQuote?.exchange ?? exchange;
+
+    const providerName = exchangeInfo?.providerInfos[quoteExchange]?.companyName || quoteExchange;
 
     const isFullApproval = !(Number(selectedQuote.preapprovedStringAmount) > 0);
 
