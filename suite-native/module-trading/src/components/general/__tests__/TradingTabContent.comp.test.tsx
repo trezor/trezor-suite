@@ -1,6 +1,6 @@
 import { renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
 
-import { initialState } from '../../../tradingSlice';
+import { initialState } from '../../../reducers';
 import { TradingTabContent } from '../TradingTabContent';
 
 let mockIsInternetReachable: boolean | null = true;

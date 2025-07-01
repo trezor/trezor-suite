@@ -10,7 +10,7 @@ import {
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { initialState } from '../../../tradingSlice';
+import { initialState } from '../../../reducers';
 import { BuyFormType } from '../../../types/buy';
 import { ReceiveAccount, TradeableAsset } from '../../../types/general';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';

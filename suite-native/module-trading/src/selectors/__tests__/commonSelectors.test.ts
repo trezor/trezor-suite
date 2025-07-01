@@ -2,7 +2,7 @@ import { Action, Feature, Message } from '@suite-common/suite-types';
 import { InvityServerEnvironment } from '@suite-common/trading';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 
-import { TradingRootState, initialState } from '../../tradingSlice';
+import { TradingRootState, initialState } from '../../reducers';
 import {
     selectActiveTradingType,
     selectEnabledTradingTypes,

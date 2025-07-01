@@ -21,7 +21,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
-import { tradingActions } from '../tradingSlice';
+import { tradingActions } from '../reducers';
 import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
 
 type RouteProps = StackProps<RootStackParamList, RootStackRoutes.TradingWebView>['route'];

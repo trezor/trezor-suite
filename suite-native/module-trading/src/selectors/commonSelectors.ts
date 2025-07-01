@@ -11,7 +11,7 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 
-import { TradingRootState } from '../tradingSlice';
+import { TradingRootState } from '../reducers';
 
 const createFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
     MessageSystemRootState & FeatureFlagsRootState

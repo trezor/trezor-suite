@@ -6,7 +6,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
-import { TradingRootState } from '../../../../tradingSlice';
+import { TradingRootState } from '../../../../reducers';
 import { Header } from '../Header';
 
 describe('Header', () => {
