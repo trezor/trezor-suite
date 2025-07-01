@@ -27,11 +27,7 @@ import {
     selectSupportedNetworkByDevice,
 } from '../device/deviceSelectors';
 import { selectDeviceThunk } from '../device/deviceThunks';
-import {
-    selectAccountsToBeForgotten,
-    selectIsRediscoverNeeded,
-    selectNetworksToDiscover,
-} from '../selectors';
+import { selectAccountsToBeForgotten, selectNetworksToDiscover } from '../selectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
@@ -752,16 +748,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
             dispatch(accountsActions.removeAccount(accountsToRemove));
         }
 
-        const isRediscoverNeeded = selectIsRediscoverNeeded(
-            getState(),
-            device.state.staticSessionId,
-        );
-
-        if (!isRediscoverNeeded) {
-            console.warn('no rediscovery needed');
-
-            return;
-        }
         dispatch(
             discoveryActions.startDiscovery(device.path, {
                 isAddingHiddenWallet: false,
@@ -777,12 +763,9 @@ export const runAdditionalDiscoveryThunk = createThunk(
             getState,
         );
 
-        const networksToDiscover = selectNetworksToDiscover(
-            getState(),
-            device.state.staticSessionId,
-        );
+        const networksToDiscover = selectNetworksToDiscover(getState(), staticSessionId);
 
-        if (networksToDiscover.length === 0) {
+        if (!networksToDiscover.length) {
             console.warn('no networks to discover');
 
             return;
