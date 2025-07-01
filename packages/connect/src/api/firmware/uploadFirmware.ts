@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
+import { TRANSPORT } from '@trezor/transport';
+
 import { ERRORS, PROTO } from '../../constants';
 import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
@@ -70,18 +72,32 @@ export const uploadFirmware = async (
     if (device.features.major_version === 2) {
         postConfirmationMessage(device);
         const length = payload.byteLength;
+        let progress = 0;
         let response = await typedCall('FirmwareErase', ['FirmwareRequest', 'Success'], { length });
         while (response.type !== 'Success') {
             // NOTE: offset and message are present in T2
-            const start = response.message.offset!;
-            const end = response.message.offset! + response.message.length!;
+            const start = response.message.offset;
+            const end = response.message.offset + response.message.length;
             const chunk = payload.slice(start, end);
+            const progressStart = Math.round((start / length) * 100);
+            const progressEnd = Math.round((end / length) * 100);
+            const progressDiff = progressEnd - progressStart;
+            device.transport.on(TRANSPORT.SEND_MESSAGE_PROGRESS, p => {
+                const newProgress = progressStart + Math.floor(progressDiff * p);
+                if (start > 0 && newProgress > progress) {
+                    progress = newProgress;
+                    postProgressMessage(device, progress, postMessage);
+                }
+            });
+
             // in this moment, device is still displaying 'update firmware dialog', no firmware process is in progress yet
             if (start > 0) {
-                postProgressMessage(device, Math.round((start / length) * 100), postMessage);
+                postProgressMessage(device, progressStart, postMessage);
             }
             response = await typedCall('FirmwareUpload', ['FirmwareRequest', 'Success'], {
                 payload: chunk,
+            }).finally(() => {
+                device.transport.removeAllListeners(TRANSPORT.SEND_MESSAGE_PROGRESS);
             });
         }
         postProgressMessage(device, 100, postMessage);
