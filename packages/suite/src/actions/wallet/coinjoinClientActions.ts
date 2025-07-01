@@ -341,7 +341,6 @@ export const stopCoinjoinSession =
         if (shouldCancelAuthorization) {
             const result = await TrezorConnect.cancelCoinjoinAuthorization({
                 device,
-                useEmptyPassphrase: device?.useEmptyPassphrase,
             });
 
             if (!result.success) {
@@ -653,7 +652,6 @@ const signCoinjoinTx =
                         const signTx = await TrezorConnect.signTransaction({
                             version: 1, // Coinjoin requires the 1, the default is now 2, as most wallets have 2
                             device,
-                            useEmptyPassphrase: device?.useEmptyPassphrase,
                             inputs: tx.inputs,
                             outputs: tx.outputs,
                             coinjoinRequest: tx.coinjoinRequest,

@@ -134,6 +134,16 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 const original: any = TrezorConnect[key as ConnectKey];
                 if (!original) return;
                 (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
+                    // suite typically works only with the currently selected device, so we add this fallback here to safe lines elsewhere
+                    if (!params || typeof params['useEmptyPassphrase'] !== 'boolean') {
+                        const selectedDevice = selectSelectedDevice(getState());
+                        if (selectedDevice) {
+                            params = {
+                                ...params,
+                                useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+                            };
+                        }
+                    }
                     dispatch(lockDevice(true));
                     const result = await synchronize(() => original(params));
 

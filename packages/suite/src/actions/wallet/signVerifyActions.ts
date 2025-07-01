@@ -17,7 +17,6 @@ type StateParams = {
     device: TrezorDevice;
     account: Account;
     coin: Account['symbol'];
-    useEmptyPassphrase: boolean;
     chunkify?: boolean;
 };
 
@@ -35,7 +34,6 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
         : Promise.resolve({
               device,
               account,
-              useEmptyPassphrase: device.useEmptyPassphrase,
               coin: account.symbol,
               chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
           });
@@ -43,13 +41,12 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
 
 const showAddressByNetwork =
     (_: Dispatch, address: string, path: string) =>
-    ({ account, device, coin, useEmptyPassphrase, chunkify }: StateParams) => {
+    ({ account, device, coin, chunkify }: StateParams) => {
         const params = {
             device,
             address,
             path,
             coin,
-            useEmptyPassphrase,
             chunkify,
         };
         switch (account.networkType) {
@@ -64,13 +61,12 @@ const showAddressByNetwork =
 
 const signByNetwork =
     (path: string | number[], message: string, hex: boolean, isElectrum: boolean) =>
-    ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
+    ({ account, device, coin }: StateParams) => {
         const params = {
             device,
             path,
             coin,
             message,
-            useEmptyPassphrase,
             hex,
             no_script_type: isElectrum,
         };
@@ -87,14 +83,13 @@ const signByNetwork =
 
 const verifyByNetwork =
     (address: string, message: string, signature: string, hex: boolean) =>
-    ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
+    ({ account, device, coin }: StateParams) => {
         const params = {
             device,
             address,
             coin,
             message,
             signature,
-            useEmptyPassphrase,
             hex,
         };
         switch (account.networkType) {

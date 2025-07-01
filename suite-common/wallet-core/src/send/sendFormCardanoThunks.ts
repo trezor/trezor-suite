@@ -162,7 +162,6 @@ export const signCardanoSendFormTransactionThunk = createThunk<
                 instance: device.instance,
                 state: device.state,
             },
-            useEmptyPassphrase: device.useEmptyPassphrase,
             inputs: precomposedTransaction.inputs,
             outputs: precomposedTransaction.outputs,
             unsignedTx: precomposedTransaction.unsignedTx,

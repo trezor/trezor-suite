@@ -352,7 +352,6 @@ export const signEthereumSendFormTransactionThunk = createThunk<
                 instance: device.instance,
                 state: device.state,
             },
-            useEmptyPassphrase: device.useEmptyPassphrase,
             path: selectedAccount.path,
             transaction,
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,

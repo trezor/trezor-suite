@@ -54,7 +54,6 @@ export const sessionAuthenticateThunk = createThunk<
             path: ethAccount.path,
             message,
             device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
         });
 
         if (signature.success === false) {

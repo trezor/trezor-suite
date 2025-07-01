@@ -332,7 +332,6 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                 instance: device.instance,
                 state: device.state,
             },
-            useEmptyPassphrase: device.useEmptyPassphrase,
             inputs: precomposedTransaction.inputs,
             outputs: precomposedTransaction.outputs,
             account: {

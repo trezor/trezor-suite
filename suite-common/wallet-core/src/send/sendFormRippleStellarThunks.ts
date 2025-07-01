@@ -230,7 +230,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     instance: device.instance,
                     state: device.state,
                 },
-                useEmptyPassphrase: device.useEmptyPassphrase,
                 path: selectedAccount.path,
                 transaction: {
                     fee: precomposedTransaction.feePerByte,
@@ -288,7 +287,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     instance: device.instance,
                     state: device.state,
                 },
-                useEmptyPassphrase: device.useEmptyPassphrase,
                 path: selectedAccount.path,
                 networkPassphrase: transaction.networkPassphrase,
                 transaction: {

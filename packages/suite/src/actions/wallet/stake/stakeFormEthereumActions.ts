@@ -206,7 +206,6 @@ export const signTransaction =
                 instance: device.instance,
                 state: device.state,
             },
-            useEmptyPassphrase: device.useEmptyPassphrase,
             path: account.path,
             transaction: txData.tx,
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,

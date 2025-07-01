@@ -230,7 +230,6 @@ export const useCardanoStaking = (): CardanoStaking => {
             const res = await trezorConnect.cardanoSignTransaction({
                 signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
                 device,
-                useEmptyPassphrase: device?.useEmptyPassphrase,
                 inputs: txPlan.inputs,
                 outputs: txPlan.outputs,
                 unsignedTx: txPlan.unsignedTx,

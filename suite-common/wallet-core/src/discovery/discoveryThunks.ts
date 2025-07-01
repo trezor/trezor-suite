@@ -792,7 +792,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const result = await TrezorConnect.discoverAccounts({
             device,
-            useEmptyPassphrase: device.useEmptyPassphrase,
             accounts: networksToDiscover.map(n => ({
                 symbol: n,
             })),

@@ -373,7 +373,6 @@ export const confirmAddressOnDeviceThunk = createThunk(
             device,
             path: addressPath,
             unlockPath: account.unlockPath,
-            useEmptyPassphrase: device.useEmptyPassphrase,
             coin: account.symbol,
             chunkify,
             showOnTrezor,
@@ -390,7 +389,6 @@ export const confirmAddressOnDeviceThunk = createThunk(
             case 'cardano':
                 response = TrezorConnect.cardanoGetAddress({
                     device,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
                     addressParameters: {
                         stakingPath: getStakingPath(account),
                         addressType: getAddressType(),

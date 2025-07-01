@@ -111,7 +111,6 @@ export const connectPopupCallThunkInner = createThunk<
                     instance: device.instance,
                     state: device.state,
                 },
-                useEmptyPassphrase: device.useEmptyPassphrase,
                 ...modifiedPayload,
             });
             response.id = undefined;
@@ -285,7 +284,6 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
                     instance: device.instance,
                     state: device.state,
                 },
-                useEmptyPassphrase: device.useEmptyPassphrase,
                 ...call.addresses[index].validatePayload,
                 showOnTrezor: true,
                 chunked: false,
