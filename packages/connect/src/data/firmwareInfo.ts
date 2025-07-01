@@ -17,10 +17,17 @@ const releases = Object.values(DeviceModelInternal).reduce(
     (acc, key) => ({ ...acc, [key]: [] }),
     {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[] | undefined>,
 );
+// We use `bundledReleases` to know what are the binaries that are bundled so we do not need to download them if they are needed.
+const bundledReleases: Record<keyof typeof DeviceModelInternal, FirmwareRelease | undefined> =
+    {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease>;
 
-export const parseFirmwareReleases = (json: any, deviceModel: DeviceModelInternal) => {
-    Object.keys(json).forEach(key => {
-        const release = json[key];
+export const parseFirmwareReleases = (
+    modelReleases: FirmwareRelease[],
+    deviceModel: DeviceModelInternal,
+) => {
+    const [latestRelease] = modelReleases;
+    bundledReleases[deviceModel] = latestRelease;
+    modelReleases.forEach(release => {
         releases[deviceModel]?.push({
             ...release,
         });

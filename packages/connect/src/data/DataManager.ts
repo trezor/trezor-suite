@@ -2,7 +2,7 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
@@ -10,7 +10,10 @@ import { parseFirmwareReleases } from './firmwareInfo';
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
-type AssetCollection = { [key: string]: Record<string, any> };
+type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
+type AssetCollection = {
+    [K in AssetKeys]?: Record<string, any>;
+};
 
 export class DataManager {
     static assets: AssetCollection = {};
@@ -28,10 +31,12 @@ export class DataManager {
             coins,
             coinsEth,
             ...Object.fromEntries(
-                Object.entries(firmwareAssets).map(([key, value]) => [
-                    `firmware-${key.toLowerCase()}`,
-                    value,
-                ]),
+                Object.entries(firmwareAssets).map(([key, value]) => {
+                    // For `unknown` firmware we get `{}` so we use `[]` to have always same type.
+                    const release = Array.isArray(value) ? value : [];
+
+                    return [`firmware-${key.toLowerCase()}`, release];
+                }),
             ),
         };
         Object.assign(this.assets, assetsMap);
@@ -44,11 +49,12 @@ export class DataManager {
 
         // parse firmware definitions
         for (const model in DeviceModelInternal) {
-            const firmwareKey = `firmware-${model.toLowerCase()}`;
+            const firmwareKey: `firmware-${string}` = `firmware-${model.toLowerCase()}`;
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
+            const modelReleases = this.assets[firmwareKey] as FirmwareRelease[];
             // Check if the firmware data exists for this model
-            if (this.assets[firmwareKey]) {
-                parseFirmwareReleases(this.assets[firmwareKey], modelType);
+            if (modelReleases) {
+                parseFirmwareReleases(modelReleases, modelType);
             }
         }
     }
