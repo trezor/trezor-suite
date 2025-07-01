@@ -10,9 +10,12 @@ import {
     FeesRootState,
     SendRootState,
     selectAccountByKey,
+    selectAreFeesLoading,
     selectNetworkFeeInfo,
     selectNetworkFeeLevelFeePerUnit,
     selectSendFormDraftByKey,
+    useFetchFeesOnce,
+    useRefetchFees,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
@@ -63,6 +66,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const areFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, account?.symbol),
+    );
+
     const feeLevels = useSelector(selectFeeLevels);
 
     const networkFeeInfo = useSelector((state: FeesRootState) =>
@@ -98,6 +106,8 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     });
     const { handleSubmit, control } = form;
 
+    useFetchFeesOnce({ networkSymbol: account?.symbol });
+
     const selectedFeeLevel = useWatch({ control, name: 'feeLevel' });
     const selectedFeeLevelTransaction = feeLevels[
         selectedFeeLevel
@@ -106,6 +116,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const feePerUnit = useSelector((state: FeesRootState) =>
         selectNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
     );
+
+    useRefetchFees({
+        networkSymbol: account?.symbol,
+        isDisabled: selectedFeeLevel === 'custom' || formDraft?.setMaxOutputId !== undefined,
+    });
 
     const transactionBytes = normalFee.bytes as number;
 
@@ -198,6 +213,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                                     symbol={account.symbol}
                                     accountKey={accountKey}
                                     tokenContract={tokenContract}
+                                    isLoading={areFeesLoading}
                                 />
                             )}
                             <CustomFee symbol={account.symbol} />

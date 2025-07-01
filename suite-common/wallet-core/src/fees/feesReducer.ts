@@ -103,9 +103,9 @@ export const selectNetworkFeeLevelFeePerUnit = createMemoizedSelector(
 );
 
 export const selectNetworkFeeStatus = createMemoizedSelector(
-    [selectFees, (_state: FeesRootState, symbol: NetworkSymbol) => symbol],
+    [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
     (fees, symbol): FeesStatus | null => {
-        if (!fees[symbol]) return null;
+        if (symbol === undefined || !fees[symbol]) return null;
 
         return fees[symbol].status;
     },
