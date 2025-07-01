@@ -34,7 +34,6 @@ export const DashboardPassphraseBanner = () => {
         isDashboardPassphraseBannerVisible === false ||
         device?.useEmptyPassphrase === true ||
         isDiscoveryRunning === true ||
-        isDiscoveryRunning === undefined ||
         selectedAddressDisplay === WalletType.PASSPHRASE
     ) {
         return null;
