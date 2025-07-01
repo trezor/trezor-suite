@@ -12,7 +12,7 @@ import { jws as releasesJwsLocal } from '../static/releases.v1';
 // TODO: WIP: for now we are forcing local since it was not deployed yet.
 const FORCE_LOCAL_JWS = true;
 
-export const getFirmwareReleaseConfig = async () => {
+const getFirmwareReleaseConfig = async () => {
     if (FORCE_LOCAL_JWS) {
         return {
             releasesJws: releasesJwsLocal,
