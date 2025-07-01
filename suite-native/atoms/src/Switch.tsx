@@ -34,21 +34,13 @@ const SWITCH_CIRCLE_TRACK_WIDTH =
     SWITCH_CIRCLE_MARGIN * 2 -
     SWITCH_CONTAINER_BORDER_WIDTH * 2;
 
-const switchContainerStyle = prepareNativeStyle<{ isChecked: boolean }>((utils, { isChecked }) => ({
+const switchContainerStyle = prepareNativeStyle(utils => ({
     height: SWITCH_CONTAINER_HEIGHT,
     width: SWITCH_CONTAINER_WIDTH,
     borderRadius: utils.borders.radii.round,
     flexDirection: 'row',
     borderWidth: SWITCH_CONTAINER_BORDER_WIDTH,
-    borderColor: 'transparent',
-    extend: [
-        {
-            condition: !isChecked,
-            style: {
-                borderColor: utils.colors.borderElevation0,
-            },
-        },
-    ],
+    borderColor: utils.colors.borderElevation0,
 }));
 
 const switchCircleStyle = prepareNativeStyle(utils => ({
@@ -104,12 +96,7 @@ export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: Swit
 
     return (
         <Pressable onPress={handlePress} accessibilityRole="switch" testID={testID}>
-            <Animated.View
-                style={[
-                    animatedSwitchContainerStyle,
-                    applyStyle(switchContainerStyle, { isChecked }),
-                ]}
-            >
+            <Animated.View style={[animatedSwitchContainerStyle, applyStyle(switchContainerStyle)]}>
                 <Animated.View style={[animatedSwitchCircleStyle, applyStyle(switchCircleStyle)]} />
             </Animated.View>
         </Pressable>
