@@ -31,6 +31,7 @@ inputs:
       - schema-utils
       - crypto-utils
       - device-utils
+      - firmware-release-config
       - connect
       - connect-web
       - connect-webextension
