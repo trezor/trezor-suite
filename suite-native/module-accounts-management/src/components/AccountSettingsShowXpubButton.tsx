@@ -9,18 +9,29 @@ import {
     showXpubOnDevice,
 } from '@suite-common/wallet-core';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { useAlert } from '@suite-native/alerts';
 import { Button, useBottomSheetModal } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
 import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
 import { convertTaprootXpub } from '@trezor/utils';
 
 export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
+    const openLink = useOpenLink();
+    const { showAlert } = useAlert();
+    const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
     const [isXpubVisible, setIsXpubVisible] = useState(false);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+        selectHasFirmwareAuthenticityCheckHardFailed,
+    );
 
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const device = useSelector(selectSelectedDevice);
@@ -35,6 +46,21 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
             setIsXpubVisible(true);
         }
     }, [isDeviceBackupRequired, device, account, openModal]);
+
+    const showFirmwareAuthenticityCheckAlert = useCallback(
+        () =>
+            showAlert({
+                title: translate('generic.banners.deviceDanger.compromised.title'),
+                description: translate('generic.banners.deviceDanger.compromised.subtitle'),
+                icon: 'warning',
+                primaryButtonTitle: translate('generic.banners.deviceDanger.compromised.cta'),
+                primaryButtonVariant: 'redBold',
+                onPressPrimaryButton: () => openLink(SUITE_LITE_SUPPORT_URL),
+                secondaryButtonTitle: translate('generic.buttons.cancel'),
+                secondaryButtonVariant: 'redElevation0',
+            }),
+        [openLink, showAlert, translate],
+    );
 
     if (!account) return null;
 
@@ -70,7 +96,15 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
                     ref={bottomSheetRef}
                 />
             )}
-            <Button size="large" onPress={showXpub} colorScheme="tertiaryElevation0">
+            <Button
+                size="large"
+                onPress={
+                    hasFirmwareAuthenticityCheckHardFailed
+                        ? showFirmwareAuthenticityCheckAlert
+                        : showXpub
+                }
+                colorScheme="tertiaryElevation0"
+            >
                 {buttonTitle}
             </Button>
             <XpubQRCodeBottomSheet
