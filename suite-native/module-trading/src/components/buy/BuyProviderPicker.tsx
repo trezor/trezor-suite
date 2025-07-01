@@ -10,8 +10,8 @@ import { useTranslate } from '@suite-native/intl';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
+import { TradingRootState } from '../../reducers';
 import { selectBuyQuotesByPaymentMethodNative } from '../../selectors/buySelectors';
-import { TradingRootState } from '../../tradingSlice';
 import { OverviewRow } from '../general/OverviewRow';
 import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
 import { ProviderLogo } from '../general/ProviderLogo';

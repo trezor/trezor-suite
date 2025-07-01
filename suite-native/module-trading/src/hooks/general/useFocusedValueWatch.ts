@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { useDebouncedValue } from '@trezor/react-utils';
 
-import { tradingActions } from '../../tradingSlice';
+import { tradingActions } from '../../reducers';
 
 export const useFocusedValueWatch = <T extends string | undefined>(
     watch: (field: 'focusedValue') => T,

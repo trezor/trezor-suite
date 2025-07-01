@@ -17,8 +17,8 @@ import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wal
 import { EventType, analytics } from '@suite-native/analytics';
 import { useDebounce } from '@trezor/react-utils';
 
+import { buyActions } from '../../reducers';
 import { selectValidTradingBuyQuotesNative } from '../../selectors/buySelectors';
-import { tradingActions } from '../../tradingSlice';
 import { BuyFormType } from '../../types/buy';
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
@@ -125,7 +125,7 @@ const useBuyQuotesInvalidator = (
     // make sure no stale quotes are present when form is invalid
     useEffect(() => {
         if (shouldInvalidateQuotes) {
-            dispatch(tradingActions.clearQuotesAndQuotesRequest());
+            dispatch(buyActions.clearQuotesAndQuotesRequest());
         }
     }, [shouldInvalidateQuotes, dispatch]);
 
@@ -137,7 +137,7 @@ const useBuyQuotesInvalidator = (
                 quotesPromiseRef.current.abort('Component unmounted');
             }
             // clear whole buy state including quotes
-            dispatch(tradingActions.clearBuyState());
+            dispatch(buyActions.clearState());
             // debounce should be handled by useDebounce, no need to clear it here
         },
         [dispatch, quotesPromiseRef],

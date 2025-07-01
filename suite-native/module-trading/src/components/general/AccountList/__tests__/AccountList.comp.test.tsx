@@ -11,9 +11,9 @@ import { Address } from '@trezor/blockchain-link-types';
 import { StaticSessionId } from '@trezor/connect';
 
 import fixturesAccounts from '../../../../__fixtures__/accounts.json';
+import { initialState } from '../../../../reducers';
 import { selectBuySelectedReceiveAccount } from '../../../../selectors/buySelectors';
 import { selectExchangeSelectedReceiveAccount } from '../../../../selectors/exchangeSelectors';
-import { initialState } from '../../../../tradingSlice';
 import { ReceiveAccount } from '../../../../types/general';
 import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 

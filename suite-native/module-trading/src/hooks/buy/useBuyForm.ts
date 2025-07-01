@@ -19,13 +19,13 @@ import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
+import { buyActions } from '../../reducers';
 import {
     selectBuyAmountLimits,
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
     selectValidTradingBuyQuotesNative,
 } from '../../selectors/buySelectors';
-import { tradingActions } from '../../tradingSlice';
 import { BuyFormType, BuyFormValues } from '../../types/buy';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
@@ -93,7 +93,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                             prevFiatCurrency.current = fiatCurrency;
                             setValue('fiatValue', undefined, { shouldValidate: true });
                             setValue('cryptoValue', undefined, { shouldValidate: true });
-                            dispatch(tradingActions.buyFiatCurrencyChanged());
+                            dispatch(buyActions.fiatCurrencyChanged());
                         }
                         break;
 
@@ -108,7 +108,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                             });
                             prevCryptoId.current = asset?.cryptoId as CryptoId | undefined;
                             setValue('cryptoValue', undefined, { shouldValidate: true });
-                            dispatch(tradingActions.buyAssetChanged());
+                            dispatch(buyActions.assetChanged());
                         }
                         break;
                     }

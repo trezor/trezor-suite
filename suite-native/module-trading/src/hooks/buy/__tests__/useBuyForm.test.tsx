@@ -19,7 +19,7 @@ import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/quotes.json';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { tradingActions } from '../../../tradingSlice';
+import { buyActions } from '../../../reducers';
 import { BuyFormType } from '../../../types/buy';
 import { TradeableAsset } from '../../../types/general';
 import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
@@ -151,7 +151,7 @@ describe('useBuyForm', () => {
         });
     });
 
-    it('should dispatch buyAssetChanged on asset change', async () => {
+    it('should dispatch tradingBuy/assetChanged on asset change', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result } = await renderUseTradingBuyForm(store);
@@ -161,7 +161,7 @@ describe('useBuyForm', () => {
         });
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(tradingActions.buyAssetChanged());
+        expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
     });
 
     it('should not clear selected account when asset is set to undefined', async () => {
@@ -215,7 +215,7 @@ describe('useBuyForm', () => {
         expect(result.current.getValues('fiatValue')).toBeUndefined();
     });
 
-    it('should dispatch buyFiatCurrencyChanged action on fiat currency change', async () => {
+    it('should dispatch fiatCurrencyChanged action on fiat currency change', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result } = await renderUseTradingBuyForm(store);
@@ -225,7 +225,7 @@ describe('useBuyForm', () => {
         });
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(tradingActions.buyFiatCurrencyChanged());
+        expect(dispatchSpy).toHaveBeenCalledWith(buyActions.fiatCurrencyChanged());
     });
 
     it('should clear cryptoValue when user edits fiatValue', async () => {

@@ -1,9 +1,8 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { CryptoId } from 'invity-api';
 
-import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    TradingBuyState as CommonTradingBuyState,
     TradingExchangeState as CommonTradingExchangeState,
     TradingState as CommonTradingState,
     InvityServerEnvironment,
@@ -11,12 +10,10 @@ import {
     initialState as commonInitialState,
     prepareTradingReducer,
 } from '@suite-common/trading';
-import { AccountsRootState, deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/wallet-core';
 import { Address } from '@trezor/blockchain-link-types';
 
-export interface TradingBuyState extends CommonTradingBuyState {
-    receiveAddress: Address | undefined;
-}
+import { TRADING_BUY, TradingBuyState, buyActions, buyInitialState, buyReducer } from './buySlice';
 
 export interface TradingExchangeState extends CommonTradingExchangeState {
     receiveAddress: Address | undefined;
@@ -40,7 +37,7 @@ export type TradingRootState = {
 
 export const initialState: TradingState = {
     ...commonInitialState,
-    buy: { ...commonInitialState.buy, receiveAddress: undefined },
+    buy: buyInitialState,
     exchange: { ...commonInitialState.exchange, receiveAddress: undefined },
     favouriteAssets: {},
     tradingEnvironment: 'production',
@@ -53,9 +50,6 @@ export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
     initialState,
     reducers: {
-        setBuyReceiveAddress: (state, { payload }: PayloadAction<Address | undefined>) => {
-            state.buy.receiveAddress = payload;
-        },
         setExchangeReceiveAddress: (state, { payload }: PayloadAction<Address | undefined>) => {
             state.exchange.receiveAddress = payload;
         },
@@ -67,43 +61,14 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
-            // clear buy state so everything is fetched for new environment
-            state.buy.tradingAccountKey = undefined;
-            state.buy.receiveAddress = undefined;
-            state.buy.quotesRequest = undefined;
-            state.buy.quotes = [];
-            state.buy.selectedQuote = undefined;
-            state.buy.amountLimits = undefined;
             state.tradeOrderIdToBeOpened = undefined;
-        },
-        clearBuyState: state => {
-            state.buy.tradingAccountKey = undefined;
-            state.buy.receiveAddress = undefined;
-            state.buy.quotesRequest = undefined;
-            state.buy.quotes = [];
-            state.buy.selectedQuote = undefined;
-            state.buy.amountLimits = undefined;
-            state.tradeOrderIdToBeOpened = undefined;
-        },
-        clearQuotesAndQuotesRequest: state => {
-            state.buy.quotesRequest = undefined;
-            state.buy.quotes = [];
+            buyReducer(state.buy, buyActions.clearState());
         },
         setTradeOrderIdToBeOpened: (state, { payload }: PayloadAction<string>) => {
             state.tradeOrderIdToBeOpened = payload;
         },
         clearTradeOrderIdToBeOpened: state => {
             state.tradeOrderIdToBeOpened = undefined;
-        },
-        buyAssetChanged: state => {
-            state.buy.tradingAccountKey = undefined;
-            state.buy.receiveAddress = undefined;
-            state.buy.amountLimits = undefined;
-            state.buy.quotesRequest = undefined;
-        },
-        buyFiatCurrencyChanged: state => {
-            state.buy.amountLimits = undefined;
-            state.buy.quotesRequest = undefined;
         },
         setIsAmountInputActive: (state, { payload }: PayloadAction<boolean>) => {
             state.isAmountInputActive = payload;
@@ -124,6 +89,15 @@ export const tradingSlice = createSliceWithExtraDeps({
                 state.exchange.receiveAccountKey = undefined;
                 state.exchange.receiveAddress = undefined;
             })
+            .addCase(buyActions.clearState, state => {
+                state.tradeOrderIdToBeOpened = undefined;
+            })
+            .addMatcher(
+                action => action.type.startsWith(TRADING_BUY),
+                (state, action) => {
+                    buyReducer(state.buy, action);
+                },
+            )
             // In case that this reducer does not match the action, try to handle it by suite-common tradingReducer.
             .addDefaultCase((state, action) => {
                 commonTradingFormReducer(state, action);
@@ -132,8 +106,3 @@ export const tradingSlice = createSliceWithExtraDeps({
 });
 
 export const tradingActions = tradingSlice.actions;
-
-export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
-export const createMemoizedSelectorWithAccounts = createWeakMapSelector.withTypes<
-    TradingRootState & AccountsRootState
->();

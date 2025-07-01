@@ -1,4 +1,4 @@
 export * from './navigation/TradingStackNavigator';
-export * from './tradingSlice';
+export { tradingSlice, tradingActions } from './reducers';
 export * from './selectors/commonSelectors';
 export * from './screens/TradingWebViewScreen';

@@ -1,4 +1,4 @@
-import { TradingRootState, createMemoizedSelector } from '../tradingSlice';
+import { TradingRootState, createMemoizedSelector } from '../reducers';
 import { TradeableAsset } from '../types/general';
 
 export const selectTradingFavouriteAssets = (state: TradingRootState) =>

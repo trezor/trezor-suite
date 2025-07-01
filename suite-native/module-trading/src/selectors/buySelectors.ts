@@ -20,7 +20,7 @@ import {
     TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
-} from '../tradingSlice';
+} from '../reducers';
 import { BuyFormValues } from '../types/buy';
 import { Country, FiatCurrencyItem, ReceiveAccount } from '../types/general';
 import {
