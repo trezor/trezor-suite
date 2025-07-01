@@ -68,7 +68,7 @@
             },
             "chain": "bsc",
             "chain_id": 56,
-            "blocktime_seconds": 3,
+            "blocktime_seconds": 0.75,
             "coingecko_id": "binance-smart-chain",
             "is_testnet": false,
             "label": "BNB",
