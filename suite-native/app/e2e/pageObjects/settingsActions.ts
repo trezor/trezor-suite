@@ -5,15 +5,14 @@ import { TREZOR_E2E_DEVICE_LABEL, scrollUntilVisible } from '../utils';
 import { onAlertSheet } from './alertSheetActions';
 
 class SettingsActions {
-    async tapLocalization() {
-        const localizationElement = element(by.id('@settings/localization'));
-
-        await waitFor(localizationElement).toBeVisible().withTimeout(10000);
-        await localizationElement.tap();
+    async tapPreferences() {
+        const preferencesSettingsElement = element(by.id('@settings/preferences'));
+        await waitFor(preferencesSettingsElement).toBeVisible().withTimeout(10000);
+        await preferencesSettingsElement.tap();
     }
 
     async tapPrivacyAndSecurity() {
-        const privacyAndSecurityElement = element(by.id('@settings/privacy-and-security'));
+        const privacyAndSecurityElement = element(by.id('@settings/privacy'));
 
         await waitFor(privacyAndSecurityElement).toBeVisible().withTimeout(10000);
         await privacyAndSecurityElement.tap();
