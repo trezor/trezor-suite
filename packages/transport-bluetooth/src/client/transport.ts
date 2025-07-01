@@ -2,12 +2,11 @@ import { AbstractTransportParams } from '@trezor/transport/src/transports/abstra
 import { AbstractApiTransport } from '@trezor/transport/src/transports/abstractApi';
 
 import { BluetoothApi } from './bluetooth-api';
+import { TrezorBluetoothSettings } from './types';
 
 // implementation of @trezor/transport/src/transports/abstractApi
 
-type BluetoothTransportParams = Omit<AbstractTransportParams, 'api'> & {
-    url: string;
-};
+type BluetoothTransportParams = Omit<AbstractTransportParams, 'api'> & TrezorBluetoothSettings;
 
 export class BluetoothTransport extends AbstractApiTransport {
     public name = 'BluetoothTransport' as const;
@@ -15,9 +14,9 @@ export class BluetoothTransport extends AbstractApiTransport {
     private wsApi: BluetoothApi;
 
     constructor(params: BluetoothTransportParams) {
-        const { url, logger, ...rest } = params;
+        const { url, logger, writeWithResponse, writeWithDelay, ...rest } = params;
 
-        const api = new BluetoothApi({ url, logger });
+        const api = new BluetoothApi({ url, logger, writeWithResponse, writeWithDelay });
         api.on('transport-interface-error', ({ error }) => {
             this.emit('transport-error', error);
         });
