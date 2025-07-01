@@ -4,10 +4,7 @@ const generateCode = require('@expo/config-plugins/build/utils/generateCode');
 // https://github.com/expo/expo/issues/36461#issuecomment-2846152663
 const minSdkPatchCode = `
   ext {
-    buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
     minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
-    compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
-    targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
     kotlinVersion = findProperty('android.kotlinVersion') ?: '2.0.21'
   }
 `;
