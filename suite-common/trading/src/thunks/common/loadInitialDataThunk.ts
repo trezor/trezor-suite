@@ -19,11 +19,15 @@ import { TradingType } from '../../types';
 
 export interface LoadInitialDataThunkProps {
     activeSection: TradingType;
+    forcedApiKey?: string;
 }
 
 export const loadInitialDataThunk = createThunk(
     `${TRADING_THUNK_PREFIX}/loadInitialData`,
-    async ({ activeSection }: LoadInitialDataThunkProps, { dispatch, getState, extra }) => {
+    async (
+        { activeSection, forcedApiKey }: LoadInitialDataThunkProps,
+        { dispatch, getState, extra },
+    ) => {
         const selectedAccount = extra.selectors.selectSelectedAccount(getState());
         const account = selectTradingAccountAccordingActiveSection(
             getState(),
@@ -42,7 +46,7 @@ export const loadInitialDataThunk = createThunk(
 
         dispatch(tradingActions.setTradingActiveSection(activeSection));
 
-        if (account && !isLoading && (isDifferentAccount || areDataOutdated)) {
+        if ((account || forcedApiKey) && !isLoading && (isDifferentAccount || areDataOutdated)) {
             dispatch(tradingActions.setLoading({ isLoading: true }));
 
             const invityServerEnvironment = extra.selectors.selectTradingEnvironment(getState());
@@ -50,7 +54,9 @@ export const loadInitialDataThunk = createThunk(
                 invityAPI.setInvityServersEnvironment(invityServerEnvironment);
             }
 
-            invityAPI.createInvityAPIKey(account.descriptor);
+            // use account descriptor or forcedApiKey - one of these two must be provided to get here
+            const apiKey = account?.descriptor || forcedApiKey!;
+            invityAPI.createInvityAPIKey(apiKey);
 
             if (isDifferentAccount || !platforms || !coins) {
                 const info = await invityAPI.getInfo();
