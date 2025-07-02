@@ -83,6 +83,18 @@ const buttonRequest =
 
                 return action;
             }
+
+            if (
+                action.type === UI.REQUEST_BUTTON &&
+                action.payload.name === 'confirm_ethereum_approve'
+            ) {
+                api.dispatch({
+                    ...action,
+                    payload: { ...action.payload, code: 'ButtonRequest_SignTx' },
+                });
+
+                return action;
+            }
         }
 
         if (action.type === UI.REQUEST_BUTTON && action.payload.code === 'ButtonRequest_Address') {
