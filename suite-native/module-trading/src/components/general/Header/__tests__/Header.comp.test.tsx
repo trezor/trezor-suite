@@ -62,11 +62,11 @@ describe('Header', () => {
                                     },
                                     {
                                         domain: 'trading.exchange',
-                                        flag: sellEnabled,
+                                        flag: exchangeEnabled,
                                     },
                                     {
                                         domain: 'trading.sell',
-                                        flag: exchangeEnabled,
+                                        flag: sellEnabled,
                                     },
                                 ],
                             },

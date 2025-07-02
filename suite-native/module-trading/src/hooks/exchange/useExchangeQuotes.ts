@@ -32,7 +32,7 @@ type PromiseType = {
 
 const noop = () => {};
 
-const useShouldFetchBuyQuotes = (
+const useShouldFetchExchangeQuotes = (
     watch: ExchangeFormType['watch'],
 ): { isFetchAllowed: boolean; shouldFetchQuotes: boolean } => {
     const prevState = useRef<ShouldFetchExchangeQuotesRef>({
@@ -174,7 +174,7 @@ export const useExchangeQuotes = ({ watch, getValues }: ExchangeFormType) => {
     const debounce = useDebounce();
     const promiseRef = useRef<PromiseType | undefined>(undefined);
 
-    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchBuyQuotes(watch);
+    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchExchangeQuotes(watch);
 
     const { timer, shouldReload } = useReloadTimer({ isEnabled: isFetchAllowed });
 
