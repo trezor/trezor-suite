@@ -11,6 +11,7 @@ import {
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
+import type { PathPublic } from '@trezor/transport/src/types';
 import {
     Deferred,
     TypedEmitter,
@@ -122,11 +123,11 @@ type DeviceParams = {
 };
 
 export class Device extends TypedEmitter<DeviceEvents> {
-    public readonly transport: Transport;
-    public readonly transportPath;
-    public readonly bluetoothProps;
+    public transport: Transport;
+    public transportPath: PathPublic;
+    public bluetoothProps;
     private thp: protocolThp.ThpState | undefined;
-    private readonly possibleHIDdevice;
+    private possibleHIDdevice;
     private sessionAcquired: Session | null;
 
     // protocol related
@@ -243,6 +244,17 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
     };
+
+    private mergedInto?: DeviceUniquePath;
+    private readonly backupTransports: [Transport, PathPublic][] = [];
+
+    mergeWith(another: Device) {
+        this.backupTransports.push([another.transport, another.transportPath]);
+        this.emitLifecycle(DEVICE.CHANGED);
+
+        another.mergedInto = this.uniquePath;
+        another.emitLifecycle(DEVICE.DISCONNECT);
+    }
 
     private getSessionChangePromise() {
         if (!this.sessionDfd) {
@@ -1000,13 +1012,32 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
         this.transport.deviceEvents.off(this.transportPath, this.onTransportDeviceEvent);
-        this.removeAllListeners();
+        this.removeAllListeners(); // TODO maybe not?
 
         this.sessionDfd?.reject(new Error());
 
         if (this.sessionAcquired) {
             this.transport.releaseSync(this.sessionAcquired);
             this.sessionAcquired = null; // set to null to prevent transport.release and cancelableAction
+        }
+
+        // yolo
+        for (let next = this.backupTransports.shift(); next; next = this.backupTransports.shift()) {
+            const [transport, transportPath] = next;
+            const descriptor = transport.getDescriptor(transportPath);
+            if (descriptor) {
+                this.transport = transport;
+                this.transportPath = transportPath;
+                this.possibleHIDdevice = [0, 2].includes(descriptor.type);
+                this.bluetoothProps = descriptor.id ? { id: descriptor.id } : undefined;
+
+                transport.on(TRANSPORT.STOPPED, this.onTransportStopped);
+                transport.deviceEvents.on(transportPath, this.onTransportDeviceEvent);
+
+                this.emitLifecycle(DEVICE.CHANGED);
+
+                return;
+            }
         }
 
         this.emitLifecycle(DEVICE.DISCONNECT);
@@ -1099,8 +1130,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
-        const { name, uniquePath: path } = this;
-        const base = { path, name };
+        const { name, mergedInto, uniquePath: path } = this;
+        const base = { path, name, mergedInto };
 
         if (this.unreadableError) {
             return {
