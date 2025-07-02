@@ -105,11 +105,11 @@ export class Logger implements ILogger {
         this.exit();
     }
 
-    private async logBasicInfo() {
+    private logBasicInfo() {
         const buildInfo = getBuildInfo();
         this.info('build', buildInfo);
 
-        const computerInfo = await getComputerInfo();
+        const computerInfo = getComputerInfo();
         this.debug('computer', computerInfo);
     }
 

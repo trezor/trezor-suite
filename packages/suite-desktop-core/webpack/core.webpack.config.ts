@@ -95,7 +95,6 @@ const config: webpack.Configuration = {
         'bufferutil', // optional dependency of ws lib
         'memcpy', // optional depencency of bytebuffer lib
         'utf-8-validate', // optional dependency of ws lib
-        'osx-temperature-sensor', // optional dependency of systeminformation lib
     ],
     module: {
         rules: [

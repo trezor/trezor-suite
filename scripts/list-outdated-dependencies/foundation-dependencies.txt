@@ -62,7 +62,6 @@ react-router
 react-router-dom
 rimraf
 sort-package-json
-systeminformation
 tar
 tiny-secp256k1
 typeforce
