@@ -706,11 +706,7 @@ export const startDiscoveryThunk = createThunk(
         // - we are adding a standard wallet,
         // - or adding an existing hidden wallet,
         // - or adding initially a hidden wallet set by settings
-        if (
-            !isAddingHiddenWallet ||
-            ((isAddingHiddenWalletWithRespectToSettings || isAddingHiddenWallet) &&
-                isAddingExistingWallet)
-        ) {
+        if (!isAddingHiddenWallet || isAddingExistingWallet) {
             dispatch(runDiscoveryThunk(actualDevice));
         }
     },
