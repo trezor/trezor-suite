@@ -97,7 +97,7 @@ const constructOldFlow = ({
     decreaseOutputId,
     account,
     precomposedForm,
-}: ConstructOutputsParams) => {
+}: ConstructOutputsParams): ReviewOutput[] => {
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -242,7 +242,7 @@ const constructNewFlow = ({
     account,
     precomposedForm,
     isUpdatedEthereumSendFlow,
-}: ConstructOutputsParams & { isUpdatedEthereumSendFlow: boolean }) => {
+}: ConstructOutputsParams & { isUpdatedEthereumSendFlow: boolean }): ReviewOutput[] => {
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -401,10 +401,12 @@ const constructNewFlow = ({
     return outputs;
 };
 
+type ConstructTransactionReviewOutputsProps = ConstructOutputsParams & { device: TrezorDevice };
+
 export const constructTransactionReviewOutputs = ({
     device,
     ...params
-}: ConstructOutputsParams & { device: TrezorDevice }) => {
+}: ConstructTransactionReviewOutputsProps): ReviewOutput[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device); // >= 2.6.0
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(
         device,
@@ -416,4 +418,29 @@ export const constructTransactionReviewOutputs = ({
     }
 
     return constructNewFlow({ isUpdatedEthereumSendFlow, ...params });
+};
+
+export const constructTransactionReviewOutputsOptional = ({
+    account,
+    decreaseOutputId,
+    device,
+    precomposedForm,
+    precomposedTx,
+}: Partial<ConstructTransactionReviewOutputsProps>): ReviewOutput[] => {
+    if (
+        account === undefined ||
+        device === undefined ||
+        precomposedForm === undefined ||
+        precomposedTx === undefined
+    ) {
+        return [];
+    }
+
+    return constructTransactionReviewOutputs({
+        account,
+        decreaseOutputId,
+        device,
+        precomposedForm,
+        precomposedTx,
+    });
 };
