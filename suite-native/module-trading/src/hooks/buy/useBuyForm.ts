@@ -8,9 +8,9 @@ import { useFormatters } from '@suite-common/formatters';
 import {
     TradingAmountLimitProps,
     getBestRatedQuote,
-    invityAPI,
     selectTradingBuyQuotesRequest,
 } from '@suite-common/trading';
+import { loadInitialDataThunk } from '@suite-common/trading/src/thunks/common/loadInitialDataThunk';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
@@ -34,12 +34,18 @@ import { getRandomAccountDescriptor } from '../../utils/general/utils';
 import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
 
 const useReceiveAccountChangeEffect = ({ getValues, setValue }: BuyFormType) => {
+    const dispatch = useDispatch();
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
-    // make sure invityAPIKey is initialized with some unique string on form mount
+    // make sure invityAPIKey is initialized with some unique string on form mount via loadInitialDataThunk
     useEffect(() => {
-        invityAPI.createInvityAPIKey(getRandomAccountDescriptor());
-    }, []);
+        dispatch(
+            loadInitialDataThunk({
+                activeSection: 'buy',
+                forcedApiKey: getRandomAccountDescriptor(),
+            }),
+        );
+    }, [dispatch]);
 
     useEffect(() => {
         const prevReceiveAccount = getValues('receiveAccount');
@@ -49,9 +55,14 @@ const useReceiveAccountChangeEffect = ({ getValues, setValue }: BuyFormType) => 
 
         // when user changes receive account set invityAPIKey accordingly
         if (descriptor !== prevReceiveAccount?.account?.descriptor) {
-            invityAPI.createInvityAPIKey(descriptor || getRandomAccountDescriptor());
+            dispatch(
+                loadInitialDataThunk({
+                    activeSection: 'buy',
+                    forcedApiKey: !descriptor ? getRandomAccountDescriptor() : undefined,
+                }),
+            );
         }
-    }, [selectedReceiveAccount, getValues, setValue]);
+    }, [selectedReceiveAccount, getValues, setValue, dispatch]);
 };
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
