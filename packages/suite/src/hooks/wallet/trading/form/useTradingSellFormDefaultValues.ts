@@ -1,17 +1,19 @@
 import { useMemo } from 'react';
 
 import {
-    TRADING_DEFAULT_FIAT_CURRENCY,
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingPaymentMethodListProps,
     type TradingSellInfoSelector,
     cryptoIdToSymbol,
+    enabledTradingCurrencies,
     getDefaultCountry,
     regional,
     selectTradingPrefilledFromAccount,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { FormState, Output } from '@suite-common/wallet-types';
+import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
@@ -58,9 +60,15 @@ export const useTradingSellFormDefaultValues = (
         }),
         [],
     );
+    const localCurrency = useSelector(selectLocalCurrency);
     const defaultCurrency = useMemo(
-        () => buildTradingFiatOption(TRADING_DEFAULT_FIAT_CURRENCY),
-        [],
+        () =>
+            buildTradingFiatOption(
+                isArrayMember(localCurrency, typedObjectValues(enabledTradingCurrencies))
+                    ? localCurrency
+                    : 'usd',
+            ),
+        [localCurrency],
     );
     const defaultPayment: Output = useMemo(
         () => ({
