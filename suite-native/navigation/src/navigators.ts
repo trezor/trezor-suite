@@ -20,6 +20,7 @@ import {
     AuthorizeDeviceStackRoutes,
     DevUtilsStackRoutes,
     DeviceAuthenticityStackRoutes,
+    DeviceCheckBackupStackRoutes,
     DeviceNameStackRoutes,
     DeviceOnboardingStackRoutes,
     DevicePinProtectionStackRoutes,
@@ -196,12 +197,13 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
     };
+    [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
-    [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: undefined;
+    [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
     [DeviceSettingsStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceSettingsStackRoutes.FirmwareInstallation]: undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
-    [DeviceSettingsStackRoutes.DeviceNameStack]: undefined;
+    [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
     [DeviceSettingsStackRoutes.PinProtection]: undefined;
 };
@@ -223,6 +225,13 @@ export type DeviceNameStackParamList = {
     [DeviceNameStackRoutes.DeviceName]: undefined;
     [DeviceNameStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceNameStackRoutes.DeviceNameLoadingScreen]: undefined;
+};
+
+export type DeviceCheckBackupStackParamList = {
+    [DeviceCheckBackupStackRoutes.CheckBackupTutorial]: undefined;
+    [DeviceCheckBackupStackRoutes.CheckBackup]: undefined;
+    [DeviceCheckBackupStackRoutes.CheckBackupSuccess]: undefined;
+    [DeviceCheckBackupStackRoutes.CheckBackupRecap]: undefined;
 };
 
 export type DeviceAuthenticityStackParamList = {

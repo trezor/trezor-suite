@@ -7,6 +7,7 @@ import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { useIsMultiline } from '@suite-native/helpers';
 import {
+    DeviceNameStackRoutes,
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     StackNavigationProps,
@@ -36,7 +37,9 @@ export const DeviceInfo = ({ deviceModel, deviceName }: DeviceInfoProps) => {
     const { onTextLayout, isMultiline } = useIsMultiline();
 
     const navigateToDeviceNameStack = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.DeviceNameStack);
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceNameStack, {
+            screen: DeviceNameStackRoutes.DeviceName,
+        });
     };
 
     const name = isMultiline ? deviceName.replace(' ', '\n') : deviceName;
