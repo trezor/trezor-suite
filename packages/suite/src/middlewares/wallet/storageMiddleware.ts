@@ -251,6 +251,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_ADDRESS_DISPLAY_TYPE:
                 case SUITE.SET_DEFAULT_WALLET_LOADING:
                 case SUITE.SET_AUTODETECT:
+                case SUITE.SET_AUTO_EJECT:
                 case SUITE.SET_SIDEBAR_WIDTH:
                 case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
                 case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
