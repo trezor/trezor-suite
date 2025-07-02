@@ -7,7 +7,8 @@ import {
     sellTradeEthereumToken,
     sellWatchEthereum,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+//TODO: Uncomment when bug fixed #19923
+// import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -15,13 +16,13 @@ const fiatAmount = sellQuotesEthereumToken[0].fiatStringAmount;
 const cryptoAmount = sellQuotesEthereumToken[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'sellList');
 const providerAddress = sellWatchEthereum.destinationAddress;
-const formattedCryptoAmount = `${cryptoAmount} ETH`;
+const formattedCryptoAmount = `${cryptoAmount} USDC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeEthereumToken.trade;
-const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
+//TODO: Uncomment when bug fixed #19923
+// const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
 
-//TODO: Needs investigation why redirect navigates to form instead of transaction details
-test.describe.skip('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {
@@ -45,7 +46,7 @@ test.describe.skip('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnl
         },
     );
 
-    test('Sell Ethereum token USDC', async ({ tradingPage, devicePrompt }) => {
+    test('Sell Ethereum token USDC', async ({ tradingPage, dashboardPage }) => {
         await test.step('Fill in a sell request', async () => {
             await tradingPage.fillSellForm(
                 cryptoAmount,
@@ -60,8 +61,9 @@ test.describe.skip('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnl
             await tradingPage.termsConfirmButton.click();
         });
 
-        // TODO: Fix the redirection. I need to troubleshoot this with the team.
         await tradingPage.waitForRedirectCompletion();
+        //TODO: Workaround because of bug #19743, device switcher should not be opened
+        await dashboardPage.deviceSwitchingCloseButton.click();
 
         await test.step('Verify all confirmation values', async () => {
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
@@ -69,18 +71,19 @@ test.describe.skip('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnl
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
             await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
-            await expect(tradingPage.confirmationAccount).toHaveText('Bitcoin #1');
+            await expect(tradingPage.confirmationAccount).toHaveText('Ethereum #1');
         });
 
-        await test.step('Initiate send', async () => {
-            await tradingPage.initiateSendConfirmation();
-            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
-            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
-                formattedCryptoAmount,
-            );
-            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-        });
+        //TODO: Uncomment when bug fixed #19923
+        // await test.step('Initiate send', async () => {
+        //     await tradingPage.initiateSendConfirmation();
+        //     await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+        //     await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+        //     await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+        //         formattedCryptoAmount,
+        //     );
+        //     await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+        // });
 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
     });
