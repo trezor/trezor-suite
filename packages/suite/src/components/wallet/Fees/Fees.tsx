@@ -154,6 +154,9 @@ export const Fees = <TFieldValues extends FormState>({
 
     const feeOptions = buildFeeOptions(feeInfo.levels, networkType, symbol, composedLevels);
 
+    // when fees are loading, feeInfo.levels = [], but CustomFee requires at least the 'normal' level to have some default
+    const hasNormalFeeLevel = feeInfo.levels.some(level => level.label === 'normal');
+
     const supportsCustomFee = networkType !== 'solana';
 
     useFetchFeesOnce({ networkSymbol: symbol });
@@ -205,6 +208,7 @@ export const Fees = <TFieldValues extends FormState>({
                 </Tooltip>
                 {supportsCustomFee && (
                     <SelectBar
+                        isDisabled={!hasNormalFeeLevel}
                         orientation="horizontal"
                         selectedOption={isCustomFee ? 'custom' : 'normal'}
                         size="small"
