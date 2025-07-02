@@ -213,6 +213,8 @@ export const SelectBar = <V extends ValueTypes>({
                                     <Option
                                         onClick={handleOptionClick(option)}
                                         $isDisabled={!!isDisabled}
+                                        // @ts-expect-error
+                                        disabled={!!isDisabled}
                                         $isSelected={isSelected}
                                         data-testid={`select-bar/${String(option.value)}`}
                                     >
