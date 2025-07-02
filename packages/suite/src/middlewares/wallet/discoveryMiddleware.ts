@@ -8,7 +8,7 @@ import {
     runAdditionalDiscoveryThunk,
     selectNetworksToDiscover,
     selectSelectedDevice,
-    startInitialDiscovery,
+    startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -16,7 +16,7 @@ import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 // todo: this is crazy. needs some consideration
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
-    async (action, { dispatch, next, getState }) => {
+    async (action, { dispatch, next, getState, extra }) => {
         const prevState = getState();
 
         // Pass action to next middleware, meaning that the code below runs *only after* the action has been completely processed in Redux.
@@ -56,9 +56,18 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         ) {
             if (device && device.connected && isDeviceAcquired(device) && !isDeviceLocked) {
                 if (!device?.state) {
+                    // note: currently this is only used in Suite. If a Suite Lite implementation is needed,
+                    // refactor this to a parameter because suiteSettings is a suite-only reducer.
+                    const isAddingHiddenWalletWithRespectToSettings =
+                        extra.selectors.selectSuiteSettings(getState()).defaultWalletLoading ===
+                        'passphrase';
+
                     dispatch(
-                        startInitialDiscovery({
+                        startDiscoveryThunk({
                             device,
+                            isAddingHiddenWalletWithRespectToSettings,
+                            isAddingExistingWallet: true,
+                            isAddingHiddenWallet: isAddingHiddenWalletWithRespectToSettings,
                         }),
                     );
                 } else if (device.state.staticSessionId) {
