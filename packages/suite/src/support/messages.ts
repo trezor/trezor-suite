@@ -5666,14 +5666,6 @@ export default defineMessages({
         id: 'TR_ADD_TOKEN_TOAST_ERROR',
         defaultMessage: 'Action failed: {error}',
     },
-    TR_BRIDGE_DEV_MODE_START: {
-        id: 'TR_BRIDGE_DEV_MODE_START',
-        defaultMessage: 'Starting Trezor Bridge on port 21324',
-    },
-    TR_BRIDGE_DEV_MODE_STOP: {
-        id: 'TR_BRIDGE_DEV_MODE_STOP',
-        defaultMessage: 'Starting Trezor Bridge on default port',
-    },
     TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',
         defaultMessage: 'Loading accounts. Wait before adding another one.',
