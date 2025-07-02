@@ -8,11 +8,13 @@ import {
     selectIsDeviceConnectedViaBluetooth,
 } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceBluetoothCard } from '../components/DeviceBluetoothCard';
+import { DeviceCheckBackupCard } from '../components/DeviceCheckBackupCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DeviceInfo } from '../components/DeviceInfo';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
@@ -27,6 +29,7 @@ export const DeviceSettingsModalScreen = () => {
     const deviceName = useSelector(selectDeviceName);
     const deviceLabel = useSelector(selectDeviceLabel);
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
+    const isCheckBackupsEnabled = useFeatureFlag(FeatureFlag.IsCheckBackupsEnabled);
 
     if (!deviceModel || !deviceName) {
         return null;
@@ -43,8 +46,9 @@ export const DeviceSettingsModalScreen = () => {
                     <DeviceFirmwareCard />
                 </DeviceSettingsSection>
                 <DeviceSettingsSection
-                    title={<Translation id="moduleDeviceSettings.sectionTitles.checks" />}
+                    title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
                 >
+                    {isCheckBackupsEnabled && <DeviceCheckBackupCard />}
                     {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
                 </DeviceSettingsSection>
                 {isDeviceConnectedViaBluetooth && <DeviceBluetoothCard />}

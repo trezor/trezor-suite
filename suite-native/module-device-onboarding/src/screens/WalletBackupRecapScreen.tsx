@@ -1,9 +1,12 @@
 import { useSharedValue } from 'react-native-reanimated';
 
-import { SwipeableWalkthrough, SwipeableWalkthroughScreenHeader } from '@suite-native/atoms';
+import {
+    SwipeableWalkthrough,
+    SwipeableWalkthroughCloseButton,
+    SwipeableWalkthroughScreenHeader,
+} from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 
-import { WalletBackupRecapBackButton } from '../components/WalletBackupRecap/WalletBackupRecapBackButton';
 import { WalletBackupRecapStep1 } from '../components/WalletBackupRecap/create/WalletBackupRecapStep1';
 import { WalletBackupRecapStep2 } from '../components/WalletBackupRecap/create/WalletBackupRecapStep2';
 import { WalletBackupRecapStep3 } from '../components/WalletBackupRecap/create/WalletBackupRecapStep3';
@@ -20,7 +23,7 @@ export const WalletBackupRecapScreen = () => {
             header={
                 <SwipeableWalkthroughScreenHeader
                     currentStepIndex={currentStepIndex}
-                    CustomBackButton={WalletBackupRecapBackButton}
+                    CustomBackButton={SwipeableWalkthroughCloseButton}
                     onPressBack={handleExitButtonPress}
                 />
             }
