@@ -24,7 +24,9 @@ export const DeviceAuthenticityScreen = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const navigateToDeviceAuthenticityStack = useCallback(() => {
-        navigation.navigate(DeviceSettingsStackRoutes.DeviceAuthenticityStack);
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceAuthenticityStack, {
+            screen: DeviceAuthenticityStackRoutes.AuthenticityCheck,
+        });
     }, [navigation]);
 
     return (
