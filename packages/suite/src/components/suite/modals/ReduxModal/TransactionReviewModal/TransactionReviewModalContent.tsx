@@ -3,23 +3,21 @@ import { useEffect, useState } from 'react';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { NetworkType } from '@suite-common/wallet-config';
 import {
-    AccountsState,
     DeviceRootState,
     SendState,
     SerializedTx,
     StakeState,
-    selectAccounts,
+    selectIsTxOutputInternal,
     selectPrecomposedSendForm,
     selectSelectedDevice,
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
 } from '@suite-common/wallet-core';
-import { FormState, RbfTransactionType, ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import { FormState, RbfTransactionType, StakeType } from '@suite-common/wallet-types';
 import {
-    constructTransactionReviewOutputs,
-    findAccountsByAddress,
+    constructTransactionReviewOutputsOptional,
     getStakeType,
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
@@ -60,24 +58,26 @@ const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
 
 const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
 
-const shouldShowTxValidityTimer = (
-    deadline: number,
-    outputs: ReviewOutput[],
-    symbol: NetworkSymbol,
-    accounts: AccountsState,
-    buttonRequestsCount: number,
-    serializedTx: SerializedTx | undefined,
-    stakeType: StakeType | null,
-    shouldCheckTxTimeValidity: boolean,
-) => {
+type ShouldShowTxValidityTimerProps = {
+    deadline: number;
+    buttonRequestsCount: number;
+    serializedTx: SerializedTx | undefined;
+    stakeType: StakeType | null;
+    shouldCheckTxTimeValidity: boolean;
+    isInternalTransfer: boolean;
+};
+
+const shouldShowTxValidityTimer = ({
+    deadline,
+    buttonRequestsCount,
+    serializedTx,
+    stakeType,
+    shouldCheckTxTimeValidity,
+    isInternalTransfer,
+}: ShouldShowTxValidityTimerProps) => {
     if (!shouldCheckTxTimeValidity || hasTxValidityExpired(deadline)) {
         return false;
     }
-
-    const firstOutput = outputs[0];
-    const isInternalTransfer =
-        firstOutput?.type === 'address' &&
-        findAccountsByAddress(symbol, firstOutput.value, accounts).length > 0;
 
     const isFirstStep = buttonRequestsCount <= 1;
     const isStaking = stakeType && !serializedTx;
@@ -116,7 +116,6 @@ export const TransactionReviewModalContent = ({
 }: TransactionReviewModalContentProps) => {
     const dispatch = useDispatch();
     const account = useSelector(selectAccountIncludingChosenInTrading);
-    const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const connectPopupCall = useSelector(selectConnectPopupCall);
@@ -175,6 +174,18 @@ export const TransactionReviewModalContent = ({
         selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId),
     );
 
+    const outputs = constructTransactionReviewOutputsOptional({
+        account,
+        decreaseOutputId,
+        device,
+        precomposedForm,
+        precomposedTx,
+    });
+
+    const isInternalTransfer = useSelector(state =>
+        selectIsTxOutputInternal(state, account?.symbol, outputs[0]),
+    );
+
     if (!device) return null;
     if (!account || !precomposedTx || !precomposedForm) {
         // TODO: special case for Connect Popup
@@ -185,14 +196,6 @@ export const TransactionReviewModalContent = ({
     const { options, selectedFee } = precomposedForm;
 
     const txType = getTxType(txInfoState, precomposedForm);
-
-    const outputs = constructTransactionReviewOutputs({
-        account,
-        decreaseOutputId,
-        device,
-        precomposedForm,
-        precomposedTx,
-    });
 
     // for bump fee we have to analyze tx data which are in outputs[0], for legacy in outputs[1]
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -210,16 +213,14 @@ export const TransactionReviewModalContent = ({
 
     const isTxExpired = hasTxValidityExpired(deadline);
 
-    const showTxValidityTimer = shouldShowTxValidityTimer(
+    const showTxValidityTimer = shouldShowTxValidityTimer({
         deadline,
-        outputs,
-        symbol,
-        accounts,
         buttonRequestsCount,
         serializedTx,
         stakeType,
         shouldCheckTxTimeValidity,
-    );
+        isInternalTransfer,
+    });
 
     const actionTranslation = getTransactionReviewModalActionTranslation({
         stakeType,
