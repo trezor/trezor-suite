@@ -1,12 +1,14 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { networksCollection } from '@suite-common/wallet-config';
-import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import { ReviewOutput } from '@suite-common/wallet-types';
+import { findAccountsByAddress, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 import { AccountsRootState } from './accounts/accountsReducer';
 import {
     selectAccounts,
     selectAccountsByDeviceState,
+    selectDeviceAccountsByNetworkSymbol,
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
@@ -29,9 +31,11 @@ This file is for selectors that reach into more than one wallet-core reduce
 to prevent circular dependencies between reducers
 */
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<
-    AccountsRootState & DeviceRootState & DiscoveryRootState & WalletSettingsRootState
->();
+type CompoundRootState = AccountsRootState &
+    DeviceRootState &
+    DiscoveryRootState &
+    WalletSettingsRootState;
+const createMemoizedSelector = createWeakMapSelector.withTypes<CompoundRootState>();
 
 /**
  * This means "all potentially visible accounts", because for accounts that failed to be discovered
@@ -130,4 +134,24 @@ export const selectIsDiscoveredDeviceAccountless = createMemoizedSelector(
 export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
     [selectIsDiscoveredDeviceAccountless, selectHasOnlyPortfolioDevice],
     (isDiscoveredAccountless, hasOnlyPortfolio) => isDiscoveredAccountless && hasOnlyPortfolio,
+);
+
+/**
+ * Memoizing this selector is actually essential for performance, because every select accounts
+ * operation is a potential rerender-hell due to the fetchAndUpdateAccountThunk.
+ */
+export const selectIsTxOutputInternal = createMemoizedSelector(
+    [
+        selectDeviceAccountsByNetworkSymbol,
+        (_state: CompoundRootState, symbol?: NetworkSymbol, output?: ReviewOutput) => ({
+            symbol,
+            output,
+        }),
+    ],
+    (accounts, { symbol, output }) => {
+        if (!symbol || !output || output.type !== 'address') return false;
+        const matchingAccounts = findAccountsByAddress(symbol, output.value, accounts);
+
+        return matchingAccounts.length > 0;
+    },
 );

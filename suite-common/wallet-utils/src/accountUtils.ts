@@ -412,9 +412,9 @@ export const findAccountsByAddress = (
         .filter(a => {
             if (a.addresses) {
                 return (
-                    a.addresses.used.find(u => u.address === address) ||
-                    a.addresses.unused.find(u => u.address === address) ||
-                    a.addresses.change.find(u => u.address === address) ||
+                    a.addresses.used.some(u => u.address === address) ||
+                    a.addresses.unused.some(u => u.address === address) ||
+                    a.addresses.change.some(u => u.address === address) ||
                     a.descriptor === address
                 );
             }
