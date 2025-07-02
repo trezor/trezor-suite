@@ -38,7 +38,7 @@ describe('TrezorConnect.authenticateDevice', () => {
         ),
     } as DeviceAuthenticityConfig;
 
-    conditionalTest(['!T2T1'], 'validation successful', async () => {
+    conditionalTest(['!T2T1', '!T1B1'], 'validation successful', async () => {
         const result = await TrezorConnect.authenticateDevice({
             config,
         });
@@ -49,55 +49,67 @@ describe('TrezorConnect.authenticateDevice', () => {
         });
     });
 
-    conditionalTest(['!T2T1'], 'validation unsuccessful (rootPubKey not found)', async () => {
-        const result = await TrezorConnect.authenticateDevice({
-            config: {
-                ...config,
-                ...Object.fromEntries(
-                    Object.entries(config)
-                        .filter(([key, _]) =>
-                            Object.values(DeviceModelInternal).includes(key as DeviceModelInternal),
-                        )
-                        .map(([key, value]) => [
-                            key,
-                            {
-                                ...value,
-                                rootPubKeys: [],
-                            },
-                        ]),
-                ),
-            },
-        });
+    conditionalTest(
+        ['!T2T1', '!T1B1'],
+        'validation unsuccessful (rootPubKey not found)',
+        async () => {
+            const result = await TrezorConnect.authenticateDevice({
+                config: {
+                    ...config,
+                    ...Object.fromEntries(
+                        Object.entries(config)
+                            .filter(([key, _]) =>
+                                Object.values(DeviceModelInternal).includes(
+                                    key as DeviceModelInternal,
+                                ),
+                            )
+                            .map(([key, value]) => [
+                                key,
+                                {
+                                    ...value,
+                                    rootPubKeys: [],
+                                },
+                            ]),
+                    ),
+                },
+            });
 
-        expect(result).toMatchObject({
-            success: true,
-            payload: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
-        });
-    });
+            expect(result).toMatchObject({
+                success: true,
+                payload: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
+            });
+        },
+    );
 
-    conditionalTest(['!T2T1'], 'sanity check unsuccessful (caPubkey not found)', async () => {
-        const result = await TrezorConnect.authenticateDevice({
-            config: {
-                ...config,
-                ...Object.fromEntries(
-                    Object.entries(config)
-                        .filter(([key, _]) =>
-                            Object.values(DeviceModelInternal).includes(key as DeviceModelInternal),
-                        )
-                        .map(([key, value]) => [
-                            key,
-                            {
-                                ...value,
-                                caPubKeys: [],
-                            },
-                        ]),
-                ),
-            },
-        });
+    conditionalTest(
+        ['!T2T1', '!T1B1'],
+        'sanity check unsuccessful (caPubkey not found)',
+        async () => {
+            const result = await TrezorConnect.authenticateDevice({
+                config: {
+                    ...config,
+                    ...Object.fromEntries(
+                        Object.entries(config)
+                            .filter(([key, _]) =>
+                                Object.values(DeviceModelInternal).includes(
+                                    key as DeviceModelInternal,
+                                ),
+                            )
+                            .map(([key, value]) => [
+                                key,
+                                {
+                                    ...value,
+                                    caPubKeys: [],
+                                },
+                            ]),
+                    ),
+                },
+            });
 
-        expect(result).toMatchObject({
-            success: true,
-            payload: { valid: false, error: 'CA_PUBKEY_NOT_FOUND' },
-        });
-    });
+            expect(result).toMatchObject({
+                success: true,
+                payload: { valid: false, error: 'CA_PUBKEY_NOT_FOUND' },
+            });
+        },
+    );
 });
