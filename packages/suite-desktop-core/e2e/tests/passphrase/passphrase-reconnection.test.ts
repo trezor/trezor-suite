@@ -36,6 +36,7 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
             await trezorUserEnvLink.pressYes(); // confirm address
+            await devicePrompt.confirmOnDevicePromptIsHiddenOnModal();
 
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
@@ -84,9 +85,12 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
             await expect(page.getByTestId('@modal/output-value')).toHaveText(
                 formatAddress(abcAddr),
             );
+
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
             await trezorUserEnvLink.pressYes(); // confirm address
+            await devicePrompt.confirmOnDevicePromptIsHiddenOnModal();
+
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
             await devicePrompt.closeModal();
@@ -95,7 +99,10 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
         await test.step('Second displaying receive address after reconnect should NOT prompt for passphrase', async () => {
             await walletPage.revealAddressButton.click();
             await expect(page.getByTestId('@modal/output-value')).toBeVisible();
+
             await trezorUserEnvLink.pressYes(); // confirm address
+            await devicePrompt.confirmOnDevicePromptIsHiddenOnModal();
+
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
         });
