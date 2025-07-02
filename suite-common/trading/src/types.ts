@@ -231,10 +231,10 @@ export interface TradingExchangeFormProps extends FormState {
 }
 
 export type MinimalExchangeFormProps = {
-    outputs: [{ amount?: string }, ...{ amount?: string }[]];
-    receiveCryptoSelect: { value: CryptoId };
-    sendCryptoSelect: { value: CryptoId };
-    setMaxOutputId?: string;
+    outputs: { amount?: string }[];
+    receiveCryptoSelect?: { value: CryptoId } | null;
+    sendCryptoSelect?: { value: CryptoId } | null;
+    setMaxOutputId?: number;
 };
 
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
