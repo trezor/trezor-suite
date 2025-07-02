@@ -8,7 +8,6 @@ import { useFormatters } from '@suite-common/formatters';
 import {
     TradingAmountLimitProps,
     getBestRatedQuote,
-    invityAPI,
     selectTradingBuyQuotesRequest,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -30,29 +29,7 @@ import { BuyFormType, BuyFormValues } from '../../types/buy';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
-import { getRandomAccountDescriptor } from '../../utils/general/utils';
 import { useConvertFormValueToBaseUnit } from '../general/useConvertFormValueToBaseUnit';
-
-const useReceiveAccountChangeEffect = ({ getValues, setValue }: BuyFormType) => {
-    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
-
-    // make sure invityAPIKey is initialized with some unique string on form mount
-    useEffect(() => {
-        invityAPI.createInvityAPIKey(getRandomAccountDescriptor());
-    }, []);
-
-    useEffect(() => {
-        const prevReceiveAccount = getValues('receiveAccount');
-        const descriptor = selectedReceiveAccount?.account?.descriptor;
-
-        setValue('receiveAccount', selectedReceiveAccount);
-
-        // when user changes receive account set invityAPIKey accordingly
-        if (descriptor !== prevReceiveAccount?.account?.descriptor) {
-            invityAPI.createInvityAPIKey(descriptor || getRandomAccountDescriptor());
-        }
-    }, [selectedReceiveAccount, getValues, setValue]);
-};
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
     const dispatch = useDispatch();
@@ -122,6 +99,14 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
         return unsubscribe;
     }, [dispatch, setValue, watch]);
+};
+
+const useReceiveAccountChangeEffect = ({ setValue }: BuyFormType) => {
+    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
+
+    useEffect(() => {
+        setValue('receiveAccount', selectedReceiveAccount);
+    }, [setValue, selectedReceiveAccount]);
 };
 
 const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
