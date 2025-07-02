@@ -92,17 +92,18 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
+    fullHistory = false,
 ) => {
     let lastSignature: SignatureWithSlot | undefined;
     let keepFetching = true;
     let allSignatures: SignatureWithSlot[] = [];
 
-    const limit = 100;
+    const defaultValueLimit = 1000; // default value of getSignaturesForAddress
     while (keepFetching) {
         const signaturesInfos = await api.rpc
             .getSignaturesForAddress(address(descriptor), {
                 before: lastSignature?.signature,
-                limit,
+                limit: defaultValueLimit,
             })
             .send();
 
@@ -111,7 +112,7 @@ const getAllSignatures = async (
             slot: info.slot,
         }));
         lastSignature = signatures[signatures.length - 1];
-        keepFetching = signatures.length === limit;
+        keepFetching = signatures.length === defaultValueLimit && fullHistory;
         allSignatures = [...allSignatures, ...signatures];
     }
 
