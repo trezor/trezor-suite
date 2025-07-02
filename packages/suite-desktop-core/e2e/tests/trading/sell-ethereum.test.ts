@@ -23,7 +23,7 @@ const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
 const gasLimit = '26000';
 const maxFeePerGas = '2.67674454';
 const maxPriorityFeePerGas = '1.375641927';
-/*TODO: Uncomment once bug #19186 is resolved 
+/*TODO: Uncomment once bug #19186 is resolved
 + import BigNumber from '@trezor/utils' and localizeNumber from '@suite-common/wallet-utils'
 const maxFeePerGasRounded = new BigNumber(maxFeePerGas).decimalPlaces(2, BigNumber.ROUND_UP);
 const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalPlaces(
@@ -65,8 +65,12 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
         },
     );
 
-    test('Sell Ethereum', async ({ tradingPage, devicePrompt }) => {
+    test('Sell Ethereum', async ({ page, tradingPage, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
+            await expect(tradingPage.fees.switchModeButton('custom')).toBeVisible();
+            await expect(tradingPage.fees.switchModeButton('custom')).toBeEnabled();
+            // TODO: toBeEnabled() is not working, it immediately resolves despite disabled attribute being present
+            await page.waitForTimeout(1000);
             await tradingPage.fees.switchModeButton('custom').click();
             await tradingPage.fees.ethereumFeeLimit.fill(gasLimit);
             await tradingPage.fees.ethereumMaxFeePerGas.fill(maxFeePerGas);
@@ -126,7 +130,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
                 ],
                 footer: 'Tap to continue',
             });
-           
+
             await expect(
                 devicePrompt.cryptoAmountWithSymbolOf('fee'),
                 errorMessageMaxCalculation,
