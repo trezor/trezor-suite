@@ -31,6 +31,15 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             transports,
         }),
         selectTradingEnvironment,
+        // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
+        //  and without defining the selector, it would use extraDependenciesMock value there
+        selectSelectedAccount: () => ({
+            status: 'none',
+            loader: undefined,
+            account: undefined,
+            network: undefined,
+            params: undefined,
+        }),
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {} as Partial<ExtraDependencies['thunks']>,
     actions: {} as Partial<ExtraDependencies['actions']>,

@@ -6,11 +6,18 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 
+import { getRandomAccountDescriptor } from '../../utils/general/utils';
+
 export const useExchangeData = (reloadRequestOrdinal: number) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'exchange' }));
+        dispatch(
+            tradingThunks.loadInitialDataThunk({
+                activeSection: 'exchange',
+                forcedApiKey: getRandomAccountDescriptor(),
+            }),
+        );
     }, [dispatch, reloadRequestOrdinal]);
 
     return useSelector(selectTradingExchangeLoadingTimestampAndStatus);
