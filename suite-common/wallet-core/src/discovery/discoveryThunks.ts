@@ -716,25 +716,6 @@ export const startDiscoveryThunk = createThunk(
     },
 );
 
-export const startInitialDiscovery = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/startInitial`,
-    ({ device }: { device: TrezorDevice }, { dispatch, getState, extra }) => {
-        // note: currently this is only used in Suite. If a Suite Lite implementation is needed,
-        // refactor this to a parameter because suiteSettings is a suite-only reducer.
-        const isAddingHiddenWalletWithRespectToSettings =
-            extra.selectors.selectSuiteSettings(getState()).defaultWalletLoading === 'passphrase';
-
-        dispatch(
-            startDiscoveryThunk({
-                device,
-                isAddingHiddenWalletWithRespectToSettings,
-                isAddingExistingWallet: true,
-                isAddingHiddenWallet: isAddingHiddenWalletWithRespectToSettings,
-            }),
-        );
-    },
-);
-
 export const runAdditionalDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
     async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
