@@ -20,6 +20,7 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/module-authorize-device": "workspace:*",
+        "@suite-native/module-check-backup": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",

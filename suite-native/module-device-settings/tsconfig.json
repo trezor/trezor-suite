@@ -10,6 +10,7 @@
         { "path": "../device" },
         { "path": "../intl" },
         { "path": "../module-authorize-device" },
+        { "path": "../module-check-backup" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

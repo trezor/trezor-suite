@@ -326,6 +326,35 @@ export const en = {
             },
         },
     },
+    moduleCheckBackup: {
+        checkBackupTutorialScreen: {
+            step1: {
+                callout: 'Let’s check your backup',
+                title: 'This check will ensure your backup is valid',
+                description:
+                    'A valid backup is necessary to recover a lost, stolen, or damaged Trezor.',
+            },
+            step2: {
+                callout: 'To get started',
+                title: 'Get your wallet backup',
+                description:
+                    'Wallet backup is a list of words you wrote down when you first set up your hardware wallet.',
+                checkButton: 'Check my backup',
+                noBackupButton: "I can't find my backup",
+            },
+        },
+        checkBackupScreen: {
+            title: 'Enter your wallet backup on your Trezor',
+        },
+        checkBackupSuccessScreen: {
+            title: 'Your backup is valid',
+        },
+        checkBackupRecapScreen: {
+            callout: 'Store your wallet backup safely',
+            title: 'Make sure to return your wallet backup to a secure, private place',
+            description: 'No one can recover your backup if you lose it—not even Trezor Support.',
+        },
+    },
     moduleConnectDevice: {
         connectAndUnlockScreen: {
             title: 'Connect & unlock\nyour Trezor',
@@ -545,7 +574,7 @@ export const en = {
     moduleDeviceSettings: {
         sectionTitles: {
             general: 'General',
-            checks: 'Checks',
+            security: 'Security',
             dangerZone: 'Danger Zone',
         },
         changeDeviceName: {
@@ -601,6 +630,10 @@ export const en = {
                 changePin: 'Change PIN',
                 removePin: 'Remove PIN',
             },
+        },
+        checkBackup: {
+            title: 'Check wallet backup',
+            subtitle: 'Check the validity of your backup',
         },
         authenticity: {
             title: 'Device authenticity',
