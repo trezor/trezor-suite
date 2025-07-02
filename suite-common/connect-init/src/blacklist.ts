@@ -1,7 +1,10 @@
 import { ConnectWebKey } from './types';
 
-// List of methods that don't work with device, so they don't need to be patched
+/**
+ * does not need wrapping blacklist
+ */
 export const blacklist: ConnectWebKey[] = [
+    // List of utility methods that don't need to be patched - getting info for them is not valuable
     'manifest',
     'init',
     'setTransports',
@@ -10,6 +13,7 @@ export const blacklist: ConnectWebKey[] = [
     'off',
     'removeAllListeners',
     'uiResponse',
+    //  at the moment, we don't need to get info for blockchain methods, but we could add them later
     'blockchainGetAccountBalanceHistory',
     'blockchainGetInfo',
     'blockchainGetCurrentFiatRates',
@@ -22,14 +26,11 @@ export const blacklist: ConnectWebKey[] = [
     'blockchainSubscribeFiatRates',
     'blockchainUnsubscribe',
     'blockchainUnsubscribeFiatRates',
+    // more utility methods
     'requestLogin',
     'getCoinInfo',
     'dispose',
     'cancel',
-    // this API may use device or not, depending on parameters. The flow that doesn't use device is called very often,
-    // so locking device must be avoided (blocks a lot of Suite features needlessly)
-    // TODO find a better solution to wrap this method only when device is used
-    'getAccountInfo',
     // WebUSB methods from Connect web
     'requestWebUSBDevice',
     'disableWebUSB',

@@ -139,17 +139,27 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 const original: any = TrezorConnect[key as ConnectKey];
                 if (!original) return;
                 (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
-                    dispatch(lockDevice(true));
-                    const result = await synchronize(() => original(params));
+                    const result = await synchronize(async () => {
+                        const infoResult = await original({ ...params, __info: true });
 
-                    dispatch(lockDevice(false));
-                    dispatch(
-                        deviceActions.removeButtonRequests({
-                            // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                            // be the same re-selected device from this line. We should reuse device from params.
-                            device: selectSelectedDevice(getState()),
-                        }),
-                    );
+                        const shouldLockDevice = infoResult.success && infoResult.payload.useDevice;
+                        if (shouldLockDevice) {
+                            dispatch(lockDevice(true));
+                        }
+
+                        return original(params).finally(() => {
+                            if (shouldLockDevice) {
+                                dispatch(lockDevice(false));
+                                dispatch(
+                                    deviceActions.removeButtonRequests({
+                                        // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                                        // be the same re-selected device from this line. We should reuse device from params.
+                                        device: selectSelectedDevice(getState()),
+                                    }),
+                                );
+                            }
+                        });
+                    });
 
                     return result;
                 };
