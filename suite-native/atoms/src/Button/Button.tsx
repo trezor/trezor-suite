@@ -75,9 +75,8 @@ export type ButtonStyleProps = {
     size: ButtonSize;
     backgroundColor: Color;
     isDisabled: boolean;
+    isFullWidth: boolean;
     flex?: number;
-    hasTitle?: boolean;
-    isFullWidth?: boolean;
 };
 
 export type ButtonTextStyleProps = {

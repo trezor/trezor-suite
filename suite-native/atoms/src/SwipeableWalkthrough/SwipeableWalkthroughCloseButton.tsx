@@ -6,17 +6,17 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { IconButton } from '@suite-native/atoms';
-type SwipeableWalkthroughScreenHeaderProps = {
+type SwipeableWalkthroughCloseButtonProps = {
     onPressBack: () => void;
     currentStepIndex: SharedValue<number>;
 };
 
 const ANIMATION_DURATION = 500;
 
-export const WalletBackupRecapBackButton = ({
+export const SwipeableWalkthroughCloseButton = ({
     onPressBack,
     currentStepIndex,
-}: SwipeableWalkthroughScreenHeaderProps) => {
+}: SwipeableWalkthroughCloseButtonProps) => {
     const xPaddingBottom = useDerivedValue(() =>
         withTiming(currentStepIndex.value === 0 ? 0 : 3, { duration: ANIMATION_DURATION / 2 }),
     );
