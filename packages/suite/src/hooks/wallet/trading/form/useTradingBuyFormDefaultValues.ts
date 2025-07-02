@@ -3,17 +3,19 @@ import { useMemo } from 'react';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
-    TRADING_DEFAULT_FIAT_CURRENCY,
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
     TradingCountryCode,
     type TradingPaymentMethodListProps,
+    enabledTradingCurrencies,
     getDefaultCountry,
     regional,
     selectTradingPrefilledFromAccount,
     useTradingInfo,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
+import { selectLocalCurrency } from '@suite-common/wallet-core';
+import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
@@ -45,11 +47,18 @@ export const useTradingBuyFormDefaultValues = (
         }),
         [],
     );
-    const suggestedFiatCurrency = (buyInfo?.buyInfo?.suggestedFiatCurrency?.toLowerCase() ??
-        TRADING_DEFAULT_FIAT_CURRENCY) as FiatCurrencyCode;
+
+    const localCurrency = useSelector(selectLocalCurrency);
+    const isEnabledTradingCurrency = isArrayMember(
+        localCurrency,
+        typedObjectValues(enabledTradingCurrencies),
+    );
+    const suggestedFiatCurrency = (
+        isEnabledTradingCurrency ? localCurrency : 'usd'
+    ) as FiatCurrencyCode;
     const defaultCurrency = useMemo(
-        () => buildTradingFiatOption(suggestedFiatCurrency),
-        [suggestedFiatCurrency],
+        () => buildTradingFiatOption(isEnabledTradingCurrency ? localCurrency : 'usd'),
+        [isEnabledTradingCurrency, localCurrency],
     );
     const defaultValues = useMemo(
         () => ({
