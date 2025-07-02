@@ -30,4 +30,8 @@ export const blacklist: ConnectKey[] = [
     // so locking device must be avoided (blocks a lot of Suite features needlessly)
     // TODO find a better solution to wrap this method only when device is used
     'getAccountInfo',
+    // https://github.com/trezor/trezor-suite/issues/19876
+    'composeTransaction',
+    'cardanoComposeTransaction',
+    'solanaComposeTransaction',
 ];
