@@ -28,6 +28,7 @@ type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'
     isLoading?: boolean;
     isDisabled?: boolean;
 };
+
 const sizeDimensions = {
     tiny: 20,
     extraSmall: 36,
@@ -38,9 +39,9 @@ const sizeDimensions = {
 
 const iconButtonStyle = mergeNativeStyles([
     buttonStyle,
-    prepareNativeStyle<ButtonStyleProps>((_, { size, hasTitle }) => ({
+    prepareNativeStyle<ButtonStyleProps>((_, { size }) => ({
         height: sizeDimensions[size],
-        width: hasTitle ? 'auto' : sizeDimensions[size],
+        width: sizeDimensions[size],
         // padding must be set using paddingVertical and paddingHorizontal otverwise it won't override the default padding
         paddingVertical: 0,
         paddingHorizontal: 0,
@@ -83,6 +84,7 @@ export const IconButton = ({
                 animatedPressStyle,
                 applyStyle(iconButtonStyle, {
                     size,
+                    isFullWidth: false,
                     backgroundColor,
                     isDisabled,
                 }),
