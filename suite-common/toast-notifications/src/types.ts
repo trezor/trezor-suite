@@ -82,10 +82,6 @@ export type ToastPayload = (
           txid: string;
       }
     | {
-          type: 'bridge-dev-restart';
-          devMode: boolean;
-      }
-    | {
           type:
               | 'error'
               | 'auth-failed'
