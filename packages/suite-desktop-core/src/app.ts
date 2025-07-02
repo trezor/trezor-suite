@@ -206,7 +206,7 @@ const init = async () => {
     const buildInfo = getBuildInfo();
     logger.info('build', buildInfo);
 
-    const computerInfo = await getComputerInfo();
+    const computerInfo = getComputerInfo();
     logger.debug('computer', computerInfo);
 
     const widthArg = parseInt(app.commandLine.getSwitchValue('width'), 10);

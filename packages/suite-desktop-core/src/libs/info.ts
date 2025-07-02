@@ -1,10 +1,25 @@
 import { app } from 'electron';
-import si from 'systeminformation';
+import os from 'os';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { bytesToHumanReadable } from '@trezor/utils';
 
 import { b2t } from './utils';
+
+const getCPUInfo = () => {
+    const cpus = os.cpus();
+    const cores = cpus.length;
+    const model = cpus[0]?.model.trim() ?? 'Unknown CPU';
+
+    const maxSpeedMHz = Math.max(...cpus.map(cpu => cpu.speed));
+    const speedGHz = isNaN(maxSpeedMHz) ? 'Unknown CPU speed' : (maxSpeedMHz / 1000).toFixed(2);
+
+    return {
+        model,
+        cores,
+        speedGHz,
+    };
+};
 
 export const getBuildInfo = () => [
     'Info:',
@@ -17,25 +32,21 @@ export const getBuildInfo = () => [
     `- CWD: ${process.cwd()}`,
 ];
 
-export const getComputerInfo = async () => {
-    const { system, cpu, mem, osInfo } = await si.get({
-        system: 'manufacturer, model, virtual',
-        cpu: 'manufacturer, brand, processors, physicalCores, cores, speed',
-        mem: 'total',
-        osInfo: 'platform, arch, distro, release',
-    });
+/**
+ * This information is currently used *only* in Debug mode, goes to stdout and local files, see logger.ts.
+ * It is neither sent to analytics (but a similar info is queried in the renderer process for consistency with Web),
+ * nor offered in the UI "Application logs" section (those are redux logs, nothing from nodeJS process).
+ */
+export const getComputerInfo = () => {
+    const cpu = getCPUInfo();
 
     return [
         'Info:',
-        `- Platform: ${osInfo.platform} ${osInfo.arch}`,
-        `- OS: ${osInfo.distro} ${osInfo.release}`,
-        `- Manufacturer: ${system.manufacturer}`,
-        `- Model: ${system.model}`,
-        `- Virtual: ${b2t(system.virtual)}`,
-        `- CPU: ${cpu.manufacturer} ${cpu.brand}`,
-        `- Cores: ${cpu.processors}x${cpu.physicalCores}(+${cpu.cores - cpu.physicalCores}) @ ${
-            cpu.speed
-        }GHz`,
-        `- RAM: ${bytesToHumanReadable(mem.total)}`,
+        `- Platform: ${os.platform()} ${os.arch()}`,
+        `- OS release: ${os.release()}`,
+        `- OS version: ${os.version()}`,
+        `- CPU: ${cpu.model}`,
+        `- Cores: ${cpu.cores} @ ${cpu.speedGHz} GHz`,
+        `- RAM: ${bytesToHumanReadable(os.totalmem())}`,
     ];
 };
