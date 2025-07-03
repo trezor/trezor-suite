@@ -7,8 +7,8 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">25.5.0",
-                        "mobile": ">25.5.0",
+                        "desktop": ">=25.5.1",
+                        "mobile": ">=25.5.1",
                         "web": "*"
                     },
                     "countryCodes": ["GB"]
