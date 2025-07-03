@@ -233,6 +233,9 @@ export type DeviceCheckBackupStackParamList = {
     [DeviceCheckBackupStackRoutes.CheckBackup]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupSuccess]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupRecap]: undefined;
+    [DeviceCheckBackupStackRoutes.UnsupportedModel]: {
+        deviceModel: string;
+    };
 };
 
 export type DeviceAuthenticityStackParamList = {

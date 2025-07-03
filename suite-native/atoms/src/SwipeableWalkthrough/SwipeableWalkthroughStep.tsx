@@ -83,7 +83,7 @@ export const SwipeableWalkthroughStep = ({
                 walkthroughStepAnimatedStyle,
                 applyStyle(stepContainerStyle, { height: stepContainerHeight }),
             ]}
-            testID="@deviceOnboarding/SwipeableWalkthroughStep"
+            testID="@swipeableWalkthroughStep"
         >
             <ScrollView
                 bounces={false}
@@ -91,7 +91,7 @@ export const SwipeableWalkthroughStep = ({
                     safeAreaInsetBottom: bottomSafeAreaInset,
                     height: stepContainerHeight,
                 })}
-                testID="@deviceOnboarding/SwipeableWalkthroughStep/scrollView"
+                testID="@swipeableWalkthroughStep/scrollView"
             >
                 <Box flex={1}>
                     <SwipeableWalkthroughStepHeader

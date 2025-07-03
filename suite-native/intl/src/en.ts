@@ -354,6 +354,16 @@ export const en = {
             title: 'Make sure to return your wallet backup to a secure, private place',
             description: 'No one can recover your backup if you lose it—not even Trezor Support.',
         },
+        checkBackupUnsupportedModelScreen: {
+            title: 'To check your backup, use the web application.',
+            subtitle:
+                'Check backup for {deviceModel} is unfortunately not supported in the mobile app.',
+            redirectButton: 'Continue to Trezor Suite Web',
+            laterButton: 'I’ll do it later',
+            step1: 'Go to Trezor Suite for Web using the button below.',
+            step2: 'Complete check backup in your browser.',
+            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
+        },
     },
     moduleConnectDevice: {
         connectAndUnlockScreen: {
