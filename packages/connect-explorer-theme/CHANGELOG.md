@@ -60,7 +60,6 @@
 - ffb6d808: - Fix
   `TypeError: Cannot read properties of null (reading 'classList')` while
   navigating to route that doesn't have toc with `router.push` for example
-
     - Add alias `Tabs.Tab` to `Tab` component
     - Add alias `Cards.Card` to `Card` component
     - should not attach custom heading id as id attribute if parent is `Tabs.Tab`
@@ -90,13 +89,11 @@
 ### Minor Changes
 
 - d9820746: - show headings for partial md/mdx in toc
-
     - hide headings in toc when parent `<Tab />` or `<Tabs.Tab />`
 
 - 63271a41: add toc.backToTop option
 - 8962597e: - allow override static image component that was hardcoded to
   `import Image from 'next/image'` now it's plain `<img />`
-
     - support `<details />`/`<summary />` for `.md` files
 
 ### Patch Changes
@@ -158,7 +155,6 @@
 - e54b008: - add `@theguild/remark-npm2yarn` package that replaces the code
   block that has `npm2yarn` metadata with `<Tabs />` and `<Tab />` components
   from `nextra/components`.
-
     - `<Tabs />` now has `selectedKey` prop, the chosen tab is saved in the local
       storage, which will be chosen in future page renders.
 
@@ -174,7 +170,6 @@
 ### Minor Changes
 
 - 16bbb88: Move below packages to nextra package
-
     - `<Cards />` and `<Card />`
     - `<Tabs />` and `<Tab />`
     - `<Steps />`

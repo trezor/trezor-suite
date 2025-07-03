@@ -113,7 +113,7 @@ runs:
         fi
         export BASE_URL
         echo "Using BASE_URL: $BASE_URL"
-  
+
         if [[ "${{ inputs.run-reporter }}" == "true" ]]; then
           REPORTER_OPT="--reporter=./e2e/support/reporters/gitHubReporter.ts"
         else

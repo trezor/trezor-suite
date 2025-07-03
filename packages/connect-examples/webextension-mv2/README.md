@@ -34,7 +34,6 @@ Run the commands below in order to get the MV2 and MV3 webextension ready to be 
 Basic implementation is the same for both Google Chrome & Firefox. However, few additional steps are needed to make extension work with [WebUSB](https://wicg.github.io/webusb/) in Google Chrome.
 
 1. Configure your manifest file ([Google Chrome](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-examples/webextension/manifest.json), [Firefox](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-examples/webextension/manifest-firefox.json))
-
     - Because Trezor Connect is served from the `https://connect.trezor.io/` domain you must grant permissions to `://connect.trezor.io/*` URL in your manifest file.
 
         ```JSON
