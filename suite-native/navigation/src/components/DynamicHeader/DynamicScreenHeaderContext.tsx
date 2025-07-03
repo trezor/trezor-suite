@@ -4,11 +4,8 @@ import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/
 import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 type HeaderContextType = {
-    isHeaderVisible: boolean;
-    setIsHeaderVisible: (visible: boolean) => void;
     setScrollableHeaderHeight: (height: number) => void;
-    scrollableHeaderHeight: number;
-    isScrolled: boolean;
+    isScrollableHeaderScrolled: boolean;
     handleDynamicHeaderScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
 };
 
@@ -18,15 +15,14 @@ type HeaderProviderProps = {
     children: ReactNode;
 };
 
-export const HeaderProvider = ({ children }: HeaderProviderProps) => {
-    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-    const [isScrolled, setIsScrolled] = useState(false);
+export const DynamicHeaderProvider = ({ children }: HeaderProviderProps) => {
+    const [isScrollableHeaderScrolled, setIsScrollableHeaderScrolled] = useState(false);
     const [scrollableHeaderHeight, setScrollableHeaderHeight] = useState(0);
 
     const handleDynamicHeaderScroll = useCallback(
         ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
             const isOffsetBigger = nativeEvent.contentOffset.y > scrollableHeaderHeight;
-            setIsScrolled(isOffsetBigger);
+            setIsScrollableHeaderScrolled(isOffsetBigger);
         },
         [scrollableHeaderHeight],
     );
@@ -34,12 +30,9 @@ export const HeaderProvider = ({ children }: HeaderProviderProps) => {
     return (
         <HeaderContext.Provider
             value={{
-                isHeaderVisible,
-                setIsHeaderVisible,
                 setScrollableHeaderHeight,
-                scrollableHeaderHeight,
                 handleDynamicHeaderScroll,
-                isScrolled,
+                isScrollableHeaderScrolled,
             }}
         >
             {children}
@@ -47,9 +40,10 @@ export const HeaderProvider = ({ children }: HeaderProviderProps) => {
     );
 };
 
-export const useHeader = () => {
+export const useDynamicHeader = () => {
     const context = useContext(HeaderContext);
-    if (context === undefined) {
+
+    if (!context) {
         throw new Error('useHeader must be used within a HeaderProvider');
     }
 

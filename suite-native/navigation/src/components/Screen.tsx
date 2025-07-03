@@ -13,15 +13,12 @@ import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import {
-    DynamicScreenHeader,
-    DynamicScreenHeaderProps,
-    DynamicScrollableHeader,
-} from './DynamicScreenHeader';
-import { HeaderProvider } from './DynamicScreenHeaderContext';
+import { DynamicScreenHeader, DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
+import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
+import { DynamicScrollableScreenContentHeader } from './DynamicHeader/ScrollableScreenContentHeader';
 
 export type ScreenProps = {
     children: ReactNode;
@@ -122,7 +119,7 @@ export const Screen = ({
     };
 
     return (
-        <HeaderProvider>
+        <DynamicHeaderProvider>
             <View
                 style={applyStyle(screenContainerStyle, {
                     backgroundColor,
@@ -141,7 +138,7 @@ export const Screen = ({
                     isDynamicHeader={isDynamicHeader(header)}
                 >
                     {isDynamicHeader(header) && (
-                        <DynamicScrollableHeader {...dynamicHeaderProps()} />
+                        <DynamicScrollableScreenContentHeader {...dynamicHeaderProps()} />
                     )}
                     <Box
                         style={applyStyle(screenContentStyle, {
@@ -162,6 +159,6 @@ export const Screen = ({
                     </KeyboardStickyView>
                 )}
             </View>
-        </HeaderProvider>
+        </DynamicHeaderProvider>
     );
 };
