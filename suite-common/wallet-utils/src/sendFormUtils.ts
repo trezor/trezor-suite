@@ -315,7 +315,7 @@ export const findComposeErrors = <T extends FieldValues>(
 export const findToken = (tokens: Account['tokens'], address?: string | null) => {
     if (!address || !tokens) return;
 
-    return tokens.find(t => t.contract === address);
+    return tokens.find(t => t.contract.toLowerCase() === address.toLowerCase());
 };
 
 // BTC composeTransaction
