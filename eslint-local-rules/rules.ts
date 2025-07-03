@@ -1,5 +1,7 @@
 import type { Rule } from 'eslint';
 
+import { noObjectKeysRule } from './noObjectKeysRule';
+
 const findNodeWithCalleeInSubTree = (node, calleeName) => {
     if (node.type === 'CallExpression' && node.callee.name === calleeName) {
         return node;
@@ -54,6 +56,7 @@ const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedCompon
 };
 
 export default {
+    'no-object-keys': noObjectKeysRule,
     'no-override-ds-component': {
         meta: {
             type: 'problem',

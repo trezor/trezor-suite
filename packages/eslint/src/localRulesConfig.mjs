@@ -6,6 +6,7 @@ export const localRulesConfig = [
             'local-rules': pluginLocalRules,
         },
         rules: {
+            'local-rules/no-object-keys': 'error',
             'local-rules/no-override-ds-component': [
                 'error',
                 { packageNames: ['@trezor/components', '@trezor/product-components'] },
