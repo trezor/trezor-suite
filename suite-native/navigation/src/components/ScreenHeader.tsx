@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { RequireOneOrNone } from 'type-fest';
 
@@ -55,16 +56,20 @@ export const ScreenHeader = ({
                     <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
                 )}
             </Box>
-            <Box alignItems="center">
-                <Text
-                    variant="highlight"
-                    adjustsFontSizeToFit
-                    numberOfLines={1}
-                    testID="@screen/sub-header/title"
-                >
-                    {content}
-                </Text>
-            </Box>
+            {content && (
+                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                    <Box alignItems="center">
+                        <Text
+                            variant="highlight"
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                            testID="@screen/sub-header/title"
+                        >
+                            {content}
+                        </Text>
+                    </Box>
+                </Animated.View>
+            )}
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
                 {rightIcon}
             </Box>
