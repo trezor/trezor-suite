@@ -2,6 +2,7 @@ import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import type { FiatRatesBySymbol } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -17,7 +18,7 @@ const calcFiatValueMap = (
     rates: FiatRatesBySymbol,
 ): { [k: string]: string | undefined } => {
     const fiatValueMap: { [k: string]: string | undefined } = {};
-    Object.keys(rates).forEach(fiatSymbol => {
+    typedObjectKeys(rates).forEach(fiatSymbol => {
         fiatValueMap[fiatSymbol] = toFiatCurrency(amount, rates?.[fiatSymbol]) ?? '0';
     });
 
@@ -116,7 +117,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
     }
 
     // convert bins from an object indexed by timestamp to an array of bins
-    const aggregatedData = Object.keys(groupedByTimestamp)
+    const aggregatedData = typedObjectKeys(groupedByTimestamp)
         .map(timestamp => groupedByTimestamp[timestamp])
         .sort((a, b) => Number(a.time) - Number(b.time)); // sort from older to newer;;
 

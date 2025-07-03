@@ -1,3 +1,5 @@
+import { typedObjectKeys } from './typedObjectKeys';
+
 export const deepEqual = (a: any, b: any): boolean => {
     if (a === b) return true;
 
@@ -17,8 +19,8 @@ export const deepEqual = (a: any, b: any): boolean => {
         return true;
     }
 
-    const keysA = Object.keys(a);
-    const keysB = Object.keys(b);
+    const keysA = typedObjectKeys(a);
+    const keysB = typedObjectKeys(b);
 
     if (keysA.length !== keysB.length) return false;
 
@@ -49,8 +51,8 @@ export const isChanged = (prev?: any, current?: any, filter?: { [k: string]: str
             if (isChanged(prev[i], current[i], filter)) return true;
         }
     } else if (currentType === '[object Object]') {
-        const prevKeys = Object.keys(prev);
-        const currentKeys = Object.keys(current);
+        const prevKeys = typedObjectKeys(prev);
+        const currentKeys = typedObjectKeys(current);
         // 5. simple validation of keys length
         if (prevKeys.length !== currentKeys.length) return true;
 

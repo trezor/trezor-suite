@@ -1,3 +1,4 @@
+import { typedObjectKeys } from '@trezor/utils/libESM';
 import { networks } from '@trezor/utxo-lib';
 
 import { analyzeTransactions } from '../../src/client/analyzeTransactions';
@@ -37,7 +38,10 @@ const calcAnonymity = (transactions: any[]) => {
         tx.InternalOutputs.forEach(calc);
     });
 
-    return Object.keys(anonymity).map(Address => ({ Address, AnonymitySet: anonymity[Address] }));
+    return typedObjectKeys(anonymity).map(Address => ({
+        Address,
+        AnonymitySet: anonymity[Address],
+    }));
 };
 
 describe('analyzeTransactions', () => {

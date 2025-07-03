@@ -26,6 +26,7 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "expo-linear-gradient": "~14.1.5",
         "react": "19.0.0",
         "react-native": "0.79.3",

@@ -5,6 +5,7 @@ import {
     ExtendedMessageDescriptor as CommonExtendedMessageDescriptor,
     FormatXMLElementFn,
 } from '@suite-common/intl-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 // We cannot use aliases here because this file is directly imported by the @suite-common/intl-types
 // It's little hacky by this will be solved when PR for refactor intl will be merged.
@@ -27,7 +28,7 @@ export const isMsgType = (
 export const Translation = (props: MsgType) => {
     const values: Record<string, any> = {};
     // message passed via props (id, defaultMessage, values)
-    Object.keys(props.values || []).forEach(key => {
+    typedObjectKeys(props.values || []).forEach(key => {
         // Iterates through all values. The entry may also contain a MessageDescriptor.
         // If so, Renders MessageDescriptor by passing it to `Translation` component
         const maybeMsg = props.values![key];
@@ -51,7 +52,7 @@ export const Translation = (props: MsgType) => {
             tagName={defaultTagName}
             defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
             // pass undefined to a 'values' prop in case of an empty values object
-            values={Object.keys(values).length === 0 ? undefined : values}
+            values={typedObjectKeys(values).length === 0 ? undefined : values}
         />
     );
 };

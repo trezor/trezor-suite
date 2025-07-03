@@ -1,9 +1,11 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 import * as networks from '../src/networks';
 
 const { isNetworkType } = networks;
 
 type Key = Exclude<keyof typeof networks, 'isNetworkType'>;
-const defs = Object.keys(networks).reduce((n, key) => {
+const defs = typedObjectKeys(networks).reduce((n, key) => {
     if (typeof networks[key as Key] !== 'object') {
         return n;
     }

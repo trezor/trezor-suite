@@ -11,6 +11,7 @@ export const localRulesConfig = [
                 'error',
                 { packageNames: ['@trezor/components', '@trezor/product-components'] },
             ],
+            'local-rules/no-object-keys': 'error',
         },
     },
 ];

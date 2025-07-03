@@ -1,6 +1,8 @@
 const { addressType } = require('./crypto/utils');
+
 const baseX = require('base-x').default;
 const crc = require('crc');
+
 const cryptoUtils = require('./crypto/utils');
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -12,11 +14,12 @@ const ed25519PublicKeyVersionByte = 6 << 3;
 function swap16(number) {
     const lower = number & 0xff;
     const upper = (number >> 8) & 0xff;
+
     return (lower << 8) | upper;
 }
 
 module.exports = {
-    isValidAddress: function (address) {
+    isValidAddress (address) {
         if (regexp.test(address)) {
             return this.verifyChecksum(address);
         }
@@ -24,7 +27,7 @@ module.exports = {
         return false;
     },
 
-    verifyChecksum: function (address) {
+    verifyChecksum (address) {
         // based on https://github.com/stellar/js-stellar-base/blob/master/src/strkey.js
         const bytes = base32.decode(address);
         if (bytes[0] !== ed25519PublicKeyVersionByte) {
@@ -34,13 +37,15 @@ module.exports = {
         const payload = bytes.slice(0, -2);
         const checksum = cryptoUtils.toHex(bytes.slice(-2));
         const computedChecksum = cryptoUtils.numberToHex(swap16(crc.crc16xmodem(payload)), 2);
+
         return computedChecksum === checksum;
     },
 
-    getAddressType: function (address, currency, networkType) {
+    getAddressType (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
+
         return undefined;
     },
 };

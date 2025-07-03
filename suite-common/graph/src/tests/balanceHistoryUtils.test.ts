@@ -1,4 +1,5 @@
 import { TokenAddress } from '@suite-common/wallet-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { getAccountHistoryMovementFromTransactions } from '../balanceHistoryUtils';
 import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';
@@ -107,7 +108,7 @@ describe('Account balance movement history', () => {
             to,
         });
 
-        for (const token of Object.keys(balanceHistory.tokens)) {
+        for (const token of typedObjectKeys(balanceHistory.tokens)) {
             const filteredBalanceHistory = ethTokenBalanceHistoryResult[token].filter(
                 item => item.time >= from && item.time <= to,
             );

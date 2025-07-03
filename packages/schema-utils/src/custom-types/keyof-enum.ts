@@ -9,6 +9,8 @@ import {
     TUnion,
 } from '@sinclair/typebox';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 // UnionToIntersection<A | B> = A & B
 type UnionToIntersection<U> = (U extends unknown ? (arg: U) => 0 : never) extends (
     arg: infer I,
@@ -49,7 +51,7 @@ export class KeyofEnumBuilder extends JavaScriptTypeBuilder {
         schema: T,
         options?: SchemaOptions,
     ): TKeyOfEnum<T> {
-        const keys = Object.keys(schema).map(key => this.Literal(key));
+        const keys = typedObjectKeys(schema).map(key => this.Literal(key));
 
         return this.Union(keys, { ...options, [Hint]: 'KeyOfEnum' }) as TKeyOfEnum<T>;
     }

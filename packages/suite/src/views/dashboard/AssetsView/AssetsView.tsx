@@ -26,6 +26,7 @@ import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Button, Card, Icon, LoadingContent, Row } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { PartialRecord } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils/libESM';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -117,7 +118,7 @@ export const AssetsView = () => {
         assets[account.symbol] = symbolAssets;
     });
 
-    const assetSymbols = Object.keys(assets).filter(symbol => isNetworkSymbol(symbol));
+    const assetSymbols = typedObjectKeys(assets).filter(symbol => isNetworkSymbol(symbol));
 
     const assetsData: AssetData[] = assetSymbols
         .map(symbol => {

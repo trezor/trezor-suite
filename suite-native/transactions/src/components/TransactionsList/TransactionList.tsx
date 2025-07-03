@@ -25,7 +25,7 @@ import {
     selectAccountTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition , typedObjectKeys } from '@trezor/utils';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -212,7 +212,7 @@ export const TransactionList = ({
             delete accountTransactionsByMonth['no-blocktime'];
         }
 
-        const transactionMonthKeys = Object.keys(accountTransactionsByMonth).sort(
+        const transactionMonthKeys = typedObjectKeys(accountTransactionsByMonth).sort(
             sortKeysPendingFirst,
         ) as MonthKey[];
 

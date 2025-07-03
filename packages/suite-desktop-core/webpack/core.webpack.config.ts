@@ -8,6 +8,8 @@ import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { suiteVersion } from '../../suite/package.json';
 import pkg from '../../suite-desktop/package.json';
 import uriSchemes from '../../suite-desktop/uriSchemes.json';
@@ -62,7 +64,7 @@ const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
  2. find any occurrences of your local trezor-suite repo path in dist/**.js
     (if any, Suite will likely crash when executed on another computer).
 */
-const dependencies = Object.keys(pkg.dependencies);
+const dependencies = typedObjectKeys(pkg.dependencies);
 
 /* **** CONFIG **** */
 

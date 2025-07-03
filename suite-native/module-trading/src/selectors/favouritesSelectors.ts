@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 import { TradingRootState, createMemoizedSelector } from '../reducers';
 import { TradeableAsset } from '../types/general';
 
@@ -6,7 +8,7 @@ export const selectTradingFavouriteAssets = (state: TradingRootState) =>
 
 export const selectTradingFavouriteAssetsArray = createMemoizedSelector(
     [selectTradingFavouriteAssets],
-    assets => Object.keys(assets),
+    assets => typedObjectKeys(assets),
 );
 
 export const selectIsTradingFavouriteAsset = createMemoizedSelector(

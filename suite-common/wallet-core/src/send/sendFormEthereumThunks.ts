@@ -31,7 +31,7 @@ import {
     prepareEthereumTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber , typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
@@ -239,7 +239,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
 
         // format max
         // update errorMessage values (symbol)
-        Object.keys(resultLevels).forEach(key => {
+        typedObjectKeys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
             if (tx.type !== 'error') {
                 tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;

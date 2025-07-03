@@ -14,6 +14,7 @@ import {
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 type StakingParams = {
@@ -155,7 +156,7 @@ export const composeStakingTransaction = (
 
     // format max (calculate sends it as satoshi)
     // update errorMessage values (symbol)
-    Object.keys(wrappedResponse).forEach(key => {
+    typedObjectKeys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
             tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;

@@ -2,6 +2,8 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { getWorkspacesList } from './utils/getWorkspacesList';
 
 (() => {
@@ -13,7 +15,7 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
         {},
     );
 
-    Object.keys(workspaces).forEach(workspaceName => {
+    typedObjectKeys(workspaces).forEach(workspaceName => {
         const workspace = workspaces[workspaceName];
         const packageJSON = fs.readFileSync(path.join(workspace.location, 'package.json'), {
             encoding: 'utf-8',

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { explorerActions } from '@suite-common/wallet-core';
-import { isUrl } from '@trezor/utils';
+import { isUrl , typedObjectKeys } from '@trezor/utils';
 
 import { useDispatch, useSelector, useTranslation } from '../suite';
 
@@ -139,7 +139,7 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
     const normalizeExplorer = (explorer: Explorer) => {
         const stripSlashes = (value: string): string => value.replace(/^\/+|\/+$/g, '');
 
-        (Object.keys(explorer) as (keyof Explorer)[]).forEach(key => {
+        (typedObjectKeys(explorer) as (keyof Explorer)[]).forEach(key => {
             if (!explorer[key]) return;
             explorer[key] = stripSlashes(explorer[key]).trim();
         });
@@ -149,7 +149,7 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
 
     const usesDefaultExplorer = useCallback(
         (explorer: Explorer) =>
-            Object.keys(explorerConfig.default).every(
+            typedObjectKeys(explorerConfig.default).every(
                 key =>
                     explorer[key as keyof Explorer] ===
                     explorerConfig.default[key as keyof Explorer],

@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { icons } from '@suite-common/icons/src/icons';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -21,7 +22,7 @@ export const Icon: StoryObj<typeof IconComponent> = {
     },
     argTypes: {
         name: {
-            options: Object.keys(icons),
+            options: typedObjectKeys(icons),
             control: {
                 type: 'select',
             },

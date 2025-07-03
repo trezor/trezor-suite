@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import json from '../messages.json';
 import {
     DEFINITION_PATCH,
@@ -81,7 +83,7 @@ const parseMessage = (
     const { nested, fields } = message;
     let nestedTypes;
     if (nested) {
-        nestedTypes = Object.keys(nested).flatMap(item =>
+        nestedTypes = typedObjectKeys(nested).flatMap(item =>
             parseMessage(item, nested[item], options),
         );
     }
@@ -94,13 +96,13 @@ const parseMessage = (
     if (DEFINITION_PATCH[messageName]) {
         // replace whole declaration with patch
         lines.push(DEFINITION_PATCH[messageName]());
-    } else if (!fields || !Object.keys(fields).length) {
+    } else if (!fields || !typedObjectKeys(fields).length) {
         // few types are just empty objects, make it one line
         lines.push(`export type ${messageName} = {};`, '');
     } else {
         // declare type
         lines.push(`export type ${messageName} = {`);
-        Object.keys(fields).forEach(fieldName => {
+        typedObjectKeys(fields).forEach(fieldName => {
             const field = fields[fieldName];
             const fieldKey = `${messageName}.${fieldName}`;
             // find patch for "rule"
@@ -133,7 +135,7 @@ const parseMessage = (
 };
 
 const fixOrder = (types: TypeItem[]) => {
-    Object.keys(ORDER).forEach(key => {
+    typedObjectKeys(ORDER).forEach(key => {
         if (key === ORDER[key]) {
             logError(`ORDER map cannot have key=value`);
         }
@@ -169,7 +171,7 @@ export const createTypes = (
     options?: ParseMessageOptions,
 ) => {
     const root = def.nested ? def.nested : def;
-    const types = Object.keys(root).flatMap(key => parseMessage(key, root[key], options));
+    const types = typedObjectKeys(root).flatMap(key => parseMessage(key, root[key], options));
     skipTypes(types);
     if (options?.fixOrder) {
         fixOrder(types);

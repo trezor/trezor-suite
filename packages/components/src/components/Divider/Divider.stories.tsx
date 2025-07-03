@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { colorVariants } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { Divider as DividerComponent, DividerProps, allowedDividerFrameProps } from './Divider';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -52,7 +53,7 @@ export const Divider: StoryObj<typeof DividerComponent> = {
             control: {
                 type: 'select',
             },
-            options: Object.keys(colorVariants.standard),
+            options: typedObjectKeys(colorVariants.standard),
         },
         children: {
             control: {

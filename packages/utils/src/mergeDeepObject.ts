@@ -3,6 +3,8 @@
 
 import { Keys } from '@trezor/type-utils';
 
+import { typedObjectKeys } from './typedObjectKeys';
+
 type TIndexValue<T, K extends PropertyKey, D = never> = T extends any
     ? K extends keyof T
         ? T[K]
@@ -72,7 +74,7 @@ export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[n
             throw new TypeError('Arguments provided to ts-deepmerge must be objects, not arrays.');
         }
 
-        Object.keys(current).forEach(key => {
+        typedObjectKeys(current).forEach(key => {
             if (['__proto__', 'constructor', 'prototype'].includes(key)) {
                 return;
             }

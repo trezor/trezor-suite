@@ -30,7 +30,7 @@ import { fetchAndUpdateAccountThunk, selectAccountByKey } from '@suite-common/wa
 import { Account } from '@suite-common/wallet-types';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { isChanged } from '@trezor/utils';
+import { isChanged , typedObjectKeys } from '@trezor/utils';
 
 import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -170,9 +170,9 @@ export const useTradingExchangeForm = ({
         ? toFiatCurrency(quotes?.[0]?.sendStringAmount, fiatValues?.fiatRate?.rate, 2)
         : null;
 
-    const formIsValid = Object.keys(formState.errors).length === 0;
+    const formIsValid = typedObjectKeys(formState.errors).length === 0;
     const hasValues = !!output?.amount;
-    const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
+    const noProviders = typedObjectKeys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues);
@@ -618,7 +618,7 @@ export const useTradingExchangeForm = ({
             if (
                 formState.isDirty &&
                 !formState.isValidating &&
-                Object.keys(formState.errors).length === 0 &&
+                typedObjectKeys(formState.errors).length === 0 &&
                 !isComposing
             ) {
                 saveDraft(exchangeDraftKey, values as TradingExchangeFormProps);

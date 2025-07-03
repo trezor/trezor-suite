@@ -5,6 +5,7 @@ import { StakeRootState, selectPoolStatsApyData } from '@suite-common/wallet-cor
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';
 import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -17,7 +18,7 @@ export const EstimatedGains = () => {
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =
-        Object.keys(formState.errors).length > 0 &&
+        typedObjectKeys(formState.errors).length > 0 &&
         formState.errors[CRYPTO_INPUT]?.type !== 'reserveOrBalance'; // provide gains calculation even if the user has not enough balance
 
     const cryptoInput = hasInvalidFormState || !value ? '0' : value;

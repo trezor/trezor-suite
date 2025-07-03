@@ -15,7 +15,8 @@
     "dependencies": {
         "@trezor/connect": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",
-        "@trezor/connect-common": "workspace:*"
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.27.1",

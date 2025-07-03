@@ -7,6 +7,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
@@ -28,7 +29,7 @@ export const ensureHistoryRates = async (
     if (!getNetwork(symbol).coingeckoId) return data;
 
     const missingRates = data
-        .filter(({ rates }) => !Object.keys(rates || {}).length)
+        .filter(({ rates }) => !typedObjectKeys(rates || {}).length)
         .map(({ time }) => time);
 
     const rateDictionary = await getFiatRatesForTimestamps(

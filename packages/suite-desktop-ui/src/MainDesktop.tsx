@@ -1,4 +1,5 @@
 /* eslint-disable import/order */
+import { typedObjectKeys } from '@trezor/utils';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -139,7 +140,7 @@ export const init = async (container: HTMLElement) => {
     // create ipc-proxy for @trezor/connect
     const proxy = await createIpcProxy<typeof TrezorConnect>('TrezorConnect');
     // override each method of @trezor/connect using ipc-proxy
-    Object.keys(TrezorConnect).forEach(method => {
+    typedObjectKeys(TrezorConnect).forEach(method => {
         // @ts-expect-error key vs union of values endless problem
         TrezorConnect[method] = proxy[method];
     });

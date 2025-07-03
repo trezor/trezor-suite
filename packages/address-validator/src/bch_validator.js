@@ -1,6 +1,6 @@
+var BTCValidator = require('./bitcoin_validator');
 const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
-var BTCValidator = require('./bitcoin_validator');
 
 var GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
 
@@ -15,6 +15,7 @@ function polymod(values) {
             }
         }
     }
+
     return chk;
 }
 
@@ -28,6 +29,7 @@ function hrpExpand(hrp) {
     for (p = 0; p < hrp.length; ++p) {
         ret.push(hrp.charCodeAt(p) & 31);
     }
+
     return ret;
 }
 
@@ -78,18 +80,19 @@ function validateAddress(address, currency, networkType) {
 }
 
 module.exports = {
-    isValidAddress: function (address, currency, networkType) {
+    isValidAddress (address, currency, networkType) {
         return (
             validateAddress(address, currency, networkType) ||
             (currency.symbol !== 'bch' &&
                 BTCValidator.isValidAddress(address, currency, networkType))
         );
     },
-    getAddressType: function (address, currency, networkType) {
+    getAddressType (address, currency, networkType) {
         networkType = networkType || DEFAULT_NETWORK_TYPE;
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
+
         return undefined;
     },
 };

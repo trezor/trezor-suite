@@ -4,11 +4,11 @@ var cryptoUtils = require('./crypto/utils');
 var regexp = new RegExp('^[0-9]{1,20}L$');
 
 module.exports = {
-    isValidAddress: function (address) {
+    isValidAddress (address) {
         return this.getAddressType(address) === addressType.ADDRESS;
     },
 
-    getAddressType: function (address) {
+    getAddressType (address) {
         if (!regexp.test(address)) {
             return undefined;
         }
@@ -17,10 +17,11 @@ module.exports = {
         }
     },
 
-    verifyAddress: function (address) {
+    verifyAddress (address) {
         var BUFFER_SIZE = 8;
         var bigNumber = address.substring(0, address.length - 1);
         var addressBuffer = cryptoUtils.bigNumberToBuffer(bigNumber);
+
         return Buffer.from(addressBuffer).slice(0, BUFFER_SIZE).equals(addressBuffer);
     },
 };

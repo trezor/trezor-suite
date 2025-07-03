@@ -1,3 +1,4 @@
+import { typedObjectKeys } from '@trezor/utils';
 export const breakpoints = {
     mobile: 576, // Previously SM
     tablet: 768, // Previously MD
@@ -27,7 +28,7 @@ export const getBreakpointFlagNames = (
     return [`isBelow${capitalizedBreakpoint}`, `isAbove${capitalizedBreakpoint}`];
 };
 
-export const initialBreakpointFlags: BreakpointFlags = Object.keys(breakpoints).reduce(
+export const initialBreakpointFlags: BreakpointFlags = typedObjectKeys(breakpoints).reduce(
     (acc, breakpoint) => {
         const [belowFlag, aboveFlag] = getBreakpointFlagNames(breakpoint as Breakpoint);
         acc[belowFlag] = false;

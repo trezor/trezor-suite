@@ -1,14 +1,4 @@
-var XRPValidator = require('./ripple_validator');
-var ETHValidator = require('./ethereum_validator');
-var BTCValidator = require('./bitcoin_validator');
 var ADAValidator = require('./ada_validator');
-var XMRValidator = require('./monero_validator');
-var LokiValidator = require('./loki_validator');
-var NANOValidator = require('./nano_validator');
-var SCValidator = require('./siacoin_validator');
-var TRXValidator = require('./tron_validator');
-var NEMValidator = require('./nem_validator');
-var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
 var EOSValidator = require('./eos_validator');
@@ -16,15 +6,25 @@ var XTZValidator = require('./tezos_validator');
 var AEValidator = require('./ae_validator');
 var ARDRValidator = require('./ardr_validator');
 var ATOMValidator = require('./atom_validator');
+var BTCValidator = require('./bitcoin_validator');
+var ETHValidator = require('./ethereum_validator');
 var HBARValidator = require('./hbar_validator');
 var ICXValidator = require('./icx_validator');
 var IOSTValidator = require('./iost_validator');
+var LSKValidator = require('./lisk_validator');
+var LokiValidator = require('./loki_validator');
+var XMRValidator = require('./monero_validator');
+var NANOValidator = require('./nano_validator');
+var NEMValidator = require('./nem_validator');
 // var IOTAValidator = require('./iota_validator');
+var NXTValidator = require('./nxt_validator');
+var XRPValidator = require('./ripple_validator');
+var SCValidator = require('./siacoin_validator');
+var SOLValidator = require('./solana_validator');
 var STEEMValidator = require('./steem_validator');
 var SYSValidator = require('./sys_validator');
+var TRXValidator = require('./tron_validator');
 var ZILValidator = require('./zil_validator');
-var NXTValidator = require('./nxt_validator');
-var SOLValidator = require('./solana_validator');
 
 // defines P2PKH, P2SH and bech32 address types for standard (prod) and testnet networks
 var CURRENCIES = [
@@ -1495,8 +1495,9 @@ var CURRENCIES = [
 ];
 
 module.exports = {
-    getByNameOrSymbol: function (currencyNameOrSymbol) {
+    getByNameOrSymbol (currencyNameOrSymbol) {
         var nameOrSymbol = currencyNameOrSymbol.toLowerCase();
+
         return CURRENCIES.find(function (currency) {
             return (
                 currency.name.toLowerCase() === nameOrSymbol ||
@@ -1504,7 +1505,7 @@ module.exports = {
             );
         });
     },
-    getAll: function () {
+    getAll () {
         return CURRENCIES;
     },
 };

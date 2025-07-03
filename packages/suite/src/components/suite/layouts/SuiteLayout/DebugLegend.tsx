@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { CSSColor, borders, colorVariants, spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 const DebugLegendContainer = styled.div`
     position: absolute;
@@ -63,7 +64,7 @@ export const DebugLegend = () => {
                         gap={spacings.xs}
                         margin={{ bottom: spacings.xs }}
                     >
-                        {Object.keys(mapDebugElevations).map(key => (
+                        {typedObjectKeys(mapDebugElevations).map(key => (
                             <Row key={key} gap={spacings.xs}>
                                 <Badge
                                     $fill={mapDebugElevations[key].background}

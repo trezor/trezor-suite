@@ -18,6 +18,7 @@ import {
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -84,7 +85,7 @@ export const useCompose = <TFieldValues extends FormState>({
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestIDRef.current;
             const result = await debounce(() => {
-                if (Object.keys(errors).length > 0) {
+                if (typedObjectKeys(errors).length > 0) {
                     return Promise.resolve(undefined);
                 }
 
@@ -203,7 +204,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
             if (shouldSwitch && composed.type === 'error') {
                 // find nearest possible tx
-                const nearest = Object.keys(composedLevels)
+                const nearest = typedObjectKeys(composedLevels)
                     .reverse()
                     .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
                 // switch to it

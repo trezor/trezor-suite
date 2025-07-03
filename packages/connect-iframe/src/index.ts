@@ -28,6 +28,7 @@ import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo, storage } from '@trezor/connect-common';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { isOriginWhitelisted, parseConnectSettings } from './connectSettings';
 import { initLogWriterWithWorker } from './sharedLoggerUtils';
@@ -145,7 +146,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
                 referrerApp: settings?.manifest?.appUrl,
                 referrerEmail: settings?.manifest?.email,
                 method: method?.name,
-                payload: method?.payload ? Object.keys(method.payload) : undefined,
+                payload: method?.payload ? typedObjectKeys(method.payload) : undefined,
                 transportTypes: transports?.map(t => t.type),
                 bridgeVersion: transports?.find(t => t.type === 'BridgeTransport')?.version,
             },

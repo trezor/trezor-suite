@@ -89,6 +89,7 @@ var createOutputMethods = function (method, createMethod, bits, padding) {
         var type = OUTPUT_TYPES[i];
         method[type] = createMethod(bits, padding, type);
     }
+
     return method;
 };
 
@@ -100,6 +101,7 @@ var createMethod = function (bits, padding) {
     method.update = function (message) {
         return method.create().update(message);
     };
+
     return createOutputMethods(method, createOutputMethod, bits, padding);
 };
 
@@ -111,6 +113,7 @@ var createShakeMethod = function (bits, padding) {
     method.update = function (message, outputBits) {
         return method.create(outputBits).update(message);
     };
+
     return createOutputMethods(method, createShakeOutputMethod, bits, padding);
 };
 
@@ -127,6 +130,7 @@ var createCshakeMethod = function (bits, padding) {
     method.update = function (message, outputBits, n, s) {
         return method.create(outputBits, n, s).update(message);
     };
+
     return createOutputMethods(method, createCshakeOutputMethod, bits, padding);
 };
 
@@ -139,12 +143,13 @@ var createKmacMethod = function (bits, padding) {
     method.update = function (key, message, outputBits, s) {
         return method.create(key, outputBits, s).update(message);
     };
+
     return createOutputMethods(method, createKmacOutputMethod, bits, padding);
 };
 
 var algorithms = [
-    { name: 'keccak', padding: KECCAK_PADDING, bits: BITS, createMethod: createMethod },
-    { name: 'sha3', padding: PADDING, bits: BITS, createMethod: createMethod },
+    { name: 'keccak', padding: KECCAK_PADDING, bits: BITS, createMethod },
+    { name: 'sha3', padding: PADDING, bits: BITS, createMethod },
     { name: 'shake', padding: SHAKE_PADDING, bits: SHAKE_BITS, createMethod: createShakeMethod },
     { name: 'cshake', padding: CSHAKE_PADDING, bits: SHAKE_BITS, createMethod: createCshakeMethod },
     { name: 'kmac', padding: CSHAKE_PADDING, bits: SHAKE_BITS, createMethod: createKmacMethod },
@@ -155,7 +160,7 @@ var methods = {},
 
 for (var i = 0; i < algorithms.length; ++i) {
     var algorithm = algorithms[i];
-    var bits = algorithm.bits;
+    var {bits} = algorithm;
     for (var j = 0; j < bits.length; ++j) {
         var methodName = algorithm.name + '_' + bits[j];
         methodNames.push(methodName);
@@ -209,12 +214,12 @@ Keccak.prototype.update = function (message) {
         }
         notString = true;
     }
-    var blocks = this.blocks,
-        byteCount = this.byteCount,
-        length = message.length,
-        blockCount = this.blockCount,
+    var {blocks} = this,
+        {byteCount} = this,
+        {length} = message,
+        {blockCount} = this,
         index = 0,
-        s = this.s,
+        {s} = this,
         i,
         code;
 
@@ -265,6 +270,7 @@ Keccak.prototype.update = function (message) {
             this.start = i;
         }
     }
+
     return this;
 };
 
@@ -286,6 +292,7 @@ Keccak.prototype.encode = function (x, right) {
         bytes.unshift(n);
     }
     this.update(bytes);
+
     return bytes.length;
 };
 
@@ -309,7 +316,7 @@ Keccak.prototype.encodeString = function (str) {
         notString = true;
     }
     var bytes = 0,
-        length = str.length;
+        {length} = str;
     if (notString) {
         bytes = length;
     } else {
@@ -329,6 +336,7 @@ Keccak.prototype.encodeString = function (str) {
     }
     bytes += this.encode(bytes * 8);
     this.update(str);
+
     return bytes;
 };
 
@@ -341,6 +349,7 @@ Keccak.prototype.bytepad = function (strs, w) {
     var zeros = [];
     zeros.length = paddingBytes;
     this.update(zeros);
+
     return this;
 };
 
@@ -349,10 +358,10 @@ Keccak.prototype.finalize = function () {
         return;
     }
     this.finalized = true;
-    var blocks = this.blocks,
+    var {blocks} = this,
         i = this.lastByteIndex,
-        blockCount = this.blockCount,
-        s = this.s;
+        {blockCount} = this,
+        {s} = this;
     blocks[i >> 2] |= this.padding[i & 3];
     if (this.lastByteIndex === this.byteCount) {
         blocks[0] = blocks[blockCount];
@@ -370,10 +379,10 @@ Keccak.prototype.finalize = function () {
 Keccak.prototype.toString = Keccak.prototype.hex = function () {
     this.finalize();
 
-    var blockCount = this.blockCount,
-        s = this.s,
-        outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes,
+    var {blockCount} = this,
+        {s} = this,
+        {outputBlocks} = this,
+        {extraBytes} = this,
         i = 0,
         j = 0;
     var hex = '',
@@ -406,16 +415,17 @@ Keccak.prototype.toString = Keccak.prototype.hex = function () {
             hex += HEX_CHARS[(block >> 20) & 0x0f] + HEX_CHARS[(block >> 16) & 0x0f];
         }
     }
+
     return hex;
 };
 
 Keccak.prototype.arrayBuffer = function () {
     this.finalize();
 
-    var blockCount = this.blockCount,
-        s = this.s,
-        outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes,
+    var {blockCount} = this,
+        {s} = this,
+        {outputBlocks} = this,
+        {extraBytes} = this,
         i = 0,
         j = 0;
     var bytes = this.outputBits >> 3;
@@ -438,6 +448,7 @@ Keccak.prototype.arrayBuffer = function () {
         array[i] = s[i];
         buffer = buffer.slice(0, bytes);
     }
+
     return buffer;
 };
 
@@ -446,10 +457,10 @@ Keccak.prototype.buffer = Keccak.prototype.arrayBuffer;
 Keccak.prototype.digest = Keccak.prototype.array = function () {
     this.finalize();
 
-    var blockCount = this.blockCount,
-        s = this.s,
-        outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes,
+    var {blockCount} = this,
+        {s} = this,
+        {outputBlocks} = this,
+        {extraBytes} = this,
         i = 0,
         j = 0;
     var array = [],
@@ -479,6 +490,7 @@ Keccak.prototype.digest = Keccak.prototype.array = function () {
             array[offset + 2] = (block >> 16) & 0xff;
         }
     }
+
     return array;
 };
 
@@ -490,6 +502,7 @@ Kmac.prototype = new Keccak();
 
 Kmac.prototype.finalize = function () {
     this.encode(this.outputBits, true);
+
     return Keccak.prototype.finalize.call(this);
 };
 

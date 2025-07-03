@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import * as fixtures from '../__fixtures__/messageSystemActions';
 import {
@@ -211,7 +212,7 @@ describe('Message system actions', () => {
             messageSystemActions.dismissMessage({ id: fixtures.messageId1, category: 'banner' }),
         );
 
-        expect(Object.keys(store.getState().messageSystem.dismissedMessages).length).toEqual(1);
+        expect(typedObjectKeys(store.getState().messageSystem.dismissedMessages).length).toEqual(1);
 
         expect(store.getState().messageSystem.dismissedMessages[fixtures.messageId1]).toEqual({
             banner: true,
@@ -223,12 +224,12 @@ describe('Message system actions', () => {
         store.dispatch(
             messageSystemActions.dismissMessage({ id: fixtures.messageId1, category: 'modal' }),
         );
-        expect(Object.keys(store.getState().messageSystem.dismissedMessages).length).toEqual(1);
+        expect(typedObjectKeys(store.getState().messageSystem.dismissedMessages).length).toEqual(1);
 
         store.dispatch(
             messageSystemActions.dismissMessage({ id: fixtures.messageId2, category: 'context' }),
         );
-        expect(Object.keys(store.getState().messageSystem.dismissedMessages).length).toEqual(2);
+        expect(typedObjectKeys(store.getState().messageSystem.dismissedMessages).length).toEqual(2);
 
         expect(store.getState().messageSystem.dismissedMessages[fixtures.messageId1]).toEqual({
             banner: true,

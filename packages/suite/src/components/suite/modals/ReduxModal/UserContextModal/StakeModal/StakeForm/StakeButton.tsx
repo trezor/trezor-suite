@@ -2,6 +2,7 @@ import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/w
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -32,7 +33,7 @@ export const StakeButton = () => {
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
-    const formIsValid = Object.keys(errors).length === 0;
+    const formIsValid = typedObjectKeys(errors).length === 0;
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 

@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 import { AbstractMetadataProvider } from 'src/types/suite/metadata';
 
 export class InMemoryTestProvider extends AbstractMetadataProvider {
@@ -42,7 +44,7 @@ export class InMemoryTestProvider extends AbstractMetadataProvider {
     }
 
     getFilesList() {
-        return Promise.resolve(this.ok(Object.keys(this.#files)));
+        return Promise.resolve(this.ok(typedObjectKeys(this.#files)));
     }
 
     renameFile(from: string, to: string) {

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Account } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { AccountUtxo } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRegisteredUtxosByAccountKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -21,7 +22,7 @@ export const useCoinjoinRegisteredUtxos = ({ account }: UseCoinjoinRegisteredUtx
     return useMemo(() => {
         const registeredUtxos: AccountUtxo[] = [];
 
-        if (sessionPrison && Object.keys(sessionPrison).length > 0) {
+        if (sessionPrison && typedObjectKeys(sessionPrison).length > 0) {
             account?.utxo?.forEach(utxo => {
                 if (sessionPrison?.[getUtxoOutpoint(utxo)]) {
                     registeredUtxos.push(utxo);

@@ -16,6 +16,7 @@ import {
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -129,7 +130,7 @@ export const extraDependencies: ExtraDependencies = {
         ) => {
             if (payload.tokenManagement) {
                 const tokenDefinitions = buildTokenDefinitionsFromStorage(payload.tokenManagement);
-                Object.keys(tokenDefinitions).forEach(symbol => {
+                typedObjectKeys(tokenDefinitions).forEach(symbol => {
                     if (isNetworkSymbol(symbol)) {
                         state[symbol] = tokenDefinitions[symbol];
                     }

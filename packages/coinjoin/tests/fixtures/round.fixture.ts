@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../src/constants';
@@ -121,7 +123,7 @@ export const createCoinjoinRound = (
 ) => {
     const R = { ...DEFAULT_ROUND };
     if (statusRound) {
-        Object.keys(statusRound).forEach(key => {
+        typedObjectKeys(statusRound).forEach(key => {
             // @ts-expect-error key-value unsolvable problem
             R[key] = statusRound[key];
         });
@@ -131,7 +133,7 @@ export const createCoinjoinRound = (
     round.inputs = inputs;
 
     if (roundOptions) {
-        Object.keys(roundOptions).forEach(key => {
+        typedObjectKeys(roundOptions).forEach(key => {
             // @ts-expect-error key-value unsolvable problem
             round[key] = roundOptions[key];
         });

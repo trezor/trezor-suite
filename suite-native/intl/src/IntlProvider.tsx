@@ -1,5 +1,7 @@
 import { IntlProvider as ReactIntlProvider } from 'react-intl';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 // Polyfill to support plural syntax
 import 'intl-pluralrules';
 
@@ -8,7 +10,7 @@ import { en } from './en';
 // flatten object to single level deep like { a: { b: { c: 1 } } } => { 'a.b.c': 1 }
 const flatten = (obj: Record<string, any>, prefix = '') => {
     const result: Record<string, any> = {};
-    Object.keys(obj).forEach(key => {
+    typedObjectKeys(obj).forEach(key => {
         const value = obj[key];
         const prefixedKey = prefix ? `${prefix}.${key}` : key;
         if (typeof value === 'object') {

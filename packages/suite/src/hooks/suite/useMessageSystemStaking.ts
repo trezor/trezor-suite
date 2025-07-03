@@ -4,15 +4,16 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 import { useSelector } from './useSelector';
 
 const availableNetworks = [
-    ...Object.keys(Feature.stake),
-    ...Object.keys(Feature.unstake),
-    ...Object.keys(Feature.claim),
+    ...typedObjectKeys(Feature.stake),
+    ...typedObjectKeys(Feature.unstake),
+    ...typedObjectKeys(Feature.claim),
 ] as NetworkSymbol[];
 
 export const useMessageSystemStaking = (networkSymbol?: NetworkSymbol) => {

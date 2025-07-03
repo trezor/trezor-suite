@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 
 import { testMocks } from '@suite-common/test-utils';
 import * as walletUtils from '@suite-common/wallet-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { useExcludedUtxos } from '../form/useExcludedUtxos';
 
@@ -57,7 +58,7 @@ const Component = (props: Props) => {
     return (
         <div>
             <div data-testid="renders">{count}</div>
-            {Object.keys(excludedUtxos).map(key => (
+            {typedObjectKeys(excludedUtxos).map(key => (
                 <div key={key} data-testid="utxo">
                     {excludedUtxos[key]}
                 </div>

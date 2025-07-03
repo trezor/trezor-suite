@@ -7,6 +7,7 @@ import {
     parseFormDraftKey,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -39,7 +40,7 @@ export const submitRequestForm =
 
 export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
     const { accounts, formDrafts, settings } = getState().wallet;
-    const formDraftKeys = Object.keys(formDrafts);
+    const formDraftKeys = typedObjectKeys(formDrafts);
 
     formDraftKeys.forEach(formDraftKey => {
         const [prefix, accountKey] = parseFormDraftKey(formDraftKey);

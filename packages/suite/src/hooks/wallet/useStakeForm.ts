@@ -17,7 +17,7 @@ import {
     getStakingLimitsByNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { isChanged } from '@trezor/utils';
+import { isChanged , typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
@@ -153,7 +153,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
             if (
                 formState.isDirty &&
                 !formState.isValidating &&
-                Object.keys(formState.errors).length === 0 &&
+                typedObjectKeys(formState.errors).length === 0 &&
                 !isComposing
             ) {
                 saveDraft(selectedAccount.account.key, values as StakeFormState);

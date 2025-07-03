@@ -16,7 +16,7 @@ import {
 } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { getOsName } from '@trezor/env-utils';
-import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
+import { arrayDistinct , arrayToDictionary, promiseAllSequence, typedObjectKeys } from '@trezor/utils';
 
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
 import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
@@ -479,7 +479,7 @@ const getOwnershipProof =
         );
 
         // prepare array of parameters for TrezorConnect, grouped by TrezorDevice
-        const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
+        const groupParamsByDevice = typedObjectKeys(groupUtxosByAccount).flatMap(key => {
             const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key];
@@ -596,7 +596,7 @@ const signCoinjoinTx =
             true,
         );
 
-        const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
+        const groupParamsByDevice = typedObjectKeys(groupUtxosByAccount).flatMap(key => {
             const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key];
@@ -703,7 +703,7 @@ const signCoinjoinTx =
         );
 
         // disable busy screen
-        await dispatch(setBusyScreen(Object.keys(groupUtxosByAccount)));
+        await dispatch(setBusyScreen(typedObjectKeys(groupUtxosByAccount)));
         // and close 'critical-coinjoin-phase' modal
         dispatch(closeCriticalPhaseModal());
 
@@ -777,7 +777,7 @@ export const initCoinjoinService =
                     .addresses!.change.filter(a => a.transfers > 0)
                     .map(a => a.address);
 
-                return Object.keys(account.prison!).flatMap(id => {
+                return typedObjectKeys(account.prison!).flatMap(id => {
                     const inmate = account.prison![id];
                     // clear outdated info with Infinity sentence
                     if (inmate.sentenceEnd === Infinity) {

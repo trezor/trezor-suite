@@ -43,7 +43,7 @@ import {
     HELP_CENTER_COINJOIN_URL,
     HELP_CENTER_TAPROOT_URL,
 } from '@trezor/urls';
-import { arrayDistinct, bufferUtils } from '@trezor/utils';
+import { arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -386,7 +386,7 @@ export const sortByCoin = (accounts: Account[]) =>
 
         // when it is sorted by network, sort by order of accountType keys within the same network
         const network = networks[a.symbol];
-        const orderedAccountTypes = Object.keys(network.accountTypes) as AccountType[];
+        const orderedAccountTypes: AccountType[] = typedObjectKeys(network.accountTypes);
         const aAccountTypeIndex = orderedAccountTypes.indexOf(a.accountType);
         const bAccountTypeIndex = orderedAccountTypes.indexOf(b.accountType);
 

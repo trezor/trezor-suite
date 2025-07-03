@@ -26,7 +26,7 @@ const createAuthPenaltyManager = (priority: number) => {
 
     const get = () =>
         100 * priority +
-        Object.keys(penalizedDevices).reduce(
+        typedObjectKeys(penalizedDevices).reduce(
             (penalty, key) => Math.max(penalty, penalizedDevices[key]),
             0,
         );
@@ -44,7 +44,7 @@ const createAuthPenaltyManager = (priority: number) => {
         delete penalizedDevices[deviceID];
     };
 
-    const clear = () => Object.keys(penalizedDevices).forEach(key => delete penalizedDevices[key]);
+    const clear = () => typedObjectKeys(penalizedDevices).forEach(key => delete penalizedDevices[key]);
 
     return { get, add, remove, clear };
 };

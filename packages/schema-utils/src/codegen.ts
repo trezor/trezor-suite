@@ -2,6 +2,8 @@
 import * as Codegen from '@sinclair/typebox-codegen/typescript';
 import fs from 'fs';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 export function generate(code: string) {
     // Make some replacements to make the code processable by the generator
     // Since there are some issues with typeof
@@ -21,14 +23,14 @@ export function generate(code: string) {
         UintType: 'Type.Uint()',
         SintType: 'Type.Uint({ allowNegative: true })',
     };
-    const customTypePlaceholder = Object.keys(customTypesMapping).map(t => `type ${t} = any;`);
+    const customTypePlaceholder = typedObjectKeys(customTypesMapping).map(t => `type ${t} = any;`);
     // Run generator
     let output = Codegen.TypeScriptToTypeBox.Generate(customTypePlaceholder + code, {
         useTypeBoxImport: false,
         useIdentifiers: true,
     });
     // Remove placeholder declarations of custom types
-    const lastKey = Object.keys(customTypesMapping)[Object.keys(customTypesMapping).length - 1];
+    const lastKey = typedObjectKeys(customTypesMapping)[typedObjectKeys(customTypesMapping).length - 1];
     const index = output.lastIndexOf(`const ${lastKey} = `);
     const blankLineIndex = output.indexOf('\n\n', index);
     output = output.substring(blankLineIndex + 1);

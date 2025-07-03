@@ -1,5 +1,6 @@
 import { isDesktop } from '@trezor/env-utils';
 import { SuiteThemeVariant, desktopApi } from '@trezor/suite-desktop-api';
+import { typedObjectKeys } from '@trezor/utils';
 
 export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',
@@ -23,7 +24,7 @@ export const submitRequestForm = async (
 
     if (isDesktop()) {
         let params = `a=${encodeURIComponent(formAction)}`;
-        Object.keys(fields).forEach(k => {
+        typedObjectKeys(fields).forEach(k => {
             params += `&${k}=${encodeURIComponent(fields[k])}`;
         });
         const serverUrl = await desktopApi.getHttpReceiverAddress('/buy-post');
@@ -32,7 +33,7 @@ export const submitRequestForm = async (
         const form = document.createElement('form');
         form.method = formMethod;
         form.action = formAction;
-        Object.keys(fields).forEach(key => {
+        typedObjectKeys(fields).forEach(key => {
             const hiddenField = document.createElement('input');
             hiddenField.type = 'hidden';
             hiddenField.name = key;

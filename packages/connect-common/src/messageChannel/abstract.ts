@@ -3,7 +3,13 @@
  * this file is bundled into content script so be careful what you are importing not to bloat the bundle
  */
 
-import { Deferred, TypedEmitter, createDeferred, scheduleAction } from '@trezor/utils';
+import {
+    Deferred,
+    TypedEmitter,
+    createDeferred,
+    scheduleAction,
+    typedObjectKeys,
+} from '@trezor/utils';
 
 // TODO: so logger should be probably moved to connect common, or this file should be moved to connect
 // import type { Log } from '@trezor/connect/src/utils/debug';
@@ -204,7 +210,7 @@ export abstract class AbstractMessageChannel<
             this.messagePromises[id].resolve({ id, ...data });
             delete this.messagePromises[id];
         }
-        const messagePromisesLength = Object.keys(this.messagePromises).length;
+        const messagePromisesLength = typedObjectKeys(this.messagePromises).length;
         if (messagePromisesLength > 5) {
             this.logger?.warn(
                 `too many message promises (${messagePromisesLength}). this feels unexpected!`,
@@ -247,7 +253,7 @@ export abstract class AbstractMessageChannel<
 
     resolveMessagePromises(resolvePayload: Record<string, any>) {
         // This is used when we know that the connection has been interrupted but there might be something waiting for it.
-        Object.keys(this.messagePromises).forEach(id =>
+        typedObjectKeys(this.messagePromises).forEach(id =>
             this.messagePromises[id as any].resolve({
                 id,
                 payload: resolvePayload,

@@ -23,6 +23,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import { TransactionTarget } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
@@ -324,7 +325,7 @@ const prepareCsv = (
 
     const lines: string[] = [];
 
-    const fieldKeys = Object.keys(csvFields);
+    const fieldKeys = typedObjectKeys(csvFields);
     const fieldValues = Object.values(csvFields);
 
     // Prepare header
@@ -363,7 +364,7 @@ const preparePdf = (
         amountWithSymbol: 'Amount',
     };
 
-    const fieldKeys = Object.keys(pdfFields);
+    const fieldKeys = typedObjectKeys(pdfFields);
     const fieldValues = Object.values(pdfFields);
 
     const content = prepareContent(data, tokenDefinitions, historicFiatRates);

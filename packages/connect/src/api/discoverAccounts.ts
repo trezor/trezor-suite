@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
+import { arrayPartition , getSynchronize, typedObjectKeys, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
@@ -116,7 +116,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         const progress =
             Object.values(this.progress).reduce((sum, typeProgress) => sum + typeProgress, 0) /
             // if no items in progress, divide by 1 instead of 0 as the numerator will be 0 anyway
-            (Object.keys(this.progress).length || 1);
+            (typedObjectKeys(this.progress).length || 1);
 
         this.postMessage(
             createUiMessage(UI.BUNDLE_PROGRESS, {

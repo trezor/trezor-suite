@@ -1,9 +1,11 @@
 import { Log, LogMessage, LogWriter } from './logs';
+import { typedObjectKeys } from './typedObjectKeys';
 
 export class LogsManager {
     logs: { [k: string]: Log } = {};
     writer: LogWriter | undefined;
     colors?: Record<string, string> = {};
+
     constructor({ colors }: { colors?: Record<string, string> }) {
         this.colors = colors;
     }
@@ -20,7 +22,7 @@ export class LogsManager {
     }
 
     setLogWriter(logWriterFactory: () => LogWriter | undefined) {
-        Object.keys(this.logs).forEach(key => {
+        typedObjectKeys(this.logs).forEach(key => {
             this.writer = logWriterFactory();
             if (this.writer) {
                 this.logs[key].setWriter(this.writer);
@@ -34,7 +36,7 @@ export class LogsManager {
     }
 
     enableLog(enabled?: boolean) {
-        Object.keys(this.logs).forEach(key => {
+        typedObjectKeys(this.logs).forEach(key => {
             this.logs[key].enabled = !!enabled;
         });
     }
@@ -47,7 +49,7 @@ export class LogsManager {
 
     getLog() {
         let logs: LogMessage[] = [];
-        Object.keys(this.logs).forEach(key => {
+        typedObjectKeys(this.logs).forEach(key => {
             logs = logs.concat(this.logs[key].messages);
         });
         logs.sort((a, b) => a.timestamp - b.timestamp);

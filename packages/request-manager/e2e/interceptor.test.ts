@@ -2,6 +2,8 @@ import http from 'http';
 import path from 'path';
 import WebSocket from 'ws';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
 import { TorIdentities } from '../src/torIdentities';
@@ -147,7 +149,7 @@ describe('Interceptor', () => {
             await createWebSocket();
             await createWebSocket();
 
-            const identities = Object.keys((torIdentities as any).identities).filter(name =>
+            const identities = typedObjectKeys((torIdentities as any).identities).filter(name =>
                 name.includes('WebSocket'),
             );
 
@@ -162,7 +164,7 @@ describe('Interceptor', () => {
                 'Proxy-Authorization': 'Basic WebSocket-Identity',
             });
 
-            const identities = Object.keys((torIdentities as any).identities).filter(name =>
+            const identities = typedObjectKeys((torIdentities as any).identities).filter(name =>
                 name.includes('WebSocket-Identity'),
             );
 

@@ -1,4 +1,5 @@
 import { Assert } from '@trezor/schema-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { getFirmwareRange } from './common/paramsValidator';
@@ -80,7 +81,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
 
         // prepare html for popup
         const str: string[] = [];
-        Object.keys(keys).forEach((k, _i, _a) => {
+        typedObjectKeys(keys).forEach((k, _i, _a) => {
             const details = keys[k];
             details.values.forEach(acc => {
                 str.push(k);

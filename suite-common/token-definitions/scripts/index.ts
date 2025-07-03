@@ -2,6 +2,8 @@
 import fs from 'fs';
 import { join } from 'path';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { DEFINITIONS_FILENAME_SUFFIX, FILES_PATH } from './constants';
 import { fetchCoinData } from './utils/fetchCoins';
 import { fetchNftData } from './utils/fetchNft';
@@ -50,7 +52,7 @@ const main = async () => {
             throw new Error(`No definitions available for platform: ${assetPlatformId}`);
         }
     } else {
-        const { length } = Object.keys(data);
+        const { length } = typedObjectKeys(data);
         console.log('Records for specific platform:', length);
 
         if (!length) {

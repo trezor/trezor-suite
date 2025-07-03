@@ -1,3 +1,4 @@
+import { typedObjectKeys } from '@trezor/utils';
 export const getDisplayKey = (title: string, username: string) => {
     try {
         return `Unlock ${new URL(title).host} for user ${username}?`;
@@ -7,7 +8,7 @@ export const getDisplayKey = (title: string, username: string) => {
 };
 
 export const getNextId = (entries: Record<number, any>) => {
-    if (Object.keys(entries).length === 0) return 0;
+    if (typedObjectKeys(entries).length === 0) return 0;
 
-    return Number(Object.keys(entries).sort((a, b) => parseInt(b, 10) - parseInt(a, 10))[0]) + 1;
+    return Number(typedObjectKeys(entries).sort((a, b) => parseInt(b, 10) - parseInt(a, 10))[0]) + 1;
 };

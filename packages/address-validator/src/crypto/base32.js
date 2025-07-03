@@ -71,10 +71,11 @@ var b32decode = function (s) {
         b[j * 5 + 3] = ((v[i + 4] & 0x1) << 7) | (v[i + 5] << 2) | (v[i + 6] >> 3);
         b[j * 5 + 4] = ((v[i + 6] & 0x7) << 5) | v[i + 7];
     }
+
     return b;
 };
 
 module.exports = {
-    b32decode: b32decode,
-    b32encode: b32encode,
+    b32decode,
+    b32encode,
 };

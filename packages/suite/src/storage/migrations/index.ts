@@ -18,6 +18,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import { PartialRecord } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { migrateToV56 } from 'src/storage/migrations/legacyVersions/migrateToV56';
@@ -772,7 +773,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'walletSettings', walletSettings => {
             // @ts-expect-error
-            Object.keys(walletSettings.lastUsedFeeLevel).forEach(coin => {
+            typedObjectKeys(walletSettings.lastUsedFeeLevel).forEach(coin => {
                 // @ts-expect-error
                 if (walletSettings.lastUsedFeeLevel[coin].label === 'low') {
                     // @ts-expect-error
@@ -972,7 +973,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         }
 
         await updateAll(transaction, 'historicRates', rates => {
-            const rate = Object.keys(rates).reduce((newRates, key) => {
+            const rate = typedObjectKeys(rates).reduce((newRates, key) => {
                 const newKey = key.replace('matic', 'pol');
                 // @ts-expect-error
                 newRates[newKey] = rates[key];

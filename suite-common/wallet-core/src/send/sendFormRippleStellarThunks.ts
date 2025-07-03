@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect, { FeeLevel, RipplePayment, StellarOperation } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -169,7 +170,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 
         // format max (calculate sends it as satoshi)
         // update errorMessage values (reserve)
-        Object.keys(resultLevels).forEach(key => {
+        typedObjectKeys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
             if (tx.type !== 'error' && tx.max) {
                 tx.max = formatNetworkAmount(tx.max, account.symbol);

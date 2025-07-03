@@ -30,6 +30,7 @@ import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLogge
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
 import type { TimerId } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { isPhishingDomain } from './utils/isPhishingDomain';
 import * as view from './view';
@@ -340,7 +341,7 @@ const handleMessageInCoreMode = (
                     referrerApp: settings?.manifest?.appUrl,
                     referrerEmail: settings?.manifest?.email,
                     method: method?.name,
-                    payload: method?.payload ? Object.keys(method.payload) : undefined,
+                    payload: method?.payload ? typedObjectKeys(method.payload) : undefined,
                     transportTypes: transports?.map(t => t.type),
                     bridgeVersion: transports?.find(t => t.type === 'BridgeTransport')?.version,
                 },

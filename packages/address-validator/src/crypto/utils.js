@@ -1,9 +1,11 @@
 var jsSHA = require('jssha/src/sha256');
+
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
 var Blake2B = require('./blake2b');
 var base58 = require('./base58');
 var base32 = require('./base32');
+
 var BigNum = require('browserify-bignum');
 var groestl = require('groestl-hash-js');
 
@@ -28,6 +30,7 @@ function isHexChar(c) {
     if ((c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9')) {
         return 1;
     }
+
     return 0;
 }
 
@@ -41,6 +44,7 @@ function hexChar2byte(c) {
     } else if (c >= '0' && c <= '9') {
         d = c.charCodeAt(0) - '0'.charCodeAt(0);
     }
+
     return d;
 }
 
@@ -50,6 +54,7 @@ function byte2hexStr(byte) {
     var str = '';
     str += hexByteMap.charAt(byte >> 4);
     str += hexByteMap.charAt(byte & 0x0f);
+
     return str;
 }
 
@@ -59,11 +64,12 @@ function byteArray2hexStr(byteArray) {
         str += byte2hexStr(byteArray[i]);
     }
     str += byte2hexStr(byteArray[i]);
+
     return str;
 }
 
 function hexStr2byteArray(str) {
-    var byteArray = Array();
+    var byteArray = [];
     var d = 0;
     var i = 0;
     var j = 0;
@@ -81,55 +87,59 @@ function hexStr2byteArray(str) {
             }
         }
     }
+
     return byteArray;
 }
 
 module.exports = {
     numberToHex,
-    toHex: function (arrayOfBytes) {
+    toHex (arrayOfBytes) {
         var hex = '';
         for (var i = 0; i < arrayOfBytes.length; i++) {
             hex += numberToHex(arrayOfBytes[i], 1);
         }
+
         return hex;
     },
-    sha256: function (payload, format = 'HEX') {
+    sha256 (payload, format = 'HEX') {
         var sha = new jsSHA('SHA-256', format);
         sha.update(payload);
+
         return sha.getHash(format);
     },
-    sha256x2: function (buffer, format = 'HEX') {
+    sha256x2 (buffer, format = 'HEX') {
         return this.sha256(this.sha256(buffer, format), format);
     },
-    sha256Checksum: function (payload) {
+    sha256Checksum (payload) {
         return this.sha256(this.sha256(payload)).substr(0, 8);
     },
-    blake256: function (hexString) {
+    blake256 (hexString) {
         return new Blake256().update(hexString, 'hex').digest('hex');
     },
-    blake256Checksum: function (payload) {
+    blake256Checksum (payload) {
         return this.blake256(this.blake256(payload)).substr(0, 8);
     },
-    blake2b: function (hexString, outlen) {
+    blake2b (hexString, outlen) {
         return new Blake2B(outlen).update(Buffer.from(hexString, 'hex')).digest('hex');
     },
-    keccak256: function (hexString) {
+    keccak256 (hexString) {
         return keccak256(hexString);
     },
-    keccak256Checksum: function (payload) {
+    keccak256Checksum (payload) {
         return keccak256(payload).toString().substr(0, 8);
     },
-    blake2b256: function (hexString) {
+    blake2b256 (hexString) {
         return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
     },
-    groestl512x2: function (hexString) {
+    groestl512x2 (hexString) {
         let result = groestl.groestl_2(Buffer.from(hexString, 'hex'), 1, 0).substr(0, 8);
+
         return result;
     },
     base58: base58.decode,
-    byteArray2hexStr: byteArray2hexStr,
-    hexStr2byteArray: hexStr2byteArray,
-    bigNumberToBuffer: function (bignumber, size) {
+    byteArray2hexStr,
+    hexStr2byteArray,
+    bigNumberToBuffer (bignumber, size) {
         return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
     },
     base32,

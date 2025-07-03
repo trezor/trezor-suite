@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { GuideArticle, GuideCategory } from '@suite-common/suite-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { loadPageMarkdownFile } from 'src/hooks/guide/useGuideLoadArticle';
 
@@ -61,7 +62,7 @@ const search = async (query: string, pageMap: PageMap): Promise<SearchResult[]> 
         querySanitized.length < MIN_QUERY_LENGTH
             ? []
             : await Promise.all(
-                  Object.keys(pageMap).map(url =>
+                  typedObjectKeys(pageMap).map(url =>
                       loadPageMarkdownFile(url)
                           .catch(() => '')
                           .then(md => searchInFile(url, querySanitized, md)),

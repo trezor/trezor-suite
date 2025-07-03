@@ -2,7 +2,7 @@ const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
-    isValidAddress: function (address) {
+    isValidAddress (address) {
         if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
             // Check if it has the basic requirements of an address
             return false;
@@ -16,7 +16,7 @@ module.exports = {
         // Otherwise check each case
         return this.verifyChecksum(address);
     },
-    verifyChecksum: function (address) {
+    verifyChecksum (address) {
         // Check each case
         address = address.replace('0x', '');
 
@@ -35,10 +35,11 @@ module.exports = {
         return true;
     },
 
-    getAddressType: function (address, currency, networkType) {
+    getAddressType (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
+
         return undefined;
     },
 };

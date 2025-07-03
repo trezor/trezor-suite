@@ -20,6 +20,7 @@ import {
     getFeeInfo,
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { fillSendForm } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -362,7 +363,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // handle draftSaveRequest
     useEffect(() => {
         if (!draftSaveRequest) return;
-        if (Object.keys(formState.errors).length === 0) {
+        if (typedObjectKeys(formState.errors).length === 0) {
             dispatch(
                 saveSendFormDraftThunk({ formState: { ...getValues(), selectedFee: undefined } }),
             );

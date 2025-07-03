@@ -6,6 +6,8 @@ import prettier from 'prettier';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { getPrettierConfig } from './utils/getPrettierConfig';
 import { getWorkspacesList } from './utils/getWorkspacesList';
 
@@ -56,7 +58,7 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
     const workspaces = getWorkspacesList();
 
     // NOTE: Workspace keys must be sorted due to file systems being a part of the equation...
-    Object.keys(workspaces)
+    typedObjectKeys(workspaces)
         .sort()
         .forEach(async workspaceName => {
             const workspace = workspaces[workspaceName];

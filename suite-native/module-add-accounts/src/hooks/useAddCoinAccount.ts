@@ -38,6 +38,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { useAddCoinAccountAlerts } from './useAddCoinAccountAlerts';
 
@@ -114,7 +115,7 @@ export const useAddCoinAccount = () => {
 
         networkSymbolCollection.forEach(symbol => {
             // for Cardano and Ethereum only allow latest account type and coinjoin and ledger are not supported
-            const types = Object.keys(networks[symbol].accountTypes).filter(
+            const types = typedObjectKeys(networks[symbol].accountTypes).filter(
                 t => !['coinjoin', 'imported', 'ledger'].includes(t),
             ) as AccountType[];
 

@@ -6,6 +6,7 @@ import { act, waitFor } from '@testing-library/react';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { FormState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { filterThunkActionTypes } from 'src/support/tests/configureStore';
 import {
@@ -179,7 +180,7 @@ const actionCallback = (
     // validate composedLevels object
     if (Object.prototype.hasOwnProperty.call(result, 'composedLevels')) {
         if (result.composedLevels && composedLevels) {
-            Object.keys(result.composedLevels).forEach(key => {
+            typedObjectKeys(result.composedLevels).forEach(key => {
                 const expectedLevel = result.composedLevels[key];
                 const level = composedLevels[key];
                 if (expectedLevel) {
@@ -202,7 +203,7 @@ const actionCallback = (
     // validate errors
     if (result.errors) {
         // expect(errors).toMatchObject(result.errors);
-        Object.keys(result.errors).forEach(key => {
+        typedObjectKeys(result.errors).forEach(key => {
             const expectedError = result.errors[key];
             // @ts-expect-error key: string
             const error = errors[key];

@@ -12,6 +12,7 @@ import styled from 'styled-components';
 
 import { Select, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { useActiveAnchor, useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';
@@ -123,7 +124,7 @@ export function Menu({
         stellar: 'xlm',
         tezos: 'xtz',
     };
-    const defaultActiveCoin = Object.keys(coinSymbols).includes(route.split('/')[2])
+    const defaultActiveCoin = typedObjectKeys(coinSymbols).includes(route.split('/')[2])
         ? route.split('/')[2]
         : 'bitcoin';
     const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
@@ -139,14 +140,14 @@ export function Menu({
     const methodsItems =
         directories.find(item => item.kind === 'Folder' && item.name === 'methods')?.children ?? [];
     const methodsOptions = methodsItems
-        ?.filter(item => item.kind === 'Folder' && Object.keys(coinSymbols).includes(item.name))
+        ?.filter(item => item.kind === 'Folder' && typedObjectKeys(coinSymbols).includes(item.name))
         .map(item => ({
             label: item.title,
             value: item.name,
         }));
     const activeCoinItems = methodsItems?.find(item => item.name === activeCoin)?.children;
     const otherMethods = methodsItems?.filter(
-        item => item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name),
+        item => item.kind !== 'Folder' || !typedObjectKeys(coinSymbols).includes(item.name),
     );
     const otherFolders = directories.filter(
         item => item.kind === 'Folder' && item.name !== 'methods',

@@ -1,3 +1,4 @@
+import { typedObjectKeys } from '@trezor/utils';
 const CELL_DELIMITERS = [',', ';', '\t', '|', '^'];
 // const LINE_DELIMITERS = ['\r\n', '\r', '\n'];
 
@@ -61,7 +62,7 @@ export const parseCSV = (text: string, columns: string[] = [], delimiter?: strin
     const result: Result[] = [];
     lines.forEach(line => {
         const output = parseLine(line, d, columns);
-        if (Object.keys(output).length) {
+        if (typedObjectKeys(output).length) {
             // use only valid lines
             result.push(output);
         }

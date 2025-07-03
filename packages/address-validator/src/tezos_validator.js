@@ -1,5 +1,5 @@
-const { addressType } = require('./crypto/utils');
 const base58 = require('./crypto/base58');
+const { addressType } = require('./crypto/utils');
 const cryptoUtils = require('./crypto/utils');
 
 const prefix = new Uint8Array([6, 161, 159]);
@@ -18,6 +18,7 @@ function decodeRaw(buffer) {
         (checksum[3] ^ newChecksum[3])
     )
         return;
+
     return payload;
 }
 
@@ -27,6 +28,7 @@ const isValidAddress = function (address) {
         let payload = decodeRaw(buffer);
         if (!payload) return false;
         payload.slice(prefix.length);
+
         return true;
     } catch (e) {
         return false;
@@ -36,10 +38,11 @@ const isValidAddress = function (address) {
 module.exports = {
     isValidAddress,
 
-    getAddressType: function (address, currency, networkType) {
+    getAddressType (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
+
         return undefined;
     },
 };

@@ -6,7 +6,7 @@ import path from 'node:path';
 import { regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
+import { BigNumber , splitStringEveryNCharacters, typedObjectKeys } from '@trezor/utils';
 
 import releases from '../../../../submodules/trezor-common/releases.json';
 import { PlaywrightProjects } from '../playwright.config';
@@ -94,7 +94,7 @@ export const findLatestVersionForModel = (
     model: 'T1B1' | 'T2B1' | 'T2T1' | 'T3B1' | 'T3T1',
 ): string => {
     const firmwareVersions = releases.firmware;
-    const versions = Object.keys(firmwareVersions);
+    const versions = typedObjectKeys(firmwareVersions);
 
     // Sort versions in descending order
     versions.sort((a, b) => (a > b ? -1 : 1));

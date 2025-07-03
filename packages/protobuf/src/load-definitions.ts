@@ -1,5 +1,7 @@
 import { Root } from 'protobufjs/light';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 type Definitions = Record<string, unknown>;
 
 export const loadDefinitions = async (
@@ -40,7 +42,7 @@ export const loadDefinitions = async (
     if (enumType && packageEnumType) {
         try {
             // move values from nested enum to top level
-            Object.keys(packageEnumType.values).forEach(key => {
+            typedObjectKeys(packageEnumType.values).forEach(key => {
                 enumType.add(key, packageEnumType.values[key]);
             });
             // remove nested enum

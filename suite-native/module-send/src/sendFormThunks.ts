@@ -27,6 +27,7 @@ import {
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { storeFeeLevels } from './sendFormSlice';
 import { FeeLevelsMaxAmount, NativeSupportedFeeLevel } from './types';
@@ -122,7 +123,7 @@ export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk(
     `${SEND_MODULE_PREFIX}/removeSendFormDraftsSupportingAmountUnitThunk`,
     (_, { dispatch, getState }) => {
         const sendFormDrafts = selectSendFormDrafts(getState());
-        const accountKeys = Object.keys(sendFormDrafts);
+        const accountKeys = typedObjectKeys(sendFormDrafts);
 
         accountKeys.forEach(accountKey => {
             const account = selectAccountByKey(getState(), accountKey);

@@ -10216,6 +10216,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -10568,6 +10569,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/intl@workspace:suite-native/intl"
   dependencies:
+    "@trezor/utils": "workspace:*"
     intl-pluralrules: "npm:^2.0.1"
     react: "npm:19.0.0"
     react-intl: "npm:^7.1.11"
@@ -10717,6 +10719,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:~14.1.5"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
@@ -10842,6 +10845,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.0.0"
     react-native: "npm:0.79.3"
     react-redux: "npm:9.2.0"
@@ -11688,6 +11692,7 @@ __metadata:
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     tsx: "npm:^4.20.3"
   peerDependencies:
@@ -11864,6 +11869,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/flexsearch": "npm:^0.7.3"
     "@types/git-url-parse": "npm:^9.0.3"
     "@types/react": "npm:^19.0.0"
@@ -11961,6 +11967,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/utils": "workspace:*"
     babel-loader: "npm:^10.0.0"
     copy-webpack-plugin: "npm:^13.0.0"
     es6-promise: "npm:^4.2.8"
@@ -11991,6 +11998,7 @@ __metadata:
   resolution: "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum"
   dependencies:
     "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@trezor/utils": "workspace:*"
   peerDependencies:
     "@metamask/eth-sig-util": ^8.2.0
     tslib: ^2.6.2
@@ -12337,6 +12345,7 @@ __metadata:
   resolution: "@trezor/protobuf@workspace:packages/protobuf"
   dependencies:
     "@trezor/schema-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     long: "npm:5.2.5"
     protobufjs: "npm:7.4.0"
     protobufjs-cli: "npm:^1.1.3"
@@ -12398,6 +12407,7 @@ __metadata:
     "@sinclair/typebox": "npm:^0.33.7"
     "@sinclair/typebox-codegen": "npm:^0.10.4"
     "@trezor/eslint": "workspace:*"
+    "@trezor/utils": "workspace:*"
     ts-mixer: "npm:^6.0.3"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.20.3"
@@ -12412,6 +12422,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@trezor/eslint": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/semver": "npm:^7.7.0"
     chalk: "npm:^4.1.2"
     fs-extra: "npm:^11.3.0"
@@ -12528,6 +12539,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
+    "@trezor/utils": "workspace:*"
     electron: "npm:35.1.2"
   languageName: unknown
   linkType: soft
@@ -12828,6 +12840,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/wallet-config": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

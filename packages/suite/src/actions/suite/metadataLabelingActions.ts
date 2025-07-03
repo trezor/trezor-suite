@@ -5,7 +5,7 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { cloneObject } from '@trezor/utils';
+import { cloneObject , typedObjectKeys } from '@trezor/utils';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import {
@@ -385,7 +385,7 @@ export const addAccountMetadata =
                 }
 
                 delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
-                if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0) {
+                if (typedObjectKeys(nextMetadata.outputLabels[payload.txid]).length === 0) {
                     delete nextMetadata.outputLabels[payload.txid];
                 }
             } else {

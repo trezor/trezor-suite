@@ -1,6 +1,6 @@
 var WAValidator = require('../src');
 
-const addressType = WAValidator.addressType;
+const {addressType} = WAValidator;
 
 function isValidAddressType(address, currency, networkType, addressType) {
     const type = WAValidator.getAddressType(address, currency, networkType);

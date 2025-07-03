@@ -4,7 +4,7 @@ const segmentRegex = new RegExp('^[a-z][a-z0-9-]+[a-z0-9]$');
 const doubleDashRegex = new RegExp('--');
 
 module.exports = {
-    isValidAddress: function (address, currency, networkType) {
+    isValidAddress (address, currency, networkType) {
         if (!accountRegex.test(address)) {
             return false;
         }
@@ -21,13 +21,15 @@ module.exports = {
                 return false;
             }
         }
+
         return true;
     },
 
-    getAddressType: function (address, currency, networkType) {
+    getAddressType (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
+
         return undefined;
     },
 };

@@ -1,10 +1,12 @@
 import * as sigUtil from '@metamask/eth-sig-util';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 // Sanitization is used for T1B1 as eth-sig-util does not support BigInt
 function sanitizeData(data: any): any {
     switch (Object.prototype.toString.call(data)) {
         case '[object Object]': {
-            const entries = Object.keys(data).map(k => [k, sanitizeData(data[k])]);
+            const entries = typedObjectKeys(data).map(k => [k, sanitizeData(data[k])]);
 
             return Object.fromEntries(entries);
         }

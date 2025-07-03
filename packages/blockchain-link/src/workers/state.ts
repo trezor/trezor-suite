@@ -1,6 +1,6 @@
 import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import { Cache } from '@trezor/utils';
+import { Cache , typedObjectKeys } from '@trezor/utils';
 
 export class WorkerState {
     addresses: string[];
@@ -127,7 +127,7 @@ export class WorkerState {
     }
 
     hasSubscriptions() {
-        return Object.keys(this.subscription).length > 0;
+        return typedObjectKeys(this.subscription).length > 0;
     }
 
     removeSubscription(type: string) {
@@ -135,13 +135,13 @@ export class WorkerState {
     }
 
     clearSubscriptions() {
-        Object.keys(this.subscription).forEach(key => {
+        typedObjectKeys(this.subscription).forEach(key => {
             delete this.subscription[key];
         });
     }
 
     removeEmpty(obj: Record<string, any>) {
-        Object.keys(obj).forEach(key => {
+        typedObjectKeys(obj).forEach(key => {
             if (Array.isArray(obj[key])) obj[key].map((o: any) => this.removeEmpty(o));
             if (obj[key] && typeof obj[key] === 'object') this.removeEmpty(obj[key]);
             else if (obj[key] === undefined) delete obj[key];

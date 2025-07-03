@@ -1,5 +1,7 @@
 import { Enum, Type } from 'protobufjs/light';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { createMessageFromName, isPrimitiveField } from './utils';
 
 const transform = (fieldType: string, value: any) => {
@@ -27,7 +29,7 @@ export function patch(Message: Type, payload: any) {
         return patched;
     }
 
-    Object.keys(Message.fields).forEach(key => {
+    typedObjectKeys(Message.fields).forEach(key => {
         const field = Message.fields[key];
         const value = payload[key];
 

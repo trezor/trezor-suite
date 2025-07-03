@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
+import { typedObjectKeys } from '@trezor/utils';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
@@ -131,7 +132,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
             // prepare html for popup
             const str: string[] = [];
-            Object.keys(keys).forEach((k, _i, _a) => {
+            typedObjectKeys(keys).forEach((k, _i, _a) => {
                 const details = keys[k];
                 details.values.forEach(acc => {
                     // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';

@@ -1,6 +1,7 @@
 import { Kind, OptionalKind, TSchema } from '@sinclair/typebox';
 
 import type { TrezorConnect } from '@trezor/connect-web';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     MethodState,
@@ -15,7 +16,7 @@ import { Field, FieldBasic, isFieldBasic } from '../types';
 // Convert TypeBox schema to our fields
 const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
     if (schema[Kind] === 'Object') {
-        return Object.keys(schema.properties).flatMap(key => {
+        return typedObjectKeys(schema.properties).flatMap(key => {
             const field = schema.properties[key];
             /* if (field[Kind] === 'Object') {
                 return [

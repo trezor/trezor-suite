@@ -1,4 +1,5 @@
 import type { TimerId } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils/libESM';
 
 import { ERRORS } from '../constants';
 import { Blockchain, BlockchainOptions } from './Blockchain';
@@ -56,7 +57,7 @@ export class BackendManager {
     }
 
     dispose() {
-        Object.keys(this.reconnect)
+        typedObjectKeys(this.reconnect)
             .filter(this.getReconnectFilter())
             .forEach(this.clearReconnect, this);
         Object.values(this.instances).forEach(i => i.disconnect());

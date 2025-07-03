@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import styled, { ThemeProvider as SCThemeProvider } from 'styled-components';
 
 import { intermediaryTheme } from '@trezor/components/src/config/colors';
+import { typedObjectKeys } from '@trezor/utils/libESM';
 
 import { IntlProvider } from './components/IntlProvider';
 import { useTheme } from './hooks/useTheme';
@@ -24,7 +25,7 @@ export const App = ({ children }: AppProps) => {
     const messages: Record<string, any> = { default: defaultMessages, cs };
 
     const language = window.navigator.language.split('-')[0];
-    const navigatorLocaleIsSupported = Object.keys(messages).includes(language);
+    const navigatorLocaleIsSupported = typedObjectKeys(messages).includes(language);
     const languageToUse = navigatorLocaleIsSupported ? language : 'en';
     const messagesToUse = messages[languageToUse] || defaultMessages;
 

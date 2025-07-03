@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { COIN_LOGO_TYPE, CoinLogoProps } from './CoinLogo';
 import { COINS } from './coins';
 import { CoinLogo as CoinLogoComponent } from '../../index';
@@ -32,7 +34,7 @@ export const CoinLogo: StoryObj<CoinLogoProps> = {
             type: 'number',
         },
         symbol: {
-            options: Object.keys(COINS),
+            options: typedObjectKeys(COINS),
             control: {
                 type: 'select',
             },

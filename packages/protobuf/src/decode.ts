@@ -1,5 +1,7 @@
 import { Field, Message as MessageType, Type } from 'protobufjs/light';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import type { MessageResponse } from './messages';
 import { createMessageFromType, isPrimitiveField } from './utils';
 
@@ -52,7 +54,7 @@ function messageToJSON(MessageParam: MessageType<Record<string, unknown>>, field
     const { ...message } = MessageParam;
     const res: { [key: string]: any } = {};
 
-    Object.keys(fields).forEach(key => {
+    typedObjectKeys(fields).forEach(key => {
         const field = fields[key];
         // @ts-expect-error
         const value = message[key];

@@ -13,7 +13,7 @@ import type {
 } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
-import { Deferred, createDeferred } from '@trezor/utils';
+import { Deferred , createDeferred, typedObjectKeys } from '@trezor/utils';
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
     public eventEmitter = new EventEmitter();
@@ -168,7 +168,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     }
 
     private resolveMessagePromises(resolvePayload: Record<string, any>) {
-        Object.keys(this.messagePromises).forEach(id => {
+        typedObjectKeys(this.messagePromises).forEach(id => {
             this.messagePromises[id as any].resolve({
                 id,
                 payload: resolvePayload,

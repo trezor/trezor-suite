@@ -1,3 +1,4 @@
+import { typedObjectKeys } from '@trezor/utils';
 // Usage:
 // **make sure that mock files are listed in project jest.config file**
 // roots: ['<rootDir>/src', '<rootDir>/../test-utils/__mocks__']
@@ -53,7 +54,7 @@ const DEFAULT_PAYLOAD: Record<string, any> = {
     changePin: { payload: { message: 'Success' } },
 };
 
-Object.keys(methods).forEach(methodName => {
+typedObjectKeys(methods).forEach(methodName => {
     if (typeof methods[methodName] === 'function') {
         const failed = failedByDefaultMethods.includes(methodName)
             ? ERROR_RESULT

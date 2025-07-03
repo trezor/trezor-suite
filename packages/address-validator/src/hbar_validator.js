@@ -10,14 +10,15 @@ function isValidHBarAddress(address) {
 }
 
 module.exports = {
-    isValidAddress: function (address, currency, networkType) {
+    isValidAddress (address, currency, networkType) {
         return isValidHBarAddress(address);
     },
 
-    getAddressType: function (address, currency, networkType) {
+    getAddressType (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
+
         return undefined;
     },
 };

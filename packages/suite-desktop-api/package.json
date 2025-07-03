@@ -18,6 +18,7 @@
         "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
+        "@trezor/utils": "workspace:*",
         "electron": "35.1.2"
     }
 }

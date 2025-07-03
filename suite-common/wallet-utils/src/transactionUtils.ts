@@ -26,7 +26,7 @@ import {
     TokenInfo,
     TokenTransfer,
 } from '@trezor/connect';
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition , typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { formatAmount, formatNetworkAmount, isTokenTransferMatchesSearch } from './accountUtils';
@@ -315,7 +315,7 @@ export const findTransactions = (
     txid: string,
     transactions: { [key: string]: WalletAccountTransaction[] },
 ) =>
-    Object.keys(transactions).flatMap(key => {
+    typedObjectKeys(transactions).flatMap(key => {
         const tx = findTransaction(txid, transactions[key]);
         if (!tx) return [];
 
@@ -329,7 +329,7 @@ export const findChainedTransactions = (
     transactions: Record<AccountKey, WalletAccountTransaction[]>,
     result: ChainedTransactions = { own: [], others: [] },
 ) => {
-    Object.keys(transactions).forEach(accountKey => {
+    typedObjectKeys(transactions).forEach(accountKey => {
         const ownTxs = result.own.map(tx => tx.txid);
         const othersTxs = result.others.map(tx => tx.txid);
         // check if any pending transaction is using the utxo/vin with requested txid
@@ -755,7 +755,7 @@ const groupTransactionsByLabel = (accountMetadata: AccountLabels) => {
     const labels: { [label: string]: string[] } = {};
     const { outputLabels } = accountMetadata;
 
-    Object.keys(outputLabels).forEach(txid => {
+    typedObjectKeys(outputLabels).forEach(txid => {
         Object.values(outputLabels[txid]).forEach(label => {
             if (!labels[label]) {
                 labels[label] = [];
@@ -772,7 +772,7 @@ const groupAddressesByLabel = (accountMetadata: AccountLabels) => {
     const labels: { [label: string]: string[] } = {};
     const { addressLabels } = accountMetadata;
 
-    Object.keys(addressLabels).forEach(address => {
+    typedObjectKeys(addressLabels).forEach(address => {
         const label = addressLabels[address];
 
         if (!labels[label]) {
@@ -905,7 +905,7 @@ export const simpleSearchTransactions = (
 
     // Find by output label
     const txsForOutputLabels = groupTransactionsByLabel(accountMetadata);
-    const foundTxsForOutputLabel = Object.keys(txsForOutputLabels).flatMap(label => {
+    const foundTxsForOutputLabel = typedObjectKeys(txsForOutputLabels).flatMap(label => {
         if (label.toLowerCase().includes(search.toLowerCase())) {
             return txsForOutputLabels[label];
         }
@@ -916,7 +916,7 @@ export const simpleSearchTransactions = (
 
     // Find by address label
     const addressesForLabel = groupAddressesByLabel(accountMetadata);
-    const foundAddressesForLabel = Object.keys(addressesForLabel).flatMap(label => {
+    const foundAddressesForLabel = typedObjectKeys(addressesForLabel).flatMap(label => {
         if (label.toLowerCase().includes(search.toLowerCase())) {
             return addressesForLabel[label];
         }
@@ -926,7 +926,7 @@ export const simpleSearchTransactions = (
 
     // Find by address
     const txsForAddresses = groupTransactionIdsByAddress(transactions);
-    const foundTxsForAddress = Object.keys(txsForAddresses).flatMap(address => {
+    const foundTxsForAddress = typedObjectKeys(txsForAddresses).flatMap(address => {
         if (
             address.toLowerCase().includes(search.toLowerCase()) ||
             foundAddressesForLabel.includes(address)

@@ -7,6 +7,7 @@
  */
 
 import { isDesktop } from '@trezor/env-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
@@ -304,7 +305,7 @@ class Client {
         // drive has no problem with it as they have different id. What makes this case even more confusing is that list requests
         // returns array of files in randomized order. So user is seeing and is saving his data in one session to file.mtdt(id: A) but
         // then to file.mtdt(id: B) in another session. So this warn should help as debug if this mysterious bug appears some day...
-        if (Object.keys(Client.nameIdMap).length < json.files.length) {
+        if (typedObjectKeys(Client.nameIdMap).length < json.files.length) {
             console.warn(
                 'There are multiple files with the same name in Google Drive. This may happen as a result of race condition bug in application.',
             );

@@ -24,6 +24,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     AddCoinEnabledAccountType,
@@ -87,7 +88,7 @@ const aboutStyle = prepareNativeStyle((utils, { bottomInset }: { bottomInset: nu
 }));
 
 const getAccountTypeTranslations = (type: AccountType) => {
-    if (!Object.keys(accountTypeTranslationKeys).includes(type)) {
+    if (!typedObjectKeys(accountTypeTranslationKeys).includes(type)) {
         return undefined;
     }
 

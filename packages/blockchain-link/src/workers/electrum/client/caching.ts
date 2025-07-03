@@ -1,5 +1,6 @@
 import { Status } from '@trezor/blockchain-link-types/src/electrum';
 import { IntervalId } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { ElectrumClient } from './electrum';
 
@@ -22,7 +23,7 @@ export class CachingElectrumClient extends ElectrumClient {
         super();
         this.logTimer = setInterval(() => {
             this.log(`Caching effectiveness: ${this.cached}/${this.total}`);
-            this.log('Subscription count: ', Object.keys(this.statuses).length);
+            this.log('Subscription count: ', typedObjectKeys(this.statuses).length);
         }, 60000);
     }
 

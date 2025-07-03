@@ -1,6 +1,6 @@
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
-import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils';
+import { arrayDistinct , createCooldown, promiseAllSequence, typedObjectKeys } from '@trezor/utils';
 import type { Network } from '@trezor/utxo-lib';
 
 import type { Logger } from '../types';
@@ -183,7 +183,7 @@ export class CoinjoinMempoolController {
 
         const mempoolTxids = await this.client
             .fetchMempoolFilters()
-            .then(({ entries }) => Object.keys(entries));
+            .then(({ entries }) => typedObjectKeys(entries));
         const keepTxids = mempoolTxids.filter(txid => this.mempool.has(txid));
         const removeTxids = Array.from(this.mempool.keys()).filter(
             txid => !keepTxids.includes(txid),

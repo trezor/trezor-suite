@@ -12,6 +12,7 @@ import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
 import addressValidator from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
@@ -234,7 +235,7 @@ export const selectTradingExchangeLoadingTimestampAndStatus = createMemoizedSele
         lastLoadedTimestamp: loadingAndTimestamp.lastLoadedTimestamp,
         isFullyLoaded:
             !!(info?.coins && info?.platforms && exchangeInfo) &&
-            Object.keys(exchangeInfo.providerInfos).length > 0,
+            typedObjectKeys(exchangeInfo.providerInfos).length > 0,
     }),
 );
 

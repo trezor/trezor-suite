@@ -17,7 +17,7 @@ import {
     getStakingDataForNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { BigNumber, isChanged } from '@trezor/utils';
+import { BigNumber , isChanged, typedObjectKeys } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -116,7 +116,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
         if (
             !cryptoInput ||
             new BigNumber(cryptoInput).lte(0) ||
-            Object.keys(formState.errors).length
+            typedObjectKeys(formState.errors).length
         ) {
             setApproximatedInstantEthAmount(null);
 
@@ -177,7 +177,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
             if (
                 formState.isDirty &&
                 !formState.isValidating &&
-                Object.keys(formState.errors).length === 0 &&
+                typedObjectKeys(formState.errors).length === 0 &&
                 !isComposing
             ) {
                 saveDraft(selectedAccount.account.key, values as UnstakeFormState);

@@ -7,6 +7,7 @@ import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -49,7 +50,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
 
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
-    const formIsValid = Object.keys(errors).length === 0;
+    const formIsValid = typedObjectKeys(errors).length === 0;
 
     const { claimableAmount = '0' } = getStakingDataForNetwork(selectedAccount.account) ?? {};
     const isDisabled =

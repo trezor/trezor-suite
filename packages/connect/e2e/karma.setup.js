@@ -1,4 +1,5 @@
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+import { typedObjectKeys } from '@trezor/utils';
+jest.setTimeout(30000);
 
 // jest vs jasmine matchers compatibility:
 // - jasmine is missing "toMatchObject" matcher (deeply partial matching)
@@ -16,12 +17,12 @@ jasmine.getEnv().beforeAll(() => {
                 }
 
                 const nested = obj =>
-                    Object.keys(obj).reduce((match, key) => {
+                    typedObjectKeys(obj).reduce((match, key) => {
                         if (Array.isArray(obj[key])) {
-                            match[key] = jasmine.arrayContaining(
+                            match[key] = expect.arrayContaining(
                                 obj[key].map(item => {
                                     if (typeof item === 'object') {
-                                        return jasmine.objectContaining(nested(item));
+                                        return expect.objectContaining(nested(item));
                                     }
 
                                     return item;
@@ -39,9 +40,9 @@ jasmine.getEnv().beforeAll(() => {
                             obj[key].constructor &&
                             obj[key].constructor.name === 'ArrayContaining'
                         ) {
-                            match[key] = jasmine.arrayContaining(obj[key].sample);
+                            match[key] = expect.arrayContaining(obj[key].sample);
                         } else if (obj[key] && typeof obj[key] === 'object') {
-                            match[key] = jasmine.objectContaining(nested(obj[key]));
+                            match[key] = expect.objectContaining(nested(obj[key]));
                         } else {
                             match[key] = obj[key];
                         }
@@ -50,7 +51,7 @@ jasmine.getEnv().beforeAll(() => {
                     }, {});
 
                 // eslint-disable-next-line jest/no-standalone-expect
-                expect(actual).toEqual(jasmine.objectContaining(nested(expected)));
+                expect(actual).toEqual(expect.objectContaining(nested(expected)));
 
                 return success;
             },

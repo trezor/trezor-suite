@@ -12,6 +12,7 @@ import {
 import { Button, CollapsibleBox, Select, Textarea, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
@@ -176,7 +177,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                                 data-testid="@guide/feedback/suggestion-dropdown/select"
                                 isSearchable={false}
                                 defaultValue={category && categoryToOption(category)}
-                                options={Object.keys(feedbackCategories).map(category =>
+                                options={typedObjectKeys(feedbackCategories).map(category =>
                                     categoryToOption(category as FeedbackCategory),
                                 )}
                                 onChange={(option: FeedbackCategoryOption) =>

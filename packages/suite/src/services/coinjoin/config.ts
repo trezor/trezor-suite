@@ -7,6 +7,7 @@ import {
     PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
 } from '@trezor/coinjoin/src/constants';
 import type { PartialRecord } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 
@@ -173,7 +174,7 @@ export const getCoinjoinConfig = (
 ): CoinjoinNetworksConfig => {
     const config = COINJOIN_NETWORKS[symbol];
     const settings = config
-        ? config[environment ?? (Object.keys(config)[0] as CoinjoinServerEnvironment)]
+        ? config[environment ?? (typedObjectKeys(config)[0] as CoinjoinServerEnvironment)]
         : undefined;
     if (!settings)
         throw new Error(`Missing settings for coinjoin network ${symbol} env ${environment}`);

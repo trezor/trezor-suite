@@ -3,6 +3,7 @@ import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { IconName, icons } from '@suite-common/icons/src/icons';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     IconCircle as IconCircleComponent,
@@ -54,7 +55,7 @@ export const IconCircle: StoryObj<IconCircleProps> = {
             control: {
                 type: 'select',
             },
-            options: Object.keys(icons) as IconName[],
+            options: typedObjectKeys(icons) as IconName[],
         },
         ...getFramePropsStory(allowedIconCircleFrameProps).argTypes,
     },

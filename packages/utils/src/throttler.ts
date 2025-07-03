@@ -1,5 +1,7 @@
 import { IntervalId } from '@trezor/type-utils';
 
+import { typedObjectKeys } from './typedObjectKeys';
+
 export class Throttler {
     private readonly delay: number;
     private readonly intervals: { [id: string]: IntervalId };
@@ -36,6 +38,6 @@ export class Throttler {
     }
 
     dispose() {
-        Object.keys(this.intervals).forEach(this.cancel, this);
+        typedObjectKeys(this.intervals).forEach(this.cancel, this);
     }
 }

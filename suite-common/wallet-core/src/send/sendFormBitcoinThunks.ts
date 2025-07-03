@@ -24,6 +24,7 @@ import TrezorConnect, {
     SignTransaction,
     SignedTransaction,
 } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -199,7 +200,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
 
         // format max (@trezor/connect sends it as satoshi)
         // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
-        Object.keys(resultLevels).forEach(key => {
+        typedObjectKeys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
 
             if (tx.type !== 'error') {

@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { StoryColumn } from '@trezor/components';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { COINS, isCoinSymbol } from './coins';
 import { CoinLogo } from '../../index';
@@ -35,7 +36,7 @@ export const All: StoryObj = {
     render: () => (
         <StoryColumn minWidth={700}>
             <WrapperIcons>
-                {Object.keys(COINS).map(coinSymbol => (
+                {typedObjectKeys(COINS).map(coinSymbol => (
                     <Icon key={coinSymbol}>
                         <CoinName>{coinSymbol}</CoinName>
                         {isCoinSymbol(coinSymbol) && (

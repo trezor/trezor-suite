@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 import { Status } from '../../src/client/Status';
 import * as http from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
@@ -22,7 +24,7 @@ jest.mock('../../src/constants', () => {
         get HTTP_REQUEST_TIMEOUT() {
             return 200;
         },
-        STATUS_TIMEOUT: Object.keys(originalModule.STATUS_TIMEOUT).reduce(
+        STATUS_TIMEOUT: typedObjectKeys(originalModule.STATUS_TIMEOUT).reduce(
             (obj, key) => ({
                 ...obj,
                 get [key]() {

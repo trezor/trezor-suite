@@ -13,6 +13,7 @@ import {
     isStakeTypeTx,
     isUnstakeTx,
 } from '@suite-common/wallet-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { TransactionsRootState } from './transactionsReducer';
 import { AccountsRootState } from '../accounts/accountsReducer';
@@ -74,7 +75,7 @@ export const selectPendingAccountAddresses = createMemoizedSelector(
 export const selectAllPendingTransactions = createMemoizedSelector(
     [selectTransactions],
     transactions =>
-        Object.keys(transactions).reduce(
+        typedObjectKeys(transactions).reduce(
             (response, accountKey) => {
                 response[accountKey] = (transactions[accountKey] ?? []).filter(isPending);
 

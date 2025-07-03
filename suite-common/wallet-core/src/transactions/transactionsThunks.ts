@@ -22,6 +22,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
@@ -154,7 +155,7 @@ export const addFakePendingTxThunk = createThunk(
             { [account.key]: account },
         );
 
-        Object.keys(affectedAccounts).forEach(key => {
+        typedObjectKeys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
             if (!isRbfBumpFeeTransaction(precomposedTransaction)) {
                 // create and profile pending transaction for affected account if it's not a replacement tx

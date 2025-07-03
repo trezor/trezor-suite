@@ -12,6 +12,7 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { importSendFormRequestThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch } from 'src/hooks/suite';
@@ -124,7 +125,7 @@ export const useSendFormImport = ({
                         output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
                     }
                 } else if (
-                    Object.keys(fiatCurrencies).find(currency => currency === itemCurrency) &&
+                    typedObjectKeys(fiatCurrencies).find(currency => currency === itemCurrency) &&
                     itemRate
                 ) {
                     // csv amount in fiat currency

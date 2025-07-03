@@ -24,7 +24,7 @@ import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { isChanged } from '@trezor/utils';
+import { isChanged , typedObjectKeys } from '@trezor/utils';
 
 import { openDeferredModal } from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -120,7 +120,7 @@ export const useTradingBuyForm = ({
 
     const isInitialDataLoading = !buyInfo || !buyInfo?.buyInfo;
     const noProviders = !isInitialDataLoading && buyInfo?.buyInfo?.providers.length === 0;
-    const formIsValid = Object.keys(formState.errors).length === 0;
+    const formIsValid = typedObjectKeys(formState.errors).length === 0;
     const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues);
@@ -419,7 +419,7 @@ export const useTradingBuyForm = ({
     useDebounce(
         () => {
             // saving draft after validation & buyInfo is available
-            if (!formState.isValidating && Object.keys(formState.errors).length === 0 && buyInfo) {
+            if (!formState.isValidating && typedObjectKeys(formState.errors).length === 0 && buyInfo) {
                 saveDraft(buyDraftKey, {
                     ...values,
                     fiatInput:

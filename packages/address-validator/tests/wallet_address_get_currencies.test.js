@@ -1,7 +1,7 @@
 var isNode = true;
 
 var chai = isNode ? require('chai') : window.chai,
-    expect = chai.expect;
+    {expect} = chai;
 
 var WAValidator = isNode ? require('../src') : window.WAValidator;
 

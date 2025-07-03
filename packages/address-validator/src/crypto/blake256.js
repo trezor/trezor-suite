@@ -59,6 +59,7 @@ Blake256.prototype.update = function (data, encoding) {
     }
 
     while (offset < data.length) block[this._blockOffset++] = data[offset++];
+
     return this;
 };
 
@@ -70,8 +71,8 @@ function rot(x, n) {
 }
 
 function g(v, m, i, a, b, c, d, e) {
-    var sigma = Blake256.sigma;
-    var u256 = Blake256.u256;
+    var {sigma} = Blake256;
+    var {u256} = Blake256;
 
     v[a] = (v[a] + ((m[sigma[i][e]] ^ u256[sigma[i][e + 1]]) >>> 0) + v[b]) >>> 0;
     v[d] = rot(v[d] ^ v[a], 16);
@@ -102,7 +103,7 @@ function Blake256() {
 }
 
 Blake256.prototype._compress = function () {
-    var u256 = Blake256.u256;
+    var {u256} = Blake256;
     var v = new Array(16);
     var m = new Array(16);
     var i;
@@ -177,6 +178,7 @@ Blake256.prototype.digest = function (encoding) {
 
     var buffer = Buffer.alloc(32);
     for (var i = 0; i < 8; ++i) buffer.writeUInt32BE(this._h[i], i * 4);
+
     return buffer.toString(encoding);
 };
 

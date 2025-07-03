@@ -1,3 +1,4 @@
+import { typedObjectKeys } from '@trezor/utils';
 const PREFIX = 'blockchain_link/';
 
 const ERROR: { [key: string]: string | undefined } = {
@@ -29,7 +30,7 @@ export class CustomError extends Error {
         if (typeof codeOrMessage === 'string') {
             const isPrefixed = codeOrMessage.indexOf(PREFIX) === 0;
             const code = isPrefixed ? codeOrMessage.substring(PREFIX.length) : codeOrMessage;
-            const knownCode = Object.keys(ERROR).includes(code);
+            const knownCode = typedObjectKeys(ERROR).includes(code);
             if (isPrefixed || knownCode) {
                 this.code = `${PREFIX}${code}`;
                 const codeMessage = ERROR[code];

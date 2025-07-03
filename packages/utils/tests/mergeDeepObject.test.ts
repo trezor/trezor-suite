@@ -1,4 +1,5 @@
 import { mergeDeepObject } from '../src/mergeDeepObject';
+import { typedObjectKeys } from '../src/typedObjectKeys';
 
 interface INamedObject {
     propertyA: string[];
@@ -74,7 +75,7 @@ describe('mergeDeepObject', () => {
         it('merges objects with functions correctly', () => {
             const { functions } = result;
 
-            expect(Object.keys(functions)).toEqual(['func1', 'func2', 'func3']);
+            expect(typedObjectKeys(functions)).toEqual(['func1', 'func2', 'func3']);
 
             expect(functions.func1()).toBe('Object 1');
             expect(functions.func2()).toBe('Object 3');

@@ -13,6 +13,7 @@ import {
 import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FiatValue, Translation } from 'src/components/suite';
@@ -34,6 +35,7 @@ interface AmountProps {
     output: Partial<Output>;
     outputId: number;
 }
+
 export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
     const {
@@ -61,7 +63,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const error = outputError ? outputError.amount : undefined;
 
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
-    const isSetMaxVisible = isSetMaxActive && !error && !Object.keys(errors).length;
+    const isSetMaxVisible = isSetMaxActive && !error && !typedObjectKeys(errors).length;
     const maxSwitchId = `outputs.${outputId}.setMax`;
 
     const amountValue = getDefaultValue(amountName, output.amount || '');

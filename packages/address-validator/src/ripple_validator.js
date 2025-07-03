@@ -1,5 +1,6 @@
 const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
+
 var baseX = require('base-x').default;
 
 var ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
@@ -11,7 +12,7 @@ module.exports = {
     /**
      * ripple address validation
      */
-    isValidAddress: function (address) {
+    isValidAddress (address) {
         if (regexp.test(address)) {
             return this.verifyChecksum(address);
         }
@@ -19,7 +20,7 @@ module.exports = {
         return false;
     },
 
-    verifyChecksum: function (address) {
+    verifyChecksum (address) {
         var bytes = codec.decode(address);
         var computedChecksum = cryptoUtils.sha256Checksum(cryptoUtils.toHex(bytes.slice(0, -4)));
         var checksum = cryptoUtils.toHex(bytes.slice(-4));
@@ -27,10 +28,11 @@ module.exports = {
         return computedChecksum === checksum;
     },
 
-    getAddressType: function (address, currency, networkType) {
+    getAddressType (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
+
         return undefined;
     },
 };

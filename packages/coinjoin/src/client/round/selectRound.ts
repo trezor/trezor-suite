@@ -1,4 +1,4 @@
-import { arrayPartition, arrayToDictionary } from '@trezor/utils';
+import { arrayPartition , arrayToDictionary, typedObjectKeys } from '@trezor/utils';
 
 import { ROUND_SELECTION_MAX_OUTPUTS, ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
@@ -115,7 +115,7 @@ export const getAccountCandidates = ({
             true,
         );
 
-        if (Object.keys(blameOfUtxos).length > 0) {
+        if (typedObjectKeys(blameOfUtxos).length > 0) {
             logger.info(`Found account candidate for blame round ~~${accountKey}~~`);
 
             return {

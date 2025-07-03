@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { Image as ImageComponent, ImageProps, allowedImageFrameProps } from './Image';
 import { PNG_IMAGES, SVG_IMAGES } from './images';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -18,7 +20,7 @@ export const Image: StoryObj<ImageProps> = {
     },
     argTypes: {
         image: {
-            options: Object.keys({ ...SVG_IMAGES, ...PNG_IMAGES }),
+            options: typedObjectKeys({ ...SVG_IMAGES, ...PNG_IMAGES }),
             control: {
                 type: 'select',
             },

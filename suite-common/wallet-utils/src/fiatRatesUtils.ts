@@ -10,6 +10,7 @@ import {
     TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -95,7 +96,7 @@ export const selectHistoricRatesByTransactions = (
         const { symbol, blockTime, tokens } = tx;
         const timestamp = roundTimestampToNearestPastHour(blockTime as Timestamp);
 
-        Object.keys(historicRates).forEach(fiatRate => {
+        typedObjectKeys(historicRates).forEach(fiatRate => {
             const fiatRateKey = fiatRate as FiatRateKey;
 
             if (

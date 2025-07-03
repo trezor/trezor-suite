@@ -17,7 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { DEVICE, UI } from '@trezor/connect';
-import { arrayDistinct } from '@trezor/utils';
+import { arrayDistinct , typedObjectKeys } from '@trezor/utils';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
@@ -240,7 +240,7 @@ export const coinjoinMiddleware =
                 const updatedConfig: Partial<typeof config> = {};
 
                 // Iterate over existing config and replace the value from remote config only if it's valid number.
-                (Object.keys(config) as Array<keyof CoinjoinConfig>).forEach(key => {
+                (typedObjectKeys(config) as Array<keyof CoinjoinConfig>).forEach(key => {
                     const value = incomingConfig[key];
 
                     if (
@@ -252,7 +252,7 @@ export const coinjoinMiddleware =
                     }
                 });
 
-                if (Object.keys(updatedConfig).length > 0) {
+                if (typedObjectKeys(updatedConfig).length > 0) {
                     api.dispatch(coinjoinAccountActions.updateCoinjoinConfig(updatedConfig));
                 }
             }

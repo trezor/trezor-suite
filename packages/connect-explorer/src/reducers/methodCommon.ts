@@ -1,6 +1,7 @@
 import type { TrezorConnect } from '@trezor/connect-web';
 import { TSchema } from '@trezor/schema-utils';
 import { setDeepValue } from '@trezor/schema-utils/src/utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { Field, FieldBasic, isFieldBasic } from '../types';
 
@@ -103,7 +104,7 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
 // Updates the javascript output based on the current params
 export const updateJavascript = (state: MethodState) => {
     const code =
-        Object.keys(state.params).length > 0
+        typedObjectKeys(state.params).length > 0
             ? JSON.stringify(
                   state.params,
                   (_, value) => {

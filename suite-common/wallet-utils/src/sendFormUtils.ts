@@ -39,6 +39,7 @@ import {
     PROTO,
     TokenInfo,
 } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -288,7 +289,7 @@ export const findComposeErrors = <T extends FieldValues>(
 ) => {
     const composeErrors: FieldPath<T>[] = [];
     if (!errors || typeof errors !== 'object') return composeErrors;
-    Object.keys(errors).forEach(key => {
+    typedObjectKeys(errors).forEach(key => {
         const val = errors[key];
         if (val) {
             if (Array.isArray(val)) {
@@ -488,7 +489,7 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
 export const buildCurrencyOptions = (selected: CurrencyOption) => {
     const result: CurrencyOption[] = [];
 
-    Object.keys(fiatCurrencies).forEach(currency => {
+    typedObjectKeys(fiatCurrencies).forEach(currency => {
         if (selected.value === currency) {
             return;
         }

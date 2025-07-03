@@ -18,6 +18,7 @@ import {
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -241,7 +242,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
 
         // format max (calculate sends it as lamports)
         // update errorMessage values (symbol)
-        Object.keys(resultLevels).forEach(key => {
+        typedObjectKeys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
             if (tx.type !== 'error') {
                 tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;

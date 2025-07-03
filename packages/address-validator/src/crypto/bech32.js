@@ -24,6 +24,7 @@ function convertbits(data, frombits, tobits, pad) {
     } else if (bits >= frombits || (acc << (tobits - bits)) & maxv) {
         return null;
     }
+
     return ret;
 }
 
@@ -45,6 +46,7 @@ function decode(hrp, addr, m = false) {
     if (res === null || res.length < 2 || res.length > 40) {
         return null;
     }
+
     return { version: dec.words[0], program: res };
 }
 
@@ -58,6 +60,7 @@ function encode(hrp, version, program, m = false) {
     if (decode(hrp, ret, m) === null) {
         return null;
     }
+
     return ret;
 }
 

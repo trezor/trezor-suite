@@ -17,6 +17,7 @@ import {
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { STORAGE } from 'src/actions/suite/constants';
@@ -680,7 +681,7 @@ export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
         if (!coinjoinAccount?.prison) return;
         const { prison, session, transactionCandidates } = coinjoinAccount;
 
-        return Object.keys(prison).reduce<typeof prison>((result, key) => {
+        return typedObjectKeys(prison).reduce<typeof prison>((result, key) => {
             const inmate = prison[key];
             // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
             if (

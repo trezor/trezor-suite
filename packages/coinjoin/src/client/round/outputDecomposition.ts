@@ -1,4 +1,4 @@
-import { arrayToDictionary, getWeakRandomId } from '@trezor/utils';
+import { arrayToDictionary , getWeakRandomId, typedObjectKeys } from '@trezor/utils';
 
 import { getExternalOutputSize } from '../../utils/coordinatorUtils';
 import { compareOutpoint, getRoundEvents, sumCredentials } from '../../utils/roundUtils';
@@ -416,7 +416,7 @@ export const outputDecomposition = async (
 
     const { logger } = options;
 
-    logger.info(`Decompose ${Object.keys(groupInputsByAccount).length} accounts`);
+    logger.info(`Decompose ${typedObjectKeys(groupInputsByAccount).length} accounts`);
 
     // calculate amounts
     const outputAmounts = await Promise.all(
@@ -447,7 +447,7 @@ export const outputDecomposition = async (
 
     // join inputs Credentials for each account separately
     const joinedCredentials = await Promise.all(
-        Object.keys(groupInputsByAccount).map((accountKey, index) => {
+        typedObjectKeys(groupInputsByAccount).map((accountKey, index) => {
             if (!outputAmounts[index]) throw new Error(`Missing amounts at index ${index}`);
 
             logger.info(`Create outputs: ${outputAmounts[index].join(',')}`);
@@ -470,7 +470,7 @@ export const outputDecomposition = async (
     );
 
     // combine everything into DecomposedOutputs objects and return the result to outputRegistration
-    return Object.keys(groupInputsByAccount).map((accountKey, index) => {
+    return typedObjectKeys(groupInputsByAccount).map((accountKey, index) => {
         if (!joinedCredentials[index])
             throw new Error(`Missing joined credentials at index ${index}`);
 

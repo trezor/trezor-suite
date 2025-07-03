@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch';
 
-import { ScheduleActionParams, getWeakRandomId } from '@trezor/utils';
+import { ScheduleActionParams , getWeakRandomId, typedObjectKeys } from '@trezor/utils';
+
 
 export interface RequestOptions extends ScheduleActionParams {
     method?: 'POST' | 'GET';
@@ -18,7 +19,7 @@ export const patchResponse = (obj: any) => {
             patchResponse(obj[i]);
         }
     } else if (obj && typeof obj === 'object') {
-        Object.keys(obj).forEach(key => {
+        typedObjectKeys(obj).forEach(key => {
             const newKey = camelCaseToPascalCase(key);
             obj[newKey] = obj[key];
             if (key !== newKey) {

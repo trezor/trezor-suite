@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { Option, Select as SelectComponent, SelectProps } from './Select';
 
 const values: any = {
@@ -11,7 +13,7 @@ const values: any = {
     Custom: { label: 'custom', value: 'custom' },
 };
 
-const options = Object.keys(values)
+const options = typedObjectKeys(values)
     .filter((k: string) => values[k])
     .map((k: string) => values[k]);
 

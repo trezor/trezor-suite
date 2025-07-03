@@ -1,5 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 import stMock from '../__fixtures__/searchTransactions.json';
 import * as fixtures from '../__fixtures__/transactionUtils';
@@ -39,7 +40,7 @@ describe('transaction utils', () => {
     });
 
     describe('isPending', () => {
-        Object.keys(fixtures.isPending).forEach(f => {
+        typedObjectKeys(fixtures.isPending).forEach(f => {
             it(f, () => {
                 const transaction = fixtures.isPending[f];
                 const { blockHeight } = transaction;

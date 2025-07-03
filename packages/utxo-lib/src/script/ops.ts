@@ -1,5 +1,7 @@
 import * as ops from 'bitcoin-ops';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 // extend with Decred OP codes
 const OPS: Record<string, number> = {
     ...ops,
@@ -10,7 +12,7 @@ const OPS: Record<string, number> = {
 };
 
 const REVERSE_OPS: string[] = [];
-Object.keys(OPS).forEach(code => {
+typedObjectKeys(OPS).forEach(code => {
     REVERSE_OPS[OPS[code]] = code;
 });
 

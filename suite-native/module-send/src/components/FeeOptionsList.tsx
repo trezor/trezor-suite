@@ -5,6 +5,7 @@ import { D, pipe } from '@mobily/ts-belt';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey, GeneralPrecomposedLevels, TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { FeeOption } from './FeeOption';
 import { NativeSupportedFeeLevel } from '../types';
@@ -42,7 +43,7 @@ export const FeeOptionsList = ({
 
     const transactionBytes = getTransactionBytes(predefinedFeeLevels);
 
-    const isMultipleOptionsDisplayed = Object.keys(predefinedFeeLevels).length > 1;
+    const isMultipleOptionsDisplayed = typedObjectKeys(predefinedFeeLevels).length > 1;
 
     return (
         <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>

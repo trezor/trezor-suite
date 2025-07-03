@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { InvityServerEnvironment, invityAPI } from '@suite-common/trading';
 import { Select, SelectItemType } from '@suite-native/atoms';
 import { selectTradingEnvironment, tradingActions } from '@suite-native/module-trading';
+import { typedObjectKeys } from '@trezor/utils';
 
-const tradingEnvironmentItems: SelectItemType<InvityServerEnvironment>[] = Object.keys(
-    invityAPI.SERVERS,
-).map(env => ({
+const tradingEnvironmentItems: SelectItemType<InvityServerEnvironment>[] = typedObjectKeys(invityAPI.SERVERS).map(env => ({
     value: env as InvityServerEnvironment,
     label: env,
 }));

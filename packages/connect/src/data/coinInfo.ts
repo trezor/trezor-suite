@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
-import { cloneObject } from '@trezor/utils';
+import { cloneObject, typedObjectKeys } from '@trezor/utils';
 
 import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
 import { ERRORS } from '../constants';
@@ -176,7 +176,7 @@ export const getCoinName = (path: number[]) => {
 const BITCOIN_SHORTCUTS = ['BTC', 'TEST', 'REGTEST'];
 
 const parseBitcoinNetworksJson = (json: any) => {
-    Object.keys(json).forEach(key => {
+    typedObjectKeys(json).forEach(key => {
         const coin = json[key];
         const shortcut = coin.coin_shortcut;
 
@@ -252,7 +252,7 @@ export const ethereumNetworkInfoBase = {
 };
 
 const parseEthereumNetworksJson = (json: any) => {
-    Object.keys(json).forEach(key => {
+    typedObjectKeys(json).forEach(key => {
         const network = json[key];
 
         ethereumNetworks.push({
@@ -270,7 +270,7 @@ const parseEthereumNetworksJson = (json: any) => {
 };
 
 const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
-    Object.keys(json).forEach(key => {
+    typedObjectKeys(json).forEach(key => {
         const network = json[key];
         miscNetworks.push({
             type: type || 'misc',
@@ -288,7 +288,7 @@ const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
 };
 
 export const parseCoinsJson = (json: any) => {
-    Object.keys(json).forEach(key => {
+    typedObjectKeys(json).forEach(key => {
         switch (key) {
             case 'bitcoin':
                 return parseBitcoinNetworksJson(json[key]);

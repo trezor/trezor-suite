@@ -1,5 +1,5 @@
 var moduleImport = require('./biginteger');
-var JSBigInt = moduleImport.JSBigInt;
+var {JSBigInt} = moduleImport;
 
 /**
 Copyright (c) 2017, moneroexamples
@@ -56,6 +56,7 @@ var cnBase58 = (function () {
         for (var i = 0; i < hex.length / 2; ++i) {
             res[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
         }
+
         return res;
     }
 
@@ -64,6 +65,7 @@ var cnBase58 = (function () {
         for (var i = 0; i < bin.length; ++i) {
             out.push(('0' + bin[i].toString(16)).slice(-2));
         }
+
         return out.join('');
     }
 
@@ -72,6 +74,7 @@ var cnBase58 = (function () {
         for (var i = 0; i < str.length; i++) {
             res[i] = str.charCodeAt(i);
         }
+
         return res;
     }
 
@@ -80,6 +83,7 @@ var cnBase58 = (function () {
         for (var i = 0; i < bin.length; i++) {
             out.push(String.fromCharCode(bin[i]));
         }
+
         return out.join('');
     }
 
@@ -111,6 +115,7 @@ var cnBase58 = (function () {
             default:
                 throw 'Impossible condition';
         }
+
         return res;
     }
 
@@ -124,6 +129,7 @@ var cnBase58 = (function () {
             res[i] = num.remainder(twopow8).toJSValue();
             num = num.divide(twopow8);
         }
+
         return res;
     }
 
@@ -143,6 +149,7 @@ var cnBase58 = (function () {
             buf[index + i] = alphabet[remainder.toJSValue()];
             i--;
         }
+
         return buf;
     };
 
@@ -178,6 +185,7 @@ var cnBase58 = (function () {
                 full_block_count * full_encoded_block_size,
             );
         }
+
         return bintostr(res);
     };
 
@@ -209,6 +217,7 @@ var cnBase58 = (function () {
             throw 'Overflow 2';
         }
         buf.set(uint64_to_8be(res_num, res_size), index);
+
         return buf;
     };
 
@@ -245,6 +254,7 @@ var cnBase58 = (function () {
                 full_block_count * full_block_size,
             );
         }
+
         return bintohex(data);
     };
 

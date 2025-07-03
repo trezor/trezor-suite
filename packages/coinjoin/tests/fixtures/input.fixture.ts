@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 import { Alice } from '../../src/client/Alice';
 
 export const createInput = (
@@ -14,7 +16,7 @@ export const createInput = (
         anonymityLevel: 1,
     });
     if (options) {
-        Object.keys(options).forEach(key => {
+        typedObjectKeys(options).forEach(key => {
             // @ts-expect-error key-value unsolvable problem
             input[key] = options[key];
         });

@@ -1,6 +1,7 @@
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
@@ -16,7 +17,7 @@ export const Fiat = () => {
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 
-    const options = Object.keys(fiatCurrencies).map(c => buildCurrencyOption(c));
+    const options = typedObjectKeys(fiatCurrencies).map(c => buildCurrencyOption(c));
     const value = buildCurrencyOption(localCurrency);
 
     const handleChange = (option: { value: FiatCurrencyCode; label: string }) => {

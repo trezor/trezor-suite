@@ -5,6 +5,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { IconName, icons } from '@suite-common/icons/src/icons';
 import { typography } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { Icon, IconProps, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -96,7 +97,7 @@ const Render = (props: IconProps) => {
                 />
             </FloatingWrapper>
             <Wrapper>
-                {(Object.keys(icons) as IconName[])
+                {(typedObjectKeys(icons) as IconName[])
                     .filter(iconKey => new RegExp(search, 'i').test(iconKey))
                     .map(iconKey =>
                         copied === iconKey ? (

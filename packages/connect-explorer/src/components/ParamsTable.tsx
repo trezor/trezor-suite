@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Kind, OptionalKind, TIntersect, TObject, TSchema } from '@sinclair/typebox';
 
+import { typedObjectKeys } from '@trezor/utils';
+
 import { Param } from './Param';
 import { descriptionDictionary } from '../constants/descriptions';
 import { getTypeName } from '../utils/getTypeName';
@@ -43,7 +45,7 @@ const SingleParam = ({
         hasDescendants = false;
         typeLink = `#${value.$id}`;
     }
-    if (value[Kind] === 'Object' && Object.keys(value.properties).length === 0) {
+    if (value[Kind] === 'Object' && typedObjectKeys(value.properties).length === 0) {
         // No properties, don't show descendants or the object itself
         return null;
     }

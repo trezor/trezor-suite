@@ -1,4 +1,5 @@
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
+import { typedObjectKeys } from '@trezor/utils';
 
 import type { SuiteDBSchema } from '../../definitions';
 import { updateAll } from '../utils';
@@ -132,7 +133,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     await updateAll(transaction, 'historicRates', rates => {
-        const rate = Object.keys(rates).reduce((newRates, key) => {
+        const rate = typedObjectKeys(rates).reduce((newRates, key) => {
             const newKey = key.replace('bnb', 'bsc');
             // @ts-expect-error
             newRates[newKey] = rates[key];

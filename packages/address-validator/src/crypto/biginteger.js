@@ -65,6 +65,7 @@
             } else if (typeof n === 'undefined') {
                 return ZERO;
             }
+
             return BigInteger.parse(n);
         }
 
@@ -190,6 +191,7 @@
                 while (group.length < BigInteger_base_log10) group = '0' + group;
                 str += group;
             }
+
             return str;
         } else {
             var numerals = BigInteger.digits;
@@ -208,6 +210,7 @@
                 // Benchmark both to compare speeds.
                 digits.push(numerals[digit.valueOf()]);
             }
+
             return (sign < 0 ? '-' : '') + digits.reverse().join('');
         }
     };
@@ -292,6 +295,7 @@
                 c = (c = Math.abs(c)) >= x ? c - x + l : 0;
                 var z = new Array(c + 1).join('0');
                 var r = n + f;
+
                 return (
                     (s || '') +
                     (l ? (r = z + r) : (r += z)).substr(0, (i += l ? z.length : 0)) +
@@ -376,16 +380,18 @@
                     );
                 }
                 d.push(parseInt(digits.join(''), 10));
+
                 return new BigInteger(d, sign, CONSTRUCT);
             }
 
             // Do the conversion
             var d = ZERO;
             base = BigInteger.small[base];
-            var small = BigInteger.small;
+            var {small} = BigInteger;
             for (var i = 0; i < digits.length; i++) {
                 d = d.multiply(base).add(small[parseInt(digits[i], 36)]);
             }
+
             return new BigInteger(d._d, sign, CONSTRUCT);
         } else {
             throw new Error('Invalid BigInteger format: ' + s);
@@ -413,6 +419,7 @@
         }
         if (this._s !== n._s) {
             n = n.negate();
+
             return this.subtract(n);
         }
 
@@ -495,6 +502,7 @@
         }
         if (this._s !== n._s) {
             n = n.negate();
+
             return this.add(n);
         }
 
@@ -706,6 +714,7 @@
         if (this._s === n._s) {
             // both positive or both negative
             var cmp = this.compareAbs(n);
+
             return cmp * this._s;
         } else {
             return this._s;
@@ -750,12 +759,14 @@
             if (this._s < 0) {
                 return n.negate();
             }
+
             return n;
         }
         if (n.isUnit()) {
             if (n._s < 0) {
                 return this.negate();
             }
+
             return this;
         }
         if (this === n) {
@@ -791,6 +802,7 @@
                 partial[j] = digit % BigInteger_base;
             }
         }
+
         return new BigInteger(partial, this._s * n._s, CONSTRUCT);
     };
 
@@ -815,6 +827,7 @@
                     CONSTRUCT,
                 );
             }
+
             return new BigInteger([digit], 1, CONSTRUCT);
         }
 
@@ -871,7 +884,7 @@
         }
 
         var digits = this._d;
-        var length = digits.length;
+        var {length} = digits;
         var imult1 = new Array(length + length + 1);
         var product, carry, k;
         var i;
@@ -1068,6 +1081,7 @@
             if (this._s < 0) {
                 r = r.negate();
             }
+
             return [q, r];
         }
 
@@ -1108,6 +1122,7 @@
         if (this._s < 0) {
             r = r.negate();
         }
+
         return [new BigInteger(quot.reverse(), sign, CONSTRUCT), r];
     };
 
@@ -1122,6 +1137,7 @@
     */
     BigInteger.prototype.isEven = function () {
         var digits = this._d;
+
         return this._s === 0 || digits.length === 0 || digits[0] % 2 === 0;
     };
 
@@ -1227,6 +1243,7 @@
             if (n == 0) return k;
             k._s = 1;
             k = k.multiplySingleDigit(Math.pow(10, n));
+
             return this._s < 0 ? k.negate() : k;
         } else if (-n >= this._d.length * BigInteger_base_log10) {
             return ZERO;
@@ -1236,6 +1253,7 @@
             for (n = -n; n >= BigInteger_base_log10; n -= BigInteger_base_log10) {
                 k._d.shift();
             }
+
             return n == 0 ? k : k.divRemSmall(Math.pow(10, n))[0];
         }
     };
@@ -1358,6 +1376,7 @@
 
         var N = Math.ceil(30 / BigInteger_base_log10);
         var firstNdigits = this._d.slice(l - N);
+
         return (
             Math.log(new BigInteger(firstNdigits, 1, CONSTRUCT).valueOf()) +
             (l - N) * Math.log(BigInteger_base)

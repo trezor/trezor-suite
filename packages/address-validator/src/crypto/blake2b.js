@@ -263,6 +263,7 @@ function Blake2b(outlen, key, salt, personal) {
 
 Blake2b.prototype.update = function (input) {
     blake2bUpdate(this, input);
+
     return this;
 };
 
@@ -270,6 +271,7 @@ Blake2b.prototype.digest = function (out) {
     var buf = !out || out === 'binary' || out === 'hex' ? new Uint8Array(this.outlen) : out;
     blake2bFinal(this, buf);
     if (out === 'hex') return hexSlice(buf);
+
     return buf;
 };
 
@@ -303,17 +305,20 @@ function blake2bFinal(ctx, out) {
     for (var i = 0; i < ctx.outlen; i++) {
         out[i] = ctx.h[i >> 2] >> (8 * (i & 3));
     }
+
     return out;
 }
 
 function hexSlice(buf) {
     var str = '';
     for (var i = 0; i < buf.length; i++) str += toHex(buf[i]);
+
     return str;
 }
 
 function toHex(n) {
     if (n < 16) return '0' + n.toString(16);
+
     return n.toString(16);
 }
 

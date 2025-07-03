@@ -1,6 +1,7 @@
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { AccountKey } from '@suite-common/wallet-types';
+import { typedObjectKeys } from '@trezor/utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { Dispatch } from 'src/types/suite';
@@ -22,7 +23,7 @@ export const deleteDanglingLabels = async ({
     accountKey,
     txid,
 }: DeleteAllOutputLabelsParams) => {
-    for (const outputIndex of Object.keys(labels)) {
+    for (const outputIndex of typedObjectKeys(labels)) {
         await dispatch(
             metadataLabelingActions.addMetadata({
                 type: 'outputLabel',
@@ -49,7 +50,7 @@ export const copyLabelToNewTransaction = async ({
     accountKey,
     newTxid,
 }: MoveLabelToNewTransactionParams) => {
-    for (const outputIndex of Object.keys(accountOutputLabels)) {
+    for (const outputIndex of typedObjectKeys(accountOutputLabels)) {
         const value = accountOutputLabels[outputIndex];
 
         await dispatch(

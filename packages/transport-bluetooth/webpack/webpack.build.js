@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 /* eslint-disable import/no-extraneous-dependencies */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
@@ -17,7 +19,7 @@ class RemoveJSFilePlugin {
                 },
                 assets => {
                     // Iterate over assets and delete JavaScript files
-                    Object.keys(assets).forEach(filename => {
+                    typedObjectKeys(assets).forEach(filename => {
                         if (filename.endsWith('.js')) {
                             compilation.deleteAsset(filename);
                         }
@@ -83,7 +85,7 @@ module.exports = {
                 minifyJS: true,
             },
             templateContent: ({ compilation }) => {
-                const jsBundleName = Object.keys(compilation.assets).find(name =>
+                const jsBundleName = typedObjectKeys(compilation.assets).find(name =>
                     name.endsWith('.js'),
                 );
                 const jsBundleContent = compilation.assets[jsBundleName].source();

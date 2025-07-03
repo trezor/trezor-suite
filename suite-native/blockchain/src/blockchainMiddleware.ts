@@ -6,6 +6,7 @@ import {
     selectAllPendingTransactions,
 } from '@suite-common/wallet-core';
 import { BlockchainEvent, BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     onBlockchainConnectThunk,
@@ -16,7 +17,7 @@ import {
 export const selectNetworksWithPendingTransactions = (state: TransactionsRootState) => {
     const pendingTransactions = selectAllPendingTransactions(state);
 
-    return Object.keys(pendingTransactions)
+    return typedObjectKeys(pendingTransactions)
         .filter(accountKey => pendingTransactions[accountKey].length > 0)
         .map(accountKey => pendingTransactions[accountKey][0].symbol);
 };

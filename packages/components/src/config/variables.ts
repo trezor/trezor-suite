@@ -1,5 +1,6 @@
 import { icons } from '@suite-common/icons/src/icons';
 import { aboveBreakpoint, belowBreakpoint, breakpoints } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 /**
  * @deprecated This key is deprecated. Please use `useLayoutSize` hook or breakpoints from `@trezor/theme`.
@@ -57,4 +58,4 @@ export const FONT_WEIGHT = {
     BOLD: 700,
 } as const;
 
-export const ICONS = Object.keys(icons).sort();
+export const ICONS = typedObjectKeys(icons).sort();

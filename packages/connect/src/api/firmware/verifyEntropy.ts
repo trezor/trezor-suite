@@ -5,6 +5,7 @@ import { randomBytes } from '@noble/hashes/utils';
 import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 
 import { bip39 } from '@trezor/crypto-utils';
+import { typedObjectKeys } from '@trezor/utils';
 import { bip32 } from '@trezor/utxo-lib';
 
 import { PROTO } from '../../constants';
@@ -142,7 +143,7 @@ export const verifyEntropy = async ({
     xpubs,
 }: VerifyEntropyOptions) => {
     try {
-        if (!trezorEntropy || !commitment || !strength || Object.keys(xpubs).length < 1) {
+        if (!trezorEntropy || !commitment || !strength || typedObjectKeys(xpubs).length < 1) {
             throw new Error('Missing verifyEntropy data');
         }
 
@@ -153,7 +154,7 @@ export const verifyEntropy = async ({
 
         // derive xpubs and compare with FW results
         const node = bip32.fromSeed(seed);
-        Object.keys(xpubs).forEach(path => {
+        typedObjectKeys(xpubs).forEach(path => {
             const pubKey = node.derivePath(path);
             const xpub = pubKey.neutered().toBase58();
             if (xpub !== xpubs[path]) {
