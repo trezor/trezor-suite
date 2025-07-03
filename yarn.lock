@@ -12402,7 +12402,7 @@ __metadata:
     minimatch: "npm:^10.0.1"
     prettier: "npm:^3.6.2"
     semver: "npm:^7.7.1"
-    sort-package-json: "npm:^3.2.1"
+    sort-package-json: "npm:^3.4.0"
     tar: "npm:^7.0.1"
     tsx: "npm:^4.20.3"
     yargs: "npm:^18.0.0"
@@ -21093,14 +21093,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emoji-regex@npm:^10.2.1":
-  version: 10.3.0
-  resolution: "emoji-regex@npm:10.3.0"
-  checksum: 10/b9b084ebe904f13bb4b66ee4c29fb41a7a4a1165adcc33c1ce8056c0194b882cc91ebdc782f1a779b5d7ea7375c5064643a7734893d7c657b44c5c6b9d7bf1e7
-  languageName: node
-  linkType: hard
-
-"emoji-regex@npm:^10.3.0":
+"emoji-regex@npm:^10.2.1, emoji-regex@npm:^10.3.0":
   version: 10.4.0
   resolution: "emoji-regex@npm:10.4.0"
   checksum: 10/76bb92c5bcf0b6980d37e535156231e4a9d0aa6ab3b9f5eabf7690231d5aa5d5b8e516f36e6804cbdd0f1c23dfef2a60c40ab7bb8aedd890584281a565b97c50
@@ -38209,9 +38202,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sort-package-json@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "sort-package-json@npm:3.2.1"
+"sort-package-json@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "sort-package-json@npm:3.4.0"
   dependencies:
     detect-indent: "npm:^7.0.1"
     detect-newline: "npm:^4.0.1"
@@ -38222,7 +38215,7 @@ __metadata:
     tinyglobby: "npm:^0.2.12"
   bin:
     sort-package-json: cli.js
-  checksum: 10/71a84a6f9d68d0ad3b3cbe5091a563115977de758f8578d4db8756a57f7ded6ed93f8a90a36acbf026503a57f70bd835af098422757c89d02cc955ac807b6c4f
+  checksum: 10/f8009b037d0e1ba48819ddf498a34500f778058833b962b5f0d481943def68e2633259e679f29dbb6356fbab2bbc9ffa18524bc6decdcfd4341ab1a6aadee571
   languageName: node
   linkType: hard
 
