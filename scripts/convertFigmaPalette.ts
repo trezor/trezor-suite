@@ -4,6 +4,9 @@ import prettier from 'prettier';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+/**
+ * Example usage: yarn convert-figma-palette --test=true
+ */
 (async () => {
     const { argv } = yargs(hideBin(process.argv)).boolean('test') as any;
     const isTesting = argv.test || false;
