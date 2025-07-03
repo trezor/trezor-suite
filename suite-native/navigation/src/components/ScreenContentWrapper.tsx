@@ -8,7 +8,7 @@ import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventType
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useScrollDivider } from '../useScrollDivider';
-import { useHeader } from './DynamicScreenHeaderContext';
+import { useDynamicHeader } from './DynamicHeader/DynamicScreenHeaderContext';
 import { ScrollViewContext } from './ScrollViewContext';
 
 type ScreenContentProps = {
@@ -34,7 +34,7 @@ export const ScreenContentWrapper = ({
     const { applyStyle } = useNativeStyles();
 
     const { scrollDivider, handleScroll } = useScrollDivider();
-    const { handleDynamicHeaderScroll } = useHeader();
+    const { handleDynamicHeaderScroll } = useDynamicHeader();
 
     const scrollHandler = (() => {
         if (hasHeader && isDynamicHeader) {
