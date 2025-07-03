@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     TokenDefinitions,
     selectCoinDefinitions,
@@ -255,7 +255,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
                     },
                 ],
-                localCurrency: currencyValue.value as FiatCurrencyCode,
+                localCurrency: currencyValue.value as BaseCurrencyCode,
                 rateType: 'current',
                 fetchAttemptTimestamp: Date.now() as Timestamp,
             }),

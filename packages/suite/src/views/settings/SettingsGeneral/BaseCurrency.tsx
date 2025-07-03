@@ -1,25 +1,26 @@
-import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+import { BaseCurrencyCode, baseCurrencies } from '@suite-common/suite-config';
 import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const buildCurrencyOption = (currency: string) => ({
+const buildCurrencyOption = (currency: BaseCurrencyCode) => ({
     value: currency,
     label: currency.toUpperCase(),
 });
 
-export const Fiat = () => {
+export const BaseCurrency = () => {
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 
-    const options = Object.keys(fiatCurrencies).map(c => buildCurrencyOption(c));
+    const options = typedObjectKeys(baseCurrencies).map(c => buildCurrencyOption(c));
     const value = buildCurrencyOption(localCurrency);
 
-    const handleChange = (option: { value: FiatCurrencyCode; label: string }) => {
+    const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
         dispatch(setLocalCurrency(option.value));
         analytics.report({
             type: EventType.SettingsGeneralChangeFiat,
@@ -31,7 +32,7 @@ export const Fiat = () => {
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.Fiat}>
-            <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
+            <TextColumn title={<Translation id="TR_BASE_CURRENCY" />} />
             <ActionColumn>
                 <ActionSelect
                     useKeyPressScroll

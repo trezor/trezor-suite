@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { AssetFiatBalance } from '@suite-common/assets';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     type Network,
     type NetworkSymbol,
@@ -67,7 +67,7 @@ export type AssetData = {
 const useAssetsFiatBalances = (
     assetsData: AssetData[],
     accounts: { [key: string]: Account[] },
-    localCurrency: FiatCurrencyCode,
+    localCurrency: BaseCurrencyCode,
     currentFiatRates?: RatesByKey,
 ) =>
     assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {

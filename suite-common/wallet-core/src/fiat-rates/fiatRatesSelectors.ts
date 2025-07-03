@@ -1,6 +1,6 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -69,7 +69,7 @@ export const selectIsFiatRateLoading = (
 export const selectIsTickerLoading = (
     state: FiatRatesRootState,
     ticker: TickerId,
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric = 'current',
 ) => {
     const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
@@ -129,7 +129,7 @@ export const selectTickerFromAccounts = (
 export const selectTickersToBeUpdated = (
     state: FiatRatesRootState & TokenDefinitionsRootState,
     currentTimestamp: UnixTimestamp,
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric,
 ): TickerId[] => {
     const tickers = selectTickerFromAccounts(state);
@@ -146,7 +146,7 @@ export const selectTickersToBeUpdated = (
 
 export const selectTransactionsWithMissingRates = (
     state: FiatRatesRootState & TransactionsRootState & AccountsRootState,
-    localCurrency: FiatCurrencyCode,
+    localCurrency: BaseCurrencyCode,
 ) => {
     const accountTransactions = selectTransactions(state);
     const historicFiatRates = selectHistoricFiatRates(state);
@@ -156,7 +156,7 @@ export const selectTransactionsWithMissingRates = (
         D.mapWithKey((accountKey, txs) => ({
             account: selectAccountByKey(state, accountKey as AccountKey),
             txs: txs.filter(tx => {
-                const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency as FiatCurrencyCode);
+                const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency as BaseCurrencyCode);
                 const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
                 const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
 

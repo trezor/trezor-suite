@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
@@ -98,7 +98,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
 
 type CoinjoinBatchItemProps = {
     transactions: WalletAccountTransaction[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     isPending: boolean;
 };
 

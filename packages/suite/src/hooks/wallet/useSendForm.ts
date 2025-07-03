@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
@@ -49,7 +49,7 @@ SendContext.displayName = 'SendContext';
 // Props of @wallet-views/send/index
 export interface SendFormProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     fees: AppState['wallet']['fees'];
     online: boolean;
     sendRaw?: boolean;

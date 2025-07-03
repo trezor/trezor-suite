@@ -6,7 +6,7 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import {
     AccountsRootState,
@@ -101,7 +101,7 @@ const getTotalFiatBalanceNative = ({
     rates,
 }: {
     deviceAccounts: Account[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     rates?: RatesByKey;
 }) => {
     let instanceBalance = new BigNumber(0);

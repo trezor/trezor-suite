@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { networks } from '@suite-common/wallet-config';
 import { HistoricRates, TickerId } from '@suite-common/wallet-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
@@ -126,7 +126,7 @@ export const findClosestTimestampValue = (
 export const getFiatRatesForTimestamps = async (
     ticker: TickerId,
     timestamps: number[],
-    fiatCurrencyCode: FiatCurrencyCode,
+    fiatCurrencyCode: BaseCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
     const coinUrls = buildCoinUrls(ticker); // Assuming this now returns an array of URLs
     const urlEndpoint = `market_chart/range`;
@@ -173,7 +173,7 @@ export const getFiatRatesForTimestamps = async (
  */
 export const fetchLastWeekRates = async (
     ticker: TickerId,
-    fiatCurrencyCode: FiatCurrencyCode,
+    fiatCurrencyCode: BaseCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
     const urlEndpoint = `market_chart`;
     const urlParams = `vs_currency=${fiatCurrencyCode}&days=7`;

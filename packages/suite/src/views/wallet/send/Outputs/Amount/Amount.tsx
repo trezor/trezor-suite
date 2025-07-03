@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
@@ -27,7 +27,7 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 
-import { FiatInput } from './FiatInput';
+import { BaseCurrencyInput } from './BaseCurrencyInput';
 import { SendMaxSwitch } from './SendMaxSwitch';
 
 interface AmountProps {
@@ -70,7 +70,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
     const currentRate = getCurrentFiatRate({
         tokenAddress: (token?.contract ?? '') as TokenAddress,
-        currencyCode: (output.currency?.value ?? '') as FiatCurrencyCode,
+        currencyCode: (output.currency?.value ?? '') as BaseCurrencyCode,
     });
 
     const isWithRate = !!currentRate?.rate || !!currentRate?.isLoading;
@@ -184,7 +184,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                         variant="tertiary"
                                         margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
                                     />
-                                    <FiatInput
+                                    <BaseCurrencyInput
                                         output={output}
                                         outputId={outputId}
                                         // To fix alignment with the other input

@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,7 +21,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               appLanguage: string;
               deviceLanguage?: string;
-              localCurrency: FiatCurrencyCode;
+              localCurrency: BaseCurrencyCode;
               bitcoinUnit: UNIT_ABBREVIATION;
               screenWidth: number;
               screenHeight: number;
@@ -117,7 +117,7 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.SettingsChangeCurrency;
           payload: {
-              localCurrency: FiatCurrencyCode;
+              localCurrency: BaseCurrencyCode;
           };
       }
     | {

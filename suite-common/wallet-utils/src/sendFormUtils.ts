@@ -9,7 +9,7 @@ import {
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { fiatCurrencies } from '@suite-common/suite-config';
+import { baseCurrencies } from '@suite-common/suite-config';
 import { Network, NetworkType } from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
@@ -488,7 +488,7 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
 export const buildCurrencyOptions = (selected: CurrencyOption) => {
     const result: CurrencyOption[] = [];
 
-    Object.keys(fiatCurrencies).forEach(currency => {
+    Object.keys(baseCurrencies).forEach(currency => {
         if (selected.value === currency) {
             return;
         }

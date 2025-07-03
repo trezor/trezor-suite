@@ -3160,9 +3160,9 @@ export default defineMessages({
         defaultMessage: 'Enable the passphrase feature to continue with the verification process.',
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
     },
-    TR_PRIMARY_FIAT: {
-        defaultMessage: 'Fiat currency',
-        id: 'TR_PRIMARY_FIAT',
+    TR_BASE_CURRENCY: {
+        defaultMessage: 'Currency',
+        id: 'TR_BASE_CURRENCY',
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
