@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -8,11 +9,12 @@ import {
     ConfirmFirmwareUpdateScreenContent,
     ConfirmFirmwareUpdateScreenFooter,
 } from '@suite-native/firmware';
+import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
+    DynamicScreenHeader,
     Screen,
-    ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
 
@@ -36,7 +38,13 @@ export const ConfirmFirmwareUpdateScreen = () => {
 
     return (
         <Screen
-            header={<ScreenHeader closeActionType="close" />}
+            header={
+                <DynamicScreenHeader
+                    content={<Translation id="firmware.firmwareUpdateScreen.title" />}
+                    subtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
+                    closeActionType="close"
+                />
+            }
             footer={
                 isFirmwareUpgradable && (
                     <ConfirmFirmwareUpdateScreenFooter
@@ -45,7 +53,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
                 )
             }
         >
-            <Box flex={1} marginTop="sp16">
+            <Box flex={1}>
                 <ConfirmFirmwareUpdateScreenContent />
             </Box>
         </Screen>

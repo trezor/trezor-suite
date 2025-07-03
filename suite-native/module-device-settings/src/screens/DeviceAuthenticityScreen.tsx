@@ -2,15 +2,15 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, IconListTextItem, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, IconListTextItem, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
+    DynamicScreenHeader,
     Screen,
-    ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
@@ -30,28 +30,23 @@ export const DeviceAuthenticityScreen = () => {
     }, [navigation]);
 
     return (
-        <Screen header={<ScreenHeader />}>
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    content={<Translation id="moduleDeviceSettings.authenticity.title" />}
+                    subtitle={<Translation id="moduleDeviceSettings.authenticity.subtitle" />}
+                />
+            }
+        >
             <VStack justifyContent="space-between" flex={1}>
-                <VStack spacing="sp32" marginTop="sp16">
-                    <VStack>
-                        <Text variant="titleMedium">
-                            <Translation id="moduleDeviceSettings.authenticity.title" />
-                        </Text>
-                        <Text color="textSubdued">
-                            <Translation id="moduleDeviceSettings.authenticity.subtitle" />
-                        </Text>
-                    </VStack>
-
-                    <VStack spacing="sp24">
-                        <IconListTextItem icon="cpu" iconSize="large" textVariant="highlight">
-                            <Translation id="moduleDeviceSettings.authenticity.info.item1" />
-                        </IconListTextItem>
-                        <IconListTextItem icon="check" iconSize="large" textVariant="highlight">
-                            <Translation id="moduleDeviceSettings.authenticity.info.item2" />
-                        </IconListTextItem>
-                    </VStack>
+                <VStack spacing="sp24">
+                    <IconListTextItem icon="cpu" iconSize="large" textVariant="highlight">
+                        <Translation id="moduleDeviceSettings.authenticity.info.item1" />
+                    </IconListTextItem>
+                    <IconListTextItem icon="check" iconSize="large" textVariant="highlight">
+                        <Translation id="moduleDeviceSettings.authenticity.info.item2" />
+                    </IconListTextItem>
                 </VStack>
-
                 <Box>
                     <Button
                         onPress={navigateToDeviceAuthenticityStack}
