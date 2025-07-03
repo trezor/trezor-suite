@@ -1,13 +1,10 @@
 import { useCallback } from 'react';
-import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
-import { useAtomValue } from 'jotai';
 
 import { selectDeviceModel, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Image, TitleHeader } from '@suite-native/atoms';
 import { usePinAction } from '@suite-native/device';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -29,7 +26,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { onboardingAnalyticsAtom } from '../../atoms';
+import { useReportOnboardingSuccessAnalytics } from '../hooks/useReportOnboardingSuccessAnalytics';
 
 const SCREEN_HEIGHT = getScreenHeight();
 
@@ -59,8 +56,8 @@ export const CreatePinScreen = () => {
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const { applyStyle } = useNativeStyles();
-    const onboardingAnalytics = useAtomValue(onboardingAnalyticsAtom);
     const { showAlert, hideAlert } = useAlert();
+    const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
     const handlePinCreated = useCallback(() => {
         if (hasBitcoinOnlyFirmware || isCoinEnablingInitFinished) {
@@ -74,24 +71,12 @@ export const CreatePinScreen = () => {
             navigation.navigate(RootStackRoutes.CoinEnablingInit);
         }
 
-        analytics.report({
-            type: EventType.DeviceSetupCompleted,
-            payload: {
-                deviceModel,
-                osName: Platform.OS,
-                seed: 'create',
-                duration: onboardingAnalytics.startTimestamp
-                    ? Date.now() - onboardingAnalytics.startTimestamp
-                    : undefined,
-                ...onboardingAnalytics,
-            },
-        });
+        reportOnboardingSuccessAnalytics();
     }, [
-        deviceModel,
         hasBitcoinOnlyFirmware,
         isCoinEnablingInitFinished,
         navigation,
-        onboardingAnalytics,
+        reportOnboardingSuccessAnalytics,
     ]);
 
     const handlePinCanceled = useCallback(
