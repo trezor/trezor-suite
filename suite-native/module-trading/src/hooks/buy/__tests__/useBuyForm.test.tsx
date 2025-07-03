@@ -3,7 +3,8 @@ import { Platform } from 'react-native';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { invityAPI, tradingBuyActions } from '@suite-common/trading';
+import { tradingBuyActions } from '@suite-common/trading';
+import { loadInitialDataThunk } from '@suite-common/trading/src/thunks/common/loadInitialDataThunk';
 import { Form, useField } from '@suite-native/forms';
 import {
     PreloadedState,
@@ -29,11 +30,24 @@ jest.mock('../../../utils/general/utils', () => ({
     getRandomAccountDescriptor: () => 'random_string',
 }));
 
+jest.mock('@trezor/react-utils', () => {
+    const originalModule = jest.requireActual('@trezor/react-utils');
+
+    return {
+        ...originalModule,
+        useDebounce: () => (fn: () => unknown) => fn(),
+    };
+});
+
+jest.mock('@suite-common/trading/src/thunks/common/loadInitialDataThunk', () => ({
+    loadInitialDataThunk: jest.fn(() => ({ type: 'TEST_ACTION' })),
+}));
+
 describe('useBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
 
-    const getInitializedStore = async (amountInSats = false) => {
+    const getInitializedStore = async (amountInSats = false, withoutPreselectedAccount = false) => {
         const preloadedState: PreloadedState = {
             wallet: {
                 tradingNew: getInitializedTradingState(),
@@ -49,7 +63,9 @@ describe('useBuyForm', () => {
                 ],
             },
         };
-        preloadedState.wallet!.tradingNew!.buy!.tradingAccountKey = 'btc-account-1';
+        if (!withoutPreselectedAccount) {
+            preloadedState.wallet!.tradingNew!.buy!.tradingAccountKey = 'btc-account-1';
+        }
 
         return await initStore(preloadedState);
     };
@@ -65,8 +81,14 @@ describe('useBuyForm', () => {
         });
     };
 
-    afterEach(() => {
+    beforeEach(() => {
         jest.resetAllMocks();
+        global.fetch = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                json: () => Promise.resolve({}),
+                ok: true,
+            }),
+        );
     });
 
     it('should update form value when account in redux store is changed', async () => {
@@ -82,34 +104,51 @@ describe('useBuyForm', () => {
         });
     });
 
-    describe('createInvityAPIKey', () => {
-        it('should set random value to invityAPIKey on mount', async () => {
-            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
-            const store = await getInitializedStore();
+    describe('loadInitialDataThunk', () => {
+        it('should dispatch loadInitialDataThunk on mount with random API key', async () => {
+            const store = await getInitializedStore(false, true);
 
             await renderUseTradingBuyForm(store);
 
-            expect(invityAPISpy).toHaveBeenCalledWith('random_string');
+            // Wait for the effect to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(loadInitialDataThunk).toHaveBeenCalledWith({
+                activeSection: 'buy',
+                forcedApiKey: 'random_string',
+            });
         });
 
-        it('should update invityAPIKey when account is changed', async () => {
-            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+        it('should dispatch loadInitialDataThunk when account is changed with descriptor', async () => {
             const store = await getInitializedStore();
             await renderUseTradingBuyForm(store);
-            invityAPISpy.mockClear();
+
+            // Clear the initial call
+            (loadInitialDataThunk as unknown as jest.Mock).mockClear();
 
             act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-2'));
             });
 
-            expect(invityAPISpy).toHaveBeenCalledWith('descriptor-btc-account-2');
+            // Wait for the effect to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(loadInitialDataThunk).toHaveBeenCalledWith({
+                activeSection: 'buy',
+                forcedApiKey: undefined,
+            });
         });
 
-        it('should not call createInvityAPIKey when descriptor is not changed', async () => {
-            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+        it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
             const store = await getInitializedStore();
             await renderUseTradingBuyForm(store);
-            invityAPISpy.mockClear();
+
+            // Clear the initial call
+            (loadInitialDataThunk as unknown as jest.Mock).mockClear();
 
             act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-2'));
@@ -119,35 +158,58 @@ describe('useBuyForm', () => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-2'));
             });
 
-            expect(invityAPISpy).toHaveBeenCalledTimes(1);
+            // Wait for effects to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(loadInitialDataThunk).toHaveBeenCalledTimes(1);
         });
 
-        it('should call createInvityAPIKey with random string when descriptor is empty string', async () => {
-            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+        it('should dispatch loadInitialDataThunk with random string when descriptor is empty string', async () => {
             const store = await getInitializedStore();
             await renderUseTradingBuyForm(store);
-            invityAPISpy.mockClear();
+
+            // Clear the initial call
+            (loadInitialDataThunk as unknown as jest.Mock).mockClear();
 
             act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey('btc-account-3'));
             });
 
-            expect(invityAPISpy).toHaveBeenCalledTimes(1);
-            expect(invityAPISpy).toHaveBeenCalledWith('random_string');
+            // Wait for the effect to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(loadInitialDataThunk).toHaveBeenCalledTimes(1);
+            expect(loadInitialDataThunk).toHaveBeenCalledWith({
+                activeSection: 'buy',
+                forcedApiKey: 'random_string',
+            });
         });
 
-        it('should call createInvityAPIKey with random string when descriptor is undefined ', async () => {
-            const invityAPISpy = jest.spyOn(invityAPI, 'createInvityAPIKey');
+        it('should dispatch loadInitialDataThunk with random string when descriptor is undefined', async () => {
             const store = await getInitializedStore();
             await renderUseTradingBuyForm(store);
-            invityAPISpy.mockClear();
+
+            // Clear the initial call
+            (loadInitialDataThunk as unknown as jest.Mock).mockClear();
 
             act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey(undefined));
             });
 
-            expect(invityAPISpy).toHaveBeenCalledTimes(1);
-            expect(invityAPISpy).toHaveBeenLastCalledWith('random_string');
+            // Wait for the effect to run
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(loadInitialDataThunk).toHaveBeenCalledTimes(1);
+            expect(loadInitialDataThunk).toHaveBeenLastCalledWith({
+                activeSection: 'buy',
+                forcedApiKey: 'random_string',
+            });
         });
     });
 
@@ -159,8 +221,7 @@ describe('useBuyForm', () => {
         act(() => {
             result.current.setValue('asset', usdcAsset);
         });
-
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledTimes(4);
         expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
     });
 
@@ -224,13 +285,13 @@ describe('useBuyForm', () => {
             result.current.setValue('fiatCurrency', 'eur');
         });
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
         expect(dispatchSpy).toHaveBeenCalledWith(buyActions.fiatCurrencyChanged());
     });
 
     it('should clear cryptoValue when user edits fiatValue', async () => {
         const store = await getInitializedStore();
-        const { result } = await renderUseTradingBuyForm(store);
+        const { result } = await renderUseTradingBuyForm(store); //
         const { result: fieldResult } = renderHook(() => useField({ name: 'fiatValue' }), {
             wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
         });
