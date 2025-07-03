@@ -124,6 +124,7 @@ export const SendOutputsScreen = ({
             feeLevelsMaxAmount,
             decimals: tokenInfo?.decimals ?? network?.decimals,
             isTaprootAvailable: !deviceUnavailableCapabilities?.taproot,
+            accountNativeAvailableBalance: account?.availableBalance,
         },
         defaultValues: getDefaultValues({
             tokenContract,
