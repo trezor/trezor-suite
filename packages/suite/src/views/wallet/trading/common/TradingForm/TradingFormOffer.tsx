@@ -125,6 +125,10 @@ export const TradingFormOffer = () => {
         context.getValues().sendCryptoSelect &&
         !isSendingEvmNativeToken(context.getValues().sendCryptoSelect?.value);
 
+    const isQuoteOutdated =
+        isTradingExchangeContext(context) &&
+        (quote as ExchangeTrade)?.send !== context.getValues().sendCryptoSelect?.value;
+
     useEffect(() => {
         if (isTradingExchangeContext(context) && requiresTokenApproval) {
             const { fetchApprovalStatus } = context;
@@ -187,7 +191,9 @@ export const TradingFormOffer = () => {
                 ) : (
                     <TradingFormOfferCryptoAmount
                         amount={
-                            !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.receiveAmount
+                            !state.isLoadingOrInvalid &&
+                            bestScoredQuoteAmounts?.receiveAmount &&
+                            !isQuoteOutdated
                                 ? bestScoredQuoteAmounts.receiveAmount
                                 : '0'
                         }
@@ -251,7 +257,7 @@ export const TradingFormOffer = () => {
                     <TextButton
                         onClick={onCompareAllOffersClick}
                         size="small"
-                        isDisabled={state.isLoadingOrInvalid}
+                        isDisabled={state.isLoadingOrInvalid || isQuoteOutdated}
                         isLoading={isCompareLoading}
                         data-testid="@trading/form/compare-button"
                         type="button"
@@ -262,7 +268,9 @@ export const TradingFormOffer = () => {
                 {isTradingExchangeContext(context) ? (
                     <TradingFormOffersSwitcher
                         context={context}
-                        isFormLoading={state.isFormLoading && !preselectedQuote}
+                        isFormLoading={
+                            (state.isFormLoading || isQuoteOutdated) && !preselectedQuote
+                        }
                         isFormInvalid={state.isFormInvalid && !preselectedQuote}
                         providers={providers}
                     />
@@ -279,7 +287,7 @@ export const TradingFormOffer = () => {
             {requiresTokenApproval && bestScoredQuote && !state.isFormInvalid ? (
                 <TradingFormApproval
                     openApproveModal={() => setIsApproveModalOpen(true)}
-                    isFetchingApprovalStatus={isFetchingApprovalStatus}
+                    isFetchingApprovalStatus={isFetchingApprovalStatus || isQuoteOutdated}
                     approvalType={approvalType}
                     setApprovalType={setApprovalType}
                 />
