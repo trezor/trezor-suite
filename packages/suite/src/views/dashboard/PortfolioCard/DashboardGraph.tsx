@@ -7,13 +7,13 @@ import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectLocalCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, variables } from '@trezor/components';
 
-import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
+import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import graphWorkerFactory from 'src/support/workers/graph';
 import { Account } from 'src/types/wallet';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
-import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
+import { getGraphDataForInterval, getMinMaxValueFromData } from 'src/utils/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,4 +1,4 @@
-import { differenceInMonths } from 'date-fns';
+import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { BaseCurrencyCode } from '@suite-common/suite-config';
@@ -9,6 +9,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { State as GraphState } from 'src/reducers/wallet/graphReducer';
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
@@ -336,4 +337,45 @@ export const calcFakeGraphDataForTimestamps = (
     const sortedData = balanceData.sort((a, b) => Number(a.time) - Number(b.time));
 
     return sortedData;
+};
+
+type GetGraphDataForIntervalProps = {
+    account?: Account;
+    deviceState?: StaticSessionId;
+    graph: GraphState;
+};
+
+export const getGraphDataForInterval = ({
+    account,
+    deviceState,
+    graph,
+}: GetGraphDataForIntervalProps) => {
+    const { selectedRange } = graph;
+
+    const data: GraphData[] = [];
+    graph.data.forEach(accountGraph => {
+        const accountFilter = account ? accountGraphDataFilterFn(accountGraph, account) : true;
+        const deviceFilter = deviceState
+            ? deviceGraphDataFilterFn(accountGraph, deviceState)
+            : true;
+
+        if (accountFilter && deviceFilter) {
+            if (selectedRange.startDate && selectedRange.endDate) {
+                data.push({
+                    ...accountGraph,
+                    data:
+                        accountGraph.data?.filter(d =>
+                            isWithinInterval(fromUnixTime(d.time), {
+                                start: selectedRange.startDate,
+                                end: selectedRange.endDate,
+                            }),
+                        ) ?? [],
+                });
+            } else {
+                data.push(accountGraph);
+            }
+        }
+    });
+
+    return data;
 };
