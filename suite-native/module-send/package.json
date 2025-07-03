@@ -48,7 +48,7 @@
         "expo-linear-gradient": "~14.1.5",
         "jotai": "^2.12.5",
         "react": "19.0.0",
-        "react-hook-form": "^7.56.3",
+        "react-hook-form": "^7.59.0",
         "react-native": "0.79.3",
         "react-native-reanimated": "^3.18.0",
         "react-native-svg": "15.11.2",

@@ -29,7 +29,7 @@
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
         "react": "19.0.0",
-        "react-hook-form": "^7.56.3",
+        "react-hook-form": "^7.59.0",
         "web3-eth-abi": "^4.4.1",
         "web3-utils": "^4.3.1"
     }
