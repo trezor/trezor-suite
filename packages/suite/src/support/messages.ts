@@ -566,14 +566,6 @@ export default defineMessages({
         defaultMessage: 'is being processed',
         id: 'TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX',
     },
-    TR_EXCHANGE_APPROVAL_FORM_APPROVED: {
-        defaultMessage: 'Ready to swap: {amount} {coinSymbol}',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVED',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_APPROVED_PLAIN: {
-        defaultMessage: 'Ready to swap',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVED_PLAIN',
-    },
     TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP: {
         defaultMessage: 'Ready to swap',
         id: 'TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP',

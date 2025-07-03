@@ -7,7 +7,6 @@ import {
     TradingExchangeType,
     cryptoIdToNetwork,
     tradingExchangeActions,
-    useTradingInfo,
 } from '@suite-common/trading';
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import { Button, Card, Column, Icon, IconVariant, Paragraph, Row } from '@trezor/components';
@@ -111,11 +110,6 @@ export const TradingFormApproval = ({
             state: { isFormLoading },
         },
     } = context;
-
-    const { cryptoIdToCoinSymbol } = useTradingInfo();
-
-    const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
-    const coinSymbol = selectedQuote?.send ? cryptoIdToCoinSymbol(selectedQuote?.send) : undefined;
 
     const currentQuoteStatus = selectedQuote?.status;
     const previousQuoteStatus = usePrevious(currentQuoteStatus);
@@ -371,18 +365,7 @@ export const TradingFormApproval = ({
 
                                         <ApprovalStep
                                             label={
-                                                <Translation
-                                                    id={
-                                                        preapprovedAmount &&
-                                                        preapprovedAmount !== '0'
-                                                            ? 'TR_EXCHANGE_APPROVAL_FORM_APPROVED'
-                                                            : 'TR_EXCHANGE_APPROVAL_FORM_APPROVED_PLAIN'
-                                                    }
-                                                    values={{
-                                                        amount: preapprovedAmount,
-                                                        coinSymbol,
-                                                    }}
-                                                />
+                                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP" />
                                             }
                                             icon={<IconCheck variant="primary" />}
                                         />
