@@ -1,16 +1,18 @@
 ### 🚀 New features
 
-- **Stellar (XLM) network now generally available:** Stellar (XLM) has moved from experimental features and can now be accessed by all Suite users via the Coins menu.
-- **Firmware Installation check:** new safety check added to ensure device firmware is correctly installed and up to date.
+- Stellar (XLM) support is now available to all users, moving from experimental to fully integrated and accessible via the Coins menu.
+- Solana address validation has been introduced, warning users when sending to system-derived token or staking addresses for added clarity and security.
 
 ### 🎨 Improvements
 
-- **Enhanced Passphrase wallet flow:** improved guidance when accessing passphrase wallets, making it clearer whether reopening an existing passphrase wallet or creating a new one.
-- **Faster wallet discovery:** wallets now load up to 50% faster, delivering a smoother and more responsive experience.
-- **Improved transaction history navigation:** pagination and navigation in transaction history have been refined for easier browsing.
-- **Trading interface enhancements:** modal headers have been updated for greater clarity, and DEX approvals have been moved to the start of the swap flow for a more intuitive experience.
-- **More accurate Bitcoin fee rates:** Bitcoin network fee rates now update every minute for improved accuracy when sending transactions.
+- The passphrase wallet flow has been refined with clearer guidance when opening existing wallets or creating new ones, improving user confidence and understanding.
+- Account discovery speed has been boosted by up to 50%, offering a noticeably faster and more responsive experience.
+- Transaction history navigation has been improved with smoother pagination, making it easier to browse past transactions.
+- The trading interface has been polished with updated modal headers and a restructured swap flow that moves DEX approvals to the start for better usability.
+- Fee rate updates now occur every minute, ensuring more accurate estimates when sending transactions.
+- WalletConnect transaction previews are now shown before confirmation, adding transparency to EVM-based transactions.
+- EIP-712 messages and 1inch Fusion swap details have been made easier to read, enhancing clarity during the signing process.
 
 ### 🔧 Bug fixes
 
-- Fixed minor bugs, improved usability, and optimized overall performance for a smoother experience.
+- Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience.
