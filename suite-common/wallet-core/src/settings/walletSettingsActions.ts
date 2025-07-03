@@ -1,6 +1,6 @@
 import { Dispatch, createAction } from '@reduxjs/toolkit';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
@@ -11,7 +11,7 @@ export const setLocalCurrency = createAction(
     WALLET_SETTINGS.SET_LOCAL_CURRENCY,
     (localCurrency: string) => ({
         payload: {
-            localCurrency: localCurrency.toLowerCase() as FiatCurrencyCode,
+            localCurrency: localCurrency.toLowerCase() as BaseCurrencyCode,
         },
     }),
 );

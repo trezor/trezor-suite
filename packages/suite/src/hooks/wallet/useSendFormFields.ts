@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FormOptions, FormState, Rate, TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -19,7 +19,7 @@ import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useSelector } from '../suite';
 
 export type GetCurrentRateParams = {
-    currencyCode: FiatCurrencyCode;
+    currencyCode: BaseCurrencyCode;
     tokenAddress: TokenAddress;
 };
 
@@ -86,7 +86,7 @@ export const useSendFormFields = ({
             }
 
             const fiatRate = getCurrentFiatRate({
-                currencyCode: output.currency.value as FiatCurrencyCode,
+                currencyCode: output.currency.value as BaseCurrencyCode,
                 tokenAddress: output.token as TokenAddress,
             });
             if (!fiatRate?.rate) {

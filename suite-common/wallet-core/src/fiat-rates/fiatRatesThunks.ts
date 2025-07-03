@@ -1,6 +1,6 @@
 import { fetchCurrentFiatRates, fetchLastWeekFiatRates } from '@suite-common/fiat-services';
 import { createThunk } from '@suite-common/redux-utils';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import {
@@ -28,7 +28,7 @@ import { selectIsElectrumBackendSelected } from '../blockchain/blockchainSelecto
 type UpdateTxsFiatRatesThunkPayload = {
     accountKey: AccountKey;
     txs: WalletAccountTransaction[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
 };
 
 // TODO: Refactor this to batch requests as much as possible
@@ -92,18 +92,19 @@ export const updateTxsFiatRatesThunk = createThunk(
 
 type UpdateCurrentFiatRatesThunkPayload = {
     tickers: TickerId[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     fetchAttemptTimestamp: Timestamp;
     rateType: RateTypeWithoutHistoric;
     forceFetchToken?: boolean;
 };
 
-export const updateFiatRatesThunk = createThunk(
+export const updateFiatRatesThunk = createThunk<
+    PromiseSettledResult<FiatRatesResult>[],
+    UpdateCurrentFiatRatesThunkPayload,
+    void
+>(
     `${FIAT_RATES_MODULE_PREFIX}/updateFiatRates`,
-    async (
-        { tickers, localCurrency, rateType, forceFetchToken }: UpdateCurrentFiatRatesThunkPayload,
-        { getState },
-    ) => {
+    async ({ tickers, localCurrency, rateType, forceFetchToken }, { getState }) => {
         const fetchRate = async (ticker: TickerId) => {
             if (isTestnet(ticker.symbol)) {
                 throw new Error('Testnet');
@@ -170,7 +171,7 @@ export const updateFiatRatesThunk = createThunk(
 
 export const updateMissingTxFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/updateMissingTxRates`,
-    ({ localCurrency }: { localCurrency: FiatCurrencyCode }, { dispatch, getState }) => {
+    ({ localCurrency }: { localCurrency: BaseCurrencyCode }, { dispatch, getState }) => {
         const transactionsWithMissingRates = selectTransactionsWithMissingRates(
             getState(),
             localCurrency,
@@ -184,7 +185,7 @@ export const updateMissingTxFiatRatesThunk = createThunk(
 
 type FetchFiatRatesThunkPayload = {
     rateType: RateTypeWithoutHistoric;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
 };
 
 export const fetchFiatRatesThunk = createThunk(
@@ -241,7 +242,7 @@ const ratesTimeouts: Record<RateTypeWithoutHistoric, TimerId | null> = {
 
 type PeriodicFetchFiatRatesThunkPayload = {
     rateType: RateTypeWithoutHistoric;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
 };
 
 export const periodicFetchFiatRatesThunk = createThunk(

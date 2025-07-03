@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { TokenDefinition } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
@@ -17,7 +17,7 @@ export const handleTokensAndStakingData = (
     accountsThatStaked: Account[],
     isStakingActive: boolean,
     symbol: NetworkSymbol,
-    localCurrency: FiatCurrencyCode,
+    localCurrency: BaseCurrencyCode,
     coinDefinitions?: TokenDefinition,
     currentFiatRates?: RatesByKey,
 ) => {

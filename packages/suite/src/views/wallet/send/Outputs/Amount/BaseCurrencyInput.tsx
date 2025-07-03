@@ -1,7 +1,7 @@
 import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
@@ -36,7 +36,7 @@ type FiatInputProps = {
     labelRight?: React.ReactNode;
 };
 
-export const FiatInput = ({
+export const BaseCurrencyInput = ({
     output,
     outputId,
     labelLeft,
@@ -61,14 +61,14 @@ export const FiatInput = ({
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
 
-    const fiatInputName = `outputs.${outputId}.fiat` as const;
+    const baseCurrencyInputName = `outputs.${outputId}.fiat` as const;
     const currencyInputName = `outputs.${outputId}.currency` as const;
     const amountInputName = `outputs.${outputId}.amount` as const;
     const tokenInputName = `outputs.${outputId}.token` as const;
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.fiat : undefined;
-    const fiatValue = getDefaultValue(fiatInputName, output.fiat || '');
+    const baseCurrencyValue = getDefaultValue(baseCurrencyInputName, output.fiat || '');
     const tokenContractAddress = getDefaultValue(tokenInputName, output.token);
 
     const amountValue = getDefaultValue(amountInputName, '');
@@ -89,7 +89,7 @@ export const FiatInput = ({
         ) {
             const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
 
-            setValue(fiatInputName, fiatValueBigNumber.toFixed(2), {
+            setValue(baseCurrencyInputName, fiatValueBigNumber.toFixed(2), {
                 shouldValidate: true,
             });
             // call compose to store draft, precomposedTx should be the same
@@ -102,7 +102,7 @@ export const FiatInput = ({
     // usually this happens after Fiat > Amount recalculation (from here, onChange event)
     // or as a result on composeTransaction process
     const amountError = outputError ? outputError.amount : undefined;
-    const errorToDisplay = !error && fiatValue && amountError ? amountError : error;
+    const errorToDisplay = !error && baseCurrencyValue && amountError ? amountError : error;
 
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay);
@@ -151,7 +151,7 @@ export const FiatInput = ({
                                 tokenAddress: token?.contract as TokenAddress,
                             },
                         ],
-                        localCurrency: selected.value as FiatCurrencyCode,
+                        localCurrency: selected.value as BaseCurrencyCode,
                         rateType: 'current',
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
@@ -177,9 +177,9 @@ export const FiatInput = ({
             control={control}
             inputState={inputState}
             onChange={handleChange}
-            name={fiatInputName}
-            data-testid={fiatInputName}
-            defaultValue={fiatValue}
+            name={baseCurrencyInputName}
+            data-testid={baseCurrencyInputName}
+            defaultValue={baseCurrencyValue}
             maxLength={formInputsMaxLength.fiat}
             rules={rules}
             bottomText={bottomText || null}

@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TokenDefinitions, getIsPhishingTransaction } from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -34,7 +34,7 @@ type Data = {
     accountName: string;
     type: ExportFileType;
     transactions: AccountTransactionForExports[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
 };
 
 type Fields = {

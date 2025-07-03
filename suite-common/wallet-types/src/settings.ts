@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
@@ -18,7 +18,7 @@ export const WalletType = {
 export type WalletType = (typeof WalletType)[keyof typeof WalletType];
 
 export interface WalletSettings {
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     discreetMode: boolean;
     enabledNetworks: NetworkSymbol[];
     hideSuspiciousTransactions: boolean;

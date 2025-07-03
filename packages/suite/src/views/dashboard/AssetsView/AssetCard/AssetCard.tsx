@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import styled, { useTheme } from 'styled-components';
 
 import { AssetFiatBalance } from '@suite-common/assets';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
@@ -86,7 +86,7 @@ type AssetCardProps = {
     stakingAccounts: Account[];
     assetTokens: TokenInfo[];
     index?: number;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     currentFiatRates?: RatesByKey;
     accounts: Account[];
     isStakeNetwork?: boolean;
