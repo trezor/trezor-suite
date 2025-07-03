@@ -10,6 +10,7 @@ export * from './hooks/useOverrideBackNavigation';
 export * from './components/TabBar';
 export * from './components/Screen';
 export * from './components/ScreenHeader';
+export * from './components/DynamicScreenHeader';
 export * from './components/LoadingSuccessScreen';
 export * from './components/ScreenFooterGradient';
 export * from './components/NavigationContainerWithAnalytics';

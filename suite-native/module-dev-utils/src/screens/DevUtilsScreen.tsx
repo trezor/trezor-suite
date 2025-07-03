@@ -7,9 +7,9 @@ import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
+    DynamicScreenHeader,
     RootStackParamList,
     Screen,
-    ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
@@ -34,7 +34,14 @@ export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
     return (
-        <Screen header={<ScreenHeader content="DEV utils" />}>
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    content="DEV utils"
+                    subtitle="This is subtitle for dev utils"
+                />
+            }
+        >
             <VStack spacing="sp16">
                 <Card>
                     <VStack spacing="sp16">

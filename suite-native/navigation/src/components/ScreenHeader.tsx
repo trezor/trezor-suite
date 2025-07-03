@@ -56,18 +56,14 @@ export const ScreenHeader = ({
                 )}
             </Box>
             <Box alignItems="center">
-                {typeof content === 'string' ? (
-                    <Text
-                        variant="highlight"
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                        testID="@screen/sub-header/title"
-                    >
-                        {content}
-                    </Text>
-                ) : (
-                    content
-                )}
+                <Text
+                    variant="highlight"
+                    adjustsFontSizeToFit
+                    numberOfLines={1}
+                    testID="@screen/sub-header/title"
+                >
+                    {content}
+                </Text>
             </Box>
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
                 {rightIcon}
