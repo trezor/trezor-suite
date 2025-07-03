@@ -6,9 +6,10 @@ import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmwareReleases } from './firmwareInfo';
+import { parseFirmwareReleaseConfig, parseFirmwareReleases } from './firmwareInfo';
 import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
+import { getFirmwareReleaseConfig } from '../utils/firmwareReleaseConfigUtils';
 
 type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
 type AssetCollection = {
@@ -22,7 +23,7 @@ export class DataManager {
     private static messages: Record<string, any> = messages;
     private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
 
-    static load(settings: ConnectSettings, withAssets = true) {
+    static async load(settings: ConnectSettings, withAssets = true) {
         this.settings = settings;
 
         if (!withAssets) return;
@@ -57,6 +58,10 @@ export class DataManager {
                 parseFirmwareReleases(modelReleases, modelType);
             }
         }
+
+        const firmwareReleaseConfig = await getFirmwareReleaseConfig();
+
+        parseFirmwareReleaseConfig(firmwareReleaseConfig);
     }
 
     static getProtobufMessages() {
