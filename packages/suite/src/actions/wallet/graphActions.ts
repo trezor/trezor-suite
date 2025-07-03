@@ -1,16 +1,12 @@
-import { fromUnixTime, isWithinInterval } from 'date-fns';
-
 import { selectIsElectrumBackendSelected, selectLocalCurrency } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
-import { State } from 'src/reducers/wallet/graphReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 import {
     accountGraphDataFilterFn,
-    deviceGraphDataFilterFn,
     enhanceBlockchainAccountHistory,
     ensureHistoryRates,
 } from 'src/utils/wallet/graph';
@@ -175,43 +171,3 @@ export const updateGraphData =
             type: AGGREGATED_GRAPH_SUCCESS,
         });
     };
-
-// TODO: should be in graphUtils
-export const getGraphDataForInterval = ({
-    account,
-    deviceState,
-    graph,
-}: {
-    account?: Account;
-    deviceState?: StaticSessionId;
-    graph: State;
-}) => {
-    const { selectedRange } = graph;
-
-    const data: GraphData[] = [];
-    graph.data.forEach(accountGraph => {
-        const accountFilter = account ? accountGraphDataFilterFn(accountGraph, account) : true;
-        const deviceFilter = deviceState
-            ? deviceGraphDataFilterFn(accountGraph, deviceState)
-            : true;
-
-        if (accountFilter && deviceFilter) {
-            if (selectedRange.startDate && selectedRange.endDate) {
-                data.push({
-                    ...accountGraph,
-                    data:
-                        accountGraph.data?.filter(d =>
-                            isWithinInterval(fromUnixTime(d.time), {
-                                start: selectedRange.startDate,
-                                end: selectedRange.endDate,
-                            }),
-                        ) ?? [],
-                });
-            } else {
-                data.push(accountGraph);
-            }
-        }
-    });
-
-    return data;
-};
