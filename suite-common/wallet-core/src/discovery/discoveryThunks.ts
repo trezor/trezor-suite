@@ -35,11 +35,9 @@ const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
-type ProgressOkEvent = BundleProgress<DiscoverAccountsProgressOk>['payload'];
+
 const isProgressOk = (progress: DiscoverAccountsProgress): progress is DiscoverAccountsProgressOk =>
     Object.prototype.hasOwnProperty.call(progress, 'path');
-const isProgressEventOk = (progressEvent: ProgressEvent): progressEvent is ProgressOkEvent =>
-    isProgressOk(progressEvent.response);
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
     if (!device?.state?.staticSessionId) {
@@ -159,27 +157,13 @@ const applyDeviceStatesThunk = createThunk(
     },
 );
 
-const createOnBundleProgressHandler = (
-    devicePath: DeviceUniquePath,
-    deviceStaticSessionId: StaticSessionId,
-    dispatch: any,
-    getState: any,
-    progressHooks: {
-        onNonFirstNonEmptyAccountDiscovered?: () => void;
-    } = {},
-) => {
-    let encounteredNonEmptyAccount = false;
-    // we do not create empty accounts right away, but store the progress events for later
-    const emptyProgressEvents: ProgressOkEvent[] = [];
-
-    const progressEventToCreateAccountPayload = (
-        event: ProgressOkEvent,
-    ): CreateAccountActionProps => {
-        const { response } = event;
+const progressEventToCreateAccountPayload =
+    (deviceState: StaticSessionId) =>
+    (response: DiscoverAccountsProgressOk): CreateAccountActionProps => {
         const backendType = response.backendType as TrezorConnectBackendType | undefined;
 
         return {
-            deviceState: deviceStaticSessionId,
+            deviceState,
             discoveryItem: {
                 path: response.path as Bip43Path,
                 coin: response.symbol,
@@ -193,8 +177,24 @@ const createOnBundleProgressHandler = (
         };
     };
 
+const createOnBundleProgressHandler = (
+    devicePath: DeviceUniquePath,
+    deviceStaticSessionId: StaticSessionId,
+    dispatch: any,
+    getState: any,
+    progressHooks: {
+        onNonFirstNonEmptyAccountDiscovered?: () => void;
+    } = {},
+) => {
+    // we do not create empty accounts right away, but store the progress events for later
+    const accountQueue: ReturnType<typeof accountsActions.createAccount>[] = [];
+    const getCreateAccountPayload = progressEventToCreateAccountPayload(deviceStaticSessionId);
+
+    let encounteredNonEmptyAccount = false;
+
     return (event: ProgressEvent) => {
         const discovery = selectDiscoveryByDevicePath(getState(), devicePath);
+
         if (!discovery) {
             console.error('bundle progress handler: no discovery found');
 
@@ -226,65 +226,44 @@ const createOnBundleProgressHandler = (
             progressHooks.onNonFirstNonEmptyAccountDiscovered?.();
         }
 
-        if (isProgressEventOk(event)) {
-            // all encountered accounts were empty, so create all of the delayed empty accounts (and also the latest event)
-            if (event.progress === 100 && !encounteredNonEmptyAccount) {
-                [...emptyProgressEvents, event].forEach(delayedEvent => {
-                    dispatch(
-                        accountsActions.createAccount(
-                            progressEventToCreateAccountPayload(delayedEvent),
-                        ),
-                    );
-                });
-
-                return;
-            }
-
-            if (encounteredNonEmptyAccount) {
-                dispatch(accountsActions.createAccount(progressEventToCreateAccountPayload(event)));
-
-                return;
-            } else {
-                emptyProgressEvents.push(event);
-            }
-
-            // on first non-empty one, create all of the delayed empty accounts
-            if (!encounteredNonEmptyAccount && event.response.empty === false) {
-                encounteredNonEmptyAccount = true;
-
-                emptyProgressEvents.forEach(delayedEvent => {
-                    dispatch(
-                        accountsActions.createAccount(
-                            progressEventToCreateAccountPayload(delayedEvent),
-                        ),
-                    );
-                });
-            }
-
-            return;
-        }
-
         const { response } = event;
+
         if (isProgressOk(response)) {
-            console.error('Cannot happen per TS; event.response cannot be OK if event is not OK');
+            const accountAction = accountsActions.createAccount(getCreateAccountPayload(response));
 
-            return;
+            const prevEncountered = encounteredNonEmptyAccount;
+            encounteredNonEmptyAccount ||= !response.empty || event.progress === 100;
+
+            // no non-empty account encountered, enqueue account for postponed creation
+            if (!encounteredNonEmptyAccount) {
+                accountQueue.push(accountAction);
+            } else {
+                // first non-empty account encountered right now, create all enqueued accounts first
+                if (!prevEncountered) {
+                    accountQueue.forEach(action => dispatch(action));
+                    accountQueue.splice(0, accountQueue.length);
+                }
+                dispatch(accountAction);
+            }
+        } else {
+            const currentFailedAccounts = discovery.failed ?? [];
+            const newFailedAccount: FailedAccount = { accountType: response.type, ...response };
+
+            const { symbol, accountType, index } = newFailedAccount;
+
+            const isDuplicate = currentFailedAccounts.some(
+                f => f.symbol === symbol && f.accountType === accountType && f.index === index,
+            );
+            if (isDuplicate) return; // only defensive programming
+
+            dispatch(
+                // TODO this repeatedly rewrites last status with the previous one!
+                discoveryActions.updateDiscovery(
+                    { ...discovery, failed: [...currentFailedAccounts, newFailedAccount] },
+                    devicePath,
+                ),
+            );
         }
-        const currentFailedAccounts = discovery.failed ?? [];
-        const newFailedAccount: FailedAccount = { accountType: response.type, ...response };
-
-        const { symbol, accountType, index } = newFailedAccount;
-        const isDuplicate = currentFailedAccounts.some(
-            f => f.symbol === symbol && f.accountType === accountType && f.index === index,
-        );
-        if (isDuplicate) return; // only defensive programming
-
-        dispatch(
-            discoveryActions.updateDiscovery(
-                { ...discovery, failed: [...currentFailedAccounts, newFailedAccount] },
-                devicePath,
-            ),
-        );
     };
 };
 
