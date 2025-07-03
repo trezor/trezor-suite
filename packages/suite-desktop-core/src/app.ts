@@ -152,9 +152,9 @@ const init = async () => {
         restartApp();
     });
 
-    // Electron 32 has a bug with Worker due to Chromium changes
-    // https://github.com/electron/electron/issues/43556
-    app.commandLine.appendSwitch('disable-features', 'PlzDedicatedWorker');
+    // workaround for Electron 36 on older linux distros, still not resolved in 37
+    // https://github.com/electron/electron/issues/46538#issuecomment-2808806722
+    app.commandLine.appendSwitch('gtk-version', '3');
 
     await app.whenReady();
 
