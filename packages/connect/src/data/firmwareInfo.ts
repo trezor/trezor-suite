@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
-import { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareRelease, FirmwareReleaseConfig, IntermediaryReleaseConfig, VersionArray } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import type { Features, IntermediaryVersion, ReleaseInfo, StrictFeatures } from '../types';
@@ -17,6 +17,10 @@ const releases = Object.values(DeviceModelInternal).reduce(
     (acc, key) => ({ ...acc, [key]: [] }),
     {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[] | undefined>,
 );
+let firmwareReleasesConfig: FirmwareReleaseConfig['releases'] | undefined;
+let firmwareIntermediaryReleasesConfig:
+    | Record<keyof typeof DeviceModelInternal, IntermediaryReleaseConfig[]>
+    | undefined;
 // We use `bundledReleases` to know what are the binaries that are bundled so we do not need to download them if they are needed.
 const bundledReleases: Record<keyof typeof DeviceModelInternal, FirmwareRelease | undefined> =
     {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease>;
@@ -49,6 +53,16 @@ export const getOnlineReleases = async (internalModel: DeviceModelInternal) => {
     }
 
     return [] as FirmwareRelease[];
+};
+
+export const parseFirmwareReleaseConfig = (config: FirmwareReleaseConfig) => {
+    firmwareReleasesConfig = config.releases;
+    firmwareIntermediaryReleasesConfig = config.intermediaries;
+
+   return {
+        releases,
+        intermediaryReleases: firmwareIntermediaryReleasesConfig,
+    };
 };
 
 const getChangelog = (releases2: FirmwareRelease[], features: StrictFeatures) => {
