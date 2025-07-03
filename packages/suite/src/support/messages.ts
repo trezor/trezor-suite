@@ -10473,7 +10473,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS',
-        defaultMessage: 'Trezor Connect & WalletConnect',
+        defaultMessage: 'Trezor Connect',
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION',
