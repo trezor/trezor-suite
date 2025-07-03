@@ -274,7 +274,10 @@ export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) =>
             return;
         }
     });
-    const amount = amountToSmallestUnit(getValues('outputs.0.amount'), 8);
+
+    const amount = isAmountInSats
+        ? getValues('outputs.0.amount')
+        : amountToSmallestUnit(getValues('outputs.0.amount'), network?.decimals ?? 0);
 
     return {
         handleSubmitSendForm,
