@@ -23,6 +23,7 @@ import * as eventLoggingContents from './event-logging/contents';
 import * as eventLoggingProcess from './event-logging/process';
 import * as externalLinks from './external-links';
 import * as fileProtocol from './file-protocol';
+import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
 import * as menu from './menu';
 import * as metadata from './metadata';
@@ -65,6 +66,7 @@ const MODULES: Module[] = [
     bridge,
     systemSettings,
     bluetooth,
+    firmware,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];

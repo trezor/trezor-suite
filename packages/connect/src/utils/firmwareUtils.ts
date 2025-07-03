@@ -1,5 +1,4 @@
 import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
 
 import { Features, FirmwareType, StrictFeatures, VersionArray } from '../types';
 
@@ -23,41 +22,6 @@ export const isValidReleases = (extReleases: any): extReleases is FirmwareReleas
             release.version && release.min_firmware_version && release.min_bootloader_version,
     );
 
-export const filterSafeListByBootloader = (
-    releasesList: FirmwareRelease[],
-    bootloaderVersion: VersionArray,
-) => {
-    // bootloader_version indicates that there could be more than one version
-    const bootloaderVersions = releasesList.flatMap(item =>
-        item.bootloader_version ? [item.bootloader_version] : [],
-    );
-    // find at least one compatible release by bootloader_version
-    const compatibleRelease = bootloaderVersions.find(item =>
-        versionUtils.isNewerOrEqual(item, bootloaderVersion),
-    );
-
-    if (bootloaderVersions.length > 0 && !compatibleRelease) {
-        // no compatible releases, bootloaderVersion is greater than any known
-        return [];
-    }
-
-    return releasesList.filter(
-        item =>
-            (!item.min_bootloader_version ||
-                versionUtils.isNewerOrEqual(bootloaderVersion, item.min_bootloader_version)) &&
-            (!item.bootloader_version ||
-                versionUtils.isNewerOrEqual(item.bootloader_version, bootloaderVersion)),
-    );
-};
-
-export const filterSafeListByFirmware = (
-    releasesList: FirmwareRelease[],
-    firmwareVersion: VersionArray,
-) =>
-    releasesList.filter(item =>
-        versionUtils.isNewerOrEqual(firmwareVersion, item.min_firmware_version),
-    );
-
 export const buildFirmwareFileName = (
     firmwareType: FirmwareType,
     internalModel: DeviceModelInternal,
@@ -67,3 +31,8 @@ export const buildFirmwareFileName = (
 
     return `trezor-${internalModel.toLocaleLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
 };
+
+export const buildIntermediaryFirmwareFileName = (
+    internalModel: DeviceModelInternal,
+    version: number,
+) => `trezor-${internalModel}-inter-v${version}.bin`;

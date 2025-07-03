@@ -2,7 +2,7 @@ import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
 import type { ThpStateSerialized } from '@trezor/protocol';
 
 import type { PROTO } from '../constants';
-import type { ReleaseInfo } from './firmware';
+import type { FirmwareReleaseConfigInfo } from './firmware';
 
 /**
  * - `available`  no other application has an active session
@@ -92,7 +92,7 @@ export type KnownDevice = BaseDevice & {
     label: string;
     error?: typeof undefined;
     firmware: DeviceFirmwareStatus;
-    firmwareRelease?: ReleaseInfo | null;
+    firmwareReleaseConfigInfo?: FirmwareReleaseConfigInfo | null;
     firmwareType?: FirmwareType;
     color?: string;
     status: DeviceStatus;
@@ -122,7 +122,7 @@ export type UnknownDevice = BaseDevice & {
     features?: typeof undefined;
     thp?: ThpStateSerialized;
     firmware?: typeof undefined;
-    firmwareRelease?: typeof undefined;
+    firmwareReleaseConfigInfo?: typeof undefined;
     firmwareType?: typeof undefined;
     color?: typeof undefined;
     status?: typeof undefined;
@@ -145,7 +145,7 @@ export type UnreadableDevice = BaseDevice & {
     features?: typeof undefined;
     thp?: typeof undefined;
     firmware?: typeof undefined;
-    firmwareRelease?: typeof undefined;
+    firmwareReleaseConfigInfo?: typeof undefined;
     firmwareType?: typeof undefined;
     color?: typeof undefined;
     status?: typeof undefined;

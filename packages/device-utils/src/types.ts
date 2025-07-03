@@ -88,6 +88,7 @@ export type PartialDevice = {
 
 export type FirmwareSource = 'official' | 'unknown' | 'NA - bootloader';
 
+// Type `FirmwareRelease` is the original in releases.json probably we should get rid of it once this is replaced by the new FirmwareReleaseConfig
 export type FirmwareRelease = {
     required: boolean;
     url: string;
@@ -105,19 +106,6 @@ export type FirmwareRelease = {
     translations?: string[];
 };
 
-export interface FirmwareReleaseConfigInfo {
-    required: boolean;
-    url: string;
-    version: VersionArray;
-    bootloader_version?: VersionArray;
-    min_firmware_version: VersionArray;
-    min_bootloader_version: VersionArray;
-    translations: string[];
-    firmware_revision?: string;
-    fingerprint: string;
-    changelog?: string;
-}
-
 export interface ConditionalRelease {
     firmware_type: FirmwareType;
     conditions: {
@@ -126,7 +114,18 @@ export interface ConditionalRelease {
         };
         rollout_probability: number;
     };
-    release: FirmwareReleaseConfigInfo;
+    release: {
+        required: boolean;
+        url: string;
+        version: VersionArray;
+        bootloader_version?: VersionArray;
+        min_firmware_version: VersionArray;
+        min_bootloader_version: VersionArray;
+        translations: string[];
+        firmware_revision?: string;
+        fingerprint: string;
+        changelog?: string;
+    };
 }
 
 export interface ReleasesConfig {
@@ -138,7 +137,8 @@ export interface ReleasesConfig {
     T3W1: ConditionalRelease[];
 }
 export interface IntermediaryReleaseConfig {
-    if_version_less_than: string;
+    min_firmware_version: VersionArray;
+    min_bootloader_version: VersionArray;
     version: number;
     firmware_revision: string;
     url: string;
