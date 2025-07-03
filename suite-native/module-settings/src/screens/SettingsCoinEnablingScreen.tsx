@@ -6,14 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 import { selectEnabledNetworks, selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { BtcOnlyCoinEnablingContent, CoinEnablingForm } from '@suite-native/coin-enabling';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 export const SettingsCoinEnablingScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const { translate } = useTranslate();
 
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const availableNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
@@ -36,7 +35,7 @@ export const SettingsCoinEnablingScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    content={translate('moduleSettings.coinEnabling.settings.title')}
+                    content={<Translation id="moduleSettings.coinEnabling.settings.title" />}
                     subtitle="Coin enabling subtitle"
                 />
             }

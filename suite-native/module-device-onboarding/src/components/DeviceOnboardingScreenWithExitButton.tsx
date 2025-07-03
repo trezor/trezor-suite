@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
 import { Box } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
+    DynamicScreenHeader,
     RootStackParamList,
     Screen,
-    ScreenHeader,
     ScreenProps,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -43,7 +44,14 @@ const DeviceOnboardingExitButtonScreenHeader = ({
         return unsubscribe;
     }, [handleExitButtonPress, navigation]);
 
-    return <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
+    return (
+        <DynamicScreenHeader
+            content={<Translation id="firmware.firmwareUpdateScreen.title" />}
+            subtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
+            closeActionType="close"
+            closeAction={handleExitButtonPress}
+        />
+    );
 };
 
 export const DeviceOnboardingScreenWithExitButton = ({

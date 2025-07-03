@@ -7,7 +7,7 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectIsFirmwareUpgradable,
 } from '@suite-common/wallet-core';
-import { InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { FirmwareChangelogButton } from '../components/FirmwareChangelogButton';
@@ -70,18 +70,8 @@ export const ConfirmFirmwareUpdateScreenContent = () => {
     const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
 
     return (
-        <VStack spacing="sp32">
-            <VStack>
-                <Text variant="titleMedium">
-                    <Translation id="firmware.firmwareUpdateScreen.title" />
-                </Text>
-                <Text variant="body" color="textSubdued">
-                    <Translation id="firmware.firmwareUpdateScreen.subtitle" />
-                </Text>
-            </VStack>
-            <VStack spacing="sp16">
-                {isFirmwareUpgradable ? <UpgradableContent /> : <UpToDateContent />}
-            </VStack>
+        <VStack spacing="sp16">
+            {isFirmwareUpgradable ? <UpgradableContent /> : <UpToDateContent />}
         </VStack>
     );
 };
