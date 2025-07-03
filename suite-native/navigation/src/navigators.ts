@@ -136,8 +136,12 @@ export type DeviceOnboardingStackParamList = {
         suspicionCause: DeviceSuspicionCause;
     };
     [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
-    [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
+    [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
+    [DeviceOnboardingStackRoutes.ThpPairingInfo]: undefined;
+    [DeviceOnboardingStackRoutes.ThpConfirmation]: undefined;
+    [DeviceOnboardingStackRoutes.ThpCodeEntry]: undefined;
+    [DeviceOnboardingStackRoutes.ThpPairingSuccess]: undefined;
     [DeviceOnboardingStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess]: undefined;
     [DeviceOnboardingStackRoutes.DeviceTutorial]: undefined;
@@ -222,6 +226,7 @@ export type DevicePinProtectionStackParamList = {
 export type FirmwareUpdateStackParamList = {
     [FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [FirmwareUpdateStackRoutes.FirmwareInstallation]: undefined;
+    [FirmwareUpdateStackRoutes.ThpConfirmation]: undefined;
 };
 
 export type WipeDeviceStackParamList = {
@@ -261,7 +266,8 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.ConnectBluetoothDevice]: undefined;
     [AuthorizeDeviceStackRoutes.PinMatrix]: undefined;
     [AuthorizeDeviceStackRoutes.ConnectingDevice]: undefined;
-
+    [AuthorizeDeviceStackRoutes.ThpConfirmation]: undefined;
+    [AuthorizeDeviceStackRoutes.ThpCodeEntry]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseForm]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseLoading]: undefined;

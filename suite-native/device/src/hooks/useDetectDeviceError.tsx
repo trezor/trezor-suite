@@ -8,6 +8,7 @@ import {
     deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
+    selectIsDeviceThpRequired,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
     selectIsUnacquiredDevice,
@@ -56,6 +57,7 @@ export const useDetectDeviceError = () => {
 
     const selectedDevice = useSelector(selectSelectedDevice);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
+    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
@@ -87,7 +89,12 @@ export const useDetectDeviceError = () => {
     // If device is unacquired (restarted app, another app fetched device session, ...),
     // we cannot work with device anymore. Shouldn't happen on mobile app but just in case.
     useEffect(() => {
-        if (isUnacquiredDevice && isOnboardingFinished) {
+        if (
+            isOnboardingFinished &&
+            isUnacquiredDevice &&
+            !isDeviceThpRequired &&
+            !isFirmwareInstallationRunning
+        ) {
             showAlert({
                 title: <Translation id="moduleDevice.unacquiredDeviceModal.title" />,
                 description: <Translation id="moduleDevice.unacquiredDeviceModal.description" />,
@@ -106,7 +113,15 @@ export const useDetectDeviceError = () => {
         } else {
             hideAlert();
         }
-    }, [isOnboardingFinished, isUnacquiredDevice, dispatch, hideAlert, showAlert]);
+    }, [
+        isOnboardingFinished,
+        isUnacquiredDevice,
+        isDeviceThpRequired,
+        isFirmwareInstallationRunning,
+        dispatch,
+        hideAlert,
+        showAlert,
+    ]);
 
     useEffect(() => {
         if (

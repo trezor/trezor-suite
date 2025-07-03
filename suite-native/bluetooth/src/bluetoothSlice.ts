@@ -6,6 +6,8 @@ import {
     prepareInitialState,
 } from '@suite-common/bluetooth';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { FirmwareDisconnect, UI_REQUEST } from '@trezor/connect';
+import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
 import { BluetoothDevice, BluetoothPermissionStatus } from './types';
 
@@ -34,9 +36,16 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     },
     extraReducers: (builder, extra) => {
         const commonReducer = prepareBluetoothReducerCreator<BluetoothDevice>()(extra);
-        builder.addDefaultCase((state, action) => {
-            commonReducer(state, action);
-        });
+        builder
+            .addCase(UI_REQUEST.FIRMWARE_DISCONNECT, (_, action: FirmwareDisconnect) => {
+                const deviceId = action.payload.device.bluetoothProps?.id;
+                if (deviceId) {
+                    bluetoothManager.disconnectDevice({ deviceId });
+                }
+            })
+            .addDefaultCase((state, action) => {
+                commonReducer(state, action);
+            });
     },
 });
 

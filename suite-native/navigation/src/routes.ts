@@ -44,10 +44,14 @@ export enum DeviceOnboardingStackRoutes {
     UninitializedDeviceLanding = 'UninitializedDeviceLanding',
     SuspiciousDevice = 'SuspiciousDevice',
     SecurityCheck = 'SecurityCheck',
+    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
+    ThpPairingInfo = 'ThpPairingInfo',
+    ThpConfirmation = 'ThpConfirmation',
+    ThpCodeEntry = 'ThpCodeEntry',
+    ThpPairingSuccess = 'ThpPairingSuccess',
     DeviceAuthenticity = 'DeviceAuthenticity ',
     DeviceAuthenticitySuccess = 'DeviceAuthenticitySuccess',
-    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     DeviceTutorial = 'DeviceTutorial',
     CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',
     CreateWalletLoading = 'CreateWalletLoading',
@@ -92,6 +96,7 @@ export enum DevicePinProtectionStackRoutes {
 export enum FirmwareUpdateStackRoutes {
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
+    ThpConfirmation = 'ThpConfirmation',
 }
 
 export enum DeviceCheckBackupStackRoutes {
@@ -126,8 +131,9 @@ export enum AuthorizeDeviceStackRoutes {
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
     ConnectBluetoothDevice = 'ConnectBluetoothDevice',
     PinMatrix = 'PinMatrix',
+    ThpConfirmation = 'ThpConfirmation',
+    ThpCodeEntry = 'ThpCodeEntry',
     ConnectingDevice = 'ConnectingDevice',
-
     PassphraseForm = 'PassphraseForm',
     PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     PassphraseLoading = 'PassphraseLoading',

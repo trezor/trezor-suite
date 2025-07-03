@@ -10,6 +10,7 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { prepareThpReducer } from '@suite-common/thp';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import {
@@ -73,6 +74,7 @@ const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
+const thpReducer = prepareThpReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -242,6 +244,13 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const thpPersistedReducer = await preparePersistReducer({
+        reducer: thpReducer,
+        persistedKeys: ['credentials', 'staticKey'],
+        key: 'thp',
+        version: 1,
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             app: appReducer,
@@ -263,6 +272,7 @@ export const prepareRootReducers = async () => {
             walletConnect: walletConnectReducer,
             bluetooth: bluetoothPersistedReducer,
             geolocation: geolocationReducer,
+            thp: thpPersistedReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

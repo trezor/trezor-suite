@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { useAtom, useAtomValue } from 'jotai';
 
+import { selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
 import {
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInitialized,
     selectIsDeviceRemembered,
+    selectIsDeviceThpRequired,
     selectIsDeviceUsingPassphrase,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
@@ -25,6 +27,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
 import {
@@ -51,6 +54,8 @@ const pinMatrixBlacklistedScreens = [
 ];
 
 export const useHandleDeviceConnection = () => {
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
@@ -59,6 +64,9 @@ export const useHandleDeviceConnection = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
+    const isThpInProgress = useSelector(selectIsThpInProgress);
+    const thpStep = useSelector(selectThpStep);
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
@@ -91,6 +99,7 @@ export const useHandleDeviceConnection = () => {
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const isOnboardingStackFocused = lastRoute === RootStackRoutes.OnboardingStack;
     const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
+    const isAuthorizeDeviceStackFocused = lastRoute === RootStackRoutes.AuthorizeDeviceStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
     const isDeviceCompromisedModalFocused = lastRoute === RootStackRoutes.DeviceCompromisedModal;
     const isOnPinMatrixBlacklistedRoute = pinMatrixBlacklistedScreens.includes(
@@ -103,6 +112,19 @@ export const useHandleDeviceConnection = () => {
         shouldKeepDeviceCompromisedModal,
     } = useDeviceChecks(isDeviceCompromisedModalFocused);
 
+    // Nothing can be accomplished before a THP connection is established.
+    useEffect(() => {
+        if (
+            isOnboardingFinished &&
+            !isFirmwareInstallationRunning &&
+            (thpStep === 'ConfirmConnectionBeforePairing' || thpStep === 'ConfirmOnlyConnection')
+        ) {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.ThpConfirmation,
+            });
+        }
+    }, [isOnboardingFinished, isFirmwareInstallationRunning, thpStep, navigation]);
+
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
         if (
@@ -110,17 +132,27 @@ export const useHandleDeviceConnection = () => {
             isDeviceConnected &&
             isOnboardingFinished &&
             !isDeviceInitialized &&
+            !isDeviceThpRequired &&
+            !isThpInProgress &&
             !isPortfolioTrackerDevice &&
             !isBiometricsOverlayVisible &&
             !isOnboardingDeviceDisconnectedAlertDisplayed &&
             !isFirmwareInstallationRunning &&
             (!isDeviceOnboardingStackFocused || isDeviceOnboardingConnectAndUnlockScreenFocused) &&
-            !wasDeviceOnboardingCancelled &&
             !shouldNavigateToDeviceCompromisedModal
         ) {
-            navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
-            });
+            if (!wasDeviceOnboardingCancelled) {
+                navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
+                    screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                });
+            } else if (isAuthorizeDeviceStackFocused) {
+                navigation.navigate(RootStackRoutes.AppTabs, {
+                    screen: AppTabsRoutes.HomeStack,
+                    params: {
+                        screen: HomeStackRoutes.Home,
+                    },
+                });
+            }
         }
     }, [
         dispatch,
@@ -129,6 +161,8 @@ export const useHandleDeviceConnection = () => {
         isBiometricsOverlayVisible,
         navigation,
         isDeviceInitialized,
+        isDeviceThpRequired,
+        isThpInProgress,
         isPortfolioTrackerDevice,
         isDeviceSetupSupported,
         isDeviceOnboardingStackFocused,
@@ -137,12 +171,16 @@ export const useHandleDeviceConnection = () => {
         isDeviceOnboardingConnectAndUnlockScreenFocused,
         wasDeviceOnboardingCancelled,
         shouldNavigateToDeviceCompromisedModal,
+        isAuthorizeDeviceStackFocused,
+        navigateToInitialScreen,
     ]);
 
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
-        if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused) return;
+        if (isThpInProgress || isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused) {
+            return;
+        }
 
         if (
             isDeviceInitialized &&
@@ -168,6 +206,7 @@ export const useHandleDeviceConnection = () => {
             navigation.navigate(RootStackRoutes.DeviceCompromisedModal, { failedCheck });
         }
     }, [
+        isThpInProgress,
         failedCheck,
         isCoinEnablingInitFinished,
         isDeviceConnected,

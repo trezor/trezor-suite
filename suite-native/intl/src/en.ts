@@ -328,6 +328,43 @@ export const en = {
             },
         },
     },
+    thp: {
+        pairingInfo: {
+            title: 'Create secure connection',
+            subtitle: 'Trezor Suite will create a secure connection to your Trezor',
+            help: {
+                title: 'What is a secure connection?',
+                description:
+                    'A secure connection is a protected link that ensures safe communication between Trezor Suite and your device, using a one-time security code to prevent unauthorized access.',
+            },
+        },
+        codeEntry: {
+            title: 'Enter one-time security code',
+            subtitle: 'Check your Trezor for the code.',
+            invalidCode: {
+                title: 'Incorrect security code',
+                description: 'Try again with a new code.',
+                getNewCodeButton: 'Get a new code',
+            },
+        },
+        autoconnect: {
+            title: 'Save time with auto-connect',
+            description:
+                'Use this phone often with your Trezor? Allow Trezor Suite to connect automatically to it—no need to confirm every time.',
+            appendix: {
+                highlight: 'Fast, secure access with auto-connect',
+                bullet1:
+                    'Let Trezor Suite connect to your Trezor automatically when it’s connected',
+                bullet2: 'Skip repeated confirmations',
+                bullet3: 'Stay fully secure',
+            },
+            turnOnButton: 'Turn on auto-connect',
+            noThanksButton: 'No thanks',
+        },
+        pairingSuccess: {
+            title: 'Secure connection created',
+        },
+    },
     moduleCheckBackup: {
         checkBackupTutorialScreen: {
             step1: {
@@ -2321,7 +2358,7 @@ export const en = {
             installing: {
                 title: 'Installing firmware',
             },
-            restarting: { title: 'Restarting Trezor.' },
+            restarting: { title: 'Restarting Trezor' },
             completed: {
                 title: 'Firmware installed',
                 subtitle: 'You’re all set.',

@@ -3,7 +3,12 @@ import { A, pipe } from '@mobily/ts-belt';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { BackupType, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { getDeviceInstances, getFwUpdateVersion, getStatus } from '@suite-common/suite-utils';
+import {
+    getDeviceInstances,
+    getDeviceInternalModel,
+    getFwUpdateVersion,
+    getStatus,
+} from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 import {
@@ -200,6 +205,11 @@ export const selectDeviceStatus = createMemoizedSelector(
     device => device && getStatus(device),
 );
 
+export const selectIsDeviceThpRequired = createMemoizedSelector(
+    [selectDeviceStatus],
+    deviceStatus => deviceStatus === 'unacquired-thp-required',
+);
+
 export const selectSupportedNetworkByDevice = (device: TrezorDevice | undefined) => {
     const firmwareVersion = getFirmwareVersion(device);
     const result = networkSymbolCollection.filter(symbol => {
@@ -303,9 +313,8 @@ export const selectDeviceModelById = createMemoizedSelector(
     },
 );
 
-export const selectDeviceModel = createMemoizedSelector(
-    [selectSelectedDevice],
-    selectedDevice => selectedDevice?.features?.internal_model ?? null,
+export const selectDeviceModel = createMemoizedSelector([selectSelectedDevice], selectedDevice =>
+    selectedDevice ? getDeviceInternalModel(selectedDevice) : null,
 );
 
 export const selectDeviceReleaseInfo = createMemoizedSelector(

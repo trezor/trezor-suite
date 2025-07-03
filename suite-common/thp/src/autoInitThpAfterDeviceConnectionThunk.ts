@@ -1,6 +1,6 @@
 import { selectFirmware } from '@suite-common/firmware/src/firmwareReducer';
 import { createThunk } from '@suite-common/redux-utils';
-import { acquireDevice, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { acquireDevice, selectDevices } from '@suite-common/wallet-core';
 import { Device } from '@trezor/connect';
 
 import { THP_PREFIX } from './thpActions';
@@ -21,8 +21,9 @@ export const autoInitThpAfterDeviceConnectionThunk = createThunk<
     const reselectedTrezorDevice = selectDevices(getState())?.find(
         stateDevice => stateDevice.path === device.path,
     );
-    const selectedDevice = selectSelectedDevice(getState());
-    if (device?.thp !== undefined && !isFwInstall && selectedDevice === undefined) {
+    // TODO: Discuss with Komar, this breaks THP autoconnect.
+    // const selectedDevice = selectSelectedDevice(getState());
+    if (device?.thp !== undefined && !isFwInstall) {
         dispatch(acquireDevice({ requestedDevice: reselectedTrezorDevice }));
     }
 });
