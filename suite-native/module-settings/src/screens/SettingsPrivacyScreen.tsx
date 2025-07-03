@@ -48,7 +48,7 @@ const DiscreetModeSwitchRow = () => {
     return (
         <PressableSwitchRow
             testID="@settings/privacy-and-security/discreet-mode-toggle"
-            text={<Translation id="moduleSettings.privacyAndSecurity.biometrics" />}
+            text={<Translation id="moduleSettings.privacyAndSecurity.discreetMode" />}
             accessibilityLabel="discreet-mode"
             description={
                 <Box flexDirection="row" alignItems="center">
