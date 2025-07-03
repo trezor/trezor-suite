@@ -9,6 +9,11 @@ import { hideBin } from 'yargs/helpers';
 import { getPrettierConfig } from './utils/getPrettierConfig';
 import { getWorkspacesList } from './utils/getWorkspacesList';
 
+/**
+ * Example usage:
+ *      yarn update-project-references --read-only 1 2 3 --test true
+ *      yarn update-project-references --ignore *\/firmware
+ */
 (async () => {
     const { argv } = yargs(hideBin(process.argv))
         .array('read-only')
@@ -17,6 +22,7 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
 
     const readOnlyGlobs: string[] = argv.readOnly || [];
     const ignoreGlobs: string[] = argv.ignore || [];
+
     const isTesting = argv.test || false;
 
     const prettierConfig = await getPrettierConfig();
