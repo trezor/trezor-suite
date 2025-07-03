@@ -59,7 +59,7 @@
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "@types/bchaddrjs": "^0.4.3",
-        "@types/bn.js": "^5.1.6",
+        "@types/bn.js": "^5.2.0",
         "@types/create-hmac": "^1.1.3",
         "@types/events": "^3.0.3",
         "minimaldata": "^1.0.2",
