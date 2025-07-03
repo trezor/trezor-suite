@@ -43,7 +43,6 @@ This CI pipeline decides whether to build app and run E2E tests following this l
 #### 🔹 Is First Attempt?
 
 - **Yes** (e.g. initial run after a push):
-
     - **Check Previous Test Runs**:
         - ✅ **If a previous successful run exists**:
             - 🛑 **Skip Build**

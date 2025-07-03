@@ -15,7 +15,6 @@ Package `@trezor/connect-common` is a public NPM package used as dependency of `
 1. Add firmwares to `packages/connect-common/files/firmware/*` and modify its `releases.json` file. See [Firmware `releases.json` files structure](#firmware-releasesjson-files-structure) for an explanation and [90bb548](https://github.com/trezor/trezor-suite/commit/90bb548aec06c9b4816c9a87b2ffa5fcade99f29) for an example.
 
 1. Remove older binaries so they are not bundled in the desktop app any more, but always keep:
-
     - the intermediary FW for T1B1 [packages/connect-common/files/firmware/t1b1/trezor-inter-v{1 | 2 | 3}.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/t1b1/trezor-inter-v1.bin)
     - and 2.1.1 for T2T1 [packages/connect-common/files/firmware/t2t1/trezor-2.1.1.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/t2t1/trezor-2.1.1.bin)
 
