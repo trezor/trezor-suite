@@ -510,6 +510,8 @@ export type SuiteNativeAnalyticsEvent =
               firmware: 'install' | 'update' | 'skip' | 'up-to-date';
               seedType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
               recoveryStepBack: boolean;
+              wasBackupSkipped: boolean;
+              wasPinSkipped: boolean;
           }>;
       }
     | {
