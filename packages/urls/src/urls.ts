@@ -18,6 +18,7 @@ export const SUITE_URL: Url = 'https://trezor.io/trezor-suite';
 export const SUITE_BACKUP_URL: Url = 'https://suite.trezor.io/web/backup/';
 export const SUITE_FIRMWARE_URL: Url = 'https://suite.trezor.io/web/firmware/';
 export const SUITE_UDEV_URL: Url = 'https://suite.trezor.io/web/udev/';
+export const SUITE_WEB_DEVICE_SETTINGS_URL = (SUITE_WEB_URL + 'settings/device/') as Url;
 
 export const SUITE_MOBILE_APP_STORE: Url = 'https://apps.apple.com/app/id1631884497';
 export const SUITE_MOBILE_PLAY_STORE: Url =

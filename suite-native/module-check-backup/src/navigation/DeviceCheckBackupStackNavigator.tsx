@@ -10,6 +10,7 @@ import { DeviceCheckBackupRecapScreen } from '../screens/DeviceCheckBackupRecapS
 import { DeviceCheckBackupScreen } from '../screens/DeviceCheckBackupScreen';
 import { DeviceCheckBackupSuccessScreen } from '../screens/DeviceCheckBackupSuccessScreen';
 import { DeviceCheckBackupTutorialScreen } from '../screens/DeviceCheckBackupTutorialScreen';
+import { DeviceCheckBackupUnsupportedModelScreen } from '../screens/DeviceCheckBackupUnsupportedModelScreen';
 
 const DeviceCheckBackupStack = createNativeStackNavigator<DeviceCheckBackupStackParamList>();
 
@@ -33,6 +34,10 @@ export const DeviceCheckBackupStackNavigator = () => (
         <DeviceCheckBackupStack.Screen
             name={DeviceCheckBackupStackRoutes.CheckBackupRecap}
             component={DeviceCheckBackupRecapScreen}
+        />
+        <DeviceCheckBackupStack.Screen
+            name={DeviceCheckBackupStackRoutes.UnsupportedModel}
+            component={DeviceCheckBackupUnsupportedModelScreen}
         />
     </DeviceCheckBackupStack.Navigator>
 );
