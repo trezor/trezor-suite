@@ -7,8 +7,7 @@ import {
     sellTradeEthereumToken,
     sellWatchEthereum,
 } from '../../fixtures/invity';
-//TODO: Uncomment when bug fixed #19923
-// import { formatAddress } from '../../support/common';
+import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -19,8 +18,7 @@ const providerAddress = sellWatchEthereum.destinationAddress;
 const formattedCryptoAmount = `${cryptoAmount} USDC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeEthereumToken.trade;
-//TODO: Uncomment when bug fixed #19923
-// const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
+const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
 
 test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -46,7 +44,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
         },
     );
 
-    test('Sell Ethereum token USDC', async ({ tradingPage, dashboardPage }) => {
+    test('Sell Ethereum token USDC', async ({ tradingPage, dashboardPage, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
             await tradingPage.fillSellForm(
                 cryptoAmount,
@@ -74,16 +72,15 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
             await expect(tradingPage.confirmationAccount).toHaveText('Ethereum #1');
         });
 
-        //TODO: Uncomment when bug fixed #19923
-        // await test.step('Initiate send', async () => {
-        //     await tradingPage.initiateSendConfirmation();
-        //     await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
-        //     await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
-        //     await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
-        //         formattedCryptoAmount,
-        //     );
-        //     await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-        // });
+        await test.step('Initiate send', async () => {
+            await tradingPage.initiateSendConfirmation();
+            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                formattedCryptoAmount,
+            );
+            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+        });
 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
     });

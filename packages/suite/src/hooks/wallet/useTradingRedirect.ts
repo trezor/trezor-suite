@@ -8,12 +8,13 @@ import {
 } from 'invity-api';
 
 import {
+    parseCryptoId,
     tradingActions,
     tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { FeeLevel } from '@trezor/connect';
+import { FeeLevel, TokenInfo } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -70,6 +71,16 @@ interface DetailRedirectParams {
     accountType: Account['accountType'];
     transactionId: string;
 }
+
+const getTokenInfo = (cryptoId: CryptoId): TokenInfo | undefined => {
+    const { contractAddress } = parseCryptoId(cryptoId);
+
+    if (!contractAddress) return;
+
+    return {
+        contract: contractAddress,
+    } as TokenInfo;
+};
 
 export const useTradingRedirect = () => {
     const dispatch = useDispatch();
@@ -131,6 +142,7 @@ export const useTradingRedirect = () => {
         } = params;
         let request: SellFiatTradeQuoteRequest;
         const commonParams = { fiatCurrency, cryptoCurrency, country, paymentMethod };
+        const token = getTokenInfo(cryptoCurrency);
 
         if (amountInCrypto) {
             request = {
@@ -153,6 +165,7 @@ export const useTradingRedirect = () => {
             fee: '', // fee is not passed by redirect, will be recalculated
             maxFeePerGas,
             maxPriorityFeePerGas,
+            token,
         };
         dispatch(
             tradingActions.saveComposedTransactionInfo({
@@ -188,12 +201,15 @@ export const useTradingRedirect = () => {
             receive,
             sendStringAmount: amount,
         };
+        const token = getTokenInfo(send);
+
         const composed = {
             feeLimit,
             feePerByte: feePerByte || '',
             fee: '', // fee is not passed by redirect, will be recalculated
             maxFeePerGas,
             maxPriorityFeePerGas,
+            token,
         };
 
         dispatch(tradingExchangeActions.saveQuoteRequest(request));
