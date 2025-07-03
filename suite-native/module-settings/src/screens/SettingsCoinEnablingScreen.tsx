@@ -7,7 +7,7 @@ import { selectEnabledNetworks, selectHasBitcoinOnlyFirmware } from '@suite-comm
 import { BtcOnlyCoinEnablingContent, CoinEnablingForm } from '@suite-native/coin-enabling';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { useTranslate } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { setIsCoinEnablingInitFinished } from '@suite-native/settings';
 
 export const SettingsCoinEnablingScreen = () => {
@@ -35,7 +35,10 @@ export const SettingsCoinEnablingScreen = () => {
     return (
         <Screen
             header={
-                <ScreenHeader content={translate('moduleSettings.coinEnabling.settings.title')} />
+                <DynamicScreenHeader
+                    content={translate('moduleSettings.coinEnabling.settings.title')}
+                    subtitle="Coin enabling subtitle"
+                />
             }
         >
             {showNetworks ? <CoinEnablingForm /> : <BtcOnlyCoinEnablingContent />}
