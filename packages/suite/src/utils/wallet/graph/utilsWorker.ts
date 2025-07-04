@@ -1,7 +1,9 @@
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import type { FiatRatesBySymbol } from '@trezor/connect';
+import { typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -15,14 +17,13 @@ import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
 const calcFiatValueMap = (
     amount: string,
     rates: FiatRatesBySymbol,
-): { [k: string]: string | undefined } => {
-    const fiatValueMap: { [k: string]: string | undefined } = {};
-    Object.keys(rates).forEach(fiatSymbol => {
-        fiatValueMap[fiatSymbol] = toFiatCurrency(amount, rates?.[fiatSymbol]) ?? '0';
-    });
-
-    return fiatValueMap;
-};
+): { [K in BaseCurrencyCode]?: string | undefined } =>
+    typedObjectFromEntries(
+        typedObjectKeys(rates).map(fiatSymbol => [
+            fiatSymbol,
+            toFiatCurrency(amount, rates[fiatSymbol]) ?? '0',
+        ]),
+    );
 
 const isAccountAggregatedHistory = (
     history: AggregatedAccountHistory | AggregatedDashboardHistory,

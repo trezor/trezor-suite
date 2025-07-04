@@ -55,6 +55,7 @@ export * from './throttler';
 export * from './throwError';
 export * from './topologicalSort';
 export * from './typedEventEmitter';
+export * from './typedObjectFromEntries';
 export * from './typedObjectKeys';
 export * from './urlToOnion';
 export * from './zip';
