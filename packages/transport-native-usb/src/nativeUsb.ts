@@ -11,7 +11,10 @@ export class NativeUsbTransport extends AbstractApiTransport {
         super({
             api: new UsbApi({
                 usbInterface: new WebUSB(),
-                logger,
+                logger:
+                    process.env.EXPO_PUBLIC_IS_NATIVE_USB_LOGGER_ENABLED === 'true'
+                        ? console
+                        : logger,
             }),
             logger,
             ...rest,
