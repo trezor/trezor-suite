@@ -44,7 +44,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
         },
     );
 
-    test('Sell Ethereum token USDC', async ({ tradingPage, dashboardPage, devicePrompt }) => {
+    test('Sell Ethereum token USDC', async ({ tradingPage, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
             await tradingPage.fillSellForm(
                 cryptoAmount,
@@ -59,9 +59,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
             await tradingPage.termsConfirmButton.click();
         });
 
-        await tradingPage.waitForRedirectCompletion();
-        //TODO: Workaround because of bug #19743, device switcher should not be opened
-        await dashboardPage.deviceSwitchingCloseButton.click();
+        await tradingPage.waitForSellRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
