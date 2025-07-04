@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { getChangelogUrl, getFwUpdateVersion } from '@suite-common/suite-utils';
+import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
@@ -33,16 +33,8 @@ const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
 `;
 
-const getButtonLabelId = ({
-    availableFwVersion,
-    currentFwVersion,
-    device,
-}: {
-    availableFwVersion: string | null;
-    currentFwVersion: string | null;
-    device: AcquiredDevice;
-}) => {
-    if (currentFwVersion && availableFwVersion && currentFwVersion === availableFwVersion) {
+const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {
+    if (!device.firmwareReleaseConfigInfo?.isNewer) {
         return 'TR_UP_TO_DATE';
     }
     switch (device.firmware) {
@@ -70,7 +62,6 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     }
 
     const currentFwVersion = getFirmwareVersion(device);
-    const availableFwVersion = getFwUpdateVersion(device);
     const { revision } = device.features;
     const changelogUrl = getChangelogUrl(device, revision);
     const githubButtonIcon = revision ? 'arrowUpRight' : undefined;
@@ -131,9 +122,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                     isTooltipActive={isDeviceLocked}
                     tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
-                    <Translation
-                        id={getButtonLabelId({ device, currentFwVersion, availableFwVersion })}
-                    />
+                    <Translation id={getButtonLabelId({ device })} />
                 </ActionButton>
             </ActionColumn>
         </SettingsSectionItem>
