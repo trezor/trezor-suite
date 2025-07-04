@@ -122,6 +122,7 @@ export const findClosestTimestampValue = (
  *
  * @param {TickerId} ticker
  * @param {number[]} timestamps
+ * @param {BaseCurrencyCode} fiatCurrencyCode
  */
 export const getFiatRatesForTimestamps = async (
     ticker: TickerId,
