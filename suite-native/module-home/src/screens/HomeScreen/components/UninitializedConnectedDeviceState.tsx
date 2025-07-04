@@ -49,6 +49,7 @@ export const UninitializedConnectedDeviceState = () => {
                     subtitle={
                         <Translation id="moduleHome.emptyState.uninitializedDevice.subtitle" />
                     }
+                    testID="@homescreen/uninitializedConnectedDeviceText"
                 />
                 <Button size="large" onPress={handleAddAccount} style={applyStyle(buttonStyle)}>
                     <Translation id="moduleHome.emptyState.uninitializedDevice.button" />

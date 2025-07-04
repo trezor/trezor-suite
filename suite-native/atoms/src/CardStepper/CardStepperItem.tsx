@@ -131,6 +131,7 @@ export const CardStepperItem = ({
                                 style={applyStyle(buttonStyle)}
                                 colorScheme={buttonsColorSchemeMap[buttonsActionType].primary}
                                 onPress={onPressConfirmButton}
+                                testID="@cardStepper/confirm-button"
                             >
                                 {primaryButtonText}
                             </Button>

@@ -11,8 +11,23 @@ class DeviceSettingsActions {
             .withTimeout(10000);
     }
 
+    async waitForHomescreenAndUninitializedTitle() {
+        await waitFor(element(by.id('@screen/Home')))
+            .toBeVisible()
+            .withTimeout(10000);
+        await waitFor(element(by.id('@homescreen/uninitializedConnectedDeviceText')))
+            .toBeVisible()
+            .withTimeout(10000);
+    }
+
     async waitForPinProtectionScreen() {
         await waitFor(element(by.id('@screen/PinProtection')))
+            .toBeVisible()
+            .withTimeout(10000);
+    }
+
+    async waitForWipeDeviceContinueOnTrezor() {
+        await waitFor(element(by.id('@screen/ContinueOnTrezor')))
             .toBeVisible()
             .withTimeout(10000);
     }
@@ -70,6 +85,12 @@ class DeviceSettingsActions {
         await changeDeviceNameButton.tap();
     }
 
+    async tapWipeDevice() {
+        const wipeDeviceButton = element(by.id('@wipeDevice/redirectToWipeDeviceScreen'));
+        await scrollUntilVisible(wipeDeviceButton);
+        await wipeDeviceButton.tap();
+    }
+
     async submitNewDeviceName(value: string) {
         const changeDeviceNameInput = element(by.id('@device-name/input'));
         const changeDeviceNameSubmitButton = element(by.id('@device-name/submit-button'));
@@ -84,6 +105,15 @@ class DeviceSettingsActions {
         const checkDeviceAuthenticityButton = element(by.id('@device-authenticity/check-button'));
         await waitFor(checkDeviceAuthenticityButton).toBeVisible().withTimeout(5_000);
         await checkDeviceAuthenticityButton.tap();
+    }
+
+    async confirmStepperItems(items: number) {
+        const confirmButton = element(by.id('@cardStepper/confirm-button'));
+
+        for (let i = 0; i < items; i++) {
+            await waitFor(confirmButton).toBeVisible().withTimeout(10000);
+            await confirmButton.tap();
+        }
     }
 }
 
