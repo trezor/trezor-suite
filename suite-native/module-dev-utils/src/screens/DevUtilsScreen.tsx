@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
+import { Translation } from '@suite-native/intl';
 import {
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
@@ -37,8 +38,8 @@ export const DevUtilsScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    content="DEV utils"
-                    subtitle="This is subtitle for dev utils"
+                    content={<Translation id="moduleSettings.items.features.devUtils.title" />}
+                    subtitle={<Translation id="moduleSettings.items.features.devUtils.subtitle" />}
                 />
             }
         >

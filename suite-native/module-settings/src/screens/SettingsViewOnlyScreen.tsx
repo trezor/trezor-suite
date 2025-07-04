@@ -5,7 +5,7 @@ import { A } from '@mobily/ts-belt';
 
 import { selectPhysicalDevices } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import { DynamicScreenHeader, Screen, ScreenHeader } from '@suite-native/navigation';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { AboutViewOnlyBottomSheet } from '../components/ViewOnly/AboutViewOnlyBottomSheet';
 import { DevicesEmpty } from '../components/ViewOnly/DevicesEmpty';
@@ -21,13 +21,10 @@ export const SettingsViewOnlyScreen = () => {
     return (
         <Screen
             header={
-                A.isEmpty(devices) ? (
-                    <ScreenHeader content={<Translation id="moduleSettings.viewOnly.title" />} />
-                ) : (
-                    <DynamicScreenHeader
-                        content={<Translation id="moduleSettings.viewOnly.title" />}
-                    />
-                )
+                <DynamicScreenHeader
+                    content={<Translation id="moduleSettings.viewOnly.title" />}
+                    isCompactOnly={A.isEmpty(devices)}
+                />
             }
         >
             {A.isEmpty(devices) ? (
