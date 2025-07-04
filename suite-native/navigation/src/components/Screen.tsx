@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, isValidElement, useContext } from 'react';
+import { ReactNode, useContext } from 'react';
 import { ScrollViewProps, View } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
@@ -13,12 +13,13 @@ import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { DynamicScreenHeader, DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
+import { DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
-import { DynamicScrollableScreenContentHeader } from './DynamicHeader/ScrollableScreenContentHeader';
+import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
+import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 
 export type ScreenProps = {
     children: ReactNode;
@@ -77,9 +78,6 @@ const screenFooterStyle = prepareNativeStyle<{
     paddingBottom: applyBottomInset ? insets.bottom : 0,
 }));
 
-const isDynamicHeader = (element: ReactNode): element is ReactElement<DynamicScreenHeaderProps> =>
-    isValidElement(element) && element.type === DynamicScreenHeader;
-
 export const Screen = ({
     children,
     header,
@@ -110,13 +108,17 @@ export const Screen = ({
 
     const { name } = useRoute();
 
-    const dynamicHeaderProps = (): DynamicScreenHeaderProps | null => {
-        if (isDynamicHeader(header)) {
+    // We have to extract dynamic header props from header prop. While not ideal, this allows us to only send one header prop to the screen.
+    const dynamicHeaderProps = ((): DynamicScreenHeaderProps | null => {
+        if (isScreenHeaderPropDynamic(header)) {
             return header.props as DynamicScreenHeaderProps;
         }
 
         return null;
-    };
+    })();
+
+    const shouldRenderDynamicScrollableHeader =
+        isScreenHeaderPropDynamic(header) && !dynamicHeaderProps?.isCompactOnly;
 
     return (
         <DynamicHeaderProvider>
@@ -135,10 +137,10 @@ export const Screen = ({
                     hasHeader={!!header}
                     focusedInputBottomOffset={focusedInputBottomOffset}
                     refreshControl={refreshControl}
-                    isDynamicHeader={isDynamicHeader(header)}
+                    isDynamicHeader={isScreenHeaderPropDynamic(header)}
                 >
-                    {isDynamicHeader(header) && (
-                        <DynamicScrollableScreenContentHeader {...dynamicHeaderProps()} />
+                    {shouldRenderDynamicScrollableHeader && (
+                        <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />
                     )}
                     <Box
                         style={applyStyle(screenContentStyle, {
