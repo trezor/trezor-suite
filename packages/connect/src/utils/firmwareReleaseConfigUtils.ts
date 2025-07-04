@@ -75,10 +75,24 @@ export const getFirmwareReleaseConfig = async () => {
     if (isRemote) {
         const decodedJwsLocal = decode(firmwareReleaseConfigAssets.jws);
 
-        if (decodedJwsLocal && decodedJwsLocal.payload.sequence > decodedJws.payload.sequence) {
+        if (!decodedJwsLocal) {
+            // Just sanity check, local JWS should always be there and should be possible to decode it.
+            throw new Error('Local firmware release config missing.');
+        }
+        if (decodedJwsLocal.payload.sequence > decodedJws.payload.sequence) {
             throw new Error(
                 'Local firmware release config cannot have greater sequence than remote.',
             );
+        }
+        const localConfigDate: Date = new Date(decodedJwsLocal.payload.timestamp);
+        const remoteConfigDate: Date = new Date(decodedJws.payload.sequence);
+        if (remoteConfigDate > localConfigDate) {
+            throw new Error(
+                'Local firmware release config cannot have older timestamp than remote.',
+            );
+        }
+        if (decodedJwsLocal.payload.version === VERSION) {
+            throw new Error(`Local firmware release config exepected version ${VERSION}.`);
         }
     }
 
