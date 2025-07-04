@@ -412,7 +412,10 @@ export const TradingFormApproval = ({
 
                     <TextButton
                         onClick={() =>
-                            isRevokeButtonLoading || isSwapButtonLoading
+                            isRevokeButtonDisabled ||
+                            isRevokeButtonLoading ||
+                            isSwapButtonDisabled ||
+                            isSwapButtonLoading
                                 ? null
                                 : onRevokeApprovalClick()
                         }
