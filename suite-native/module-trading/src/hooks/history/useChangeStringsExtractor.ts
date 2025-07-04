@@ -18,7 +18,7 @@ export const useChangeStringsExtractor = (
     toStringValue: string | undefined;
     formattedRate?: string | undefined;
 } => {
-    const { CryptoAmountFormatter, FiatAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     const tradeOperationData = getTradeOperationData(trade);
@@ -67,7 +67,7 @@ export const useChangeStringsExtractor = (
         }
 
         return (
-            FiatAmountFormatter.format(value, {
+            BaseCurrencyAmountFormatter.format(value, {
                 currency,
             }) ?? undefined
         );

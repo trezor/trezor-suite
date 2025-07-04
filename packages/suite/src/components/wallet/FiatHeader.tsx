@@ -69,8 +69,8 @@ export const FiatHeader = ({
 }: FiatHeaderProps) => {
     const language = useSelector(selectLanguage);
     const fiatAmount = useFiatAmount({ amount, symbol });
-    const { FiatAmountFormatter } = useFormatters();
-    const formattedAmount = FiatAmountFormatter({
+    const { BaseCurrencyAmountFormatter } = useFormatters();
+    const formattedAmount = BaseCurrencyAmountFormatter({
         value: fiatAmount ?? '0',
         currency: localCurrency,
     });

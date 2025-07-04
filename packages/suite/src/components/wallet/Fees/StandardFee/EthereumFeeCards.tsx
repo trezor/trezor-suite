@@ -7,7 +7,7 @@ import { Badge, Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
@@ -71,7 +71,7 @@ export const EthereumFeeCards = ({
                         topRightChild={getTimeEstimate(fee)}
                         bottomLeftChild={
                             <span data-testid={`@fee-card/${fee.value}-fiat-amount`}>
-                                <FiatValue
+                                <BaseCurrencyValue
                                     disableHiddenPlaceholder
                                     amount={fee.networkAmount || ''}
                                     symbol={symbol}

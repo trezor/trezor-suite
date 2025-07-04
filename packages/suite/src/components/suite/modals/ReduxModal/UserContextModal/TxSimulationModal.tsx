@@ -54,7 +54,7 @@ const TxSimulationAsset = ({
     assetExposure?: AssetExposure;
     network: Network;
 }) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const AssetIcon = () => {
         const asset = (assetDiff || assetExposure)?.asset;
@@ -108,7 +108,10 @@ const TxSimulationAsset = ({
                     {inAmount.usd_price && (
                         <Text variant="tertiary" key={`in-usd-${inIndex}`}>
                             {`+ `}
-                            <FiatAmountFormatter value={inAmount.usd_price} currency="USD" />
+                            <BaseCurrencyAmountFormatter
+                                value={inAmount.usd_price}
+                                currency="USD"
+                            />
                         </Text>
                     )}
                 </>
@@ -126,7 +129,10 @@ const TxSimulationAsset = ({
                     {outAmount.usd_price && (
                         <Text variant="tertiary" key={`out-usd-${outIndex}`}>
                             {`- `}
-                            <FiatAmountFormatter value={outAmount.usd_price} currency="USD" />
+                            <BaseCurrencyAmountFormatter
+                                value={outAmount.usd_price}
+                                currency="USD"
+                            />
                         </Text>
                     )}
                 </>
@@ -143,7 +149,7 @@ const TxSimulationAsset = ({
                         </Text>
                         {spender.exposure.usd_price && (
                             <Text variant="tertiary" key={`spender-usd-${index}`}>
-                                <FiatAmountFormatter
+                                <BaseCurrencyAmountFormatter
                                     value={spender.exposure.usd_price}
                                     currency="USD"
                                 />

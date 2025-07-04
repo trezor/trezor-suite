@@ -6,7 +6,7 @@ import { PROTO } from '@trezor/connect';
 export type FormatterProviderConfig = {
     locale: string;
     bitcoinAmountUnit: PROTO.AmountUnit;
-    fiatCurrency: BaseCurrencyCode;
+    baseCurrency: BaseCurrencyCode;
     is24HourFormat: boolean;
 };
 

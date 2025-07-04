@@ -17,8 +17,8 @@ import { spacings } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
+    BaseCurrencyValue,
     CoinBalance,
-    FiatValue,
     PriceTicker,
     Translation,
     TrendTicker,
@@ -150,7 +150,10 @@ export const AssetRow = memo(
                                 gap={spacings.xxxs}
                                 data-testid={`@dashboard/asset/${symbol}/fiat-amount`}
                             >
-                                <FiatValue amount={assetNativeCryptoBalance} symbol={symbol} />
+                                <BaseCurrencyValue
+                                    amount={assetNativeCryptoBalance}
+                                    symbol={symbol}
+                                />
 
                                 <Text typographyStyle="hint" color={theme.textSubdued}>
                                     <AmountUnitSwitchWrapper symbol={symbol}>

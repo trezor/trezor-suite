@@ -2,7 +2,12 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { CoinBalance, FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
+import {
+    BaseCurrencyValue,
+    CoinBalance,
+    HiddenPlaceholder,
+    Translation,
+} from 'src/components/suite';
 
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
@@ -33,7 +38,7 @@ export const AssetStakingRow = ({
                 {stakingTotalBalance && (
                     <Column alignItems="flex-start" justifyContent="center" gap={spacings.xxxs}>
                         <HiddenPlaceholder>
-                            <FiatValue amount={stakingTotalBalance} symbol={symbol} />
+                            <BaseCurrencyValue amount={stakingTotalBalance} symbol={symbol} />
                         </HiddenPlaceholder>
                         <HiddenPlaceholder>
                             <Text typographyStyle="hint" variant="tertiary">

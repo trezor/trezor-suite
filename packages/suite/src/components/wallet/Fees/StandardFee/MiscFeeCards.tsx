@@ -2,7 +2,7 @@ import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
@@ -38,7 +38,7 @@ export const MiscFeeCards = ({
                     </span>
                 }
                 bottomLeftChild={
-                    <FiatValue
+                    <BaseCurrencyValue
                         disableHiddenPlaceholder
                         amount={fee.networkAmount || ''}
                         symbol={symbol}

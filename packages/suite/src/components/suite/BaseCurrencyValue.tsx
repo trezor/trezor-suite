@@ -26,7 +26,7 @@ interface Params {
     timestamp: number | null;
 }
 
-type FiatValueProps = UseFiatFromCryptoValueParams & {
+type BaseCurrencyValueProps = UseFiatFromCryptoValueParams & {
     children?: (props: Params) => ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
@@ -49,10 +49,10 @@ type FiatValueProps = UseFiatFromCryptoValueParams & {
  * The function will be called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
  *
  *  In case of a custom source of fiat rates returned timestamp is always null;
- * @param {FiatValueProps} { amount, symbol, fiatCurrency, ...props }
+ * @param {BaseCurrencyValueProps} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
-export const FiatValue = ({
+export const BaseCurrencyValue = ({
     children,
     amount, // expects a value in full units (BTC not sats)
     className,
@@ -67,7 +67,7 @@ export const FiatValue = ({
     shouldConvert = true,
     showLoadingSkeleton,
     isLoading,
-}: FiatValueProps) => {
+}: BaseCurrencyValueProps) => {
     const { shouldAnimate } = useLoadingSkeleton();
     const { localCurrency, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
@@ -77,7 +77,7 @@ export const FiatValue = ({
         useHistoricRate,
     });
 
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const value = shouldConvert ? fiatAmount : amount;
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
@@ -99,7 +99,7 @@ export const FiatValue = ({
         const fiatValueComponent = (
             <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈&nbsp;</>}
-                <FiatAmountFormatter
+                <BaseCurrencyAmountFormatter
                     currency={localCurrency.toUpperCase()}
                     value={value}
                     {...fiatAmountFormatterOptions}
@@ -109,7 +109,7 @@ export const FiatValue = ({
 
         const fiatRateComponent = rate ? (
             <SameWidthNums>
-                <FiatAmountFormatter
+                <BaseCurrencyAmountFormatter
                     currency={localCurrency}
                     value={rate}
                     {...fiatRateFormatterOptions}

@@ -19,7 +19,7 @@ const theme = prepareNativeTheme({ colorVariant: 'standard' });
 
 const DEFAULT_FORMATTERS_CONFIG: FormatterProviderConfig = {
     locale: 'en' as const,
-    fiatCurrency: 'usd' as const,
+    baseCurrency: 'usd' as const,
     bitcoinAmountUnit: 0,
     is24HourFormat: true,
 };

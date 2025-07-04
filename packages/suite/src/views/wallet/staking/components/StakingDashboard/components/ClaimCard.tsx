@@ -8,7 +8,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -73,7 +73,7 @@ export const ClaimCard = () => {
                 <FormattedCryptoAmount value={claimableAmount} symbol={selectedAccount?.symbol} />
             </Paragraph>
             <Paragraph typographyStyle="hint" variant="tertiary">
-                <FiatValue
+                <BaseCurrencyValue
                     showApproximationIndicator
                     amount={claimableAmount}
                     symbol={selectedAccount?.symbol}

@@ -3,7 +3,12 @@ import { Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { CoinBalance, FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
+import {
+    BaseCurrencyValue,
+    CoinBalance,
+    HiddenPlaceholder,
+    Translation,
+} from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 
 type AssetCardTokensAndStakingInfoProps = {
@@ -44,7 +49,7 @@ export const AssetCardTokensAndStakingInfo = ({
                             </Text>
                         </HiddenPlaceholder>
                         <HiddenPlaceholder>
-                            <FiatValue amount={assetStakingBalance} symbol={symbol} />
+                            <BaseCurrencyValue amount={assetStakingBalance} symbol={symbol} />
                         </HiddenPlaceholder>
                     </>
                 )}
@@ -61,7 +66,7 @@ export const AssetCardTokensAndStakingInfo = ({
                         <Translation id="TR_NAV_TOKENS" />
                     </Text>
                 </Row>
-                <FiatValue
+                <BaseCurrencyValue
                     amount={tokensFiatBalance ?? '0'}
                     symbol={symbol}
                     shouldConvert={false}

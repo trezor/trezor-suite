@@ -8,7 +8,7 @@ import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
 import { Badge, Box, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -64,7 +64,7 @@ const CryptoAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
 const FiatAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
     const fiatValue = useSelector((state: AssetsRootState) => selectAssetFiatValue(state, symbol));
 
-    return <FiatAmountFormatter symbol={symbol} value={fiatValue} />;
+    return <BaseCurrencyAmountFormatter symbol={symbol} value={fiatValue} />;
 });
 
 const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {

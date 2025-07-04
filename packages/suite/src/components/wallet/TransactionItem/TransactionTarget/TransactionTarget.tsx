@@ -15,7 +15,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 
 import {
     AddressLabeling,
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     MetadataLabeling,
     Translation,
@@ -108,7 +108,7 @@ export const TransactionTarget = ({
     const fiatAmountComponent = useMemo(
         () =>
             !isTestnet(transaction.symbol) && amount ? (
-                <FiatValue
+                <BaseCurrencyValue
                     amount={amount}
                     symbol={transaction.symbol}
                     historicRate={historicRate}

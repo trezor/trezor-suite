@@ -18,7 +18,12 @@ import {
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { FiatValue, FormattedCryptoAmount, FormattedDate, Translation } from 'src/components/suite';
+import {
+    BaseCurrencyValue,
+    FormattedCryptoAmount,
+    FormattedDate,
+    Translation,
+} from 'src/components/suite';
 import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -64,7 +69,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 id="TR_TODAY_DATE"
                                 values={{
                                     date: (
-                                        <FiatValue amount="1" symbol={tx.symbol}>
+                                        <BaseCurrencyValue amount="1" symbol={tx.symbol}>
                                             {({ timestamp }) =>
                                                 timestamp ? (
                                                     <FormattedDate
@@ -74,7 +79,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                                     />
                                                 ) : null
                                             }
-                                        </FiatValue>
+                                        </BaseCurrencyValue>
                                     ),
                                 }}
                             />
@@ -105,7 +110,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue
+                                <BaseCurrencyValue
                                     amount={amount.abs().toString()}
                                     symbol={tx.symbol}
                                     historicRate={historicRate}
@@ -115,7 +120,10 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue amount={amount.abs().toString()} symbol={tx.symbol} />
+                                <BaseCurrencyValue
+                                    amount={amount.abs().toString()}
+                                    symbol={tx.symbol}
+                                />
                             </Text>
                         </Table.Cell>
                     </Table.Row>
@@ -140,7 +148,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue
+                                <BaseCurrencyValue
                                     amount={formatNetworkAmount(transfer.amount, tx.symbol)}
                                     symbol={tx.symbol}
                                     historicRate={historicRate}
@@ -150,7 +158,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue
+                                <BaseCurrencyValue
                                     amount={formatNetworkAmount(transfer.amount, tx.symbol)}
                                     symbol={tx.symbol}
                                 />
@@ -193,7 +201,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 {selectedAccount.account && (
                                     <Text variant="default">
-                                        <FiatValue
+                                        <BaseCurrencyValue
                                             amount={formatAmount(
                                                 transfer.amount,
                                                 transfer.decimals,
@@ -209,7 +217,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 {selectedAccount.account && (
                                     <Text variant="default">
-                                        <FiatValue
+                                        <BaseCurrencyValue
                                             amount={formatAmount(
                                                 transfer.amount,
                                                 transfer.decimals,
@@ -241,7 +249,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue
+                                <BaseCurrencyValue
                                     amount={cardanoWithdrawal}
                                     symbol={tx.symbol}
                                     historicRate={historicRate}
@@ -251,7 +259,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue amount={cardanoWithdrawal} symbol={tx.symbol} />
+                                <BaseCurrencyValue amount={cardanoWithdrawal} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
                     </Table.Row>
@@ -274,7 +282,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue
+                                <BaseCurrencyValue
                                     amount={cardanoDeposit}
                                     symbol={tx.symbol}
                                     historicRate={historicRate}
@@ -284,7 +292,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue amount={cardanoDeposit} symbol={tx.symbol} />
+                                <BaseCurrencyValue amount={cardanoDeposit} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
                     </Table.Row>
@@ -308,7 +316,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue
+                                <BaseCurrencyValue
                                     amount={fee}
                                     symbol={tx.symbol}
                                     historicRate={historicRate}
@@ -318,7 +326,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         </Table.Cell>
                         <Table.Cell align="end">
                             <Text variant="default">
-                                <FiatValue amount={fee} symbol={tx.symbol} />
+                                <BaseCurrencyValue amount={fee} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
                     </Table.Row>

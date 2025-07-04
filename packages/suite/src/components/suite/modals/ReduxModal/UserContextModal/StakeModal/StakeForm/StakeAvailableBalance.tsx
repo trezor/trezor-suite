@@ -3,7 +3,7 @@ import React from 'react';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { InfoItem, Row, Text } from '@trezor/components';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 
 interface StakeAvailableBalanceProps {
     formattedBalance: string;
@@ -14,7 +14,7 @@ export const StakeAvailableBalance = ({ formattedBalance, symbol }: StakeAvailab
     <InfoItem label={<Translation id="TR_STAKE_AVAILABLE" />}>
         <Row justifyContent="space-between">
             <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />{' '}
-            <FiatValue amount={formattedBalance} symbol={symbol} showApproximationIndicator>
+            <BaseCurrencyValue amount={formattedBalance} symbol={symbol} showApproximationIndicator>
                 {({ value }) =>
                     value ? (
                         <Text typographyStyle="label" variant="tertiary">
@@ -22,7 +22,7 @@ export const StakeAvailableBalance = ({ formattedBalance, symbol }: StakeAvailab
                         </Text>
                     ) : null
                 }
-            </FiatValue>
+            </BaseCurrencyValue>
         </Row>
     </InfoItem>
 );

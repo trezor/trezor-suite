@@ -20,7 +20,12 @@ import { TokenInfo } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { Address, FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import {
+    Address,
+    BaseCurrencyValue,
+    FormattedCryptoAmount,
+    Translation,
+} from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
 const getCardanoFingerprint = (
@@ -98,7 +103,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
                     />
                     {symbol && isFiatVisible && (
                         <Text variant="tertiary" data-testid="@modal/fiat-amount">
-                            <FiatValue
+                            <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={formattedValue}
                                 tokenAddress={
