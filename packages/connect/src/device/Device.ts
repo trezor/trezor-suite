@@ -19,7 +19,11 @@ import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
-import { getFirmwareStatus, getRelease, getReleaseInfo } from '../data/firmwareInfo';
+import {
+    getFirmwareReleaseConfig,
+    getFirmwareStatus,
+    getRelease,
+} from '../data/firmwareInfo';
 import { getLanguage } from '../data/getLanguage';
 import {
     DEVICE,
@@ -41,9 +45,9 @@ import {
     DeviceUniquePath,
     Features,
     FirmwareHashCheckResult,
+    FirmwareReleaseConfigInfo,
     FirmwareType,
     KnownDevice,
-    ReleaseInfo,
     UnavailableCapabilities,
     VersionArray,
 } from '../types';
@@ -138,9 +142,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this._firmwareStatus;
     }
 
-    private _firmwareRelease?: ReleaseInfo | null;
-    public get firmwareRelease() {
-        return this._firmwareRelease;
+    private _firmwareReleaseConfigInfo?: FirmwareReleaseConfigInfo;
+    public get firmwareReleaseConfigInfo() {
+        return this._firmwareReleaseConfigInfo;
     }
 
     // @ts-expect-error: strictPropertyInitialization
@@ -801,10 +805,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 });
             }
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this._firmwareStatus = getFirmwareStatus(feat);
-            this._firmwareRelease = getReleaseInfo(feat);
+            this._firmwareStatus = getFirmwareStatus(feat, FirmwareType.Regular);
+            this._firmwareReleaseConfigInfo = getFirmwareReleaseConfig(feat, FirmwareType.Regular);
 
-            this.availableTranslations = this.firmwareRelease?.translations ?? [];
+            this.availableTranslations = this.firmwareReleaseConfigInfo?.translations ?? [];
         }
 
         this._features = feat;
@@ -1023,7 +1027,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             mode: this.getMode(),
             color: this.color,
             firmware: this.firmwareStatus,
-            firmwareRelease: this.firmwareRelease,
+            firmwareReleaseConfigInfo: this.firmwareReleaseConfigInfo,
             firmwareType: this.firmwareType,
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,

@@ -4,7 +4,7 @@ import { serializeError, versionUtils } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { DataManager } from '../../data/DataManager';
-import { getReleases } from '../../data/firmwareInfo';
+import { getFirmwareLocation, getReleases } from '../../data/firmwareInfo';
 import { FirmwareHashCheckError, FirmwareHashCheckResult, FirmwareType } from '../../types';
 import { Log } from '../../utils/debug';
 import type { Device } from '../Device';
@@ -24,11 +24,23 @@ export const checkFirmwareHash = async ({
     device,
     logger,
 }: Context): Promise<FirmwareHashCheckResult | null> => {
-    const baseUrl = DataManager.getSettings('binFilesBaseUrl');
     const enabled = DataManager.getSettings('enableFirmwareHashCheck');
-    const timeoutThresholdsPerModel = DataManager.getSettings('firmwareHashCheckTimeouts');
-    if (!enabled || baseUrl === undefined) return createFailResult('check-skipped');
+    if (!enabled) return createFailResult('check-skipped');
+
     const firmwareVersion = device.getVersion();
+
+    if (firmwareVersion === undefined || !device.features || device.features.bootloader_mode) {
+        return null;
+    }
+
+    const firmwareLocation = getFirmwareLocation({
+        firmwareVersion,
+        internalModel: device.features.internal_model,
+        firmwareType: device.firmwareType ? device.firmwareType : FirmwareType.Universal,
+    });
+    const { baseUrl, firmwareName } = firmwareLocation;
+
+    const timeoutThresholdsPerModel = DataManager.getSettings('firmwareHashCheckTimeouts');
     // device has no features (not yet connected) or no firmware
     if (firmwareVersion === undefined || !device.features || device.features.bootloader_mode) {
         return null;
@@ -43,20 +55,24 @@ export const checkFirmwareHash = async ({
     // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
     if (release === undefined) return createFailResult('unknown-release');
 
-    const btcOnly = device.firmwareType === FirmwareType.BitcoinOnly;
-    const binary = await getBinaryOptional({ baseUrl, btcOnly, release });
+    const firmwareBinary = await getBinaryOptional({
+        baseUrl,
+        firmwareName,
+        version: firmwareVersion,
+    });
+
     // release was found, but not its binary - happens on desktop, where only local files are searched
-    if (binary === null) {
+    if (firmwareBinary === null) {
         return createFailResult('check-unsupported');
     }
     // binary was found, but it's likely a git LFS pointer (can happen on dev) - see onCallFirmwareUpdate.ts
-    if (binary.byteLength < 200) {
+    if (firmwareBinary.binary.byteLength < 200) {
         logger.warn(`Firmware binary for hash check suspiciously small (< 200 b)`);
 
         return createFailResult('check-unsupported');
     }
 
-    const strippedBinary = stripFwHeaders(binary);
+    const strippedBinary = stripFwHeaders(firmwareBinary.binary);
     const { hash: expectedHash, challenge } = calculateFirmwareHash(
         device.features.major_version,
         strippedBinary,

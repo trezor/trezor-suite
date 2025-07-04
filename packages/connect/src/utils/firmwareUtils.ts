@@ -1,7 +1,7 @@
 import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
 
 import { Features, FirmwareType, StrictFeatures, VersionArray } from '../types';
+import { versionUtils } from '@trezor/utils';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&
@@ -67,3 +67,8 @@ export const buildLocalFirmwareFileName = (
 
     return `trezor-${internalModel.toLocaleLowerCase()}-${version.join('.')}${firmwareTypeFileString}.bin`;
 };
+
+export const buildIntermediaryFirmwareFileName = (
+    internalModel: DeviceModelInternal,
+    version: number,
+) => `trezor-${internalModel}-inter-v${version}.bin`;

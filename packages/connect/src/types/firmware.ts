@@ -1,5 +1,10 @@
-import type { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
-import { Type } from '@trezor/schema-utils';
+import type {
+    ConditionalRelease,
+    DeviceModelInternal,
+    FirmwareType,
+    IntermediaryReleaseConfig,
+    VersionArray,
+} from '@trezor/device-utils';
 
 export type FirmwareRange = Record<
     DeviceModelInternal,
@@ -9,25 +14,19 @@ export type FirmwareRange = Record<
     }
 >;
 
-export type IntermediaryVersion = 1 | 2 | 3;
-export const IntermediaryVersion = Type.Union([Type.Literal(1), Type.Literal(2), Type.Literal(3)]);
-
-export type ReleaseInfo = {
-    changelog: FirmwareRelease[] | null;
-    release: FirmwareRelease;
-    isRequired: boolean | null;
-    isNewer: boolean | null;
-    /**
-     * v1 - bootloader < 1.8.0
-     * v2 - bootloader >= 1.8.0, < 1.12.0
-     * v3 - bootloader >= 1.12.0
-     */
-    intermediaryVersion?: IntermediaryVersion;
-    translations?: string[];
-};
-
 export type BinaryInfo = {
     binary: ArrayBuffer;
     binaryVersion: VersionArray;
-    releaseVersion: undefined;
+    releaseVersion?: VersionArray;
+};
+
+export type FirmwareReleaseConfigInfo = {
+    firmwareType: FirmwareType;
+    isBitcoinOnlyAvailable: boolean;
+    releaseConditions: ConditionalRelease['conditions'] & { shouldBeOffered: boolean };
+    release: ConditionalRelease['release'];
+    intermediary: IntermediaryReleaseConfig | undefined;
+    isRequired: boolean | null;
+    isNewer: boolean | null;
+    translations?: string[];
 };
