@@ -12,9 +12,6 @@ const debugLog = (...args: any[]) => {
     }
 };
 
-export const setPriorityMode = (isInPriorityMode: boolean) =>
-    ReactNativeUsbModule.setPriorityMode(isInPriorityMode);
-
 const open = (deviceName: string) => ReactNativeUsbModule.open(deviceName);
 
 const reset = (deviceName: string) => ReactNativeUsbModule.reset(deviceName);

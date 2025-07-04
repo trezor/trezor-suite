@@ -10443,7 +10443,6 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/react-native-usb": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-keep-awake: "npm:14.0.3"
     react: "npm:19.0.0"

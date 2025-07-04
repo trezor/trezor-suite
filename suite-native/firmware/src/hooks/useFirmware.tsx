@@ -8,7 +8,6 @@ import {
 } from '@suite-common/firmware';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { setPriorityMode } from '@trezor/react-native-usb';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';
 import { useFirmwareAnalytics } from './useFirmwareAnalytics';
@@ -73,7 +72,6 @@ export const useFirmware = (
     }, [progress, status, setMayBeStuckedTimeout, resetMayBeStuckedTimeout]);
 
     const firmwareUpdate = useCallback(async () => {
-        setPriorityMode(true);
         const result = await firmwareUpdateCommon({ ignoreBaseUrl: true })
             .unwrap()
             .catch(error => {
@@ -85,7 +83,6 @@ export const useFirmware = (
             })
             .then(({ connectResponse }) => connectResponse)
             .finally(() => {
-                setPriorityMode(false);
                 resetMayBeStuckedTimeout();
             });
 

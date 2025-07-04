@@ -19,7 +19,6 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles": "workspace:*",
         "expo-keep-awake": "14.0.3",
         "react": "19.0.0",
