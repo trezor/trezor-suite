@@ -72,7 +72,9 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
     const amountLimits: AmountLimitProps = {
         currency: symbol,
         maxCrypto: autocompoundBalance,
-        maxFiat: toFiatCurrency(autocompoundBalance, currentRate?.rate) ?? undefined,
+        maxFiat:
+            toFiatCurrency({ amount: autocompoundBalance, rate: currentRate?.rate })?.toFixed(2) ??
+            undefined,
     };
 
     const defaultValues = useMemo(() => {
@@ -198,7 +200,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
             if (currentRate) {
-                const fiatValue = toFiatCurrency(amount, currentRate?.rate);
+                const fiatValue = toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(2);
                 setValue(FIAT_INPUT, fiatValue || '', {
                     shouldDirty: true,
                     shouldValidate: true,
@@ -219,7 +221,11 @@ export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): Unstake
         async (amount: string) => {
             if (!currentRate) return;
 
-            const cryptoValue = fromFiatCurrency(amount, network.decimals, currentRate?.rate);
+            const cryptoValue = fromFiatCurrency({
+                localAmount: amount,
+                rate: currentRate?.rate,
+            })?.toFixed(network.decimals);
+
             setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
             setValue(OUTPUT_AMOUNT, cryptoValue || '', {
                 shouldDirty: true,

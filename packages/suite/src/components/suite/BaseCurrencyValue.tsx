@@ -78,7 +78,7 @@ export const BaseCurrencyValue = ({
     });
 
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const value = shouldConvert ? fiatAmount : amount;
+    const value = shouldConvert ? fiatAmount?.toFixed(2) : amount;
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
 

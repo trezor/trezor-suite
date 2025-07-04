@@ -19,14 +19,14 @@ export const convertCryptoToFiatAmount = ({
     symbol,
     isAmountInSats = true,
     rate,
-}: ConvertInput): string | null => {
+}: ConvertInput): BigNumber | null => {
     if (!amount) {
         return null;
     }
 
     const networkAmount = isAmountInSats ? formatNetworkAmount(amount, symbol) : amount;
 
-    return toFiatCurrency(networkAmount, rate);
+    return toFiatCurrency({ amount: networkAmount, rate });
 };
 
 export const convertFiatToCryptoAmount = ({
@@ -34,17 +34,17 @@ export const convertFiatToCryptoAmount = ({
     symbol,
     isAmountInSats = true,
     rate,
-}: ConvertInput): string | null => {
+}: ConvertInput): BigNumber | null => {
     if (!amount) {
         return null;
     }
 
     const { decimals } = getNetwork(symbol);
-    const cryptoAmount = fromFiatCurrency(amount, decimals, rate);
+    const cryptoAmount = fromFiatCurrency({ localAmount: amount, rate });
 
     if (!cryptoAmount || !isAmountInSats) {
         return cryptoAmount;
     }
 
-    return convertAmountUnitsToSubunits(new BigNumber(cryptoAmount), decimals);
+    return new BigNumber(convertAmountUnitsToSubunits(new BigNumber(cryptoAmount), decimals));
 };

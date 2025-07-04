@@ -2,6 +2,7 @@ import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { Input } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
@@ -29,6 +30,7 @@ export const FiatAmountInput = ({
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const fiatCurrencyCode = useSelector(selectLocalCurrency);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
+    const { decimals } = getNetwork(symbol);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
@@ -57,7 +59,9 @@ export const FiatAmountInput = ({
         onChange(transformedValue);
 
         const cryptoValue = converters?.convertFiatToCrypto?.(transformedValue);
-        if (cryptoValue) setValue(cryptoFieldName, cryptoValue, { shouldValidate: true });
+        if (cryptoValue) {
+            setValue(cryptoFieldName, cryptoValue.toFixed(decimals), { shouldValidate: true });
+        }
 
         setValue('setMaxOutputId', undefined);
         onFocus?.();

@@ -11,7 +11,7 @@ export type FiatAmountFormatterDataContext<T> = {
 };
 
 const handleBigNumberFormatting = (
-    value: string | number,
+    value: string | number | BigNumber,
     dataContext: FiatAmountFormatterDataContext<FormatNumberOptions>,
     config: FormatterConfig,
 ) => {
@@ -22,7 +22,7 @@ const handleBigNumberFormatting = (
 
     if (baseCurrencyValue.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies
-        return `${value} ${currencyForDisplay}`;
+        return `${value instanceof BigNumber ? value.toFixed() : value} ${currencyForDisplay}`;
     }
 
     return intl.formatNumber(baseCurrencyValue.toNumber(), {
@@ -36,7 +36,7 @@ const handleBigNumberFormatting = (
 
 export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<
-        string | number,
+        string | number | BigNumber,
         string | null,
         FiatAmountFormatterDataContext<FormatNumberOptions>
     >((value, dataContext, shouldRedactNumbers) => {
@@ -48,4 +48,4 @@ export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
         const formattedValue = handleBigNumberFormatting(value, dataContext, config);
 
         return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
-    }, 'FiatAmountFormatter');
+    }, 'BaseCurrencyAmountFormatter');

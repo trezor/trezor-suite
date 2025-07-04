@@ -3,13 +3,14 @@ import React from 'react';
 import { useFormatters } from '@suite-common/formatters';
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { BigNumber } from '@trezor/utils';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountText } from './EmptyAmountText';
 import { parseBalanceAmount } from '../utils';
 
-type BalanceFormatterProps = FormatterProps<string | null> & {
+type BalanceFormatterProps = FormatterProps<string | null | BigNumber> & {
     isForcedDiscreetMode?: boolean;
     testID?: string;
 };

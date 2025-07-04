@@ -35,7 +35,7 @@ export const CryptoToFiatAmountFormatter = ({
     return (
         <BaseCurrencyAmountFormatter
             symbol={symbol}
-            value={fiatValue}
+            value={fiatValue?.toFixed() ?? null}
             isLoading={isLoading}
             {...otherProps}
         />

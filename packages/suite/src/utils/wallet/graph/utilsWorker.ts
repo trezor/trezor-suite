@@ -23,7 +23,7 @@ const calcFiatValueMap = (
     typedObjectFromEntries(
         typedObjectKeys(rates).map(fiatSymbol => [
             fiatSymbol,
-            toFiatCurrency(amount, rates[fiatSymbol]) ?? '0',
+            toFiatCurrency({ amount, rate: rates[fiatSymbol] })?.toFixed(2) ?? '0',
         ]),
     );
 

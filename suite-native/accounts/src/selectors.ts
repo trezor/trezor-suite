@@ -117,7 +117,7 @@ export const selectAccountTokenFiatBalance = createMemoizedSelector(
 
         if (!rate || !balance) return '0';
 
-        return toFiatCurrency(balance, rate) ?? '0';
+        return toFiatCurrency({ amount: balance, rate })?.toFixed(2) ?? '0';
     },
 );
 

@@ -61,8 +61,16 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
         currency: symbol,
         minCrypto: MIN_AMOUNT_FOR_STAKING.toString(),
         maxCrypto: account.formattedBalance,
-        minFiat: toFiatCurrency(MIN_AMOUNT_FOR_STAKING.toString(), currentRate?.rate) ?? undefined,
-        maxFiat: toFiatCurrency(account.formattedBalance, currentRate?.rate) ?? undefined,
+        minFiat:
+            toFiatCurrency({
+                amount: MIN_AMOUNT_FOR_STAKING.toString(),
+                rate: currentRate?.rate,
+            })?.toFixed(2) ?? undefined,
+        maxFiat:
+            toFiatCurrency({
+                amount: account.formattedBalance,
+                rate: currentRate?.rate,
+            })?.toFixed(2) ?? undefined,
     };
 
     const defaultValues = useMemo(() => {
@@ -214,8 +222,10 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
             clearWithdrawalWarnings();
 
             if (currentRate) {
-                const fiatValue = toFiatCurrency(amount, currentRate?.rate);
-                setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
+                const fiatValue =
+                    toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(2) || '';
+
+                setValue(FIAT_INPUT, fiatValue, { shouldValidate: true });
             }
 
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
@@ -240,14 +250,18 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
             clearWithdrawalWarnings();
             if (!currentRate) return;
 
-            const cryptoValue = fromFiatCurrency(amount, network.decimals, currentRate?.rate);
-            setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
-            setValue(OUTPUT_AMOUNT, cryptoValue || '', {
+            const cryptoValue =
+                fromFiatCurrency({ localAmount: amount, rate: currentRate?.rate })?.toFixed(
+                    network.decimals,
+                ) || '';
+
+            setValue(CRYPTO_INPUT, cryptoValue, { shouldDirty: true, shouldValidate: true });
+            setValue(OUTPUT_AMOUNT, cryptoValue, {
                 shouldDirty: true,
             });
             await composeRequest(FIAT_INPUT);
 
-            shouldShowAdvice(cryptoValue || '', account.formattedBalance);
+            shouldShowAdvice(cryptoValue, account.formattedBalance);
         },
         [
             account.formattedBalance,
@@ -341,7 +355,10 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
                 setValue(OUTPUT_AMOUNT, max, { shouldValidate: true, shouldDirty: true });
                 clearErrors(CRYPTO_INPUT);
 
-                const fiatValue = currentRate ? toFiatCurrency(max, currentRate?.rate) : '';
+                const fiatValue = currentRate
+                    ? toFiatCurrency({ amount: max, rate: currentRate?.rate })?.toFixed(2)
+                    : '';
+
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true, shouldDirty: true });
             }
 

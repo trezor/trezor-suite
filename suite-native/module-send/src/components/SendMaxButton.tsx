@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
@@ -34,6 +35,8 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+
+    const decimals = symbol && getNetwork(symbol).decimals;
 
     const tokenBalance = useSelector((state: TokensRootState) =>
         selectAccountTokenBalance(state, accountKey, tokenContract),
@@ -91,7 +94,9 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         });
 
         const fiatValue = converters?.convertCryptoToFiat(maxAmountValue);
-        if (fiatValue) setValue(getOutputFieldName(outputIndex, 'fiat'), fiatValue);
+        if (fiatValue && decimals !== null) {
+            setValue(getOutputFieldName(outputIndex, 'fiat'), fiatValue?.toFixed(decimals));
+        }
     };
 
     return (

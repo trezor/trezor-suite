@@ -46,7 +46,7 @@ export const useFiatFromCryptoValue = ({
     if (tokenAddress) {
         const decimalValue = convertTokenValueToDecimal(cryptoValue, tokenDecimals);
 
-        return toFiatCurrency(decimalValue.toString(), rate);
+        return toFiatCurrency({ amount: decimalValue.toString(), rate });
     }
 
     return convertCryptoToFiatAmount({

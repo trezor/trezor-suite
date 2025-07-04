@@ -5,6 +5,7 @@ import { FormatNumberOptions } from '@formatjs/intl';
 
 import { SignValue } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BigNumber } from '@trezor/utils';
 
 import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
@@ -43,7 +44,7 @@ export type Formatters = {
     NetworkNameFormatter: Formatter<NetworkSymbol, string>;
     SignValueFormatter: Formatter<SignValue | undefined, string>;
     BaseCurrencyAmountFormatter: Formatter<
-        string | number,
+        string | number | BigNumber,
         string | null,
         FiatAmountFormatterDataContext<FormatNumberOptions>
     >;
