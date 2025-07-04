@@ -1,25 +1,37 @@
-import type { FirmwareRelease } from '@trezor/device-utils';
+import { VersionArray } from '@trezor/device-utils';
 import { removeTrailingSlashes } from '@trezor/utils';
 
+import { parseFirmwareHeaders } from './parseFirmwareHeaders';
+import { ERRORS } from '../../constants';
 import { httpRequest } from '../../utils/assets';
 
-interface GetBinaryProps {
+interface GetBinaryParams {
     baseUrl: string;
-    btcOnly?: boolean;
-    release: FirmwareRelease;
+    firmwareName: string;
+    version: VersionArray;
 }
 
-export const getBinary = ({ baseUrl, btcOnly, release }: GetBinaryProps) => {
-    const fwUrl = release[btcOnly ? 'url_bitcoinonly' : 'url'];
+export const getBinary = async ({ baseUrl, firmwareName, version }: GetBinaryParams) => {
     const sanitizedBaseUrl = removeTrailingSlashes(baseUrl);
-    const url = `${sanitizedBaseUrl}/${fwUrl}`;
+    const url = `${sanitizedBaseUrl}/${firmwareName}`;
 
-    return httpRequest(url, 'binary');
+    const res = await httpRequest(url, 'binary');
+    // suspiciously small binary. this typically happens when build does not have git lfs enabled and all
+    // you download here are some pointers to lfs objects which are around ~132 byteLength
+    if (res.byteLength < 200) {
+        throw ERRORS.TypedError('Runtime', 'Firmware binary is too small');
+    }
+
+    return {
+        binary: res,
+        binaryVersion: parseFirmwareHeaders(Buffer.from(res)).version,
+        releaseVersion: version,
+    };
 };
 
-export const getBinaryOptional = async (props: GetBinaryProps) => {
+export const getBinaryOptional = async (params: GetBinaryParams) => {
     try {
-        return await getBinary(props);
+        return await getBinary(params);
     } catch {
         return null;
     }
