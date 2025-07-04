@@ -1,3 +1,6 @@
+import { getSuiteVersion } from '@trezor/env-utils';
+import { versionUtils } from '@trezor/utils';
+
 import { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import {
@@ -70,7 +73,6 @@ export const useUpdateStatus = (): UpdateStatusData => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     const isDeviceDisconnected = device?.connected !== true;
-    const isFirmwareOutdated = device?.firmware === 'outdated';
 
     // If firmware is outdated and suite update download/check is in progress,
     // we suppress the Firmware notification as it can be there just for a second and then
@@ -78,6 +80,20 @@ export const useUpdateStatus = (): UpdateStatusData => {
     const isSuiteUpdateInProgress = [UpdateState.Downloading, UpdateState.Checking].includes(
         desktopUpdate.state,
     );
+
+    const { releaseConditions: { environment, shouldBeOffered } = {} } =
+        device?.firmwareReleaseConfigInfo || {};
+
+    // when device is not connected environment?.min_suite_version is undefined and when you start the process of flashing
+    // firmware since it reboots from Firmware mode to Bootloader mode there is a moment when device is "disconnected"
+    // and therefore that fails, so we evaluate isNewerOrEqual only if device is not disconnected.
+    const isValidSuiteVersion =
+        !isDeviceDisconnected &&
+        !!environment?.min_suite_version &&
+        versionUtils.isNewerOrEqual(getSuiteVersion(), environment?.min_suite_version);
+
+    const isFirmwareOutdated =
+        isValidSuiteVersion && !!shouldBeOffered && device?.firmware === 'outdated';
 
     const updateStatusSuite = getSuiteUpdateStatus({ desktopUpdate });
 

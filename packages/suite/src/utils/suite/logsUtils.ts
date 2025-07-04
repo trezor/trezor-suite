@@ -85,7 +85,9 @@ export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
         id: REDACTED_REPLACEMENT,
         label: device.label ? REDACTED_REPLACEMENT : undefined,
         state: REDACTED_REPLACEMENT,
-        firmwareRelease: device.firmwareRelease ? REDACTED_REPLACEMENT : undefined,
+        firmwareReleaseConfigInfo: device.firmwareReleaseConfigInfo
+            ? REDACTED_REPLACEMENT
+            : undefined,
         features: device.features
             ? {
                   ...device.features,
