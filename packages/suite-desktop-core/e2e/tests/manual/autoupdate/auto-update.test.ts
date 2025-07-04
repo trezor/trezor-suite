@@ -1,4 +1,9 @@
-import { TestCategory, TestOsMatrix, TestPriority } from '../../../support/enums/testAnnotations';
+import {
+    TestCategory,
+    TestOsMatrix,
+    TestPriority,
+    TestStream,
+} from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -31,6 +36,7 @@ test.describe.skip('Auto update', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Application,
                 priority: TestPriority.Critical,
+                stream: TestStream.Foundation,
                 osMatrix: [
                     TestOsMatrix.Linux,
                     TestOsMatrix.Windows,
