@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -17,6 +17,7 @@ test.describe.skip('Portfolio', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Dashboard,
                 priority: TestPriority.High,
+                stream: TestStream.Foundation,
             }),
         },
         async () => {},

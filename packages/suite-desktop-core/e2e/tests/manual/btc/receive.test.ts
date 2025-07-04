@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -24,6 +24,7 @@ test.describe.skip('Receive transaction', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.BTC,
                 priority: TestPriority.Critical,
+                stream: TestStream.Engagement,
             }),
         },
         async () => {},

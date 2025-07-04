@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -16,6 +16,7 @@ test.describe.skip('Check for update', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Foundation,
             }),
         },
         async () => {},

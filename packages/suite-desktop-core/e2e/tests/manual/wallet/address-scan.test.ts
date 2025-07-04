@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -20,6 +20,7 @@ test.describe.skip('Address scan', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Wallets,
                 priority: TestPriority.Critical,
+                stream: TestStream.Foundation,
             }),
         },
         async () => {},
