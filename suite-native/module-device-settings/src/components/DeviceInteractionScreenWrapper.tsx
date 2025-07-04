@@ -6,12 +6,10 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 type DeviceInteractionScreenWrapperProps = {
-    hasHeader?: boolean;
     children: ReactNode;
 };
 
 export const DeviceInteractionScreenWrapper = ({
-    hasHeader = true,
     children,
 }: DeviceInteractionScreenWrapperProps) => {
     const device = useSelector(selectSelectedDevice);
@@ -26,7 +24,7 @@ export const DeviceInteractionScreenWrapper = ({
 
     return (
         <Screen
-            header={hasHeader && <ScreenHeader closeActionType="close" closeAction={closeAction} />}
+            header={<ScreenHeader closeActionType="close" closeAction={closeAction} />}
             hasBottomInset={false}
             isScrollable={false}
         >
