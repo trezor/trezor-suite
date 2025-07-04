@@ -101,4 +101,16 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
         expect(element(by.label('new name'))).toBeVisible();
     });
+
+    test('Wipe device', async () => {
+        await onDeviceSettings.tapWipeDevice();
+
+        await onDeviceSettings.confirmStepperItems(2);
+        await onDeviceSettings.waitForWipeDeviceContinueOnTrezor();
+        await TrezorUserEnvLink.pressNo();
+        await onDeviceSettings.confirmStepperItems(1);
+        await TrezorUserEnvLink.pressYes();
+
+        await onDeviceSettings.waitForHomescreenAndUninitializedTitle();
+    });
 });
