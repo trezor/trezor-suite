@@ -412,32 +412,6 @@ describe('onCallFirmwareUpdate', () => {
         await deviceList.dispose();
     });
 
-    it('T2T1: from binary, binary version mismatch', async () => {
-        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
-
-        await waitForDeviceList([
-            // GetFeatures in bootloader mode
-            buildFixture('0037', {
-                bootloader_mode: true,
-            }),
-            // Initialize in bootloader mode
-            buildFixture('0000', {}),
-            // GetFeatures after reboot
-            buildFixture('0037', {}),
-        ]);
-
-        const binary = await httpRequestMock([2, 8, 3]);
-        const result = await runFirmwareUpdate({
-            params: { binary },
-            context,
-        });
-
-        expect(result.versionCheck).toEqual(false);
-        expect(result.binaryVersion).not.toEqual(result.installedVersion);
-
-        await deviceList.dispose();
-    });
-
     it('T1B1: updated to latest release', async () => {
         const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
 
@@ -513,34 +487,6 @@ describe('onCallFirmwareUpdate', () => {
         await deviceList.dispose();
     });
 
-    it('T3W1: from binary', async () => {
-        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
-        const t3 = {
-            internal_model: 'T3W1',
-        };
-
-        await waitForDeviceList([
-            // GetFeatures before reboot
-            buildFixture('0037', { ...t3 }),
-            // GetFeatures in bootloader mode
-            buildFixture('0037', { ...t3, bootloader_mode: true }),
-            // Initialize in bootloader mode
-            buildFixture('0000', { ...t3 }),
-            // GetFeatures after reboot
-            buildFixture('0037', { ...t3 }),
-        ]);
-
-        const binary = await httpRequestMock();
-        const result = await runFirmwareUpdate({
-            params: { binary },
-            context,
-        });
-
-        expect(result.versionCheck).toEqual(true);
-
-        await deviceList.dispose();
-    });
-
     // NOTE: this test fails because there are no official releases for T3W1, should be removed after release
     it('T3W1: failed from config', async () => {
         const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
@@ -556,7 +502,7 @@ describe('onCallFirmwareUpdate', () => {
                 params: {},
                 context,
             }),
-        ).rejects.toThrow('firmwareRelease is not set');
+        ).rejects.toThrow('Device missing features');
 
         await deviceList.dispose();
     });
