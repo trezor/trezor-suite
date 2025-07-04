@@ -310,7 +310,7 @@ export const selectDeviceModel = createMemoizedSelector(
 
 export const selectDeviceReleaseInfo = createMemoizedSelector(
     [selectSelectedDevice],
-    device => device?.firmwareRelease ?? null,
+    device => device?.firmwareReleaseConfigInfo ?? null,
 );
 
 export const selectIsFirmwareUpgradable = createMemoizedSelector(
@@ -454,10 +454,10 @@ export const selectFirmwareChangelog = (state: DeviceRootState) => {
     const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(state);
 
     if (isBitcoinOnlyFirmware) {
-        return device?.firmwareRelease?.changelog?.[0]?.changelog_bitcoinonly;
+        return device?.firmwareReleaseConfigInfo?.release.changelog;
     }
 
-    return device?.firmwareRelease?.changelog?.[0]?.changelog;
+    return device?.firmwareReleaseConfigInfo?.release.changelog;
 };
 
 export const selectDeviceUnitPackaging = createMemoizedSelector(
