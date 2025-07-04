@@ -3,8 +3,8 @@ import { Dimensions, Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { getLocales } from 'expo-localization';
 
-import { publicKey } from './jws';
-import { EnvUtils } from './types';
+import { firmwareConfigPublicKey, publicKey } from './jws';
+import { EnvUtils, JWSPublicKeyUse } from './types';
 
 const isWeb = () => false;
 
@@ -79,7 +79,13 @@ const getOsNameWeb = () => '';
 
 const getOsFamily = (): 'Linux' => 'Linux';
 
-export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
+export const getJWSPublicKey = (use: JWSPublicKeyUse) => {
+    if (['message-system', 'token-definitions'].includes(use)) {
+        return isCodesignBuild() ? publicKey.codesign : publicKey.dev;
+    }
+
+    return isCodesignBuild() ? firmwareConfigPublicKey.codesign : firmwareConfigPublicKey.dev;
+};
 
 export const envUtils: EnvUtils = {
     isWeb,
