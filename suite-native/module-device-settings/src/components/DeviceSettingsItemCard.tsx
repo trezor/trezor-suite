@@ -7,6 +7,8 @@ export const DeviceSettingsItemCard = ({
     icon,
     title,
     onPress,
+    variant,
+    alertBoxProps,
     testID,
     subtitle,
 }: CompactCardWithIconLayoutProps) => {
@@ -14,9 +16,11 @@ export const DeviceSettingsItemCard = ({
 
     return (
         <CompactCardWithIconLayout
+            alertBoxProps={alertBoxProps}
             icon={icon}
             onPress={onPress}
             title={title}
+            variant={variant}
             subtitle={subtitle}
             isDisabled={hasRunningDiscovery}
             testID={testID}
