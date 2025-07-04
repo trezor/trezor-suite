@@ -8,7 +8,7 @@ type FingerprintProps = {
 };
 
 export const Fingerprint = ({ device }: FingerprintProps) => {
-    const { fingerprint } = device.firmwareRelease?.release ?? {};
+    const { fingerprint } = device.firmwareReleaseConfigInfo?.release ?? {};
 
     if (!fingerprint) {
         // device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck)
