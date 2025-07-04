@@ -190,8 +190,6 @@ const createOnBundleProgressHandler = (
     const accountQueue: ReturnType<typeof accountsActions.createAccount>[] = [];
     const getCreateAccountPayload = progressEventToCreateAccountPayload(deviceStaticSessionId);
 
-    let encounteredNonEmptyAccount = false;
-
     return (event: ProgressEvent) => {
         const discovery = selectDiscoveryByDevicePath(getState(), devicePath);
 
@@ -201,50 +199,39 @@ const createOnBundleProgressHandler = (
             return;
         }
 
-        const hasLoadedAnyNonEmptyAccount =
-            'balance' in event.response &&
-            !isNaN(Number(event.response.balance)) &&
-            Number(event.response.balance) > 0;
-
-        dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'progress',
-                    total: event.total,
-                    progress: event.progress,
-                    hasLoadedAnyNonEmptyAccount,
-                },
-                devicePath,
-            ),
-        );
-
-        if (
-            discovery.status === 'progress' &&
-            !discovery.hasLoadedAnyNonEmptyAccount &&
-            hasLoadedAnyNonEmptyAccount
-        ) {
-            progressHooks.onNonFirstNonEmptyAccountDiscovered?.();
-        }
-
         const { response } = event;
 
         if (isProgressOk(response)) {
             const accountAction = accountsActions.createAccount(getCreateAccountPayload(response));
 
-            const prevEncountered = encounteredNonEmptyAccount;
-            encounteredNonEmptyAccount ||= !response.empty || event.progress === 100;
+            const hasLoadedAnyNonEmptyAccount =
+                discovery.hasLoadedAnyNonEmptyAccount || !response.empty;
 
-            // no non-empty account encountered, enqueue account for postponed creation
-            if (!encounteredNonEmptyAccount) {
+            // no non-empty account encountered and not the last event, enqueue account for postponed creation
+            if (!hasLoadedAnyNonEmptyAccount && event.progress !== 100) {
                 accountQueue.push(accountAction);
             } else {
                 // first non-empty account encountered right now, create all enqueued accounts first
-                if (!prevEncountered) {
+                if (!discovery.hasLoadedAnyNonEmptyAccount) {
+                    progressHooks.onNonFirstNonEmptyAccountDiscovered?.();
+
                     accountQueue.forEach(action => dispatch(action));
                     accountQueue.splice(0, accountQueue.length);
                 }
                 dispatch(accountAction);
             }
+
+            dispatch(
+                discoveryActions.updateDiscovery(
+                    {
+                        status: 'progress',
+                        total: event.total,
+                        progress: event.progress,
+                        hasLoadedAnyNonEmptyAccount,
+                    },
+                    devicePath,
+                ),
+            );
         } else {
             const currentFailedAccounts = discovery.failed ?? [];
             const newFailedAccount: FailedAccount = { accountType: response.type, ...response };
@@ -257,9 +244,13 @@ const createOnBundleProgressHandler = (
             if (isDuplicate) return; // only defensive programming
 
             dispatch(
-                // TODO this repeatedly rewrites last status with the previous one!
                 discoveryActions.updateDiscovery(
-                    { ...discovery, failed: [...currentFailedAccounts, newFailedAccount] },
+                    {
+                        status: 'progress',
+                        total: event.total,
+                        progress: event.progress,
+                        failed: [...currentFailedAccounts, newFailedAccount],
+                    },
                     devicePath,
                 ),
             );
