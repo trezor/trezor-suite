@@ -15,6 +15,7 @@ type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
     isAddingHiddenWalletWithRespectToSettings?: boolean;
+    hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the disocovery started loading actual accounts
     emptyWallet?: boolean;
     failed?: FailedAccount[];
     passphraseOnDevice?: boolean;
@@ -47,7 +48,6 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
               status: 'progress';
               total: BundleProgress<any>['payload']['total'];
               progress: BundleProgress<any>['payload']['progress'];
-              hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the disocovery started loading actual accounts
           }
         | {
               status: 'confirm-empty-passphrase';
