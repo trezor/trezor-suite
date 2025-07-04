@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Pressable, PressableProps } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -25,7 +25,7 @@ export type CompactCardWithIconLayoutProps = {
     noShadow?: boolean;
     paddingVertical?: NativeSpacing;
     borderColor?: Color | null;
-} & PressableProps;
+} & TouchableOpacityProps;
 
 type CardColorScheme = {
     iconWrapperBackgroundColor: Color;
@@ -70,7 +70,7 @@ export const CompactCardWithIconLayout = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable onPress={onPress} disabled={isDisabled} {...pressableProps}>
+        <TouchableOpacity disabled={isDisabled} onPress={onPress} {...pressableProps}>
             <Card noPadding noShadow borderColor={borderColor ?? undefined}>
                 <HStack
                     paddingHorizontal="sp16"
@@ -106,6 +106,6 @@ export const CompactCardWithIconLayout = ({
                     </Box>
                 )}
             </Card>
-        </Pressable>
+        </TouchableOpacity>
     );
 };

@@ -38,22 +38,17 @@ export const DevicePinProtectionCard = () => {
         });
     };
 
-    const pinAlertBoxProps = ((): InlineAlertBoxProps | undefined => {
-        if (!isDeviceProtectedByPin) {
-            return {
-                title: <Translation id="moduleDeviceSettings.pinProtection.alertBoxTitle" />,
-                variant: 'warning',
-                buttonLabel: <Translation id="moduleDeviceSettings.pinProtection.buttons.setPin" />,
-                onButtonPress: navigateToPinStack,
-                buttonProps: {
-                    isDisabled: isDiscoveryRunning,
-                    isLoading: isDiscoveryRunning,
-                },
-            } as const;
-        }
-
-        return undefined;
-    })();
+    const pinAlertBoxProps = ((): InlineAlertBoxProps | undefined => // if (!isDeviceProtectedByPin) {
+        ({
+            title: <Translation id="moduleDeviceSettings.pinProtection.alertBoxTitle" />,
+            variant: 'warning',
+            buttonLabel: <Translation id="moduleDeviceSettings.pinProtection.buttons.setPin" />,
+            onButtonPress: navigateToPinStack,
+            buttonProps: {
+                isDisabled: isDiscoveryRunning,
+                isLoading: isDiscoveryRunning,
+            },
+        }) as const)();
 
     const handleOnPress = () => {
         navigation.navigate(DeviceSettingsStackRoutes.PinProtection);
