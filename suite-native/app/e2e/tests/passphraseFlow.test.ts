@@ -133,7 +133,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
 
     describe('with passphrase already allowed on Trezor', () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator(undefined, true);
+            await prepareTrezorEmulator({ seed: undefined, passphrase_protection: true });
             await restartApp();
             await appIsFullyLoaded();
 

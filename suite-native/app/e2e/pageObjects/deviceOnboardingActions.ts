@@ -38,19 +38,19 @@ class DeviceOnboardingActions {
     }
 
     async gotToNextWalletBackupTutorialStep(step: number) {
-        const buttonId = `@deviceOnboarding/walletBackupTutorialStep${step}/nextButton`;
+        const buttonId = `@swipeableWalkthroughStep/walletBackupTutorialStep${step}/nextButton`;
         await waitForElementByIdToBeVisible(buttonId);
         await element(by.id(buttonId)).tap();
     }
 
     async goToNextWalletBackupRecapStep(step: number) {
-        const buttonId = `@deviceOnboarding/walletBackupRecapStep${step}/nextButton`;
+        const buttonId = `@swipeableWalkthroughStep/walletBackupRecapStep${step}/nextButton`;
         await waitForElementByIdToBeVisible(buttonId);
         await element(by.id(buttonId)).tap();
     }
 
     async goToNextWalletRecoveryRecapStep(step: number) {
-        const buttonId = `@deviceOnboarding/walletRecoveryRecapStep${step}/nextButton`;
+        const buttonId = `@swipeableWalkthroughStep/walletRecoveryRecapStep${step}/nextButton`;
         await waitForElementByIdToBeVisible(buttonId);
         await element(by.id(buttonId)).tap();
     }
