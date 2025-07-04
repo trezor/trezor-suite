@@ -159,7 +159,8 @@ export const useFirmwareInstallation = (
 
     const targetFirmwareType = useMemo(() => {
         const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
-        const isBitcoinOnlyAvailable = !!originalDevice?.firmwareRelease?.release.url_bitcoinonly;
+        const isBitcoinOnlyAvailable =
+            !!originalDevice?.firmwareReleaseConfigInfo?.isBitcoinOnlyAvailable;
 
         return (isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
             // Switching to Bitcoin-only:
