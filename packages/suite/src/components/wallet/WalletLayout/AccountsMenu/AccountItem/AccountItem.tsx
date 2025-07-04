@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
@@ -82,6 +83,8 @@ export const AccountItem = forwardRef(
                     return 'wallet-staking';
                 case 'tokens':
                     return 'wallet-tokens';
+                default:
+                    return exhaustive(type);
             }
         };
 

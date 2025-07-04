@@ -75,7 +75,8 @@ export const AccountItemContent = ({
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
     return (
-        // content is constant size in discreet mode, so overflow: hidden is unnecessary. Though it would cut off CSS blur effect, so we may turn it off
+        // Content is constant size in discreet mode, so overflow: hidden is unnecessary.
+        // Though it would cut off CSS blur effect, so we may turn it off
         <Column flex="1" overflow={discreetMode ? 'visible' : 'hidden'} gap={spacings.xxxs}>
             <Row gap={spacings.md} margin={{ right: spacings.xxs }} justifyContent="space-between">
                 <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
