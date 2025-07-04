@@ -49,7 +49,7 @@ const finishOnboardingFlow = async () => {
 
 conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () => {
     beforeEach(async () => {
-        await prepareTrezorEmulator('');
+        await prepareTrezorEmulator({ seed: '' });
         await openApp({ newInstance: true });
         await onOnboarding.skipOnboarding();
         await proceedToCreateOrRecoverCrossroads();

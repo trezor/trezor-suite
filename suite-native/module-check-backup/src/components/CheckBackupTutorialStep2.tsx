@@ -71,7 +71,11 @@ export const CheckBackupTutorialStep2 = ({
             }
             continueButton={
                 <VStack spacing="sp12" style={applyStyle(continueButtonContainerStyle)}>
-                    <Button size="medium" onPress={navigateToCheckBackup}>
+                    <Button
+                        size="medium"
+                        onPress={navigateToCheckBackup}
+                        testID="@device-check-backup/continue-button"
+                    >
                         <Translation id="moduleCheckBackup.checkBackupTutorialScreen.step2.checkButton" />
                     </Button>
                     <Button

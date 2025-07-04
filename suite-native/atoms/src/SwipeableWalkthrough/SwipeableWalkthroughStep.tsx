@@ -108,7 +108,7 @@ export const SwipeableWalkthroughStep = ({
                             colorScheme="tertiaryElevation0"
                             size="large"
                             onPress={handleNextButtonPress}
-                            testID={`@deviceOnboarding/${stepId}/nextButton`}
+                            testID={`@swipeableWalkthroughStep/${stepId}/nextButton`}
                         />
                     )}
                 </VStack>

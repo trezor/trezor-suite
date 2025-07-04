@@ -1,5 +1,5 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
@@ -9,6 +9,7 @@ import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import {
+    PrepareTrezorEmulatorProps,
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
     openApp,
@@ -16,9 +17,16 @@ import {
     restartApp,
 } from '../utils';
 
+const insertAllSeed = async () => {
+    for (let i = 0; i < MNEMONICS.mnemonic_all.length; i++) {
+        await TrezorUserEnvLink.inputEmu('all');
+    }
+};
+
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
     beforeAll(async () => {
-        await prepareTrezorEmulator();
+        const emulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
+        await prepareTrezorEmulator(emulatorOptions);
         await openApp({ newInstance: true });
 
         await onOnboarding.skipOnboarding();
@@ -30,87 +38,132 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         await onAlertSheet.skipViewOnlyMode();
     });
 
-    beforeEach(async () => {
-        await prepareTrezorEmulator();
-        await restartApp();
-        await appIsFullyLoaded();
-
-        await onConnectingDevice.waitForScreen();
-        await onDeviceManager.tapDeviceSwitch();
-        await onDeviceManager.tapDeviceSettingsButton();
-    });
-
     afterAll(async () => {
         disconnectTrezorUserEnv();
         await device.terminateApp();
     });
 
-    test('Enable, change & disable PIN', async () => {
-        await onDeviceSettings.redirectToPinProtectionScreen();
+    describe('Tests with T3T1 device model', () => {
+        const emulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
 
-        await onDeviceSettings.tapEnablePinProtectionButton();
-        await TrezorUserEnvLink.pressNo();
-        await onAlertSheet.tapPrimaryButton();
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.inputEmu('42');
-        await TrezorUserEnvLink.inputEmu('42');
-        await TrezorUserEnvLink.pressYes();
+        beforeEach(async () => {
+            await prepareTrezorEmulator(emulatorOptions);
+            await restartApp();
+            await appIsFullyLoaded();
 
-        await onDeviceSettings.tapChangePinProtectionButton();
-        await TrezorUserEnvLink.pressNo();
-        await onAlertSheet.tapSecondaryButton();
+            await onConnectingDevice.waitForScreen();
+            await onDeviceManager.tapDeviceSwitch();
+            await onDeviceManager.tapDeviceSettingsButton();
+        });
 
-        await onDeviceSettings.tapChangePinProtectionButton();
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.inputEmu('42');
-        await TrezorUserEnvLink.inputEmu('21');
-        await TrezorUserEnvLink.inputEmu('21');
-        await TrezorUserEnvLink.pressYes();
+        test('Enable, change & disable PIN', async () => {
+            await onDeviceSettings.redirectToPinProtectionScreen();
 
-        await onDeviceSettings.tapDisablePinProtectionButton();
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.inputEmu('21');
-        await TrezorUserEnvLink.pressYes();
+            await onDeviceSettings.tapEnablePinProtectionButton();
+            await TrezorUserEnvLink.pressNo();
+            await onAlertSheet.tapPrimaryButton();
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.inputEmu('42');
+            await TrezorUserEnvLink.inputEmu('42');
+            await TrezorUserEnvLink.pressYes();
 
-        await onDeviceSettings.waitForPinProtectionScreen();
+            await onDeviceSettings.tapChangePinProtectionButton();
+            await TrezorUserEnvLink.pressNo();
+            await onAlertSheet.tapSecondaryButton();
+
+            await onDeviceSettings.tapChangePinProtectionButton();
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.inputEmu('42');
+            await TrezorUserEnvLink.inputEmu('21');
+            await TrezorUserEnvLink.inputEmu('21');
+            await TrezorUserEnvLink.pressYes();
+
+            await onDeviceSettings.tapDisablePinProtectionButton();
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.inputEmu('21');
+            await TrezorUserEnvLink.pressYes();
+
+            await onDeviceSettings.waitForPinProtectionScreen();
+        });
+
+        test('Check device authenticity', async () => {
+            await onDeviceSettings.scrollUntilCheckAuthenticityButtonIsVisible();
+
+            await onDeviceSettings.redirectToDeviceAuthenticityScreen();
+
+            await onDeviceSettings.tapCheckAuthenticityButton();
+            await TrezorUserEnvLink.pressNo();
+
+            await onDeviceSettings.tapCheckAuthenticityButton();
+            await TrezorUserEnvLink.pressYes();
+
+            await onDeviceAuthenticitySuccess.waitForScreen();
+            await onDeviceAuthenticitySuccess.tapCloseButton();
+
+            await onDeviceSettings.waitForDeviceAuthenticityScreen();
+        });
+
+        test('Change Device Name', async () => {
+            await onDeviceSettings.tapChangeDeviceNameButton();
+            await onDeviceSettings.submitNewDeviceName('new name');
+            await TrezorUserEnvLink.pressYes();
+
+            await onDeviceSettings.waitForSettingsScreen();
+
+            expect(element(by.label('new name'))).toBeVisible();
+        });
+
+        test('Wipe device', async () => {
+            await onDeviceSettings.tapWipeDevice();
+
+            await onDeviceSettings.confirmStepperItems(2);
+            await onDeviceSettings.waitForWipeDeviceContinueOnTrezor();
+            await TrezorUserEnvLink.pressNo();
+            await onDeviceSettings.confirmStepperItems(1);
+            await TrezorUserEnvLink.pressYes();
+
+            await onDeviceSettings.waitForHomescreenAndUninitializedTitle();
+        });
+
+        test('Device Check Backup', async () => {
+            await onDeviceSettings.tapDeviceCheckBackupButton();
+            await onDeviceSettings.goToNextDeviceCheckBackupTutorialStep(1);
+            await onDeviceSettings.tapDeviceCheckBackupContinueButton();
+
+            await TrezorUserEnvLink.pressYes();
+            const twelveSeedOptionCoordinates = { x: 45, y: 50 };
+            await TrezorUserEnvLink.clickEmu(twelveSeedOptionCoordinates);
+            await TrezorUserEnvLink.pressYes();
+            await insertAllSeed();
+
+            expect(element(by.label('Your backup is valid'))).toBeVisible();
+        });
     });
 
-    test('Check device authenticity', async () => {
-        await onDeviceSettings.scrollUntilCheckAuthenticityButtonIsVisible();
+    describe('Tests with T1B1 device model', () => {
+        const emulatorOptions: PrepareTrezorEmulatorProps = {
+            seed: MNEMONICS.mnemonic_all,
+            model: 'T1B1',
+        };
 
-        await onDeviceSettings.redirectToDeviceAuthenticityScreen();
+        beforeEach(async () => {
+            await prepareTrezorEmulator(emulatorOptions);
+            await restartApp();
+            await appIsFullyLoaded();
 
-        await onDeviceSettings.tapCheckAuthenticityButton();
-        await TrezorUserEnvLink.pressNo();
+            await onConnectingDevice.waitForScreen();
+            await onDeviceManager.tapDeviceSwitch();
+            await onDeviceManager.tapDeviceSettingsButton();
+        });
 
-        await onDeviceSettings.tapCheckAuthenticityButton();
-        await TrezorUserEnvLink.pressYes();
+        test('Device Check Backup with unsupported Device Model', async () => {
+            await onDeviceSettings.tapDeviceCheckBackupButton();
+            await onDeviceSettings.goToNextDeviceCheckBackupTutorialStep(1);
+            await onDeviceSettings.tapDeviceCheckBackupContinueButton();
 
-        await onDeviceAuthenticitySuccess.waitForScreen();
-        await onDeviceAuthenticitySuccess.tapCloseButton();
-
-        await onDeviceSettings.waitForDeviceAuthenticityScreen();
-    });
-
-    test('Change Device Name', async () => {
-        await onDeviceSettings.tapChangeDeviceNameButton();
-        await onDeviceSettings.submitNewDeviceName('new name');
-        await TrezorUserEnvLink.pressYes();
-
-        await onDeviceSettings.waitForSettingsScreen();
-
-        expect(element(by.label('new name'))).toBeVisible();
-    });
-
-    test('Wipe device', async () => {
-        await onDeviceSettings.tapWipeDevice();
-
-        await onDeviceSettings.confirmStepperItems(2);
-        await onDeviceSettings.waitForWipeDeviceContinueOnTrezor();
-        await TrezorUserEnvLink.pressNo();
-        await onDeviceSettings.confirmStepperItems(1);
-        await TrezorUserEnvLink.pressYes();
-
-        await onDeviceSettings.waitForHomescreenAndUninitializedTitle();
+            expect(
+                element(by.label('To check your backup, use the web application.')),
+            ).toBeVisible();
+        });
     });
 });

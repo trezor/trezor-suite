@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 import { resolveConfig } from 'detox/internals';
 
-import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const platform = device.getPlatform();
 
@@ -103,16 +103,23 @@ export const appIsFullyLoaded = async () => {
         .withTimeout(35000);
 };
 
-export const prepareTrezorEmulator = async (
-    seed: string = MNEMONICS.mnemonic_immune,
-    passphrase_protection: boolean = false,
-) => {
+export type PrepareTrezorEmulatorProps = {
+    seed?: string;
+    passphrase_protection?: boolean;
+    model?: Model;
+};
+
+export const prepareTrezorEmulator = async ({
+    seed = MNEMONICS.mnemonic_immune,
+    passphrase_protection = false,
+    model = 'T3T1',
+}: PrepareTrezorEmulatorProps = {}) => {
     if (platform === 'android') {
         // Prepare Trezor device for test scenario
         await TrezorUserEnvLink.disconnect();
         await TrezorUserEnvLink.connect();
         // start with latest officially released firmware (necessary to pass the firmware checks)
-        await TrezorUserEnvLink.startEmu({ model: 'T3T1', version: '2-latest', wipe: true });
+        await TrezorUserEnvLink.startEmu({ model, version: '2-latest', wipe: true });
 
         if (seed) {
             await TrezorUserEnvLink.setupEmu({
