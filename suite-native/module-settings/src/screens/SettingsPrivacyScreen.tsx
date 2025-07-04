@@ -10,7 +10,7 @@ import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles';
 
-import { PressableSwitchRow } from '../components/PressableSwitchRow';
+import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 
 const RowDescription = ({ children }: { children: ReactNode }) => (
     <Text variant="hint" color="textSubdued">
@@ -46,7 +46,7 @@ const DiscreetModeSwitchRow = () => {
     };
 
     return (
-        <PressableSwitchRow
+        <TouchableSwitchRow
             testID="@settings/privacy-and-security/discreet-mode-toggle"
             text={<Translation id="moduleSettings.privacyAndSecurity.discreetMode" />}
             accessibilityLabel="discreet-mode"
@@ -76,7 +76,7 @@ const AnalyticsSwitchRow = () => {
     };
 
     return (
-        <PressableSwitchRow
+        <TouchableSwitchRow
             text={<Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.title" />}
             iconName="database"
             accessibilityLabel="analytics"
@@ -96,7 +96,7 @@ const BiometricsSwitchRow = () => {
     const { toggleBiometricsOption } = useBiometricsSettings();
 
     return (
-        <PressableSwitchRow
+        <TouchableSwitchRow
             isChecked={isBiometricsOptionEnabled}
             onChange={toggleBiometricsOption}
             accessibilityLabel="biometrics"

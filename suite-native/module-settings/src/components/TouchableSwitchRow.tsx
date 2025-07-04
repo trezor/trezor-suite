@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Pressable } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import { Box, Card, HStack, RoundedIcon, Switch, Text } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
@@ -24,7 +24,7 @@ const contentStyle = prepareNativeStyle(_ => ({
     maxWidth: '75%',
 }));
 
-export const PressableSwitchRow = ({
+export const TouchableSwitchRow = ({
     isChecked,
     onChange,
     text,
@@ -40,15 +40,20 @@ export const PressableSwitchRow = ({
     };
 
     return (
-        <Pressable
-            onPress={handleChange}
-            accessibilityRole="switch"
-            accessibilityLabel={accessibilityLabel}
-            accessibilityState={{ checked: isChecked }}
-            testID={testID}
-        >
-            <Card>
-                <HStack justifyContent="space-between" alignItems="center" spacing="sp12">
+        <Card noPadding>
+            <TouchableOpacity
+                onPress={handleChange}
+                accessibilityRole="switch"
+                accessibilityLabel={accessibilityLabel}
+                accessibilityState={{ checked: isChecked }}
+                testID={testID}
+            >
+                <HStack
+                    justifyContent="space-between"
+                    alignItems="center"
+                    spacing="sp12"
+                    padding="sp16"
+                >
                     <Box style={applyStyle(contentStyle)} flexDirection="row" alignItems="center">
                         <RoundedIcon name={iconName} color="iconSubdued" />
                         <Box alignItems="flex-start" style={applyStyle(textStyle)}>
@@ -58,7 +63,7 @@ export const PressableSwitchRow = ({
                     </Box>
                     <Switch isChecked={isChecked} onChange={handleChange} />
                 </HStack>
-            </Card>
-        </Pressable>
+            </TouchableOpacity>
+        </Card>
     );
 };
