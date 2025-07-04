@@ -39,17 +39,17 @@ type FiatValueProps = UseFiatFromCryptoValueParams & {
 };
 
 /**
- * If used without children prop it returns a value of an crypto assets in fiat currency.
+ * If used without children prop it returns a value of a crypto assets in fiat currency.
  * If prop `fiatCurrency` is not specified, the currency is read from suite settings.
- * null is returned if there was some problem with conversion (eg. missing rates)
+ * null is returned if there was some problem with conversion (e.g., missing rates)
  *
  * If `symbol` is not NetworkSymbol (necessary to type forcing), it will handle that case as well.
  *
- * Advanced usage is with passing a function as a children prop.
+ * Advanced usage is with passing a function as a children's prop.
  * The function will be called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
  *
- *  In case of custom source of fiat rates returned timestamp is always null;
- * @param {FiatValuePropsProps} { amount, symbol, fiatCurrency, ...props }
+ *  In case of a custom source of fiat rates returned timestamp is always null;
+ * @param {FiatValueProps} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
 export const FiatValue = ({
