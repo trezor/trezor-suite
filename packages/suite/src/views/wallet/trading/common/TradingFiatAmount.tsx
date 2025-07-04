@@ -6,10 +6,10 @@ interface TradingFiatAmountProps {
 }
 
 export const TradingFiatAmount = ({ amount, currency }: TradingFiatAmountProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
 
     if (amount) {
-        return <FiatAmountFormatter value={amount} currency={currency} />;
+        return <BaseCurrencyAmountFormatter value={amount} currency={currency} />;
     }
 
     return <>{currency?.toUpperCase()}</>;

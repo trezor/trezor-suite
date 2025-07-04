@@ -34,7 +34,7 @@ export const TokenToFiatAmountFormatter = ({
     useHistoricRate,
     ...rest
 }: TokenToFiatAmountFormatterProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const fiatValue = useFiatFromCryptoValue({
         cryptoValue: String(value),
         symbol,
@@ -44,7 +44,7 @@ export const TokenToFiatAmountFormatter = ({
         useHistoricRate,
     });
 
-    const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? 0);
+    const formattedFiatValue = BaseCurrencyAmountFormatter.format(fiatValue ?? 0);
 
     return signValue ? (
         <Box flexDirection="row">

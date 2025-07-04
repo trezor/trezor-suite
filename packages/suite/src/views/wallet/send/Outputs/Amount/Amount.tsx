@@ -15,7 +15,7 @@ import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -174,7 +174,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 />
 
                 {isWithRate && (
-                    <FiatValue amount="1" symbol={symbol}>
+                    <BaseCurrencyValue amount="1" symbol={symbol}>
                         {({ rate }) =>
                             rate && (
                                 <>
@@ -194,7 +194,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                 </>
                             )
                         }
-                    </FiatValue>
+                    </BaseCurrencyValue>
                 )}
             </Flex>
 

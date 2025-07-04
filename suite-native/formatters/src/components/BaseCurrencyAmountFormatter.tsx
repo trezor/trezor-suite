@@ -18,7 +18,7 @@ type FiatAmountFormatterProps = FormatterProps<string | null> &
         isLoading?: boolean;
     };
 
-export const FiatAmountFormatter = React.memo(
+export const BaseCurrencyAmountFormatter = React.memo(
     ({
         symbol,
         value,
@@ -27,7 +27,7 @@ export const FiatAmountFormatter = React.memo(
         isLoading = false,
         ...otherProps
     }: FiatAmountFormatterProps) => {
-        const { FiatAmountFormatter: formatter } = useFormatters();
+        const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
 
         if (!!symbol && isTestnet(symbol)) {
             return <EmptyAmountText variant={variant} />;

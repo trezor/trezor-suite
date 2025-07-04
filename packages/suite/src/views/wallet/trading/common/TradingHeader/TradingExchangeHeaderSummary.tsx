@@ -9,7 +9,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { H3, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
@@ -69,7 +69,7 @@ export const TradingExchangeHeaderSummary = ({
                             />
                         ),
                         feeAmountFiat: (
-                            <FiatValue
+                            <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={feeAmount}
                                 symbol={symbol}

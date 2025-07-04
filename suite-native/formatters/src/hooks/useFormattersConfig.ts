@@ -9,16 +9,16 @@ import { selectBitcoinAmountUnit, selectLocalCurrency } from '@suite-common/wall
 const is24HourFormat = getCalendars()[0].uses24hourClock ?? true;
 
 export const useFormattersConfig = (): FormatterProviderConfig => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const baseCurrencyCode = useSelector(selectLocalCurrency);
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
 
     return useMemo(
         () => ({
             locale: 'en',
-            fiatCurrency: fiatCurrencyCode,
+            baseCurrency: baseCurrencyCode,
             bitcoinAmountUnit,
             is24HourFormat,
         }),
-        [fiatCurrencyCode, bitcoinAmountUnit],
+        [baseCurrencyCode, bitcoinAmountUnit],
     );
 };

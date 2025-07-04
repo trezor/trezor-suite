@@ -30,7 +30,7 @@ export const DayHeader = ({
     isMissingFiatRates,
     isHovered,
 }: DayHeaderProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const parsedDate = parseTransactionDateKey(dateKey);
     const showFiatValue = !isTestnet(symbol);
@@ -60,7 +60,7 @@ export const DayHeader = ({
                 <ColFiat>
                     <HiddenPlaceholder>
                         {totalFiatAmountPerDay.gt(0) && <span>+</span>}
-                        <FiatAmountFormatter
+                        <BaseCurrencyAmountFormatter
                             currency={localCurrency}
                             value={totalFiatAmountPerDay.toFixed()}
                         />

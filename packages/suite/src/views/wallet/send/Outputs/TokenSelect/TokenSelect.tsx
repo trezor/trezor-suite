@@ -43,7 +43,7 @@ import { spacings } from '@trezor/theme';
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import {
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     HiddenPlaceholder,
     Translation,
@@ -355,7 +355,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             contractAddress={selectedToken?.contract}
                                         />
                                     </HiddenPlaceholder>{' '}
-                                    <FiatValue
+                                    <BaseCurrencyValue
                                         tokenAddress={selectedToken?.contract as TokenAddress}
                                         amount={selectedToken?.balance || account.formattedBalance}
                                         symbol={account.symbol}

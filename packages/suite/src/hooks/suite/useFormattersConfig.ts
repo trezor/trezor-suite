@@ -7,11 +7,11 @@ import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 export const useFormattersConfig = (): FormatterProviderConfig => {
     const locale = useSelector(selectLanguage);
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
-    const fiatCurrency = useSelector(selectLocalCurrency);
+    const baseCurrency = useSelector(selectLocalCurrency);
 
     return {
         locale,
-        fiatCurrency,
+        baseCurrency,
         bitcoinAmountUnit,
         is24HourFormat: true,
     };

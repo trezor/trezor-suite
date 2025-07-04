@@ -15,17 +15,17 @@ const handleBigNumberFormatting = (
     dataContext: FiatAmountFormatterDataContext<FormatNumberOptions>,
     config: FormatterConfig,
 ) => {
-    const { intl, fiatCurrency } = config;
+    const { intl, baseCurrency } = config;
     const { style, currency, minimumFractionDigits, maximumFractionDigits } = dataContext;
-    const fiatValue = new BigNumber(value);
-    const currencyForDisplay = currency ?? fiatCurrency;
+    const baseCurrencyValue = new BigNumber(value);
+    const currencyForDisplay = currency ?? baseCurrency;
 
-    if (fiatValue.gt(Number.MAX_VALUE)) {
-        // backup when number is too big, the formatting is different than should be for currencies
+    if (baseCurrencyValue.gt(Number.MAX_VALUE)) {
+        // backup when number is too big, the formatting is different from what should be for currencies
         return `${value} ${currencyForDisplay}`;
     }
 
-    return intl.formatNumber(fiatValue.toNumber(), {
+    return intl.formatNumber(baseCurrencyValue.toNumber(), {
         ...dataContext,
         style: style || 'currency',
         currency: currencyForDisplay,
@@ -34,14 +34,14 @@ const handleBigNumberFormatting = (
     });
 };
 
-export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
+export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<
         string | number,
         string | null,
         FiatAmountFormatterDataContext<FormatNumberOptions>
     >((value, dataContext, shouldRedactNumbers) => {
-        const fiatValue = new BigNumber(value);
-        if (fiatValue.isNaN()) {
+        const baseValue = new BigNumber(value);
+        if (baseValue.isNaN()) {
             return null;
         }
 

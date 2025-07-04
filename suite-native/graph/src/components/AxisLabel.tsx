@@ -4,7 +4,7 @@ import { Dimensions, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useDiscreetMode } from '@suite-native/atoms';
-import { FiatAmountFormatter } from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AxisLabelProps = {
@@ -71,7 +71,11 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
             onLayout={handleLayoutOverflow}
             ref={viewRef}
         >
-            <FiatAmountFormatter value={String(value)} variant="label" color="textDisabled" />
+            <BaseCurrencyAmountFormatter
+                value={String(value)}
+                variant="label"
+                color="textDisabled"
+            />
         </View>
     );
 };

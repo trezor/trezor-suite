@@ -108,7 +108,7 @@ export const CoinjoinBatchItem = ({
     isPending,
 }: CoinjoinBatchItemProps) => {
     const lastTx = transactions[0];
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const historicFiatRates = useSelector(selectHistoricFiatRates);
     const amount = sumTransactions(transactions);
     const fiatAmount = sumTransactionsFiat(transactions, localCurrency, historicFiatRates);
@@ -152,7 +152,7 @@ export const CoinjoinBatchItem = ({
                                     fiatAmount={
                                         !isTestnet(lastTx.symbol) && !isMissingFiatRates ? (
                                             <HiddenPlaceholder>
-                                                <FiatAmountFormatter
+                                                <BaseCurrencyAmountFormatter
                                                     currency={localCurrency}
                                                     value={fiatAmount.absoluteValue().toFixed()}
                                                 />

@@ -6,7 +6,7 @@ export type FiatAmountBadgeProps = {
 };
 
 export const FiatAmountBadge = ({ amount }: FiatAmountBadgeProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
 
     if (!amount) {
         return null;
@@ -14,7 +14,7 @@ export const FiatAmountBadge = ({ amount }: FiatAmountBadgeProps) => {
 
     return (
         <Text variant="body" color="textDefault">
-            <FiatAmountFormatter value={amount} />
+            <BaseCurrencyAmountFormatter value={amount} />
         </Text>
     );
 };

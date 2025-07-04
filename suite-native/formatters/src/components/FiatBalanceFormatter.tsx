@@ -26,7 +26,7 @@ export const FiatBalanceFormatter = ({
     testID,
 }: BalanceFormatterProps) => {
     const { applyStyle } = useNativeStyles();
-    const { FiatAmountFormatter: formatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
 
     if (!value) return <EmptyAmountText />;
 

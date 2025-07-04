@@ -4,7 +4,7 @@ import { getFeeUnits } from '@suite-common/wallet-utils';
 import { FeeRate } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
-import { FiatValue } from 'src/components/suite/FiatValue';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
@@ -56,7 +56,7 @@ export const BitcoinFeeCards = ({
                         topRightChild={getTimeEstimate(fee)}
                         bottomLeftChild={
                             <span data-testid={`@fee-card/${fee.value}-fiat-amount`}>
-                                <FiatValue
+                                <BaseCurrencyValue
                                     disableHiddenPlaceholder
                                     amount={fee?.networkAmount ?? ''}
                                     symbol={symbol}

@@ -238,7 +238,7 @@ const useValidations = (
 
 export const useBuyForm = (): BuyFormType => {
     const { translate } = useTranslate();
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const defaultValues = useSelector(selectBuyFormDefaultValues);
     const limits = useSelector(selectBuyAmountLimits);
     const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
@@ -249,7 +249,7 @@ export const useBuyForm = (): BuyFormType => {
         context: {
             ...limits,
             translate,
-            FiatAmountFormatter,
+            FiatAmountFormatter: BaseCurrencyAmountFormatter,
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
         },

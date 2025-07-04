@@ -18,8 +18,8 @@ import { spacings } from '@trezor/theme';
 
 import {
     AccountLabel,
+    BaseCurrencyValue,
     CoinBalance,
-    FiatValue,
     HiddenPlaceholder,
     Translation,
 } from 'src/components/suite';
@@ -67,7 +67,7 @@ export const AccountItemContent = ({
     dataTestKey,
     isFiatLoading,
 }: ItemContentProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const localCurrency = useSelector(selectLocalCurrency);
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const { shouldAnimate } = useLoadingSkeleton();
@@ -96,7 +96,7 @@ export const AccountItemContent = ({
                         {isFiatLoading ? (
                             <SkeletonRectangle animate={shouldAnimate} />
                         ) : (
-                            <FiatAmountFormatter
+                            <BaseCurrencyAmountFormatter
                                 value={customFiatValue}
                                 currency={localCurrency}
                                 minimumFractionDigits={0}
@@ -105,7 +105,7 @@ export const AccountItemContent = ({
                         )}
                     </HiddenPlaceholder>
                 ) : (
-                    <FiatValue
+                    <BaseCurrencyValue
                         amount={formattedBalance}
                         symbol={symbol}
                         fiatAmountFormatterOptions={{
@@ -114,7 +114,7 @@ export const AccountItemContent = ({
                         }}
                     >
                         {FiatValueRenderComponent}
-                    </FiatValue>
+                    </BaseCurrencyValue>
                 )}
             </Row>
             {isBalanceShown && type !== 'tokens' && (
