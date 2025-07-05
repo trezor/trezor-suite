@@ -47,7 +47,7 @@ test.describe.skip('Bootloader', { tag: ['@group=manual'] }, () => {
             annotation: createTestAnnotation({
                 testCase: 'Verifies that a user can update the bootloader.',
                 prerequisites: [
-                    'Trezor  device with at least a year old BL/FW (older then the latest)',
+                    'Trezor device with at least a year old BL/FW (older than the latest)',
                     'Connected Trezor Suite',
                 ],
                 steps: [
