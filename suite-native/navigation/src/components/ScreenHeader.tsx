@@ -1,19 +1,17 @@
-// ScreenHeader.tsx
 import { ComponentProps, ReactElement, ReactNode } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { RequireOneOrNone } from 'type-fest';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
+import { ScreenHeaderContent } from './ScreenHeaderContent';
 
 export type ScreenHeaderProps = RequireOneOrNone<
     {
-        // Content (optional, mutually exclusive)
         title?: ReactElement<ComponentProps<typeof Translation>> | string;
         customContent?: ReactNode;
         leftIcon?: ReactNode;
@@ -61,21 +59,7 @@ export const ScreenHeader = ({
                     <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
                 )}
             </Box>
-            {customContent && <Box alignItems="center">{customContent}</Box>}
-            {title && (
-                <Animated.View entering={FadeIn} exiting={FadeOut}>
-                    <Box alignItems="center">
-                        <Text
-                            variant="highlight"
-                            adjustsFontSizeToFit
-                            numberOfLines={1}
-                            testID="@screen/sub-header/title"
-                        >
-                            {title}
-                        </Text>
-                    </Box>
-                </Animated.View>
-            )}
+            <ScreenHeaderContent title={title} customContent={customContent} />
 
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
                 {rightIcon}
