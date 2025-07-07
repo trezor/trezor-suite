@@ -6,7 +6,7 @@ files:
   [
     {
       "source": "master.json",
-      "translation": "%two_letters_code%.json",
+      "translation": "%locale%.json",
       "update_option": "update_as_unapproved",
     },
   ]
