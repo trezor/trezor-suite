@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { BridgeSettings } from '@trezor/suite-desktop-api/src/messages';
 
@@ -14,6 +15,10 @@ export const useBridgeDesktopApi = () => {
     const [bridgeDesktopApiError, setBridgeDesktopApiError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (!isDesktop()) {
+            return;
+        }
+
         desktopApi.getBridgeStatus().then(result => {
             if (result.success) {
                 setBridgeProcess(result.payload);

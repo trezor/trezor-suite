@@ -37,7 +37,7 @@ export const SuiteDesktopTip = () => {
 export const BridgeStatus = () => (
     <Wrapper>
         <Translation
-            id="TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION"
+            id="TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION"
             values={{
                 a: chunks => (
                     <TrezorLink variant="underline" href="http://127.0.0.1:21325/status/">
@@ -49,8 +49,12 @@ export const BridgeStatus = () => (
     </Wrapper>
 );
 
+/**
+ * should only be rendered for desktop when built-in bridge is running
+ */
 export const BridgeToggle = () => {
-    const { changeBridgeSettings, bridgeSettings } = useBridgeDesktopApi();
+    const { changeBridgeSettings, bridgeSettings, toggleBridge, bridgeProcess } =
+        useBridgeDesktopApi();
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
 
     if (!bridgeSettings) return null;
@@ -58,9 +62,9 @@ export const BridgeToggle = () => {
     return (
         <Wrapper>
             <Translation
-                id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_DESCRIPTION"
+                id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION"
                 values={{
-                    currentVersion: bridge?.version,
+                    currentVersion: bridge?.version || 'unknown', // unknown should not happen, if bridge process is running
                     a: chunks => (
                         <TrezorLink
                             variant="underline"
@@ -69,6 +73,16 @@ export const BridgeToggle = () => {
                                     ...bridgeSettings,
                                     legacy: !bridgeSettings?.legacy,
                                 });
+
+                                // if bridge process is not running it might make sense to toggle it on and also
+                                // try to switch between legacy and node implementation (= who knows why it didn't start?)
+                                if (!bridgeProcess.process) {
+                                    // to get some sentry insights
+                                    console.error(
+                                        'Bridge process was not running and user toggled it in troubleshooting tips',
+                                    );
+                                    toggleBridge();
+                                }
                             }}
                         >
                             {chunks}
