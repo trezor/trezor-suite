@@ -72,11 +72,7 @@ export const ConnectPermissionsScreen = () => {
             header={
                 <ScreenHeader
                     closeActionType="close"
-                    content={
-                        <Text>
-                            <Translation id="moduleConnectPopup.trezorConnect.title" />
-                        </Text>
-                    }
+                    title={<Translation id="moduleConnectPopup.trezorConnect.title" />}
                 />
             }
         >

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     AccountTypeDecisionBottomSheet,
     useAddCoinAccount,
@@ -26,8 +26,6 @@ export const TradingReceiveAccountsPickerScreen = () => {
     const {
         params: { symbol, tradingType },
     } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>>();
-
-    const { translate } = useTranslate();
 
     const accountSelector =
         tradingType === 'buy'
@@ -55,12 +53,14 @@ export const TradingReceiveAccountsPickerScreen = () => {
     const handleAddAccountConfirmTap = () => handleAccountTypeConfirmation(flowType);
 
     const title =
-        pickerMode === 'account'
-            ? translate('moduleTrading.accountScreen.titleStep1')
-            : selectedReceiveAccount?.account.accountLabel;
+        pickerMode === 'account' ? (
+            <Translation id="moduleTrading.accountScreen.titleStep1" />
+        ) : (
+            selectedReceiveAccount?.account.accountLabel
+        );
 
     return (
-        <Screen header={<ScreenHeader content={title} closeActionType="close" />}>
+        <Screen header={<ScreenHeader title={title} closeActionType="close" />}>
             <AccountList
                 symbol={symbol}
                 pickerMode={pickerMode}

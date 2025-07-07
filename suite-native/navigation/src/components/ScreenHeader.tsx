@@ -1,24 +1,30 @@
-import { ReactNode } from 'react';
+import { ComponentProps, ReactElement, ReactNode } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { RequireOneOrNone } from 'type-fest';
 
 import { Box, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
 
+type ScreenHeaderContentProps = {
+    customContent?: ReactNode;
+    title?: ReactElement<ComponentProps<typeof Translation>> | string;
+};
+
 export type ScreenSubHeaderProps = RequireOneOrNone<
     {
-        content?: ReactNode;
         rightIcon?: ReactNode;
         leftIcon?: ReactNode;
         closeActionType?: CloseActionType;
         closeAction?: () => void;
     },
     'leftIcon' | 'closeActionType'
->;
+> &
+    ScreenHeaderContentProps;
 
 const ICON_SIZE = 48;
 
@@ -39,9 +45,10 @@ const iconWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 export const ScreenHeader = ({
-    content,
+    customContent,
     rightIcon,
     leftIcon,
+    title,
     closeActionType,
     closeAction,
 }: ScreenSubHeaderProps) => {
@@ -56,7 +63,8 @@ export const ScreenHeader = ({
                     <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
                 )}
             </Box>
-            {content && (
+            {customContent && <Box alignItems="center">{customContent}</Box>}
+            {title && (
                 <Animated.View entering={FadeIn} exiting={FadeOut}>
                     <Box alignItems="center">
                         <Text
@@ -65,11 +73,12 @@ export const ScreenHeader = ({
                             numberOfLines={1}
                             testID="@screen/sub-header/title"
                         >
-                            {content}
+                            {title}
                         </Text>
                     </Box>
                 </Animated.View>
             )}
+
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
                 {rightIcon}
             </Box>

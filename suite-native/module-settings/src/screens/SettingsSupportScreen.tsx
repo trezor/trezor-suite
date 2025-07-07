@@ -22,7 +22,7 @@ export const SettingsSupportScreen = () => {
 
     return (
         <Screen
-            header={<DynamicScreenHeader content={<Translation id="moduleSettings.faq.title" />} />}
+            header={<DynamicScreenHeader title={<Translation id="moduleSettings.faq.title" />} />}
         >
             <VStack spacing="sp40">
                 <VStack spacing="sp32">

@@ -63,7 +63,7 @@ export const AccountDetailScreenHeader = ({
 
     return (
         <ScreenHeader
-            content={
+            customContent={
                 <AccountDetailScreenHeaderContent
                     accountLabel={accountLabel}
                     accountKey={accountKey}

@@ -10,7 +10,7 @@ import {
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -33,7 +33,6 @@ const keyExtractor = (item: TradingTransaction) => `${item.key ?? ''}`;
 
 export const TradingHistoryScreen = () => {
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
     const dispatch = useDispatch();
     const { bottom: insetBottom } = useSafeAreaInsets();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
@@ -71,7 +70,7 @@ export const TradingHistoryScreen = () => {
         <Screen
             header={
                 <ScreenHeader
-                    content={translate('moduleTrading.tradeHistory.list.title')}
+                    title={<Translation id="moduleTrading.tradeHistory.list.title" />}
                     closeActionType="back"
                 />
             }

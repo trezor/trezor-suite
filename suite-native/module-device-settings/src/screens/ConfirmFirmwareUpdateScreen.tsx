@@ -40,7 +40,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    content={<Translation id="firmware.firmwareUpdateScreen.title" />}
+                    title={<Translation id="firmware.firmwareUpdateScreen.title" />}
                     subtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
                     closeActionType="close"
                 />

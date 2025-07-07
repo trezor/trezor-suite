@@ -37,7 +37,7 @@ export const StakingDetailScreenHeader = () => {
 
     return (
         <ScreenHeader
-            content={
+            customContent={
                 <>
                     <HStack style={applyStyle(headerStyle)}>
                         <Icon name="piggyBankFilled" color="iconSubdued" />

@@ -46,7 +46,7 @@ const DeviceOnboardingExitButtonScreenHeader = ({
 
     return (
         <DynamicScreenHeader
-            content={<Translation id="firmware.firmwareUpdateScreen.title" />}
+            title={<Translation id="firmware.firmwareUpdateScreen.title" />}
             subtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
             closeActionType="close"
             closeAction={handleExitButtonPress}

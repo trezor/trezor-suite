@@ -22,7 +22,7 @@ export const SettingsViewOnlyScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    content={<Translation id="moduleSettings.viewOnly.title" />}
+                    title={<Translation id="moduleSettings.viewOnly.title" />}
                     isCompactOnly={A.isEmpty(devices)}
                 />
             }

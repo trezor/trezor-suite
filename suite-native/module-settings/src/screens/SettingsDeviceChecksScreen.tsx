@@ -8,9 +8,7 @@ import { TurnOffFirmwareAuthenticityCheckCard } from '../components/TurnOffFirmw
 
 export const SettingsDeviceChecksScreen = () => (
     <Screen
-        header={
-            <DynamicScreenHeader content={<Translation id="moduleSettings.advanced.title" />} />
-        }
+        header={<DynamicScreenHeader title={<Translation id="moduleSettings.advanced.title" />} />}
     >
         <VStack spacing="sp16">
             <TurnOffFirmwareAuthenticityCheckCard />
