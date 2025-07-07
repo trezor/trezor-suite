@@ -6,7 +6,6 @@ export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsBluetoothEnabled: 'isBluetoothEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
-    IsStellarSupportEnabled: 'isStellarSupportEnabled',
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
     IsWalletConnectEnabled: 'isWalletConnectEnabled',
@@ -31,8 +30,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsBluetoothEnabled]: process.env.EXPO_PUBLIC_FF_IS_BLUETOOTH_ENABLED === 'true',
     [FeatureFlag.IsCardanoSendEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
-    [FeatureFlag.IsStellarSupportEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_STELLAR_SUPPORT_ENABLED === 'true',
     [FeatureFlag.IsConnectPopupEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true',
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
@@ -51,7 +48,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsBluetoothEnabled,
     FeatureFlag.IsCardanoSendEnabled,
-    FeatureFlag.IsStellarSupportEnabled,
     FeatureFlag.IsConnectPopupEnabled,
     FeatureFlag.IsWalletConnectEnabled,
     FeatureFlag.IsTradingBuyEnabled,
