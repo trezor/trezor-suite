@@ -10,7 +10,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
     [FeatureFlagEnum.IsBluetoothEnabled]: 'Bluetooth',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
-    [FeatureFlagEnum.IsStellarSupportEnabled]: 'Stellar network',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
     [FeatureFlagEnum.IsWalletConnectEnabled]: 'WalletConnect',
