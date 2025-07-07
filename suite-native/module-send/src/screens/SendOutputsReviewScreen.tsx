@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack } from '@suite-native/atoms';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { Box, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
@@ -15,10 +16,13 @@ import {
     StackProps,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
+import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
+import { selectIsTransactionAlreadySigned } from '../selectors';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -26,6 +30,9 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackRoutes.SendOutputsReview,
     RootStackParamList
 >;
+const spacerStyle = prepareNativeStyle(_ => ({
+    height: 150,
+}));
 
 export const SendOutputsReviewScreen = ({
     route,
@@ -34,6 +41,15 @@ export const SendOutputsReviewScreen = ({
     const navigation = useNavigation<NavigationProps>();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
     const dispatch = useDispatch();
+    const { applyStyle } = useNativeStyles();
+
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+
+    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
+
+    const showOutputsReviewFooter = isTransactionAlreadySigned && account;
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', async e => {
@@ -65,10 +81,16 @@ export const SendOutputsReviewScreen = ({
                     closeActionType="close"
                 />
             }
+            /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
+            footer={!showOutputsReviewFooter && <SendConfirmOnDeviceImage />}
         >
             <VStack flex={1} spacing="sp16" justifyContent="space-between">
                 <ReviewOutputItemList accountKey={accountKey} tokenContract={tokenContract} />
-                <OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />
+                {showOutputsReviewFooter ? (
+                    <OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />
+                ) : (
+                    <Box style={applyStyle(spacerStyle)} />
+                )}
             </VStack>
         </Screen>
     );

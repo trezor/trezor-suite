@@ -21,6 +21,12 @@ import {
 
 import { StatefulReviewOutput } from './types';
 
+export const selectIsTransactionAlreadySigned = (state: SendRootState) => {
+    const serializedTx = selectSendSerializedTx(state);
+
+    return G.isNotNullable(serializedTx);
+};
+
 export const selectTransactionReviewOutputs = (
     state: SendRootState & AccountsRootState & DeviceRootState,
     accountKey: AccountKey,
@@ -38,6 +44,8 @@ export const selectTransactionReviewOutputs = (
 
     const account = selectAccountByKey(state, accountKey);
     const device = selectSelectedDevice(state);
+
+    const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
     const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
         state,
@@ -62,7 +70,9 @@ export const selectTransactionReviewOutputs = (
         (output, outputIndex) =>
             ({
                 ...output,
-                state: getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
+                state: isTransactionAlreadySigned
+                    ? 'success'
+                    : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
             }) as StatefulReviewOutput,
     );
 };
@@ -110,12 +120,6 @@ export const selectIsReceiveAddressOutputConfirmed = (
         ),
         G.isNotNullable,
     );
-};
-
-export const selectIsTransactionAlreadySigned = (state: SendRootState) => {
-    const serializedTx = selectSendSerializedTx(state);
-
-    return G.isNotNullable(serializedTx);
 };
 
 export const selectReviewSummaryOutputState = (
