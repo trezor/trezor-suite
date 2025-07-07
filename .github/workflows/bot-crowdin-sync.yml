@@ -47,7 +47,7 @@ jobs:
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
           git checkout -B ${{ env.BRANCH_NAME }}
-          yarn workspace @trezor/suite translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          yarn workspace @trezor/suite translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }} --verbose
           yarn workspace @trezor/suite translations:backport-en
           if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
             yarn workspace @trezor/suite translations:list-unused --cleanup
