@@ -111,7 +111,7 @@ export const stepCategories: StepCategory[] = [
             {
                 id: STEP.ID_COINS_STEP,
                 prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
-                supportedFirmwareTypes: [FirmwareType.Regular],
+                supportedFirmwareTypes: [FirmwareType.Universal],
             },
         ],
     },

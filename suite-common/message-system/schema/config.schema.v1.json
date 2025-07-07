@@ -465,7 +465,7 @@
                                 "variant": {
                                     "title": "Firmware Variant",
                                     "type": "string",
-                                    "enum": ["*", "bitcoin-only", "regular"]
+                                    "enum": ["*", "bitcoin-only", "universal"]
                                 },
                                 "vendor": {
                                     "title": "Vendor",

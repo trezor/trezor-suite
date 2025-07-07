@@ -195,7 +195,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
         firmwareType:
             feat && feat.capabilities && !feat?.capabilities.includes('Capability_Bitcoin_like')
                 ? FirmwareType.BitcoinOnly
-                : FirmwareType.Regular,
+                : FirmwareType.Universal,
         name: '',
         availableTranslations: [],
         ...dev,
@@ -371,7 +371,7 @@ const getMessageSystemConfig = (
                             firmware: '2.1.1',
                             bootloader: '*',
                             firmwareRevision: '*',
-                            variant: 'regular',
+                            variant: 'universal',
                             vendor: 'trezor.io',
                         },
                     ],

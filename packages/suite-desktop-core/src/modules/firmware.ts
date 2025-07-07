@@ -44,7 +44,7 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
                 binary,
                 binaryVersion,
                 internalModel,
-                firmwareType = FirmwareType.Regular,
+                firmwareType = FirmwareType.Universal,
             } = event;
 
             const firmwareBinName = buildFirmwareFileName(
