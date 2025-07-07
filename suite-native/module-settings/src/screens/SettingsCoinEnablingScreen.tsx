@@ -36,7 +36,7 @@ export const SettingsCoinEnablingScreen = () => {
             header={
                 <DynamicScreenHeader
                     title={<Translation id="moduleSettings.coinEnabling.settings.title" />}
-                    subtitle="Coin enabling subtitle"
+                    subtitle={<Translation id="moduleSettings.coinEnabling.settings.subtitle" />}
                 />
             }
         >

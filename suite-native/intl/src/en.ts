@@ -803,7 +803,8 @@ export const en = {
                 },
                 coinEnabling: {
                     title: 'Coins',
-                    subtitle: 'Enable coins that you want to use',
+                    subtitle:
+                        'Only choosing coins that you use will shorten loading times when connecting your Trezor.',
                 },
                 advanced: {
                     title: 'Advanced',
