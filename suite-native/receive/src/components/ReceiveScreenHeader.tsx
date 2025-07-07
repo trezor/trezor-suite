@@ -14,7 +14,6 @@ import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     CloseActionType,
-    GoBackIcon,
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
@@ -78,12 +77,8 @@ export const ReceiveScreenHeader = ({
                     </HStack>
                 </>
             }
-            leftIcon={
-                <GoBackIcon
-                    closeActionType={closeActionType}
-                    closeAction={closeActionType === 'close' ? navigateToInitialScreen : undefined}
-                />
-            }
+            closeActionType={closeActionType}
+            closeAction={closeActionType === 'close' ? navigateToInitialScreen : undefined}
         />
     );
 };
