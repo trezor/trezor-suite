@@ -12,7 +12,7 @@ import { BluetoothSettingsDescription } from './BluetoothSettingsDescription';
 
 export const TROUBLESHOOTING_TIP_BRIDGE_STATUS: TroubleshootingTipsItem = {
     key: 'bridge-status',
-    heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE" />,
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_TITLE" />,
     description: <BridgeStatus />,
     hide: !isWeb(),
 };
@@ -51,8 +51,8 @@ export const TROUBLESHOOTING_TIP_SUITE_DESKTOP: TroubleshootingTipsItem = {
 };
 
 export const TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE: TroubleshootingTipsItem = {
-    key: 'suite-desktop',
-    heading: <Translation id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE" />,
+    key: 'suite-desktop-toggle',
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE" />,
     description: <BridgeToggle />,
     hide: isWeb() || isAndroid(),
 };
