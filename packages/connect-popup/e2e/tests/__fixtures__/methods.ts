@@ -586,7 +586,7 @@ export const fixtures = [
     ...nemSignTransaction,
     ...cipherKeyValue,
     // balance dependent tests
-    // these are using masked seed in gitlab CI
+    // these are using masked seed in github CI
     ...composeTransaction,
     // todo:
     // management methods

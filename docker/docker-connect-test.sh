@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 # This script runs @trezor/connect tests.
-# It spins up trezor-user-env and sets required evironment variables.
+# It spins up trezor-user-env and sets required environment variables.
 
 set -euo pipefail
 
 # Running standalone instance of trezor-user-env
-# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21326:21326" -p "21325:21326" registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21326:21326" -p "21325:21326"  ghcr.io/trezor/trezor-user-env:latest
 
 # Tweaking trezor-user-env locally
-# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21326:21326" -p "21325:21326" registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env nix-shell
+# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21326:21326" -p "21325:21326" ghcr.io/trezor/trezor-user-env:latest nix-shell
 # do your changes using `vi` and run:
 # [nix-shell:/trezor-user-env]# ./run.sh
 

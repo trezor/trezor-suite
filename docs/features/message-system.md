@@ -77,7 +77,7 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
     - `config.v1.jws` to be uploaded to `https://data.trezor.io/config/$environment/config.vX.jws`
     - `config.v1.ts` to be bundled with application
 - Development private key is baked into project structure together with public keys for both development and production.
-- Production private key is available only on `codesign` branch in CI (both Gitlab and Github).
+- Production private key is available only on `codesign` branch in Github CI.
 - Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/suite-build/utils/jws.ts` file.
 
 ### Versioning of implementation
