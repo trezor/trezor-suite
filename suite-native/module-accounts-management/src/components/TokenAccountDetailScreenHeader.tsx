@@ -11,12 +11,7 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import {
-    GoBackIcon,
-    RootStackParamList,
-    RootStackRoutes,
-    ScreenHeader,
-} from '@suite-native/navigation';
+import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type TokenAccountDetailScreenHeaderProps = {
@@ -73,7 +68,7 @@ export const TokenAccountDetailScreenHeader = ({
                     </HStack>
                 </Box>
             }
-            leftIcon={<GoBackIcon closeActionType={closeActionType} />}
+            closeActionType={closeActionType}
         />
     );
 };
