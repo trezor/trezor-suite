@@ -152,6 +152,7 @@ describe('TrezorConnect passphrase', () => {
         });
 
         // use invalid state on default instance
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
         const invalidState = await TrezorConnect.getAddress({
             device: {
                 instance: 0,

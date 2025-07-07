@@ -108,7 +108,14 @@ export const validateState = async (context: WorkflowContext) => {
                 }
             }
         } else if (invalidDeviceState) {
-            throw ERRORS.TypedError('Device_InvalidState');
+            // reset sessionId and try again
+            device.setState({ sessionId: undefined });
+            await device.initialize(method.useCardanoDerivation);
+            // if still not valid, throw error
+            invalidDeviceState = await getInvalidDeviceState(context);
+            if (invalidDeviceState) {
+                throw ERRORS.TypedError('Device_InvalidState');
+            }
         }
     } catch (error) {
         // other error
