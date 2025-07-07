@@ -123,6 +123,7 @@ export const TransactionReviewModalContent = ({
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
     const deviceModelInternal = device?.features?.internal_model;
     const { precomposedTx, serializedTx } = txInfoState;
+    const [hasTxExpired, setHasTxExpired] = useState(false);
 
     const router = useSelector(state => state.router);
 
@@ -152,6 +153,7 @@ export const TransactionReviewModalContent = ({
 
         const timeoutId = setTimeout(() => {
             if (mounted && !isSending) {
+                setHasTxExpired(true);
                 TrezorConnect.cancel('tx-timeout');
             }
         }, timeLeft);
@@ -355,7 +357,7 @@ export const TransactionReviewModalContent = ({
             return (
                 <Modal.Button
                     data-testid="@modal/send"
-                    isDisabled={!serializedTx}
+                    isDisabled={!serializedTx || hasTxExpired}
                     isLoading={isSending}
                     variant={isCancelRbfAction ? 'destructive' : 'primary'}
                     onClick={handleSend}
