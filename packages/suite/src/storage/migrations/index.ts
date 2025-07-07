@@ -457,7 +457,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                 features.capabilities &&
                 !features.capabilities.includes('Capability_Bitcoin_like')
                     ? FirmwareType.BitcoinOnly
-                    : FirmwareType.Regular;
+                    : FirmwareType.Universal;
 
             return device;
         });

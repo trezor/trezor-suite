@@ -34,7 +34,7 @@ const firmwareUpdateResponsePayload = {
 export const actions = [
     {
         description: 'Success T2T1',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -51,7 +51,7 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'done' },
             ],
@@ -86,7 +86,7 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (with intermediary)',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -103,7 +103,7 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
                 {
                     type: firmwareActions.cacheDevice.type,
                     payload: bootloaderDeviceNeedsIntermediary,
@@ -115,7 +115,7 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (without intermediary)',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -132,7 +132,7 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
                 {
                     type: firmwareActions.cacheDevice.type,
                     payload: bootloaderDeviceNoIntermediaryT1,
@@ -144,7 +144,7 @@ export const actions = [
     },
     {
         description: 'Fails for missing device',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: undefined,
@@ -157,7 +157,7 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect fails',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,
@@ -176,7 +176,7 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 { type: firmwareActions.setFirmwareUpdateError.type, payload: 'foo' },
@@ -194,7 +194,7 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect fails due to cancelling on device',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,
@@ -213,7 +213,7 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 {

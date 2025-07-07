@@ -906,7 +906,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (feat.fw_vendor === 'Trezor Bitcoin-only') {
             this._firmwareType = FirmwareType.BitcoinOnly;
         } else if (feat.fw_vendor === 'Trezor') {
-            this._firmwareType = FirmwareType.Regular;
+            this._firmwareType = FirmwareType.Universal;
         } else if (this.getMode() !== 'bootloader') {
             // Relevant for T1B1, T2T1 and custom firmware with a different vendor header. Capabilities do not work in bootloader mode.
             this._firmwareType =
@@ -914,7 +914,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 feat.capabilities.length > 0 &&
                 !feat.capabilities.includes('Capability_Bitcoin_like')
                     ? FirmwareType.BitcoinOnly
-                    : FirmwareType.Regular;
+                    : FirmwareType.Universal;
         }
 
         const deviceInfo = models[feat.internal_model] ?? {

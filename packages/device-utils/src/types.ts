@@ -4,7 +4,7 @@ export type FirmwareVersionString = `${number}.${number}.${number}`;
 
 export enum FirmwareType {
     BitcoinOnly = 'bitcoin-only',
-    Regular = 'regular',
+    Universal = 'universal',
 }
 
 export type VersionArray = [number, number, number];

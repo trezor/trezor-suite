@@ -172,7 +172,7 @@ export const useFirmwareInstallation = (
             // Bitcoin-only device:
             isBitcoinOnlyDevice(originalDevice)
             ? FirmwareType.BitcoinOnly
-            : FirmwareType.Regular;
+            : FirmwareType.Universal;
     }, [originalDevice, shouldSwitchFirmwareType]);
 
     const firmwareUpdate = useCallback(

@@ -84,7 +84,7 @@ export const firmwareUpdate = createThunk<
 
             return hasBitcoinOnlyFirmware(device) || isBitcoinOnlyDevice(device)
                 ? FirmwareType.BitcoinOnly
-                : FirmwareType.Regular;
+                : FirmwareType.Universal;
         };
 
         const targetFirmwareType = getTargetFirmwareType();

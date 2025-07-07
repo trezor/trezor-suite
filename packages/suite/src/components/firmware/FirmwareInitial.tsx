@@ -180,7 +180,7 @@ export const FirmwareInitial = ({
                 <FirmwareButtonsRow>
                     <FirmwareInstallButton
                         variant="tertiary"
-                        onClick={() => installFirmware(FirmwareType.Regular)}
+                        onClick={() => installFirmware(FirmwareType.Universal)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation

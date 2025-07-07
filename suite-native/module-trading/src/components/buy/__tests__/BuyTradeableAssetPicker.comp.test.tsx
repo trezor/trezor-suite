@@ -43,7 +43,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     describe('with regular firmware', () => {
         beforeEach(async () => {
-            store = await initPreloadedStore(FirmwareType.Regular);
+            store = await initPreloadedStore(FirmwareType.Universal);
             form = await renderFormHook();
         });
 
