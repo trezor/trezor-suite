@@ -12,7 +12,6 @@ you may use the following params:
 
 ```
 -f <semver string such as 2.5.2>
--u <url of unix-frozen-debug-build, such as https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/2730055101/artifacts/file/core/build/unix/trezor-emu-core>
 -p <pattern to match tests files>
 -i <in case -p methods, use -i to filter one connect method, such as -i binanceGetAddress>
 ```
@@ -38,7 +37,7 @@ _Too many requests from not whitelisted origins may be penalized with temporary 
 
 Backend connection will be omitted in case of providing `refTxs` so even coins without officially supported backends (like zcash testnet) may sign a transaction in _"offline mode"_. [see docs](https://connect.trezor.io/9/methods/bitcoin/signTransaction/)
 
-To reduce network traffic `Github Actions CI` is using **cached** (offline) mode and whitelisted `GitLab CI` is using **default** (online) mode.
+To reduce network traffic `Github Actions CI` is using **cached** (offline) mode and whitelisted `Github CI` is using **default** (online) mode.
 
 Cached transactions are stored in `./tests/__txcache__` directory in the same structure as in [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/main/tests/txcache) repository.
 

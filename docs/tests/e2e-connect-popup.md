@@ -26,7 +26,3 @@ FILE=path-from-the-error && mkdir -p "${FILE%/*}" && touch "$FILE" && ./nixos-fi
 ## Fixtures
 
 Fixtures are located in [packages/connect-popup](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-popup/e2e/tests)
-
-## Test results
-
-Checkout [latest screenshots](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/artifacts/develop/file/packages/connect-popup/connect-popup-overview.html?job=connect-popup%3A%20%5Bmethods.test%5D)
