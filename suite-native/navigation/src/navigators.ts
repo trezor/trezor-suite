@@ -201,7 +201,6 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
     };
-    [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
     [DeviceSettingsStackRoutes.ConfirmFirmwareUpdate]: undefined;
@@ -210,6 +209,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
     [DeviceSettingsStackRoutes.PinProtection]: undefined;
+    [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
 };
 
 export type DevicePinProtectionStackParamList = {

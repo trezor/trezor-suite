@@ -40,10 +40,6 @@ export const DeviceSettingsStackNavigator = () => (
             component={PinProtectionScreen}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.DeviceCheckBackupStack}
-            component={DeviceCheckBackupStackNavigator}
-        />
-        <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceAuthenticity}
             component={DeviceAuthenticityScreen}
         />
@@ -70,6 +66,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceNameStack}
             component={DeviceNameStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceCheckBackupStack}
+            component={DeviceCheckBackupStackNavigator}
         />
     </DeviceSettingsStack.Navigator>
 );
