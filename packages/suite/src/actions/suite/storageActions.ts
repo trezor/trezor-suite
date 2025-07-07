@@ -287,7 +287,7 @@ export const saveAccountTransactions =
         const accTxs = allTxs[account.key] || [];
 
         // wrap txs and add its order inside the array
-        const orderedTxs = accTxs.map((tx, order) => ({ tx, order }));
+        const orderedTxs = accTxs.map((tx, order) => ({ tx, order })).filter(({ tx }) => !!tx);
 
         return db.addItems('txs', orderedTxs, true);
     };
