@@ -1,3 +1,4 @@
+// ScreenHeader.tsx
 import { ComponentProps, ReactElement, ReactNode } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -10,21 +11,18 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
 
-type ScreenHeaderContentProps = {
-    customContent?: ReactNode;
-    title?: ReactElement<ComponentProps<typeof Translation>> | string;
-};
-
-export type ScreenSubHeaderProps = RequireOneOrNone<
+export type ScreenHeaderProps = RequireOneOrNone<
     {
-        rightIcon?: ReactNode;
+        // Content (optional, mutually exclusive)
+        title?: ReactElement<ComponentProps<typeof Translation>> | string;
+        customContent?: ReactNode;
         leftIcon?: ReactNode;
         closeActionType?: CloseActionType;
+        rightIcon?: ReactNode;
         closeAction?: () => void;
     },
     'leftIcon' | 'closeActionType'
-> &
-    ScreenHeaderContentProps;
+>;
 
 const ICON_SIZE = 48;
 
@@ -51,7 +49,7 @@ export const ScreenHeader = ({
     title,
     closeActionType,
     closeAction,
-}: ScreenSubHeaderProps) => {
+}: ScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (

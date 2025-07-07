@@ -4,11 +4,11 @@ import { LayoutChangeEvent } from 'react-native';
 import { Box, Text } from '@suite-native/atoms';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
-import { ScreenSubHeaderProps } from '../ScreenHeader';
+import { ScreenHeaderProps } from '../ScreenHeader';
 
 type DynamicScrollableScreenContentHeaderProps = {
     subtitle?: ReactNode;
-} & Pick<ScreenSubHeaderProps, 'title'>;
+} & Pick<ScreenHeaderProps, 'title'>;
 
 export const DynamicScrollableScreenContentHeader = ({
     title,

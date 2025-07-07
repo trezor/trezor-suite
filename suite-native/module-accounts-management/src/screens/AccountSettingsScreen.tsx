@@ -69,7 +69,7 @@ export const AccountSettingsScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    title={accountLabel}
+                    title={accountLabel ?? undefined}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }
