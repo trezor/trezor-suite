@@ -5,6 +5,7 @@ import {
     TROUBLESHOOTING_ENABLE_IN_DEBUG,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
 } from 'src/components/suite/troubleshooting/tips';
 
@@ -36,7 +37,7 @@ const TransportDesktop = ({ items }: { items: TroubleshootingTipsItem[] }) => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { bridgeProcess } = useBridgeDesktopApi();
 
-    const itemsForDesktop = [...items];
+    const itemsForDesktop = [...items, TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE];
 
     if (isDebugModeActive && !bridgeProcess.process) {
         itemsForDesktop.push(TROUBLESHOOTING_ENABLE_IN_DEBUG);

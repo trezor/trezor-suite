@@ -5,7 +5,6 @@ import {
     bridge as protocolBridge,
     v1 as protocolV1,
 } from '@trezor/protocol';
-import { resolveAfter } from '@trezor/utils';
 
 import {
     AbstractTransport,
@@ -135,20 +134,13 @@ export class BridgeTransport extends AbstractTransport {
 
     private async listenLoop() {
         while (!this.stopped) {
-            const listenTimestamp = Date.now();
-
             const response = await this.post('/listen', {
                 body: this.descriptors,
                 signal: this.abortController.signal,
             });
 
             if (!response.success) {
-                const time = Date.now() - listenTimestamp;
-                if (time <= 1100) {
-                    this.emit(TRANSPORT.ERROR, response.error);
-                    break;
-                }
-                await resolveAfter(1000);
+                this.emit(TRANSPORT.ERROR, response.error);
             } else {
                 this.handleDescriptorsChange(response.payload);
             }

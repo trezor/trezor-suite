@@ -7680,13 +7680,14 @@ export default defineMessages({
         defaultMessage: 'Try these steps to solve this issue.',
         id: 'TR_TROUBLESHOOTING_DEVICE_NOT_DETECTED',
     },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE: {
-        defaultMessage: 'Ensure the Trezor Bridge process is running',
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE',
+    TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_TITLE: {
+        defaultMessage: 'Check connection status',
+        id: 'TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_TITLE',
     },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION: {
-        defaultMessage: 'Visit <a>Trezor Bridge status page</a>',
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION',
+    TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION: {
+        defaultMessage:
+            'You may visit <a>connection status page</a> where you can find useful information to solve your problem with Trezor Support.',
+        id: 'TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE: {
         defaultMessage: 'Use a Chromium-based browser',
@@ -7714,14 +7715,14 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION',
         defaultMessage: 'Run the  <a>Trezor Suite</a> desktop app',
     },
-    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE: {
-        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE',
-        defaultMessage: 'Use another version of Trezor Bridge',
+    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE',
+        defaultMessage: 'Use alternative transport',
     },
-    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_DESCRIPTION: {
-        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_DESCRIPTION',
+    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION',
         defaultMessage:
-            '<a>Click to toggle</a> an alternative bridge implementation. Current version: ({currentVersion})',
+            '<a>Click to toggle</a> an alternative connection implementation. Current version: ({currentVersion})',
     },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
