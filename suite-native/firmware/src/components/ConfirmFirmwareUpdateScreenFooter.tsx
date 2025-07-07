@@ -1,10 +1,9 @@
-import { ReactNode, useCallback } from 'react';
+import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
 import { Button, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { useIsFirmwareUpdateFeatureEnabled } from '../hooks/useIsFirmwareUpdateFeatureEnabled';
 
@@ -20,26 +19,13 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
     onUpdateConfirmation,
     onSkipUpdate,
 }: ConfirmFirmwareUpdateScreenFooterProps) => {
-    const { showAlert } = useAlert();
-    const { translate } = useTranslate();
-
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
-
-    const handleShowSeedBottomSheet = useCallback(() => {
-        showAlert({
-            title: translate('firmware.seedBottomSheet.title'),
-            description: translate('firmware.seedBottomSheet.description'),
-            primaryButtonTitle: translate('firmware.seedBottomSheet.continueButton'),
-            onPressPrimaryButton: onUpdateConfirmation,
-            secondaryButtonTitle: translate('firmware.seedBottomSheet.closeButton'),
-        });
-    }, [showAlert, translate, onUpdateConfirmation]);
 
     return (
         <VStack spacing="sp12" marginHorizontal="sp16" marginBottom="sp16">
             <Button
-                onPress={handleShowSeedBottomSheet}
+                onPress={onUpdateConfirmation}
                 colorScheme="blueBold"
                 isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                 isLoading={isDiscoveryRunning}

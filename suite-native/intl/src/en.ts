@@ -2190,6 +2190,13 @@ export const en = {
         typeUniversal: 'Universal',
         typeBitcoinOnly: 'Bitcoin-only',
         updateNotAvailable: 'Firmware update disabled',
+        seedBottomSheetWithCheckBackup: {
+            title: 'It’s a good practice to check your backup before installing new firmware.',
+            description:
+                'Although unlikely, a firmware update might fail. If this were to happen, you would need to access your assets with your wallet backup.',
+            continueButton: 'Install firmware',
+            checkBackupButton: 'Check backup',
+        },
         seedBottomSheet: {
             title: 'Make sure you know where to find your wallet backup.',
             description:

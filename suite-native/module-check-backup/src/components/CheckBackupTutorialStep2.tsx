@@ -1,9 +1,7 @@
 import { SharedValue } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -11,7 +9,6 @@ import {
     DeviceCheckBackupStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal, models } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { CheckBackupTutorialStep } from './CheckBackupTutorialStep';
@@ -29,24 +26,14 @@ type NavigationProps = StackNavigationProps<
     DeviceCheckBackupStackRoutes.CheckBackupTutorial
 >;
 
-const checkBackupUnsupportedDeviceModels: Array<DeviceModelInternal> = [DeviceModelInternal.T1B1];
-
 export const CheckBackupTutorialStep2 = ({
     currentStepIndex,
 }: WalletBackupTutorialNumberedStepProps) => {
-    const navigation = useNavigation<NavigationProps>();
-    const deviceModel = useSelector(selectDeviceModel);
-
     const { applyStyle } = useNativeStyles();
 
-    const navigateToCheckBackup = () => {
-        if (deviceModel && checkBackupUnsupportedDeviceModels.includes(deviceModel)) {
-            navigation.navigate(DeviceCheckBackupStackRoutes.UnsupportedModel, {
-                deviceModel: models[deviceModel].name,
-            });
+    const navigation = useNavigation<NavigationProps>();
 
-            return;
-        }
+    const navigateToCheckBackup = () => {
         navigation.navigate(DeviceCheckBackupStackRoutes.CheckBackup);
     };
 
