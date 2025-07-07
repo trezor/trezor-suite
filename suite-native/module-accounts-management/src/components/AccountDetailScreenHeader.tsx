@@ -7,6 +7,7 @@ import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
     AccountsStackParamList,
+    GoBackIcon,
     RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
@@ -77,7 +78,7 @@ export const AccountDetailScreenHeader = ({
                     testID="@account-detail/settings-button"
                 />
             }
-            closeActionType={closeActionType}
+            leftIcon={<GoBackIcon closeActionType={closeActionType} />}
         />
     );
 };

@@ -8,6 +8,7 @@ import {
     Box,
     BulletListItem,
     Button,
+    IconButton,
     SelectableItem,
     Text,
     VStack,
@@ -95,6 +96,7 @@ const getAccountTypeTranslations = (type: AccountType) => {
 
 export const SelectAccountTypeScreen = ({
     route,
+    navigation,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.SelectAccountType>) => {
     const { accountType: defaultType, networkSymbol, flowType } = route.params;
     const { translate } = useTranslate();
@@ -112,6 +114,8 @@ export const SelectAccountTypeScreen = ({
 
     const accountTypeKey = getAccountTypeTranslations(selectedAccountType)?.titleKey;
 
+    const handleClose = () => navigation.goBack();
+
     const handleMoreTap = () => openLink(ACCOUNT_TYPES_URL);
 
     const handleConfirmTap = () =>
@@ -125,7 +129,14 @@ export const SelectAccountTypeScreen = ({
                         title={translate('moduleAddAccounts.selectAccountTypeScreen.title', {
                             symbol: _ => networkSymbol.toUpperCase(),
                         })}
-                        closeActionType="close"
+                        leftIcon={
+                            <IconButton
+                                iconName="x"
+                                onPress={handleClose}
+                                colorScheme="tertiaryElevation0"
+                                size="medium"
+                            />
+                        }
                     />
                 }
             >

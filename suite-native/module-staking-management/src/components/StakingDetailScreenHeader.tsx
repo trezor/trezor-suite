@@ -7,7 +7,12 @@ import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
+import {
+    GoBackIcon,
+    RootStackParamList,
+    RootStackRoutes,
+    ScreenHeader,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const headerStyle = prepareNativeStyle(utils => ({
@@ -50,7 +55,7 @@ export const StakingDetailScreenHeader = () => {
                     </Text>
                 </>
             }
-            closeActionType="back"
+            leftIcon={<GoBackIcon closeActionType="back" />}
         />
     );
 };

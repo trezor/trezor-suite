@@ -5,7 +5,7 @@ import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { ScreenHeader } from '@suite-native/navigation';
+import { GoBackIcon, ScreenHeader } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type AccountBalanceScreenHeaderProps = {
@@ -38,6 +38,7 @@ export const AccountBalanceScreenHeader = ({
                     <Translation id="moduleSend.outputs.title" values={{ assetName }} />
                 </Text>
             }
+            leftIcon={<GoBackIcon />}
         />
     );
 };
