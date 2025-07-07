@@ -11,6 +11,26 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.6.2-beta.1
+
+This release is important for smooth support of 2.9.0 trezor firmware, namely commits:
+
+- feat(connect): change default for skipFinalReload (86d982e)
+- feat(connect): reorganize order of getHDNode and SingTx calls; remove decred verification (906d835)
+
+Improvement of ethereumSignTypedData
+
+- fix(connect): button request data in ethereumSignTypedData (a0a2f1c)
+
+Other than that only refactorings and chores are present:
+
+- refactor(connect): improved pendingTransportEvent (f965980)
+- refactor(connect): add devices after handshake (da4893b)
+- refactor(connect): lifecycle changed to emitter (742d1c1)
+- feat(connect): included bundled releases (8230255)
+- fix(connect-common): reduce bsc block time (90e2b55)
+- feat(connect): create THP devices in handshake process (5f07f57)
+
 # 9.6.1
 
 Minor improvements and fixes regarding the [New Connect flow in Trezor Suite](https://connect.trezor.io/9/guides/new-connect-flow-in-trezor-suite/).
