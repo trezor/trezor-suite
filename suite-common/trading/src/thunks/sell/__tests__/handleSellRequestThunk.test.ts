@@ -3,7 +3,7 @@ import { CryptoId, SellFiatTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { sellThunks } from '../../';
 import { invityAPI } from '../../../invityAPI';
@@ -166,7 +166,7 @@ describe('handleSellRequestThunk', () => {
                         ...input.formValues,
                         outputs: input.formValues.outputs.map(output => ({
                             ...output,
-                            amount: amountToSmallestUnit(output.amount, 8),
+                            amount: convertAmountUnitsToSubunits(output.amount, 8),
                         })),
                     },
                     shouldSendInSats: true,

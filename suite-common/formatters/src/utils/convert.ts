@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     formatNetworkAmount,
     fromFiatCurrency,
     toFiatCurrency,
@@ -46,5 +46,5 @@ export const convertFiatToCryptoAmount = ({
         return cryptoAmount;
     }
 
-    return amountToSmallestUnit(new BigNumber(cryptoAmount), decimals);
+    return convertAmountUnitsToSubunits(new BigNumber(cryptoAmount), decimals);
 };

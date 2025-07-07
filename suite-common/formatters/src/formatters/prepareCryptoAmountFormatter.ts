@@ -7,8 +7,8 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     redactNumericalSubstring,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
@@ -66,7 +66,7 @@ const convertToUnit = (
         smallestUnitsOverride === true ||
         (isBalance && areAmountUnitsSupported && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI)
     ) {
-        return amountToSmallestUnit(value, decimals);
+        return convertAmountUnitsToSubunits(value, decimals);
     }
 
     // if it's not balance and sats units are disabled, values other than balances are in sats so we need to convert it to BTC
@@ -74,7 +74,7 @@ const convertToUnit = (
         !isBalance &&
         (bitcoinAmountUnit !== PROTO.AmountUnit.SATOSHI || !areAmountUnitsSupported)
     ) {
-        return formatAmount(value, decimals ?? BASE_CRYPTO_MAX_DISPLAYED_DECIMALS);
+        return convertAmountSubunitsToUnits(value, decimals ?? BASE_CRYPTO_MAX_DISPLAYED_DECIMALS);
     }
 
     return value;

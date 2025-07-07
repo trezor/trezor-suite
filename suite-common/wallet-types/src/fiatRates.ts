@@ -1,6 +1,7 @@
 import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { FiatRatesBySymbol } from '@trezor/connect';
+import { Branded } from '@trezor/type-utils';
 
 import { TokenAddress } from './account';
 
@@ -20,9 +21,9 @@ export interface HistoricRates {
     ts: number;
 }
 
-export type FiatRateKey = string & { __type: 'FiatRateKey' };
+export type FiatRateKey = string & Branded<'FiatRateKey'>;
 
-export type Timestamp = number & { __type: 'Timestamp' };
+export type Timestamp = number & Branded<'Timestamp'>;
 
 export type RateType = 'current' | 'lastWeek' | 'historic';
 export type RateTypeWithoutHistoric = Exclude<RateType, 'historic'>;

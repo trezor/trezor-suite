@@ -11,7 +11,7 @@ import {
     type TradingSellFormProps,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, FractionButton, FractionButtonProps, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { spacings } from '@trezor/theme';
@@ -85,7 +85,10 @@ export const TradingFormInputs = () => {
         const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
         const outputAmount =
             shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getTradingNetworkDecimals({ sendCryptoSelect }))
+                ? convertAmountSubunitsToUnits(
+                      output.amount,
+                      getTradingNetworkDecimals({ sendCryptoSelect }),
+                  )
                 : output.amount;
 
         return (
@@ -165,7 +168,10 @@ export const TradingFormInputs = () => {
         const supportedCryptoCurrencies = exchangeInfo?.buyCryptoIds;
         const outputAmount =
             shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getTradingNetworkDecimals({ sendCryptoSelect }))
+                ? convertAmountSubunitsToUnits(
+                      output.amount,
+                      getTradingNetworkDecimals({ sendCryptoSelect }),
+                  )
                 : output.amount;
 
         return (

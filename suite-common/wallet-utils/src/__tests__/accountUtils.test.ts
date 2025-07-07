@@ -1,9 +1,13 @@
 import { testMocks } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
+import { asAmountSubunit, asAmountUnit } from '../AmountTypes';
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
     accountSearchFn,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     enhanceAddresses,
     findAccountDevice,
     formatNetworkAmount,
@@ -24,6 +28,8 @@ import {
     sortByBIP44AddressIndex,
     sortByCoin,
     substituteBip43Path,
+    subunitsToUnits,
+    unitsToSubunits,
 } from '../accountUtils';
 
 const { getSuiteDevice, getWalletAccount } = testMocks;
@@ -333,5 +339,33 @@ describe('account utils', () => {
         accountInfo.addresses.change = [];
         account.addresses = enhanceAddresses(accountInfo, account);
         expect(account.addresses.change).toEqual([]);
+    });
+});
+
+describe(convertAmountUnitsToSubunits.name, () => {
+    it('converts BTC->Sats', () => {
+        expect(convertAmountUnitsToSubunits('1', 8)).toEqual(String(100_000_000));
+    });
+});
+
+describe(unitsToSubunits.name, () => {
+    it('converts BTC->Sats', () => {
+        expect(unitsToSubunits(asAmountUnit(new BigNumber(1), 'btc'), 'btc').toString()).toEqual(
+            String(100_000_000),
+        );
+    });
+});
+
+describe(convertAmountSubunitsToUnits.name, () => {
+    it('converts Sats->BTC', () => {
+        expect(convertAmountSubunitsToUnits('1', 8)).toEqual('0.00000001');
+    });
+});
+
+describe(subunitsToUnits.name, () => {
+    it('converts Sats->BTC', () => {
+        expect(subunitsToUnits(asAmountSubunit(new BigNumber(1), 'btc'), 'btc').toString()).toEqual(
+            '0.00000001',
+        );
     });
 });

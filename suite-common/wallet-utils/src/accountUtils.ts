@@ -46,6 +46,7 @@ import {
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
+import { AmountSubunit, AmountUnit } from './AmountTypes';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -288,7 +289,12 @@ export const getAccountTypeUrl = (path: string) => {
 
 export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
 
-export const formatAmount = (amount: BigNumberValue, decimals: number) => {
+/**
+ * BTC -> Sats, etc...
+ *
+ * @deprecated Use `subunitsToUnits` instead!
+ */
+export const convertAmountSubunitsToUnits = (amount: BigNumberValue, decimals: number) => {
     const safeAmount = amount || '0';
     const bAmount = new BigNumber(safeAmount);
 
@@ -301,7 +307,12 @@ export const formatAmount = (amount: BigNumberValue, decimals: number) => {
     return bAmount.div(factor).toString(10);
 };
 
-export const amountToSmallestUnit = (amount: BigNumberValue, decimals: number) => {
+/**
+ * Sats -> BTC, etc...
+ *
+ * @deprecated Use `unitsToSubunits` instead!
+ */
+export const convertAmountUnitsToSubunits = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -315,6 +326,9 @@ export const amountToSmallestUnit = (amount: BigNumberValue, decimals: number) =
     }
 };
 
+/**
+ * @deprecated Use `subunitsToUnits` instead!
+ */
 export const satoshiAmountToBtc = (amount: BigNumberValue) => {
     try {
         const satsAmount = new BigNumber(amount);
@@ -329,6 +343,9 @@ export const satoshiAmountToBtc = (amount: BigNumberValue) => {
     }
 };
 
+/**
+ * @deprecated Use `subunitsToUnits` instead!
+ */
 export const networkAmountToSmallestUnit = (amount: string | null, symbol: NetworkSymbol) => {
     if (!amount) return '0';
 
@@ -336,7 +353,34 @@ export const networkAmountToSmallestUnit = (amount: string | null, symbol: Netwo
 
     if (!decimals) return amount;
 
-    return amountToSmallestUnit(amount, decimals);
+    return convertAmountUnitsToSubunits(amount, decimals);
+};
+
+/**
+ * Converts Bitcoins to Sats (and similarly for other coins)
+ */
+export const unitsToSubunits = <T extends NetworkSymbol, K extends T>(
+    value: AmountUnit<T>,
+    symbol: K,
+): AmountSubunit<T> => {
+    const decimals = getAccountDecimals(symbol);
+
+    const factor = new BigNumber(10).exponentiatedBy(decimals);
+
+    return value.multipliedBy(factor) as AmountSubunit<T>;
+};
+
+/**
+ * Converts Sats to Bitcoin (and similarly for other coins)
+ */
+export const subunitsToUnits = <T extends NetworkSymbol, K extends T>(
+    value: AmountSubunit<T>,
+    symbol: K,
+): AmountUnit<T> => {
+    const decimals = getAccountDecimals(symbol);
+    const factor = new BigNumber(10).exponentiatedBy(decimals);
+
+    return value.div(factor) as AmountUnit<T>;
 };
 
 export const formatNetworkAmount = (
@@ -349,7 +393,7 @@ export const formatNetworkAmount = (
 
     if (!decimals) return amount;
 
-    let formattedAmount = formatAmount(amount, decimals);
+    let formattedAmount = convertAmountSubunitsToUnits(amount, decimals);
 
     if (withSymbol) {
         let formattedSymbol = getNetworkDisplaySymbol(symbol);
@@ -366,7 +410,10 @@ export const formatNetworkAmount = (
 };
 
 export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
-    const formattedAmount = formatAmount(tokenTransfer.amount, tokenTransfer.decimals);
+    const formattedAmount = convertAmountSubunitsToUnits(
+        tokenTransfer.amount,
+        tokenTransfer.decimals,
+    );
     const formattedTokenSymbol = tokenTransfer.symbol?.toUpperCase();
 
     return formattedTokenSymbol ? `${formattedAmount} ${formattedTokenSymbol}` : formattedAmount;
@@ -466,7 +513,7 @@ export const enhanceTokens = (tokens: Account['tokens']) => {
             ...t,
             name: t.name || symbol,
             symbol: symbol.toLowerCase(),
-            balance: formatAmount(t.balance || 0, t.decimals),
+            balance: convertAmountSubunitsToUnits(t.balance || 0, t.decimals),
         };
     });
 };

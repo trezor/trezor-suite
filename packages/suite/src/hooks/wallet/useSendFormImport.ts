@@ -6,8 +6,8 @@ import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRates, FiatRatesResult, Output, Rate, Timestamp } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     fromFiatCurrency,
     getFiatRateKey,
     toFiatCurrency,
@@ -105,7 +105,10 @@ export const useSendFormImport = ({
                     const cryptoAmount = item.amount || '';
                     if (shouldSendInSats) {
                         // try to convert to satoshis
-                        output.amount = amountToSmallestUnit(cryptoAmount, network.decimals);
+                        output.amount = convertAmountUnitsToSubunits(
+                            cryptoAmount,
+                            network.decimals,
+                        );
                     } else {
                         output.amount = cryptoAmount;
                     }
@@ -119,7 +122,7 @@ export const useSendFormImport = ({
                     // calculate Fiat from Amount
                     if (fiatRate?.rate) {
                         const cryptoValue = shouldSendInSats
-                            ? formatAmount(output.amount, network.decimals)
+                            ? convertAmountSubunitsToUnits(output.amount, network.decimals)
                             : output.amount;
                         output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
                     }
@@ -134,7 +137,7 @@ export const useSendFormImport = ({
                     const cryptoValue = fromFiatCurrency(output.fiat, network.decimals, itemRate);
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats
-                            ? amountToSmallestUnit(cryptoValue, network.decimals)
+                            ? convertAmountUnitsToSubunits(cryptoValue, network.decimals)
                             : (cryptoValue ?? '');
 
                     output.amount = cryptoAmount;

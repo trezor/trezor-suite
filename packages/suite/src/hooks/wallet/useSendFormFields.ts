@@ -5,7 +5,7 @@ import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FormOptions, FormState, Rate, TokenAddress } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     formatNetworkAmount,
     fromFiatCurrency,
     getFiatRateKey,
@@ -127,7 +127,7 @@ export const useSendFormFields = ({
                 const amount = fromFiatCurrency(fiat, decimals, fiatRate);
 
                 return shouldSendInSats
-                    ? amountToSmallestUnit(amount || '0', network.decimals)
+                    ? convertAmountUnitsToSubunits(amount || '0', network.decimals)
                     : amount;
             };
 

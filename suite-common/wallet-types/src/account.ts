@@ -7,12 +7,13 @@ import {
 } from '@trezor/blockchain-link-types/src/blockbook-api';
 import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
 import { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
+import { Branded } from '@trezor/type-utils';
 
 export type MetadataItem = string;
 export type XpubAddress = string;
 
-export type TokenSymbol = string & { __type: 'TokenSymbol' };
-export type TokenAddress = string & { __type: 'TokenAddress' };
+export type TokenSymbol = string & Branded<'TokenSymbol'>;
+export type TokenAddress = string & Branded<'TokenAddress'>;
 
 export type AddressType = 'contract' | 'fingerprint' | 'policyId';
 
@@ -102,7 +103,7 @@ export type AccountBackendSpecific =
       };
 
 export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceStaticSessionId>
-export type AccountDescriptor = string & { __type: 'AccountDescriptor' }; // Descriptor or xpub/zpub/..
+export type AccountDescriptor = string & Branded<'AccountDescriptor'>; // Descriptor or xpub/zpub/..
 
 export type Account = {
     deviceState: StaticSessionId;

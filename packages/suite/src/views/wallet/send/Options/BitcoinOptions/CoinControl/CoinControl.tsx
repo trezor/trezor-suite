@@ -6,7 +6,7 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     filterAndCategorizeUtxos,
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
@@ -93,7 +93,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     );
     const totalOutputsInSats = shouldSendInSats
         ? totalOutputs
-        : Number(amountToSmallestUnit(totalOutputs.toString(), network.decimals));
+        : Number(convertAmountUnitsToSubunits(totalOutputs.toString(), network.decimals));
     const missingToInput = totalOutputsInSats - totalInputs;
     const isMissingToAmount = missingToInput > 0; // relevant when the amount field is not validated, e.g. there is an error in the address
     const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;

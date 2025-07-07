@@ -26,10 +26,15 @@ import {
     TokenInfo,
     TokenTransfer,
 } from '@trezor/connect';
+import { Branded } from '@trezor/type-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { formatAmount, formatNetworkAmount, isTokenTransferMatchesSearch } from './accountUtils';
+import {
+    convertAmountSubunitsToUnits,
+    formatNetworkAmount,
+    isTokenTransferMatchesSearch,
+} from './accountUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
 import { toFiatCurrency } from '../src/fiatConverterUtils';
@@ -91,7 +96,7 @@ export const parseTransactionDateKey = (key: string) => {
     return new Date(Number(year), Number(month) - 1, Number(day));
 };
 
-export type MonthKey = string & { __type: 'MonthKey' };
+export type MonthKey = string & Branded<'MonthKey'>;
 export const generateTransactionMonthKey = (d: Date): MonthKey =>
     // Adding days because of time zones of UTC
     addDays(startOfMonth(d), 1).toUTCString() as MonthKey;
@@ -263,7 +268,7 @@ export const sumTransactionsFiat = (
                     token.contract as TokenAddress,
                 );
                 const historicTokenRate = historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
-                const tokenAmount = formatAmount(token.amount, token.decimals);
+                const tokenAmount = convertAmountSubunitsToUnits(token.amount, token.decimals);
 
                 if (transferType === 'sent') {
                     totalAmount = totalAmount.minus(
@@ -607,7 +612,7 @@ const getEthereumRbfParams = (
               address: token.to,
               token: token.contract,
               amount: token.amount,
-              formattedAmount: formatAmount(token.amount, token.decimals),
+              formattedAmount: convertAmountSubunitsToUnits(token.amount, token.decimals),
           }
         : {
               address: vout[0].addresses![0],

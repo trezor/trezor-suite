@@ -1,7 +1,7 @@
 import { Output } from '@suite-common/wallet-types/src';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     getAccountDecimals,
     hasNetworkFeatures,
     parseFormDraftKey,
@@ -55,7 +55,9 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
 
         if (draft) {
             const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
-            const conversion = areSatsSelected ? amountToSmallestUnit : formatAmount;
+            const conversion = areSatsSelected
+                ? convertAmountUnitsToSubunits
+                : convertAmountSubunitsToUnits;
             const decimals = getAccountDecimals(relatedAccount.symbol)!;
 
             if (draft.cryptoInput) {

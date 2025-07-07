@@ -6,7 +6,7 @@ import { ExchangeTrade } from 'invity-api';
 import { selectTradingExchangeProviders } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 
 import { selectGroupedExchangeQuotes } from '../../selectors/exchangeSelectors';
@@ -61,7 +61,7 @@ const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => 
 
         const value =
             isAmountInSats && amount && symbol
-                ? amountToSmallestUnit(amount, getNetwork(symbol).decimals)
+                ? convertAmountUnitsToSubunits(amount, getNetwork(symbol).decimals)
                 : amount;
         setValue('receiveCryptoAmount', value);
     }, [selectedQuote, isAmountInSats, symbol, setValue]);

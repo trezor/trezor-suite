@@ -23,8 +23,8 @@ import {
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     fromFiatCurrency,
     isZero,
 } from '@suite-common/wallet-utils';
@@ -103,7 +103,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const rate = await tradingFiatValues.fiatRatesUpdater(value);
         const amount = getValues(TRADING_FORM_OUTPUT_AMOUNT);
         const formattedAmount = new BigNumber(
-            shouldSendInSats ? formatAmount(amount, networkDecimals) : amount,
+            shouldSendInSats ? convertAmountSubunitsToUnits(amount, networkDecimals) : amount,
         );
 
         if (
@@ -137,7 +137,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             const formattedCryptoAmount =
                 cryptoAmount && shouldSendInSats
-                    ? amountToSmallestUnit(cryptoAmount, networkDecimals)
+                    ? convertAmountUnitsToSubunits(cryptoAmount, networkDecimals)
                     : (cryptoAmount ?? '');
             setValue(TRADING_FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
         },
@@ -206,7 +206,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                   .decimalPlaces(networkDecimals)
                   .toString();
         const cryptoInputValue = shouldSendInSats
-            ? amountToSmallestUnit(amount, networkDecimals)
+            ? convertAmountUnitsToSubunits(amount, networkDecimals)
             : amount;
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
         setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });

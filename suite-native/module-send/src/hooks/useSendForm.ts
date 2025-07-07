@@ -23,7 +23,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { amountToSmallestUnit, getExcludedUtxos } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits, getExcludedUtxos } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
     SendStackParamList,
@@ -277,7 +277,7 @@ export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) =>
 
     const amount = isAmountInSats
         ? getValues('outputs.0.amount')
-        : amountToSmallestUnit(getValues('outputs.0.amount'), network?.decimals ?? 0);
+        : convertAmountUnitsToSubunits(getValues('outputs.0.amount'), network?.decimals ?? 0);
 
     return {
         handleSubmitSendForm,

@@ -17,11 +17,11 @@ import {
     RbfTransactionParams,
 } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
     calculateMax,
     calculateTotal,
     calculateTotalGasCost,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     getAccountIdentity,
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
@@ -57,7 +57,7 @@ export const calculate = (
     );
 
     const availableTokenBalance = token
-        ? amountToSmallestUnit(token.balance!, token.decimals)
+        ? convertAmountUnitsToSubunits(token.balance!, token.decimals)
         : undefined;
 
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
@@ -242,7 +242,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         Object.keys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
             if (tx.type !== 'error') {
-                tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
+                tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
                 tx.estimatedFeeLimit = !customFeeLimit.isNaN()
                     ? customFeeLimit.toFixed(0)
                     : undefined;

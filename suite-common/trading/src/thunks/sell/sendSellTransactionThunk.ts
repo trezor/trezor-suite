@@ -3,7 +3,7 @@ import { SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { tradingThunks } from '../';
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
@@ -65,7 +65,7 @@ export const sendSellTransactionThunk = createThunk(
         }
 
         const cryptoStringAmount = shouldSendInSats
-            ? amountToSmallestUnit(selectedTrade.cryptoStringAmount, decimals)
+            ? convertAmountUnitsToSubunits(selectedTrade.cryptoStringAmount, decimals)
             : selectedTrade.cryptoStringAmount;
         const { destinationPaymentExtraId } = selectedTrade;
 
