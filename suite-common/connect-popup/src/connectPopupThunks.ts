@@ -92,6 +92,9 @@ export const connectPopupCallThunkInner = createThunk<
             if (!device) {
                 throw TypedError('Device_NotFound');
             }
+            if (!device.connected) {
+                throw TypedError('Device_Disconnected');
+            }
 
             const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
                 methodInfo.payload.precomposed;
