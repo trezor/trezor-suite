@@ -31,9 +31,7 @@ import {
 } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
-import { SendConfirmOnDeviceImage } from './SendConfirmOnDeviceImage';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
-import { selectIsTransactionAlreadySigned } from '../selectors';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 import { SignSuccessMessage } from './SignSuccessMessage';
 
@@ -113,8 +111,6 @@ export const OutputsReviewFooter = ({
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
 
-    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
-
     const formValues = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
@@ -134,8 +130,9 @@ export const OutputsReviewFooter = ({
         }
     }, [isTransactionProcessedByBackend, accountKey, tokenContract, txid, navigation, dispatch]);
 
-    /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
-    if (!isTransactionAlreadySigned || !account) return <SendConfirmOnDeviceImage />;
+    if (!account) {
+        return null;
+    }
 
     const isSolanaAccount = account.networkType === 'solana';
 

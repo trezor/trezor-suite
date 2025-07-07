@@ -39,6 +39,7 @@ import { FeeOptionsList } from './FeeOptionsList';
 import { FeesFooter } from './FeesFooter';
 import { RecipientsSummary } from './RecipientsSummary';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
+import { useRequestDelayedNavigationToOutputsReview } from '../hooks/useRequestDelayedNavigationToOutputsReview';
 import {
     NativeSendRootState,
     selectDestinationTagFromDraft,
@@ -81,6 +82,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const destinationTag = useSelector((state: NativeSendRootState) =>
         selectDestinationTagFromDraft(state, accountKey, tokenContract),
     );
+
     const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
 
     const form = useForm<SendFeesFormValues>({
@@ -129,6 +131,11 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         transaction: selectedFeeLevelTransaction,
     });
 
+    const requestDelayedNavigationToOutputsReview = useRequestDelayedNavigationToOutputsReview({
+        accountKey,
+        tokenContract,
+    });
+
     if (!account) return;
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
@@ -141,12 +148,9 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
             });
         } else if (networkType === 'stellar') {
             // The first review entry of Stellar is neither a destination address nor a destination tag.
+            // We need to wait for device button requests before navigating to the review screen.
             handleOnDeviceTransactionReview();
-
-            navigation.navigate(SendStackRoutes.SendOutputsReview, {
-                accountKey,
-                tokenContract,
-            });
+            requestDelayedNavigationToOutputsReview();
         } else {
             navigation.navigate(SendStackRoutes.SendAddressReview, {
                 accountKey,
