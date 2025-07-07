@@ -115,7 +115,7 @@ export const SettingsPrivacyScreen = () => (
     <Screen
         header={
             <DynamicScreenHeader
-                content={<Translation id="moduleSettings.privacyAndSecurity.title" />}
+                title={<Translation id="moduleSettings.privacyAndSecurity.title" />}
             />
         }
     >

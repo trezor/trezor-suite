@@ -4,14 +4,14 @@ import { LayoutChangeEvent } from 'react-native';
 import { Box, Text } from '@suite-native/atoms';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
+import { ScreenSubHeaderProps } from '../ScreenHeader';
 
 type DynamicScrollableScreenContentHeaderProps = {
-    content?: ReactNode;
     subtitle?: ReactNode;
-};
+} & Pick<ScreenSubHeaderProps, 'title'>;
 
 export const DynamicScrollableScreenContentHeader = ({
-    content,
+    title,
     subtitle,
 }: DynamicScrollableScreenContentHeaderProps) => {
     const { setScrollableHeaderHeight } = useDynamicHeader();
@@ -24,7 +24,7 @@ export const DynamicScrollableScreenContentHeader = ({
     return (
         <Box paddingHorizontal="sp16" marginTop="sp16" marginBottom="sp32">
             <Text variant="titleMedium" onLayout={handleLayout}>
-                {content}
+                {title}
             </Text>
             {subtitle && <Text color="textSubdued">{subtitle}</Text>}
         </Box>

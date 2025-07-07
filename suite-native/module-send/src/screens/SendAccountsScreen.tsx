@@ -1,6 +1,6 @@
 import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
 import { EventType, analytics } from '@suite-native/analytics';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
@@ -12,8 +12,6 @@ import {
 export const SendAccountsScreen = ({
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
-    const { translate } = useTranslate();
-
     const navigateToSendFormScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
         analytics.report({
             type: EventType.SendFlowEntered,
@@ -35,7 +33,7 @@ export const SendAccountsScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    content={translate('moduleSend.accountsList.title')}
+                    title={<Translation id="moduleSend.accountsList.title" />}
                     closeActionType="close"
                 />
             }

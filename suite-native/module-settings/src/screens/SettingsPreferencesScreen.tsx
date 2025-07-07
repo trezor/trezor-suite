@@ -9,7 +9,7 @@ import { CurrencySelector } from '../components/CurrencySelector';
 export const SettingsPreferencesScreen = () => (
     <Screen
         header={
-            <DynamicScreenHeader content={<Translation id="moduleSettings.preferences.title" />} />
+            <DynamicScreenHeader title={<Translation id="moduleSettings.preferences.title" />} />
         }
     >
         <VStack spacing="sp16">

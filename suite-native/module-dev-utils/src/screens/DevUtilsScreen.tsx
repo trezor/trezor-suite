@@ -38,7 +38,7 @@ export const DevUtilsScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    content={<Translation id="moduleSettings.items.features.devUtils.title" />}
+                    title={<Translation id="moduleSettings.items.features.devUtils.title" />}
                     subtitle={<Translation id="moduleSettings.items.features.devUtils.subtitle" />}
                 />
             }

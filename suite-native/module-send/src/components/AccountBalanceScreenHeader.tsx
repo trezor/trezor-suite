@@ -33,7 +33,7 @@ export const AccountBalanceScreenHeader = ({
 
     return (
         <ScreenHeader
-            content={
+            customContent={
                 <Text variant="highlight">
                     <Translation id="moduleSend.outputs.title" values={{ assetName }} />
                 </Text>

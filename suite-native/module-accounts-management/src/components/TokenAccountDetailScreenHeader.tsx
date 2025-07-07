@@ -47,7 +47,7 @@ export const TokenAccountDetailScreenHeader = ({
 
     return (
         <ScreenHeader
-            content={
+            customContent={
                 <Box alignItems="center">
                     <HStack alignItems="center">
                         <CryptoIconWithNetwork

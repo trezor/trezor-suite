@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -31,7 +31,6 @@ export const SendOutputsReviewScreen = ({
     route,
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>) => {
     const { accountKey, tokenContract } = route.params;
-    const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
     const dispatch = useDispatch();
@@ -62,7 +61,7 @@ export const SendOutputsReviewScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    content={translate('moduleSend.review.outputs.title')}
+                    title={<Translation id="moduleSend.review.outputs.title" />}
                     closeActionType="close"
                 />
             }

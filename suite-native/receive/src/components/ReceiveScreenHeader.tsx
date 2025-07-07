@@ -56,7 +56,7 @@ export const ReceiveScreenHeader = ({
 
     return (
         <ScreenHeader
-            content={
+            customContent={
                 <>
                     <Text variant="highlight">
                         {symbol ? (

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AccountsList, AddAccountButton, OnSelectAccount } from '@suite-native/accounts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackParamList,
     ReceiveStackRoutes,
@@ -22,7 +22,6 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const ReceiveAccountsScreen = () => {
-    const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
@@ -51,7 +50,7 @@ export const ReceiveAccountsScreen = () => {
         <Screen
             header={
                 <ScreenHeader
-                    content={translate('moduleReceive.receiveTitle')}
+                    title={<Translation id="moduleReceive.receiveTitle" />}
                     rightIcon={<AddAccountButton flowType="receive" />}
                     closeActionType="close"
                 />

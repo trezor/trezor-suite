@@ -101,11 +101,7 @@ export const WalletConnectPairScreen = () => {
             header={
                 <ScreenHeader
                     closeActionType="close"
-                    content={
-                        <Text>
-                            <Translation id="moduleConnectPopup.walletConnect.title" />
-                        </Text>
-                    }
+                    title={<Translation id="moduleConnectPopup.walletConnect.title" />}
                     rightIcon={
                         <IconButton
                             colorScheme="tertiaryElevation0"

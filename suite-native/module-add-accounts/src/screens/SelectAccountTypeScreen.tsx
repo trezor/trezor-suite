@@ -126,7 +126,7 @@ export const SelectAccountTypeScreen = ({
             <Screen
                 header={
                     <ScreenHeader
-                        content={translate('moduleAddAccounts.selectAccountTypeScreen.title', {
+                        title={translate('moduleAddAccounts.selectAccountTypeScreen.title', {
                             symbol: _ => networkSymbol.toUpperCase(),
                         })}
                         leftIcon={

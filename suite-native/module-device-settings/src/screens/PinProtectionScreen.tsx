@@ -48,7 +48,7 @@ export const PinProtectionScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    content={<Translation id="moduleDeviceSettings.pinProtection.title" />}
+                    title={<Translation id="moduleDeviceSettings.pinProtection.title" />}
                     subtitle={<Translation id="moduleDeviceSettings.pinProtection.content" />}
                     closeActionType="close"
                 />
