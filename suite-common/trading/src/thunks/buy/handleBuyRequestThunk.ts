@@ -2,7 +2,7 @@ import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -47,7 +47,9 @@ const getQuoteRequestData = ({
         formValues;
     const decimals = getTradingNetworkDecimals({ network });
     const cryptoStringAmount =
-        cryptoInput && shouldSendInSats ? formatAmount(cryptoInput, decimals) : cryptoInput;
+        cryptoInput && shouldSendInSats
+            ? convertAmountSubunitsToUnits(cryptoInput, decimals)
+            : cryptoInput;
 
     const request = {
         wantCrypto: amountInCrypto,

@@ -3,7 +3,7 @@ import { PropsWithChildren, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
-import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -66,7 +66,7 @@ export const TotalSent = () => {
                                     disableHiddenPlaceholder
                                     value={
                                         tokenInfo
-                                            ? formatAmount(
+                                            ? convertAmountSubunitsToUnits(
                                                   transactionInfo.totalSpent,
                                                   tokenInfo.decimals,
                                               )

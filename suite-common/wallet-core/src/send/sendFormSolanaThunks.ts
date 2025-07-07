@@ -8,10 +8,10 @@ import {
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
     calculateMax,
     calculateTotal,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     getAccountIdentity,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
@@ -43,7 +43,7 @@ const calculate = (
     let amount: string;
     let max: string | undefined;
     const availableTokenBalance = token
-        ? amountToSmallestUnit(token.balance!, token.decimals)
+        ? convertAmountUnitsToSubunits(token.balance!, token.decimals)
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
@@ -67,8 +67,8 @@ const calculate = (
         const errorMessage = {
             id: 'REMAINING_BALANCE_LESS_THAN_RENT' as const,
             values: {
-                remainingSolBalance: formatAmount(remainingSolBalance, decimals),
-                rent: formatAmount(rent, decimals),
+                remainingSolBalance: convertAmountSubunitsToUnits(remainingSolBalance, decimals),
+                rent: convertAmountSubunitsToUnits(rent, decimals),
             },
         };
 
@@ -148,7 +148,10 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 formState.outputs[0].amount = tokenInfo.balance;
             } else {
                 // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
-                formState.outputs[0].amount = formatAmount((account.misc?.rent ?? 0) + 1, decimals);
+                formState.outputs[0].amount = convertAmountSubunitsToUnits(
+                    (account.misc?.rent ?? 0) + 1,
+                    decimals,
+                );
             }
         }
 
@@ -244,7 +247,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         Object.keys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
             if (tx.type !== 'error') {
-                tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
+                tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
             }
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {

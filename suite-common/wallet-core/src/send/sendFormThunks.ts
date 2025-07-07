@@ -16,8 +16,8 @@ import {
     PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getAccountDecimals,
     getAreSatoshisUsed,
@@ -114,7 +114,9 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
             const areSatsSupported = hasNetworkFeatures(relatedAccount, 'amount-unit');
 
             const amountFormatter =
-                areSatsAmountUnit && areSatsSupported ? amountToSmallestUnit : formatAmount;
+                areSatsAmountUnit && areSatsSupported
+                    ? convertAmountUnitsToSubunits
+                    : convertAmountSubunitsToUnits;
 
             const updatedDraft = cloneObject(draft);
             const amountDecimals = getAccountDecimals(relatedAccount.symbol)!;
@@ -310,7 +312,7 @@ export const pushSendFormTransactionThunk = createThunk<
 
         // get total amount without fee OR token amount
         const formattedAmount = token
-            ? `${formatAmount(
+            ? `${convertAmountSubunitsToUnits(
                   precomposedTransaction.totalSpent,
                   token.decimals,
               )} ${token.symbol!.toUpperCase()}`

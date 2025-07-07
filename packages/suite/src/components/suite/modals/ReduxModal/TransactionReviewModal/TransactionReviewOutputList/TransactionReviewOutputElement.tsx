@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Card,
     Column,
@@ -85,7 +85,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
         case 'amount': {
             const isTokenAmount = !isFee && token;
             const formattedValue = isTokenAmount
-                ? formatAmount(value, token.decimals)
+                ? convertAmountSubunitsToUnits(value, token.decimals)
                 : formatNetworkAmount(value, symbol);
 
             return (

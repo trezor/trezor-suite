@@ -1,5 +1,5 @@
 import { cryptoIdToNetwork, parseCryptoId } from '@suite-common/trading';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Badge, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -33,7 +33,7 @@ export const TradingFormInputAccountOption = ({
 
     const balanceLabel = tradingGetAccountLabel(option.label, shouldSendInSats);
     const balance = shouldSendInSats
-        ? amountToSmallestUnit(option.balance, decimals)
+        ? convertAmountUnitsToSubunits(option.balance, decimals)
         : option.balance;
     const accountType = optionGroups.find(group =>
         group.options.find(

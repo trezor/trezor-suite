@@ -11,8 +11,8 @@ import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/conne
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     formatNetworkAmount,
     networkAmountToSmallestUnit,
 } from './accountUtils';
@@ -81,7 +81,7 @@ export const transformUserOutputs = (
                       {
                           unit: output.token,
                           quantity: output.amount
-                              ? amountToSmallestUnit(output.amount, tokenDecimals)
+                              ? convertAmountUnitsToSubunits(output.amount, tokenDecimals)
                               : '0',
                       },
                   ]
@@ -195,5 +195,5 @@ export const formatMaxOutputAmount = (
     const tokenDecimals =
         account.tokens?.find(t => t.contract === maxOutput.assets[0].unit)?.decimals ?? 0;
 
-    return formatAmount(maxAmount, tokenDecimals);
+    return convertAmountSubunitsToUnits(maxAmount, tokenDecimals);
 };

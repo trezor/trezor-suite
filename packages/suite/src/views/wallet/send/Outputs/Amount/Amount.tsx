@@ -3,7 +3,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     findToken,
     formatNetworkAmount,
     getInputState,
@@ -110,7 +110,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
                 if (dust && amountBig.lt(dust)) {
                     if (shouldSendInSats) {
-                        dust = amountToSmallestUnit(dust, decimals);
+                        dust = convertAmountUnitsToSubunits(dust, decimals);
                     }
 
                     return translationString('AMOUNT_IS_BELOW_DUST', {

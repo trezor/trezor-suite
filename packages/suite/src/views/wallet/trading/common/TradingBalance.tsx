@@ -1,6 +1,6 @@
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
 import { BaseCurrencyValue, HiddenPlaceholder, Translation } from 'src/components/suite';
@@ -40,7 +40,7 @@ export const TradingBalance = ({
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
         stringBalance && shouldSendInSats
-            ? amountToSmallestUnit(stringBalance, networkDecimals)
+            ? convertAmountUnitsToSubunits(stringBalance, networkDecimals)
             : stringBalance;
 
     const { fiatAmount } = useFiatFromCryptoValue({

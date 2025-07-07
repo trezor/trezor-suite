@@ -14,8 +14,8 @@ import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
-    formatAmount,
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
     getDefaultValues,
     getFeeInfo,
     useExcludedUtxos,
@@ -296,7 +296,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 const protocolAmount = protocol.sendForm.amount.toString();
 
                 const formattedAmount = shouldSendInSats
-                    ? amountToSmallestUnit(protocolAmount, state.network.decimals)
+                    ? convertAmountUnitsToSubunits(protocolAmount, state.network.decimals)
                     : protocolAmount;
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
@@ -373,7 +373,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useDidUpdate(() => {
         const { outputs } = getValues();
 
-        const conversionToUse = shouldSendInSats ? amountToSmallestUnit : formatAmount;
+        const conversionToUse = shouldSendInSats
+            ? convertAmountUnitsToSubunits
+            : convertAmountSubunitsToUnits;
 
         outputs.forEach((output, index) => {
             if (!output.amount) {

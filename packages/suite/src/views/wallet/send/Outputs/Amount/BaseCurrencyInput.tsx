@@ -13,8 +13,8 @@ import {
 } from '@suite-common/wallet-types';
 import {
     buildCurrencyOptions,
+    convertAmountSubunitsToUnits,
     findToken,
-    formatAmount,
     getInputState,
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
@@ -78,7 +78,9 @@ export const BaseCurrencyInput = ({
 
     const recalculateFiat = (rate: number) => {
         const formattedAmount = new BigNumber(
-            shouldSendInSats ? formatAmount(amountValue, network.decimals) : amountValue,
+            shouldSendInSats
+                ? convertAmountSubunitsToUnits(amountValue, network.decimals)
+                : amountValue,
         );
 
         if (

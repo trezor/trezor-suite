@@ -2,7 +2,7 @@ import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { Network } from '@suite-common/wallet-config';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -41,7 +41,7 @@ export const getQuoteRequestData = ({
     const unformattedOutputAmount = outputs[0].amount ?? '';
     const sendStringAmount =
         unformattedOutputAmount && shouldSendInSats
-            ? formatAmount(unformattedOutputAmount, decimals)
+            ? convertAmountSubunitsToUnits(unformattedOutputAmount, decimals)
             : unformattedOutputAmount;
 
     if (

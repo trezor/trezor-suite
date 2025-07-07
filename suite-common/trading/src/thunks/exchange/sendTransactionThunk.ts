@@ -2,7 +2,7 @@ import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { exchangeThunks, tradingThunks } from '../';
 import { SendDexTransactionThunkProps } from './sendDexTransactionThunk';
@@ -87,7 +87,7 @@ export const sendTransactionThunk = createThunk<
         }
 
         const sendStringAmount = shouldSendInSats
-            ? amountToSmallestUnit(selectedTrade.sendStringAmount, decimals)
+            ? convertAmountUnitsToSubunits(selectedTrade.sendStringAmount, decimals)
             : selectedTrade.sendStringAmount;
         const sendPaymentExtraId =
             selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId;

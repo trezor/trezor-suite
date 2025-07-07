@@ -10,7 +10,7 @@ import {
 import {
     calculateMax,
     calculateTotal,
-    formatAmount,
+    convertAmountSubunitsToUnits,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
@@ -158,7 +158,7 @@ export const composeStakingTransaction = (
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
-            tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
+            tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
             tx.estimatedFeeLimit = customFeeLimit ?? tx.estimatedFeeLimit;
         }
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {

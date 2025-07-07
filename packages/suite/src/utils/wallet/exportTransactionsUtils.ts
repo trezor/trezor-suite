@@ -14,7 +14,7 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    formatAmount,
+    convertAmountSubunitsToUnits,
     formatNetworkAmount,
     getFiatRateKey,
     getNftTokenId,
@@ -82,7 +82,7 @@ const formatAmounts =
             ...token,
             amount: isNftTokenTransfer(token)
                 ? `ID ${getNftTokenId(token)}`
-                : formatAmount(token.amount, token.decimals),
+                : convertAmountSubunitsToUnits(token.amount, token.decimals),
         })),
         internalTransfers: tx.internalTransfers.map(internal => ({
             ...internal,

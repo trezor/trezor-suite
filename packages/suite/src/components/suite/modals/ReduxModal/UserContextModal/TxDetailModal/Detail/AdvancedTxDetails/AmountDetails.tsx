@@ -5,7 +5,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
-    formatAmount,
+    convertAmountSubunitsToUnits,
     formatCardanoDeposit,
     formatCardanoWithdrawal,
     formatNetworkAmount,
@@ -202,7 +202,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 {selectedAccount.account && (
                                     <Text variant="default">
                                         <BaseCurrencyValue
-                                            amount={formatAmount(
+                                            amount={convertAmountSubunitsToUnits(
                                                 transfer.amount,
                                                 transfer.decimals,
                                             )}
@@ -218,7 +218,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 {selectedAccount.account && (
                                     <Text variant="default">
                                         <BaseCurrencyValue
-                                            amount={formatAmount(
+                                            amount={convertAmountSubunitsToUnits(
                                                 transfer.amount,
                                                 transfer.decimals,
                                             )}

@@ -4,3 +4,4 @@ export * from './timeout';
 export * from './utils';
 export * from './object';
 export * from './exhaustive';
+export * from './branded';

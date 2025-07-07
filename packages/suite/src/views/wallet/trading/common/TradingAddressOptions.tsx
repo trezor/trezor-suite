@@ -6,7 +6,7 @@ import { CryptoId } from 'invity-api';
 
 import { TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, InfoSegments, Select } from '@trezor/components';
 import type { AccountAddress } from '@trezor/connect';
 
@@ -106,7 +106,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
                             network: getNetwork(account.symbol),
                         });
                         const balance = accountAddress.balance
-                            ? formatAmount(accountAddress.balance, networkDecimals)
+                            ? convertAmountSubunitsToUnits(accountAddress.balance, networkDecimals)
                             : accountAddress.balance;
 
                         const { coinSymbol, contractAddress } =

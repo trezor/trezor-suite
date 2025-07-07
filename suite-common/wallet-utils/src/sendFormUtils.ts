@@ -42,7 +42,7 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
-    amountToSmallestUnit,
+    convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getUtxoOutpoint,
     networkAmountToSmallestUnit,
@@ -120,7 +120,7 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     // 32 bytes address parameter, remove '0x' prefix
     const erc20recipient = padLeft(to, 64).substring(2);
     // convert amount to satoshi
-    const tokenAmount = amountToSmallestUnit(amount, token.decimals);
+    const tokenAmount = convertAmountUnitsToSubunits(amount, token.decimals);
     // 32 bytes amount paramter, remove '0x' prefix
     const erc20amount = padLeft(numberToHex(tokenAmount), 64).substring(2);
 
@@ -407,7 +407,7 @@ export const getExternalComposeOutput = (
 
     const tokenInfo = findToken(account.tokens, token);
     const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
-    const formattedAmount = amountToSmallestUnit(amount, decimals);
+    const formattedAmount = convertAmountUnitsToSubunits(amount, decimals);
 
     let output: ExternalOutput;
     if (isMaxActive) {
