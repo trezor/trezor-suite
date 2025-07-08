@@ -10372,6 +10372,10 @@ export default defineMessages({
         id: 'TR_CONNECT_ERROR_GENERIC_DESCRIPTION',
         defaultMessage: 'There was an error during the Trezor Connect request.',
     },
+    TR_CONNECT_ERROR_CANCELED: {
+        id: 'TR_CONNECT_ERROR_CANCELED',
+        defaultMessage: 'Request was canceled by the user',
+    },
     TR_NO_CONNECTED_APPS_DESCRIPTION: {
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
         defaultMessage: 'Use your Trezor with third-party apps and wallets to manage your assets.',

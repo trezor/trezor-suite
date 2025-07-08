@@ -16,6 +16,33 @@ export const ConnectErrorModal = () => {
     if (!popupCall || (popupCall?.state !== 'error' && popupCall?.state !== 'call-error'))
         return null;
 
+    const isCancelled =
+        popupCall.error?.code === 'Method_Cancel' ||
+        popupCall.error?.code === 'Method_Interrupted' ||
+        popupCall.error?.code === 'Failure_ActionCancelled';
+
+    const getVariant = () => {
+        if (isCancelled) return 'warning';
+
+        return 'destructive';
+    };
+    const getTitle = () => {
+        if (isCancelled) return <Translation id="TR_CANCELLED" />;
+
+        return <Translation id="TR_ERROR" />;
+    };
+    const getSubtitle = () => {
+        if (isCancelled) return null;
+
+        return <Translation id="TR_CONNECT_ERROR_GENERIC_DESCRIPTION" />;
+    };
+    const getErrorText = () => {
+        if (isCancelled) return <Translation id="TR_CONNECT_ERROR_CANCELED" />;
+        if (popupCall.error?.error) return popupCall.error.error;
+
+        return <Translation id="TR_UNKNOWN_ERROR_SEE_CONSOLE" />;
+    };
+
     return (
         <Modal
             variant="primary"
@@ -29,18 +56,14 @@ export const ConnectErrorModal = () => {
         >
             <Column gap={spacings.xs}>
                 <Row alignItems="center" gap={spacings.sm}>
-                    <Icon name="warning" size={32} variant="destructive" />
-                    <H3 variant="destructive">
-                        <Translation id="TR_ERROR" />
-                    </H3>
+                    <Icon name="warning" size={32} variant={getVariant()} />
+                    <H3 variant={getVariant()}>{getTitle()}</H3>
                 </Row>
                 <ConnectCallSource />
-                <Paragraph>
-                    <Translation id="TR_CONNECT_ERROR_GENERIC_DESCRIPTION" />
-                </Paragraph>
+                <Paragraph>{getSubtitle()}</Paragraph>
 
                 <Card margin={{ top: spacings.md }} data-testid="@connect-popup-error/message">
-                    {popupCall.error.error}
+                    {getErrorText()}
                 </Card>
             </Column>
         </Modal>
