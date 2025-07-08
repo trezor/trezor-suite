@@ -1,3 +1,8 @@
+# 1.1.2
+
+- npm-prerelease: @trezor/device-utils 1.1.2-beta.1 (1f9fcb1c07)
+- chore(device-utils): add new firmware release types (90c903824e)
+
 # 1.1.1
 
 - npm-prerelease: @trezor/device-utils 1.1.1-beta.2 (d9e1e9816d)
