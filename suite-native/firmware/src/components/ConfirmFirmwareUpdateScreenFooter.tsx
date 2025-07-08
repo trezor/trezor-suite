@@ -29,6 +29,7 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
                 colorScheme="blueBold"
                 isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                 isLoading={isDiscoveryRunning}
+                testID="@device-firmware/update-button"
             >
                 <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />
             </Button>

@@ -1,4 +1,12 @@
+import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../utils';
+
+const insertAllSeed = async () => {
+    for (let i = 0; i < MNEMONICS.mnemonic_all.length; i++) {
+        await TrezorUserEnvLink.inputEmu('all');
+    }
+};
 
 const redirectToDeviceAuthenticityScreenButton = element(
     by.id('@device-authenticity/redirectToDeviceAuthenticityScreen'),
@@ -100,6 +108,25 @@ class DeviceSettingsActions {
         await deviceCheckBackup.tap();
     }
 
+    async tapUpdateFirmwareButton() {
+        const deviceFirmware = element(by.id('@device-firmware/redirectToFirmwareUpdateScreen'));
+
+        await scrollUntilVisible(deviceFirmware);
+        await deviceFirmware.tap();
+    }
+
+    async tapUpdateFirmwareBottomSheet() {
+        const updateFirmwareButton = element(by.id('@device-firmware/update-button'));
+        await waitFor(updateFirmwareButton).toBeVisible().withTimeout(10000);
+        await updateFirmwareButton.tap();
+    }
+
+    async tapCheckBackupButtonFromFirmwareUpdate() {
+        const checkBackupButton = element(by.id('@device-firmware/sheet/check-backup'));
+        await waitFor(checkBackupButton).toBeVisible().withTimeout(10000);
+        await checkBackupButton.tap();
+    }
+
     async submitNewDeviceName(value: string) {
         const changeDeviceNameInput = element(by.id('@device-name/input'));
         const changeDeviceNameSubmitButton = element(by.id('@device-name/submit-button'));
@@ -135,6 +162,16 @@ class DeviceSettingsActions {
         const continueButton = element(by.id('@device-check-backup/continue-button'));
         await waitFor(continueButton).toBeVisible().withTimeout(10000);
         await continueButton.tap();
+    }
+
+    async passCheckBackupFlow() {
+        await this.goToNextDeviceCheckBackupTutorialStep(1);
+        await this.tapDeviceCheckBackupContinueButton();
+
+        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLink.selectNumOfWordsEmu(12);
+        await TrezorUserEnvLink.pressYes();
+        await insertAllSeed();
     }
 }
 
