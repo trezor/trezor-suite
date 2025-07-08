@@ -91,22 +91,3 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
         instance={instance}
     />
 );
-
-export const EjectConfirmationDisableViewOnly = ({
-    onClick,
-    onCancel,
-    instance,
-}: EjectConfirmationProps) => (
-    <EjectConfirmationContainer
-        title={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE" />}
-        description={
-            <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION" />
-        }
-        primaryButtonLabel={
-            <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON" />
-        }
-        onClick={onClick}
-        onCancel={onCancel}
-        instance={instance}
-    />
-);

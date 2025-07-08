@@ -1,27 +1,33 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    cancelDiscoveryThunk,
+    runDiscoveryThunk,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 
 import { EnterPassphrase } from './EnterPassphrase';
+import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 
 type PassphraseWalletIsNotExistFlowProps = {
     device: TrezorDevice;
     deviceOffer: boolean;
-    passphraseState: string;
-    loading: boolean;
-    onCancel: () => void;
+    passphraseState: DiscoveryStatus['status'];
+    onCancel?: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     submittingPassphrase?: boolean;
     isAddingHiddenWalletWithRespectToSettings?: boolean;
+    onBackToInitial: () => void;
 };
 
 export const PassphraseWalletIsNotExistFlow = ({
     device,
     deviceOffer,
     passphraseState,
-    loading,
+    onBackToInitial,
     onSubmit,
     onCancel,
     submittingPassphrase,
@@ -29,10 +35,20 @@ export const PassphraseWalletIsNotExistFlow = ({
 }: PassphraseWalletIsNotExistFlowProps) => {
     const dispatch = useDispatch();
 
-    if (passphraseState === 'not-exist-confirm-passphrase') {
+    if (passphraseState === 'starting') {
+        return (
+            <PassphraseWalletBestPractices
+                device={device}
+                onBack={onBackToInitial}
+                onCancel={onCancel}
+                onNext={() => dispatch(runDiscoveryThunk(device))}
+            />
+        );
+    }
+
+    if (passphraseState === 'confirm-empty-passphrase') {
         return (
             <PassphraseWalletConfirmation
-                deviceLoading={loading}
                 onCancel={onCancel}
                 onSubmit={onSubmit}
                 device={device}
@@ -41,16 +57,15 @@ export const PassphraseWalletIsNotExistFlow = ({
         );
     }
 
-    if (passphraseState === 'not-exist-enter-passphrase') {
+    if (passphraseState === 'enter-passphrase') {
         return (
             <EnterPassphrase
-                cancelDisabled={isAddingHiddenWalletWithRespectToSettings}
-                deviceLoading={loading}
                 device={device}
                 submitting={submittingPassphrase}
                 onDeviceOffer={deviceOffer}
                 onBack={() => {
                     dispatch(cancelDiscoveryThunk(device));
+                    // TODO: best practices flow should not be initiated along with discovery
                     dispatch(
                         startDiscoveryThunk({
                             device,

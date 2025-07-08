@@ -77,7 +77,6 @@ const parseParamValue = <T>(value: string, defaultValue?: T) => {
 
 export type ModalAppParams = {
     cancelable: boolean;
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
     variant?: string;
 };
 
@@ -138,9 +137,7 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
 };
 
 export type WalletParams = CommonWalletParams;
-export type RouteParams = (WalletParams | ModalAppParams) & {
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
-};
+export type RouteParams = WalletParams | ModalAppParams;
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);
