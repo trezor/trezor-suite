@@ -1,5 +1,6 @@
 // https://github.com/trezor/connect/blob/develop/src/js/storage/index.js
 
+import { Branded } from '@trezor/type-utils';
 import { TypedEmitter } from '@trezor/utils';
 
 const storageVersion = 2;
@@ -17,7 +18,7 @@ export interface Permission {
  */
 export interface PreferredDevice {
     label?: string;
-    path: string & { __type: 'DeviceUniquePath' };
+    path: string & Branded<'DeviceUniquePath'>;
     state?: `${string}@${string}:${number}`;
     internalState?: string;
     internalStateExpiration?: number;
