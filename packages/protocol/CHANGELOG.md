@@ -1,3 +1,7 @@
+# 1.2.8
+
+- npm-prerelease: @trezor/protocol 1.2.8-beta.1 (45c2211e42)
+
 # 1.2.7
 
 - npm-prerelease: @trezor/protocol 1.2.7-beta.1 (381415fe44)
