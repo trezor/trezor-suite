@@ -18,6 +18,7 @@ blakejs
 bn.js
 bs58
 bs58check
+cashaddrjs
 chalk
 core-js
 cors

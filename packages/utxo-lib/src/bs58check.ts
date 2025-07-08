@@ -1,7 +1,7 @@
-import bchaddrjs from 'bchaddrjs';
 import bs58 from 'bs58';
 import bs58check from 'bs58check';
 
+import { isCashAddress, toCashAddress, toLegacyAddress } from './bchUtils';
 import { blake256 } from './crypto';
 import { bitcoin as BITCOIN_NETWORK, isNetworkType } from './networks';
 
@@ -59,8 +59,8 @@ export function decodeAddress(address: string, network = BITCOIN_NETWORK) {
     // Identify them by checking if the version is multibyte (2 bytes instead of 1)
     let payload: Buffer;
     if (isNetworkType('bitcoinCash', network)) {
-        if (!bchaddrjs.isCashAddress(address)) throw Error(`${address} is not a cash address`);
-        payload = Buffer.from(bs58check.decode(bchaddrjs.toLegacyAddress(address)));
+        if (!isCashAddress(address)) throw Error(`${address} is not a cash address`);
+        payload = Buffer.from(bs58check.decode(toLegacyAddress(address)));
     } else {
         payload = Buffer.from(decode(address, network));
     }
@@ -96,5 +96,5 @@ export function encodeAddress(hash: Buffer, version: number, network = BITCOIN_N
 
     const encoded = encode(payload, network);
 
-    return isNetworkType('bitcoinCash', network) ? bchaddrjs.toCashAddress(encoded) : encoded;
+    return isNetworkType('bitcoinCash', network) ? toCashAddress(encoded) : encoded;
 }
