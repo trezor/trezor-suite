@@ -84,9 +84,11 @@ export const DevUtilsScreen = () => {
                     <TestnetsToggle />
                 </Card>
                 <Card>
-                    <Text variant="highlight">Trading</Text>
-                    <TradingEnvironmentSelect />
-                    <TradingDeeplinks />
+                    <VStack>
+                        <Text variant="highlight">Trading</Text>
+                        <TradingEnvironmentSelect />
+                        <TradingDeeplinks />
+                    </VStack>
                 </Card>
                 <MessageSystemInfo />
             </VStack>
