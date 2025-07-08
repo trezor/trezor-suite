@@ -9,6 +9,7 @@ import {
     formatDistanceStrict,
     fromUnixTime,
     getUnixTime,
+    parse,
     startOfDay,
     startOfMonth,
 } from 'date-fns';
@@ -90,4 +91,27 @@ export const resetTime = (ts: number, resetDay?: boolean) => {
     }
 
     return getUnixTime(sanitizedTimestamp);
+};
+
+/**
+ * Parses datetime in UTC from one of the following formats:
+ * - dd/MM/yyyy
+ * - dd/MM/yyyy HH:mm
+ * - dd/MM/yyyy HH:mm:ss
+ * If a component is omitted, it is assumed to be zero.
+ *
+ * @param {string | undefined} input
+ * @returns {Date | undefined}
+ */
+export const parseUTCdatetime = (input: string | undefined): Date | undefined => {
+    const formats = ['dd/MM/yyyy X', 'dd/MM/yyyy HH:mm X', 'dd/MM/yyyy HH:mm:ss X'];
+
+    for (const format of formats) {
+        const parsed = parse(input + ' Z', format, new Date()); // Force UTC timezone
+        if (!isNaN(parsed.getTime())) {
+            return parsed;
+        }
+    }
+
+    return undefined;
 };
