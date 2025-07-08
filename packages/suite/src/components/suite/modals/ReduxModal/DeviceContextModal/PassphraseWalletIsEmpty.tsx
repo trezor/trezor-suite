@@ -15,7 +15,7 @@ import { Translation } from '../../../Translation';
 
 type PassphraseWalletIsEmptyProps = {
     onRetry: () => void;
-    onCancel: () => void;
+    onCancel?: () => void;
     device: TrezorDevice;
     onNext: () => void;
     onBack: () => void;
@@ -24,7 +24,7 @@ type PassphraseWalletIsEmptyProps = {
 type PassphraseWalletIsEmptyContentProps = {
     onNext: () => void;
     onRetry: () => void;
-    onCancel: () => void;
+    onCancel?: () => void;
     'data-testid'?: string;
 };
 
@@ -97,18 +97,20 @@ const PassphraseWalletIsEmptyContent = ({
                                     <CoinLogo key={network} symbol={network} size={16} />
                                 ))}
                             </Row>
-                            <Button
-                                variant="tertiary"
-                                icon="plus"
-                                size="tiny"
-                                onClick={() => {
-                                    onCancel();
-                                    dispatch(onCancelModal());
-                                    dispatch(goto('settings-coins'));
-                                }}
-                            >
-                                <Translation id="TR_ADD" />
-                            </Button>
+                            {onCancel && (
+                                <Button
+                                    variant="tertiary"
+                                    icon="plus"
+                                    size="tiny"
+                                    onClick={() => {
+                                        onCancel();
+                                        dispatch(onCancelModal());
+                                        dispatch(goto('settings-coins'));
+                                    }}
+                                >
+                                    <Translation id="TR_ADD" />
+                                </Button>
+                            )}
                         </Row>
                     )}
                     <Button
@@ -134,12 +136,7 @@ export const PassphraseWalletIsEmpty = ({
     onNext,
 }: PassphraseWalletIsEmptyProps) => (
     <SwitchDeviceModal onCancel={onCancel}>
-        <CardWithDevice
-            onCancel={onCancel}
-            device={device}
-            onBackButtonClick={onBack}
-            isFullHeaderVisible
-        >
+        <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
             <PassphraseWalletIsEmptyContent onNext={onNext} onRetry={onRetry} onCancel={onCancel} />
         </CardWithDevice>
     </SwitchDeviceModal>

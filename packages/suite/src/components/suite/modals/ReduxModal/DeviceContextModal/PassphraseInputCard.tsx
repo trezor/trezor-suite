@@ -16,18 +16,19 @@ import {
     Tooltip,
     motionEasing,
 } from '@trezor/components';
+import { UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
 
+import { CONTEXT_DEVICE } from 'src/actions/suite/constants/modalConstants';
 import { Translation } from 'src/components/suite';
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 
 type PassphraseInputCardProps = {
     deviceModel?: DeviceModelInternal;
-    deviceLoading?: boolean;
     isLoading?: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     offerPassphraseOnDevice: boolean;
@@ -45,7 +46,6 @@ const getErrorMessage = (isPassphraseTooLong: boolean, isUsingNonAsciiCharacters
 
 export const PassphraseInputCard = ({
     deviceModel,
-    deviceLoading,
     isLoading,
     onSubmit,
     offerPassphraseOnDevice,
@@ -53,11 +53,16 @@ export const PassphraseInputCard = ({
     value: externalValue,
     setValue: setExternalValue,
 }: PassphraseInputCardProps) => {
+    const modal = useSelector(state => state.modal);
     const [internalValue, setInternalValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const { translationString } = useTranslation();
     const value = externalValue ?? internalValue;
     const setValue = setExternalValue ?? setInternalValue;
+
+    const isDeviceLoading = !(
+        modal.context === CONTEXT_DEVICE && modal.windowType === UI.REQUEST_PASSPHRASE
+    );
 
     const isPassphraseTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
     const isUsingNonAsciiCharacters = allowNonAsciiCharacters
@@ -150,7 +155,7 @@ export const PassphraseInputCard = ({
                             isDisabled={
                                 !value ||
                                 isPassphraseTooLong ||
-                                deviceLoading ||
+                                isDeviceLoading ||
                                 isUsingNonAsciiCharacters
                             }
                             isFullWidth

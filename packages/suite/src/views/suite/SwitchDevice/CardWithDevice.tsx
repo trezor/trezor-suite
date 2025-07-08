@@ -13,22 +13,20 @@ import { NeedsAttentionBanner } from './NeedsAttentionBanner';
 
 type CardWithDeviceProps = {
     children: ReactNode;
-    cancelDisabled?: boolean;
     onCancel?: ForegroundAppProps['onCancel'];
     device: TrezorDevice;
-    isFullHeaderVisible?: boolean;
     isFindTrezorVisible?: boolean;
     onBackButtonClick?: () => void;
+    isDeviceStatusVisible?: boolean;
 };
 
 export const CardWithDevice = ({
     children,
-    cancelDisabled,
     onCancel,
     device,
-    isFullHeaderVisible = false,
     onBackButtonClick,
     isFindTrezorVisible,
+    isDeviceStatusVisible,
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
 
@@ -40,12 +38,10 @@ export const CardWithDevice = ({
             <Column gap={spacings.md} margin={spacings.xs}>
                 <DeviceHeader
                     isFindTrezorVisible={isFindTrezorVisible}
-                    cancelDisabled={cancelDisabled}
                     onCancel={onCancel}
                     device={device}
-                    isFullHeaderVisible={isFullHeaderVisible}
                     onBackButtonClick={onBackButtonClick}
-                    forceConnectionInfo
+                    isDeviceStatusVisible={isDeviceStatusVisible}
                 />
 
                 {needsAttention && (

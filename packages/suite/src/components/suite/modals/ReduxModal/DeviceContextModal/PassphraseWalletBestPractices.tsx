@@ -7,8 +7,7 @@ import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/Switc
 import { Translation } from '../../../Translation';
 
 type PassphraseWalletBestPracticesProps = {
-    cancelDisabled?: boolean;
-    onCancel: () => void;
+    onCancel?: () => void;
     onNext: () => void;
     onBack: () => void;
     device: TrezorDevice;
@@ -56,20 +55,13 @@ const PassphraseWalletBestPracticesContent = ({
 );
 
 export const PassphraseWalletBestPractices = ({
-    cancelDisabled,
     onCancel,
     onNext,
     onBack,
     device,
 }: PassphraseWalletBestPracticesProps) => (
     <SwitchDeviceModal onCancel={onCancel}>
-        <CardWithDevice
-            onCancel={onCancel}
-            cancelDisabled={cancelDisabled}
-            device={device}
-            onBackButtonClick={onBack}
-            isFullHeaderVisible
-        >
+        <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
             <PassphraseWalletBestPracticesContent onNext={onNext} />
         </CardWithDevice>
     </SwitchDeviceModal>

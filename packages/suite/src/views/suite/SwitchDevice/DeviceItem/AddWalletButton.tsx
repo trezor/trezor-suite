@@ -27,18 +27,16 @@ import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suit
 interface AddWalletButtonProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
-    onCancel: ForegroundAppProps['onCancel'];
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
+    onCancel?: ForegroundAppProps['onCancel'];
 }
 
-export const AddWalletButton = ({
-    device,
-    instances,
-    onCancel,
-    isAddingHiddenWalletWithRespectToSettings, // NOTE: This is passed from to opening goto() that's called from the passphrase modals
-}: AddWalletButtonProps) => {
+export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButtonProps) => {
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
+
+    // Derive isAddingHiddenWalletWithRespectToSettings from whether onCancel is defined
+    // When onCancel is undefined, it means we're adding a hidden wallet with respect to settings
+    const isAddingHiddenWalletWithRespectToSettings = !onCancel;
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
     const isPassphraseProtectionEnabled = Boolean(device?.features?.passphrase_protection);
     const dispatch = useDispatch();
@@ -52,16 +50,11 @@ export const AddWalletButton = ({
         walletType: WalletType;
         isExisting?: boolean;
     }) => {
-        onCancel(false);
+        onCancel?.(false);
         dispatch(selectDeviceThunk({ device }));
         dispatch(closeModalApp());
+        // TODO: when creating a new hidden wallet, we should not start discovery yet, but only after going through the best practices flow
         dispatch(
-            // NOTE: this prop drilling of isAddingHiddenWalletWithRespectToSettings is "needed"
-            // becuase this infor comes from when the APP IS STARTED an initial discovery receives this flag
-            // from the settings. However! Only "first" discovery must get this flag, no other following,
-            // but if the first discovery is cancelled the switch-device is opened with this flag in "router params"
-            // and in this case, we want to make device switch uncancelable and pass this prop to another discovery
-            // as required first passphrase wallet hasn't been yet opened
             startDiscoveryThunk({
                 device,
                 isAddingHiddenWallet: walletType === WalletType.PASSPHRASE,

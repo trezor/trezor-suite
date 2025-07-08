@@ -5,11 +5,7 @@
 // 4. add params types to RouteParamsTypes (@suite-constants/routes)
 
 const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
-const modalAppParams = [
-    'isAddingHiddenWalletWithRespectToSettings',
-    'cancelable',
-    'variant',
-] as const;
+const modalAppParams = ['cancelable', 'variant'] as const;
 
 export const routes = [
     {

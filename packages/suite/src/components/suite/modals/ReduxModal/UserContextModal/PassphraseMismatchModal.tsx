@@ -37,7 +37,7 @@ export const PassphraseMismatchModal = ({
 
     return (
         <SwitchDeviceModal data-testid="@passphrase-mismatch">
-            <CardWithDevice device={device} isFullHeaderVisible={false}>
+            <CardWithDevice device={device}>
                 <Column gap={spacings.xs} margin={{ bottom: spacings.lg }}>
                     <H3>
                         <Translation id="TR_PASSPHRASE_MISMATCH" />
