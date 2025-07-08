@@ -352,9 +352,15 @@ const constructNewFlow = ({
                 // this is displayed only for tokens without definitions
                 if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana) {
                     outputs.push(tokenOutput);
+                    outputs.push({ type: 'address', value: o.address });
+                } else if (precomposedForm.ethereumDataHex) {
+                    // EVM contract call
+                    outputs.push({ type: 'contract', value: o.address });
+                } else {
+                    // regular transfer
+                    outputs.push({ type: 'address', value: o.address });
                 }
 
-                outputs.push({ type: 'address', value: o.address });
                 if (!isSolana && !isUpdatedEthereumSendFlow) {
                     outputs.push({
                         type: 'amount',
