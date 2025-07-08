@@ -9,7 +9,6 @@ import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 
 type SelectTriggerProps = {
     value: string | null;
-    label?: ReactNode;
     icon?: ReactNode;
     handlePress: () => void;
     testID?: string;
@@ -33,25 +32,18 @@ const selectStyle = prepareNativeStyle(utils => ({
 
 const iconWrapperStyle = prepareNativeStyle(() => ({ marginRight: 1 }));
 
-export const SelectTrigger = ({ value, label, icon, handlePress, testID }: SelectTriggerProps) => {
+export const SelectTrigger = ({ value, icon, handlePress, testID }: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
-            <Box justifyContent="center">
-                {!!value && !!label && (
-                    <Text variant="label" color="textSubdued">
-                        {label}
+            <Box flexDirection="row" alignItems="center">
+                <Text numberOfLines={1}>
+                    {icon && <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>}
+                    <Text numberOfLines={1} ellipsizeMode="tail">
+                        {value}
                     </Text>
-                )}
-                <Box flexDirection="row" alignItems="center">
-                    <Text numberOfLines={1}>
-                        {icon && <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>}
-                        <Text numberOfLines={1} ellipsizeMode="tail">
-                            {value}
-                        </Text>
-                    </Text>
-                </Box>
+                </Text>
             </Box>
             <Icon size="large" color="iconSubdued" name="caretDown" />
         </TouchableOpacity>

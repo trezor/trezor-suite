@@ -37,7 +37,6 @@ export const CurrencySelector = () => {
                 selectValue={selectedFiatCurrencyCode}
                 onSelectItem={handleSelectCurrency}
                 selectLabel={<Translation id="moduleSettings.preferences.fiatCurrencyLabel" />}
-                shouldDisplayLabelInTrigger={false}
                 testID="@settings/localization/currency-selector"
             />
         </PreferencesSettingsCard>
