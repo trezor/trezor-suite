@@ -10,6 +10,6 @@ type SettingsSectionProps = {
 export const SettingsSection = ({ title, children }: SettingsSectionProps) => (
     <VStack spacing="sp16">
         <Text variant="titleSmall">{title}</Text>
-        {children}
+        <VStack spacing="sp12">{children}</VStack>
     </VStack>
 );

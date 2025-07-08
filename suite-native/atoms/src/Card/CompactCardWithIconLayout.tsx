@@ -3,7 +3,7 @@ import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, NativeSpacing } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 
 import { Card } from './Card';
 import { Box } from '../Box';
@@ -23,7 +23,6 @@ export type CompactCardWithIconLayoutProps = {
     onPress?: () => void;
     variant?: CardVariant;
     noShadow?: boolean;
-    paddingVertical?: NativeSpacing;
     borderColor?: Color | null;
 } & TouchableOpacityProps;
 
@@ -62,7 +61,6 @@ export const CompactCardWithIconLayout = ({
     onPress,
     isDisabled = false,
     variant = 'normal',
-    paddingVertical = 'sp16',
     noShadow = false,
     borderColor = 'borderElevation1',
     ...pressableProps
@@ -71,10 +69,10 @@ export const CompactCardWithIconLayout = ({
 
     return (
         <TouchableOpacity disabled={isDisabled} onPress={onPress} {...pressableProps}>
-            <Card noPadding noShadow borderColor={borderColor ?? undefined}>
+            <Card noPadding borderColor={borderColor ?? undefined}>
                 <HStack
                     paddingHorizontal="sp16"
-                    paddingVertical={paddingVertical}
+                    paddingVertical="sp12"
                     spacing="sp12"
                     alignItems="center"
                 >

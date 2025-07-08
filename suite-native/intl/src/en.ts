@@ -819,7 +819,7 @@ export const en = {
                 },
                 walletConnect: {
                     title: 'WalletConnect',
-                    add: 'Add WalletConnect connection',
+                    add: 'Add WalletConnect',
                 },
             },
         },
@@ -960,7 +960,7 @@ export const en = {
             title: 'View-only',
             emptyTitle: 'Connect your device to enable view-only',
             subtitle:
-                'Check balances without connecting your Trezor. <about>See how it works</about>',
+                'Check balances without connecting your Trezor.\n<about>See how it works</about>',
             button: { enable: 'Enable', disable: 'Disable' },
             about: {
                 title: 'View-only',

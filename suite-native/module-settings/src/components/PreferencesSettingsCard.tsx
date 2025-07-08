@@ -14,7 +14,7 @@ export const PreferencesSettingsCard = ({
     title,
     children,
 }: PreferencesSettingsCardProps) => (
-    <Card>
+    <Card noShadow>
         <VStack spacing="sp12">
             <HStack alignItems="center">
                 <Icon name={iconName} size="mediumLarge" />
