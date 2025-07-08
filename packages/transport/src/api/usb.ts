@@ -563,7 +563,14 @@ export class UsbApi extends AbstractApi {
             return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
         }
 
-        return this.unknownError(err);
+        return this.unknownError(err, [
+            ERRORS.DEVICE_NOT_FOUND,
+            ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+            ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
+            ERRORS.ABORTED_BY_TIMEOUT,
+            ERRORS.ABORTED_BY_SIGNAL,
+            ERRORS.UNEXPECTED_ERROR,
+        ]);
     }
 
     public dispose() {
