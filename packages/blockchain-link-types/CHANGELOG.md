@@ -1,3 +1,8 @@
+# 1.4.2
+
+- fix: types for FiatRatesBySymbol, add typedObjectFromEntries util (61e33e5410)
+- npm-prerelease: @trezor/blockchain-link-types 1.4.2-beta.1 (570d0a4967)
+
 # 1.4.1
 
 - npm-prerelease: @trezor/blockchain-link-types 1.4.1-beta.1 (3de1dddc3f)
