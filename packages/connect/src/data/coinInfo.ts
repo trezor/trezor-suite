@@ -2,7 +2,6 @@
 import { cloneObject } from '@trezor/utils';
 
 import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
-import { ERRORS } from '../constants';
 import type {
     BitcoinNetworkInfo,
     DerivationPath,
@@ -110,57 +109,6 @@ export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
     }
 
     return coinInfo;
-};
-
-// TODO: https://github.com/trezor/trezor-suite/issues/4886
-const detectBtcVersion = (data: { subversion?: string }) => {
-    if (data.subversion == null) {
-        return 'btc';
-    }
-    if (data.subversion.startsWith('/Bitcoin ABC')) {
-        return 'bch';
-    }
-    if (data.subversion.startsWith('/Bitcoin Cash')) {
-        return 'bch';
-    }
-    if (data.subversion.startsWith('/Bitcoin Gold')) {
-        return 'btg';
-    }
-
-    return 'btc';
-};
-
-// TODO: https://github.com/trezor/trezor-suite/issues/4886
-export const getCoinInfoByHash = (hash: string, networkInfo: any) => {
-    const networks = cloneObject(bitcoinNetworks);
-    const result = networks.find(
-        info => hash.toLowerCase() === info.hashGenesisBlock.toLowerCase(),
-    );
-    if (!result) {
-        throw ERRORS.TypedError(
-            'Method_UnknownCoin',
-            `Coin info not found for hash: ${hash} ${networkInfo.hashGenesisBlock}`,
-        );
-    }
-
-    if (result.isBitcoin) {
-        const btcVersion = detectBtcVersion(networkInfo);
-        let fork: BitcoinNetworkInfo | undefined;
-        if (btcVersion === 'bch') {
-            fork = networks.find(info => info.name === 'Bcash');
-        } else if (btcVersion === 'btg') {
-            fork = networks.find(info => info.name === 'Bgold');
-        }
-        if (fork) {
-            return fork;
-        }
-        throw ERRORS.TypedError(
-            'Method_UnknownCoin',
-            `Coin info not found for hash: ${hash} ${networkInfo.hashGenesisBlock} BTC version:${btcVersion}`,
-        );
-    }
-
-    return result;
 };
 
 export const getCoinInfo = (currency: string) =>
