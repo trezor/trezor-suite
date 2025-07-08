@@ -1,3 +1,7 @@
+# 1.5.2
+
+- npm-prerelease: @trezor/transport 1.5.2-beta.1 (2c70ed0b92)
+
 # 1.5.1
 
 - npm-prerelease: @trezor/transport 1.5.1-beta.1 (98a275e65c)
