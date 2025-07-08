@@ -17,12 +17,6 @@ import {
     restartApp,
 } from '../utils';
 
-const insertAllSeed = async () => {
-    for (let i = 0; i < MNEMONICS.mnemonic_all.length; i++) {
-        await TrezorUserEnvLink.inputEmu('all');
-    }
-};
-
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
     beforeAll(async () => {
         const emulatorOptions: PrepareTrezorEmulatorProps = { seed: MNEMONICS.mnemonic_all };
@@ -127,14 +121,18 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
         test.skip('Device Check Backup', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
-            await onDeviceSettings.goToNextDeviceCheckBackupTutorialStep(1);
-            await onDeviceSettings.tapDeviceCheckBackupContinueButton();
 
-            await TrezorUserEnvLink.pressYes();
-            const twelveSeedOptionCoordinates = { x: 45, y: 50 };
-            await TrezorUserEnvLink.clickEmu(twelveSeedOptionCoordinates);
-            await TrezorUserEnvLink.pressYes();
-            await insertAllSeed();
+            await onDeviceSettings.passCheckBackupFlow();
+
+            expect(element(by.label('Your backup is valid'))).toBeVisible();
+        });
+
+        test('Device Check Backup is possible from firmware update', async () => {
+            await onDeviceSettings.tapUpdateFirmwareButton();
+            await onDeviceSettings.tapUpdateFirmwareBottomSheet();
+            await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();
+
+            await onDeviceSettings.passCheckBackupFlow();
 
             expect(element(by.label('Your backup is valid'))).toBeVisible();
         });
@@ -158,8 +156,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
         test.skip('Device Check Backup with unsupported Device Model', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
-            await onDeviceSettings.goToNextDeviceCheckBackupTutorialStep(1);
-            await onDeviceSettings.tapDeviceCheckBackupContinueButton();
 
             expect(
                 element(by.label('To check your backup, use the web application.')),

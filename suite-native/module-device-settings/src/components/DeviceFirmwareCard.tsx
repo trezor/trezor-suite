@@ -91,6 +91,7 @@ export const DeviceFirmwareCard = () => {
             alertBoxProps={firmwareUpdateProps}
             subtitle={<Translation id="firmware.version" values={{ firmwareVersion }} />}
             onPress={handleOnPress}
+            testID="@device-firmware/redirectToFirmwareUpdateScreen"
         />
     );
 };
