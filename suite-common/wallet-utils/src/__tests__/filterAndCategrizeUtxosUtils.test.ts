@@ -1,9 +1,8 @@
-import { filterAndCategorizeUtxos } from '@suite-common/wallet-utils';
-
 import {
     baseUtxo,
     filterAndCategorizeUtxosFixtures,
 } from '../__fixtures__/filterAndCategorizeUtxosFixtures';
+import { filterAndCategorizeUtxos } from '../filterAndCategorizeUtxosUtils';
 
 describe(filterAndCategorizeUtxos.name, () => {
     it('filters and categorizes correctly while searching by address', () => {
