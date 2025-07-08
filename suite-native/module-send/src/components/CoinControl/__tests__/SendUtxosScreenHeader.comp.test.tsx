@@ -8,7 +8,7 @@ jest.mock('../../../hooks/useUtxoSelection', () => ({
 }));
 
 describe('SendUtxosScreenHeader', () => {
-   it('should render delete button when there are selected utxos', () => {
+    it('should render delete button when there are selected utxos', () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             selectedUtxos: [
                 {
