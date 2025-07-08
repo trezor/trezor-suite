@@ -61,7 +61,7 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
                 <TouchableOpacity onPress={() => (isExpanded.value = !isExpanded.value)}>
                     <HStack spacing="sp12" alignItems="center">
                         <ConnectAppIcon
-                            src={session.peer.metadata.icons[0]}
+                            src={session.peer.metadata.icons?.[0]}
                             type="walletConnect"
                             size="medium"
                         />

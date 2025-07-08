@@ -105,7 +105,7 @@ export const WalletConnectSessionPopupScreen = () => {
                     <Card>
                         <HStack alignItems="center" spacing="sp16">
                             <ConnectAppIcon
-                                src={pendingProposal?.params.proposer.metadata.icons[0]}
+                                src={pendingProposal?.params.proposer.metadata.icons?.[0]}
                                 type="walletConnect"
                                 size="large"
                             />

@@ -140,7 +140,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 <Card>
                     <Row gap={spacings.md}>
                         <ConnectAppIcon
-                            src={pendingProposal.params.proposer.metadata.icons[0]}
+                            src={pendingProposal.params.proposer.metadata.icons?.[0]}
                             size={spacings.xxxxl}
                             type="walletConnect"
                         />
