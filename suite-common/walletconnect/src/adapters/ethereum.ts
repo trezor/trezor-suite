@@ -57,7 +57,7 @@ const ethereumRequestThunk = createThunk<
             origin: event.verifyContext.verified.origin,
             manifest: {
                 appName: session.peer.metadata.name,
-                appIcon: session.peer.metadata.icons[0],
+                appIcon: session.peer.metadata.icons?.[0],
             },
         },
     };

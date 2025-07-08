@@ -38,7 +38,10 @@ export const WalletConnectList = () => {
                         padding={spacings.md}
                         data-testid={`@settings/walletconnect-apps/${index}`}
                     >
-                        <ConnectAppIcon src={session.peer.metadata.icons[0]} type="walletConnect" />
+                        <ConnectAppIcon
+                            src={session.peer.metadata.icons?.[0]}
+                            type="walletConnect"
+                        />
                         <Column flex="1">
                             <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">
                                 <Text>{session.peer.metadata.name}</Text>
