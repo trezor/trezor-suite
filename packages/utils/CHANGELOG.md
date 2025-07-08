@@ -1,3 +1,10 @@
+# 9.4.2
+
+- fix: types for FiatRatesBySymbol, add typedObjectFromEntries util (61e33e5410)
+- npm-prerelease: @trezor/utils 9.4.2-beta.1 (e32ab5f4a1)
+- feat(suite-native): Settings: Change Device Name (d67742d376)
+- feat(utils): add a util for float approx comparison (24f4d182bc)
+
 # 9.4.1
 
 - npm-prerelease: @trezor/utils 9.4.1-beta.2 (73e565cc0f)
