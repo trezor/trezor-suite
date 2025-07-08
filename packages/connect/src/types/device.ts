@@ -1,5 +1,6 @@
 import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
 import type { ThpStateSerialized } from '@trezor/protocol';
+import { Branded } from '@trezor/type-utils';
 
 import type { PROTO } from '../constants';
 import type { ReleaseInfo } from './firmware';
@@ -73,7 +74,7 @@ export type FirmwareHashCheckResult =
           errorPayload?: unknown;
       };
 
-export type DeviceUniquePath = string & { __type: 'DeviceUniquePath' };
+export type DeviceUniquePath = string & Branded<'DeviceUniquePath'>;
 export const DeviceUniquePath = (id: string) => id as DeviceUniquePath;
 
 type BaseDevice = {

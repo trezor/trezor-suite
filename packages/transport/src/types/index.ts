@@ -1,12 +1,14 @@
+import { Branded } from '@trezor/type-utils';
+
 import type { DEVICE_TYPE } from '../api/abstract';
 
 export * from './apiCall';
 
-export type Session = `${number}` & { __type: 'Session' };
+export type Session = `${number}` & Branded<'Session'>;
 export const Session = (input: `${number}`) => `${input}` as Session;
-export type PathInternal = string & { __type: 'PathInternal' };
+export type PathInternal = string & Branded<'PathInternal'>;
 export const PathInternal = (input: string) => input as PathInternal;
-export type PathPublic = `${number}` & { __type: 'PathPublic' };
+export type PathPublic = `${number}` & Branded<'PathPublic'>;
 export const PathPublic = (input: `${number}`) => `${input}` as PathPublic;
 
 export type DescriptorApiLevel = {
@@ -34,8 +36,12 @@ export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
 
 export interface Logger {
     info(...args: any): void;
+
     debug(...args: any): void;
+
     log(...args: any): void;
+
     warn(...args: any): void;
+
     error(...args: any): void;
 }
