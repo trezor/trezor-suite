@@ -16,8 +16,8 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Card, CheckBox, Divider, HStack, Text, TextButton, VStack } from '@suite-native/atoms';
 import {
     AccountAddressFormatter,
+    BaseCurrencyAmountFormatter,
     CryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -93,7 +93,7 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = fals
                                 symbol={symbol}
                             />
                             <Text color="textSubdued">≈</Text>
-                            <CryptoToFiatAmountFormatter
+                            <BaseCurrencyAmountFormatter
                                 color="textSubdued"
                                 variant="highlight"
                                 symbol={symbol}
