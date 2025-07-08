@@ -14,7 +14,7 @@ export const firmwareAssets: Record<DeviceModelInternal, NodeJS.Require> = {
     [DeviceModelInternal.T3W1]: require('@trezor/connect-common/files/firmware/t3w1/releases.json'),
 };
 
-export const firmwareReleaseConfigAssets = require('@trezor/connect-common/files/firmware/release/releases.v1.ts');
+export const firmwareReleaseConfigAssets = require('@trezor/connect-common/files/firmware/release/releases.v1.json');
 
 export const tryLocalAssetRequire = (url: string) => {
     const fileUrl = url.split('?')[0];
