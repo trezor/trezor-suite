@@ -168,13 +168,12 @@ const getInstallationParams = (device: Device, params: Params) => {
         const upgrade =
             device.atLeast('2.6.3') && isUpdatingToNewerVersion && isUpdatingToEqualFirmwareType;
         const manual = !device.atLeast(['1.10.0', '2.6.0']) && !upgrade;
-        const language =
-            device.atLeast('2.7.0') &&
-            // automatic language update from 2.7.2 sometimes not working on TT, probably memory issues?
-            // https://satoshilabs.slack.com/archives/CL1D61PQF/p1726148939472909
-            device.features.internal_model !== PROTO.DeviceModelInternal.T2T1 &&
-            // ok this started to happen also when updating from 2.8.7 to 2.8.9 T3T1
-            device.features.internal_model !== PROTO.DeviceModelInternal.T3T1;
+        // We are disabling language update during firmware update since it was already disabled for T3T1 due to some memory issues
+        // and since version 2.9.0 the language blobs are changing from V0 to V1 that is not supporter by FW before 2.9.0 it
+        // cannot be updated during FW update for T2B1 and T3B1 so we disable it for now until we have better solution.
+        // The consequences of disabling it are that FW installation screen will be in English but the device will be
+        // updated with the correct translations once device initialized thanks to `changeLanguage` in Device._runInner().
+        const language = false;
 
         return {
             /** RebootToBootloader is not supported */
