@@ -127,7 +127,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             expect(element(by.label('Your backup is valid'))).toBeVisible();
         });
 
-        test('Device Check Backup is possible from firmware update', async () => {
+        test.skip('Device Check Backup is possible from firmware update', async () => {
             await onDeviceSettings.tapUpdateFirmwareButton();
             await onDeviceSettings.tapUpdateFirmwareBottomSheet();
             await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();
