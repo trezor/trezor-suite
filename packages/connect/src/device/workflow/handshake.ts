@@ -3,13 +3,10 @@ import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import { TypedError } from '../../constants/errors';
-import { DataManager } from '../../data/DataManager';
 import { WorkflowContext } from '../../types/workflow';
 import { Log } from '../../utils/debug';
 
 const CANCEL_TIMEOUT = 1_000;
-// Due to performance issues in suite-native during app start, original timeout is not sufficient.
-const CANCEL_TIMEOUT_REACT_NATIVE = 20_000;
 const ATTEMPTS_LIMIT = 10;
 
 type Context = {
@@ -36,15 +33,12 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
         return;
     }
 
-    const isNative = DataManager.getSettings('env') === 'react-native';
-    const cancelTimeout = isNative ? CANCEL_TIMEOUT_REACT_NATIVE : CANCEL_TIMEOUT;
-
     logger?.debug('handshake Cancel start');
 
     // send could fail on T1 bootloader when device has erase/wipe button request displayed
     const send = await device
         .getCurrentSession()
-        .send('Cancel', {}, { signal, timeout: cancelTimeout });
+        .send('Cancel', {}, { signal, timeout: CANCEL_TIMEOUT });
 
     if (!send.success) {
         logger?.debug(`handshake Cancel send error ${send.error}`);
@@ -60,7 +54,7 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
 
         const result = await device.getCurrentSession().receive({
             signal,
-            timeout: cancelTimeout, // need longer timeout for bridge?
+            timeout: CANCEL_TIMEOUT, // need longer timeout for bridge?
         });
 
         // Older T1 don't respond to Cancel message which seems to be recoverable only by reacquiring
