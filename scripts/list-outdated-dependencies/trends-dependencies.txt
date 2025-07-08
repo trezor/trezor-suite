@@ -30,7 +30,6 @@
 @testing-library/jest-dom
 @testing-library/react
 @testing-library/user-event
-@types/bchaddrjs
 @types/invity-api
 @types/jws
 @types/redux-logger
@@ -40,7 +39,6 @@
 ajv
 babel-jest
 babel-loader
-bchaddrjs
 copy-webpack-plugin
 eth-phishing-detect
 html-webpack-plugin
