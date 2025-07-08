@@ -8,7 +8,6 @@ import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { Device } from './Device';
-import { DataManager } from '../data/DataManager';
 import { DEVICE } from '../events';
 import { initLog } from '../utils/debug';
 
@@ -63,10 +62,6 @@ const error = (error: Error) => ({ success: false as const, error });
 const nestedError = (cause: Error) => error(ERRORS.nestError(cause));
 const fail = (msg: string) =>
     error(isErrorWithoutDeviceInteraction(msg) ? new ERRORS.TransportError(msg) : new Error(msg));
-
-const getFeaturesTimeout = () =>
-    // Due to performance issues in suite-native during app start, original timeout is not sufficient.
-    DataManager.getSettings('env') === 'react-native' ? 20_000 : 3_000;
 
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
@@ -190,7 +185,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             // transport response is pending endlessly, calling any other message will end up with "device call in progress"
             // set the timeout for this call so whenever it happens "unacquired device" will be created instead
             // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
-            const timeout = name === 'GetFeatures' ? getFeaturesTimeout() : undefined;
+            const timeout = name === 'GetFeatures' ? 3_000 : undefined;
 
             const callPromise = this.call(name, data, { timeout });
 
