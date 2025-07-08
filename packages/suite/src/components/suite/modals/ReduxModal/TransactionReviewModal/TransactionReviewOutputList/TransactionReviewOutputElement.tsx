@@ -1,11 +1,12 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
+    Box,
     Card,
     Column,
     DotIndicator,
@@ -15,9 +16,11 @@ import {
     Note,
     Row,
     Text,
+    TextButton,
+    useElevation,
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
+import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -41,11 +44,75 @@ const getCardanoFingerprint = (
     return token?.fingerprint;
 };
 
-const DataWrapper = styled.p`
+const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
     word-break: break-all;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
+    cursor: pointer;
+    position: relative;
+
+    ${({ $isExpanded, $elevation, theme }) =>
+        !$isExpanded &&
+        css`
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            /* Bottom shadow */
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 40px;
+                background: linear-gradient(
+                    to bottom,
+                    rgb(0 0 0 / 0%) 0%,
+                    ${mapElevationToBackground({ theme, $elevation })} 100%
+                );
+                pointer-events: none;
+            }
+        `}
 `;
+
+const MAX_COLLAPSED_DATA_LENGTH = 400;
+
+const Data = ({ value }: { value: string }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const { parentElevation } = useElevation();
+    const isTooLong = value.length > MAX_COLLAPSED_DATA_LENGTH;
+
+    if (!isTooLong) {
+        return (
+            <DataWrapper $isExpanded $elevation={parentElevation}>
+                {value}
+            </DataWrapper>
+        );
+    }
+
+    return (
+        <Box>
+            <DataWrapper
+                onClick={() => setIsExpanded(!isExpanded)}
+                $isExpanded={isExpanded}
+                $elevation={parentElevation}
+            >
+                {isExpanded ? value : value.slice(0, MAX_COLLAPSED_DATA_LENGTH)}
+            </DataWrapper>
+            <Row justifyContent="center">
+                <TextButton
+                    variant="tertiary"
+                    icon={isExpanded ? 'caretUp' : 'caretDown'}
+                    iconAlignment="start"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                >
+                    <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />
+                </TextButton>
+            </Row>
+        </Box>
+    );
+};
 
 const Status = ({ state }: { state: TransactionReviewOutputElementProps['state'] }) => {
     switch (state) {
@@ -81,7 +148,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
         case 'safe-address':
             return <Address value={value} />;
         case 'data':
-            return <DataWrapper>{value}</DataWrapper>;
+            return <Data value={value} />;
         case 'amount': {
             const isTokenAmount = !isFee && token;
             const formattedValue = isTokenAmount
