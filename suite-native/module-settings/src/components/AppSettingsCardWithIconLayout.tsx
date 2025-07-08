@@ -13,7 +13,6 @@ export const AppSettingsCardWithIconLayout = ({
         icon={icon}
         title={title}
         noShadow={noShadow}
-        paddingVertical="sp12"
         onPress={onPress}
         testID={testID}
         subtitle={subtitle}

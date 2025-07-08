@@ -15,6 +15,7 @@ type SelectProps<TItemValue extends SelectItemValue> = {
     onSelectItem: (value: TItemValue) => void;
     selectLabel?: ReactNode;
     testID?: string;
+    shouldDisplayLabelInTrigger?: boolean;
 };
 
 export const Select = <TItemValue extends SelectItemValue>({
@@ -23,6 +24,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     selectValue,
     onSelectItem,
     testID,
+    shouldDisplayLabelInTrigger = true,
 }: SelectProps<TItemValue>) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -51,7 +53,7 @@ export const Select = <TItemValue extends SelectItemValue>({
             </BottomSheet>
             <SelectTrigger
                 value={selectedItem?.label ?? null}
-                label={selectLabel}
+                label={shouldDisplayLabelInTrigger && selectLabel}
                 handlePress={() => setIsOpen(true)}
                 testID={testID}
             />
