@@ -118,8 +118,20 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         );
     }
 
-    getButtonRequestData(code: string) {
-        if (code === 'ButtonRequest_Other' || code === 'ButtonRequest_SignTx') {
+    getButtonRequestData(code: string, name?: string) {
+        if (
+            (code === 'ButtonRequest_Other' &&
+                name &&
+                [
+                    'should_show_domain',
+                    'should_show_struct',
+                    'should_show_array',
+                    'confirm_typed_value',
+                    'confirm_empty_typed_message',
+                    'confirm_typed_data_final',
+                ].includes(name)) ||
+            code === 'ButtonRequest_SignTx'
+        ) {
             return {
                 type: 'message' as const,
                 coin: this.params.network?.shortcut ?? 'ETH',
