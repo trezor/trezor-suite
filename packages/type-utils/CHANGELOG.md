@@ -1,3 +1,7 @@
+# 1.1.8
+
+- npm-prerelease: @trezor/type-utils 1.1.8-beta.1 (4d38a22dc2)
+
 # 1.1.7
 
 - npm-prerelease: @trezor/type-utils 1.1.7-beta.1 (df073166ad)
