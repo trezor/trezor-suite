@@ -17,7 +17,7 @@ import { Card, CheckBox, Divider, HStack, Text, TextButton, VStack } from '@suit
 import {
     AccountAddressFormatter,
     CryptoAmountFormatter,
-    FiatAmountFormatter,
+    CryptoToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -93,7 +93,7 @@ export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = fals
                                 symbol={symbol}
                             />
                             <Text color="textSubdued">≈</Text>
-                            <FiatAmountFormatter
+                            <CryptoToFiatAmountFormatter
                                 color="textSubdued"
                                 variant="highlight"
                                 symbol={symbol}

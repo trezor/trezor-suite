@@ -31,7 +31,7 @@ describe('useUtxoSelection', () => {
         const { result } = renderHook(() => useUtxoSelection());
 
         expect(result.current.selectedUtxos).toEqual([]);
-        expect(result.current.totalSelectedAmount).toBe('0');
+        expect(result.current.totalSelectedAmount.toString()).toEqual('0');
         expect(result.current.isCoinControlEnabled).toBe(false);
     });
 
@@ -60,6 +60,6 @@ describe('useUtxoSelection', () => {
 
         const { result } = renderHook(() => useUtxoSelection());
 
-        expect(result.current.totalSelectedAmount).toBe('3000');
+        expect(result.current.totalSelectedAmount.toString()).toEqual('3000');
     });
 });
