@@ -1,6 +1,7 @@
 export * from './accountUtils';
 export * from './backendUtils';
 export * from './balanceUtils';
+export * from './bitcoinUtils';
 export * from './calculateChainedTransactionsFeeForRbf';
 export * from './cardanoUtils';
 export * from './csvParserUtils';
