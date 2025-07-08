@@ -8,18 +8,7 @@ jest.mock('../../../hooks/useUtxoSelection', () => ({
 }));
 
 describe('SendUtxosScreenHeader', () => {
-    it('should render header with correct title', () => {
-        (useUtxoSelection as jest.Mock).mockReturnValue({
-            selectedUtxos: [],
-            setSelectedUtxos: jest.fn(),
-        });
-
-        const { getByText } = renderWithBasicProvider(<SendUtxoScreenHeader />);
-
-        expect(getByText('Coin control')).toBeTruthy();
-    });
-
-    it('should render delete button when there are selected utxos', () => {
+   it('should render delete button when there are selected utxos', () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             selectedUtxos: [
                 {

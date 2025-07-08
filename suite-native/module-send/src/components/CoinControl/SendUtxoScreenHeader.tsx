@@ -31,7 +31,7 @@ export const SendUtxoScreenHeader = ({ onDelete }: SendUtxoScreenHeaderProps) =>
 
     return (
         <ScreenHeader
-            content={translate('moduleSend.coinControl.title')}
+            title={translate('moduleSend.coinControl.title')}
             closeActionType="close"
             rightIcon={
                 selectedUtxos.length > 0 && (
