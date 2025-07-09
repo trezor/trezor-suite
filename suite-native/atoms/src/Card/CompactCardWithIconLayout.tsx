@@ -53,6 +53,10 @@ const contentStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
 }));
 
+const touchableOpacityStyle = prepareNativeStyle(utils => ({
+    ...utils.boxShadows.small,
+}));
+
 export const CompactCardWithIconLayout = ({
     icon,
     title,
@@ -68,8 +72,13 @@ export const CompactCardWithIconLayout = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity disabled={isDisabled} onPress={onPress} {...pressableProps}>
-            <Card noPadding borderColor={borderColor ?? undefined}>
+        <TouchableOpacity
+            style={applyStyle(touchableOpacityStyle)}
+            disabled={isDisabled}
+            onPress={onPress}
+            {...pressableProps}
+        >
+            <Card noPadding noShadow borderColor={borderColor ?? undefined}>
                 <HStack
                     paddingHorizontal="sp16"
                     paddingVertical="sp12"
