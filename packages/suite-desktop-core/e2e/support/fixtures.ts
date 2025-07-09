@@ -16,6 +16,7 @@ import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
+import { StakingSection } from './pageObjects/stakingSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
 import { WalletPage } from './pageObjects/walletPage';
@@ -41,6 +42,7 @@ type Fixtures = {
     blockbookMock: BlockbookMock;
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
+    stakingSection: StakingSection;
 };
 
 const suiteTest = suiteBaseTest.extend<Fixtures>({
@@ -114,6 +116,9 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     },
     connectPermissionsModal: async ({ page }, use) => {
         await use(new ConnectPermissionsModal(page));
+    },
+    stakingSection: async ({ page }, use) => {
+        await use(new StakingSection(page));
     },
 });
 
