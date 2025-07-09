@@ -144,26 +144,26 @@ export const useHandleDeviceConnection = () => {
     useEffect(() => {
         if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused) return;
 
-        if (
-            isDeviceInitialized &&
-            isDeviceConnected &&
-            isOnboardingFinished &&
-            !isPortfolioTrackerDevice &&
-            !isDeviceConnectedAndAuthorized &&
-            !isBiometricsOverlayVisible &&
-            !shouldNavigateToDeviceCompromisedModal &&
-            !isDeviceOnboardingStackFocused &&
-            !isDeviceUsingPassphrase &&
-            !shouldBlockSendReviewRedirect
-        ) {
-            if (isCoinEnablingInitFinished) {
-                navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                    screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
-                });
-            } else {
-                navigation.navigate(RootStackRoutes.CoinEnablingInit);
-            }
-        }
+        // if (
+        //     isDeviceInitialized &&
+        //     isDeviceConnected &&
+        //     isOnboardingFinished &&
+        //     !isPortfolioTrackerDevice &&
+        //     !isDeviceConnectedAndAuthorized &&
+        //     !isBiometricsOverlayVisible &&
+        //     !shouldNavigateToDeviceCompromisedModal &&
+        //     !isDeviceOnboardingStackFocused &&
+        //     !isDeviceUsingPassphrase &&
+        //     !shouldBlockSendReviewRedirect
+        // ) {
+        //     if (isCoinEnablingInitFinished) {
+        //         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+        //             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
+        //         });
+        //     } else {
+        //         navigation.navigate(RootStackRoutes.CoinEnablingInit);
+        //     }
+        // }
         if (shouldNavigateToDeviceCompromisedModal) {
             navigation.navigate(RootStackRoutes.DeviceCompromisedModal, { failedCheck });
         }
