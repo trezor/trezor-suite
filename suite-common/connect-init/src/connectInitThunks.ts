@@ -18,10 +18,12 @@ import TrezorConnect, {
     DEVICE,
     DEVICE_EVENT,
     Device,
+    Response,
     TRANSPORT_EVENT,
     UI,
     UI_EVENT,
 } from '@trezor/connect';
+import { MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
 import { isDesktop } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
 import { getSynchronize } from '@trezor/utils';
@@ -140,7 +142,10 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 if (!original) return;
                 (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
                     const result = await synchronize(async () => {
-                        const infoResult = await original({ ...params, __info: true });
+                        const infoResult: Awaited<Response<MethodInfo>> = await original({
+                            ...params,
+                            __info: true,
+                        });
 
                         const shouldLockDevice = infoResult.success && infoResult.payload.useDevice;
                         if (shouldLockDevice) {
