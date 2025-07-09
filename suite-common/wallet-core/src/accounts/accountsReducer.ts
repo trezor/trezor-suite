@@ -65,31 +65,20 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 remove(state, action.payload);
             })
             .addCase(accountsActions.createAccount, (state, action) => {
-                const { deviceState, symbol, accountType } = action.payload;
-                const matchingNetworkAndTypeAccounts = state.filter(
-                    account =>
-                        account.deviceState === deviceState &&
-                        account.symbol === symbol &&
-                        account.accountType === accountType,
-                );
-
-                const indexOfPreviousAccount = matchingNetworkAndTypeAccounts.length;
+                const { symbol, index } = action.payload;
                 const networkName = networks[symbol].name;
-                const accountLabel =
-                    action.payload.accountLabel ?? `${networkName} #${indexOfPreviousAccount + 1}`;
+                const accountLabel = action.payload.accountLabel ?? `${networkName} #${index + 1}`;
+                // remove "transactions" field, they are stored in "transactionReducer"
+                const history = enhanceHistory(action.payload.history);
 
-                const account = {
-                    ...action.payload,
-                    accountLabel,
-                    // remove "transactions" field, they are stored in "transactionReducer"
-                    history: enhanceHistory(action.payload.history),
-                };
+                const account = { ...action.payload, accountLabel, history };
+
                 if (state.some(accountEqualTo(account))) {
-                    console.warn('Prevented duplicate account in accountsReducer: ', account);
-
-                    return;
+                    console.warn('Duplicated account found, updating instead: ', account);
+                    update(state, account);
+                } else {
+                    state.push(account);
                 }
-                state.push(account);
             })
             .addCase(accountsActions.updateAccount, (state, action) => {
                 update(state, action.payload);
