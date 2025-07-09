@@ -41,8 +41,9 @@ const getOrCreateTransport = (
             return tryGetTransport(transports, transportInstance.name) ?? transportInstance;
         }
     } else if (isTransportInstance(transportType)) {
-        if (tryGetTransport(transports, transportType.name)) {
-            return transportType;
+        const existing = tryGetTransport(transports, transportType.name);
+        if (existing) {
+            return existing;
         }
 
         // custom Transport might be initialized without messages, update them if so
