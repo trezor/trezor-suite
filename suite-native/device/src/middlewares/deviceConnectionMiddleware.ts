@@ -77,8 +77,11 @@ export const deviceConnectionEffect = (
     if (isFirmwareInstallationRunning) return;
 
     const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(getState());
-    // Only display connecting screen for unauthorized devices
-    // TODO this seems smelly - why would newly connected device be authorized?
+
+    // Probably doesn't need to be here. It was added when authorizeDeviceThunk was called from useEffect
+    // inside useHandleDeviceConnection. Now the device is authorized regardless and I think we can navigate
+    // since it was because of biometrics and those are handled separately.
+    // Reference https://github.com/trezor/trezor-suite/pull/11319/commits/a9152279fe6d70c57fa16ee0bf75dc9fd52bb930
     if (isDeviceConnectedAndAuthorized) return;
 
     const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());

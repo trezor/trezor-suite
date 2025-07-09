@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
+import {
+    restartDeviceConnectionListening,
+    stopDeviceConnectionListening,
+} from '@suite-native/device';
 import { Icon, iconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -33,6 +38,12 @@ export const BiometricOverlay = ({
     onBiometricAuthPress,
 }: BiometricOverlayProps) => {
     const { applyStyle } = useNativeStyles();
+
+    useEffect(() => {
+        stopDeviceConnectionListening();
+
+        return () => restartDeviceConnectionListening();
+    }, []);
 
     return (
         <>
