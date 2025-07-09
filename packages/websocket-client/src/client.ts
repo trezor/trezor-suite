@@ -51,7 +51,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         this.options = options;
         this.messages = createDeferredManager({
             timeout: this.options.timeout || DEFAULT_TIMEOUT,
-            onTimeout: this.onTimeout.bind(this),
+            onTimeout: promiseId => this.onMessageTimeout(promiseId),
         });
     }
 
@@ -93,7 +93,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         return this.ping();
     }
 
-    private onTimeout() {
+    onMessageTimeout(_promiseId: number) {
         const { ws } = this;
         if (!ws) return;
         this.messages.rejectAll(new WebsocketError('websocket_timeout'));
