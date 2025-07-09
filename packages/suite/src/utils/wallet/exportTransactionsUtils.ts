@@ -2,7 +2,6 @@ import { format } from 'date-fns';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TokenDefinitions, getIsPhishingTransaction } from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -22,6 +21,7 @@ import {
     localizeNumber,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TransactionTarget } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

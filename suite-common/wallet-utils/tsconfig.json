@@ -5,7 +5,6 @@
     "references": [
         { "path": "../fiat-services" },
         { "path": "../metadata-types" },
-        { "path": "../suite-config" },
         { "path": "../suite-types" },
         { "path": "../test-utils" },
         { "path": "../wallet-config" },

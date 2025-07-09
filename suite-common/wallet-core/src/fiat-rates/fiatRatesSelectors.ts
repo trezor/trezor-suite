@@ -1,6 +1,5 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -24,6 +23,7 @@ import {
     isNftTokenTransfer,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { MAX_AGE } from './fiatRatesConstants';
 import { FiatRatesRootState } from './fiatRatesTypes';

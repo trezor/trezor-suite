@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     TokenDefinitions,
     selectCoinDefinitions,
@@ -26,6 +25,7 @@ import {
     hasNetworkFeatures,
     isNftToken,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetLogo, Card, Column, IconButton, Row, Text } from '@trezor/components';
 import {

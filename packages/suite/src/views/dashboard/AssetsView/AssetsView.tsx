@@ -1,7 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
 import { AssetFiatBalance } from '@suite-common/assets';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     type Network,
     type NetworkSymbol,
@@ -22,6 +21,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Button, Card, Icon, LoadingContent, Row } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';

@@ -1,7 +1,7 @@
 import { A, D, pipe } from '@mobily/ts-belt';
 import { differenceInMinutes, eachMinuteOfInterval, fromUnixTime, getUnixTime } from 'date-fns';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {

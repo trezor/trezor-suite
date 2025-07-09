@@ -6,9 +6,6 @@
             "path": "../../suite-common/analytics"
         },
         {
-            "path": "../../suite-common/suite-config"
-        },
-        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -35,6 +32,9 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../toasts" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },

@@ -1,5 +1,5 @@
-import { BaseCurrencyCode, baseCurrencies } from '@suite-common/suite-config';
 import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
+import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { typedObjectKeys } from '@trezor/utils';
 

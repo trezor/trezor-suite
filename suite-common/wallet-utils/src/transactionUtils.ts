@@ -2,7 +2,6 @@ import { addDays, startOfMonth } from 'date-fns';
 import { fromWei, toWei } from 'web3-utils';
 
 import { AccountLabels } from '@suite-common/metadata-types';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { SignOperator } from '@suite-common/suite-types';
 import {
     Account,
@@ -19,6 +18,7 @@ import {
     TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     AccountAddress,
     AccountTransaction,

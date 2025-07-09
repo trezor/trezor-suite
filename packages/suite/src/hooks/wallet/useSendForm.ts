@@ -9,7 +9,6 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
@@ -20,6 +19,7 @@ import {
     getFeeInfo,
     useExcludedUtxos,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { fillSendForm } from 'src/actions/suite/protocolActions';

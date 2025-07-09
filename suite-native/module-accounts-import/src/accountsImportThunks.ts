@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     getSupportedDefinitionTypes,
     getTokenDefinitionThunk,
@@ -17,6 +16,7 @@ import {
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { isCoinWithTokens } from '@suite-native/tokens';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { convertTaprootXpub } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';

@@ -1,6 +1,6 @@
 import { IntlShape } from 'react-intl';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
 export type FormatterProviderConfig = {

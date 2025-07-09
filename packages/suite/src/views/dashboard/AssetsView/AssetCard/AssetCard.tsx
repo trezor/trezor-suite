@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux';
 import styled, { useTheme } from 'styled-components';
 
 import { AssetFiatBalance } from '@suite-common/assets';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     Card,
     Column,

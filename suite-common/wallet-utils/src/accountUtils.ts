@@ -1,4 +1,3 @@
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
@@ -24,6 +23,7 @@ import {
     ReceiveInfo,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 import {
     AccountAddress,

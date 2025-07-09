@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
@@ -12,6 +11,7 @@ import {
     sumTransactions,
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Box, CollapsibleBox, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

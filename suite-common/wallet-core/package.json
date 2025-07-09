@@ -17,7 +17,6 @@
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
