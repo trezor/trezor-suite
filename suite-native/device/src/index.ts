@@ -1,6 +1,7 @@
 export * from './middlewares/deviceMiddleware';
 export * from './middlewares/deviceConnectionMiddleware';
 export * from './hooks/useHandleDeviceConnection';
+export * from './hooks/useDisableDeviceConnectionOnFocus';
 export * from './hooks/useDetectDeviceError';
 export * from './hooks/useWipeDevice';
 export * from './hooks/useDeviceAuthenticityCheck';

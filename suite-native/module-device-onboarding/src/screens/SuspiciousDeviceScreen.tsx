@@ -1,12 +1,8 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
 import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
-import {
-    restartDeviceConnectionListening,
-    stopDeviceConnectionListening,
-} from '@suite-native/device';
+import { useDisableDeviceConnectionOnFocus } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -48,11 +44,7 @@ export const SuspiciousDeviceScreen = ({
     const openLink = useOpenLink();
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
 
-    useEffect(() => {
-        stopDeviceConnectionListening();
-
-        return () => restartDeviceConnectionListening();
-    }, []);
+    useDisableDeviceConnectionOnFocus();
 
     const supportLink = causeToLinkMap[suspicionCause];
 
