@@ -2,11 +2,12 @@ import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import { step } from '../common';
 import { fixtures as dogeFixtures } from './doge-endpoints';
-import { fixtures as ethFixtures } from './eth-endpoints';
+import { ETH_ACC, fixtures as ethFixtures } from './eth-endpoints';
 import { fixtures as ltcFixtures } from './ltc-mw-endpoints';
 
 export class BlockbookMock {
     private mockServer: BackendWebsocketServerMock | undefined;
+    private accountState: any = null;
 
     get url() {
         if (!this.mockServer) {
@@ -23,6 +24,8 @@ export class BlockbookMock {
             case 'doge':
                 return dogeFixtures;
             case 'eth':
+                this.accountState = ETH_ACC;
+
                 return ethFixtures;
             default:
                 throw new Error('Unknown blockbook mock type');
@@ -33,6 +36,7 @@ export class BlockbookMock {
     async start(type: 'ltc' | 'doge' | 'eth') {
         this.mockServer = await BackendWebsocketServerMock.create('blockbook');
         const fixtures = this.selectFixture(type);
+
         this.mockServer.setFixtures(fixtures);
     }
 
@@ -41,5 +45,35 @@ export class BlockbookMock {
         if (this.mockServer) {
             this.mockServer.stop();
         }
+    }
+
+    @step()
+    updateAccountState(accountData: any) {
+        if (!this.mockServer) {
+            throw new Error('Blockbook mock not initialized');
+        }
+
+        this.accountState = { ...this.accountState, ...accountData };
+        const currentFixture = this.mockServer.getFixtures();
+        if (!currentFixture) {
+            throw new Error('No fixtures found in Blockbook mock');
+        }
+
+        const updatedFixtures = currentFixture.map(fixture => {
+            if (fixture.method === 'getAccountInfo') {
+                return {
+                    ...fixture,
+                    response: ({ params }: any) => {
+                        if (params.descriptor === this.accountState.address) {
+                            return { data: this.accountState };
+                        }
+                    },
+                };
+            }
+
+            return fixture;
+        });
+
+        this.mockServer.setFixtures(updatedFixtures);
     }
 }
