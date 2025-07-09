@@ -120,7 +120,7 @@ export const AssetsView = () => {
     const assetSymbols = Object.keys(assets).filter(symbol => isNetworkSymbol(symbol));
 
     const assetsData: AssetData[] = assetSymbols
-        .map(symbol => {
+        .map((symbol): AssetData => {
             const network = getNetwork(symbol);
 
             const assetNativeCryptoBalance = assets[symbol]?.reduce(
@@ -139,13 +139,12 @@ export const AssetsView = () => {
             const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
 
             return {
-                symbol,
                 network,
                 failed: !!assetFailed,
                 assetNativeCryptoBalance: assetNativeCryptoBalance
-                    ? assetNativeCryptoBalance.toNumber()
+                    ? assetNativeCryptoBalance.toFixed()
                     : '0',
-                assetTokens: assetTokens?.length ? assetTokens : undefined,
+                assetTokens: assetTokens?.length ? assetTokens : [],
                 stakingAccounts: accounts.filter(
                     account =>
                         isSupportedEthStakingNetworkSymbol(account.symbol) ||

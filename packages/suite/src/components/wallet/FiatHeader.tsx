@@ -1,41 +1,12 @@
-import { PropsWithChildren } from 'react';
-
-import styled from 'styled-components';
-
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    BASE_CURRENCY_ZERO,
-    asBaseCurrencyAmount,
-    useShouldRedactNumbers,
-} from '@suite-common/wallet-utils';
-import { typography } from '@trezor/theme';
+import { BASE_CURRENCY_ZERO, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder, RedactNumericalValue } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { HiddenPlaceholder } from 'src/components/suite';
 
-const ValueWrapper = styled.div`
-    display: flex;
-    align-items: flex-end;
-`;
-
-const WholeValue = styled.div<{ $size: 'large' | 'medium' }>`
-    ${({ $size }) => ($size === 'large' ? typography.titleLarge : typography.titleMedium)};
-    color: ${({ theme }) => theme.textDefault};
-    font-variant-numeric: tabular-nums;
-`;
-
-const DecimalValue = styled.div<{ $size: 'large' | 'medium' }>`
-    ${typography.hint};
-    font-variant-numeric: tabular-nums;
-    align-self: flex-end;
-    letter-spacing: 0.565px;
-    margin-bottom: ${({ $size }) => `${$size === 'large' ? '6px' : '2px'}`};
-    color: ${({ theme }) => theme.textSubdued};
-`;
+import { BigAmountValue } from './BigAmountValue';
+import { useFiatFromCryptoValue } from '../../hooks/suite/useFiatFromCryptoValue';
 
 type UseFiatAmountProps = { amount: string; symbol?: NetworkSymbol };
 
@@ -44,10 +15,6 @@ type FiatHeaderProps = {
     localCurrency: string;
     'data-testid'?: string;
 } & UseFiatAmountProps;
-
-// redacted value placeholder doesn't have to be displayed twice, display it only for whole value
-const HideRedactedValue = ({ children }: PropsWithChildren) =>
-    useShouldRedactNumbers() ? null : children;
 
 const useFiatAmount = ({ amount, symbol }: UseFiatAmountProps) => {
     const { fiatAmount } = useFiatFromCryptoValue({
@@ -72,7 +39,6 @@ export const FiatHeader = ({
     localCurrency,
     'data-testid': dataTestId,
 }: FiatHeaderProps) => {
-    const language = useSelector(selectLanguage);
     const fiatAmount = useFiatAmount({ amount, symbol });
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const formattedAmount = BaseCurrencyAmountFormatter({
@@ -81,23 +47,10 @@ export const FiatHeader = ({
     });
 
     const formattedFiatAmount = formattedAmount?.props.children;
-    const [whole, separator, fractional] = ['en', 'ja', 'zh'].includes(language)
-        ? formattedFiatAmount.split(/(\.)/)
-        : formattedFiatAmount.split(/(,)/);
 
     return (
         <HiddenPlaceholder enforceIntensity={10}>
-            <ValueWrapper data-testid={dataTestId}>
-                <WholeValue $size={size}>
-                    <RedactNumericalValue value={whole} />
-                </WholeValue>
-                <HideRedactedValue>
-                    <DecimalValue $size={size}>
-                        {separator}
-                        {fractional}
-                    </DecimalValue>
-                </HideRedactedValue>
-            </ValueWrapper>
+            <BigAmountValue formattedStringAmount={formattedFiatAmount} data-testid={dataTestId} size={size}/>
         </HiddenPlaceholder>
     );
 };
