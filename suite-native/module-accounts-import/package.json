@@ -19,7 +19,6 @@
         "@shopify/flash-list": "1.7.6",
         "@shopify/react-native-skia": "^2.0.5",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/suite-config": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

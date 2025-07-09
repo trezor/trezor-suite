@@ -6,7 +6,6 @@
         { "path": "../device-authenticity" },
         { "path": "../fiat-services" },
         { "path": "../redux-utils" },
-        { "path": "../suite-config" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },

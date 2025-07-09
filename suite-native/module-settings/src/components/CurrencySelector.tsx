@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { BaseCurrency, BaseCurrencyCode, baseCurrencies } from '@suite-common/suite-config';
 import { selectLocalCurrency, setLocalCurrency } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { BaseCurrency, BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 

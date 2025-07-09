@@ -9,7 +9,6 @@ import {
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { baseCurrencies } from '@suite-common/suite-config';
 import { Network, NetworkType } from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
@@ -32,6 +31,7 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { baseCurrencies } from '@trezor/blockchain-link-types';
 import {
     ComposeOutput,
     EthereumTransaction,

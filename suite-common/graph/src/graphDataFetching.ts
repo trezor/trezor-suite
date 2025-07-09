@@ -4,12 +4,12 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

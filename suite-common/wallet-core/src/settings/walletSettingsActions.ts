@@ -1,7 +1,7 @@
 import { Dispatch, createAction } from '@reduxjs/toolkit';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
 import { WALLET_SETTINGS } from './walletSettingsConstants';

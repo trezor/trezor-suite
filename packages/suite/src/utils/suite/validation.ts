@@ -1,5 +1,4 @@
 import { Formatter } from '@suite-common/formatters';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -9,6 +8,7 @@ import {
     isInteger,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';

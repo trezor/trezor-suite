@@ -1,6 +1,5 @@
 import { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import type { Network } from '@suite-common/wallet-config';
 import {
     Account,
@@ -9,6 +8,7 @@ import {
     Rate,
     StakeFormState,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { FeeLevel } from '@trezor/connect';
 
 export enum EverstakeEndpointType {

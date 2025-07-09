@@ -1,4 +1,3 @@
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     EnhancedTokenInfo,
     TokenDefinition,
@@ -13,6 +12,7 @@ import {
     isNftToken,
     isTokenMatchesSearch,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

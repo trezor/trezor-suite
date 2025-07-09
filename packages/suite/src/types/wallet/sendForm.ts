@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { Network } from '@suite-common/wallet-config';
 import {
     Account,
@@ -17,6 +16,7 @@ import {
     UtxoSorting,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
 import {

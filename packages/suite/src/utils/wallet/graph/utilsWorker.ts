@@ -1,7 +1,7 @@
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
 import { typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

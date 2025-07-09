@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { Fees } from './fees';
 import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';

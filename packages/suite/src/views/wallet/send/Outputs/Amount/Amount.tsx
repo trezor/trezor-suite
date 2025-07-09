@@ -1,4 +1,3 @@
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
@@ -10,6 +9,7 @@ import {
     hasNetworkFeatures,
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

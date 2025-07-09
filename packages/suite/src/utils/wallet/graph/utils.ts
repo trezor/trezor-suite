@@ -1,11 +1,11 @@
 import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { resetTime } from '@suite-common/suite-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

@@ -1,7 +1,6 @@
 import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
@@ -18,6 +17,7 @@ import {
     getInputState,
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

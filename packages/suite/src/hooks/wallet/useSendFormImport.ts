@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { BaseCurrencyCode, baseCurrencies } from '@suite-common/suite-config';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
@@ -12,6 +11,7 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 
 import { importSendFormRequestThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch } from 'src/hooks/suite';

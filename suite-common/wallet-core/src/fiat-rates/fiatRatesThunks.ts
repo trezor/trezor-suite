@@ -1,6 +1,5 @@
 import { fetchCurrentFiatRates, fetchLastWeekFiatRates } from '@suite-common/fiat-services';
 import { createThunk } from '@suite-common/redux-utils';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import {
@@ -18,6 +17,7 @@ import {
     groupTokensTransactionsByContractAddress,
     isTestnet,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TimerId, exhaustive } from '@trezor/type-utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';

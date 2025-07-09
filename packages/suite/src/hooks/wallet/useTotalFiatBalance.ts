@@ -1,6 +1,6 @@
-import type { BaseCurrencyCode } from '@suite-common/suite-config';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';

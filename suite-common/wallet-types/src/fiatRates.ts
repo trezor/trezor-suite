@@ -1,5 +1,5 @@
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol } from '@trezor/connect';
 import { Branded } from '@trezor/type-utils';
 

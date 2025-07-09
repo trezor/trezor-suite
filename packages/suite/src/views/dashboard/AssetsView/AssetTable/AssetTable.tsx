@@ -1,6 +1,6 @@
 import { AssetFiatBalance } from '@suite-common/assets';
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { RatesByKey } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,6 +1,5 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { isBlockbookBasedNetwork } from '@suite-common/wallet-config';
 import type {
     FiatRatesResult,
@@ -8,6 +7,7 @@ import type {
     TickerId,
     Timestamp,
 } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import {
     SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE,
