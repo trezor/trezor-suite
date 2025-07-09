@@ -3,7 +3,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { enhanceHistory, isAccountInCollection } from '@suite-common/wallet-utils';
+import { accountEqualTo, enhanceHistory } from '@suite-common/wallet-utils';
 
 import { accountsActions } from './accountsActions';
 import { deviceActions } from '../device/deviceActions';
@@ -22,9 +22,6 @@ const findCoinjoinAccount =
     (key: string) =>
     (account: Account): account is Extract<Account, { backendType: 'coinjoin' }> =>
         account.key === key && account.backendType === 'coinjoin';
-
-const accountEqualTo = (b: Account) => (a: Account) =>
-    a.deviceState === b.deviceState && a.descriptor === b.descriptor && a.symbol === b.symbol;
 
 const update = (state: Account[], account: Account) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
@@ -87,7 +84,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                     // remove "transactions" field, they are stored in "transactionReducer"
                     history: enhanceHistory(action.payload.history),
                 };
-                if (isAccountInCollection(account, state)) {
+                if (state.some(accountEqualTo(account))) {
                     console.warn('Prevented duplicate account in accountsReducer: ', account);
 
                     return;
