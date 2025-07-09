@@ -4,6 +4,7 @@ import { LinearTransition } from 'react-native-reanimated';
 import { AnimatedBox, Card, VStack } from '@suite-native/atoms';
 
 import { ExchangeAlert } from './ExchangeAlert';
+import { ExchangeConfirmation } from './ExchangeConfirmation';
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
 import { ExchangeRatePicker } from './ExchangeRatePicker';
 import { ExchangeReceiveAccountPicker } from './receive/ExchangeReceiveAccountPicker';
@@ -32,11 +33,14 @@ const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoized
             {isAmountInputActive ? (
                 <AmountEditingDoneButton />
             ) : (
-                <Card noPadding>
-                    <ExchangeReceiveAccountPicker />
-                    <ExchangeRatePicker />
-                    <ExchangeProviderPicker />
-                </Card>
+                <>
+                    <Card noPadding>
+                        <ExchangeReceiveAccountPicker />
+                        <ExchangeRatePicker />
+                        <ExchangeProviderPicker />
+                    </Card>
+                    <ExchangeConfirmation enteringAnimation={LinearTransition} />
+                </>
             )}
         </VStack>
     </AnimatedBox>

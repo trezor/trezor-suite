@@ -1,7 +1,7 @@
 import { act, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { BuyLegalSheet, LegalSheetProps } from '../BuyLegalSheet';
+import { BuyLegalSheet, BuyLegalSheetProps } from '../BuyLegalSheet';
 
 jest.mock('@suite-common/wallet-core', () => {
     const fiatRate = { rate: 1e8 };
@@ -13,7 +13,7 @@ jest.mock('@suite-common/wallet-core', () => {
 });
 
 describe('BuyLegalSheet', () => {
-    const renderLegalSheet = (props?: Partial<LegalSheetProps>) =>
+    const renderLegalSheet = (props?: Partial<BuyLegalSheetProps>) =>
         renderWithStoreProviderAsync(
             <BuyLegalSheet
                 isVisible

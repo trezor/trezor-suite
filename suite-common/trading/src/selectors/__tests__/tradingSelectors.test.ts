@@ -49,6 +49,7 @@ import {
     selectTradingExchange,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
+    selectTradingExchangeIsLoading,
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
@@ -891,6 +892,18 @@ describe('tradingSelectors', () => {
         it('should return correct quote', () => {
             const result = selectTradingBuyQuoteByOrderId(state, 'orderId1');
             expect(result?.orderId).toBe('orderId1');
+        });
+    });
+
+    describe('selectTradingExchangeIsLoading', () => {
+        it('should be false when trading is not loading', () => {
+            expect(selectTradingExchangeIsLoading(state)).toBe(false);
+        });
+
+        it('should be true when trading is loading', () => {
+            state.wallet.tradingNew.exchange.isLoading = true;
+
+            expect(selectTradingExchangeIsLoading(state)).toBe(true);
         });
     });
 

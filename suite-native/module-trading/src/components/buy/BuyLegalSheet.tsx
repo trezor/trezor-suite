@@ -15,7 +15,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useBottomSheetBackButtonSubscription } from '../../hooks/general/useBottomSheetBackButtonSubscription';
 
-export type LegalSheetProps = {
+export type BuyLegalSheetProps = {
     isVisible: boolean;
     onConsent: () => void;
     onDismiss: () => void;
@@ -37,7 +37,7 @@ const Info = ({ children }: { children: ReactNode }) => (
 );
 
 export const BuyLegalSheet = memo(
-    ({ isVisible, onConsent, onDismiss, tradeProvider }: LegalSheetProps) => {
+    ({ isVisible, onConsent, onDismiss, tradeProvider }: BuyLegalSheetProps) => {
         const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
         const providers = useSelector(selectTradingBuyProviders);
         const { companyName } = providers?.[tradeProvider] ?? {};
@@ -56,48 +56,48 @@ export const BuyLegalSheet = memo(
         return (
             <BottomSheetModal
                 ref={bottomSheetRef}
-                title={translate('moduleTrading.legalSheet.title', { companyName })}
+                title={translate('moduleTrading.legalSheet.buy.title', { companyName })}
                 onDismiss={onDismiss}
                 isCloseDisplayed
             >
                 <VStack spacing="sp12" paddingHorizontal="sp12">
                     <VStack>
                         <Subheader>
-                            <Translation id="moduleTrading.legalSheet.subheaderSecurity" />
+                            <Translation id="moduleTrading.legalSheet.buy.subheaderSecurity" />
                         </Subheader>
                         <Info>
                             <Translation
-                                id="moduleTrading.legalSheet.infoSecurity1"
+                                id="moduleTrading.legalSheet.buy.infoSecurity1"
                                 values={{ companyName }}
                             />
                         </Info>
                         <Info>
-                            <Translation id="moduleTrading.legalSheet.infoSecurity2" />
+                            <Translation id="moduleTrading.legalSheet.buy.infoSecurity2" />
                         </Info>
                         <Info>
-                            <Translation id="moduleTrading.legalSheet.infoSecurity3" />
+                            <Translation id="moduleTrading.legalSheet.buy.infoSecurity3" />
                         </Info>
                     </VStack>
                     <VStack>
                         <Subheader>
-                            <Translation id="moduleTrading.legalSheet.subheaderPartners" />
+                            <Translation id="moduleTrading.legalSheet.buy.subheaderPartners" />
                         </Subheader>
                         <Info>
                             <Translation
-                                id="moduleTrading.legalSheet.infoPartners"
+                                id="moduleTrading.legalSheet.buy.infoPartners"
                                 values={{ companyName }}
                             />
                         </Info>
                     </VStack>
                     <VStack>
                         <Subheader>
-                            <Translation id="moduleTrading.legalSheet.subheaderLegal" />
+                            <Translation id="moduleTrading.legalSheet.buy.subheaderLegal" />
                         </Subheader>
                         <Info>
-                            <Translation id="moduleTrading.legalSheet.infoLegal1" />
+                            <Translation id="moduleTrading.legalSheet.buy.infoLegal1" />
                         </Info>
                         <Info>
-                            <Translation id="moduleTrading.legalSheet.infoLegal2" />
+                            <Translation id="moduleTrading.legalSheet.buy.infoLegal2" />
                         </Info>
                     </VStack>
                     {
