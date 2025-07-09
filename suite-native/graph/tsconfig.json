@@ -37,6 +37,7 @@
         { "path": "../theme" },
         { "path": "../tokens" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/utils" }
     ]
 }

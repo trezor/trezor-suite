@@ -28,6 +28,7 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../staking" },
-        { "path": "../tokens" }
+        { "path": "../tokens" },
+        { "path": "../../packages/utils" }
     ]
 }
