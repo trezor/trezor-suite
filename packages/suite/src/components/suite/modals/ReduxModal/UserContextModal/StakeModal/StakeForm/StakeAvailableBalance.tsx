@@ -13,8 +13,17 @@ interface StakeAvailableBalanceProps {
 export const StakeAvailableBalance = ({ formattedBalance, symbol }: StakeAvailableBalanceProps) => (
     <InfoItem label={<Translation id="TR_STAKE_AVAILABLE" />}>
         <Row justifyContent="space-between">
-            <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />{' '}
-            <BaseCurrencyValue amount={formattedBalance} symbol={symbol} showApproximationIndicator>
+            <FormattedCryptoAmount
+                data-testid="@staking/available-balance"
+                value={formattedBalance}
+                symbol={symbol}
+            />{' '}
+            <BaseCurrencyValue
+                data-testid="@staking/base-currency-value"
+                amount={formattedBalance}
+                symbol={symbol}
+                showApproximationIndicator
+            >
                 {({ value }) =>
                     value ? (
                         <Text typographyStyle="label" variant="tertiary">
