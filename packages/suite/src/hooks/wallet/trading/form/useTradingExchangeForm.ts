@@ -10,17 +10,23 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
+    TradingExchangeType,
     type TradingExchangeUserConsentProps,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
     exchangeThunks,
     exchangeUtils,
+    getUnusedAddressFromAccount,
+    invityAPI,
     selectTradingComposedTransactionInfo,
     selectTradingExchange,
+    selectTradingExchangeAccountKey,
     selectTradingExchangeInfo,
+    selectTradingExchangeReceiveAccountKey,
     selectTradingTrades,
     selectTradingVerifiedAddress,
+    tradingActions,
     tradingExchangeActions,
     tradingThunks,
     useTradingInfo,
@@ -130,6 +136,9 @@ export const useTradingExchangeForm = ({
             trade.data.orderId === transactionId,
     );
 
+    const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
+    const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
+
     const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(account);
     const exchangeDraftKey = 'trading-exchange';
     const { getDraft, saveDraft, removeDraft } =
@@ -228,6 +237,7 @@ export const useTradingExchangeForm = ({
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
+        setApprovalInitiated,
     });
 
     const helpers = useTradingFormActions({
@@ -544,39 +554,151 @@ export const useTradingExchangeForm = ({
             );
         };
 
-    const watchTradeApproval = useCallback(
-        async (refreshCount: number) => {
-            await dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+    const confirmApproval = async ({
+        trade,
+        receiveAddress,
+    }: {
+        trade?: ExchangeTrade;
+        receiveAddress: string;
+    }) => {
+        const commonFunctions = await getCommonFunctions(trade);
+        if (!commonFunctions) return undefined;
+        const { processResponseData } = commonFunctions;
 
-            const commonFunctions = await getCommonFunctions(trade?.data);
+        const { address: refundAddress } = getUnusedAddressFromAccount(account);
 
-            if (!commonFunctions) return;
+        if (!trade) {
+            trade = selectedQuote;
+        }
 
-            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
-                commonFunctions;
+        if (!quotesRequest || !trade || !refundAddress || !trade.quoteId) {
+            return undefined;
+        }
 
-            await dispatch(
-                exchangeThunks.watchTradeApprovalThunk({
-                    account,
-                    returnUrl,
-                    refreshCount,
-                    triggerAnalyticsTradeConfirmation,
-                    processResponseData,
-                    nextStep,
+        trade = { ...trade, receiveAddress };
+
+        if (!trade.fromAddress) {
+            trade = { ...trade, fromAddress: refundAddress };
+        }
+
+        dispatch(tradingExchangeActions.saveTransactionId(undefined));
+
+        const response = await invityAPI.doExchangeTrade({
+            trade,
+            receiveAddress,
+            refundAddress,
+            extraField: undefined,
+            returnUrl: undefined,
+            approvalFlow: true,
+        });
+
+        if (!response) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'No response from the server',
                 }),
             );
-        },
-        [account, trade?.data, dispatch, getCommonFunctions],
-    );
+
+            return undefined;
+        }
+
+        if (
+            response.error ||
+            !response.status ||
+            !response.orderId ||
+            response.status === 'ERROR'
+        ) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: response.error || 'Error response from the server',
+                }),
+            );
+
+            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+
+            return response;
+        }
+
+        if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
+            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+
+            return response;
+        }
+
+        if (response.status === 'SIGN_DATA') {
+            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+            dispatch(tradingExchangeActions.setFormStep('SIGN_DATA'));
+
+            return response;
+        }
+
+        if (response.status === 'CONFIRM') {
+            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+            dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
+
+            return response;
+        }
+
+        dispatch(
+            tradingActions.saveTrade({
+                tradeType: 'exchange',
+                date: new Date().toISOString(),
+                key: response.orderId,
+                data: response,
+                sendAccountKey,
+                receiveAccountKey,
+            }),
+        );
+
+        dispatch(tradingExchangeActions.saveTransactionId(response.orderId));
+
+        if (response.tradeForm?.form) {
+            processResponseData(response);
+        }
+
+        return response;
+    };
+
+    const watchApproval = async ({ refreshCount }: { refreshCount: number }) => {
+        if (!selectedQuote) return;
+
+        const response = await invityAPI.watchTrade<TradingExchangeType>(
+            selectedQuote,
+            'exchange',
+            refreshCount,
+        );
+
+        if (!response.status || response.status === selectedQuote.status) {
+            return;
+        }
+
+        const updatedSelectedQuote = {
+            ...selectedQuote,
+            status: response.status,
+            error: response.error,
+            approvalType: undefined,
+        };
+
+        if (!updatedSelectedQuote.dexTx || !updatedSelectedQuote.receiveAddress) {
+            return;
+        }
+
+        const newTrade = await confirmApproval({
+            trade: updatedSelectedQuote,
+            receiveAddress: updatedSelectedQuote.receiveAddress,
+        });
+
+        dispatch(tradingExchangeActions.saveSelectedQuote(newTrade));
+        await dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+    };
 
     const approveTransaction = async (trade: ExchangeTrade) => {
         setApprovalInitiated(true);
+        const newTrade = await confirmApproval({ trade, receiveAddress: account.descriptor });
 
-        await confirmTrade({
-            trade,
-            receiveAddress: account.descriptor,
-            approvalFlow: true,
-        });
+        return !!newTrade;
     };
 
     const revokeApproval = async (trade: ExchangeTrade) => {
@@ -589,12 +711,14 @@ export const useTradingExchangeForm = ({
 
         dispatch(tradingExchangeActions.saveSelectedQuote(updatedTrade));
 
-        await confirmTrade({
-            receiveAddress: trade.receiveAddress,
-            extraField: undefined,
+        const newTrade = await confirmApproval({
             trade: updatedTrade,
-            approvalFlow: true,
+            receiveAddress: trade.receiveAddress,
         });
+
+        if (!newTrade) {
+            return false;
+        }
 
         return await sendTransaction();
     };
@@ -604,9 +728,13 @@ export const useTradingExchangeForm = ({
 
         setIsFetchingApprovalStatus(true);
 
-        await confirmTrade({ trade, receiveAddress: account.descriptor, approvalFlow: true });
+        await confirmApproval({ trade, receiveAddress: account.descriptor });
 
         setIsFetchingApprovalStatus(false);
+    };
+
+    const refreshQuotes = async () => {
+        await handleChange();
     };
 
     useEffect(() => {
@@ -693,11 +821,6 @@ export const useTradingExchangeForm = ({
         }
     }, [dispatch, isFromRedirect, trade, transactionId]);
 
-    // reset when from/to/amount form values changes
-    useEffect(() => {
-        setApprovalInitiated(false);
-    }, [values.amountInCrypto, values.sendCryptoSelect, values.receiveCryptoSelect]);
-
     return {
         type,
         ...methods,
@@ -744,9 +867,11 @@ export const useTradingExchangeForm = ({
         verifyAddress,
         selectQuote,
         confirmTrade,
-        watchTradeApproval,
         approveTransaction,
         revokeApproval,
         fetchApprovalStatus,
+        confirmApproval,
+        watchApproval,
+        refreshQuotes,
     };
 };

@@ -54,7 +54,7 @@ export const ApproveModal = ({
         account,
         selectedQuote,
         exchangeInfo,
-        confirmTrade,
+        confirmApproval,
         sendTransaction,
         preselectedQuote,
     } = useTradingFormContext<TradingExchangeType>();
@@ -121,11 +121,9 @@ export const ApproveModal = ({
 
         dispatch(tradingExchangeActions.saveSelectedQuote(updatedSelectedQuote));
 
-        await confirmTrade({
-            receiveAddress: selectedQuote.receiveAddress,
-            extraField: undefined,
+        await confirmApproval({
             trade: updatedSelectedQuote,
-            approvalFlow: true,
+            receiveAddress: selectedQuote.receiveAddress,
         });
     };
 
