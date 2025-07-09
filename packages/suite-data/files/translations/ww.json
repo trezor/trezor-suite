@@ -159,7 +159,7 @@
   "TR_DISABLED_SWITCH_TOOLTIP": "要切換請連接並解鎖裝置",
   "TR_DISCONNECT": "中斷連線",
   "TR_DISCONNECTED": "未連線",
-  "TR_DISCONNECT_YOUR_DEVICE": "中斷 Trezor 裝置的連線",
+  "TR_DISCONNECT_YOUR_DEVICE": "中斷 Trezor 裝置的連線 ",
   "TR_DISCONNECT_YOUR_TREZOR": "重新連接裝置",
   "TR_DISCOVERY_NEW_COINS": "啟用幣別",
   "TR_DISCREET": "謹慎模式",

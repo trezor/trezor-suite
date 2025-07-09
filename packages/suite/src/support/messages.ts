@@ -719,7 +719,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_NUMBER',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE: {
-        defaultMessage: 'Slippage must be in the range 0.01% - 50%',
+        defaultMessage: 'Slippage must be between 0.01% and 50%',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE',
     },
     TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND: {
@@ -779,7 +779,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
-        defaultMessage: "Use an account ({symbol}) that isn't in Suite",
+        defaultMessage: "Use an account ({symbol}) that isn't in Trezor Suite",
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
@@ -1336,7 +1336,7 @@ export default defineMessages({
         id: 'TR_TRADING_COMPARE_OFFERS',
     },
     TR_TRADING_OFFER_LOOKING: {
-        defaultMessage: 'Searching for your best offer.',
+        defaultMessage: 'Searching for your best offer',
         id: 'TR_TRADING_OFFER_LOOKING',
     },
     TR_TRADING_OFFER_NO_FOUND: {
@@ -2777,7 +2777,7 @@ export default defineMessages({
         id: 'TR_HOLOGRAM_T2B1_NEW_SEAL',
     },
     TR_I_UNDERSTAND_PASSPHRASE: {
-        defaultMessage: "I understand that passphrases can't be retrieved.",
+        defaultMessage: "You understand that passphrases can't be retrieved.",
         id: 'TR_I_UNDERSTAND_PASSPHRASE',
     },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
@@ -5700,7 +5700,7 @@ export default defineMessages({
     },
     TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT: {
         defaultMessage:
-            'You are sending funds to an associated account (e.g. token or staking account).',
+            "You're sending funds to a linked account, such as a token or staking account.",
         id: 'TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
@@ -5939,7 +5939,7 @@ export default defineMessages({
     },
     SEND_RAW_TRANSACTION_TOOLTIP: {
         id: 'SEND_RAW_TRANSACTION_TOOLTIP',
-        defaultMessage: 'You can provide all the raw data for your transaction by yourself.',
+        defaultMessage: 'Input the raw data for your transaction yourself.',
     },
     SIGN_TRANSACTION: {
         id: 'SIGN_TRANSACTION',
@@ -6524,7 +6524,7 @@ export default defineMessages({
     },
     FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC: {
         id: 'FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC',
-        defaultMessage: 'Yes, I do!',
+        defaultMessage: 'Yes, I do',
     },
     FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC: {
         id: 'FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC',
@@ -7115,11 +7115,11 @@ export default defineMessages({
     },
     TR_GRAPH_VIEW: {
         id: 'TR_GRAPH_VIEW',
-        defaultMessage: 'Graph View',
+        defaultMessage: 'Graph view',
     },
     TR_SHOW_GRAPH: {
         id: 'TR_SHOW_GRAPH',
-        defaultMessage: 'Show Graph',
+        defaultMessage: 'Show graph',
     },
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',
@@ -7412,7 +7412,7 @@ export default defineMessages({
     },
     TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FIRMWARE_WONT_UPDATE_TEXT',
-        defaultMessage: 'Your device rejects firmware installation.',
+        defaultMessage: 'Your Trezor rejected the firmware installation.',
     },
     TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT',
@@ -7681,7 +7681,7 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION: {
         defaultMessage:
-            'You may visit <a>connection status page</a> where you can find useful information to solve your problem with Trezor Support.',
+            'Visit the <a>connection status page</a> for useful information to help solve your issue with Trezor Support.',
         id: 'TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE: {
@@ -7769,7 +7769,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
         defaultMessage:
-            'Restarting your computer may fix the communication issue between your browser and device.',
+            'Restarting your computer may fix the communication issue between Trezor Suite and your Trezor device.',
     },
     TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
         id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
@@ -10453,7 +10453,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS',
-        defaultMessage: 'Trezor Connect & WalletConnect',
+        defaultMessage: 'Trezor Connect',
     },
     TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TREZORCONNECT_WS_DESCRIPTION',
@@ -10495,16 +10495,16 @@ export default defineMessages({
     TR_SIMULATION_WARNING: {
         id: 'TR_SIMULATION_WARNING',
         defaultMessage:
-            'This transaction is potentially risky! Please make sure you trust the source.',
+            'This transaction appears suspicious. Make sure you trust the source before continuing.',
     },
     TR_SIMULATION_MALICIOUS: {
         id: 'TR_SIMULATION_MALICIOUS',
         defaultMessage:
-            'This transaction is likely malicious! We recommend not to engage with this app.',
+            "This transaction appears suspicious. To protect your assets, it's best not to proceed with this app.",
     },
     TR_SIMULATION_DISCLAIMER_OVERRIDE: {
         id: 'TR_SIMULATION_DISCLAIMER_OVERRIDE',
-        defaultMessage: 'I want to ignore the warning and proceed anyways',
+        defaultMessage: 'I understand the risks—proceed anyway.',
     },
     TR_CONTRACT_INFO: {
         id: 'TR_CONTRACT_INFO',
@@ -10520,16 +10520,15 @@ export default defineMessages({
     },
     TR_SIMULATION_NO_ASSETS: {
         id: 'TR_SIMULATION_NO_ASSETS',
-        defaultMessage: 'No asset changes detected',
+        defaultMessage: 'No changes to your assets were detected.',
     },
     TR_EXCHANGE_DETAIL_FEEDBACK_TITLE: {
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_TITLE',
-        defaultMessage: 'How was your trading experience with Trezor Suite?',
+        defaultMessage: 'How was your trading experience?',
     },
     TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION: {
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION',
-        defaultMessage:
-            'Can you tell us more about your experience? Any details help make it better.',
+        defaultMessage: 'Your feedback helps us improve—tell us what you think.',
     },
     TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON: {
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON',
