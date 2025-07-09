@@ -13,11 +13,23 @@ const buildCurrencyOption = (currency: BaseCurrencyCode) => ({
     label: currency.toUpperCase(),
 });
 
+const options = [
+    {
+        options: typedObjectKeys(baseCurrencies)
+            .filter(it => it === 'btc')
+            .map(c => buildCurrencyOption(c)),
+    },
+    {
+        options: typedObjectKeys(baseCurrencies)
+            .filter(it => it !== 'btc')
+            .map(c => buildCurrencyOption(c)),
+    },
+];
+
 export const BaseCurrency = () => {
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 
-    const options = typedObjectKeys(baseCurrencies).map(c => buildCurrencyOption(c));
     const value = buildCurrencyOption(localCurrency);
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { CROWDIN_URL } from '@trezor/urls';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { setLanguage } from 'src/actions/settings/languageActions';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
@@ -36,13 +37,13 @@ const useLanguageOptions = () => {
             },
             {
                 label: translationString('TR_OFFICIAL_LANGUAGES'),
-                options: Object.entries(LANGUAGES)
+                options: typedObjectEntries(LANGUAGES)
                     .filter(onlyOfficial)
                     .map(([value, { name }]) => ({ value, label: name })),
             },
             {
                 label: translationString('TR_COMMUNITY_LANGUAGES'),
-                options: Object.entries(LANGUAGES)
+                options: typedObjectEntries(LANGUAGES)
                     .filter(onlyCommunity)
                     .map(([value, { name }]) => ({ value, label: name })),
             },
