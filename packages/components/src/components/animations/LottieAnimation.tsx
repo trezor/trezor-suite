@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Lottie, { LottieOptions } from 'lottie-react';
 import styled from 'styled-components';
 
+// TODO: suite-common imports in non-suite packages should not be allowed
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 

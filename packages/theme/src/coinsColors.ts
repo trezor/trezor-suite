@@ -1,3 +1,5 @@
+// TODO: suite-common imports in non-suite packages should not be allowed
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { CSSColor } from './types';

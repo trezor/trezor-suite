@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+// TODO: suite-common imports in non-suite packages should not be allowed
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { getNetwork, getNetworkByCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
