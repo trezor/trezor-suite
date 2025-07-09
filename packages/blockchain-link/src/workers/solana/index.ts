@@ -4,6 +4,7 @@ import {
     ClusterUrl,
     RpcMainnet,
     RpcSubscriptionsMainnet,
+    RpcTransportMainnet,
     SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
@@ -64,9 +65,15 @@ import { getSuiteVersion } from '@trezor/env-utils';
 import { IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 
-import { getBaseFee, getPriorityFee } from './fee';
-import { STAKE_ACCOUNT_V2_SIZE, getSolanaStakingData } from './stakingAccounts';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { getBaseFee, getPriorityFee } from './utils/fee';
+import { ThrottledTransportOptions, getThrottledTransport } from './utils/getThrottledTransport';
+import { STAKE_ACCOUNT_V2_SIZE, getSolanaStakingData } from './utils/stakingAccounts';
+
+const THROTTLE_OPTIONS: ThrottledTransportOptions = {
+    maxRps: 4,
+    interval: 100,
+};
 
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;
@@ -92,7 +99,7 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
-    fullHistory = false,
+    fullHistory = true,
 ) => {
     let lastSignature: SignatureWithSlot | undefined;
     let keepFetching = true;
@@ -234,8 +241,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const getAllTxIds = async (tokenAccountPubkeys: string[]) => {
         const sortedTokenAccountPubkeys = tokenAccountPubkeys.sort();
-        // limit to 100 accounts, loading too many would hit the rpc limit
-        sortedTokenAccountPubkeys.splice(100);
 
         const allAccounts = [payload.descriptor, ...sortedTokenAccountPubkeys];
 
@@ -835,9 +840,15 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
             },
         });
 
+        const throttledTransport = getThrottledTransport(
+            transport,
+            THROTTLE_OPTIONS,
+        ) as RpcTransportMainnet;
+        const throttledRpc = createSolanaRpcFromTransport(throttledTransport);
+
         const api = {
             clusterUrl,
-            rpc: createSolanaRpcFromTransport(transport),
+            rpc: throttledRpc,
             rpcSubscriptions: createSolanaRpcSubscriptions(mainnet(url.replace('http', 'ws'))),
         };
 

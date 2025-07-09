@@ -44,7 +44,7 @@ import {
     getDelegations,
     isStake,
     stakeAccountState,
-} from '@trezor/blockchain-link/src/workers/solana/stakingAccounts';
+} from '@trezor/blockchain-link/src/workers/solana/utils/stakingAccounts';
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { serializeError } from '@trezor/utils';
 
