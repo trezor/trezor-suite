@@ -2,7 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork } from '@suite-common/wallet-config';
+import { Network, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { SendState, accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
 import { FeesState, SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -54,7 +54,8 @@ const UTXO = {
     }),
 };
 
-export const BTC_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
+// The type was needed because of error TS7056: The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed.
+export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
     account: testMocks.getWalletAccount({
         symbol: 'btc',

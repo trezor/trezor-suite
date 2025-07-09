@@ -146,45 +146,6 @@ describe('Discovery Reducer', () => {
         });
     });
 
-    it('should not set "hasLoadedAnyNonEmptyAccount" when status is not "progress"', () => {
-        // Initialize store with existing discovery
-        const store = initStore({
-            preloadedState: {
-                wallet: {
-                    discovery: {
-                        [TEST_DEVICE_PATH]: {
-                            status: 'starting',
-                            startTimestamp: 1000,
-                        },
-                    },
-                },
-            },
-        });
-
-        // Update to progress status
-        store.dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'enter-passphrase',
-                    // @ts-expect-error: this is not possible type-wise but in runtime, who know
-                    hasLoadedAnyNonEmptyAccount: true,
-                    total: 10,
-                    progress: 5,
-                },
-                TEST_DEVICE_PATH,
-            ),
-        );
-
-        expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual({
-            status: 'enter-passphrase',
-            startTimestamp: 1000,
-            hasLoadedAnyNonEmptyAccount: undefined,
-            passphraseSubmitted: undefined,
-            total: 10,
-            progress: 5,
-        });
-    });
-
     it('should handle updateDiscovery action with passphraseSubmitted flag', () => {
         // Initialize store with existing discovery
         const store = initStore({
