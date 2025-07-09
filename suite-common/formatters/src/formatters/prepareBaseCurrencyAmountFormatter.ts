@@ -1,18 +1,21 @@
 import { FormatNumberOptions } from '@formatjs/intl';
 
-import { redactNumericalSubstring } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount, redactNumericalSubstring } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
 
-export type FiatAmountFormatterDataContext<T> = {
+const USE_SIGNIFICANT_DIGITS_BELOW = 1000;
+const MAX_NO_SIGNIFICANT_DIGITS = Math.log10(USE_SIGNIFICANT_DIGITS_BELOW);
+
+export type BaseCurrencyAmountFormatterDataContext<T> = {
     [K in keyof T]: T[K];
 };
 
 const handleBigNumberFormatting = (
-    value: string | number,
-    dataContext: FiatAmountFormatterDataContext<FormatNumberOptions>,
+    value: BaseCurrencyAmount,
+    dataContext: BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>,
     config: FormatterConfig,
 ) => {
     const { intl, baseCurrency } = config;
@@ -25,20 +28,29 @@ const handleBigNumberFormatting = (
         return `${value} ${currencyForDisplay}`;
     }
 
+    const useSignificantDigits = baseCurrencyValue.isLessThan(USE_SIGNIFICANT_DIGITS_BELOW);
+
     return intl.formatNumber(baseCurrencyValue.toNumber(), {
         ...dataContext,
         style: style || 'currency',
         currency: currencyForDisplay,
-        minimumFractionDigits: minimumFractionDigits ?? 2,
-        maximumFractionDigits: maximumFractionDigits ?? 2,
+        ...(useSignificantDigits
+            ? {
+                  minimumSignificantDigits: 1,
+                  maximumSignificantDigits: MAX_NO_SIGNIFICANT_DIGITS,
+              }
+            : {
+                  minimumFractionDigits: minimumFractionDigits ?? 2,
+                  maximumFractionDigits: maximumFractionDigits ?? 2,
+              }),
     });
 };
 
 export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<
-        string | number,
+        BaseCurrencyAmount,
         string | null,
-        FiatAmountFormatterDataContext<FormatNumberOptions>
+        BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>
     >((value, dataContext, shouldRedactNumbers) => {
         const baseValue = new BigNumber(value);
         if (baseValue.isNaN()) {
@@ -48,4 +60,4 @@ export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
         const formattedValue = handleBigNumberFormatting(value, dataContext, config);
 
         return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
-    }, 'FiatAmountFormatter');
+    }, 'BaseCurrencyAmountFormatter');
