@@ -4,6 +4,12 @@ import { WebsocketClient } from '../src/client';
 
 class Client extends WebsocketClient<{ 'foo-event': 'bar-event' }> {}
 
+class ClientWithCustomTimeout extends WebsocketClient<{ 'foo-event': 'bar-event' }> {
+    onMessageTimeout(promiseId: number) {
+        this.messages.reject(promiseId, new Error('websocket_timeout'));
+    }
+}
+
 class Server extends WebSocketServer {
     private _url: string;
     fixtures?: any[];
@@ -21,7 +27,7 @@ class Server extends WebSocketServer {
         return this._url;
     }
 
-    private sendResponse(client: WebSocket, data: any) {
+    sendResponse(client: WebSocket, data: any) {
         const request = JSON.parse(data);
         const { id, method } = request;
         let response;
@@ -151,5 +157,58 @@ describe('WebsocketClient', () => {
         const cli = new Client({ url: 'invalid-url' });
 
         await expect(() => cli.connect()).rejects.toThrow('invalid-url');
+    });
+
+    it('throws timeout error on sendMessage and kills the connection', async () => {
+        const cli = new Client({ url: server.getUrl() });
+        await cli.connect();
+        const disconnectedSpy = jest.fn();
+        cli.on('disconnected', disconnectedSpy);
+
+        // do not respond, client should timeout
+        const sendSpy = jest.spyOn(server, 'sendResponse').mockImplementation(() => {});
+        await expect(() => cli.sendMessage({ method: 'init' }, { timeout: 100 })).rejects.toThrow(
+            'websocket_timeout',
+        );
+
+        // client is disconnected
+        expect(cli.isConnected()).toEqual(false);
+        // wait for ws.close propagation
+        await new Promise(resolve => setTimeout(resolve, 10));
+        expect(disconnectedSpy).toHaveBeenCalledTimes(1);
+
+        sendSpy.mockRestore();
+        cli.dispose();
+    });
+
+    it('throws timeout error on sendMessage', async () => {
+        const cli = new ClientWithCustomTimeout({ url: server.getUrl() });
+        await cli.connect();
+
+        const sendSpy = jest.spyOn(server, 'sendResponse').mockImplementation((wsCli, data) => {
+            const request = JSON.parse(data);
+            if (request.method !== 'init') {
+                setTimeout(() => {
+                    wsCli.send(JSON.stringify({ id: request.id, success: true }));
+                }, 100);
+            }
+        });
+
+        const initPromise = cli.sendMessage({ method: 'init' }, { timeout: 100 });
+        // move closer to the timeout and call second message
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const infoPromise = cli.sendMessage({ method: 'get-info' }, { timeout: 500 });
+
+        // init should timeout
+        await expect(() => initPromise).rejects.toThrow('websocket_timeout');
+        // second message is not rejected
+        const result = await infoPromise;
+        await expect(result).toEqual({ id: '1', success: true });
+
+        // client is still connected
+        expect(cli.isConnected()).toEqual(true);
+
+        sendSpy.mockRestore();
+        cli.dispose();
     });
 });

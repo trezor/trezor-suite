@@ -28,6 +28,10 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
         };
     }
 
+    onMessageTimeout(promiseId: number) {
+        this.messages.reject(promiseId, new Error('websocket_timeout'));
+    }
+
     createWebsocket() {
         return this.initWebsocket({
             url: this.settings.url,
