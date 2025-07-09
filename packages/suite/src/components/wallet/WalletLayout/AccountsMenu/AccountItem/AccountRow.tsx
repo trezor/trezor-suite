@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
+import { AccountType } from '@suite-common/wallet-config';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -68,7 +69,7 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             tabIndex={0}
         >
             <Left>
-                <AccountItemLeft type={type} symbol={account.symbol} account={account} />
+                <AccountItemLeft type={type} account={account} />
             </Left>
             <AccountItemContent
                 customFiatValue={customFiatValue}

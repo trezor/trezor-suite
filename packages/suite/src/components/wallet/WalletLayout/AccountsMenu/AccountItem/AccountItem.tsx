@@ -132,7 +132,7 @@ export const AccountItem = forwardRef(
                             hasArrow
                         >
                             <CollapsedItem $isSelected={isSelected} onClick={handleHeaderClick}>
-                                <AccountItemLeft type={type} symbol={symbol} account={account} />
+                                <AccountItemLeft type={type} account={account} />
                             </CollapsedItem>
                         </Tooltip>
                     </Column>
