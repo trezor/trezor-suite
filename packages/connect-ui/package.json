@@ -11,7 +11,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/validators": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",
