@@ -8,9 +8,13 @@ import type { TradingTransaction } from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { deviceActions, selectDevices } from '@suite-common/wallet-core';
-import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
+import type { FormState, RatesByTimestamps, SuccessfulAccount } from '@suite-common/wallet-types';
 import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
-import { getFormDraftKey, selectHistoricRatesByTransactions } from '@suite-common/wallet-utils';
+import {
+    getFormDraftKey,
+    isAccountSuccessful,
+    selectHistoricRatesByTransactions,
+} from '@suite-common/wallet-utils';
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -250,7 +254,7 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
     ]);
 };
 
-export const saveAccounts = async (accounts: Account[]) => {
+export const saveAccounts = async (accounts: SuccessfulAccount[]) => {
     if (!(await db.isAccessible())) return;
 
     return db.addItems('accounts', accounts, true);
@@ -305,9 +309,10 @@ export const rememberDevice =
         }
 
         const { wallet } = getState();
-        const accounts = wallet.accounts.filter(
-            a => a.deviceState === device.state?.staticSessionId,
-        );
+        const accounts = wallet.accounts
+            .filter(isAccountSuccessful)
+            .filter(a => a.deviceState === device.state?.staticSessionId);
+
         const graphData = wallet.graph.data.filter(d =>
             deviceGraphDataFilterFn(d, device.state?.staticSessionId),
         );

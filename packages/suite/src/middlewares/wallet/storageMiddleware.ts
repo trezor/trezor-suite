@@ -27,7 +27,7 @@ import {
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { findAccountDevice } from '@suite-common/wallet-utils';
+import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 
 import { METADATA, STORAGE, SUITE } from 'src/actions/suite/constants';
@@ -58,7 +58,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 const { payload } = action;
                 const device = findAccountDevice(payload, selectDevices(api.getState()));
                 // update only transactions for remembered device
-                if (isDeviceRemembered(device)) {
+                if (isDeviceRemembered(device) && isAccountSuccessful(payload)) {
                     storageActions.saveAccounts([payload]);
                     api.dispatch(storageActions.saveCoinjoinAccount(payload.key));
                 }
@@ -71,7 +71,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (isAnyOf(metadataActions.setAccountAdd)(action)) {
                 const device = findAccountDevice(action.payload, selectDevices(api.getState()));
                 // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
-                if (isDeviceRemembered(device)) {
+                if (isDeviceRemembered(device) && isAccountSuccessful(action.payload)) {
                     storageActions.saveAccounts([action.payload]);
                 }
             }
