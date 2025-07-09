@@ -1,6 +1,7 @@
 import React, { JSX } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getDaysToAddToPool } from '@suite-common/staking';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
@@ -16,7 +17,6 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
-import { getDaysToAddToPool } from 'src/utils/suite/ethereumStaking';
 
 import { InfoRow } from './InfoRow';
 

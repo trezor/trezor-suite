@@ -1,5 +1,14 @@
 import { address } from '@solana/kit';
 
+import {
+    calculate,
+    composeStakingTransaction,
+} from '@suite-common/staking/src/actions/stakeFormActions';
+import {
+    prepareClaimSolTx,
+    prepareStakeSolTx,
+    prepareUnstakeSolTx,
+} from '@suite-common/staking-solana';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -29,13 +38,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
-import {
-    prepareClaimSolTx,
-    prepareStakeSolTx,
-    prepareUnstakeSolTx,
-} from 'src/utils/suite/solanaStaking';
-
-import { calculate, composeStakingTransaction } from './stakeFormActions';
 
 const calculateTransaction = (
     availableBalance: string,

@@ -1,3 +1,4 @@
+import { getStakingTotalRewards } from '@suite-common/staking';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     StakeRootState,
@@ -32,7 +33,6 @@ import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/compo
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getStakingTotalRewards } from 'src/utils/suite/staking';
 
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';

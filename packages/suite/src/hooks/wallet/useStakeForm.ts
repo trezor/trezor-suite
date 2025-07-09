@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
 
+import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import {
     StakeContextValues,
     selectFiatRatesByFiatRateKey,
@@ -29,8 +30,6 @@ import {
     OUTPUT_AMOUNT,
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
-import { getStakeFormsDefaultValues } from 'src/utils/suite/ethereumStaking';
-import { getStakingContractAddress } from 'src/utils/suite/staking';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';

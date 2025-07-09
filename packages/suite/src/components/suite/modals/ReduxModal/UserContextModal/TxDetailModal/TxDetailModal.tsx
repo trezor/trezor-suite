@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import { getInstantStakeType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
@@ -13,7 +14,6 @@ import { Modal } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
 
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
 import { BumpFeeModal } from './ChangeFee/BumpFeeModal';
