@@ -55,9 +55,10 @@ export const useSendFormOutputs = ({
     const addOpReturn = () => {
         // const outputs = getValues('outputs');
         const values = getValues();
-        const lastOutput = values.outputs[values.outputs.length - 1];
-        const isLastOutputDirty = lastOutput.address.length > 0 || lastOutput.amount.length > 0;
-        if (isLastOutputDirty) {
+        const outputsDirty = values.outputs.some(
+            output => output.address.length > 0 || output.amount.length > 0,
+        );
+        if (outputsDirty) {
             outputsFieldArray.append({ ...DEFAULT_OPRETURN });
         } else {
             reset(
