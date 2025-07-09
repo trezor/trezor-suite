@@ -9646,6 +9646,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/staking@workspace:suite-common/staking":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/staking@workspace:suite-common/staking"
+  dependencies:
+    "@everstake/wallet-sdk-ethereum": "npm:1.0.3"
+    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    web3-utils: "npm:^4.3.2"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/suite-config@workspace:*, @suite-common/suite-config@workspace:suite-common/suite-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-config@workspace:suite-common/suite-config"
