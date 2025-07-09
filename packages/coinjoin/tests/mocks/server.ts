@@ -1,5 +1,6 @@
 import * as http from 'http';
-import * as net from 'net';
+
+import { getFreePort } from '@trezor/node-utils';
 
 import { CoinjoinClientEvents } from '../../src/types/client';
 import { Logger } from '../../src/types/logger';
@@ -116,19 +117,6 @@ const DEFAULT = {
     'transaction-signature': '',
     'input-unregistration': '',
 };
-
-export const getFreePort = () =>
-    new Promise<number>((resolve, reject) => {
-        const server = net.createServer();
-        server.unref();
-        server.on('error', reject);
-        server.listen(0, () => {
-            const { port } = server.address() as net.AddressInfo;
-            server.close(() => {
-                resolve(port);
-            });
-        });
-    });
 
 const readRequest = (request: http.IncomingMessage) =>
     new Promise<RequestData>(resolve => {
