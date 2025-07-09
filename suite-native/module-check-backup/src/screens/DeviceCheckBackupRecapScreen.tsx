@@ -1,12 +1,28 @@
 import { Box, Button, SwipeableWalkthroughStepHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
+import {
+    DeviceCheckBackupStackParamList,
+    DeviceCheckBackupStackRoutes,
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
+    StackToStackCompositeScreenProps,
+} from '@suite-native/navigation';
 
-export const DeviceCheckBackupRecapScreen = () => {
-    const navigateToInitialScreen = useNavigateToInitialScreen();
+import { CheckBackupScreenWithExitButton } from '../components/CheckBackupScreenWithExitButton';
+
+export const DeviceCheckBackupRecapScreen = ({
+    navigation,
+}: StackToStackCompositeScreenProps<
+    DeviceCheckBackupStackParamList,
+    DeviceCheckBackupStackRoutes.CheckBackupRecap,
+    DeviceSettingsStackParamList
+>) => {
+    const handleContinueButtonPress = () => {
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceSettings);
+    };
 
     return (
-        <Screen header={<ScreenHeader closeActionType="close" />}>
+        <CheckBackupScreenWithExitButton>
             <VStack flex={1} justifyContent="space-between" alignItems="center">
                 <Box flex={1} justifyContent="center" alignItems="center">
                     <SwipeableWalkthroughStepHeader
@@ -19,11 +35,10 @@ export const DeviceCheckBackupRecapScreen = () => {
                         }
                     />
                 </Box>
-
-                <Button onPress={navigateToInitialScreen} isFullWidth>
+                <Button onPress={handleContinueButtonPress} isFullWidth>
                     <Translation id="generic.buttons.gotIt" />
                 </Button>
             </VStack>
-        </Screen>
+        </CheckBackupScreenWithExitButton>
     );
 };

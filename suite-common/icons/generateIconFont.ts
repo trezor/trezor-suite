@@ -48,6 +48,7 @@ const usedIcons = [
     'caretUpFilled',
     'change',
     'chatCircle',
+    'chatsTeardrop',
     'check',
     'checkCircle',
     'checkCircleFilled',

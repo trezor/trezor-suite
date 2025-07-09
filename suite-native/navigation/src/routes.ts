@@ -96,6 +96,8 @@ export enum DeviceCheckBackupStackRoutes {
     CheckBackupSuccess = 'CheckBackupSuccess',
     CheckBackupRecap = 'CheckBackupRecap',
     UnsupportedModel = 'UnsupportedModel',
+    CheckBackupFail = 'CheckBackupFail',
+    CheckBackupSupport = 'CheckBackupSupport',
 }
 
 export enum DeviceAuthenticityStackRoutes {

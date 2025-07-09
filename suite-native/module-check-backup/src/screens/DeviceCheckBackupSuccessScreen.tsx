@@ -3,10 +3,10 @@ import { Translation } from '@suite-native/intl';
 import {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
-    Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+
+import { CheckBackupScreenWithExitButton } from '../components/CheckBackupScreenWithExitButton';
 
 export const DeviceCheckBackupSuccessScreen = ({
     navigation,
@@ -19,7 +19,7 @@ export const DeviceCheckBackupSuccessScreen = ({
     };
 
     return (
-        <Screen header={<ScreenHeader closeActionType="close" />}>
+        <CheckBackupScreenWithExitButton>
             <VStack flex={1} justifyContent="space-between" alignItems="center">
                 <Box flex={1} justifyContent="center" alignItems="center">
                     <PictogramTitleHeader
@@ -35,6 +35,6 @@ export const DeviceCheckBackupSuccessScreen = ({
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </VStack>
-        </Screen>
+        </CheckBackupScreenWithExitButton>
     );
 };

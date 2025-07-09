@@ -365,6 +365,23 @@ export const en = {
             step2: 'Complete check backup in your browser.',
             step3: 'Start using your Trezor with\nTrezor Suite Lite.',
         },
+        checkBackupSupportScreen: {
+            title: 'Don’t worry—we’ll figure this out',
+            description: 'Contact customer support to resolve this issue.',
+            button: 'Contact support',
+        },
+        checkBackupFailScreen: {
+            title: 'Your backup is invalid',
+            description:
+                'There’s a chance you made a typo.\nTry again or secure access to your assets.',
+            supportButton: 'Secure my assets',
+        },
+        cancelAlert: {
+            title: 'Cancel check backup?',
+            description: 'Start again at anytime.',
+            primaryButton: 'Yes, cancel',
+            secondaryButton: 'Continue checking',
+        },
     },
     moduleConnectDevice: {
         connectAndUnlockScreen: {

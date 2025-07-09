@@ -1,45 +1,29 @@
 import { useSharedValue } from 'react-native-reanimated';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     SwipeableWalkthrough,
     SwipeableWalkthroughCloseButton,
     SwipeableWalkthroughScreenHeader,
 } from '@suite-native/atoms';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    Screen,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { useDeviceConnectionGuard } from '@suite-native/module-device-settings/src/hooks/useDeviceConnectionGuard';
+import { Screen } from '@suite-native/navigation';
 
+import { useHandleCheckBackupExitButtonPress } from '../components/CheckBackupScreenWithExitButton';
 import { CheckBackupTutorialStep1 } from '../components/CheckBackupTutorialStep1';
 import { CheckBackupTutorialStep2 } from '../components/CheckBackupTutorialStep2';
-
-type NavigationProps = StackToStackCompositeNavigationProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.WalletBackupTutorial,
-    RootStackParamList
->;
 
 const WALLET_BACKUP_TUTORIAL_STEPS_COUNT = 2;
 
 export const DeviceCheckBackupTutorialScreen = () => {
+    useDeviceConnectionGuard();
+    const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
     const currentStepIndex = useSharedValue(0);
-
-    const navigation = useNavigation<NavigationProps>();
-
-    const handlePressBack = () => {
-        navigation.pop();
-    };
 
     return (
         <Screen
             header={
                 <SwipeableWalkthroughScreenHeader
-                    onPressBack={handlePressBack}
+                    onPressBack={handleExitButtonPress}
                     currentStepIndex={currentStepIndex}
                     CustomBackButton={SwipeableWalkthroughCloseButton}
                 />
