@@ -6,10 +6,8 @@ import { useAtom, useAtomValue } from 'jotai';
 
 import {
     selectIsDeviceConnected,
-    selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInitialized,
     selectIsDeviceRemembered,
-    selectIsDeviceUsingPassphrase,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -55,14 +53,11 @@ export const useHandleDeviceConnection = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
-    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
-    const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
-    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
