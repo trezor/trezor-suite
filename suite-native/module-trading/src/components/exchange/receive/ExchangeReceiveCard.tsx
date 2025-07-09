@@ -1,6 +1,8 @@
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Card, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { BigNumber } from '@trezor/utils';
 
 import { ExchangeReceiveAccountCryptoBalance } from './ExchangeReceiveAccountCryptoBalance';
 import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';
@@ -28,7 +30,7 @@ export const ExchangeReceiveCard = () => {
                     <CardTitle>
                         <Translation id="moduleTrading.selectCoin.title" />
                     </CardTitle>
-                    <FiatAmountBadge amount="123" />
+                    <FiatAmountBadge amount={asBaseCurrencyAmount(new BigNumber('123'))} />
                 </HStack>
                 <ExchangeTradeableAssetPicker />
                 <HStack

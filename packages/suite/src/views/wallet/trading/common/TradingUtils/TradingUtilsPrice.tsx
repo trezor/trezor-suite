@@ -1,6 +1,7 @@
 import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Tooltip } from '@trezor/components';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -100,7 +101,14 @@ export const TradingUtilsPrice = ({
             <PriceValueWrap data-testid="@trading/offers/quote/amount">
                 <PriceValue>
                     {amountInCrypto ? (
-                        <TradingFiatAmount amount={sendAmount} currency={sendCurrency} />
+                        <TradingFiatAmount
+                            amount={
+                                sendAmount !== undefined
+                                    ? asBaseCurrencyAmount(new BigNumber(sendAmount))
+                                    : undefined
+                            }
+                            currency={sendCurrency}
+                        />
                     ) : (
                         <>
                             {receiveCurrency && (

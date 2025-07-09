@@ -1,6 +1,7 @@
 import { TooltipProps } from 'recharts';
 
 import { useFormatters } from '@suite-common/formatters';
+import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
@@ -36,11 +37,17 @@ export const GraphTooltipDashboard = ({
     const sentAmountString = sentValueFn(payload[0].payload);
 
     const receivedAmount = (
-        <BaseCurrencyAmountFormatter currency={localCurrency} value={receivedAmountString ?? '0'} />
+        <BaseCurrencyAmountFormatter
+            currency={localCurrency}
+            value={receivedAmountString ?? BASE_CURRENCY_ZERO}
+        />
     );
 
     const sentAmount = (
-        <BaseCurrencyAmountFormatter currency={localCurrency} value={sentAmountString ?? '0'} />
+        <BaseCurrencyAmountFormatter
+            currency={localCurrency}
+            value={sentAmountString ?? BASE_CURRENCY_ZERO}
+        />
     );
 
     return (

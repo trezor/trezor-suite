@@ -107,7 +107,9 @@ export const useSendFormFields = ({
                     ? formatNetworkAmount(amount, network.symbol)
                     : amount;
 
-                return toFiatCurrency(formattedAmount, fiatRate, 2);
+                return (
+                    toFiatCurrency({ amount: formattedAmount, rate: fiatRate })?.toFixed(2) ?? null
+                );
             };
 
             return calculateFiatFromAmountOrViceVersa({
@@ -124,7 +126,10 @@ export const useSendFormFields = ({
         (outputId: number, fiat: string, token?: TokenInfo) => {
             const calculateFormattedAmountValue = (fiat: string, fiatRate: number) => {
                 const decimals = token ? token.decimals : network.decimals;
-                const amount = fromFiatCurrency(fiat, decimals, fiatRate);
+
+                const amount =
+                    fromFiatCurrency({ localAmount: fiat, rate: fiatRate })?.toFixed(decimals) ??
+                    null;
 
                 return shouldSendInSats
                     ? convertAmountUnitsToSubunits(amount || '0', network.decimals)

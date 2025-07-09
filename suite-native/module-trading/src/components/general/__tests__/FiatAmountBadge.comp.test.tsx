@@ -1,4 +1,6 @@
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { FiatAmountBadge, FiatAmountBadgeProps } from '../FiatAmountBadge';
 
@@ -13,20 +15,18 @@ describe('FiatAmountBadge', () => {
     });
 
     it('should display formatted value in app currency', () => {
-        const { getByText } = renderFiatAmountBadge({ amount: '1234.56' });
+        const { getByText } = renderFiatAmountBadge({
+            amount: asBaseCurrencyAmount(new BigNumber('1234.56')),
+        });
 
         expect(getByText('$1,234.56')).toBeDefined();
     });
 
     it('should display 0 value', () => {
-        const { getByText } = renderFiatAmountBadge({ amount: '0' });
+        const { getByText } = renderFiatAmountBadge({
+            amount: asBaseCurrencyAmount(new BigNumber('0')),
+        });
 
         expect(getByText('$0.00')).toBeDefined();
-    });
-
-    it('should display nothing for empty string value', () => {
-        const { toJSON } = renderFiatAmountBadge({ amount: '' });
-
-        expect(toJSON()).toBeNull();
     });
 });

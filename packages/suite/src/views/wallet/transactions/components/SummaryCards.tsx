@@ -1,14 +1,19 @@
 import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
+import {
+    DISCREET_PLACEHOLDER,
+    asBaseCurrencyAmount,
+    useShouldRedactNumbers,
+} from '@suite-common/wallet-utils';
 import { variables } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedDate, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
-import { sumFiatValueMap } from 'src/utils/wallet/graph';
+import { FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';
 
 import { InfoCard } from './InfoCard';
 
@@ -44,7 +49,7 @@ interface SummaryCardProps {
     selectedRange: GraphRange;
     data: AggregatedAccountHistory[];
     dataInterval: [number, number];
-    localCurrency: string;
+    localCurrency: BaseCurrencyCode;
     account: Account;
     isLoading?: boolean;
     className?: string;
@@ -74,13 +79,17 @@ export const SummaryCards = ({
     const [fromTimestamp, toTimestamp] = dataInterval;
     // aggregate values from shown graph data
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
-    const totalSentAmount = data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
-    const totalReceivedAmount = data.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
-    const totalSentFiatMap: { [k: string]: string | undefined } = data.reduce(
+    const totalSentAmount = asBaseCurrencyAmount(
+        data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0)),
+    );
+    const totalReceivedAmount = asBaseCurrencyAmount(
+        data.reduce((acc, d) => acc.plus(d.received), new BigNumber(0)),
+    );
+    const totalSentFiatMap: FiatValueMap = data.reduce(
         (acc, d) => sumFiatValueMap(acc, d.sentFiat),
         {},
     );
-    const totalReceivedFiatMap: { [k: string]: string | undefined } = data.reduce(
+    const totalReceivedFiatMap: FiatValueMap = data.reduce(
         (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
         {},
     );

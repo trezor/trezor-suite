@@ -13,6 +13,7 @@ import { State as GraphState } from 'src/reducers/wallet/graphReducer';
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
+import { FiatValueMap } from './utilsWorker';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;
@@ -87,15 +88,15 @@ export const enhanceBlockchainAccountHistory = (
 /**
  * Return array with 2 items, minimum non-zero value and maximum value calculated from sent, received and balance fields
  */
-export const getMinMaxValueFromData = <TType extends TypeName>(
+export const getMinMaxValueFromData = <TType extends TypeName, TValue extends BigNumber>(
     data: ObjectType<TType>[],
     _type: TType,
-    extractSentValue: (sourceData: ObjectType<TType>) => string | undefined,
-    extractReceivedValue: (sourceData: ObjectType<TType>) => string | undefined,
-    extractBalanceValue: (sourceData: ObjectType<TType>) => string | undefined,
-): [number, number] => {
+    extractSentValue: (sourceData: ObjectType<TType>) => TValue | undefined,
+    extractReceivedValue: (sourceData: ObjectType<TType>) => TValue | undefined,
+    extractBalanceValue: (sourceData: ObjectType<TType>) => TValue | undefined,
+): [TValue, TValue] => {
     if (!data || data.length === 0) {
-        return [0, 0];
+        return [new BigNumber(0) as TValue, new BigNumber(0) as TValue];
     }
     let maxSent = new BigNumber(extractSentValue(data[0]) || 0);
     let maxReceived = new BigNumber(extractReceivedValue(data[0]) || 0);
@@ -136,20 +137,17 @@ export const getMinMaxValueFromData = <TType extends TypeName>(
         }
     });
 
-    const maxValue = Math.max(maxSent.toNumber(), maxReceived.toNumber(), maxBalance.toNumber());
+    const maxValue = BigNumber.max(maxSent, maxReceived, maxBalance);
 
     const minsToCompare = [minSent, minReceived, minBalance]
         .filter(m => !!m)
         .map(m => m!.toNumber());
-    const minValue = Math.min(...minsToCompare);
+    const minValue = BigNumber.min(...minsToCompare);
 
-    return [minValue, maxValue];
+    return [minValue as TValue, maxValue as TValue];
 };
 
-export const sumFiatValueMap = (
-    valueMap: { [k: string]: string | undefined },
-    obj: { [k: string]: string | undefined },
-) => {
+export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap) => {
     const newMap = { ...valueMap };
     sumFiatValueMapInPlace(newMap, obj);
 

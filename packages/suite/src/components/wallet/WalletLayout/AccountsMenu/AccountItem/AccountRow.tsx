@@ -3,6 +3,7 @@ import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { Left } from './AccountItem';
@@ -20,7 +21,7 @@ type AccountRowProps = {
     type: AccountItemType;
     symbol: NetworkSymbol;
     account: Account;
-    customFiatValue?: string;
+    customFiatValue?: BaseCurrencyAmount;
     accountLabel?: string;
     accountType: AccountType;
     index?: number;

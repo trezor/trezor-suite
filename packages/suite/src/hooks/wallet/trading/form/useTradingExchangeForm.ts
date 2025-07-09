@@ -167,7 +167,10 @@ export const useTradingExchangeForm = ({
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
     const fiatOfBestScoredQuote = quotes?.[0]?.sendStringAmount
-        ? toFiatCurrency(quotes?.[0]?.sendStringAmount, fiatValues?.fiatRate?.rate, 2)
+        ? (toFiatCurrency({
+              amount: quotes?.[0]?.sendStringAmount,
+              rate: fiatValues?.fiatRate?.rate,
+          })?.toFixed(2) ?? null)
         : null;
 
     const formIsValid = Object.keys(formState.errors).length === 0;

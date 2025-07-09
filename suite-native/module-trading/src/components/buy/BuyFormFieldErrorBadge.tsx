@@ -2,9 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
@@ -55,14 +57,15 @@ const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
             isBalance: true,
         });
     } else if (!amountInCrypto && fieldName === 'fiatValue' && fiatStringAmount && fiatCurrency) {
-        requestedAmount = BaseCurrencyAmountFormatter.format(asNonEmptyStringValue(value), {
-            currency: fiatCurrency,
-        });
+        requestedAmount = BaseCurrencyAmountFormatter.format(
+            asBaseCurrencyAmount(new BigNumber(asNonEmptyStringValue(value))),
+            { currency: fiatCurrency },
+        );
         quoteAmount = BaseCurrencyAmountFormatter.format(
-            truncateDecimals(fiatStringAmount, MAX_FIAT_DECIMALS),
-            {
-                currency: fiatCurrency,
-            },
+            asBaseCurrencyAmount(
+                new BigNumber(truncateDecimals(fiatStringAmount, MAX_FIAT_DECIMALS)),
+            ),
+            { currency: fiatCurrency },
         );
     }
 

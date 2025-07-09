@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectLocalCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
+import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Button, variables } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
@@ -83,7 +84,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
         'dashboard',
         sentValueFn,
         receivedValueFn,
-        () => '0',
+        () => BASE_CURRENCY_ZERO,
     );
 
     useEffect(() => {
@@ -126,7 +127,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         isLoading={graph.isLoading || isProcessing}
                         localCurrency={localCurrency}
                         xTicks={xTicks}
-                        minMaxValues={minMaxValues}
+                        minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}
                         data={data}
                         selectedRange={graph.selectedRange}
                         receivedValueFn={receivedValueFn}

@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, Card, PriceChangeBadge, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { BigNumber } from '@trezor/utils';
 
 import { useDayCoinPriceChange } from '../hooks/useDayCoinPriceChange';
 
@@ -82,7 +84,9 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                     </Text>
                     <BaseCurrencyAmountFormatter
                         symbol={symbol}
-                        value={currentValue ? `${currentValue}` : null}
+                        value={
+                            currentValue ? asBaseCurrencyAmount(new BigNumber(currentValue)) : null
+                        }
                         variant="titleSmall"
                         isDiscreetText={false}
                         numberOfLines={1}

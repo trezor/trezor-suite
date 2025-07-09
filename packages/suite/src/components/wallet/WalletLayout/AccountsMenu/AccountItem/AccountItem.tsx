@@ -2,6 +2,7 @@ import { Ref, forwardRef } from 'react';
 
 import styled from 'styled-components';
 
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
@@ -39,7 +40,7 @@ interface AccountItemProps {
     isSelected: boolean;
     isGroupSelected?: boolean;
     formattedBalance: string;
-    customFiatValue?: string;
+    customFiatValue?: BaseCurrencyAmount;
     isGroup?: boolean;
     tokens?: Account['tokens'];
     dataTestKey?: string;

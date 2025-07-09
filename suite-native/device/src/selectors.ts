@@ -35,7 +35,7 @@ import {
     selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount, getAccountFiatBalance } from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
@@ -118,7 +118,7 @@ const getTotalFiatBalanceNative = ({
         instanceBalance = instanceBalance.plus(accountFiatBalance);
     });
 
-    return instanceBalance.toFixed(2);
+    return asBaseCurrencyAmount(instanceBalance);
 };
 
 export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(

@@ -108,7 +108,7 @@ export const useTradingFiatValues = ({
     const formattedBalance = shouldSendInSats
         ? convertAmountUnitsToSubunits(balance, decimals)
         : balance;
-    const fiatValue = toFiatCurrency(balance, fiatRate?.rate, 2);
+    const fiatValue = toFiatCurrency({ amount: balance, rate: fiatRate?.rate })?.toFixed(2) ?? null;
 
     return {
         fiatValue,

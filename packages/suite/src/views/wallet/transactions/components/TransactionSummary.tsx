@@ -5,6 +5,7 @@ import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { selectLocalCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row, variables } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import {
@@ -64,9 +65,9 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const minMaxValues = getMinMaxValueFromData(
         data,
         'account',
-        d => d.sent,
-        d => d.received,
-        d => d.balance,
+        d => new BigNumber(d.sent),
+        d => new BigNumber(d.received),
+        d => new BigNumber(d.balance),
     );
 
     const xTicks =
@@ -127,7 +128,10 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                             account={account}
                                             isLoading={isLoading}
                                             data={data}
-                                            minMaxValues={minMaxValues}
+                                            minMaxValues={[
+                                                minMaxValues[0].toNumber(),
+                                                minMaxValues[1].toNumber(),
+                                            ]}
                                             localCurrency={localCurrency}
                                             onRefresh={onRefresh}
                                             selectedRange={selectedRange}

@@ -36,6 +36,7 @@
         "@suite-native/tokens": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "expo-haptics": "~14.1.4",
         "jotai": "^2.12.5",
         "react": "19.0.0",

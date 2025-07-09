@@ -1,11 +1,15 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { BuyFormContext } from '../../types/buy';
 
 const getAmountLimitContext = ({
     options,
-}: yup.TestContext<unknown>): Omit<BuyFormContext, 'currency'> & { currency: string } => {
+}: yup.TestContext<unknown>): Omit<BuyFormContext, 'currency'> & {
+    currency: string;
+} => {
     const context = options.context as BuyFormContext;
 
     return {
@@ -85,7 +89,9 @@ export const buyFormValidationSchema = yup.object({
 
             return testContext.createError({
                 message: translate('moduleTrading.validators.min', {
-                    min: FiatAmountFormatter.format(minFiat, { currency }),
+                    min: FiatAmountFormatter.format(asBaseCurrencyAmount(new BigNumber(minFiat)), {
+                        currency,
+                    }),
                 }),
             });
         })
@@ -99,7 +105,9 @@ export const buyFormValidationSchema = yup.object({
 
             return testContext.createError({
                 message: translate('moduleTrading.validators.max', {
-                    max: FiatAmountFormatter.format(maxFiat, { currency }),
+                    max: FiatAmountFormatter.format(asBaseCurrencyAmount(new BigNumber(maxFiat)), {
+                        currency,
+                    }),
                 }),
             });
         }),
