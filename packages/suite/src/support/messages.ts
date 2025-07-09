@@ -3179,6 +3179,10 @@ export default defineMessages({
         defaultMessage: 'Receive {networkDisplaySymbol}',
         id: 'TR_RECEIVE_NETWORK',
     },
+    TR_RECEIVE_NETWORK_INCLUDING_TOKENS: {
+        defaultMessage: 'Receive {networkDisplaySymbol} including tokens',
+        id: 'TR_RECEIVE_NETWORK_INCLUDING_TOKENS',
+    },
     TR_BUY_NETWORK: {
         defaultMessage: 'Buy {networkDisplaySymbol}',
         id: 'TR_BUY_NETWORK',

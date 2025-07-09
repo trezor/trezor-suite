@@ -1,8 +1,15 @@
 import { useCallback } from 'react';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { selectTradingModalAccountKey } from '@suite-common/trading';
+import {
+    cryptoIdToSymbol,
+    selectTradingModalAccountKey,
+    useTradingInfo,
+} from '@suite-common/trading';
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
@@ -24,6 +31,8 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const isTradingFlow = useSelector(selectTradingModalAccountKey);
+    const { modalCryptoId } = useSelector(state => state.wallet.tradingNew);
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const isConnectPopup = useSelector(
         state => selectConnectPopupCall(state)?.state === 'address-confirmation',
     );
@@ -36,10 +45,67 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     if (isConnectPopup) return <ConnectAddressConfirmation />;
     if (!device) return null;
 
+    const getHeading = () => {
+        if (modalCryptoId) {
+            const symbol = cryptoIdToSymbol(modalCryptoId);
+            const { coinSymbol, contractAddress } =
+                cryptoIdToSymbolAndContractAddress(modalCryptoId);
+            const networkCurrencyName = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
+
+            if (contractAddress) {
+                const networkName = symbol ? getNetwork(symbol).name : coinSymbol?.toUpperCase();
+
+                return (
+                    <Translation
+                        id="TR_ADDRESS_MODAL_TITLE_EXCHANGE"
+                        values={{
+                            networkName,
+                            networkCurrencyName,
+                        }}
+                    />
+                );
+            }
+
+            return (
+                <Translation
+                    id="TR_ADDRESS_MODAL_TITLE"
+                    values={{
+                        networkName: networkCurrencyName,
+                    }}
+                />
+            );
+        }
+
+        if (!account) {
+            return <Translation id="TR_RECEIVE" />;
+        }
+
+        const hasTokens = hasNetworkFeatures(account, 'tokens');
+        if (hasTokens) {
+            return (
+                <Translation
+                    id="TR_RECEIVE_NETWORK_INCLUDING_TOKENS"
+                    values={{
+                        networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                    }}
+                />
+            );
+        }
+
+        return (
+            <Translation
+                id="TR_RECEIVE_NETWORK"
+                values={{
+                    networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                }}
+            />
+        );
+    };
+
     return (
         <ConfirmValueModal
             account={account}
-            heading={<Translation id="TR_RECEIVE" />}
+            heading={getHeading()}
             label={<Translation id="TR_ADDRESS" />}
             validateOnDevice={validateAddress}
             areStepsVisible={!isTradingFlow}
