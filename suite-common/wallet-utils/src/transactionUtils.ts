@@ -35,6 +35,7 @@ import {
     formatNetworkAmount,
     isTokenTransferMatchesSearch,
 } from './accountUtils';
+import { asBaseCurrencyAmount } from './baseCurrency';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
 import { toFiatCurrency } from '../src/fiatConverterUtils';
@@ -246,14 +247,14 @@ export const sumTransactionsFiat = (
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(
-                    toFiatCurrency(cardanoWithdrawal, historicRate, -1) ?? 0,
+                    toFiatCurrency({ amount: cardanoWithdrawal, rate: historicRate }) ?? 0,
                 );
             }
 
             const cardanoDeposit = formatCardanoDeposit(tx);
             if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(
-                    toFiatCurrency(cardanoDeposit, historicRate, -1) ?? 0,
+                    toFiatCurrency({ amount: cardanoDeposit, rate: historicRate }) ?? 0,
                 );
             }
         }
@@ -272,34 +273,39 @@ export const sumTransactionsFiat = (
 
                 if (transferType === 'sent') {
                     totalAmount = totalAmount.minus(
-                        toFiatCurrency(tokenAmount, historicTokenRate, -1) ?? 0,
+                        toFiatCurrency({ amount: tokenAmount, rate: historicTokenRate }) ?? 0,
                     );
                 }
 
                 if (transferType === 'recv') {
                     totalAmount = totalAmount.plus(
-                        toFiatCurrency(tokenAmount, historicTokenRate, -1) ?? 0,
+                        toFiatCurrency({ amount: tokenAmount, rate: historicTokenRate }) ?? 0,
                     );
                 }
             });
         } else {
             // count in only if Inputs/Outputs includes my account (EVM does not need to)
             if (tx.type === 'sent') {
-                totalAmount = totalAmount.minus(toFiatCurrency(amount, historicRate, -1) ?? 0);
+                totalAmount = totalAmount.minus(
+                    toFiatCurrency({ amount, rate: historicRate }) ?? 0,
+                );
             }
 
             if (tx.type === 'recv' || tx.type === 'joint') {
-                totalAmount = totalAmount.plus(toFiatCurrency(amount, historicRate, -1) ?? 0);
+                totalAmount = totalAmount.plus(toFiatCurrency({ amount, rate: historicRate }) ?? 0);
             }
         }
 
         if (isTxFeePaid(tx)) {
-            totalAmount = totalAmount.minus(toFiatCurrency(fee, historicRate, -1) ?? 0);
+            totalAmount = totalAmount.minus(
+                toFiatCurrency({ amount: fee, rate: historicRate }) ?? 0,
+            );
         }
 
         tx.internalTransfers.forEach(internalTx => {
             const amountInternal = formatNetworkAmount(internalTx.amount, tx.symbol);
-            const amountInternalFiat = toFiatCurrency(amountInternal, historicRate, -1) ?? 0;
+            const amountInternalFiat =
+                toFiatCurrency({ amount: amountInternal, rate: historicRate }) ?? 0;
 
             if (internalTx.type === 'sent') {
                 totalAmount = totalAmount.minus(amountInternalFiat);
@@ -310,7 +316,7 @@ export const sumTransactionsFiat = (
         });
     });
 
-    return totalAmount;
+    return asBaseCurrencyAmount(totalAmount);
 };
 
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>

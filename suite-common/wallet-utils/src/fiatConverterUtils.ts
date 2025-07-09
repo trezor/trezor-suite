@@ -1,6 +1,19 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-export const toFiatCurrency = (amount: string, rate?: number, decimals = 2) => {
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
+
+type ToFiatCurrencyParams = {
+    amount: string | BigNumber;
+    rate: number | undefined;
+};
+
+/**
+ * This function does only numerical operations, formatting is to be handled in formatters.
+ */
+export const toFiatCurrency = ({
+    amount,
+    rate,
+}: ToFiatCurrencyParams): BaseCurrencyAmount | null => {
     if (!rate) {
         return null;
     }
@@ -15,10 +28,21 @@ export const toFiatCurrency = (amount: string, rate?: number, decimals = 2) => {
         return null;
     }
 
-    return decimals === -1 ? localAmount.toFixed() : localAmount.toFixed(decimals);
+    return asBaseCurrencyAmount(localAmount);
 };
 
-export const fromFiatCurrency = (localAmount: string, decimals: number, rate?: number) => {
+type FromFiatCurrencyParams = {
+    localAmount: string;
+    rate: number | undefined;
+};
+
+/**
+ * This function does only numerical operations, formatting is to be handled in formatters.
+ */
+export const fromFiatCurrency = ({
+    localAmount,
+    rate,
+}: FromFiatCurrencyParams): BigNumber | null => {
     if (!rate) {
         return null;
     }
@@ -29,7 +53,6 @@ export const fromFiatCurrency = (localAmount: string, decimals: number, rate?: n
     }
 
     const amount = new BigNumber(formattedLocalAmount).div(rate);
-    const amountStr = amount.isNaN() ? null : amount.toFixed(decimals);
 
-    return amountStr;
+    return amount.isNaN() ? null : amount;
 };
