@@ -2,8 +2,10 @@ import { CryptoId } from 'invity-api';
 
 import { type TradingType } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Column, InfoItem, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
@@ -50,7 +52,14 @@ export const TradingInfoItem = ({
             </Column>
         ) : (
             <Row data-testid="@trading/form/info/fiat-amount">
-                <TradingFiatAmount amount={amount} currency={currency} />
+                <TradingFiatAmount
+                    amount={
+                        amount !== undefined
+                            ? asBaseCurrencyAmount(new BigNumber(amount))
+                            : undefined
+                    }
+                    currency={currency}
+                />
             </Row>
         )}
     </InfoItem>

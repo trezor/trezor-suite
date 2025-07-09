@@ -3,11 +3,16 @@ import { CryptoId } from 'invity-api';
 import { useFormatters } from '@suite-common/formatters';
 import { TradingTradeType, useTradingInfo } from '@suite-common/trading';
 import { getNetwork, isNetworkSymbol } from '@suite-common/wallet-config';
-import { localizeNumber } from '@suite-common/wallet-utils';
+import {
+    BaseCurrencyAmount,
+    asBaseCurrencyAmount,
+    localizeNumber,
+} from '@suite-common/wallet-utils';
 import {
     convertTokenValueToDecimal,
     formatNumberWithThousandCommas,
 } from '@suite-native/formatters/src/utils';
+import { BigNumber } from '@trezor/utils';
 
 import { TradeOperationData, getTradeOperationData } from '../../utils/general/utils';
 
@@ -61,7 +66,10 @@ export const useChangeStringsExtractor = (
         return formattedValue;
     };
 
-    const formatFiatValue = (value: string | undefined, currency: string | undefined) => {
+    const formatFiatValue = (
+        value: BaseCurrencyAmount | undefined,
+        currency: string | undefined,
+    ) => {
         if (value === undefined) {
             return undefined;
         }
@@ -89,11 +97,11 @@ export const useChangeStringsExtractor = (
 
         const rateFormatted = isFromCrypto
             ? formatCryptoValue(rate.toString(), fromCurrency, false)
-            : formatFiatValue(rate.toString(), fromCurrency);
+            : formatFiatValue(asBaseCurrencyAmount(new BigNumber(rate)), fromCurrency);
 
         const targetCurrencyFormatted = isToCrypto
             ? formatCryptoValue('1', toCurrency, false)
-            : formatFiatValue('1', toCurrency);
+            : formatFiatValue(asBaseCurrencyAmount(new BigNumber('1')), toCurrency);
 
         if (!rateFormatted || !targetCurrencyFormatted) {
             return undefined;
@@ -104,11 +112,17 @@ export const useChangeStringsExtractor = (
 
     const fromStringValue = isFromCrypto
         ? formatCryptoValue(fromValue, fromCurrency)
-        : formatFiatValue(fromValue, fromCurrency);
+        : formatFiatValue(
+              fromValue !== undefined ? asBaseCurrencyAmount(new BigNumber(fromValue)) : undefined,
+              fromCurrency,
+          );
 
     const toStringValue = isToCrypto
         ? formatCryptoValue(toValue, toCurrency)
-        : formatFiatValue(toValue, toCurrency);
+        : formatFiatValue(
+              toValue !== undefined ? asBaseCurrencyAmount(new BigNumber(toValue)) : undefined,
+              toCurrency,
+          );
 
     const formattedRate = formatExchangeRate();
 

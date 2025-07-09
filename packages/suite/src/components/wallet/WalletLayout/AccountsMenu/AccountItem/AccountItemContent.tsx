@@ -6,7 +6,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDiscreteModeActive, selectLocalCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
 import {
     Column,
     Row,
@@ -36,7 +36,7 @@ const AccountLabelContainer = styled.div`
 `;
 
 type ItemContentProps = {
-    customFiatValue?: string;
+    customFiatValue?: BaseCurrencyAmount;
     account: Account;
     type: AccountItemType;
     accountLabel?: string;

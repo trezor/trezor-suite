@@ -12,6 +12,7 @@ import {
     selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
 import { GraphFiatBalance } from '@suite-native/graph';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
@@ -31,7 +32,7 @@ import {
 type AccountBalanceProps = {
     accountKey: AccountKey;
     tokenAddress?: TokenAddress;
-    totalFiatBalance: string;
+    totalFiatBalance: BaseCurrencyAmount;
 };
 
 const CryptoBalance = ({

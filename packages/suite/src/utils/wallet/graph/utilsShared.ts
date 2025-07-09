@@ -1,6 +1,10 @@
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { typedObjectEntries } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { AggregatedAccountHistory, AggregatedDashboardHistory } from 'src/types/wallet/graph';
+
+import type { FiatValueMap } from './utilsWorker';
 
 export type ObjectType<T> = T extends 'account'
     ? AggregatedAccountHistory
@@ -17,13 +21,10 @@ export type TypeName = 'account' | 'dashboard';
  * @param {{ string: string | undefined }} obj
  * @returns
  */
-export const sumFiatValueMapInPlace = (
-    valueMap: { [k: string]: string | undefined },
-    obj: { [k: string]: string | undefined },
-) => {
-    Object.entries(obj).forEach(keyVal => {
+export const sumFiatValueMapInPlace = (valueMap: FiatValueMap, obj: FiatValueMap) => {
+    typedObjectEntries(obj).forEach(keyVal => {
         const [key, val] = keyVal;
-        const previousValue = valueMap[key] ?? '0';
-        valueMap[key] = new BigNumber(previousValue).plus(val ?? 0).toFixed();
+        const previousValue = valueMap[key] ?? asBaseCurrencyAmount(new BigNumber(0));
+        valueMap[key] = asBaseCurrencyAmount(new BigNumber(previousValue).plus(val ?? 0));
     });
 };

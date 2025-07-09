@@ -6,7 +6,9 @@ import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { SkeletonRectangle } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
@@ -78,7 +80,10 @@ export const BaseCurrencyValue = ({
     });
 
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const value = shouldConvert ? fiatAmount : amount;
+
+    // In case `shouldConvert === true` the `amount` is the Crypto-Value and will be converted.
+    // However, in case `shouldConvert === false`, the `amount` is already converted BaseCurrency (Fiat) value.
+    const value = shouldConvert ? fiatAmount : asBaseCurrencyAmount(new BigNumber(amount));
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
 
@@ -111,7 +116,7 @@ export const BaseCurrencyValue = ({
             <SameWidthNums>
                 <BaseCurrencyAmountFormatter
                     currency={localCurrency}
-                    value={rate}
+                    value={asBaseCurrencyAmount(new BigNumber(rate))}
                     {...fiatRateFormatterOptions}
                 />
             </SameWidthNums>

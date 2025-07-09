@@ -124,7 +124,11 @@ export const useSendFormImport = ({
                         const cryptoValue = shouldSendInSats
                             ? convertAmountSubunitsToUnits(output.amount, network.decimals)
                             : output.amount;
-                        output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
+                        output.fiat =
+                            toFiatCurrency({
+                                amount: cryptoValue,
+                                rate: fiatRate.rate,
+                            })?.toFixed(2) || '';
                     }
                 } else if (
                     Object.keys(baseCurrencies).find(currency => currency === itemCurrency) &&
@@ -133,8 +137,13 @@ export const useSendFormImport = ({
                     // csv amount in fiat currency
                     output.currency = { value: itemCurrency, label: itemCurrency.toUpperCase() };
                     output.fiat = item.amount || '';
+
                     // calculate Amount from Fiat
-                    const cryptoValue = fromFiatCurrency(output.fiat, network.decimals, itemRate);
+                    const cryptoValue = fromFiatCurrency({
+                        localAmount: output.fiat,
+                        rate: itemRate,
+                    })?.toFixed(network.decimals);
+
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats
                             ? convertAmountUnitsToSubunits(cryptoValue, network.decimals)

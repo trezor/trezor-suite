@@ -4,8 +4,10 @@ import { CryptoId } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
 import { TradingTradeType, useTradingInfo } from '@suite-common/trading';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -69,7 +71,7 @@ export const TradingFeaturedOffersAmounts = ({ quote }: TradingFeaturedOffersAmo
             <TradingFeaturedOffersAmount
                 fromAmount={
                     <TradingFiatAmount
-                        amount={quoteProps.sendAmount}
+                        amount={asBaseCurrencyAmount(new BigNumber(quoteProps.sendAmount))}
                         currency={quoteProps.sendCurrency}
                     />
                 }
@@ -98,7 +100,7 @@ export const TradingFeaturedOffersAmounts = ({ quote }: TradingFeaturedOffersAmo
                 }
                 toAmount={
                     <TradingFiatAmount
-                        amount={quoteProps.sendAmount}
+                        amount={asBaseCurrencyAmount(new BigNumber(quoteProps.sendAmount))}
                         currency={quoteProps.sendCurrency}
                     />
                 }

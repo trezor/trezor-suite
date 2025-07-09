@@ -127,7 +127,7 @@ export const validateFiatLimits =
     (value: string) => {
         if (value && amountLimits) {
             const currency = amountLimits.currency.toLowerCase();
-            const cryptoAmount = fromFiatCurrency(value, decimals, rate);
+            const cryptoAmount = fromFiatCurrency({ localAmount: value, rate })?.toFixed(decimals);
             if (!cryptoAmount) return translationString('TR_FIAT_RATES_NOT_AVAILABLE');
 
             if (amountLimits.minFiat && new BigNumber(value).lt(amountLimits.minFiat)) {

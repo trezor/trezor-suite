@@ -4,6 +4,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
 import {
+    asBaseCurrencyAmount,
     formatNetworkAmount,
     getFiatRateKey,
     isTestnet,
@@ -154,7 +155,9 @@ export const CoinjoinBatchItem = ({
                                             <HiddenPlaceholder>
                                                 <BaseCurrencyAmountFormatter
                                                     currency={localCurrency}
-                                                    value={fiatAmount.absoluteValue().toFixed()}
+                                                    value={asBaseCurrencyAmount(
+                                                        fiatAmount.absoluteValue(),
+                                                    )}
                                                 />
                                             </HiddenPlaceholder>
                                         ) : undefined

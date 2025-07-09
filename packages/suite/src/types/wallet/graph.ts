@@ -1,4 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {
@@ -24,9 +25,9 @@ export interface CommonAggregatedHistory {
     sent: string | undefined;
     received: string | undefined;
     balance: string | undefined;
-    balanceFiat: { [k: string]: string | undefined };
-    sentFiat: { [k: string]: string | undefined };
-    receivedFiat: { [k: string]: string | undefined };
+    balanceFiat: { [k: string]: BaseCurrencyAmount | undefined };
+    sentFiat: { [k: string]: BaseCurrencyAmount | undefined };
+    receivedFiat: { [k: string]: BaseCurrencyAmount | undefined };
 }
 
 export type GraphRange =

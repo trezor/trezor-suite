@@ -129,11 +129,11 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                 return;
             }
 
-            const cryptoAmount = fromFiatCurrency(
-                fiatAmount,
-                networkDecimals,
-                tradingFiatValues.fiatRate?.rate,
-            );
+            const cryptoAmount =
+                fromFiatCurrency({
+                    localAmount: fiatAmount,
+                    rate: tradingFiatValues.fiatRate?.rate,
+                })?.toFixed(networkDecimals) ?? null;
 
             const formattedCryptoAmount =
                 cryptoAmount && shouldSendInSats

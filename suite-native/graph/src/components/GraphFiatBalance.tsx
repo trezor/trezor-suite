@@ -5,16 +5,18 @@ import { Atom, useAtomValue } from 'jotai';
 import { useFormatters } from '@suite-common/formatters';
 import { FiatGraphPoint } from '@suite-common/graph';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { BigNumber } from '@trezor/utils';
 
 import { GraphDateFormatter } from './GraphDateFormatter';
 import { PriceChangeIndicator } from './PriceChangeIndicator';
 
 type BalanceProps = {
     selectedPointAtom: Atom<FiatGraphPoint | null>;
-    latestValue?: string;
+    latestValue?: BaseCurrencyAmount;
 };
 
 type GraphFiatBalanceProps = BalanceProps & {
@@ -22,7 +24,7 @@ type GraphFiatBalanceProps = BalanceProps & {
     percentageChangeAtom: Atom<number>;
     showChange?: boolean;
     isLoading?: boolean;
-    totalFiatBalance: string;
+    totalFiatBalance: BaseCurrencyAmount;
     isHistoryEnabledAccount?: boolean;
 };
 
@@ -41,7 +43,13 @@ const Skeleton = () => (
 const Balance = ({ selectedPointAtom, latestValue }: BalanceProps) => {
     const point = useAtomValue(selectedPointAtom);
     const fiatValue =
-        latestValue || point?.valueLatestTotal || (point?.value ? String(point.value) : '0');
+        latestValue !== undefined
+            ? latestValue
+            : asBaseCurrencyAmount(
+                  new BigNumber(
+                      point?.valueLatestTotal || (point?.value ? String(point.value) : '0'),
+                  ),
+              );
 
     return (
         <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
