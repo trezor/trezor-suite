@@ -205,16 +205,16 @@ export const fixtures = [
             data: {
                 name: 'Ethereum Archive',
                 shortcut: 'ETH',
-                decimals: 18,
-                version: '0.4.0',
-                bestHeight: 19960825,
-                bestHash: '0x8339e411cd2f62b9493e36c444f7bd11ec716ceaa94f491e9726233d22abc024',
-                block0Hash: '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
                 network: 'ETH',
+                decimals: 18,
+                version: '0.5.0',
+                bestHeight: 22881953,
+                bestHash: '0xdfe8811c2f0939d7f2cab4f93918c8e216a6cb8c8251196abe3234a52cd83155',
+                block0Hash: '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
                 testnet: false,
                 backend: {
-                    version: 'erigon/2.59.3/linux-amd64/go1.21.6',
-                    consensus_version: 'Prysm/v5.0.2 (linux amd64)',
+                    version: 'erigon/3.0.11/linux-amd64/go1.23.10',
+                    consensus_version: 'Prysm/v6.0.4 (linux amd64)',
                 },
             },
         },
@@ -245,5 +245,17 @@ export const fixtures = [
         method: 'sendTransaction',
         default: true,
         response: { result: '0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c' },
+    },
+    {
+        method: 'subscribeAddresses',
+        default: true,
+        response: {
+            subscribed: true,
+        },
+    },
+    {
+        method: 'getBalanceHistory',
+        default: true,
+        response: [],
     },
 ];
