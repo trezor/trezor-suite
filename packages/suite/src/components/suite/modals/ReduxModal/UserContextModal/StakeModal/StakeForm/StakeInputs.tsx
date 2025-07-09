@@ -8,7 +8,7 @@ import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -162,7 +162,11 @@ export const StakeInputs = () => {
                     ),
                 }}
                 fiatValue={
-                    <FiatValue amount={amount} symbol={account.symbol} showApproximationIndicator>
+                    <BaseCurrencyValue
+                        amount={amount}
+                        symbol={account.symbol}
+                        showApproximationIndicator
+                    >
                         {({ value }) =>
                             value ? (
                                 <Text typographyStyle="label" variant="tertiary">
@@ -170,7 +174,7 @@ export const StakeInputs = () => {
                                 </Text>
                             ) : null
                         }
-                    </FiatValue>
+                    </BaseCurrencyValue>
                 }
                 options={[
                     {

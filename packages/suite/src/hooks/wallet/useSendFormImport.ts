@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+import { BaseCurrencyCode, baseCurrencies } from '@suite-common/suite-config';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
@@ -53,7 +53,7 @@ export const useSendFormImport = ({
         const uniqueCurrencies = [...new Set(currencies)];
 
         for (const currency of uniqueCurrencies) {
-            const fiatRateKey = getFiatRateKey(network.symbol, currency as FiatCurrencyCode);
+            const fiatRateKey = getFiatRateKey(network.symbol, currency as BaseCurrencyCode);
             const fiatRate = currentRates?.[fiatRateKey];
 
             if (fiatRate) {
@@ -67,7 +67,7 @@ export const useSendFormImport = ({
                                 symbol: network.symbol,
                             },
                         ],
-                        localCurrency: currency as FiatCurrencyCode,
+                        localCurrency: currency as BaseCurrencyCode,
                         rateType: 'current',
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
@@ -112,7 +112,7 @@ export const useSendFormImport = ({
 
                     const fiatRateKey = getFiatRateKey(
                         network.symbol,
-                        itemCurrency as FiatCurrencyCode,
+                        itemCurrency as BaseCurrencyCode,
                     );
                     const fiatRate = currentRates?.[fiatRateKey];
 
@@ -124,7 +124,7 @@ export const useSendFormImport = ({
                         output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
                     }
                 } else if (
-                    Object.keys(fiatCurrencies).find(currency => currency === itemCurrency) &&
+                    Object.keys(baseCurrencies).find(currency => currency === itemCurrency) &&
                     itemRate
                 ) {
                     // csv amount in fiat currency

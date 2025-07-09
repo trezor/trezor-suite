@@ -6,8 +6,8 @@ import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, DiscreetCanvas, Text, VStack, useDiscreetMode } from '@suite-native/atoms';
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { Translation } from '@suite-native/intl';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles';
 
 import { PressableSwitchRow } from '../components/PressableSwitchRow';
@@ -111,18 +111,18 @@ const BiometricsSwitchRow = () => {
     );
 };
 
-export const SettingsPrivacyScreen = () => {
-    const { translate } = useTranslate();
-
-    return (
-        <Screen
-            header={<ScreenHeader content={translate('moduleSettings.privacyAndSecurity.title')} />}
-        >
-            <VStack spacing="sp16">
-                <BiometricsSwitchRow />
-                <DiscreetModeSwitchRow />
-                <AnalyticsSwitchRow />
-            </VStack>
-        </Screen>
-    );
-};
+export const SettingsPrivacyScreen = () => (
+    <Screen
+        header={
+            <DynamicScreenHeader
+                content={<Translation id="moduleSettings.privacyAndSecurity.title" />}
+            />
+        }
+    >
+        <VStack spacing="sp16">
+            <BiometricsSwitchRow />
+            <DiscreetModeSwitchRow />
+            <AnalyticsSwitchRow />
+        </VStack>
+    </Screen>
+);

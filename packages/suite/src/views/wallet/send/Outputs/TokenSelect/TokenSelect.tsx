@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     TokenDefinitions,
     selectCoinDefinitions,
@@ -43,7 +43,7 @@ import { spacings } from '@trezor/theme';
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import {
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     HiddenPlaceholder,
     Translation,
@@ -255,7 +255,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
                     },
                 ],
-                localCurrency: currencyValue.value as FiatCurrencyCode,
+                localCurrency: currencyValue.value as BaseCurrencyCode,
                 rateType: 'current',
                 fetchAttemptTimestamp: Date.now() as Timestamp,
             }),
@@ -355,7 +355,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             contractAddress={selectedToken?.contract}
                                         />
                                     </HiddenPlaceholder>{' '}
-                                    <FiatValue
+                                    <BaseCurrencyValue
                                         tokenAddress={selectedToken?.contract as TokenAddress}
                                         amount={selectedToken?.balance || account.formattedBalance}
                                         symbol={account.symbol}

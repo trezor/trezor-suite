@@ -2,7 +2,7 @@ import { addDays, startOfMonth } from 'date-fns';
 import { fromWei, toWei } from 'web3-utils';
 
 import { AccountLabels } from '@suite-common/metadata-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { SignOperator } from '@suite-common/suite-types';
 import {
     Account,
@@ -225,7 +225,7 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 
 export const sumTransactionsFiat = (
     transactions: WalletAccountTransaction[],
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     historicFiatRates: RatesByTimestamps | undefined,
 ) => {
     let totalAmount = new BigNumber(0);

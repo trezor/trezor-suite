@@ -25,7 +25,7 @@ export const GraphTooltipDashboard = ({
     sentValueFn,
     ...props
 }: GraphTooltipDashboardProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
 
     // Note: payload is [] when discovery is paused.
     if (!active || !payload?.length) {
@@ -36,11 +36,11 @@ export const GraphTooltipDashboard = ({
     const sentAmountString = sentValueFn(payload[0].payload);
 
     const receivedAmount = (
-        <FiatAmountFormatter currency={localCurrency} value={receivedAmountString ?? '0'} />
+        <BaseCurrencyAmountFormatter currency={localCurrency} value={receivedAmountString ?? '0'} />
     );
 
     const sentAmount = (
-        <FiatAmountFormatter currency={localCurrency} value={sentAmountString ?? '0'} />
+        <BaseCurrencyAmountFormatter currency={localCurrency} value={sentAmountString ?? '0'} />
     );
 
     return (

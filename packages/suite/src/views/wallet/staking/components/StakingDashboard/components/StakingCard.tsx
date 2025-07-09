@@ -28,7 +28,7 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -75,9 +75,13 @@ const Item = ({
                     />
                 </Paragraph>
                 <Paragraph typographyStyle="hint" variant="tertiary">
-                    <FiatValue amount={fiatAmount} symbol={symbol} showApproximationIndicator>
+                    <BaseCurrencyValue
+                        amount={fiatAmount}
+                        symbol={symbol}
+                        showApproximationIndicator
+                    >
                         {({ value }) => (value ? <span>{value}</span> : null)}
-                    </FiatValue>
+                    </BaseCurrencyValue>
                 </Paragraph>
             </>
         )}

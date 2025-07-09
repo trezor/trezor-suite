@@ -6,7 +6,7 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import {
     AccountsRootState,
@@ -24,8 +24,10 @@ import {
     selectDeviceInstances,
     selectDeviceModel,
     selectDevices,
+    selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceInBootloader,
     selectIsDiscoveredDeviceAccountless,
     selectIsEntropyCheckFailed,
     selectIsUnacquiredDevice,
@@ -101,7 +103,7 @@ const getTotalFiatBalanceNative = ({
     rates,
 }: {
     deviceAccounts: Account[];
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     rates?: RatesByKey;
 }) => {
     let instanceBalance = new BigNumber(0);
@@ -236,4 +238,10 @@ export const selectIsDeviceSetupSupported = createMemoizedSelector(
         G.isNotNullable(model) &&
         (isDeviceSetupSupported(model) ||
             (isModelTDeviceOnboardingFeatureFlagEnabled && model === DeviceModelInternal.T2T1)),
+);
+
+export const selectShouldFactoryResetBeVisible = createMemoizedSelector(
+    [selectIsDeviceInBootloader, selectHasDeviceFirmwareInstalled],
+    (isDeviceInBootloader, hasDeviceFirmwareInstalled) =>
+        isDeviceInBootloader && hasDeviceFirmwareInstalled,
 );

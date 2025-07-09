@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 
 import { HStack, Radio, Text } from '@suite-native/atoms';
-import { FiatAmountFormatter } from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -80,7 +80,7 @@ export const WalletItemBase = ({
                 </HStack>
                 <HStack alignItems="center" spacing="sp12">
                     {fiatBalance && (
-                        <FiatAmountFormatter
+                        <BaseCurrencyAmountFormatter
                             value={fiatBalance}
                             variant="hint"
                             color="textSubdued"

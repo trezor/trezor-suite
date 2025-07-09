@@ -4,12 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
+import { Translation } from '@suite-native/intl';
 import {
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
+    DynamicScreenHeader,
     RootStackParamList,
     Screen,
-    ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
@@ -34,7 +35,14 @@ export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
     return (
-        <Screen header={<ScreenHeader content="DEV utils" />}>
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    content={<Translation id="moduleSettings.items.features.devUtils.title" />}
+                    subtitle={<Translation id="moduleSettings.items.features.devUtils.subtitle" />}
+                />
+            }
+        >
             <VStack spacing="sp16">
                 <Card>
                     <VStack spacing="sp16">

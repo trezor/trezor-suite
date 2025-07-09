@@ -1,6 +1,6 @@
 import { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import type { Network } from '@suite-common/wallet-config';
 import {
     Account,
@@ -54,7 +54,7 @@ export interface AmountLimitsString {
 export interface BaseStakeContextValues {
     account: Account;
     network: Network;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     composedLevels?: PrecomposedLevels;
     isComposing: boolean;
     clearForm: () => void;

@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceProtectedByPin } from '@suite-common/wallet-core';
-import { Card, PictogramTitleHeader, Text, VStack } from '@suite-native/atoms';
+import { Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { DevicePinActionButton } from '../components/DevicePinActionButton';
 
@@ -45,22 +45,20 @@ export const PinProtectionScreen = () => {
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
 
     return (
-        <Screen header={<ScreenHeader closeActionType="close" />}>
-            <VStack spacing="sp32" marginTop="sp16">
-                <VStack>
-                    <Text variant="titleMedium">
-                        <Translation id="moduleDeviceSettings.pinProtection.title" />
-                    </Text>
-                    <Text color="textSubdued">
-                        <Translation id="moduleDeviceSettings.pinProtection.content" />
-                    </Text>
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    content={<Translation id="moduleDeviceSettings.pinProtection.title" />}
+                    subtitle={<Translation id="moduleDeviceSettings.pinProtection.content" />}
+                    closeActionType="close"
+                />
+            }
+        >
+            <Card>
+                <VStack spacing="sp32">
+                    {isDeviceProtectedByPin ? <DisableOrChangePinCard /> : <EnablePinCard />}
                 </VStack>
-                <Card>
-                    <VStack spacing="sp32">
-                        {isDeviceProtectedByPin ? <DisableOrChangePinCard /> : <EnablePinCard />}
-                    </VStack>
-                </Card>
-            </VStack>
+            </Card>
         </Screen>
     );
 };

@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
@@ -580,7 +580,7 @@ export const areTokenFiatRatesLoading = (
     (account.tokens ?? []).some(token => {
         const tokenFiatRateKey = getFiatRateKey(
             account.symbol,
-            localCurrency as FiatCurrencyCode,
+            localCurrency as BaseCurrencyCode,
             token.contract as TokenAddress,
         );
 
@@ -602,7 +602,7 @@ export const getAccountTokensFiatBalance = (
         .reduce((total, token) => {
             const tokenFiatRateKey = getFiatRateKey(
                 account.symbol,
-                localCurrency as FiatCurrencyCode,
+                localCurrency as BaseCurrencyCode,
                 token.contract as TokenAddress,
             );
 
@@ -620,19 +620,21 @@ export const getStakingFiatBalance = (account: Account, rate: number | undefined
     return toFiatCurrency(balance, rate, 2);
 };
 
+type GetAccountFiatBalanceParams = {
+    account: Account;
+    localCurrency: BaseCurrencyCode;
+    rates?: RatesByKey;
+    shouldIncludeTokens?: boolean;
+    shouldIncludeStaking?: boolean;
+};
+
 export const getAccountFiatBalance = ({
     account,
     localCurrency,
     rates,
     shouldIncludeTokens = true,
     shouldIncludeStaking = true,
-}: {
-    account: Account;
-    localCurrency: FiatCurrencyCode;
-    rates?: RatesByKey;
-    shouldIncludeTokens?: boolean;
-    shouldIncludeStaking?: boolean;
-}) => {
+}: GetAccountFiatBalanceParams) => {
     const coinFiatRateKey = getFiatRateKey(account.symbol, localCurrency);
     const coinFiatRate = rates?.[coinFiatRateKey];
 
@@ -664,20 +666,23 @@ export const getAccountFiatBalance = ({
     return totalBalance.toFixed();
 };
 
+type GetTotalFiatBalanceParams = {
+    deviceAccounts: Account[];
+    localCurrency: BaseCurrencyCode;
+    rates?: RatesByKey;
+    shouldIncludeTokens?: boolean;
+    shouldIncludeStaking?: boolean;
+};
+
 export const getTotalFiatBalance = ({
     deviceAccounts,
     localCurrency,
     rates,
     shouldIncludeTokens = true,
     shouldIncludeStaking = true,
-}: {
-    deviceAccounts: Account[];
-    localCurrency: FiatCurrencyCode;
-    rates?: RatesByKey;
-    shouldIncludeTokens?: boolean;
-    shouldIncludeStaking?: boolean;
-}) => {
+}: GetTotalFiatBalanceParams) => {
     let instanceBalance = new BigNumber(0);
+
     deviceAccounts.forEach(a => {
         const accountFiatBalance =
             getAccountFiatBalance({

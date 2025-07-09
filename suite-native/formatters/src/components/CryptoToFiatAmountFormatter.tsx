@@ -3,7 +3,7 @@ import { TextProps } from '@suite-native/atoms';
 
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 import { FormatterProps } from '../types';
-import { FiatAmountFormatter } from './FiatAmountFormatter';
+import { BaseCurrencyAmountFormatter } from './BaseCurrencyAmountFormatter';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
     TextProps & {
@@ -33,7 +33,7 @@ export const CryptoToFiatAmountFormatter = ({
     });
 
     return (
-        <FiatAmountFormatter
+        <BaseCurrencyAmountFormatter
             symbol={symbol}
             value={fiatValue}
             isLoading={isLoading}

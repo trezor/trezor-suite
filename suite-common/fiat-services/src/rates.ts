@@ -1,6 +1,6 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { isBlockbookBasedNetwork } from '@suite-common/wallet-config';
 import type {
     FiatRatesResult,
@@ -26,14 +26,14 @@ const parallelRequestsCache = new ParallelRequestsCache();
 
 type FiatRatesParams = {
     ticker: TickerId;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     isElectrumBackend: boolean;
 };
 
 const getConnectFiatRatesForTimestamp = async (
     ticker: TickerId,
     timestamps: number[],
-    currency: FiatCurrencyCode,
+    currency: BaseCurrencyCode,
 ): Promise<
     | ReturnType<typeof TrezorConnect.blockchainGetFiatRatesForTimestamps>
     | { success: false; payload: null }
@@ -205,7 +205,7 @@ export const fetchLastWeekFiatRates = ({
 export const getFiatRatesForTimestamps = (
     ticker: TickerId,
     timestamps: number[],
-    localCurrency: FiatCurrencyCode,
+    localCurrency: BaseCurrencyCode,
     isElectrumBackend: boolean,
 ): Promise<HistoricRates | null> =>
     parallelRequestsCache.cache(

@@ -4,7 +4,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TokenAddress } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
-import { FiatValue } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite';
 
 import { LastUpdateTooltip } from './LastUpdateTooltip';
 import { NoRatesTooltip } from './NoRatesTooltip';
@@ -37,7 +37,7 @@ export const PriceTicker = ({
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
     return (
-        <FiatValue
+        <BaseCurrencyValue
             amount="1"
             symbol={symbol}
             tokenAddress={contractAddress}
@@ -56,6 +56,6 @@ export const PriceTicker = ({
                     emptyStateComponent
                 )
             }
-        </FiatValue>
+        </BaseCurrencyValue>
     );
 };

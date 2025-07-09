@@ -15,7 +15,7 @@ import { Column, Row, Text } from '@trezor/components';
 import { PrecomposedTransactionCardano } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
@@ -147,7 +147,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                                 variant="tertiary"
                                 typographyStyle="hint"
                             >
-                                <FiatValue
+                                <BaseCurrencyValue
                                     disableHiddenPlaceholder
                                     amount={cachedNetworkAmount}
                                     symbol={symbol}

@@ -3160,9 +3160,9 @@ export default defineMessages({
         defaultMessage: 'Enable the passphrase feature to continue with the verification process.',
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
     },
-    TR_PRIMARY_FIAT: {
-        defaultMessage: 'Fiat currency',
-        id: 'TR_PRIMARY_FIAT',
+    TR_BASE_CURRENCY: {
+        defaultMessage: 'Currency',
+        id: 'TR_BASE_CURRENCY',
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
@@ -5657,14 +5657,6 @@ export default defineMessages({
     TR_ADD_TOKEN_TOAST_ERROR: {
         id: 'TR_ADD_TOKEN_TOAST_ERROR',
         defaultMessage: 'Action failed: {error}',
-    },
-    TR_BRIDGE_DEV_MODE_START: {
-        id: 'TR_BRIDGE_DEV_MODE_START',
-        defaultMessage: 'Starting Trezor Bridge on port 21324',
-    },
-    TR_BRIDGE_DEV_MODE_STOP: {
-        id: 'TR_BRIDGE_DEV_MODE_STOP',
-        defaultMessage: 'Starting Trezor Bridge on default port',
     },
     TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',

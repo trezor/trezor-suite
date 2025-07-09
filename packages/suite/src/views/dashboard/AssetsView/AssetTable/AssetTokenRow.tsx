@@ -2,7 +2,7 @@ import { Network } from '@suite-common/wallet-config';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { BaseCurrencyValue, Translation } from 'src/components/suite';
 
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
@@ -28,7 +28,7 @@ export const AssetTokenRow = ({
                 <Translation id="TR_NAV_TOKENS" />
             </Table.Cell>
             <Table.Cell colSpan={4}>
-                <FiatValue
+                <BaseCurrencyValue
                     amount={tokensDisplayFiatBalance ?? '0'}
                     symbol={network.symbol}
                     shouldConvert={false}

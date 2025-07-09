@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     EnhancedTokenInfo,
     TokenDefinition,
@@ -38,7 +38,7 @@ export const sortTokensWithRates = (a: TokensWithRates, b: TokensWithRates) => {
 
 export const enhanceTokensWithRates = (
     tokens: Account['tokens'],
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     symbol: NetworkSymbol,
     rates?: RatesByKey,
 ) => {

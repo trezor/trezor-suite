@@ -10,7 +10,7 @@ import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import {
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     MetadataLabeling,
     Translation,
@@ -119,7 +119,7 @@ const TransactionDetailButton = styled(TextButton)`
     }
 `;
 
-const StyledFiatValue = styled(FiatValue)`
+const StyledFiatValue = styled(BaseCurrencyValue)`
     margin-left: auto;
     padding-left: ${spacingsPx.xxs};
     color: ${({ theme }) => theme.textSubdued};

@@ -7,7 +7,7 @@ import { HELP_CENTER_CANCEL_TRANSACTION } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
 
 import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
-import { FiatValue } from '../../../../../FiatValue';
+import { BaseCurrencyValue } from '../../../../../BaseCurrencyValue';
 import { FormattedCryptoAmount } from '../../../../../FormattedCryptoAmount';
 import { Translation } from '../../../../../Translation';
 import { TrezorLink } from '../../../../../TrezorLink';
@@ -88,7 +88,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                             symbol={tx.symbol}
                         />
                         <Text variant="tertiary" typographyStyle="label">
-                            <FiatValue
+                            <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={fee ?? '0'}
                                 symbol={tx.symbol}
@@ -112,7 +112,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                             symbol={tx.symbol}
                         />
                         <Text variant="tertiary" typographyStyle="label">
-                            <FiatValue
+                            <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={formattedOutputAmount}
                                 symbol={tx.symbol}

@@ -73,14 +73,9 @@ export const selectAllAccountsToList = createMemoizedSelector(
 
 export const selectNetworksToDiscover = (
     state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
-    staticSessionId?: StaticSessionId,
+    staticSessionId: StaticSessionId,
 ) => {
     const enabledNetworks = selectEnabledNetworks(state);
-
-    if (!staticSessionId) {
-        return enabledNetworks;
-    }
-
     const device = selectSelectedDevice(state);
     const deviceNetworks = selectSupportedNetworkByDevice(device);
     const enabledSupportedNetworks = enabledNetworks.filter(network =>
@@ -98,16 +93,13 @@ export const selectNetworksToDiscover = (
     return enabledSupportedNetworks.filter(network => !discoveredNetworks.includes(network));
 };
 
-export const selectIsRediscoverNeeded = (
+export const selectShowRediscoverButton = (
     state: DiscoveryRootState & DeviceRootState & AccountsRootState & WalletSettingsRootState,
     staticSessionId?: StaticSessionId,
-) => {
-    if (!staticSessionId) return false;
-
-    const networksToDiscover = selectNetworksToDiscover(state, staticSessionId);
-
-    return networksToDiscover.length > 0;
-};
+) =>
+    staticSessionId &&
+    selectNetworksToDiscover(state, staticSessionId).length > 0 &&
+    !selectHasRunningDiscovery(state);
 
 export const selectAccountsToBeForgotten = (
     state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,

@@ -1,4 +1,4 @@
-export const fiatCurrencies = {
+export const baseCurrencies = {
     usd: { code: 'usd', label: 'United States Dollar' },
     eur: { code: 'eur', label: 'Euro' },
     gbp: { code: 'gbp', label: 'Pound Sterling' },
@@ -47,5 +47,5 @@ export const fiatCurrencies = {
     xdr: { code: 'xdr', label: 'Special drawing rights' },
 } as const;
 
-export type FiatCurrencyCode = keyof typeof fiatCurrencies;
-export type FiatCurrency = (typeof fiatCurrencies)[FiatCurrencyCode];
+export type BaseCurrencyCode = keyof typeof baseCurrencies;
+export type BaseCurrency = (typeof baseCurrencies)[BaseCurrencyCode];

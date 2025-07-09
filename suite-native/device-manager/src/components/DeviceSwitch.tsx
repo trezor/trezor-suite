@@ -1,15 +1,12 @@
 import { Pressable } from 'react-native';
-import { useSelector } from 'react-redux';
 
-import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { Box, HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
+import { DeviceSwitchContent } from './DeviceSwitchContent';
 import { useDeviceManager } from '../hooks/useDeviceManager';
-import { DeviceItemContent } from './DeviceItem/DeviceItemContent';
 
 type SwitchStyleProps = { isDeviceManagerVisible: boolean };
 
@@ -25,7 +22,6 @@ const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManag
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-
     extends: {
         condition: isDeviceManagerVisible,
         style: {
@@ -41,9 +37,6 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
 export const DeviceSwitch = () => {
     const { applyStyle } = useNativeStyles();
 
-    const deviceState = useSelector(selectDeviceState);
-    const numberOfDevices = useSelector(selectNumberOfDeviceInstances);
-
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
 
     const toggleDeviceManager = () => {
@@ -58,18 +51,7 @@ export const DeviceSwitch = () => {
         >
             <HStack justifyContent="space-between" alignItems="center" spacing="sp16">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
-                    {deviceState ? (
-                        <DeviceItemContent
-                            deviceState={deviceState}
-                            headerTextVariant="highlight"
-                            variant={numberOfDevices > 1 ? 'walletDetail' : 'simple'}
-                            isSubHeaderForceHidden={true}
-                        />
-                    ) : (
-                        <Text variant="highlight">
-                            <Translation id="deviceManager.defaultHeader" />
-                        </Text>
-                    )}
+                    <DeviceSwitchContent />
                     <Icon name="caretUpDown" color="iconDefault" />
                 </Box>
             </HStack>

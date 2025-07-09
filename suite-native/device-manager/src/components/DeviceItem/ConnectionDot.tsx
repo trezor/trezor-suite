@@ -4,23 +4,37 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type ConnectionDotProps = {
     isConnected: boolean;
+    isDeviceInBootloaderMode?: boolean;
 };
 
-const dotStyle = prepareNativeStyle<{ isConnected: boolean }>((utils, { isConnected }) => ({
-    width: utils.spacings.sp8,
-    height: utils.spacings.sp8,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.iconDisabled,
-    extend: {
-        condition: isConnected,
-        style: {
-            backgroundColor: utils.colors.textSecondaryHighlight,
-        },
-    },
-}));
+const dotStyle = prepareNativeStyle<{ isConnected: boolean; isDeviceInBootloaderMode: boolean }>(
+    (utils, { isConnected, isDeviceInBootloaderMode }) => ({
+        width: utils.spacings.sp8,
+        height: utils.spacings.sp8,
+        borderRadius: utils.borders.radii.round,
+        backgroundColor: utils.colors.iconDisabled,
+        extend: [
+            {
+                condition: isConnected,
+                style: {
+                    backgroundColor: utils.colors.textSecondaryHighlight,
+                },
+            },
+            {
+                condition: isDeviceInBootloaderMode,
+                style: {
+                    backgroundColor: utils.colors.textAlertBlue,
+                },
+            },
+        ],
+    }),
+);
 
-export const ConnectionDot = ({ isConnected }: ConnectionDotProps) => {
+export const ConnectionDot = ({
+    isConnected,
+    isDeviceInBootloaderMode = false,
+}: ConnectionDotProps) => {
     const { applyStyle } = useNativeStyles();
 
-    return <View style={applyStyle(dotStyle, { isConnected })} />;
+    return <View style={applyStyle(dotStyle, { isConnected, isDeviceInBootloaderMode })} />;
 };

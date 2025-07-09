@@ -1,8 +1,5 @@
 import { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types/src/device';
-import { DeviceRootState, selectDeviceByState } from '@suite-common/wallet-core';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -11,10 +8,11 @@ import { NativeTypographyStyle } from '@trezor/theme';
 import { ConnectionDot } from './ConnectionDot';
 
 export type WalletDetailDeviceItemContentProps = {
-    deviceState: TrezorDevice['state'] | undefined;
     headerTextVariant?: NativeTypographyStyle;
     header: ReactNode;
     subHeader?: ReactNode;
+    isDeviceInBootloader: boolean;
+    isConnected: boolean;
     isPortfolioTrackerDevice: boolean;
 };
 
@@ -30,19 +28,14 @@ const headerTextStyle = prepareNativeStyle(() => ({
 }));
 
 export const WalletDetailDeviceItemContent = ({
-    deviceState,
     headerTextVariant,
-
+    isConnected,
     header,
+    isDeviceInBootloader,
     subHeader,
     isPortfolioTrackerDevice,
 }: WalletDetailDeviceItemContentProps) => {
     const { applyStyle } = useNativeStyles();
-    const device = useSelector((state: DeviceRootState) => selectDeviceByState(state, deviceState));
-
-    if (!device) {
-        return null;
-    }
 
     return (
         <>
@@ -55,7 +48,12 @@ export const WalletDetailDeviceItemContent = ({
                 >
                     {header}
                 </Text>
-                {!isPortfolioTrackerDevice && <ConnectionDot isConnected={device.connected} />}
+                {!isPortfolioTrackerDevice && (
+                    <ConnectionDot
+                        isConnected={isConnected}
+                        isDeviceInBootloaderMode={isDeviceInBootloader}
+                    />
+                )}
             </HStack>
             <Text variant="hint" color="textSubdued" testID="@deviceManager/walletDetail/subheader">
                 {isPortfolioTrackerDevice && (

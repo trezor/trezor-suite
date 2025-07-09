@@ -10,7 +10,7 @@ import { spacingsPx, typography, zIndices } from '@trezor/theme';
 import {
     AccountLabel,
     AmountUnitSwitchWrapper,
-    FiatValue,
+    BaseCurrencyValue,
     FormattedCryptoAmount,
     MetadataLabeling,
 } from 'src/components/suite';
@@ -149,7 +149,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             </AmountUnitSwitchWrapper>
                         </CryptoBalance>
                         <ForegroundWrapper>
-                            <FiatValue
+                            <BaseCurrencyValue
                                 amount={formattedBalance}
                                 symbol={symbol}
                                 showApproximationIndicator

@@ -23,6 +23,7 @@ export enum RootStackRoutes {
     DeviceCompromisedModal = 'DeviceCompromisedModal',
     BackupFailedModal = 'BackupFailedModal',
     TradingWebView = 'TradingWebView',
+    BootloaderMode = 'BootloaderMode',
 }
 
 export enum AppTabsRoutes {
@@ -105,6 +106,7 @@ export enum WipeDeviceStackRoutes {
     WipeDevice = 'WipeDevice',
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
+    FactoryReset = 'FactoryReset',
 }
 
 export enum DeviceNameStackRoutes {

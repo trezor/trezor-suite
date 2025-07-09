@@ -1,5 +1,5 @@
 import { Formatter } from '@suite-common/formatters';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -113,7 +113,7 @@ export const validateCryptoLimits =
 
 interface ValidateFiatLimitsOptions {
     amountLimits?: AmountLimitProps;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     decimals: number;
     rate?: number;
     formatter: Formatter<string, string>;

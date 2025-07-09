@@ -1,6 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { Account, AccountItemType } from '../../../../../types/wallet';
 import { TokenIconSetWrapper } from '../../../TokenIconSetWrapper';
@@ -23,5 +24,7 @@ export const AccountItemLeft = ({ type, symbol, account }: AccountItemLeftProps)
             return <Icon name="piggyBankFilled" variant="tertiary" />;
         case 'tokens':
             return <TokenIconSetWrapper accounts={[account]} symbol={account.symbol} />;
+        default:
+            return exhaustive(type);
     }
 };

@@ -18,8 +18,8 @@ import { spacings } from '@trezor/theme';
 
 import {
     AccountLabel,
+    BaseCurrencyValue,
     CoinBalance,
-    FiatValue,
     HiddenPlaceholder,
     Translation,
 } from 'src/components/suite';
@@ -67,7 +67,7 @@ export const AccountItemContent = ({
     dataTestKey,
     isFiatLoading,
 }: ItemContentProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const localCurrency = useSelector(selectLocalCurrency);
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const { shouldAnimate } = useLoadingSkeleton();
@@ -75,7 +75,8 @@ export const AccountItemContent = ({
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
     return (
-        // content is constant size in discreet mode, so overflow: hidden is unnecessary. Though it would cut off CSS blur effect, so we may turn it off
+        // Content is constant size in discreet mode, so overflow: hidden is unnecessary.
+        // Though it would cut off CSS blur effect, so we may turn it off
         <Column flex="1" overflow={discreetMode ? 'visible' : 'hidden'} gap={spacings.xxxs}>
             <Row gap={spacings.md} margin={{ right: spacings.xxs }} justifyContent="space-between">
                 <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
@@ -95,7 +96,7 @@ export const AccountItemContent = ({
                         {isFiatLoading ? (
                             <SkeletonRectangle animate={shouldAnimate} />
                         ) : (
-                            <FiatAmountFormatter
+                            <BaseCurrencyAmountFormatter
                                 value={customFiatValue}
                                 currency={localCurrency}
                                 minimumFractionDigits={0}
@@ -104,7 +105,7 @@ export const AccountItemContent = ({
                         )}
                     </HiddenPlaceholder>
                 ) : (
-                    <FiatValue
+                    <BaseCurrencyValue
                         amount={formattedBalance}
                         symbol={symbol}
                         fiatAmountFormatterOptions={{
@@ -113,7 +114,7 @@ export const AccountItemContent = ({
                         }}
                     >
                         {FiatValueRenderComponent}
-                    </FiatValue>
+                    </BaseCurrencyValue>
                 )}
             </Row>
             {isBalanceShown && type !== 'tokens' && (

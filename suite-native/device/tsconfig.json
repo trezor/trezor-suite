@@ -24,6 +24,7 @@
         { "path": "../device-authorization" },
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },
+        { "path": "../firmware" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },

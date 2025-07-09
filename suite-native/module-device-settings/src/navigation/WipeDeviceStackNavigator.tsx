@@ -10,6 +10,7 @@ import {
 } from '@suite-native/navigation';
 
 import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
+import { FactoryResetScreen } from '../screens/FactoryResetScreen';
 import { WipeDeviceContinueOnTrezorScreen } from '../screens/WipeDeviceContinueOnTrezorScreen';
 import { WipeDeviceLoadingScreen } from '../screens/WipeDeviceLoadingScreen';
 import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
@@ -39,6 +40,10 @@ export const WipeDeviceStackNavigator = () => {
             <WipeDeviceStack.Screen
                 name={WipeDeviceStackRoutes.WipeDeviceLoadingScreen}
                 component={WipeDeviceLoadingScreen}
+            />
+            <WipeDeviceStack.Screen
+                name={WipeDeviceStackRoutes.FactoryReset}
+                component={FactoryResetScreen}
             />
         </WipeDeviceStack.Navigator>
     );

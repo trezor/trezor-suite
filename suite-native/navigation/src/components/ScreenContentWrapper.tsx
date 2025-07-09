@@ -2,9 +2,13 @@ import React, { ReactNode, useRef } from 'react';
 import { ScrollView, ScrollViewProps } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
+import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
+import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useScrollDivider } from '../useScrollDivider';
+import { useDynamicHeader } from './DynamicHeader/DynamicScreenHeaderContext';
 import { ScrollViewContext } from './ScrollViewContext';
 
 type ScreenContentProps = {
@@ -12,6 +16,7 @@ type ScreenContentProps = {
     isScrollable: boolean;
     hasHeader: boolean;
     focusedInputBottomOffset?: number;
+    isDynamicHeader?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
 };
 
@@ -23,11 +28,27 @@ export const ScreenContentWrapper = ({
     hasHeader,
     focusedInputBottomOffset,
     refreshControl,
+    isDynamicHeader = false,
 }: ScreenContentProps) => {
     const scrollViewRef = useRef<ScrollView | null>(null);
     const { applyStyle } = useNativeStyles();
 
     const { scrollDivider, handleScroll } = useScrollDivider();
+    const { handleDynamicHeaderScroll } = useDynamicHeader();
+
+    const scrollHandler = (() => {
+        if (hasHeader && isDynamicHeader) {
+            return (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+                handleDynamicHeaderScroll(event);
+                handleScroll(event);
+            };
+        }
+        if (hasHeader) {
+            return handleScroll;
+        }
+
+        return undefined;
+    })();
 
     return isScrollable ? (
         <>
@@ -39,7 +60,7 @@ export const ScreenContentWrapper = ({
                 keyboardShouldPersistTaps="handled"
                 contentInsetAdjustmentBehavior="never"
                 contentContainerStyle={applyStyle(screenContentWrapperStyle)}
-                onScroll={hasHeader ? handleScroll : undefined}
+                onScroll={scrollHandler}
                 testID="@screen/mainScrollView"
             >
                 <ScrollViewContext.Provider value={scrollViewRef}>

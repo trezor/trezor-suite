@@ -5,7 +5,7 @@ import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/walle
 import { Account } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import {
     NativeStakingRootState,
     doesCoinSupportStaking,
@@ -40,7 +40,7 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
 
             {hasAnyKnownTokens && (
                 <VStack spacing={0} alignItems="flex-end">
-                    <FiatAmountFormatter
+                    <BaseCurrencyAmountFormatter
                         numberOfLines={1}
                         adjustsFontSizeToFit
                         value={fiatBalance}

@@ -24,7 +24,7 @@ export const GraphYAxisTick = ({
     localCurrency,
     symbol,
 }: GraphYAxisTickProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const theme = useTheme();
     const ref = useRef<SVGGElement>(null);
@@ -47,7 +47,7 @@ export const GraphYAxisTick = ({
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {localCurrency && (
-                    <FiatAmountFormatter
+                    <BaseCurrencyAmountFormatter
                         value={payload.value}
                         currency={localCurrency}
                         minimumFractionDigits={0}

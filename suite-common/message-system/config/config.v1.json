@@ -83,6 +83,54 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": "!",
+                        "mobile": ">=25.6.1",
+                        "web": "!"
+                    },
+                    "os": {
+                        "macos": "!",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "*",
+                        "ios": "*",
+                        "chromeos": "!"
+                    },
+                    "countryCodes": ["GB"]
+                }
+            ],
+            "message": {
+                "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "priority": 91,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Trading is not available in your country yet.",
+                    "en": "Trading is not available in your country yet.",
+                    "es": "El comercio aún no está disponible en tu país.",
+                    "cs": "Obchodování zatím není ve vaší zemi dostupné.",
+                    "de": "Der Handel ist in deinem Land noch nicht verfügbar.",
+                    "fr": "Le trading n'est pas encore disponible dans votre pays.",
+                    "it": "Il trading non è ancora disponibile nel tuo paese.",
+                    "pt": "A negociação ainda não está disponível no seu país.",
+                    "tr": "Ticaret henüz ülkenizde kullanılamıyor.",
+                    "ru": "Торговля пока недоступна в вашей стране.",
+                    "ja": "お住まいの国ではまだ取引をご利用いただけません。",
+                    "uk": "Торгівля наразі недоступна y вашій країні.",
+                    "hu": "A kereskedés még nem érhető el az Ön országában."
+                },
+                "feature": [
+                    {
+                        "domain": "trading.restrictions.blacklist",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": "22.4.0",
                         "mobile": "!",
                         "web": "22.4.0"

@@ -20,7 +20,7 @@ const formatAmount = (
     sign: SignOperator,
     formatters: Formatters,
 ) => {
-    const { FiatAmountFormatter } = formatters;
+    const { BaseCurrencyAmountFormatter } = formatters;
 
     return (
         <Row>
@@ -38,7 +38,7 @@ const formatAmount = (
             {fiatAmount && localCurrency && (
                 <>
                     (
-                    <FiatAmountFormatter currency={localCurrency} value={fiatAmount} />)
+                    <BaseCurrencyAmountFormatter currency={localCurrency} value={fiatAmount} />)
                 </>
             )}
         </Row>

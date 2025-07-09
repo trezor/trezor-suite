@@ -70,7 +70,7 @@ export const SummaryCards = ({
     isLoading,
     className,
 }: SummaryCardProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const [fromTimestamp, toTimestamp] = dataInterval;
     // aggregate values from shown graph data
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
@@ -115,7 +115,7 @@ export const SummaryCards = ({
                         value={totalReceivedAmount.toFixed()}
                         secondaryValue={
                             totalReceivedFiatMap[localCurrency] ? (
-                                <FiatAmountFormatter
+                                <BaseCurrencyAmountFormatter
                                     currency={localCurrency}
                                     value={totalReceivedFiatMap[localCurrency]!}
                                 />
@@ -130,7 +130,7 @@ export const SummaryCards = ({
                         value={totalSentAmount.negated().toFixed()}
                         secondaryValue={
                             totalSentFiatMap[localCurrency] ? (
-                                <FiatAmountFormatter
+                                <BaseCurrencyAmountFormatter
                                     currency={localCurrency}
                                     value={totalSentFiatMap[localCurrency]!}
                                 />

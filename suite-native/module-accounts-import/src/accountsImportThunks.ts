@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import {
     getSupportedDefinitionTypes,
     getTokenDefinitionThunk,
@@ -80,7 +80,7 @@ export const importAccountThunk = createThunk(
 
 export const getAccountInfoThunk = createThunk<
     AccountInfo,
-    { symbol: NetworkSymbol; fiatCurrency: FiatCurrencyCode; xpubAddress: string },
+    { symbol: NetworkSymbol; fiatCurrency: BaseCurrencyCode; xpubAddress: string },
     { rejectValue: string }
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,

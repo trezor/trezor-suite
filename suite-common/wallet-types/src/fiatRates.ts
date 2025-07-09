@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { FiatRatesBySymbol } from '@trezor/connect';
 
@@ -43,7 +43,7 @@ export type FiatRatesResult = {
 
 export type TickerResult = {
     tickerId: TickerId;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     rates: FiatRatesResult[];
 };
 

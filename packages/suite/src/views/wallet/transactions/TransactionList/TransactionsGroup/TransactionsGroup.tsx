@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
@@ -38,7 +38,7 @@ interface TransactionsGroupProps {
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
     symbol: NetworkSymbol;
-    localCurrency: FiatCurrencyCode;
+    localCurrency: BaseCurrencyCode;
     index: number;
     isPending: boolean;
 }

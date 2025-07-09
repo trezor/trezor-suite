@@ -1,7 +1,7 @@
 import { differenceInMonths } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BaseCurrencyCode } from '@suite-common/suite-config';
 import { resetTime } from '@suite-common/suite-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -22,7 +22,7 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSession
 export const ensureHistoryRates = async (
     symbol: NetworkSymbol,
     data: BlockchainAccountBalanceHistory[],
-    fiatCurrency: FiatCurrencyCode,
+    fiatCurrency: BaseCurrencyCode,
     isElectrumBackend: boolean,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
     if (!getNetwork(symbol).coingeckoId) return data;

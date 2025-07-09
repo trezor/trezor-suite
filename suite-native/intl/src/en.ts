@@ -542,25 +542,17 @@ export const en = {
             description:
                 'To continue using your Trezor with this app, update it with Trezor Suite for desktop or web.',
         },
-        bootloaderModal: {
-            title: 'The connected Trezor device is in bootloader mode',
-            description: 'To continue using your Trezor with this app, exit bootloader mode.',
-            appendix: {
-                exit: {
-                    title: 'Exit bootloader mode',
-                    lines: {
-                        1: '1. Disconnect your Trezor',
-                        2: '2. Reconnect your Trezor to your mobile device',
-                    },
-                },
-                continue: {
-                    title: 'Continue in bootloader mode',
-                    lines: {
-                        1: '1. Disconnect your Trezor',
-                        2: '2. Connect your Trezor to Trezor Suite for desktop or web',
-                        3: '3. Enter bootloader mode',
-                    },
-                },
+        bootloaderScreen: {
+            factoryResetCard: {
+                title: 'Forgot your PIN or just want to reset your Trezor?',
+                description:
+                    'This will reset all stored data on your Trezor. Proceed with caution.',
+                buttonTitle: 'Factory reset',
+            },
+            reconnectCard: {
+                title: 'Want to see your dashboard?',
+                description:
+                    'If you want to see your dashboard, simply reconnect & unlock your Trezor.',
             },
         },
         noBackupModal: {
@@ -671,7 +663,12 @@ export const en = {
                 },
             },
             loadingSuccessScreen: {
-                title: 'Device wiped',
+                wipedTitle: 'Device wiped',
+                factoryResetTitle: 'Trezor reset',
+            },
+            factoryResetScreen: {
+                title: 'Factory reset',
+                description: 'This will reset all of your device’s data. Proceed with caution.',
             },
         },
         bluetooth: {
@@ -1523,6 +1520,7 @@ export const en = {
             portfolioTracker: 'Track your coins without Trezor',
             connected: 'Connected',
             disconnected: 'Disconnected',
+            bootloader: 'Bootloader mode',
         },
         syncCoinsButton: {
             syncMyCoins: 'Sync my coins',
