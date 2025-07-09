@@ -79,8 +79,9 @@ export const SendUtxoScreen = ({
                     symbol={account.symbol}
                 />
             }
+            noBottomPadding
         >
-            <VStack spacing="sp24" flex={1}>
+            <VStack flex={1}>
                 <SearchInputWithCancel
                     onChange={onSearchChange}
                     placeholder={translate('moduleSend.coinControl.search.placeholder')}

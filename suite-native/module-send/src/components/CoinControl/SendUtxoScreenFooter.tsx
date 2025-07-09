@@ -17,7 +17,11 @@ type SendUtxoScreenFooterProps = {
 
 const gradientStyle = prepareNativeStyle(utils => ({
     height: utils.spacings.sp16,
-    top: -utils.spacings.sp32,
+    top: -utils.spacings.sp16,
+}));
+
+const footerStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
 }));
 
 export const SendUtxoScreenFooter = ({
@@ -38,7 +42,13 @@ export const SendUtxoScreenFooter = ({
     return (
         <>
             <ScreenFooterGradient style={applyStyle(gradientStyle)} />
-            <VStack paddingHorizontal="sp16" paddingBottom="sp16" spacing="sp12">
+            <VStack
+                style={applyStyle(footerStyle)}
+                paddingHorizontal="sp16"
+                paddingBottom="sp16"
+                paddingTop="sp16"
+                spacing="sp12"
+            >
                 <VStack spacing="sp4">
                     <HStack justifyContent="space-between">
                         <Text variant={missingToAmount ? 'hint' : 'body'}>
