@@ -1,7 +1,11 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectDiscoveryByDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import {
+    selectAccountsByDeviceState,
+    selectDiscoveryByDevicePath,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { Account, DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { AppState } from 'src/types/suite';
 
@@ -10,6 +14,7 @@ import { DiscoveryStatusType } from '../../types/wallet';
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
     discovery: DiscoveryStatus | undefined;
+    accounts: Account[] | undefined;
     walletSettings: {
         enabledNetworks: NetworkSymbol[];
     };
@@ -18,6 +23,7 @@ type GetDiscoveryStatusParams = {
 const getDiscoveryStatus = ({
     device,
     discovery,
+    accounts,
     walletSettings,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
     if (!device) {
@@ -47,7 +53,7 @@ const getDiscoveryStatus = ({
 
     if (
         (discovery?.status === 'failed' && discovery.error) ||
-        (discovery?.failed ?? []).length > 0
+        (accounts ?? []).find(a => a.failed)
     ) {
         return {
             status: 'exception',
@@ -76,8 +82,9 @@ const getDiscoveryStatus = ({
 // TODO move this selector somewhere more sensible
 export const selectDiscoveryOverallStatus = (state: AppState) => {
     const device = selectSelectedDevice(state);
+    const accounts = device?.state && selectAccountsByDeviceState(state, device.state);
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
     const walletSettings = state.wallet.settings;
 
-    return getDiscoveryStatus({ device, discovery, walletSettings });
+    return getDiscoveryStatus({ device, discovery, accounts, walletSettings });
 };

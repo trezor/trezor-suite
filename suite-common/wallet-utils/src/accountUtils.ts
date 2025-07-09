@@ -16,11 +16,12 @@ import {
     Account,
     AccountDescriptor,
     AccountKey,
-    DiscoveryStatus,
+    FailedAccount,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
     RatesByKey,
     ReceiveInfo,
+    SuccessfulAccount,
     TokenAddress,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -55,6 +56,11 @@ import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
+
+export const isAccountSuccessful = (account: Account): account is SuccessfulAccount =>
+    !account.failed;
+
+export const isAccountFailed = (account: Account): account is FailedAccount => !!account.failed;
 
 export const getFirstFreshAddress = (
     account: Account,
@@ -896,48 +902,6 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
         stellarCursor: undefined,
         page: accountInfo.page,
     };
-};
-
-// Used in wallet/Menu and Dashboard
-export const getFailedAccounts = (
-    staticSessionId?: StaticSessionId,
-    discovery?: DiscoveryStatus,
-): Account[] => {
-    if (staticSessionId === undefined || discovery?.failed === undefined) return [];
-
-    return discovery.failed.map(f => {
-        const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
-        const network = networks[f.symbol];
-
-        return {
-            failed: true,
-            deviceState: staticSessionId,
-            index: f.index,
-            path: substituteBip43Path(network.bip43Path), // placeholder - not relevant for failed, but required by TS to be an actual Bip43Path
-            descriptor,
-            key: descriptor,
-            accountType: f.accountType,
-            symbol: f.symbol,
-            empty: true,
-            // first normal account is always visible on web & desktop
-            visible: f.accountType === 'normal' && f.index === 0,
-            balance: '0',
-            availableBalance: '0',
-            formattedBalance: '0',
-            tokens: [],
-            addresses: undefined,
-            utxo: undefined,
-            history: {
-                total: 0,
-                unconfirmed: 0,
-            },
-            metadata: {
-                key: descriptor,
-            },
-            ts: 0,
-            ...getAccountSpecific({}, network.networkType),
-        };
-    });
 };
 
 export const getAccountIdentifier = (account: Account) => ({

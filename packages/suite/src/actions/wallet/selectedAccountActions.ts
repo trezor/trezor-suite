@@ -80,15 +80,14 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         };
     }
 
-    // waiting for discovery
-    const discovery = selectDiscoveryForSelectedDevice(state);
-
-    const matchedFailed = (discovery?.failed ?? []).find(
+    const matchedFailed = accounts.find(
         f =>
+            f.failed &&
             f.symbol === network.symbol &&
             f.index === params.accountIndex &&
             f.accountType === params.accountType,
     );
+
     // discovery for requested network failed
     if (matchedFailed) {
         return {
@@ -130,6 +129,8 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             params,
         };
     }
+
+    const discovery = selectDiscoveryForSelectedDevice(state);
 
     // account doesn't exist (yet?) checking why...
     // discovery is still running

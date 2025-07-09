@@ -102,6 +102,8 @@ export type AccountBackendSpecific =
           syncing?: boolean;
       };
 
+type AccountFailureSpecific = { failed: true; error: string } | { failed?: false };
+
 export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceStaticSessionId>
 export type AccountDescriptor = string & Branded<'AccountDescriptor'>; // Descriptor or xpub/zpub/..
 
@@ -118,7 +120,6 @@ export type Account = {
     empty: boolean;
     visible: boolean;
     imported?: boolean;
-    failed?: boolean;
     balance: string;
     availableBalance: string;
     formattedBalance: string;
@@ -134,7 +135,11 @@ export type Account = {
     accountLabel?: string;
     ts: number;
 } & AccountBackendSpecific &
-    AccountNetworkSpecific;
+    AccountNetworkSpecific &
+    AccountFailureSpecific;
+
+export type FailedAccount = Extract<Account, { failed: true }>;
+export type SuccessfulAccount = Extract<Account, { failed?: false }>;
 
 export type UppercaseAccountType = Uppercase<AccountType>;
 

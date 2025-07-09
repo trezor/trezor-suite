@@ -2,7 +2,7 @@ import { ComponentProps, JSX } from 'react';
 
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { restartDiscoveryThunk } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
 import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -77,14 +77,17 @@ const getAccountError = (accountError: string, networkType: NetworkType) => {
     return accountError;
 };
 
-const discoveryFailedMessage = (discovery?: DiscoveryStatus) => {
+const discoveryFailedMessage = (
+    discovery: DiscoveryStatus | undefined,
+    failed: FailedAccount[],
+) => {
     if (!discovery || discovery.status !== 'failed') return '';
     if (discovery.error) return <div>{discovery.error}</div>;
 
     // Group all failed networks into array of errors.
     const networkError: string[] = [];
 
-    const details = (discovery.failed ?? []).reduce((value, account) => {
+    const details = failed.reduce((value, account) => {
         const network = getNetwork(account.symbol);
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
@@ -106,9 +109,14 @@ const discoveryFailedMessage = (discovery?: DiscoveryStatus) => {
 type PortfolioCardExceptionProps = {
     exception: Extract<DiscoveryStatusType, { status: 'exception' }>;
     discovery?: DiscoveryStatus;
+    failed: FailedAccount[];
 };
 
-export const PortfolioCardException = ({ exception, discovery }: PortfolioCardExceptionProps) => {
+export const PortfolioCardException = ({
+    exception,
+    discovery,
+    failed,
+}: PortfolioCardExceptionProps) => {
     const dispatch = useDispatch();
 
     switch (exception.type) {
@@ -134,7 +142,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                     description={
                         <Translation
                             id="TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC"
-                            values={{ details: discoveryFailedMessage(discovery) }}
+                            values={{ details: discoveryFailedMessage(discovery, failed) }}
                         />
                     }
                     cta={{ action: () => dispatch(restartDiscoveryThunk()), icon: 'repeat' }}
@@ -148,7 +156,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                     description={
                         <Translation
                             id="TR_ACCOUNT_PASSPHRASE_DISABLED"
-                            values={{ details: discoveryFailedMessage(discovery) }}
+                            values={{ details: discoveryFailedMessage(discovery, failed) }}
                         />
                     }
                     cta={{
