@@ -32,12 +32,14 @@ export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
 export type DeviceMode = typeof UI.SEEDLESS | typeof UI.BOOTLOADER | typeof UI.INITIALIZE;
 
 export interface MethodInfo {
+    useUi: boolean;
     useDevice: boolean;
     useDeviceState: boolean;
     name: string;
     requiredPermissions: MethodPermission[];
     info: string;
     confirmation?: UiRequestConfirmation['payload'];
+    precomposed?: PrecomposeResultFinal;
 }
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
@@ -344,7 +346,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     abstract init(): void;
 
-    async getMethodInfo() {
+    async getMethodInfo(): Promise<MethodInfo> {
         return {
             useUi: this.useUi,
             useDevice: this.useDevice,
