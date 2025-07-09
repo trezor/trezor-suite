@@ -29,6 +29,7 @@ import {
     selectIsDeviceInBootloader,
     selectIsDiscoveredDeviceAccountless,
     selectIsEntropyCheckFailed,
+    selectIsFirmwareAuthenticityCheckDismissed,
     selectIsUnacquiredDevice,
     selectLocalCurrency,
     selectSelectedDevice,
@@ -41,7 +42,10 @@ import {
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { SettingsSliceRootState } from '@suite-native/settings';
+import {
+    SettingsSliceRootState,
+    selectIsDeviceAuthenticityCheckEnabled,
+} from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -244,4 +248,58 @@ export const selectShouldFactoryResetBeVisible = createMemoizedSelector(
     [selectIsDeviceInBootloader, selectHasDeviceFirmwareInstalled],
     (isDeviceInBootloader, hasDeviceFirmwareInstalled) =>
         isDeviceInBootloader && hasDeviceFirmwareInstalled,
+);
+
+export const selectIsDeviceCompromised = createMemoizedSelector(
+    [
+        selectIsDeviceAuthenticityCheckEnabled,
+        selectIsDeviceAuthenticityCheckFailed,
+        selectIsEntropyCheckEnabledAndFailed,
+        selectIsFirmwareAuthenticityCheckDismissed,
+        selectHasFirmwareAuthenticityCheckHardFailed,
+    ],
+    (
+        isDeviceAuthenticityCheckEnabled,
+        isDeviceAuthenticityCheckFailed,
+        isEntropyCheckEnabledAndFailed,
+        isFirmwareAuthenticityCheckDismissed,
+        hasFirmwareAuthenticityCheckHardFailed,
+    ) => {
+        const isDeviceAuthenticityEnabledAndFailed =
+            isDeviceAuthenticityCheckEnabled && isDeviceAuthenticityCheckFailed;
+
+        const isFirmwareAuthenticityCheckHardFailedAndNotDismissed =
+            hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
+
+        return (
+            isDeviceAuthenticityEnabledAndFailed ||
+            isEntropyCheckEnabledAndFailed ||
+            isFirmwareAuthenticityCheckHardFailedAndNotDismissed
+        );
+    },
+);
+
+export const selectCompromisedDeviceFailedCheck = createMemoizedSelector(
+    [
+        selectIsDeviceAuthenticityCheckEnabled,
+        selectIsDeviceAuthenticityCheckFailed,
+        selectIsEntropyCheckEnabledAndFailed,
+    ],
+    (
+        isDeviceAuthenticityCheckEnabled,
+        isDeviceAuthenticityCheckFailed,
+        isEntropyCheckEnabledAndFailed,
+    ) => {
+        const isDeviceAuthenticityEnabledAndFailed =
+            isDeviceAuthenticityCheckEnabled && isDeviceAuthenticityCheckFailed;
+
+        if (isDeviceAuthenticityEnabledAndFailed) {
+            return 'device-authenticity';
+        }
+        if (isEntropyCheckEnabledAndFailed) {
+            return 'entropy';
+        }
+
+        return 'firmware-authenticity';
+    },
 );

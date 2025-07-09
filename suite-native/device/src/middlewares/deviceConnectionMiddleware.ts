@@ -35,6 +35,8 @@ import {
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
 
+import { selectCompromisedDeviceFailedCheck, selectIsDeviceCompromised } from '../selectors';
+
 export type DeviceConnectionState = DeviceRootState &
     MessageSystemRootState &
     AccountsRootState &
@@ -48,7 +50,8 @@ export type DeviceConnectionState = DeviceRootState &
 
 export const deviceConnectionMiddleware = createListenerMiddleware<DeviceConnectionState>();
 
-// Fix: Add arrow function syntax and remove extra comma
+// At the moment when unauthorized physical device is selected,
+// redirect to the Connecting screen where is handled the connection logic.
 export const deviceConnectionPredicate = (
     action: UnknownAction,
     currentState: DeviceConnectionState,
@@ -69,11 +72,12 @@ export const deviceConnectionEffect = (
     const isDeviceUsingPassphrase = selectIsDeviceUsingPassphrase(getState());
     // Passphrase protected devices are only connected through passphrase form (in app / in device)
     // The passphrase flow handles connection differently and redirect to connecting screen is not wanted.
+    // TODO we could just check this from the action maybe?
     if (isDeviceUsingPassphrase) return;
 
     const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
 
-    // TODO check for suspicious screen should also be here
+    // TODO can we just stop the listener when firmware installation is running?
     if (isFirmwareInstallationRunning) return;
 
     const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(getState());
@@ -84,8 +88,17 @@ export const deviceConnectionEffect = (
     // Reference https://github.com/trezor/trezor-suite/pull/11319/commits/a9152279fe6d70c57fa16ee0bf75dc9fd52bb930
     if (isDeviceConnectedAndAuthorized) return;
 
-    const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
+    const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
+    if (shouldNavigateToDeviceCompromisedModal) {
+        const compromisedDeviceFailedCheck = selectCompromisedDeviceFailedCheck(getState());
+        navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal, {
+            failedCheck: compromisedDeviceFailedCheck,
+        });
 
+        return;
+    }
+
+    const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
     if (isCoinEnablingInitFinished) {
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
@@ -95,7 +108,6 @@ export const deviceConnectionEffect = (
     }
 };
 
-// TODO we can use this in suspicious device screen
 export const stopDeviceConnectionListening = () => {
     deviceConnectionMiddleware.stopListening({
         predicate: deviceConnectionPredicate,

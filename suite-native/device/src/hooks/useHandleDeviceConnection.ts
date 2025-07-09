@@ -25,10 +25,7 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
-import {
-    selectIsCoinEnablingInitFinished,
-    selectIsOnboardingFinished,
-} from '@suite-native/settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 import {
     isOnboardingDeviceDisconnectedAlertDisplayedAtom,
@@ -92,11 +89,8 @@ export const useHandleDeviceConnection = () => {
         lastRoute as RootStackRoutes,
     );
 
-    const {
-        failedCheck,
-        shouldNavigateToDeviceCompromisedModal,
-        shouldKeepDeviceCompromisedModal,
-    } = useDeviceChecks(isDeviceCompromisedModalFocused);
+    const { shouldNavigateToDeviceCompromisedModal, shouldKeepDeviceCompromisedModal } =
+        useDeviceChecks(isDeviceCompromisedModalFocused);
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
@@ -132,52 +126,6 @@ export const useHandleDeviceConnection = () => {
         isDeviceOnboardingConnectAndUnlockScreenFocused,
         wasDeviceOnboardingCancelled,
         shouldNavigateToDeviceCompromisedModal,
-    ]);
-
-    // At the moment when unauthorized physical device is selected,
-    // redirect to the Connecting screen where is handled the connection logic.
-    useEffect(() => {
-        if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused) return;
-
-        // if (
-        //     isDeviceInitialized &&
-        //     isDeviceConnected &&
-        //     isOnboardingFinished &&
-        //     !isPortfolioTrackerDevice &&
-        //     !isDeviceConnectedAndAuthorized &&
-        //     !isBiometricsOverlayVisible &&
-        //     !shouldNavigateToDeviceCompromisedModal &&
-        //     !isDeviceOnboardingStackFocused &&
-        //     !isDeviceUsingPassphrase &&
-        //     !shouldBlockSendReviewRedirect
-        // ) {
-        //     if (isCoinEnablingInitFinished) {
-        //         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-        //             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
-        //         });
-        //     } else {
-        //         navigation.navigate(RootStackRoutes.CoinEnablingInit);
-        //     }
-        // }
-        if (shouldNavigateToDeviceCompromisedModal) {
-            navigation.navigate(RootStackRoutes.DeviceCompromisedModal, { failedCheck });
-        }
-    }, [
-        failedCheck,
-        isCoinEnablingInitFinished,
-        isDeviceConnected,
-        isDeviceOnboardingStackFocused,
-        isOnboardingFinished,
-        isPortfolioTrackerDevice,
-        isDeviceConnectedAndAuthorized,
-        isBiometricsOverlayVisible,
-        navigation,
-        isDeviceUsingPassphrase,
-        shouldBlockSendReviewRedirect,
-        isFirmwareInstallationRunning,
-        isDeviceInitialized,
-        shouldNavigateToDeviceCompromisedModal,
-        isSuspiciousDeviceScreenFocused,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
