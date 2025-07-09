@@ -68,17 +68,21 @@ export const AccountTopPanel = () => {
 
     const { symbol, formattedBalance, accountType } = account;
 
+    const displayCryptoBalance = localCurrency !== symbol;
+
     return (
         <Container>
             <BalanceSection ref={balanceSectionRef}>
                 <AmountUnitSwitchWrapper symbol={symbol}>
-                    <AccountCryptoBalance>
-                        <FormattedCryptoAmount
-                            data-testid="@wallet/account-top-panel/crypto-balance"
-                            value={formattedBalance}
-                            symbol={symbol}
-                        />
-                    </AccountCryptoBalance>
+                    {displayCryptoBalance && (
+                        <AccountCryptoBalance>
+                            <FormattedCryptoAmount
+                                data-testid="@wallet/account-top-panel/crypto-balance"
+                                value={formattedBalance}
+                                symbol={symbol}
+                            />
+                        </AccountCryptoBalance>
+                    )}
                 </AmountUnitSwitchWrapper>
                 <FiatHeader
                     symbol={account.symbol}
