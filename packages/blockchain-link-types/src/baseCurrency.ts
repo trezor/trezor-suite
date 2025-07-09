@@ -1,5 +1,5 @@
 export const baseCurrencies = {
-    // btc: { code: 'btc', label: 'Bitcoin' }, // will be used in future PR
+    btc: { code: 'btc', label: 'Bitcoin' },
     usd: { code: 'usd', label: 'United States Dollar' },
     eur: { code: 'eur', label: 'Euro' },
     gbp: { code: 'gbp', label: 'Pound Sterling' },
