@@ -6,6 +6,10 @@ import {
     UseFirmwareInstallationParams,
     useFirmwareInstallation,
 } from '@suite-common/firmware';
+import {
+    restartDeviceConnectionListening,
+    stopDeviceConnectionListening,
+} from '@suite-native/device';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { setPriorityMode } from '@trezor/react-native-usb';
@@ -42,6 +46,11 @@ export const useFirmware = (
 
     const setIsFirmwareInstallationRunning = useCallback(
         (isRunning: boolean) => {
+            if (isRunning) {
+                stopDeviceConnectionListening();
+            } else {
+                restartDeviceConnectionListening();
+            }
             dispatch(nativeFirmwareActions.setIsFirmwareInstallationRunning(isRunning));
         },
         [dispatch],

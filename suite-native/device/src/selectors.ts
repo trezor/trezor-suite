@@ -54,7 +54,7 @@ import { BigNumber } from '@trezor/utils';
 import { revisionCheckErrorScenarios } from './config/firmware';
 import { isDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
-type NativeDeviceRootState = DeviceRootState &
+export type NativeDeviceRootState = DeviceRootState &
     AccountsRootState &
     DiscoveryRootState &
     SettingsSliceRootState &
