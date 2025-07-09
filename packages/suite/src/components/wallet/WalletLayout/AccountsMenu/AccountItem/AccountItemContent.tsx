@@ -50,6 +50,54 @@ const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
     return <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>{value}</TruncateWithTooltip>;
 };
 
+type BaseCurrencyProps = {
+    isLoading?: boolean;
+    symbol: NetworkSymbol;
+    customFiatValue?: BaseCurrencyAmount;
+    formattedBalance: string;
+};
+
+const BaseCurrency = ({
+    isLoading,
+    symbol,
+    customFiatValue,
+    formattedBalance,
+}: BaseCurrencyProps) => {
+    const { BaseCurrencyAmountFormatter } = useFormatters();
+    const localCurrency = useSelector(selectLocalCurrency);
+    const { shouldAnimate } = useLoadingSkeleton();
+
+    if (isTestnet(symbol) || localCurrency === symbol) {
+        return null;
+    }
+
+    return customFiatValue ? (
+        <HiddenPlaceholder>
+            {isLoading ? (
+                <SkeletonRectangle animate={shouldAnimate} />
+            ) : (
+                <BaseCurrencyAmountFormatter
+                    value={customFiatValue}
+                    currency={localCurrency}
+                    minimumFractionDigits={0}
+                    maximumFractionDigits={0}
+                />
+            )}
+        </HiddenPlaceholder>
+    ) : (
+        <BaseCurrencyValue
+            amount={formattedBalance}
+            symbol={symbol}
+            fiatAmountFormatterOptions={{
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            }}
+        >
+            {FiatValueRenderComponent}
+        </BaseCurrencyValue>
+    );
+};
+
 export const AccountItemContent = ({
     customFiatValue,
     account,
@@ -58,8 +106,6 @@ export const AccountItemContent = ({
     dataTestKey,
     isFiatLoading,
 }: ItemContentProps) => {
-    const { BaseCurrencyAmountFormatter } = useFormatters();
-    const localCurrency = useSelector(selectLocalCurrency);
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const { shouldAnimate } = useLoadingSkeleton();
 
@@ -75,31 +121,12 @@ export const AccountItemContent = ({
                     {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
                     {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                 </AccountLabelContainer>
-                {customFiatValue && !isTestnet(account.symbol) ? (
-                    <HiddenPlaceholder>
-                        {isFiatLoading ? (
-                            <SkeletonRectangle animate={shouldAnimate} />
-                        ) : (
-                            <BaseCurrencyAmountFormatter
-                                value={customFiatValue}
-                                currency={localCurrency}
-                                minimumFractionDigits={0}
-                                maximumFractionDigits={0}
-                            />
-                        )}
-                    </HiddenPlaceholder>
-                ) : (
-                    <BaseCurrencyValue
-                        amount={formattedBalance}
-                        symbol={account.symbol}
-                        fiatAmountFormatterOptions={{
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0,
-                        }}
-                    >
-                        {FiatValueRenderComponent}
-                    </BaseCurrencyValue>
-                )}
+                <BaseCurrency
+                    isLoading={isFiatLoading}
+                    customFiatValue={customFiatValue}
+                    symbol={account.symbol}
+                    formattedBalance={formattedBalance}
+                />
             </Row>
             {isBalanceShown && type !== 'tokens' && (
                 <CoinBalance

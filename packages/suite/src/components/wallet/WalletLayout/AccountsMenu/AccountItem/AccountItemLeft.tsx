@@ -1,4 +1,3 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
@@ -9,15 +8,14 @@ import { TokenIconSetWrapper } from '../../../TokenIconSetWrapper';
 const ICON_SIZE = 24;
 type AccountItemLeftProps = {
     type: AccountItemType;
-    symbol: NetworkSymbol;
     account: Account;
 };
-export const AccountItemLeft = ({ type, symbol, account }: AccountItemLeftProps) => {
+export const AccountItemLeft = ({ type, account }: AccountItemLeftProps) => {
     switch (type) {
         case 'coin':
             return (
                 <Column alignItems="center">
-                    <CoinLogo size={ICON_SIZE} symbol={symbol} />
+                    <CoinLogo size={ICON_SIZE} symbol={account.symbol} />
                 </Column>
             );
         case 'staking':
