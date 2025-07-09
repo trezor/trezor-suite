@@ -1188,18 +1188,27 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.name?.toLowerCase().includes(search) ||
     token.contract?.toLowerCase().includes(search);
 
-export const isAccountInCollection = (account: Account, accounts: Account[]) =>
-    accounts.some(
-        ({ deviceState, descriptor, symbol, accountType, index }) =>
-            // most of the time, descriptor is unique for a given (symbol, accountType, index)
-            descriptor === account.descriptor &&
-            // but not for EVM networks (intentionally sharing same eth address), so let's compare them too
-            symbol === account.symbol &&
-            accountType === account.accountType &&
-            index === account.index &&
-            // do not mark as duplicate if two different devices discover the same wallet
-            deviceState === account.deviceState,
-    );
+export const accountEqualTo = (a: Account) => (b: Account) =>
+    a.deviceState === b.deviceState &&
+    a.symbol === b.symbol &&
+    a.accountType === b.accountType &&
+    a.index === b.index &&
+    // TODO just to be sure; delete later
+    (() => {
+        // if the accounts seem equal but the descriptors are different
+        if (a.descriptor !== b.descriptor) {
+            const { deviceState, symbol, accountType, index } = a;
+            console.warn('Potentially equal accounts with different descriptors!', {
+                deviceState,
+                symbol,
+                accountType,
+                index,
+                descriptors: [a.descriptor, b.descriptor],
+            });
+        }
+
+        return true;
+    })();
 
 export const parseAccountKey = (accountKey: AccountKey) => {
     const [accountDescriptor, networkSymbol, deviceStaticSessionId] = accountKey.split('-');
