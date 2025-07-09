@@ -50,4 +50,25 @@ export const typescriptConfig = [
             '@typescript-eslint/no-empty-object-type': 'off', // Todo: we shall solve this, this is bad practice
         },
     },
+    {
+        // restrict import of suite-common and suite-native packages outside of suite
+        files: ['packages/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        ignores: ['packages/suite*/**/*'],
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
+                    patterns: [
+                        '@trezor/*/lib',
+                        '@trezor/*/lib/**',
+                        '@trezor/*/libDev',
+                        '@trezor/*/libDev/**',
+                        '@suite-common/**',
+                        '@suite-native/**',
+                    ],
+                },
+            ],
+        },
+    },
 ];
