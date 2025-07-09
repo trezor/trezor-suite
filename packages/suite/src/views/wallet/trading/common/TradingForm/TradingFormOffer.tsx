@@ -67,6 +67,7 @@ export const TradingFormOffer = () => {
 
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+    const [isManuallyApproved, setIsManuallyApproved] = useState(false);
 
     const context = useTradingFormContext();
     const {
@@ -182,6 +183,10 @@ export const TradingFormOffer = () => {
     const isButtonDisabled =
         tradingDeviceDisconnected || state.isLoadingOrInvalid || !quote || amountTooHigh;
 
+    const isLoading = requiresTokenApproval
+        ? state.isFormLoading || isFetchingApprovalStatus || isQuoteOutdated
+        : state.isFormLoading;
+
     return (
         <Column gap={spacings.lg}>
             <Column gap={spacings.xs} data-testid="@trading/best-offer">
@@ -257,7 +262,7 @@ export const TradingFormOffer = () => {
                     <TextButton
                         onClick={onCompareAllOffersClick}
                         size="small"
-                        isDisabled={state.isLoadingOrInvalid || isQuoteOutdated}
+                        isDisabled={state.isLoadingOrInvalid || isLoading || isQuoteOutdated}
                         isLoading={isCompareLoading}
                         data-testid="@trading/form/compare-button"
                         type="button"
@@ -268,9 +273,7 @@ export const TradingFormOffer = () => {
                 {isTradingExchangeContext(context) ? (
                     <TradingFormOffersSwitcher
                         context={context}
-                        isFormLoading={
-                            (state.isFormLoading || isQuoteOutdated) && !preselectedQuote
-                        }
+                        isFormLoading={isLoading && !preselectedQuote}
                         isFormInvalid={state.isFormInvalid && !preselectedQuote}
                         providers={providers}
                     />
@@ -284,12 +287,13 @@ export const TradingFormOffer = () => {
                 )}
             </Column>
 
-            {requiresTokenApproval && bestScoredQuote && !state.isFormInvalid ? (
+            {requiresTokenApproval && bestScoredQuote && !isLoading ? (
                 <TradingFormApproval
                     openApproveModal={() => setIsApproveModalOpen(true)}
-                    isFetchingApprovalStatus={isFetchingApprovalStatus || isQuoteOutdated}
                     approvalType={approvalType}
                     setApprovalType={setApprovalType}
+                    isManuallyApproved={isManuallyApproved}
+                    setIsManuallyApproved={setIsManuallyApproved}
                 />
             ) : (
                 <Button
@@ -299,8 +303,8 @@ export const TradingFormOffer = () => {
                         top: spacings.md,
                     }}
                     isFullWidth
-                    isDisabled={isButtonDisabled}
-                    isLoading={(!state.isFormInvalid && state.isFormLoading) || areFeesLoading}
+                    isDisabled={isButtonDisabled || isLoading}
+                    isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
                     data-testid={`@trading/form/${type}-button`}
                 >
                     <Translation id={tradingGetSectionActionLabel(type)} />

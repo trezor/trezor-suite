@@ -13,6 +13,7 @@ type TradingExchangeUseHandleChangeProps = {
     shouldSendInSats: boolean | undefined;
 
     composeRequestCallback: () => void;
+    setApprovalInitiated?: (value: boolean) => void;
 };
 
 type PromiseType = {
@@ -29,6 +30,7 @@ export const useTradingExchangeHandleChange = ({
     timer,
     shouldSendInSats,
     composeRequestCallback,
+    setApprovalInitiated,
 }: TradingExchangeUseHandleChangeProps) => {
     const dispatch = useDispatch();
     const previousPromise = useRef<PromiseType>(null);
@@ -37,6 +39,8 @@ export const useTradingExchangeHandleChange = ({
         if (previousPromise.current) {
             previousPromise.current.abort('Request was replaced by another one.');
         }
+
+        setApprovalInitiated?.(false);
 
         const promise = dispatch(
             exchangeThunks.handleRequestThunk({
@@ -55,7 +59,15 @@ export const useTradingExchangeHandleChange = ({
         } catch (error) {
             console.warn('Request was aborted:', error.message);
         }
-    }, [dispatch, formValues, network, timer, shouldSendInSats, composeRequestCallback]);
+    }, [
+        dispatch,
+        formValues,
+        network,
+        timer,
+        shouldSendInSats,
+        composeRequestCallback,
+        setApprovalInitiated,
+    ]);
 
     // cleanup signal
     useEffect(
