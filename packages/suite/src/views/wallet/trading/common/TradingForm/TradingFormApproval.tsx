@@ -16,8 +16,9 @@ import { Translation } from 'src/components/suite';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
+
+import { useTradingExchangeWatchApproval } from '../../../../../hooks/wallet/trading/form/useTradingExchangeWatchApproval';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
     color: ${({ theme, $disabled }) =>
@@ -36,7 +37,7 @@ const IconWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translateY(4px);
+    transform: translateY(2px);
 `;
 
 const loadingAnimation = keyframes`
@@ -55,21 +56,25 @@ const LoadingIconWrapper = styled.div`
 type IconProps = { variant?: IconVariant };
 
 const IconCheck = ({ variant }: IconProps) => (
-    <Icon name="checkCircle" size="medium" variant={variant ?? 'tertiary'} />
+    <Icon name="checkCircle" size="mediumLarge" variant={variant} />
+);
+
+const IconPending = ({ variant }: IconProps) => (
+    <Icon name="clock" size="mediumLarge" variant={variant} />
 );
 
 const IconLoading = ({ variant }: IconProps) => (
     <LoadingIconWrapper>
-        <Icon name="spinnerGap" size="medium" variant={variant ?? 'tertiary'} />
+        <Icon name="spinnerGap" size="mediumLarge" variant={variant} />
     </LoadingIconWrapper>
 );
 
 const IconCircle = ({ variant }: IconProps) => (
-    <Icon name="circle" size="medium" variant={variant ?? 'tertiary'} />
+    <Icon name="circle" size="mediumLarge" variant={variant} />
 );
 
 const IconError = ({ variant }: IconProps) => (
-    <Icon name="xCircle" size="medium" variant={variant ?? 'destructive'} />
+    <Icon name="xCircle" size="mediumLarge" variant={variant} />
 );
 
 const ApprovalStep = ({ label, icon }: { label: ReactNode; icon: ReactNode }) => (
@@ -85,16 +90,18 @@ type ApprovalStep = 'REQUIRED' | 'APPROVED' | 'LOADING' | 'ERROR';
 
 interface TradingFormApprovalProps {
     openApproveModal: () => void;
-    isFetchingApprovalStatus: boolean;
     approvalType: TradingExchangeApprovalType;
     setApprovalType: (approvalType: TradingExchangeApprovalType) => void;
+    isManuallyApproved: boolean;
+    setIsManuallyApproved: (value: boolean) => void;
 }
 
 export const TradingFormApproval = ({
     openApproveModal,
-    isFetchingApprovalStatus,
     approvalType,
     setApprovalType,
+    isManuallyApproved,
+    setIsManuallyApproved,
 }: TradingFormApprovalProps) => {
     const dispatch = useDispatch();
     const context = useTradingFormContext<TradingExchangeType>();
@@ -104,8 +111,10 @@ export const TradingFormApproval = ({
         approveTransaction,
         revokeApproval,
         fetchApprovalStatus,
+        watchApproval,
+        refreshQuotes,
         selectedQuote,
-        watchTradeApproval,
+        preselectedQuote,
         form: {
             state: { isFormLoading },
         },
@@ -113,8 +122,6 @@ export const TradingFormApproval = ({
 
     const currentQuoteStatus = selectedQuote?.status;
     const previousQuoteStatus = usePrevious(currentQuoteStatus);
-
-    const [isManuallyApproved, setIsManuallyApproved] = useState(false);
 
     const [isApproveButtonLoading, setIsApproveButtonLoading] = useState(false);
     const [isRevokeButtonLoading, setIsRevokeButtonLoading] = useState(false);
@@ -128,9 +135,9 @@ export const TradingFormApproval = ({
     const explorer =
         network?.symbol && (explorers[network.symbol].custom ?? explorers[network.symbol].default);
 
-    useTradingExchangeWatchSendApproval({
+    useTradingExchangeWatchApproval({
         selectedQuote,
-        watchTradeApproval,
+        watchApproval,
     });
 
     useEffect(() => {
@@ -172,6 +179,13 @@ export const TradingFormApproval = ({
             return setApprovalStep('LOADING');
         }
 
+        if (
+            previousQuoteStatus === 'APPROVAL_PENDING' &&
+            currentQuoteStatus !== 'APPROVAL_PENDING'
+        ) {
+            refreshQuotes();
+        }
+
         if (previousQuoteStatus === 'APPROVAL_PENDING' && currentQuoteStatus === 'CONFIRM') {
             setIsManuallyApproved(true);
 
@@ -193,7 +207,13 @@ export const TradingFormApproval = ({
                 return setApprovalStep('APPROVED');
             }
         }
-    }, [currentQuoteStatus, previousQuoteStatus, approvalType]);
+    }, [
+        currentQuoteStatus,
+        previousQuoteStatus,
+        approvalType,
+        refreshQuotes,
+        setIsManuallyApproved,
+    ]);
 
     const onApproveTransactionClick = async () => {
         if (!selectedQuote || !selectedQuote.isDex) {
@@ -247,23 +267,19 @@ export const TradingFormApproval = ({
     const isApproveButtonDisabled =
         isApproveButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'REVOKE') ||
-        isFetchingApprovalStatus ||
         isFormLoading;
 
     const isSwapButtonDisabled =
         isSwapButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
-        isFetchingApprovalStatus ||
         isFormLoading;
 
     const isRevokeButtonDisabled =
         isRevokeButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
-        isFetchingApprovalStatus ||
         isFormLoading;
 
-    const isRefreshButtonDisabled =
-        isRefreshButtonLoading || isFetchingApprovalStatus || isFormLoading;
+    const isRefreshButtonDisabled = isRefreshButtonLoading || isFormLoading;
 
     return (
         <Column gap={spacings.md} alignItems="center">
@@ -282,104 +298,90 @@ export const TradingFormApproval = ({
                     </Paragraph>
 
                     <Card>
-                        {isFetchingApprovalStatus ? (
-                            <Row gap={spacings.sm}>
-                                <IconLoading variant="tertiary" />
-                                <Paragraph typographyStyle="body" variant="tertiary" align="start">
-                                    <Translation id="TR_EXCHANGE_APPROVAL_FORM_CHECKING_APPROVAL_STATUS" />
-                                </Paragraph>
-                            </Row>
-                        ) : (
-                            <Column gap={spacings.sm}>
-                                {approvalStep === 'REQUIRED' && (
-                                    <>
-                                        <ApprovalStep
-                                            label={
-                                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_REQUIRED" />
-                                            }
-                                            icon={<IconCheck variant="tertiary" />}
-                                        />
+                        <Column gap={spacings.sm}>
+                            {approvalStep === 'REQUIRED' && (
+                                <>
+                                    <ApprovalStep
+                                        label={
+                                            <Translation id="TR_EXCHANGE_APPROVAL_FORM_REQUIRED" />
+                                        }
+                                        icon={<IconPending variant="tertiary" />}
+                                    />
 
-                                        <ApprovalStep
-                                            label={
-                                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP" />
-                                            }
-                                            icon={<IconCircle variant="tertiary" />}
-                                        />
-                                    </>
-                                )}
+                                    <ApprovalStep
+                                        label={
+                                            <Translation id="TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP" />
+                                        }
+                                        icon={<IconCircle variant="tertiary" />}
+                                    />
+                                </>
+                            )}
 
-                                {approvalStep === 'LOADING' && (
-                                    <>
-                                        <ApprovalStep
-                                            label={
-                                                <Column>
-                                                    <Translation id="TR_EXCHANGE_APPROVAL_FORM_PENDING_PREFIX" />
-                                                    {selectedQuote?.approvalSendTxHash && (
-                                                        <TxAddress
-                                                            variant="primary"
-                                                            typographyStyle="body"
-                                                            txAddress={
-                                                                selectedQuote.approvalSendTxHash
-                                                            }
-                                                            explorerUrl={getExplorerUrl(
-                                                                explorer,
-                                                                'tx',
-                                                            )}
-                                                            explorerUrlQueryString={
-                                                                explorer?.queryString
-                                                            }
-                                                        />
-                                                    )}
-                                                    <Translation id="TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX" />
-                                                </Column>
-                                            }
-                                            icon={<IconLoading variant="tertiary" />}
-                                        />
+                            {approvalStep === 'LOADING' && (
+                                <>
+                                    <ApprovalStep
+                                        label={
+                                            <Column>
+                                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_PENDING_PREFIX" />
+                                                {selectedQuote?.approvalSendTxHash && (
+                                                    <TxAddress
+                                                        variant="primary"
+                                                        typographyStyle="body"
+                                                        txAddress={selectedQuote.approvalSendTxHash}
+                                                        explorerUrl={getExplorerUrl(explorer, 'tx')}
+                                                        explorerUrlQueryString={
+                                                            explorer?.queryString
+                                                        }
+                                                    />
+                                                )}
+                                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_PENDING_SUFFIX" />
+                                            </Column>
+                                        }
+                                        icon={<IconLoading variant="tertiary" />}
+                                    />
 
-                                        <ApprovalStep
-                                            label={
-                                                <Translation
-                                                    id={
-                                                        approvalType === 'APPROVE'
-                                                            ? 'TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP'
-                                                            : 'TR_EXCHANGE_APPROVAL_FORM_APPROVAL_REVOKED'
-                                                    }
-                                                />
-                                            }
-                                            icon={<IconCircle variant="tertiary" />}
-                                        />
-                                    </>
-                                )}
-
-                                {approvalStep === 'APPROVED' && (
-                                    <>
-                                        {isManuallyApproved && (
-                                            <ApprovalStep
-                                                label={
-                                                    <Translation id="TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED" />
+                                    <ApprovalStep
+                                        label={
+                                            <Translation
+                                                id={
+                                                    approvalType === 'APPROVE'
+                                                        ? 'TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP'
+                                                        : 'TR_EXCHANGE_APPROVAL_FORM_APPROVAL_REVOKED'
                                                 }
-                                                icon={<IconCheck variant="primary" />}
                                             />
-                                        )}
+                                        }
+                                        icon={<IconCircle variant="tertiary" />}
+                                    />
+                                </>
+                            )}
 
+                            {approvalStep === 'APPROVED' && (
+                                <>
+                                    {isManuallyApproved && (
                                         <ApprovalStep
                                             label={
-                                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP" />
+                                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_TX_PROCESSED" />
                                             }
                                             icon={<IconCheck variant="primary" />}
                                         />
-                                    </>
-                                )}
+                                    )}
 
-                                {approvalStep === 'ERROR' && (
                                     <ApprovalStep
-                                        label={<Translation id="TR_EXCHANGE_APPROVAL_ERROR" />}
-                                        icon={<IconError variant="destructive" />}
+                                        label={
+                                            <Translation id="TR_EXCHANGE_APPROVAL_FORM_READY_TO_SWAP" />
+                                        }
+                                        icon={<IconCheck variant="primary" />}
                                     />
-                                )}
-                            </Column>
-                        )}
+                                </>
+                            )}
+
+                            {approvalStep === 'ERROR' && (
+                                <ApprovalStep
+                                    label={<Translation id="TR_EXCHANGE_APPROVAL_ERROR" />}
+                                    icon={<IconError variant="destructive" />}
+                                />
+                            )}
+                        </Column>
                     </Card>
                 </Column>
             </Card>
@@ -404,7 +406,11 @@ export const TradingFormApproval = ({
                         onClick={onProceedToSwapClick}
                         variant="primary"
                         isFullWidth
-                        isLoading={isSwapButtonLoading || isRevokeButtonLoading}
+                        isLoading={
+                            isSwapButtonLoading ||
+                            isRevokeButtonLoading ||
+                            (preselectedQuote && isFormLoading)
+                        }
                         isDisabled={isSwapButtonDisabled || isRevokeButtonDisabled}
                     >
                         <Translation id="TR_TRADING_SWAP" />
