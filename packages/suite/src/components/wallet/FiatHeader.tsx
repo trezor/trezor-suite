@@ -4,8 +4,13 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import {
+    BASE_CURRENCY_ZERO,
+    asBaseCurrencyAmount,
+    useShouldRedactNumbers,
+} from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder, RedactNumericalValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -51,7 +56,7 @@ const useFiatAmount = ({ amount, symbol }: UseFiatAmountProps) => {
     });
 
     if (!symbol) {
-        return amount;
+        return asBaseCurrencyAmount(new BigNumber(amount));
     }
 
     return fiatAmount;
@@ -71,7 +76,7 @@ export const FiatHeader = ({
     const fiatAmount = useFiatAmount({ amount, symbol });
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const formattedAmount = BaseCurrencyAmountFormatter({
-        value: fiatAmount ?? '0',
+        value: fiatAmount ?? BASE_CURRENCY_ZERO,
         currency: localCurrency,
     });
 

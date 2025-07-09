@@ -3,9 +3,11 @@ import { Dimensions, View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { BigNumber } from '@trezor/utils';
 
 type AxisLabelProps = {
     x: number;
@@ -72,7 +74,7 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
             ref={viewRef}
         >
             <BaseCurrencyAmountFormatter
-                value={String(value)}
+                value={asBaseCurrencyAmount(new BigNumber(value))}
                 variant="label"
                 color="textDisabled"
             />

@@ -4,8 +4,10 @@ import { useFormatters } from '@suite-common/formatters';
 import { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
 import { Network, isNetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon, CryptoIconWithNetwork, Icon } from '@suite-native/icons';
+import { BigNumber } from '@trezor/utils';
 
 export const TxSimulationAsset = ({
     assetDiff,
@@ -50,7 +52,7 @@ export const TxSimulationAsset = ({
                         <Text color="textSubdued">
                             {`+ `}
                             <BaseCurrencyAmountFormatter
-                                value={inAmount.usd_price}
+                                value={asBaseCurrencyAmount(new BigNumber(inAmount.usd_price))}
                                 currency="USD"
                             />
                         </Text>
@@ -65,7 +67,7 @@ export const TxSimulationAsset = ({
                         <Text color="textSubdued">
                             {`- `}
                             <BaseCurrencyAmountFormatter
-                                value={outAmount.usd_price}
+                                value={asBaseCurrencyAmount(new BigNumber(outAmount.usd_price))}
                                 currency="USD"
                             />
                         </Text>

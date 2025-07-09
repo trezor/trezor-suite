@@ -3,6 +3,7 @@ import { memo, useState } from 'react';
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Icon, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
@@ -31,12 +32,14 @@ const Wrapper = styled.div`
     white-space: nowrap;
 
     /* little hack to remove first and last horizontal line from cartesian grid (lines that wrap the area of the chart) */
+
     .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
     .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
         stroke-opacity: 0;
     }
 
     /* hides circle dot in case only one month is displayed */
+
     .recharts-dot.recharts-line-dot {
         display: none;
     }
@@ -79,9 +82,9 @@ export interface CryptoGraphProps extends CommonProps {
 export interface FiatGraphProps extends CommonProps {
     variant: 'all-assets';
     data: AggregatedDashboardHistory[];
-    receivedValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    sentValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedDashboardHistory) => string | undefined;
+    receivedValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
+    sentValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
+    balanceValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
     account?: never;
 }
 

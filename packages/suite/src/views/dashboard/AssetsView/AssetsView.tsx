@@ -80,10 +80,10 @@ const useAssetsFiatBalances = (
                 .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
                 .toString() ?? '0';
 
-        const fiatBalance = toFiatCurrency(amount, fiatRate?.rate, 2) ?? '0';
+        const fiatBalance = toFiatCurrency({ amount, rate: fiatRate?.rate })?.toFixed(2) ?? '0';
 
         return [...acc, { fiatBalance, symbol: asset.network.symbol }];
-    }, []);
+    }, [] as AssetFiatBalance[]);
 
 export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);

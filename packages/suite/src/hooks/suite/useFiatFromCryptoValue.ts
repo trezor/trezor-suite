@@ -29,7 +29,7 @@ export const useFiatFromCryptoValue = ({
     const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
-    const fiatAmount: string | null = rate ? toFiatCurrency(amount, rate) : null;
+    const fiatAmount = rate ? toFiatCurrency({ amount, rate }) : null;
 
     return { localCurrency, fiatAmount, rate, currentRate };
 };

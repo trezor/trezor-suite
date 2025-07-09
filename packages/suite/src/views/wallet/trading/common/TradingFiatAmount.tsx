@@ -1,14 +1,15 @@
 import { useFormatters } from '@suite-common/formatters';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 
 interface TradingFiatAmountProps {
-    amount?: string | number;
+    amount?: BaseCurrencyAmount;
     currency?: string;
 }
 
 export const TradingFiatAmount = ({ amount, currency }: TradingFiatAmountProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
-    if (amount) {
+    if (amount !== undefined) {
         return <BaseCurrencyAmountFormatter value={amount} currency={currency} />;
     }
 

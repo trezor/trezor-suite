@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, VStack } from '@suite-native/atoms';
 import { GraphFiatBalance, selectHasDeviceHistoryEnabledAccounts } from '@suite-native/graph';
 
@@ -11,7 +12,7 @@ import {
 
 type PortfolioHeaderProps = {
     isLoading: boolean;
-    totalFiatBalance: string;
+    totalFiatBalance: BaseCurrencyAmount;
 };
 
 export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeaderProps) => {

@@ -24,6 +24,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
 import {
+    BASE_CURRENCY_ZERO,
     getAccountFiatBalance,
     getAccountTotalStakingBalance,
     getFiatRateKey,
@@ -88,7 +89,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
     ],
     (fiatRates, account, localCurrency, shouldIncludeStaking, shouldIncludeTokens) => {
         if (!account) {
-            return '0';
+            return BASE_CURRENCY_ZERO;
         }
 
         const totalBalance = getAccountFiatBalance({
@@ -100,7 +101,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
         });
 
         if (!totalBalance) {
-            return '0';
+            return BASE_CURRENCY_ZERO;
         }
 
         return totalBalance;
@@ -110,14 +111,14 @@ export const selectAccountFiatBalance = createMemoizedSelector(
 export const selectAccountTokenFiatBalance = createMemoizedSelector(
     [selectCurrentFiatRates, selectLocalCurrency, selectAccountByKey, selectAccountTokenInfo],
     (fiatRates, localCurrency, account, tokenInfo) => {
-        if (!account || !fiatRates || !tokenInfo) return '0';
+        if (!account || !fiatRates || !tokenInfo) return BASE_CURRENCY_ZERO;
         const { contract, balance } = tokenInfo;
         const fiatRateKey = getFiatRateKey(account.symbol, localCurrency, contract);
         const rate = fiatRates[fiatRateKey]?.rate;
 
-        if (!rate || !balance) return '0';
+        if (!rate || !balance) return BASE_CURRENCY_ZERO;
 
-        return toFiatCurrency(balance, rate) ?? '0';
+        return toFiatCurrency({ amount: balance, rate }) ?? BASE_CURRENCY_ZERO;
     },
 );
 

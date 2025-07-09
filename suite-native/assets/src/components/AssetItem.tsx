@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
 import { Badge, Box, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
@@ -23,6 +24,7 @@ import {
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
 import { TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
+import { BigNumber } from '@trezor/utils';
 
 import {
     AssetsRootState,
@@ -64,7 +66,12 @@ const CryptoAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
 const FiatAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
     const fiatValue = useSelector((state: AssetsRootState) => selectAssetFiatValue(state, symbol));
 
-    return <BaseCurrencyAmountFormatter symbol={symbol} value={fiatValue} />;
+    return (
+        <BaseCurrencyAmountFormatter
+            symbol={symbol}
+            value={fiatValue !== null ? asBaseCurrencyAmount(new BigNumber(fiatValue)) : null}
+        />
+    );
 });
 
 const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {

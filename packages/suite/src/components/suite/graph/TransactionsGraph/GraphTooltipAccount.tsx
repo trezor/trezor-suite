@@ -3,6 +3,7 @@ import { TooltipProps } from 'recharts';
 import { Formatters, useFormatters } from '@suite-common/formatters';
 import { SignOperator } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -15,7 +16,7 @@ import type { CryptoGraphProps } from './TransactionsGraph';
 const formatAmount = (
     amount: string | undefined,
     symbol: NetworkSymbol,
-    fiatAmount: string | undefined,
+    fiatAmount: BaseCurrencyAmount | undefined,
     localCurrency: string | undefined,
     sign: SignOperator,
     formatters: Formatters,
@@ -77,9 +78,10 @@ export const GraphTooltipAccount = ({
     const receivedAmountString = receivedValueFn(payload[0].payload);
     const sentAmountString = sentValueFn(payload[0].payload);
 
-    const receivedFiat: string | undefined =
+    const receivedFiat: BaseCurrencyAmount | undefined =
         payload[0].payload.receivedFiat[localCurrency] ?? undefined;
-    const sentFiat: string | undefined = payload[0].payload.sentFiat[localCurrency] ?? undefined;
+    const sentFiat: BaseCurrencyAmount | undefined =
+        payload[0].payload.sentFiat[localCurrency] ?? undefined;
 
     return (
         <GraphTooltipBase

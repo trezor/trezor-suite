@@ -20,7 +20,7 @@ import {
     selectAccountByKey,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
@@ -204,7 +204,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
     referencePointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
     selectedPointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
     graphPoints: TGraphPoint[];
-    totalFiatBalance: string;
+    totalFiatBalance: BaseCurrencyAmount;
 }): {
     handleGestureStart: () => void;
     setInitialSelectedPoints: () => void;

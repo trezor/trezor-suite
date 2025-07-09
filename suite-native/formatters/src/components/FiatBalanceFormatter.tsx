@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -9,7 +10,7 @@ import { AmountText } from './AmountText';
 import { EmptyAmountText } from './EmptyAmountText';
 import { parseBalanceAmount } from '../utils';
 
-type BalanceFormatterProps = FormatterProps<string | null> & {
+type BalanceFormatterProps = FormatterProps<BaseCurrencyAmount | null> & {
     isForcedDiscreetMode?: boolean;
     testID?: string;
 };

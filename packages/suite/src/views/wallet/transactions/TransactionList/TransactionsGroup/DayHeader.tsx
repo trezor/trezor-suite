@@ -2,7 +2,7 @@ import { FormattedDate } from 'react-intl';
 
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount, isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -14,7 +14,7 @@ interface DayHeaderProps {
     dateKey: string;
     symbol: NetworkSymbol;
     totalAmount: BigNumber;
-    totalFiatAmountPerDay: BigNumber;
+    totalFiatAmountPerDay: BaseCurrencyAmount;
     localCurrency: string;
     isMissingFiatRates?: boolean;
     isHovered?: boolean;
@@ -62,7 +62,7 @@ export const DayHeader = ({
                         {totalFiatAmountPerDay.gt(0) && <span>+</span>}
                         <BaseCurrencyAmountFormatter
                             currency={localCurrency}
-                            value={totalFiatAmountPerDay.toFixed()}
+                            value={totalFiatAmountPerDay}
                         />
                     </HiddenPlaceholder>
                 </ColFiat>

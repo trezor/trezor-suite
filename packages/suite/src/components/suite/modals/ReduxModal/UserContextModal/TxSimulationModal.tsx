@@ -15,7 +15,7 @@ import { Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
-import { getFeeInfo } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount, getFeeInfo } from '@suite-common/wallet-utils';
 import {
     AssetLogo,
     Banner,
@@ -35,6 +35,7 @@ import { ERRORS } from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { isCoinSymbol } from '@trezor/product-components/src/components/CoinLogo/coins';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -109,7 +110,7 @@ const TxSimulationAsset = ({
                         <Text variant="tertiary" key={`in-usd-${inIndex}`}>
                             {`+ `}
                             <BaseCurrencyAmountFormatter
-                                value={inAmount.usd_price}
+                                value={asBaseCurrencyAmount(new BigNumber(inAmount.usd_price))}
                                 currency="USD"
                             />
                         </Text>
@@ -130,7 +131,7 @@ const TxSimulationAsset = ({
                         <Text variant="tertiary" key={`out-usd-${outIndex}`}>
                             {`- `}
                             <BaseCurrencyAmountFormatter
-                                value={outAmount.usd_price}
+                                value={asBaseCurrencyAmount(new BigNumber(outAmount.usd_price))}
                                 currency="USD"
                             />
                         </Text>

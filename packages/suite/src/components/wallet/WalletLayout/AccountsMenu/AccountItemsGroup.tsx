@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { selectCurrentFiatRates, selectLocalCurrency } from '@suite-common/wallet-core';
 import {
+    BASE_CURRENCY_ZERO,
     areTokenFiatRatesLoading,
     getAccountTokensFiatBalance,
     getAccountTotalStakingBalance,
@@ -63,7 +64,7 @@ export const AccountItemsGroup = ({
 
     const isFiatLoading = areTokenFiatRatesLoading(account, localCurrency, rates ?? {});
     const tokensFiatBalance = isFiatLoading
-        ? (0).toFixed()
+        ? BASE_CURRENCY_ZERO
         : getAccountTokensFiatBalance(account, localCurrency, rates, tokens);
 
     const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden'];

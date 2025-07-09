@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
 import { TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
@@ -10,7 +10,7 @@ import { AmountText } from './AmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { EmptyAmountText } from './EmptyAmountText';
 
-type FiatAmountFormatterProps = FormatterProps<string | null> &
+type FiatAmountFormatterProps = FormatterProps<BaseCurrencyAmount | null> &
     TextProps & {
         symbol?: NetworkSymbol;
         isDiscreetText?: boolean;
