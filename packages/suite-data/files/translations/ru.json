@@ -1427,8 +1427,6 @@
   "TR_TROUBLESHOOTING_CLOSE_TABS": "Закройте другие вкладки и окна, которые могут использовать ваш Trezor",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION": "После закрытия других вкладок и окон, попробуйте обновить эту страницу.",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP": "После закрытия других вкладок и окон браузера попробуйте выйти и снова открыть приложение Trezor Suite.",
-  "TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION": "Посетите <a>страницу статуса Trezor Bridge</a>",
-  "TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE": "Убедитесь, что процесс Trezor Bridge запущен",
   "TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION": "Кабель должен быть полностью вставлен. Если у вас девайс с USB-C, кабель должен «защёлкнуться» в разъёме.",
   "TR_TROUBLESHOOTING_TIP_CABLE_TITLE": "Попробуйте другой кабель",
   "TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION": "С установленным Trezor Bridge.",
